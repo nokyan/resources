@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ResCPU" parent="AdwBin">
+    <property name="child">
+      <object class="GtkScrolledWindow">
+        <child>
+          <object class="AdwClamp">
+            <child>
+              <object class="GtkBox">
+                <property name="margin-top">24</property>
+                <property name="margin-bottom">24</property>
+                <property name="margin-start">16</property>
+                <property name="margin-end">16</property>
+                <property name="spacing">24</property>
+                <property name="orientation">vertical</property>
+                <property name="hexpand">true</property>
+                <property name="valign">start</property>
+                <property name="vexpand">true</property>
+                <child>
+                  <object class="GtkLabel" id="cpu_name">
+                    <property name="wrap">true</property>
+                    <property name="selectable">true</property>
+                    <style>
+                      <class name="title-header"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title" translatable="yes">Usage</property>
+                    <child>
+                      <object class="AdwExpanderRow" id="threads_expander">
+                        <property name="title" translatable="yes">Total CPU Usage</property>
+                        <child type="action">
+                          <object class="GtkLabel" id="total_usage_label">
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
+                            <property name="justify">right</property>
+                            <property name="halign">start</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title" translatable="yes">CPU Information</property>
+                    <child>
+                      <object class="ResInfoBox" id="max_speed">
+                        <property name="title" translatable="yes">Max Speed</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="logical_cpus">
+                        <property name="title" translatable="yes">Logical Cores</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="physical_cpus">
+                        <property name="title" translatable="yes">Physical Cores</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="sockets">
+                        <property name="title" translatable="yes">Sockets</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="virtualization">
+                        <property name="title" translatable="yes">Virtualization</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="architecture">
+                        <property name="title" translatable="yes">Architecture</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

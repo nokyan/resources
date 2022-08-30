@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/me/nalux/Resources/">
+    <!-- see https://gtk-rs.org/gtk4-rs/git/docs/gtk4/struct.Application.html#automatic-resources -->
+    <file compressed="true" preprocess="xml-stripblanks">ui/pages/cpu.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/pages/memory.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="gtk/help-overlay.ui">ui/shortcuts.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/widgets/info_box.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/widgets/progress_box.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/window.ui</file>
+    <file compressed="true">style.css</file>
+  </gresource>
+</gresources>

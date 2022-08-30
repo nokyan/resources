@@ -1,0 +1,6 @@
+data/me.nalux.Resources.desktop.in.in
+data/me.nalux.Resources.gschema.xml.in
+data/me.nalux.Resources.metainfo.xml.in.in
+data/resources/ui/shortcuts.ui
+data/resources/ui/window.ui
+src/application.rs

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ResProgressBox" parent="AdwActionRow">
+    <property name="overflow">hidden</property>
+    <child type="suffix">
+      <object class="GtkBox">
+        <property name="spacing">16</property>
+        <property name="valign">center</property>
+        <child>
+          <object class="GtkLabel" id="percentage_label">
+            <style>
+              <class name="dim-label"/>
+            </style>
+            <property name="justify">right</property>
+            <property name="halign">start</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkProgressBar" id="progress_bar">
+            <property name="valign">center</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
+

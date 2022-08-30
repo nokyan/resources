@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="primary_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Preferences</attribute>
+        <attribute name="action">app.preferences</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
+        <attribute name="action">win.show-help-overlay</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_About Resources</attribute>
+        <attribute name="action">app.about</attribute>
+      </item>
+    </section>
+  </menu>
+  <template class="MainWindow" parent="AdwApplicationWindow">
+    <child>
+      <object class="AdwLeaflet" id="leaflet">
+        <property name="can-navigate-back">True</property>
+        <property name="hexpand">True</property>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="AdwHeaderBar" id="header_bar">
+                <property name="show-end-title-buttons" bind-source="leaflet" bind-property="folded" bind-flags="sync-create"/>
+                <property name="title-widget">
+                  <object class="AdwWindowTitle">
+                    <property name="title" translatable="yes">Resources</property>
+                  </object>
+                </property>
+                <child type="end">
+                  <object class="GtkMenuButton">
+                    <property name="menu-model">primary_menu</property>
+                    <property name="icon-name">open-menu-symbolic</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackSidebar" id="resources_sidebar">
+                <property name="width_request">270</property>
+                <property name="vexpand">True</property>
+                <property name="stack">content_stack</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwLeafletPage">
+            <property name="navigatable">False</property>
+            <property name="child">
+              <object class="GtkSeparator" />
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="hexpand">True</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="AdwHeaderBar">
+                <property name="show-start-title-buttons" bind-source="leaflet" bind-property="folded" bind-flags="sync-create"/>
+                <property name="title-widget">
+                  <object class="AdwWindowTitle" id="content_title">
+                    <property name="title"></property>
+                  </object>
+                </property>
+                <child type="start">
+                  <object class="GtkButton">
+                    <property name="valign">center</property>
+                    <property name="tooltip-text" translatable="yes">Back</property>
+                    <property name="icon-name">go-previous-symbolic</property>
+                    <property name="visible" bind-source="leaflet" bind-property="folded" bind-flags="sync-create"/>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStack" id="content_stack">
+                <property name="vexpand">True</property>
+                <property name="hexpand">True</property>
+                <property name="vhomogeneous">False</property>
+                <property name="transition_type">crossfade</property>
+                <child>
+                  <object class="GtkStackPage" id="cpu_page">
+                    <property name="title" translatable="yes">CPU</property>
+                    <property name="child">
+                      <object class="ResCPU" id="cpu"/>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStackPage" id="memory_page">
+                    <property name="title" translatable="yes">Memory</property>
+                    <property name="child">
+                      <object class="ResMemory" id="memory"/>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
