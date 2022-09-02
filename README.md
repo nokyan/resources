@@ -28,6 +28,7 @@ Resources uses a daemon in order to gather some root-only information (such as y
 Since Resources requires access to the system's running processes (soon), building it as a Flatpak is not recommended.
 
 ```sh
+meson . build --prefix=/usr
 ninja -C build install
 systemctl enable --now me.nalux.Resources
 ```
