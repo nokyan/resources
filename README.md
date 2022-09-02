@@ -13,18 +13,9 @@ Resources is a simple yet powerful monitor for your system resources and process
 
 Other dependencies are handled by `cargo`.
 
-## Building
-
-Resources uses Meson as its build system.
-
-```sh
-meson . build --prefix=/usr
-ninja -C build
-```
-
 ## Installing
 
-Resources uses a daemon in order to gather some root-only information (such as your memory specs). It needs to be started before the actual GUI can be started.
+Resources uses Meson as its build system. It alse uses a daemon in order to gather some root-only information (such as your memory specs), which needs to be started before the actual GUI can be started.
 Since Resources requires access to the system's running processes (soon), building it as a Flatpak is not recommended.
 
 ```sh
