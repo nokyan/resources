@@ -16,7 +16,7 @@ mod imp {
     #[template(resource = "/me/nalux/Resources/ui/window.ui")]
     pub struct MainWindow {
         #[template_child]
-        pub leaflet: TemplateChild<adw::Leaflet>,
+        pub flap: TemplateChild<adw::Flap>,
         #[template_child]
         pub resources_sidebar: TemplateChild<gtk::StackSidebar>,
         #[template_child]
@@ -36,7 +36,7 @@ mod imp {
     impl Default for MainWindow {
         fn default() -> Self {
             Self {
-                leaflet: TemplateChild::default(),
+                flap: TemplateChild::default(),
                 resources_sidebar: TemplateChild::default(),
                 content_stack: TemplateChild::default(),
                 cpu: TemplateChild::default(),

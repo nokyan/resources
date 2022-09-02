@@ -10,4 +10,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/window.ui</file>
     <file compressed="true">style.css</file>
   </gresource>
+  <gresource prefix="/me/nalux/Resources/icons/scalable/actions/">
+    <file preprocess="xml-stripblanks" alias="flap-symbolic.svg">icons/flap-symbolic.svg</file>
+  </gresource>
 </gresources>
