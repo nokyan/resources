@@ -29,7 +29,7 @@ Since Resources requires access to the system's running processes (soon), buildi
 
 ```sh
 ninja -C build install
-systemctl start me.nalux.Resources
+systemctl enable --now me.nalux.Resources
 ```
 
 You can also run the daemon manually by launching `resources-daemon` with root privileges.
