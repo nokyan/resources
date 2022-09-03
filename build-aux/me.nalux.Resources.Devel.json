@@ -13,7 +13,8 @@
         "--device=dri",
         "--env=RUST_LOG=resources=debug",
         "--env=G_MESSAGES_DEBUG=none",
-        "--env=RUST_BACKTRACE=1"
+        "--env=RUST_BACKTRACE=1",
+        "--socket=system-bus"
     ],
     "build-options": {
         "append-path": "/usr/lib/sdk/rust-stable/bin",
