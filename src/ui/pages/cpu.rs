@@ -3,10 +3,10 @@ use anyhow::Context;
 use gtk::glib::{self, clone};
 use gtk::subclass::prelude::*;
 
-use crate::utils::{cpu, NaNDefault};
 use crate::config::PROFILE;
 use crate::ui::widgets::progress_box::ResProgressBox;
-use crate::utils::units::{Base, to_largest_unit};
+use crate::utils::units::{to_largest_unit, Base};
+use crate::utils::{cpu, NaNDefault};
 
 mod imp {
     use std::cell::RefCell;
@@ -130,7 +130,13 @@ impl ResCPU {
         imp.max_speed.set_info_label(
             &cpu_info
                 .max_speed
-                .map(|x| format!("{:.2} {}Hz", to_largest_unit(x.into(), Base::Decimal).0, to_largest_unit(x.into(), Base::Decimal).1))
+                .map(|x| {
+                    format!(
+                        "{:.2} {}Hz",
+                        to_largest_unit(x.into(), Base::Decimal).0,
+                        to_largest_unit(x.into(), Base::Decimal).1
+                    )
+                })
                 .unwrap_or(gettextrs::gettext("N/A")),
         );
         imp.logical_cpus.set_info_label(

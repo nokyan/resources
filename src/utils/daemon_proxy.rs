@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 use anyhow::{Context, Result};
-use zbus::{Connection, dbus_proxy};
+use zbus::{dbus_proxy, Connection};
 
 #[dbus_proxy(
     default_service = "me.nalux.Resources",

@@ -104,7 +104,8 @@ glib::wrapper! {
 
 impl MainWindow {
     pub fn new(app: &Application) -> Self {
-        let window = glib::Object::new::<Self>(&[("application", app)]).expect("Failed to create MainWindow");
+        let window = glib::Object::new::<Self>(&[("application", app)])
+            .expect("Failed to create MainWindow");
         window.setup_widgets();
         window
     }

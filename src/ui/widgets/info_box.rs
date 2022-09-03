@@ -58,7 +58,6 @@ mod imp {
     impl PreferencesRowImpl for ResInfoBox {}
 
     impl ActionRowImpl for ResInfoBox {}
-
 }
 
 glib::wrapper! {
@@ -75,5 +74,4 @@ impl ResInfoBox {
         let imp = self.imp();
         imp.info_label.set_label(str);
     }
-    
 }
