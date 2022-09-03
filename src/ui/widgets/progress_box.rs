@@ -61,7 +61,6 @@ mod imp {
     impl PreferencesRowImpl for ResProgressBox {}
 
     impl ActionRowImpl for ResProgressBox {}
-
 }
 
 glib::wrapper! {
@@ -83,5 +82,9 @@ impl ResProgressBox {
         let imp = self.imp();
         imp.percentage_label.set_label(str);
     }
-    
+
+    pub fn set_progressbar_visible(&self, visible: bool) {
+        let imp = self.imp();
+        imp.progress_bar.set_visible(visible)
+    }
 }

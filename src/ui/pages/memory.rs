@@ -3,13 +3,13 @@ use anyhow::Context;
 use gtk::glib::{self, clone, MainContext};
 use gtk::subclass::prelude::*;
 
-use crate::ui::widgets::info_box::ResInfoBox;
-use crate::utils::NaNDefault;
 use crate::config::PROFILE;
+use crate::ui::widgets::info_box::ResInfoBox;
 use crate::ui::widgets::progress_box::ResProgressBox;
 use crate::utils::daemon_proxy::dbus_ram_info;
-use crate::utils::memory::{get_total_memory, get_available_memory, get_free_swap, get_total_swap};
-use crate::utils::units::{Base, to_largest_unit};
+use crate::utils::memory::{get_available_memory, get_free_swap, get_total_memory, get_total_swap};
+use crate::utils::units::{to_largest_unit, Base};
+use crate::utils::NaNDefault;
 
 mod imp {
     use super::*;
@@ -121,8 +121,14 @@ impl ResMemory {
             let used_swap_unit = to_largest_unit((total_swap - free_swap) as f64, Base::Decimal);
             imp.memory.set_fraction(1.0 - (available_mem as f64 / total_mem as f64));
             imp.memory.set_percentage_label(&format!("{:.2} {}B / {:.2} {}B", used_mem_unit.0, used_mem_unit.1, total_mem_unit.0, total_mem_unit.1));
-            imp.swap.set_fraction(1.0 - (free_swap as f64 / total_swap as f64).nan_default(1.0));
-            imp.swap.set_percentage_label(&format!("{:.2} {}B / {:.2} {}B", used_swap_unit.0, used_swap_unit.1, total_swap_unit.0, total_swap_unit.1));
+            if total_swap == 0 {
+                imp.swap.set_progressbar_visible(false);
+                imp.swap.set_percentage_label(&gettextrs::gettext("N/A"));
+            } else {
+                imp.swap.set_fraction(1.0 - (free_swap as f64 / total_swap as f64).nan_default(1.0));
+                imp.swap.set_progressbar_visible(true);
+                imp.swap.set_percentage_label(&format!("{:.2} {}B / {:.2} {}B", used_swap_unit.0, used_swap_unit.1, total_swap_unit.0, total_swap_unit.1));
+            }
             glib::Continue(true)
         });
         glib::timeout_add_seconds_local(1, mem_usage_update);
