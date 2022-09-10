@@ -33,7 +33,6 @@ Running Resources is as simple as typing `resources` into a terminal or running 
 ## To-do
 
 - Display graphs instead of or alongside the current progress bars
-- GPU(s) usage and details
 - Network interface(s) usage and details
 - Block device(s) usage and details
 - Battery usage and details
