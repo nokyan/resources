@@ -123,15 +123,21 @@ impl ResGPU {
             let imp = this.imp();
             let gpu = imp.gpu.get().unwrap();
 
-            imp.gpu_usage.set_percentage_label(&gpu.get_gpu_usage().map(|x| format!("{} %", x)).unwrap_or_else(|_| gettextrs::gettext("N/A")));
-            imp.gpu_usage.set_fraction(gpu.get_gpu_usage().unwrap_or(0) as f64 / 100.0);
+            if let Ok(gpu_usage) = gpu.get_gpu_usage() {
+                imp.gpu_usage.set_percentage_label(&format!("{} %", gpu_usage));
+                imp.gpu_usage.set_fraction(gpu_usage as f64 / 100.0);
+                imp.gpu_usage.set_progressbar_visible(true);
+            } else {
+                imp.gpu_usage.set_percentage_label(&gettextrs::gettext("N/A"));
+                imp.gpu_usage.set_progressbar_visible(false);
+            }
 
             if let (Ok(total_vram), Ok(used_vram)) = (gpu.get_total_vram(), gpu.get_used_vram()) {
-                imp.vram_usage.set_progressbar_visible(true);
                 let total_vram_unit = to_largest_unit(total_vram as f64, Base::Decimal);
                 let used_vram_unit = to_largest_unit(used_vram as f64, Base::Decimal);
                 imp.vram_usage.set_percentage_label(&format!("{:.2} {}B / {:.2} {}B", used_vram_unit.0, used_vram_unit.1, total_vram_unit.0, total_vram_unit.1));
                 imp.vram_usage.set_fraction((used_vram as f64) / (total_vram as f64));
+                imp.vram_usage.set_progressbar_visible(true);
             } else {
                 imp.vram_usage.set_percentage_label(&gettextrs::gettext("N/A"));
                 imp.vram_usage.set_progressbar_visible(false);
@@ -139,9 +145,9 @@ impl ResGPU {
 
             // TODO: handle the user's choice of temperatue unit
             let temp_unit = "C";
-            imp.temperature.set_info_label(&format!("{} °{}", gpu.get_gpu_temp().unwrap_or(0.0) as i32, temp_unit));
+            imp.temperature.set_info_label(&gpu.get_gpu_temp().map(|x| format!("{} °{}", x, temp_unit)).unwrap_or_else(|_| gettextrs::gettext("N/A")));
 
-            imp.power_usage.set_info_label(&format!("{:.2} W", gpu.get_power_usage().unwrap_or(0.0)));
+            imp.power_usage.set_info_label(&gpu.get_power_usage().map(|x| format!("{:.2} W", x)).unwrap_or_else(|_| gettextrs::gettext("N/A")));
 
             if let Ok(gpu_clockspeed) = gpu.get_gpu_speed() {
                 let gpu_clockspeed_unit = to_largest_unit(gpu_clockspeed, Base::Decimal);
