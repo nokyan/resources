@@ -61,7 +61,7 @@
                 <property name="transition_type">crossfade</property>
                 <child>
                   <object class="GtkStackPage" id="cpu_page">
-                    <property name="title" translatable="yes">CPU</property>
+                    <property name="title" translatable="yes">Processor</property>
                     <property name="child">
                       <object class="ResCPU" id="cpu"/>
                     </property>
