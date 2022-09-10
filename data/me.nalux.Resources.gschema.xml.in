@@ -13,5 +13,9 @@
       <default>false</default>
       <summary>Window maximized state</summary>
     </key>
+    <key name="use-celsius" type="b">
+      <default>true</default>
+      <summary>Temperature unit</summary>
+    </key>
   </schema>
 </schemalist>

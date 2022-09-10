@@ -4,6 +4,9 @@ use gtk::{gio, glib};
 
 use crate::application::Application;
 use crate::config::{APP_ID, PROFILE};
+use crate::utils::gpu::GPU;
+
+use super::pages::gpu::ResGPU;
 
 mod imp {
     use crate::ui::pages::{cpu::ResCPU, memory::ResMemory};
@@ -114,6 +117,21 @@ impl MainWindow {
         let imp = self.imp();
         imp.cpu.init();
         imp.memory.init();
+        let gpus = GPU::get_gpus().unwrap_or(Vec::new());
+        let mut i = 1;
+        for gpu in &gpus {
+            let page = ResGPU::new();
+            page.init(gpu.clone(), i);
+            if gpus.len() > 1 {
+                imp.content_stack
+                    .add_titled(&page, None, &gettextrs::gettext!("GPU {}", i));
+                i += 1;
+            } else {
+                imp.content_stack
+                    .add_titled(&page, None, &gettextrs::gettext("GPU"));
+                i += 1;
+            }
+        }
     }
 
     fn save_window_size(&self) -> Result<(), glib::BoolError> {

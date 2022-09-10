@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ResGPU" parent="AdwBin">
+    <property name="child">
+      <object class="GtkScrolledWindow">
+        <child>
+          <object class="AdwClamp">
+            <child>
+              <object class="GtkBox">
+                <property name="margin-top">24</property>
+                <property name="margin-bottom">24</property>
+                <property name="margin-start">16</property>
+                <property name="margin-end">16</property>
+                <property name="spacing">24</property>
+                <property name="orientation">vertical</property>
+                <property name="hexpand">true</property>
+                <property name="valign">start</property>
+                <property name="vexpand">true</property>
+                <child>
+                  <object class="GtkLabel" id="gpu_name">
+                    <property name="wrap">true</property>
+                    <property name="selectable">true</property>
+                    <style>
+                      <class name="title-header"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title" translatable="yes">Usage</property>
+                    <child>
+                      <object class="ResProgressBox" id="gpu_usage">
+                        <property name="title" translatable="yes">GPU Usage</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResProgressBox" id="vram_usage">
+                        <property name="title" translatable="yes">VRAM Usage</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="temperature">
+                        <property name="title" translatable="yes">Temperature</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="power_usage">
+                        <property name="title" translatable="yes">Power Usage</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="gpu_clockspeed">
+                        <property name="title" translatable="yes">GPU Speed</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="vram_clockspeed">
+                        <property name="title" translatable="yes">VRAM Speed</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title" translatable="yes">GPU Information</property>
+                    <child>
+                      <object class="ResInfoBox" id="manufacturer">
+                        <property name="title" translatable="yes">Manufacturer</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="pci_slot">
+                        <property name="title" translatable="yes">PCI Slot</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="driver_used">
+                        <property name="title" translatable="yes">Driver Used</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="current_power_cap">
+                        <property name="title" translatable="yes">Current Power Cap</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="max_power_cap">
+                        <property name="title" translatable="yes">Max Power Cap</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>
