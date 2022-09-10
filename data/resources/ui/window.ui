@@ -50,9 +50,6 @@
                 </style>
               </object>
             </property>
-            <property name="separator">
-              <object class="GtkSeparator"/>
-            </property>
             <property name="content">
               <object class="GtkStack" id="content_stack">
                 <property name="vexpand">True</property>
