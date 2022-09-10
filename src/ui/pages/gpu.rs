@@ -16,7 +16,7 @@ mod imp {
     use gtk::CompositeTemplate;
     use once_cell::sync::OnceCell;
 
-    #[derive(Debug, CompositeTemplate)]
+    #[derive(Debug, CompositeTemplate, Default)]
     #[template(resource = "/me/nalux/Resources/ui/pages/gpu.ui")]
     pub struct ResGPU {
         pub gpu: OnceCell<GPU>,
@@ -45,27 +45,6 @@ mod imp {
         pub current_power_cap: TemplateChild<ResInfoBox>,
         #[template_child]
         pub max_power_cap: TemplateChild<ResInfoBox>,
-    }
-
-    impl Default for ResGPU {
-        fn default() -> Self {
-            Self {
-                gpu: OnceCell::default(),
-                number: OnceCell::default(),
-                gpu_name: TemplateChild::default(),
-                gpu_usage: TemplateChild::default(),
-                vram_usage: TemplateChild::default(),
-                temperature: TemplateChild::default(),
-                power_usage: TemplateChild::default(),
-                gpu_clockspeed: TemplateChild::default(),
-                vram_clockspeed: TemplateChild::default(),
-                manufacturer: TemplateChild::default(),
-                pci_slot: TemplateChild::default(),
-                driver_used: TemplateChild::default(),
-                current_power_cap: TemplateChild::default(),
-                max_power_cap: TemplateChild::default(),
-            }
-        }
     }
 
     #[glib::object_subclass]
@@ -131,7 +110,7 @@ impl ResGPU {
                 .get()
                 .unwrap()
                 .get_vendor()
-                .unwrap_or(gettextrs::gettext("Unknown")),
+                .unwrap_or_else(|_| gettextrs::gettext("Unknown")),
         );
         imp.pci_slot
             .set_info_label(&imp.gpu.get().unwrap().pci_slot);
@@ -144,7 +123,7 @@ impl ResGPU {
             let imp = this.imp();
             let gpu = imp.gpu.get().unwrap();
 
-            imp.gpu_usage.set_percentage_label(&gpu.get_gpu_usage().map(|x| format!("{} %", x)).unwrap_or(gettextrs::gettext("N/A")));
+            imp.gpu_usage.set_percentage_label(&gpu.get_gpu_usage().map(|x| format!("{} %", x)).unwrap_or_else(|_| gettextrs::gettext("N/A")));
             imp.gpu_usage.set_fraction(gpu.get_gpu_usage().unwrap_or(0) as f64 / 100.0);
 
             if let (Ok(total_vram), Ok(used_vram)) = (gpu.get_total_vram(), gpu.get_used_vram()) {
@@ -178,9 +157,9 @@ impl ResGPU {
                 imp.vram_clockspeed.set_info_label(&gettextrs::gettext("N/A"));
             }
 
-            imp.current_power_cap.set_info_label(&gpu.get_power_cap().and_then(|x| Ok(format!("{:.2} W", x))).unwrap_or(gettextrs::gettext("N/A")));
+            imp.current_power_cap.set_info_label(&gpu.get_power_cap().map(|x| format!("{:.2} W", x)).unwrap_or_else(|_| gettextrs::gettext("N/A")));
 
-            imp.max_power_cap.set_info_label(&gpu.get_power_cap_max().and_then(|x| Ok(format!("{:.2} W", x))).unwrap_or(gettextrs::gettext("N/A")));
+            imp.max_power_cap.set_info_label(&gpu.get_power_cap_max().map(|x| format!("{:.2} W", x)).unwrap_or_else(|_| gettextrs::gettext("N/A")));
 
             glib::Continue(true)
         });

@@ -16,7 +16,7 @@ mod imp {
 
     use gtk::CompositeTemplate;
 
-    #[derive(Debug, CompositeTemplate)]
+    #[derive(Debug, CompositeTemplate, Default)]
     #[template(resource = "/me/nalux/Resources/ui/pages/memory.ui")]
     pub struct ResMemory {
         #[template_child]
@@ -25,16 +25,6 @@ mod imp {
         pub swap: TemplateChild<ResProgressBox>,
         #[template_child]
         pub modules: TemplateChild<adw::PreferencesGroup>,
-    }
-
-    impl Default for ResMemory {
-        fn default() -> Self {
-            Self {
-                memory: TemplateChild::default(),
-                swap: TemplateChild::default(),
-                modules: TemplateChild::default(),
-            }
-        }
     }
 
     #[glib::object_subclass]
@@ -115,10 +105,12 @@ impl ResMemory {
             let available_mem = get_available_memory().with_context(|| "unable to get available memory").unwrap();
             let total_swap = get_total_swap().with_context(|| "unable to get total swap").unwrap();
             let free_swap = get_free_swap().with_context(|| "unable to get free swap").unwrap();
+
             let total_mem_unit = to_largest_unit(total_mem as f64, Base::Decimal);
             let used_mem_unit = to_largest_unit((total_mem - available_mem) as f64, Base::Decimal);
             let total_swap_unit = to_largest_unit(total_swap as f64, Base::Decimal);
             let used_swap_unit = to_largest_unit((total_swap - free_swap) as f64, Base::Decimal);
+
             imp.memory.set_fraction(1.0 - (available_mem as f64 / total_mem as f64));
             imp.memory.set_percentage_label(&format!("{:.2} {}B / {:.2} {}B", used_mem_unit.0, used_mem_unit.1, total_mem_unit.0, total_mem_unit.1));
             if total_swap == 0 {
@@ -129,8 +121,10 @@ impl ResMemory {
                 imp.swap.set_progressbar_visible(true);
                 imp.swap.set_percentage_label(&format!("{:.2} {}B / {:.2} {}B", used_swap_unit.0, used_swap_unit.1, total_swap_unit.0, total_swap_unit.1));
             }
+
             glib::Continue(true)
         });
+
         glib::timeout_add_seconds_local(1, mem_usage_update);
     }
 }

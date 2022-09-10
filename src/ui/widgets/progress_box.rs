@@ -9,22 +9,13 @@ mod imp {
 
     use gtk::CompositeTemplate;
 
-    #[derive(Debug, CompositeTemplate)]
+    #[derive(Debug, CompositeTemplate, Default)]
     #[template(resource = "/me/nalux/Resources/ui/widgets/progress_box.ui")]
     pub struct ResProgressBox {
         #[template_child]
         pub percentage_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub progress_bar: TemplateChild<gtk::ProgressBar>,
-    }
-
-    impl Default for ResProgressBox {
-        fn default() -> Self {
-            Self {
-                percentage_label: TemplateChild::default(),
-                progress_bar: TemplateChild::default(),
-            }
-        }
     }
 
     #[glib::object_subclass]

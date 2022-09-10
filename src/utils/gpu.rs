@@ -34,42 +34,44 @@ impl GPU {
     /// Returns a `Vec` of all GPUs currently found in the system.
     pub fn get_gpus() -> Result<Vec<GPU>> {
         let mut gpu_vec: Vec<GPU> = Vec::new();
-        for entry in glob("/sys/class/drm/card?")? {
-            if let Ok(path) = entry {
-                let sysfs_device_path = path.join("device");
-                let mut uevent_contents: HashMap<String, String> = HashMap::new();
-                let uevent_raw = fs::read_to_string(sysfs_device_path.join("uevent"))?;
-                for line in uevent_raw.trim().split("\n") {
-                    let (k, v) = line
-                        .split_once("=")
-                        .context("unable to correctly read uevent file")?;
-                    uevent_contents.insert(k.to_owned(), v.to_owned());
-                }
-                let vid = u16::from_str_radix(
-                    uevent_contents["PCI_ID"].split(":").collect::<Vec<&str>>()[0],
-                    16,
-                )?;
-                let pid = u16::from_str_radix(
-                    uevent_contents["PCI_ID"].split(":").collect::<Vec<&str>>()[1],
-                    16,
-                )?;
-                let mut hwmon_vec: Vec<PathBuf> = Vec::new();
-                for hwmon in glob(&format!(
-                    "{}/hwmon/hwmon?",
-                    sysfs_device_path.to_str().unwrap()
-                ))? {
-                    if let Ok(h) = hwmon {
-                        hwmon_vec.push(h);
-                    }
-                }
-                gpu_vec.push(GPU {
-                    device: Device::from_vid_pid(vid, pid),
-                    pci_slot: uevent_contents["PCI_SLOT_NAME"].clone(),
-                    driver: uevent_contents["DRIVER"].clone(),
-                    sysfs_path: path,
-                    hwmon_paths: hwmon_vec,
-                });
+        for entry in glob("/sys/class/drm/card?")?.flatten() {
+            let sysfs_device_path = entry.join("device");
+            let mut uevent_contents: HashMap<String, String> = HashMap::new();
+            let uevent_raw = fs::read_to_string(sysfs_device_path.join("uevent"))?;
+
+            for line in uevent_raw.trim().split('\n') {
+                let (k, v) = line
+                    .split_once('=')
+                    .context("unable to correctly read uevent file")?;
+                uevent_contents.insert(k.to_owned(), v.to_owned());
             }
+
+            let vid = u16::from_str_radix(
+                uevent_contents["PCI_ID"].split(':').collect::<Vec<&str>>()[0],
+                16,
+            )?;
+            let pid = u16::from_str_radix(
+                uevent_contents["PCI_ID"].split(':').collect::<Vec<&str>>()[1],
+                16,
+            )?;
+
+            let mut hwmon_vec: Vec<PathBuf> = Vec::new();
+            for hwmon in glob(&format!(
+                "{}/hwmon/hwmon?",
+                sysfs_device_path.to_str().unwrap()
+            ))?
+            .flatten()
+            {
+                hwmon_vec.push(hwmon);
+            }
+
+            gpu_vec.push(GPU {
+                device: Device::from_vid_pid(vid, pid),
+                pci_slot: uevent_contents["PCI_SLOT_NAME"].clone(),
+                driver: uevent_contents["DRIVER"].clone(),
+                sysfs_path: entry,
+                hwmon_paths: hwmon_vec,
+            });
         }
         Ok(gpu_vec)
     }
@@ -86,7 +88,7 @@ impl GPU {
     fn read_sysfs_int<P: AsRef<Path>>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path.join(file);
         fs::read_to_string(&path)?
-            .replace("\n", "")
+            .replace('\n', "")
             .parse::<isize>()
             .context(format!("error parsing file {}", &path.to_str().unwrap()))
     }
@@ -94,7 +96,7 @@ impl GPU {
     fn read_device_int<P: AsRef<Path>>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path.join("device").join(file);
         fs::read_to_string(&path)?
-            .replace("\n", "")
+            .replace('\n', "")
             .parse::<isize>()
             .context(format!("error parsing file {}", &path.to_str().unwrap()))
     }
@@ -102,7 +104,7 @@ impl GPU {
     fn read_hwmon_int<P: AsRef<Path>>(&self, hwmon: usize, file: P) -> Result<isize> {
         let path = self.hwmon_paths[hwmon].join(file);
         fs::read_to_string(&path)?
-            .replace("\n", "")
+            .replace('\n', "")
             .parse::<isize>()
             .context(format!("error parsing file {}", &path.to_str().unwrap()))
     }
@@ -116,11 +118,11 @@ impl GPU {
     }
 
     fn get_nvidia_name(&self) -> Result<String> {
-        if let Ok(nv) = NVML.get_or_try_init(|| Nvml::init()) {
+        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
-            return Ok(dev.name().context("failed to get utilization rates")?);
+            return dev.name().context("failed to get utilization rates");
         }
         Err(anyhow::anyhow!(
             "no NVML connection, nouveau not implemented yet"
@@ -151,7 +153,7 @@ impl GPU {
     }
 
     fn get_nvidia_gpu_usage(&self) -> Result<isize> {
-        if let Ok(nv) = NVML.get_or_try_init(|| Nvml::init()) {
+        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -189,7 +191,7 @@ impl GPU {
     }
 
     fn get_nvidia_used_vram(&self) -> Result<isize> {
-        if let Ok(nv) = NVML.get_or_try_init(|| Nvml::init()) {
+        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -227,7 +229,7 @@ impl GPU {
     }
 
     fn get_nvidia_total_vram(&self) -> Result<isize> {
-        if let Ok(nv) = NVML.get_or_try_init(|| Nvml::init()) {
+        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -265,7 +267,7 @@ impl GPU {
     }
 
     fn get_nvidia_gpu_temp(&self) -> Result<f64> {
-        if let Ok(nv) = NVML.get_or_try_init(|| Nvml::init()) {
+        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -302,7 +304,7 @@ impl GPU {
     }
 
     fn get_nvidia_power_usage(&self) -> Result<f64> {
-        if let Ok(nv) = NVML.get_or_try_init(|| Nvml::init()) {
+        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -335,7 +337,7 @@ impl GPU {
     }
 
     fn get_nvidia_gpu_speed(&self) -> Result<f64> {
-        if let Ok(nv) = NVML.get_or_try_init(|| Nvml::init()) {
+        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -371,7 +373,7 @@ impl GPU {
     }
 
     fn get_nvidia_vram_speed(&self) -> Result<f64> {
-        if let Ok(nv) = NVML.get_or_try_init(|| Nvml::init()) {
+        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -407,7 +409,7 @@ impl GPU {
     }
 
     fn get_nvidia_power_cap(&self) -> Result<f64> {
-        if let Ok(nv) = NVML.get_or_try_init(|| Nvml::init()) {
+        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -443,7 +445,7 @@ impl GPU {
     }
 
     fn get_nvidia_power_cap_max(&self) -> Result<f64> {
-        if let Ok(nv) = NVML.get_or_try_init(|| Nvml::init()) {
+        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;

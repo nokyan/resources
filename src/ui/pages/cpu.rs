@@ -17,7 +17,7 @@ mod imp {
 
     use gtk::CompositeTemplate;
 
-    #[derive(Debug, CompositeTemplate)]
+    #[derive(Debug, CompositeTemplate, Default)]
     #[template(resource = "/me/nalux/Resources/ui/pages/cpu.ui")]
     pub struct ResCPU {
         pub thread_boxes: RefCell<Vec<ResProgressBox>>,
@@ -39,23 +39,6 @@ mod imp {
         pub virtualization: TemplateChild<ResInfoBox>,
         #[template_child]
         pub architecture: TemplateChild<ResInfoBox>,
-    }
-
-    impl Default for ResCPU {
-        fn default() -> Self {
-            Self {
-                thread_boxes: RefCell::new(Vec::new()),
-                cpu_name: TemplateChild::default(),
-                threads_expander: TemplateChild::default(),
-                total_usage_label: TemplateChild::default(),
-                max_speed: TemplateChild::default(),
-                logical_cpus: TemplateChild::default(),
-                physical_cpus: TemplateChild::default(),
-                sockets: TemplateChild::default(),
-                virtualization: TemplateChild::default(),
-                architecture: TemplateChild::default(),
-            }
-        }
     }
 
     #[glib::object_subclass]
@@ -111,8 +94,11 @@ impl ResCPU {
             .with_context(|| "unable to get CPUInfo")
             .unwrap();
         let imp = self.imp();
-        imp.cpu_name
-            .set_label(&cpu_info.model_name.unwrap_or(gettextrs::gettext("N/A")));
+        imp.cpu_name.set_label(
+            &cpu_info
+                .model_name
+                .unwrap_or_else(|| gettextrs::gettext("N/A")),
+        );
 
         let logical_cpus = cpu_info.logical_cpus.unwrap_or(1);
         // if our CPU happens to only have one thread, showing a single thread box with the exact
@@ -137,30 +123,36 @@ impl ResCPU {
                         to_largest_unit(x.into(), Base::Decimal).1
                     )
                 })
-                .unwrap_or(gettextrs::gettext("N/A")),
+                .unwrap_or_else(|| gettextrs::gettext("N/A")),
         );
         imp.logical_cpus.set_info_label(
             &cpu_info
                 .logical_cpus
                 .map(|x| x.to_string())
-                .unwrap_or(gettextrs::gettext("N/A")),
+                .unwrap_or_else(|| gettextrs::gettext("N/A")),
         );
         imp.physical_cpus.set_info_label(
             &cpu_info
                 .physical_cpus
                 .map(|x| x.to_string())
-                .unwrap_or(gettextrs::gettext("N/A")),
+                .unwrap_or_else(|| gettextrs::gettext("N/A")),
         );
         imp.sockets.set_info_label(
             &cpu_info
                 .sockets
                 .map(|x| x.to_string())
-                .unwrap_or(gettextrs::gettext("N/A")),
+                .unwrap_or_else(|| gettextrs::gettext("N/A")),
         );
-        imp.virtualization
-            .set_info_label(&cpu_info.virtualization.unwrap_or(gettextrs::gettext("N/A")));
-        imp.architecture
-            .set_info_label(&cpu_info.architecture.unwrap_or(gettextrs::gettext("N/A")));
+        imp.virtualization.set_info_label(
+            &cpu_info
+                .virtualization
+                .unwrap_or_else(|| gettextrs::gettext("N/A")),
+        );
+        imp.architecture.set_info_label(
+            &cpu_info
+                .architecture
+                .unwrap_or_else(|| gettextrs::gettext("N/A")),
+        );
     }
 
     pub fn setup_signals(&self) {
@@ -170,11 +162,13 @@ impl ResCPU {
         let logical_cpus = cpu_info.logical_cpus.unwrap_or(0);
         let mut old_total_usage = cpu::get_cpu_usage(None).unwrap_or((0, 0));
         let mut old_thread_usages: Vec<(u64, u64)> = Vec::new();
+
         let thread_usage_update = clone!(@strong self as this => move || {
             let imp = this.imp();
             for i in 0..logical_cpus {
                 old_thread_usages.push(cpu::get_cpu_usage(Some(i)).unwrap_or((0,0)));
             }
+
             let new_total_usage = cpu::get_cpu_usage(None).unwrap_or((0,0));
             let idle_total_delta = new_total_usage.0 - old_total_usage.0;
             let sum_total_delta = new_total_usage.1 - old_total_usage.1;
@@ -182,11 +176,12 @@ impl ResCPU {
             let total_fraction = ((work_total_time as f64) / (sum_total_delta as f64)).nan_default(0.0);
             imp.total_usage_label.set_label(&format!("{} %", (total_fraction*100.0).round()));
             old_total_usage = new_total_usage;
+
             if logical_cpus > 1 {
-                for i in 0..logical_cpus {
+                for (i, old_thread_usage) in old_thread_usages.iter_mut().enumerate().take(logical_cpus) {
                     let new_thread_usage = cpu::get_cpu_usage(Some(i)).unwrap_or((0,0));
-                    let idle_thread_delta = new_thread_usage.0 - old_thread_usages[i].0;
-                    let sum_thread_delta = new_thread_usage.1 - old_thread_usages[i].1;
+                    let idle_thread_delta = new_thread_usage.0 - old_thread_usage.0;
+                    let sum_thread_delta = new_thread_usage.1 - old_thread_usage.1;
                     let work_thread_time = sum_thread_delta - idle_thread_delta;
                     let curr_threadbox = &imp.thread_boxes.borrow()[i];
                     let thread_fraction = ((work_thread_time as f64) / (sum_thread_delta as f64)).nan_default(0.0);
@@ -196,11 +191,13 @@ impl ResCPU {
                         let (frequency, base) = to_largest_unit(freq as f64, Base::Decimal);
                         curr_threadbox.set_title(&format!("CPU {} · {:.2} {}Hz", i + 1, frequency, base));
                     }
-                    old_thread_usages[i] = new_thread_usage;
+                    *old_thread_usage = new_thread_usage;
                 }
             }
+
             glib::Continue(true)
         });
+
         glib::timeout_add_seconds_local(1, thread_usage_update);
     }
 }

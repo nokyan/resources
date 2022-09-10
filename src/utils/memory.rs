@@ -33,34 +33,34 @@ fn proc_meminfo() -> Result<Value, String> {
 pub fn get_total_memory() -> Option<usize> {
     proc_meminfo().ok()?["MemTotal"]
         .as_str()
-        .and_then(|x| x.split(" ").collect::<Vec<&str>>()[0].parse::<usize>().ok())
-        .and_then(|y| Some(y * 1000))
+        .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
+        .map(|y| y * 1000)
 }
 
 pub fn get_available_memory() -> Option<usize> {
     proc_meminfo().ok()?["MemAvailable"]
         .as_str()
-        .and_then(|x| x.split(" ").collect::<Vec<&str>>()[0].parse::<usize>().ok())
-        .and_then(|y| Some(y * 1000))
+        .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
+        .map(|y| y * 1000)
 }
 
 pub fn get_free_memory() -> Option<usize> {
     proc_meminfo().ok()?["MemFree"]
         .as_str()
-        .and_then(|x| x.split(" ").collect::<Vec<&str>>()[0].parse::<usize>().ok())
-        .and_then(|y| Some(y * 1000))
+        .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
+        .map(|y| y * 1000)
 }
 
 pub fn get_total_swap() -> Option<usize> {
     proc_meminfo().ok()?["SwapTotal"]
         .as_str()
-        .and_then(|x| x.split(" ").collect::<Vec<&str>>()[0].parse::<usize>().ok())
-        .and_then(|y| Some(y * 1000))
+        .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
+        .map(|y| y * 1000)
 }
 
 pub fn get_free_swap() -> Option<usize> {
     proc_meminfo().ok()?["SwapFree"]
         .as_str()
-        .and_then(|x| x.split(" ").collect::<Vec<&str>>()[0].parse::<usize>().ok())
-        .and_then(|y| Some(y * 1000))
+        .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
+        .map(|y| y * 1000)
 }

@@ -9,19 +9,11 @@ mod imp {
 
     use gtk::CompositeTemplate;
 
-    #[derive(Debug, CompositeTemplate)]
+    #[derive(Debug, CompositeTemplate, Default)]
     #[template(resource = "/me/nalux/Resources/ui/widgets/info_box.ui")]
     pub struct ResInfoBox {
         #[template_child]
         pub info_label: TemplateChild<gtk::Label>,
-    }
-
-    impl Default for ResInfoBox {
-        fn default() -> Self {
-            Self {
-                info_label: TemplateChild::default(),
-            }
-        }
     }
 
     #[glib::object_subclass]

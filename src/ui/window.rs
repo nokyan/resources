@@ -117,7 +117,7 @@ impl MainWindow {
         let imp = self.imp();
         imp.cpu.init();
         imp.memory.init();
-        let gpus = GPU::get_gpus().unwrap_or(Vec::new());
+        let gpus = GPU::get_gpus().unwrap_or_default();
         let mut i = 1;
         for gpu in &gpus {
             let page = ResGPU::new();
