@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ResBoolBox" parent="AdwActionRow">
+    <property name="overflow">hidden</property>
+    <child type="suffix">
+      <object class="GtkLabel" id="info_label">
+        <style>
+            <class name="dim-label"/>
+        </style>
+        <property name="justify">right</property>
+        <property name="halign">start</property>
+        <property name="selectable">true</property>
+      </object>
+    </child>
+  </template>
+</interface>
+

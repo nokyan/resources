@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ResDrive" parent="AdwBin">
+    <property name="child">
+      <object class="GtkScrolledWindow">
+        <child>
+          <object class="AdwClamp">
+            <child>
+              <object class="GtkBox">
+                <property name="margin-top">24</property>
+                <property name="margin-bottom">24</property>
+                <property name="margin-start">16</property>
+                <property name="margin-end">16</property>
+                <property name="spacing">24</property>
+                <property name="orientation">vertical</property>
+                <property name="hexpand">true</property>
+                <property name="valign">start</property>
+                <property name="vexpand">true</property>
+                <child>
+                  <object class="GtkLabel" id="drive_name">
+                    <property name="wrap">true</property>
+                    <property name="selectable">true</property>
+                    <style>
+                      <class name="title-header"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title" translatable="yes">Usage</property>
+                    <child>
+                      <object class="ResProgressBox" id="total_usage">
+                        <property name="title" translatable="yes">Total Usage</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="read">
+                        <property name="title" translatable="yes">Data Read</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="write">
+                        <property name="title" translatable="yes">Data Written</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup" id="modules">
+                    <property name="title" translatable="yes">Drive Information</property>
+                    <child>
+                      <object class="ResInfoBox" id="device">
+                        <property name="title" translatable="yes">Device</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="capacity">
+                        <property name="title" translatable="yes">Capacity</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResBoolBox" id="writable">
+                        <property name="title" translatable="yes">Writable</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResBoolBox" id="removable">
+                        <property name="title" translatable="yes">Removable</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>
