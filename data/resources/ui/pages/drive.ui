@@ -35,12 +35,12 @@
                     </child>
                     <child>
                       <object class="ResInfoBox" id="read">
-                        <property name="title" translatable="yes">Data Read</property>
+                        <property name="title" translatable="yes">Read Speed</property>
                       </object>
                     </child>
                     <child>
                       <object class="ResInfoBox" id="write">
-                        <property name="title" translatable="yes">Data Written</property>
+                        <property name="title" translatable="yes">Write Speed</property>
                       </object>
                     </child>
                   </object>
