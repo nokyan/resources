@@ -1,9 +1,7 @@
-use gettextrs::gettext;
 use log::{debug, info};
 
 use adw::{prelude::*, subclass::prelude::*};
 use glib::clone;
-use gtk::subclass::prelude::*;
 use gtk::{gdk, gio, glib};
 
 use crate::config::{APP_ID, PKGDATADIR, PROFILE, VERSION, self};
