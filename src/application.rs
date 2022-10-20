@@ -6,7 +6,7 @@ use glib::clone;
 use gtk::subclass::prelude::*;
 use gtk::{gdk, gio, glib};
 
-use crate::config::{APP_ID, PKGDATADIR, PROFILE, VERSION};
+use crate::config::{APP_ID, PKGDATADIR, PROFILE, VERSION, self};
 use crate::ui::window::MainWindow;
 
 mod imp {
@@ -121,19 +121,24 @@ impl Application {
     }
 
     fn show_about_dialog(&self) {
-        let dialog = gtk::AboutDialog::builder()
-            .logo_icon_name(APP_ID)
+        let about = adw::AboutWindow::builder()
+            .application_name(&gettextrs::gettext("Resources"))
+            .application_icon(config::APP_ID)
+            .developer_name(&gettextrs::gettext("The Nalux Team"))
+            .developers(vec!["ManicRobot <manicrobot@protonmail.com>".to_string()])
             .license_type(gtk::License::Gpl30)
+            .version(config::VERSION)
             .website("https://github.com/NaluxOS/resources")
-            .version(VERSION)
-            .transient_for(&self.main_window())
-            .translator_credits(&gettext("translator-credits"))
-            .modal(true)
-            .authors(vec!["ManicRobot".into()])
-            .artists(vec!["Avhiren".into()])
             .build();
 
-        dialog.present();
+        about.add_link(&gettextrs::gettext("Report Issues"), "https://github.com/NaluxOS/resources/issues");
+
+        about.add_credit_section(Some(&gettextrs::gettext("Icon by")), &["Avhiren"]);
+        
+        about.set_transient_for(Some(&self.main_window()));
+        about.set_modal(true);
+
+        about.present();
     }
 
     pub fn run(&self) {

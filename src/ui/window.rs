@@ -4,7 +4,6 @@ use adw::{prelude::*, subclass::prelude::*};
 use anyhow::{Context, Result};
 use futures_util::stream::StreamExt;
 use gtk::glib::{clone, MainContext};
-use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 use zbus::export::futures_util;
 use zbus::Connection;

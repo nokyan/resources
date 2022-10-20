@@ -1,6 +1,5 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone};
-use gtk::subclass::prelude::*;
 
 use crate::config::PROFILE;
 use crate::ui::widgets::info_box::ResInfoBox;
