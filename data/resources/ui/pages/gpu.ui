@@ -35,7 +35,7 @@
                     </child>
                     <child>
                       <object class="ResProgressBox" id="vram_usage">
-                        <property name="title" translatable="yes">VRAM Usage</property>
+                        <property name="title" translatable="yes">Video Memory Usage</property>
                       </object>
                     </child>
                     <child>
@@ -55,7 +55,7 @@
                     </child>
                     <child>
                       <object class="ResInfoBox" id="vram_clockspeed">
-                        <property name="title" translatable="yes">VRAM Speed</property>
+                        <property name="title" translatable="yes">Video Memory Speed</property>
                       </object>
                     </child>
                   </object>
