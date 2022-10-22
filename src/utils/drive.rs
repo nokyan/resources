@@ -3,7 +3,7 @@ use lazy_static::lazy_static;
 use regex::Regex;
 use std::{collections::HashMap, path::PathBuf};
 
-const SYS_STAT_FIELDS: [&'static str; 17] = [
+const SYS_STAT_FIELDS: [&str; 17] = [
     "read_ios",
     "read_merges",
     "read_sectors",

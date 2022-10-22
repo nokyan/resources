@@ -15,7 +15,7 @@ impl SystemResourcesDaemon {
                 .args(["--type", "17", "-q"])
                 .output()
                 .map(|x| x.stdout)
-                .unwrap_or_default()
+                .unwrap_or_default(),
         )
         .unwrap_or_default()
         .split("\n\n")

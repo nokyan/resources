@@ -282,7 +282,9 @@ impl MainWindow {
                 }
                 Ok(())
             }
-        ).map(|_| ()).with_context(|| "async drive watchers failed")
+        )
+        .map(|_| ())
+        .with_context(|| "async drive watchers failed")
     }
 
     async fn handle_income_signals(

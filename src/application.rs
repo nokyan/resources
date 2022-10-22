@@ -4,7 +4,7 @@ use adw::{prelude::*, subclass::prelude::*};
 use glib::clone;
 use gtk::{gdk, gio, glib};
 
-use crate::config::{APP_ID, PKGDATADIR, PROFILE, VERSION, self};
+use crate::config::{self, APP_ID, PKGDATADIR, PROFILE, VERSION};
 use crate::ui::window::MainWindow;
 
 mod imp {
@@ -129,10 +129,13 @@ impl Application {
             .website("https://github.com/NaluxOS/resources")
             .build();
 
-        about.add_link(&gettextrs::gettext("Report Issues"), "https://github.com/NaluxOS/resources/issues");
+        about.add_link(
+            &gettextrs::gettext("Report Issues"),
+            "https://github.com/NaluxOS/resources/issues",
+        );
 
         about.add_credit_section(Some(&gettextrs::gettext("Icon by")), &["Avhiren"]);
-        
+
         about.set_transient_for(Some(&self.main_window()));
         about.set_modal(true);
 

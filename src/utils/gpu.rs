@@ -58,7 +58,9 @@ impl GPU {
             let mut hwmon_vec: Vec<PathBuf> = Vec::new();
             for hwmon in glob(&format!(
                 "{}/hwmon/hwmon?",
-                sysfs_device_path.to_str().with_context(|| anyhow!("error transforming PathBuf to str"))?
+                sysfs_device_path
+                    .to_str()
+                    .with_context(|| anyhow!("error transforming PathBuf to str"))?
             ))?
             .flatten()
             {
@@ -90,7 +92,12 @@ impl GPU {
         fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
-            .context(format!("error parsing file {}", &path.to_str().with_context(|| anyhow!("error transforming PathBuf to str"))?))
+            .context(format!(
+                "error parsing file {}",
+                &path
+                    .to_str()
+                    .with_context(|| anyhow!("error transforming PathBuf to str"))?
+            ))
     }
 
     fn read_device_int<P: AsRef<Path>>(&self, file: P) -> Result<isize> {
@@ -98,7 +105,12 @@ impl GPU {
         fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
-            .context(format!("error parsing file {}", &path.to_str().with_context(|| anyhow!("error transforming PathBuf to str"))?))
+            .context(format!(
+                "error parsing file {}",
+                &path
+                    .to_str()
+                    .with_context(|| anyhow!("error transforming PathBuf to str"))?
+            ))
     }
 
     fn read_hwmon_int<P: AsRef<Path>>(&self, hwmon: usize, file: P) -> Result<isize> {
@@ -106,7 +118,12 @@ impl GPU {
         fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
-            .context(format!("error parsing file {}", &path.to_str().with_context(|| anyhow!("error transforming PathBuf to str"))?))
+            .context(format!(
+                "error parsing file {}",
+                &path
+                    .to_str()
+                    .with_context(|| anyhow!("error transforming PathBuf to str"))?
+            ))
     }
 
     fn get_amd_name(&self) -> Result<String> {

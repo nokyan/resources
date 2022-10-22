@@ -90,11 +90,10 @@ fn parse_proc_stat_line(line: &[u8]) -> Result<(u64, u64)> {
     let sum = captures
         .iter()
         .skip(1)
-        .map(|cap| {
+        .flat_map(|cap| {
             cap.and_then(|x| String::from_utf8_lossy(x.as_bytes()).parse::<u64>().ok())
                 .ok_or_else(|| anyhow!("unable to sum CPU times from /proc/stat"))
         })
-        .flatten()
         .sum();
     Ok((idle_time, sum))
 }
