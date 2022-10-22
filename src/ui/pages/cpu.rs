@@ -91,7 +91,7 @@ impl ResCPU {
     pub fn setup_widgets(&self) {
         let cpu_info = cpu::cpu_info()
             .with_context(|| "unable to get CPUInfo")
-            .unwrap();
+            .unwrap_or_default();
         let imp = self.imp();
         imp.cpu_name.set_label(
             &cpu_info
@@ -157,7 +157,7 @@ impl ResCPU {
     pub fn setup_signals(&self) {
         let cpu_info = cpu::cpu_info()
             .with_context(|| "unable to get CPUInfo")
-            .unwrap();
+            .unwrap_or_default();
         let logical_cpus = cpu_info.logical_cpus.unwrap_or(0);
         let mut old_total_usage = cpu::get_cpu_usage(None).unwrap_or((0, 0));
         let mut old_thread_usages: Vec<(u64, u64)> = Vec::new();

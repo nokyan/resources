@@ -153,7 +153,7 @@ impl MainWindow {
         let main_context = MainContext::default();
         main_context.spawn_local(clone!(@strong self as this => async move {
             this.look_for_drives().await.unwrap_or_default();
-            this.watch_for_drives().await.unwrap();
+            this.watch_for_drives().await.unwrap_or_default();
         }));
     }
 
@@ -282,9 +282,7 @@ impl MainWindow {
                 }
                 Ok(())
             }
-        )
-        .unwrap();
-        Ok(())
+        ).map(|_| ()).with_context(|| "async drive watchers failed")
     }
 
     async fn handle_income_signals(

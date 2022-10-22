@@ -1,4 +1,4 @@
-use anyhow::{Context, Result};
+use anyhow::{anyhow, Context, Result};
 use nvml_wrapper::{
     enum_wrappers::device::{Clock, TemperatureSensor},
     Nvml,
@@ -21,7 +21,7 @@ const VID_NVIDIA: u16 = 4318;
 
 static NVML: OnceCell<Nvml> = OnceCell::new();
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct GPU {
     pub device: Option<&'static Device>,
     pub pci_slot: String,
@@ -58,7 +58,7 @@ impl GPU {
             let mut hwmon_vec: Vec<PathBuf> = Vec::new();
             for hwmon in glob(&format!(
                 "{}/hwmon/hwmon?",
-                sysfs_device_path.to_str().unwrap()
+                sysfs_device_path.to_str().with_context(|| anyhow!("error transforming PathBuf to str"))?
             ))?
             .flatten()
             {
@@ -90,7 +90,7 @@ impl GPU {
         fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
-            .context(format!("error parsing file {}", &path.to_str().unwrap()))
+            .context(format!("error parsing file {}", &path.to_str().with_context(|| anyhow!("error transforming PathBuf to str"))?))
     }
 
     fn read_device_int<P: AsRef<Path>>(&self, file: P) -> Result<isize> {
@@ -98,7 +98,7 @@ impl GPU {
         fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
-            .context(format!("error parsing file {}", &path.to_str().unwrap()))
+            .context(format!("error parsing file {}", &path.to_str().with_context(|| anyhow!("error transforming PathBuf to str"))?))
     }
 
     fn read_hwmon_int<P: AsRef<Path>>(&self, hwmon: usize, file: P) -> Result<isize> {
@@ -106,7 +106,7 @@ impl GPU {
         fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
-            .context(format!("error parsing file {}", &path.to_str().unwrap()))
+            .context(format!("error parsing file {}", &path.to_str().with_context(|| anyhow!("error transforming PathBuf to str"))?))
     }
 
     fn get_amd_name(&self) -> Result<String> {
@@ -161,8 +161,7 @@ impl GPU {
                 .utilization_rates()
                 .context("failed to get utilization rates")?
                 .gpu
-                .try_into()
-                .unwrap());
+                .try_into()?);
         }
         Err(anyhow::anyhow!(
             "no NVML connection, nouveau not implemented yet"
@@ -199,8 +198,7 @@ impl GPU {
                 .memory_info()
                 .context("failed to get memory info")?
                 .used
-                .try_into()
-                .unwrap());
+                .try_into()?);
         }
         Err(anyhow::anyhow!(
             "no NVML connection, nouveau not implemented yet"
@@ -237,8 +235,7 @@ impl GPU {
                 .memory_info()
                 .context("failed to get memory info")?
                 .total
-                .try_into()
-                .unwrap());
+                .try_into()?);
         }
         Err(anyhow::anyhow!(
             "no NVML connection, nouveau not implemented yet"
@@ -274,8 +271,7 @@ impl GPU {
             return Ok(dev
                 .temperature(TemperatureSensor::Gpu)
                 .context("failed to get temperature info")?
-                .try_into()
-                .unwrap());
+                .try_into()?);
         }
         Err(anyhow::anyhow!(
             "no NVML connection, nouveau not implemented yet"

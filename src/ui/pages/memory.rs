@@ -78,7 +78,7 @@ impl ResMemory {
         let main_context = MainContext::default();
         main_context.spawn_local(clone!(@strong self as this => async move {
             let imp = this.imp();
-            let ram_info = dbus_ram_info().await.with_context(|| "error getting ram info").unwrap();
+            let ram_info = dbus_ram_info().await.with_context(|| "error getting ram info").unwrap_or_default();
             for i in &ram_info {
                 let expander = adw::ExpanderRow::builder()
                         .title(&format!("{} · {}", i["Bank Locator"], i["Locator"]))
@@ -100,10 +100,10 @@ impl ResMemory {
     pub fn setup_signals(&self) {
         let mem_usage_update = clone!(@strong self as this => move || {
             let imp = this.imp();
-            let total_mem = get_total_memory().with_context(|| "unable to get total memory").unwrap();
-            let available_mem = get_available_memory().with_context(|| "unable to get available memory").unwrap();
-            let total_swap = get_total_swap().with_context(|| "unable to get total swap").unwrap();
-            let free_swap = get_free_swap().with_context(|| "unable to get free swap").unwrap();
+            let total_mem = get_total_memory().with_context(|| "unable to get total memory").unwrap_or_default();
+            let available_mem = get_available_memory().with_context(|| "unable to get available memory").unwrap_or_default();
+            let total_swap = get_total_swap().with_context(|| "unable to get total swap").unwrap_or_default();
+            let free_swap = get_free_swap().with_context(|| "unable to get free swap").unwrap_or_default();
 
             let total_mem_unit = to_largest_unit(total_mem as f64, Base::Decimal);
             let used_mem_unit = to_largest_unit((total_mem - available_mem) as f64, Base::Decimal);

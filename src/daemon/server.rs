@@ -14,10 +14,10 @@ impl SystemResourcesDaemon {
             Command::new("dmidecode")
                 .args(["--type", "17", "-q"])
                 .output()
-                .unwrap()
-                .stdout,
+                .map(|x| x.stdout)
+                .unwrap_or_default()
         )
-        .unwrap()
+        .unwrap_or_default()
         .split("\n\n")
         .map(|x| (*x).to_owned().indent_to_json().unwrap_or(Value::Null))
         .collect::<Vec<Value>>();

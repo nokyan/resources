@@ -89,32 +89,29 @@ impl ResGPU {
 
     pub fn init(&self, gpu: GPU, number: usize) {
         let imp = self.imp();
-        imp.gpu.set(gpu).unwrap();
-        imp.number.set(number).unwrap();
+        imp.gpu.set(gpu).unwrap_or_default();
+        imp.number.set(number).unwrap_or_default();
         self.setup_widgets();
         self.setup_signals();
     }
 
     pub fn setup_widgets(&self) {
         let imp = self.imp();
+        let gpu = &imp.gpu.get().unwrap();
         imp.gpu_name.set_label(
-            &imp.gpu
-                .get()
-                .unwrap()
+            &gpu
                 .get_name()
                 .unwrap_or(gettextrs::gettext!("GPU {}", imp.number.get().unwrap() + 1)),
         );
         imp.manufacturer.set_info_label(
-            &imp.gpu
-                .get()
-                .unwrap()
+            &gpu
                 .get_vendor()
                 .unwrap_or_else(|_| gettextrs::gettext("Unknown")),
         );
         imp.pci_slot
-            .set_info_label(&imp.gpu.get().unwrap().pci_slot);
+            .set_info_label(&gpu.pci_slot);
         imp.driver_used
-            .set_info_label(&imp.gpu.get().unwrap().driver);
+            .set_info_label(&gpu.driver);
     }
 
     pub fn setup_signals(&self) {

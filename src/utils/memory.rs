@@ -23,11 +23,11 @@ pub fn mem_info() -> MemInfo {
     }
 }
 
-fn proc_meminfo() -> Result<Value, String> {
+fn proc_meminfo() -> Result<Value, anyhow::Error> {
     std::fs::read_to_string("/proc/meminfo")
-        .with_context(|| "unable to read /proc/meminfo")
-        .unwrap()
+        .with_context(|| "unable to read /proc/meminfo")?
         .kv_str_to_json()
+        .map_err(anyhow::Error::msg)
 }
 
 pub fn get_total_memory() -> Option<usize> {
