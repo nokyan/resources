@@ -1,11 +1,14 @@
+use std::collections::BTreeMap;
+
 use adw::{prelude::*, subclass::prelude::*};
-use anyhow::Context;
+use anyhow::{Context, Result};
 use gtk::glib::{self, clone, MainContext};
+use zbus::Connection;
 
 use crate::config::PROFILE;
+use crate::dbus_proxies::daemon::ClientProxy;
 use crate::ui::widgets::info_box::ResInfoBox;
 use crate::ui::widgets::progress_box::ResProgressBox;
-use crate::utils::daemon_proxy::dbus_ram_info;
 use crate::utils::memory::{get_available_memory, get_free_swap, get_total_memory, get_total_swap};
 use crate::utils::units::{to_largest_unit, Base};
 use crate::utils::NaNDefault;
@@ -74,11 +77,24 @@ impl ResMemory {
         self.setup_signals();
     }
 
+    async fn get_ram_info(&self) -> Result<Vec<BTreeMap<String, String>>> {
+        let conn = Connection::system()
+            .await
+            .context("error trying to establish dbus system connection")?;
+        let proxy = ClientProxy::new(&conn)
+            .await
+            .context("error trying to build new dbus ClientProxy")?;
+        proxy
+            .ram_info()
+            .await
+            .context("error calling dbus proxy with `ram_info`, is the daemon running?")
+    }
+
     pub fn setup_widgets(&self) {
         let main_context = MainContext::default();
         main_context.spawn_local(clone!(@strong self as this => async move {
             let imp = this.imp();
-            let ram_info = dbus_ram_info().await.with_context(|| "error getting ram info").unwrap_or_default();
+            let ram_info = this.get_ram_info().await.with_context(|| "error getting ram info").unwrap_or_default();
             for i in &ram_info {
                 let expander = adw::ExpanderRow::builder()
                         .title(&format!("{} · {}", i["Bank Locator"], i["Locator"]))

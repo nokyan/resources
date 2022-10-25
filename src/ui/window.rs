@@ -11,11 +11,11 @@ use zvariant::Value::{Array, Bool, ObjectPath, U8};
 
 use crate::application::Application;
 use crate::config::{APP_ID, PROFILE};
-use crate::ui::pages::drive::ResDrive;
-use crate::utils::daemon_proxy::{
+use crate::dbus_proxies::udisks2::{
     BlockProxy, DriveProxy, InterfacesAdded, PartitionProxy, SwapspaceProxy,
     UDisks2InterfacesProxy, UDisks2ManagerProxy,
 };
+use crate::ui::pages::drive::ResDrive;
 use crate::utils::gpu::GPU;
 use crate::utils::units::{to_largest_unit, Base};
 
