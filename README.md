@@ -12,6 +12,7 @@ Resources is a simple yet powerful monitor for your system resources and process
 - `cargo`
 
 Other dependencies are handled by `cargo`.
+Note: Right now, Resources requires the nightly version of Rust.
 
 ## Installing
 
@@ -33,7 +34,5 @@ Running Resources is as simple as typing `resources` into a terminal or running 
 ## To-do
 
 - Display graphs instead of or alongside the current progress bars
-- Network interface(s) usage and details
-- Block device(s) usage and details
 - Battery usage and details
 - List processes and make them sortable by CPU, memory and maybe GPU usage

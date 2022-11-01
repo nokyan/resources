@@ -125,7 +125,7 @@ impl ResDrive {
                 let refresh_millis = refresh_seconds as f64 * 1000.0;
                 let read_ratio = delta_read_ticks as f64 / refresh_millis;
                 let write_ratio = delta_write_ticks as f64 / refresh_millis;
-                let percentage = f64::max(read_ratio, write_ratio).min(1.0).max(0.0);
+                let percentage = f64::max(read_ratio, write_ratio).clamp(0.0, 1.0);
                 let percentage_string = format!("{} %", (percentage * 100.0) as u8);
                 imp.total_usage.set_fraction(percentage);
                 imp.total_usage.set_percentage_label(&percentage_string);
