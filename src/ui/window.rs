@@ -167,7 +167,7 @@ impl MainWindow {
                     // path, we watch for network interfaces the old-fashioned
                     // way: just poll /sys/class/net/ every second
                     loop {
-                        this.watch_for_network_interfaces()?;
+                        this.watch_for_network_interfaces();
                         timeout_future_seconds(1).await;
                     }
                     #[allow(unreachable_code)]
@@ -230,12 +230,9 @@ impl MainWindow {
                         )?;
                     }
                     let capacity = drive.size().await?;
-                    let formatted_capacity = to_largest_unit(capacity as f64, Base::Decimal);
-                    let capacity_string = format!(
-                        "{} {}B",
-                        formatted_capacity.0.round() as f64,
-                        formatted_capacity.1
-                    );
+                    let formatted_capacity = to_largest_unit(capacity as f64, &Base::Decimal);
+                    let capacity_string =
+                        format!("{} {}B", formatted_capacity.0.round(), formatted_capacity.1);
                     let mut writable = true;
                     if let Ok(ro) = block.read_only().await {
                         writable = !ro;
@@ -276,7 +273,7 @@ impl MainWindow {
             async {
                 while let Some(signal) = interfaces_added.next().await {
                     if let Some(result) = Self::handle_income_signals(signal, &conn).await? {
-                        let capacity = to_largest_unit(result.2 as f64, Base::Decimal);
+                        let capacity = to_largest_unit(result.2 as f64, &Base::Decimal);
                         let capacity_string =
                             format!("{} {}B", capacity.0.round() as usize, capacity.1);
                         imp.content_stack.add_titled(
@@ -351,7 +348,7 @@ impl MainWindow {
         Ok(None)
     }
 
-    fn watch_for_network_interfaces(&self) -> Result<()> {
+    fn watch_for_network_interfaces(&self) {
         let imp = self.imp();
         let mut still_active_interfaces = Vec::new();
         if let Ok(paths) = std::fs::read_dir("/sys/class/net") {
@@ -366,7 +363,7 @@ impl MainWindow {
                     continue;
                 }
                 let page = ResNetwork::new();
-                if let Ok(interface) = NetworkInterface::from_sysfs(dir_path.clone()) {
+                if let Ok(interface) = NetworkInterface::from_sysfs(&dir_path) {
                     let sidebar_title = match interface.interface_type {
                         InterfaceType::Ethernet => gettextrs::gettext("Ethernet Connection"),
                         InterfaceType::InfiniBand => gettextrs::gettext("InfiniBand Connection"),
@@ -389,7 +386,6 @@ impl MainWindow {
             .borrow_mut()
             .drain_filter(|k, _| !still_active_interfaces.iter().any(|x| *x == **k)) // remove entry from network_pages HashMap
             .for_each(|(_, v)| imp.content_stack.remove(&v)); // remove page from the UI
-        Ok(())
     }
 
     fn save_window_size(&self) -> Result<(), glib::BoolError> {

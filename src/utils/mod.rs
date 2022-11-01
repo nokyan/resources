@@ -8,23 +8,26 @@ pub mod units;
 pub trait NaNDefault {
     /// Returns the given `default` value if the variable is NaN,
     /// and returns itself otherwise.
+    #[must_use]
     fn nan_default(&self, default: Self) -> Self;
 }
 
 impl NaNDefault for f64 {
     fn nan_default(&self, default: Self) -> Self {
-        match self.is_nan() {
-            false => *self,
-            true => default,
+        if self.is_nan() {
+            default
+        } else {
+            *self
         }
     }
 }
 
 impl NaNDefault for f32 {
     fn nan_default(&self, default: Self) -> Self {
-        match self.is_nan() {
-            false => *self,
-            true => default,
+        if self.is_nan() {
+            default
+        } else {
+            *self
         }
     }
 }

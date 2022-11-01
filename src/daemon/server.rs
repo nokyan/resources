@@ -1,6 +1,6 @@
 use std::{collections::BTreeMap, process::Command};
 
-use nparse::*;
+use nparse::IndentToJson;
 use serde_json::Value;
 use zbus::dbus_interface;
 
@@ -24,11 +24,10 @@ impl SystemResourcesDaemon {
         let mut ret_vec: Vec<BTreeMap<String, String>> = Vec::new();
         for v in output {
             match v {
-                Value::Null => (),
+                Value::Null | Value::Array(_) => (),
                 Value::Bool(_) => unimplemented!(),
                 Value::Number(_) => unimplemented!(),
                 Value::String(_) => unimplemented!(),
-                Value::Array(_) => (),
                 Value::Object(_) => {
                     // don't add it to the ret_vec if it's empty
                     if v["Memory Device"]["Size"]

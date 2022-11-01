@@ -75,6 +75,6 @@ impl ResProgressBox {
 
     pub fn set_progressbar_visible(&self, visible: bool) {
         let imp = self.imp();
-        imp.progress_bar.set_visible(visible)
+        imp.progress_bar.set_visible(visible);
     }
 }

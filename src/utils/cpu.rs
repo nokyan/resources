@@ -1,6 +1,6 @@
 use anyhow::{anyhow, Context, Result};
 use lazy_static::lazy_static;
-use nparse::*;
+use nparse::KVStrToJson;
 use regex::bytes::Regex;
 use serde_json::Value;
 use std::process::Command;
@@ -25,12 +25,23 @@ fn lscpu() -> Result<Value> {
 }
 
 /// Returns a `CPUInfo` struct populated with values gathered from `lscpu`.
+///
+/// # Errors
+///
+/// Will return `Err` if the are problems during reading or parsing
+/// of the `lscpu` command
 pub fn cpu_info() -> Result<CPUInfo> {
     let lscpu_output = lscpu()?;
 
-    let vendor_id = lscpu_output["Vendor ID"].as_str().map(|x| x.to_string());
-    let model_name = lscpu_output["Model name"].as_str().map(|x| x.to_string());
-    let architecture = lscpu_output["Architecture"].as_str().map(|x| x.to_string());
+    let vendor_id = lscpu_output["Vendor ID"]
+        .as_str()
+        .map(std::string::ToString::to_string);
+    let model_name = lscpu_output["Model name"]
+        .as_str()
+        .map(std::string::ToString::to_string);
+    let architecture = lscpu_output["Architecture"]
+        .as_str()
+        .map(std::string::ToString::to_string);
     let logical_cpus = lscpu_output["CPU(s)"]
         .as_str()
         .and_then(|x| x.parse::<usize>().ok());
@@ -42,11 +53,11 @@ pub fn cpu_info() -> Result<CPUInfo> {
         .and_then(|x| x.parse::<usize>().ok().map(|y| y * sockets.unwrap_or(1)));
     let virtualization = lscpu_output["Virtualization"]
         .as_str()
-        .map(|x| x.to_string());
+        .map(std::string::ToString::to_string);
     let max_speed = lscpu_output["CPU max MHz"]
         .as_str()
         .and_then(|x| x.parse::<f32>().ok())
-        .map(|y| y * 1000000.0);
+        .map(|y| y * 1_000_000.0);
 
     Ok(CPUInfo {
         vendor_id,
@@ -60,6 +71,12 @@ pub fn cpu_info() -> Result<CPUInfo> {
     })
 }
 
+/// Returns the frequency of the given CPU `core`
+///
+/// # Errors
+///
+/// Will return `Err` if the are problems during reading or parsing
+/// of the corresponding file in sysfs
 pub fn get_cpu_freq(core: usize) -> Result<u64> {
     std::fs::read_to_string(format!(
         "/sys/devices/system/cpu/cpu{}/cpufreq/scaling_cur_freq",
@@ -98,10 +115,10 @@ fn parse_proc_stat_line(line: &[u8]) -> Result<(u64, u64)> {
     Ok((idle_time, sum))
 }
 
-pub fn get_proc_stat(core: Option<usize>) -> Result<String> {
+fn get_proc_stat(core: Option<usize>) -> Result<String> {
     // the combined stats are in line 0, the other cores are in the following lines,
     // since our `core` argument starts with 0, we must add 1 to it if it's not `None`.
-    let selected_line_number = core.map(|x| x + 1).unwrap_or(0);
+    let selected_line_number = core.map_or(0, |x| x + 1);
     let proc_stat_raw =
         std::fs::read_to_string("/proc/stat").with_context(|| "unable to read /proc/stat")?;
     let mut proc_stat = proc_stat_raw.split('\n').collect::<Vec<&str>>();
@@ -116,7 +133,12 @@ pub fn get_proc_stat(core: Option<usize>) -> Result<String> {
 /// Returns the CPU usage of either all cores combined (if supplied argument is `None`),
 /// or of a specific thread (taken from the supplied argument starting at 0)
 /// Please keep in mind that this is the total CPU time since boot, you have to do delta
-/// calculations yourself. The tuple's layout is: (idle_time, total_time)
+/// calculations yourself. The tuple's layout is: `(idle_time, total_time)`
+///
+/// # Errors
+///
+/// Will return `Err` if the are problems during reading or parsing
+/// of /proc/stat
 pub fn get_cpu_usage(core: Option<usize>) -> Result<(u64, u64)> {
     parse_proc_stat_line(get_proc_stat(core)?.as_bytes())
 }

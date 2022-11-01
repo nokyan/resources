@@ -121,10 +121,10 @@ impl ResMemory {
             let total_swap = get_total_swap().with_context(|| "unable to get total swap").unwrap_or_default();
             let free_swap = get_free_swap().with_context(|| "unable to get free swap").unwrap_or_default();
 
-            let total_mem_unit = to_largest_unit(total_mem as f64, Base::Decimal);
-            let used_mem_unit = to_largest_unit((total_mem - available_mem) as f64, Base::Decimal);
-            let total_swap_unit = to_largest_unit(total_swap as f64, Base::Decimal);
-            let used_swap_unit = to_largest_unit((total_swap - free_swap) as f64, Base::Decimal);
+            let total_mem_unit = to_largest_unit(total_mem as f64, &Base::Decimal);
+            let used_mem_unit = to_largest_unit((total_mem - available_mem) as f64, &Base::Decimal);
+            let total_swap_unit = to_largest_unit(total_swap as f64, &Base::Decimal);
+            let used_swap_unit = to_largest_unit((total_swap - free_swap) as f64, &Base::Decimal);
 
             imp.memory.set_fraction(1.0 - (available_mem as f64 / total_mem as f64));
             imp.memory.set_percentage_label(&format!("{:.2} {}B / {:.2} {}B", used_mem_unit.0, used_mem_unit.1, total_mem_unit.0, total_mem_unit.1));

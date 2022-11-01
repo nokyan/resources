@@ -92,7 +92,7 @@ impl ResGPU {
         imp.gpu.set(gpu).unwrap_or_default();
         imp.number.set(number).unwrap_or_default();
         self.setup_widgets();
-        self.setup_signals();
+        self.setup_listener();
     }
 
     pub fn setup_widgets(&self) {
@@ -110,13 +110,13 @@ impl ResGPU {
         imp.driver_used.set_info_label(&gpu.driver);
     }
 
-    pub fn setup_signals(&self) {
+    pub fn setup_listener(&self) {
         let gpu_usage_update = clone!(@strong self as this => move || {
             let imp = this.imp();
             let gpu = imp.gpu.get().unwrap();
 
             if let Ok(gpu_usage) = gpu.get_gpu_usage() {
-                imp.gpu_usage.set_percentage_label(&format!("{} %", gpu_usage));
+                imp.gpu_usage.set_percentage_label(&format!("{gpu_usage} %"));
                 imp.gpu_usage.set_fraction(gpu_usage as f64 / 100.0);
                 imp.gpu_usage.set_progressbar_visible(true);
             } else {
@@ -125,8 +125,8 @@ impl ResGPU {
             }
 
             if let (Ok(total_vram), Ok(used_vram)) = (gpu.get_total_vram(), gpu.get_used_vram()) {
-                let total_vram_unit = to_largest_unit(total_vram as f64, Base::Decimal);
-                let used_vram_unit = to_largest_unit(used_vram as f64, Base::Decimal);
+                let total_vram_unit = to_largest_unit(total_vram as f64, &Base::Decimal);
+                let used_vram_unit = to_largest_unit(used_vram as f64, &Base::Decimal);
                 imp.vram_usage.set_percentage_label(&format!("{:.2} {}B / {:.2} {}B", used_vram_unit.0, used_vram_unit.1, total_vram_unit.0, total_vram_unit.1));
                 imp.vram_usage.set_fraction((used_vram as f64) / (total_vram as f64));
                 imp.vram_usage.set_progressbar_visible(true);
@@ -137,27 +137,27 @@ impl ResGPU {
 
             // TODO: handle the user's choice of temperatue unit
             let temp_unit = "C";
-            imp.temperature.set_info_label(&gpu.get_gpu_temp().map(|x| format!("{} °{}", x, temp_unit)).unwrap_or_else(|_| gettextrs::gettext("N/A")));
+            imp.temperature.set_info_label(&gpu.get_gpu_temp().map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x} °{temp_unit}")));
 
-            imp.power_usage.set_info_label(&gpu.get_power_usage().map(|x| format!("{:.2} W", x)).unwrap_or_else(|_| gettextrs::gettext("N/A")));
+            imp.power_usage.set_info_label(&gpu.get_power_usage().map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x:.2} W")));
 
             if let Ok(gpu_clockspeed) = gpu.get_gpu_speed() {
-                let gpu_clockspeed_unit = to_largest_unit(gpu_clockspeed, Base::Decimal);
+                let gpu_clockspeed_unit = to_largest_unit(gpu_clockspeed, &Base::Decimal);
                 imp.gpu_clockspeed.set_info_label(&format!("{:.2} {}Hz", gpu_clockspeed_unit.0, gpu_clockspeed_unit.1));
             } else {
                 imp.gpu_clockspeed.set_info_label(&gettextrs::gettext("N/A"));
             }
 
             if let Ok(vram_clockspeed) = gpu.get_vram_speed() {
-                let vram_clockspeed_unit = to_largest_unit(vram_clockspeed, Base::Decimal);
+                let vram_clockspeed_unit = to_largest_unit(vram_clockspeed, &Base::Decimal);
                 imp.vram_clockspeed.set_info_label(&format!("{:.2} {}Hz", vram_clockspeed_unit.0, vram_clockspeed_unit.1));
             } else {
                 imp.vram_clockspeed.set_info_label(&gettextrs::gettext("N/A"));
             }
 
-            imp.current_power_cap.set_info_label(&gpu.get_power_cap().map(|x| format!("{:.2} W", x)).unwrap_or_else(|_| gettextrs::gettext("N/A")));
+            imp.current_power_cap.set_info_label(&gpu.get_power_cap().map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x:.2} W")));
 
-            imp.max_power_cap.set_info_label(&gpu.get_power_cap_max().map(|x| format!("{:.2} W", x)).unwrap_or_else(|_| gettextrs::gettext("N/A")));
+            imp.max_power_cap.set_info_label(&gpu.get_power_cap_max().map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x:.2} W")));
 
             glib::Continue(true)
         });

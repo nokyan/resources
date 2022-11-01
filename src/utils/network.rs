@@ -1,4 +1,8 @@
-use std::{collections::HashMap, ffi::OsString, path::PathBuf};
+use std::{
+    collections::HashMap,
+    ffi::OsString,
+    path::{Path, PathBuf},
+};
 
 use anyhow::{Context, Result};
 use pci_ids::FromId;
@@ -60,8 +64,15 @@ impl NetworkInterface {
         Ok(hmap)
     }
 
-    /// Returns a `NetworkInterface` based on information found in its SysFS Path
-    pub fn from_sysfs(sysfs_path: PathBuf) -> Result<NetworkInterface> {
+    /// Returns a `NetworkInterface` based on information
+    /// found in its sysfs path
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if an invalid sysfs Path has
+    /// been passed or if there has been problems parsing
+    /// information
+    pub fn from_sysfs(sysfs_path: &Path) -> Result<NetworkInterface> {
         let dev_uevent = Self::read_uevent(sysfs_path.join("device/uevent")).unwrap_or_default();
         let interface_name = sysfs_path
             .file_name()
@@ -107,12 +118,14 @@ impl NetworkInterface {
             hw_address: std::fs::read_to_string(sysfs_path.join("address"))
                 .map(|x| x.replace('\n', ""))
                 .ok(),
-            sysfs_path: sysfs_path.clone(),
+            sysfs_path: sysfs_path.to_path_buf(),
             received_bytes_path: sysfs_path.join(PathBuf::from("statistics/rx_bytes")),
             sent_bytes_path: sysfs_path.join(PathBuf::from("statistics/tx_bytes")),
         })
     }
 
+    /// Returns a display name for this Network Interface.
+    /// It tries to be as human readable as possible.
     pub fn display_name(&self) -> String {
         self.device_name
             .clone()
@@ -120,6 +133,13 @@ impl NetworkInterface {
             .unwrap_or_else(|| self.interface_name.to_str().unwrap_or_default().to_string())
     }
 
+    /// Returns the amount of bytes sent by this Network
+    /// Interface.
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the `tx_bytes` file in sysfs
+    /// is unreadable or not parsable to a `usize`
     pub fn received_bytes(&self) -> Result<usize> {
         std::fs::read_to_string(&self.received_bytes_path)
             .with_context(|| "read failure")?
@@ -128,6 +148,13 @@ impl NetworkInterface {
             .with_context(|| "parsing failure")
     }
 
+    /// Returns the amount of bytes sent by this Network
+    /// Interface
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the `tx_bytes` file in sysfs
+    /// is unreadable or not parsable to a `usize`
     pub fn sent_bytes(&self) -> Result<usize> {
         std::fs::read_to_string(&self.sent_bytes_path)
             .with_context(|| "read failure")?

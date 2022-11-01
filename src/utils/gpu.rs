@@ -32,6 +32,11 @@ pub struct GPU {
 
 impl GPU {
     /// Returns a `Vec` of all GPUs currently found in the system.
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the are problems detecting
+    /// the GPUs in the system
     pub fn get_gpus() -> Result<Vec<GPU>> {
         let mut gpu_vec: Vec<GPU> = Vec::new();
         for entry in glob("/sys/class/drm/card?")?.flatten() {
@@ -83,6 +88,11 @@ impl GPU {
     }
 
     /// Returns the Vendor name using the GPU's Vendor ID
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the vendor is unknown
+    /// in the PCI IDs database
     pub fn get_vendor(&self) -> Result<String> {
         Ok(self.device.context("no device")?.vendor().name().to_owned())
     }
@@ -149,6 +159,11 @@ impl GPU {
     /// Returns the product name of the GPU. If the nvidia driver is used,
     /// the name will be obtained using NVML, otherwise it will be obtained
     /// from the PCI ID
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if there's no name either exposed through a driver,
+    /// exposed through a sysfs file or findable in the PCI IDs database.
     pub fn get_name(&self) -> Result<String> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
@@ -186,6 +201,12 @@ impl GPU {
     }
 
     /// Returns the GPU usage in percent
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the GPU usage
+    /// is for some reason unreadable or is simply
+    /// not exposed
     pub fn get_gpu_usage(&self) -> Result<isize> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
@@ -223,6 +244,13 @@ impl GPU {
     }
 
     /// Returns the used VRAM in bytes
+    ///
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the used amount of VRAM
+    /// is for some reason unreadable or is simply
+    /// not exposed
     pub fn get_used_vram(&self) -> Result<isize> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
@@ -260,6 +288,12 @@ impl GPU {
     }
 
     /// Returns the total VRAM in bytes
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the VRAM size
+    /// is for some reason unreadable or is simply
+    /// not exposed
     pub fn get_total_vram(&self) -> Result<isize> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
@@ -296,6 +330,12 @@ impl GPU {
     }
 
     /// Returns the GPU temperature in °C
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the temperature
+    /// is for some reason unreadable or is simply
+    /// not exposed
     pub fn get_gpu_temp(&self) -> Result<f64> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
@@ -309,7 +349,7 @@ impl GPU {
     }
 
     fn get_amd_power_usage(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int(0, "power1_average")? as f64 / 1000000.0)
+        Ok(self.read_hwmon_int(0, "power1_average")? as f64 / 1_000_000.0)
     }
 
     fn get_intel_power_usage(&self) -> Result<f64> {
@@ -321,14 +361,20 @@ impl GPU {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
-            return Ok(dev.power_usage().context("failed to get power usage")? as f64 / 1000.0);
+            return Ok(f64::from(dev.power_usage().context("failed to get power usage")?) / 1000.0);
         }
         Err(anyhow::anyhow!(
             "no NVML connection, nouveau not implemented yet"
         ))
     }
 
-    /// Returns the GPU power usage in W
+    /// Returns the GPU power usage in Watts
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the power usage
+    /// is for some reason unreadable or is simply
+    /// not exposed
     pub fn get_power_usage(&self) -> Result<f64> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
@@ -346,7 +392,7 @@ impl GPU {
     }
 
     fn get_intel_gpu_speed(&self) -> Result<f64> {
-        Ok(self.read_sysfs_int("gt_cur_freq_mhz")? as f64 * 1000000.0)
+        Ok(self.read_sysfs_int("gt_cur_freq_mhz")? as f64 * 1_000_000.0)
     }
 
     fn get_nvidia_gpu_speed(&self) -> Result<f64> {
@@ -354,17 +400,24 @@ impl GPU {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
-            return Ok(dev
-                .clock_info(Clock::Graphics)
-                .context("failed to get clock info")? as f64
-                * 1000000.0);
+            return Ok(f64::from(
+                dev.clock_info(Clock::Graphics)
+                    .context("failed to get clock info")?,
+            ) * 1_000_000.0);
         }
         Err(anyhow::anyhow!(
             "no NVML connection, nouveau not implemented yet"
         ))
     }
 
-    /// Returns the GPU clockspeed (typically the graphics part) in Hz
+    /// Returns the GPU clockspeed (typically the 3-D
+    /// graphics part) in Hz
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the clockspeed
+    /// is for some reason unreadable or is simply
+    /// not exposed
     pub fn get_gpu_speed(&self) -> Result<f64> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
@@ -390,10 +443,10 @@ impl GPU {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
-            return Ok(dev
-                .clock_info(Clock::Memory)
-                .context("failed to get clock info")? as f64
-                * 1000000.0);
+            return Ok(f64::from(
+                dev.clock_info(Clock::Memory)
+                    .context("failed to get clock info")?,
+            ) * 1_000_000.0);
         }
         Err(anyhow::anyhow!(
             "no NVML connection, nouveau not implemented yet"
@@ -401,6 +454,12 @@ impl GPU {
     }
 
     /// Returns the VRAM speed in Hz
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the VRAM speed
+    /// is for some reason unreadable or is simply
+    /// not exposed
     pub fn get_vram_speed(&self) -> Result<f64> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
@@ -414,7 +473,7 @@ impl GPU {
     }
 
     fn get_amd_power_cap(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int(0, "power1_cap")? as f64 / 1000000.0)
+        Ok(self.read_hwmon_int(0, "power1_cap")? as f64 / 1_000_000.0)
     }
 
     fn get_intel_power_cap(&self) -> Result<f64> {
@@ -426,17 +485,23 @@ impl GPU {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
-            return Ok(dev
-                .power_management_limit_default()
-                .context("failed to get power cap info")? as f64
-                / 1000.0);
+            return Ok(f64::from(
+                dev.power_management_limit_default()
+                    .context("failed to get power cap info")?,
+            ) / 1000.0);
         }
         Err(anyhow::anyhow!(
             "no NVML connection, nouveau not implemented yet"
         ))
     }
 
-    /// Returns the current power cap in W
+    /// Returns the current power cap in Watts
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the current power cap
+    /// is for some reason unreadable or is simply
+    /// not exposed
     pub fn get_power_cap(&self) -> Result<f64> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
@@ -450,7 +515,7 @@ impl GPU {
     }
 
     fn get_amd_power_cap_max(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int(0, "power1_cap_max")? as f64 / 1000000.0)
+        Ok(self.read_hwmon_int(0, "power1_cap_max")? as f64 / 1_000_000.0)
     }
 
     fn get_intel_power_cap_max(&self) -> Result<f64> {
@@ -462,18 +527,24 @@ impl GPU {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
-            return Ok(dev
-                .power_management_limit_constraints()
-                .context("failed to get max power cap info")?
-                .max_limit as f64
-                / 1000.0);
+            return Ok(f64::from(
+                dev.power_management_limit_constraints()
+                    .context("failed to get max power cap info")?
+                    .max_limit,
+            ) / 1000.0);
         }
         Err(anyhow::anyhow!(
             "no NVML connection, nouveau not implemented yet"
         ))
     }
 
-    /// Returns the max power cap in W
+    /// Returns the max power cap in Watts
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the max power cap
+    /// is for some reason unreadable or is simply
+    /// not exposed
     pub fn get_power_cap_max(&self) -> Result<f64> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {

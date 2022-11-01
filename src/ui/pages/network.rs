@@ -117,10 +117,10 @@ impl ResNetwork {
             let received_delta = received_bytes - old_received_bytes;
             let sent_delta = sent_bytes - old_sent_bytes;
 
-            let received_delta_formatted = to_largest_unit(received_delta as f64, Base::Decimal);
-            let sent_delta_formatted = to_largest_unit(sent_delta as f64, Base::Decimal);
-            let received_formatted = to_largest_unit(received_bytes as f64, Base::Decimal);
-            let sent_formatted = to_largest_unit(sent_bytes as f64, Base::Decimal);
+            let received_delta_formatted = to_largest_unit(received_delta as f64, &Base::Decimal);
+            let sent_delta_formatted = to_largest_unit(sent_delta as f64, &Base::Decimal);
+            let received_formatted = to_largest_unit(received_bytes as f64, &Base::Decimal);
+            let sent_formatted = to_largest_unit(sent_bytes as f64, &Base::Decimal);
             imp.receiving.set_info_label(&format!("{:.2} {}B/s", received_delta_formatted.0, received_delta_formatted.1));
             imp.sending.set_info_label(&format!("{:.2} {}B/s", sent_delta_formatted.0, sent_delta_formatted.1));
             imp.total_received.set_info_label(&format!("{:.2} {}B", received_formatted.0, received_formatted.1));

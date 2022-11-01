@@ -101,7 +101,7 @@ impl ResDrive {
         let imp = self.imp();
         imp.drive_name.set_label(&vec![vendor, model].join(" "));
         imp.device.set_info_label(device);
-        let formatted_capacity = to_largest_unit(capacity as f64, Base::Decimal);
+        let formatted_capacity = to_largest_unit(capacity as f64, &Base::Decimal);
         imp.capacity.set_info_label(&format!(
             "{:.1} {}B",
             formatted_capacity.0, formatted_capacity.1
@@ -122,7 +122,7 @@ impl ResDrive {
             if let (Some(read_ticks), Some(write_ticks), Some(old_read_ticks), Some(old_write_ticks)) = (disk_stats.get("read_ticks"), disk_stats.get("write_ticks"), old_stats.get("read_ticks"), old_stats.get("write_ticks")) {
                 let delta_read_ticks = read_ticks - old_read_ticks;
                 let delta_write_ticks = write_ticks - old_write_ticks;
-                let refresh_millis = refresh_seconds as f64 * 1000.0;
+                let refresh_millis = f64::from(refresh_seconds) * 1000.0;
                 let read_ratio = delta_read_ticks as f64 / refresh_millis;
                 let write_ratio = delta_write_ticks as f64 / refresh_millis;
                 let percentage = f64::max(read_ratio, write_ratio).clamp(0.0, 1.0);
@@ -136,8 +136,8 @@ impl ResDrive {
                 let delta_write_sectors = write_sectors - old_write_sectors;
                 let read_bytes_per_second = (delta_read_sectors * hw_sector_size) / refresh_seconds as usize;
                 let write_bytes_per_second = (delta_write_sectors * hw_sector_size) / refresh_seconds as usize;
-                let rbps_formatted = to_largest_unit(read_bytes_per_second as f64, Base::Decimal);
-                let wbps_formatted = to_largest_unit(write_bytes_per_second as f64, Base::Decimal);
+                let rbps_formatted = to_largest_unit(read_bytes_per_second as f64, &Base::Decimal);
+                let wbps_formatted = to_largest_unit(write_bytes_per_second as f64, &Base::Decimal);
                 imp.read.set_info_label(&format!("{:.2} {}B/s", rbps_formatted.0, rbps_formatted.1));
                 imp.write.set_info_label(&format!("{:.2} {}B/s", wbps_formatted.0, wbps_formatted.1));
             }

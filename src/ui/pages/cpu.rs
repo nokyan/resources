@@ -112,35 +112,31 @@ impl ResCPU {
                 imp.thread_boxes.borrow_mut().push(progress_box);
             }
         }
-        imp.max_speed.set_info_label(
-            &cpu_info
-                .max_speed
-                .map(|x| {
+        imp.max_speed
+            .set_info_label(&cpu_info.max_speed.map_or_else(
+                || gettextrs::gettext("N/A"),
+                |x| {
                     format!(
                         "{:.2} {}Hz",
-                        to_largest_unit(x.into(), Base::Decimal).0,
-                        to_largest_unit(x.into(), Base::Decimal).1
+                        to_largest_unit(x.into(), &Base::Decimal).0,
+                        to_largest_unit(x.into(), &Base::Decimal).1
                     )
-                })
-                .unwrap_or_else(|| gettextrs::gettext("N/A")),
-        );
+                },
+            ));
         imp.logical_cpus.set_info_label(
             &cpu_info
                 .logical_cpus
-                .map(|x| x.to_string())
-                .unwrap_or_else(|| gettextrs::gettext("N/A")),
+                .map_or_else(|| gettextrs::gettext("N/A"), |x| x.to_string()),
         );
         imp.physical_cpus.set_info_label(
             &cpu_info
                 .physical_cpus
-                .map(|x| x.to_string())
-                .unwrap_or_else(|| gettextrs::gettext("N/A")),
+                .map_or_else(|| gettextrs::gettext("N/A"), |x| x.to_string()),
         );
         imp.sockets.set_info_label(
             &cpu_info
                 .sockets
-                .map(|x| x.to_string())
-                .unwrap_or_else(|| gettextrs::gettext("N/A")),
+                .map_or_else(|| gettextrs::gettext("N/A"), |x| x.to_string()),
         );
         imp.virtualization.set_info_label(
             &cpu_info
@@ -187,8 +183,8 @@ impl ResCPU {
                     curr_threadbox.set_fraction(thread_fraction);
                     curr_threadbox.set_percentage_label(&format!("{} %", (thread_fraction*100.0).round()));
                     if let Ok(freq) = cpu::get_cpu_freq(i) {
-                        let (frequency, base) = to_largest_unit(freq as f64, Base::Decimal);
-                        curr_threadbox.set_title(&format!("CPU {} · {:.2} {}Hz", i + 1, frequency, base));
+                        let (frequency, base) = to_largest_unit(freq as f64, &Base::Decimal);
+                        curr_threadbox.set_title(&format!("CPU {} · {frequency:.2} {base}Hz", i + 1));
                     }
                     *old_thread_usage = new_thread_usage;
                 }
