@@ -1,9 +1,10 @@
 use std::collections::HashMap;
+use std::path::PathBuf;
 
 use adw::{prelude::*, subclass::prelude::*};
 use anyhow::{Context, Result};
 use futures_util::stream::StreamExt;
-use gtk::glib::{clone, MainContext};
+use gtk::glib::{clone, timeout_future_seconds, MainContext};
 use gtk::{gio, glib};
 use zbus::export::futures_util;
 use zbus::Connection;
@@ -16,7 +17,10 @@ use crate::dbus_proxies::udisks2::{
     UDisks2InterfacesProxy, UDisks2ManagerProxy,
 };
 use crate::ui::pages::drive::ResDrive;
+use crate::ui::pages::network::ResNetwork;
 use crate::utils::gpu::GPU;
+use crate::utils::network::InterfaceType;
+use crate::utils::network::NetworkInterface;
 use crate::utils::units::{to_largest_unit, Base};
 
 use super::pages::gpu::ResGPU;
@@ -24,7 +28,7 @@ use super::pages::gpu::ResGPU;
 mod imp {
     use std::cell::RefCell;
 
-    use crate::ui::pages::{cpu::ResCPU, memory::ResMemory};
+    use crate::ui::pages::{cpu::ResCPU, memory::ResMemory, network::ResNetwork};
 
     use super::*;
 
@@ -34,6 +38,7 @@ mod imp {
     #[template(resource = "/me/nalux/Resources/ui/window.ui")]
     pub struct MainWindow {
         pub drive_pages: RefCell<HashMap<String, ResDrive>>,
+        pub network_pages: RefCell<HashMap<PathBuf, ResNetwork>>,
         #[template_child]
         pub flap: TemplateChild<adw::Flap>,
         #[template_child]
@@ -56,6 +61,7 @@ mod imp {
         fn default() -> Self {
             Self {
                 drive_pages: RefCell::default(),
+                network_pages: RefCell::default(),
                 flap: TemplateChild::default(),
                 resources_sidebar: TemplateChild::default(),
                 content_stack: TemplateChild::default(),
@@ -153,7 +159,21 @@ impl MainWindow {
         let main_context = MainContext::default();
         main_context.spawn_local(clone!(@strong self as this => async move {
             this.look_for_drives().await.unwrap_or_default();
-            this.watch_for_drives().await.unwrap_or_default();
+            futures_util::try_join!(
+                this.watch_for_drives(),
+                async {
+                    // because NetworkManager exposes weird "virtual" devices,
+                    // is inconsistent (at least for our case) with its UDI
+                    // path, we watch for network interfaces the old-fashioned
+                    // way: just poll /sys/class/net/ every second
+                    loop {
+                        this.watch_for_network_interfaces()?;
+                        timeout_future_seconds(1).await;
+                    }
+                    #[allow(unreachable_code)]
+                    Ok(())    // this is to make the compiler happy
+                }
+            ).unwrap_or_default();
         }));
     }
 
@@ -329,6 +349,47 @@ impl MainWindow {
             }
         }
         Ok(None)
+    }
+
+    fn watch_for_network_interfaces(&self) -> Result<()> {
+        let imp = self.imp();
+        let mut still_active_interfaces = Vec::new();
+        if let Ok(paths) = std::fs::read_dir("/sys/class/net") {
+            for path in paths.flatten() {
+                let dir_path = path.path();
+                // skip loopback (or non-UTF-8 names) and already found network pages
+                if path.file_name().to_str().unwrap_or("lo") == "lo" {
+                    continue;
+                }
+                if imp.network_pages.borrow().contains_key(&dir_path) {
+                    still_active_interfaces.push(dir_path);
+                    continue;
+                }
+                let page = ResNetwork::new();
+                if let Ok(interface) = NetworkInterface::from_sysfs(dir_path.clone()) {
+                    let sidebar_title = match interface.interface_type {
+                        InterfaceType::Ethernet => gettextrs::gettext("Ethernet Connection"),
+                        InterfaceType::InfiniBand => gettextrs::gettext("InfiniBand Connection"),
+                        InterfaceType::Slip => gettextrs::gettext("Serial Line IP Connection"),
+                        InterfaceType::Wlan => gettextrs::gettext("Wi-Fi Connection"),
+                        InterfaceType::Wwan => gettextrs::gettext("WWAN Connection"),
+                        InterfaceType::Bluetooth => gettextrs::gettext("Bluetooth Tether"),
+                        InterfaceType::Other => gettextrs::gettext("Network Interface"),
+                    };
+                    page.init(interface);
+                    imp.content_stack.add_titled(&page, None, &sidebar_title);
+                    imp.network_pages.borrow_mut().insert(path.path(), page);
+                    still_active_interfaces.push(dir_path);
+                }
+            }
+        }
+        // remove all the pages of network interfaces that have been removed from the system
+        // during the last time this method was called and now
+        imp.network_pages
+            .borrow_mut()
+            .drain_filter(|k, _| !still_active_interfaces.iter().any(|x| *x == **k)) // remove entry from network_pages HashMap
+            .for_each(|(_, v)| imp.content_stack.remove(&v)); // remove page from the UI
+        Ok(())
     }
 
     fn save_window_size(&self) -> Result<(), glib::BoolError> {

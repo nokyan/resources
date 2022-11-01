@@ -1,3 +1,5 @@
+#![feature(hash_drain_filter)]
+
 pub mod application;
 pub mod config;
 pub mod daemon;

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ResNetwork" parent="AdwBin">
+    <property name="child">
+      <object class="GtkScrolledWindow">
+        <child>
+          <object class="AdwClamp">
+            <child>
+              <object class="GtkBox">
+                <property name="margin-top">24</property>
+                <property name="margin-bottom">24</property>
+                <property name="margin-start">16</property>
+                <property name="margin-end">16</property>
+                <property name="spacing">24</property>
+                <property name="orientation">vertical</property>
+                <property name="hexpand">true</property>
+                <property name="valign">start</property>
+                <property name="vexpand">true</property>
+                <child>
+                  <object class="GtkLabel" id="interface_name">
+                    <property name="wrap">true</property>
+                    <property name="selectable">true</property>
+                    <style>
+                      <class name="title-header"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title" translatable="yes">Usage</property>
+                    <child>
+                      <object class="ResInfoBox" id="receiving">
+                        <property name="title" translatable="yes">Receiving</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="sending">
+                        <property name="title" translatable="yes">Sending</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="total_received">
+                        <property name="title" translatable="yes">Total Received</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="total_sent">
+                        <property name="title" translatable="yes">Total Sent</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title" translatable="yes">Network Interface Information</property>
+                    <child>
+                      <object class="ResInfoBox" id="manufacturer">
+                        <property name="title" translatable="yes">Manufacturer</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="driver">
+                        <property name="title" translatable="yes">Driver Used</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="interface">
+                        <property name="title" translatable="yes">Interface</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ResInfoBox" id="hw_address">
+                        <property name="title" translatable="yes">Hardware Address</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

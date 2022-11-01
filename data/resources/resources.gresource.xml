@@ -6,6 +6,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/drive.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/gpu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/memory.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/pages/network.ui</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="gtk/help-overlay.ui">ui/shortcuts.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/bool_box.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/info_box.ui</file>
