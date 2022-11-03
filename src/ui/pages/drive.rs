@@ -148,4 +148,18 @@ impl ResDrive {
         });
         glib::timeout_add_seconds_local(refresh_seconds, drive_usage_update);
     }
+
+    pub fn set_writable(&self, writable: bool) {
+        let imp = self.imp();
+        imp.writable.set_bool(writable);
+    }
+
+    pub fn set_capacity(&self, capacity: u64) {
+        let imp = self.imp();
+        let capacity_formatted = to_largest_unit(capacity as f64, &Base::Decimal);
+        imp.capacity.set_info_label(&format!(
+            "{:.1} {}B",
+            capacity_formatted.0, capacity_formatted.1
+        ));
+    }
 }

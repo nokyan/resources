@@ -1,4 +1,5 @@
 #![feature(hash_drain_filter)]
+#![feature(let_chains)]
 
 pub mod application;
 pub mod config;

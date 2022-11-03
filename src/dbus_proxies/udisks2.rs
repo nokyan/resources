@@ -2,24 +2,7 @@ use std::collections::HashMap;
 
 use anyhow::Result;
 use zbus::dbus_proxy;
-use zvariant::{ObjectPath, OwnedObjectPath, Value};
-
-#[dbus_proxy(
-    default_service = "org.freedesktop.UDisks2",
-    interface = "org.freedesktop.DBus.ObjectManager",
-    default_path = "/org/freedesktop/UDisks2"
-)]
-trait UDisks2Interfaces {
-    #[dbus_proxy(signal)]
-    fn interfaces_added(
-        &self,
-        path: ObjectPath<'_>,
-        interfaces: HashMap<String, HashMap<String, Value<'_>>>,
-    ) -> Result<()>;
-
-    #[dbus_proxy(signal)]
-    fn interfaces_removed(&self, path: ObjectPath<'_>, array: Vec<String>) -> Result<()>;
-}
+use zvariant::{OwnedObjectPath, Value};
 
 #[dbus_proxy(
     default_service = "org.freedesktop.UDisks2",

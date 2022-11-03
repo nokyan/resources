@@ -13,8 +13,7 @@ use zvariant::Value::{Array, Bool, ObjectPath, U8};
 use crate::application::Application;
 use crate::config::{APP_ID, PROFILE};
 use crate::dbus_proxies::udisks2::{
-    BlockProxy, DriveProxy, InterfacesAdded, PartitionProxy, SwapspaceProxy,
-    UDisks2InterfacesProxy, UDisks2ManagerProxy,
+    BlockProxy, DriveProxy, PartitionProxy, SwapspaceProxy, UDisks2ManagerProxy,
 };
 use crate::ui::pages::drive::ResDrive;
 use crate::ui::pages::network::ResNetwork;
@@ -178,7 +177,6 @@ impl MainWindow {
     }
 
     async fn look_for_drives(&self) -> Result<()> {
-        let imp = self.imp();
         let conn = Connection::system()
             .await
             .with_context(|| "unable to establish connection to system bus")?;
@@ -220,33 +218,19 @@ impl MainWindow {
                     .build()
                     .await
                 {
-                    let drive_page = ResDrive::new();
-                    let vendor = drive.vendor().await?;
-                    let model = drive.model().await?;
                     let mut device = String::new();
                     if let Ok(device_bytes) = block.device().await {
                         device = String::from_utf8(
                             device_bytes.into_iter().filter(|x| *x != 0).collect(),
                         )?;
                     }
-                    let capacity = drive.size().await?;
-                    let formatted_capacity = to_largest_unit(capacity as f64, &Base::Decimal);
-                    let capacity_string =
-                        format!("{} {}B", formatted_capacity.0.round(), formatted_capacity.1);
                     let mut writable = true;
                     if let Ok(ro) = block.read_only().await {
                         writable = !ro;
                     }
-                    let removable = drive.removable().await?;
-                    drive_page.init(&vendor, &model, &device, capacity, writable, removable);
-                    imp.content_stack.add_titled(
-                        &drive_page,
-                        None,
-                        &gettextrs::gettext!("{} Drive", capacity_string),
-                    );
-                    imp.drive_pages
-                        .borrow_mut()
-                        .insert(drive_object_path.to_string(), drive_page);
+                    self.add_drive_page(drive, device, writable, drive_object_path.to_string())
+                        .await
+                        .unwrap_or_default();
                 }
             }
         }
@@ -258,30 +242,45 @@ impl MainWindow {
         let conn = Connection::system()
             .await
             .with_context(|| "unable to establish connection to system bus")?;
-        let manager = UDisks2InterfacesProxy::new(&conn)
+        let object_manager = zbus::fdo::ObjectManagerProxy::builder(&conn)
+            .path("/org/freedesktop/UDisks2")?
+            .interface("org.freedesktop.UDisks2")?
+            .build()
             .await
-            .with_context(|| "unable to connect to UDisks2 bus")?;
-        let mut interfaces_added = manager
+            .with_context(|| "unable to connect to UDisks2 ObjectManager bus")?;
+        let mut interfaces_added = object_manager
             .receive_interfaces_added()
             .await
             .with_context(|| "unable to establish connection to UDisk2's InterfacesAdded")?;
-        let mut interfaces_removed = manager
+        let mut interfaces_removed = object_manager
             .receive_interfaces_removed()
             .await
             .with_context(|| "unable to establish connection to UDisk2's InterfacesRemoved")?;
         futures_util::try_join!(
             async {
                 while let Some(signal) = interfaces_added.next().await {
-                    if let Some(result) = Self::handle_income_signals(signal, &conn).await? {
-                        let capacity = to_largest_unit(result.2 as f64, &Base::Decimal);
-                        let capacity_string =
-                            format!("{} {}B", capacity.0.round() as usize, capacity.1);
-                        imp.content_stack.add_titled(
-                            &result.1,
-                            None,
-                            &gettextrs::gettext!("{} Drive", capacity_string),
-                        );
-                        imp.drive_pages.borrow_mut().insert(result.0, result.1);
+                    let body: (
+                        zbus::zvariant::ObjectPath,
+                        HashMap<String, HashMap<String, zbus::zvariant::Value>>,
+                    ) = signal.body()?;
+                    if body.1.get("org.freedesktop.UDisks2.Partition").is_none()
+                        && body.1.get("org.freedesktop.UDisks2.Swapspace").is_none()
+                        && let Some(block_data) = body.1.get("org.freedesktop.UDisks2.Block")
+                        && let Some(ObjectPath(object_path)) = block_data.get("Drive") {
+                            let mut device = String::new();
+                            if let Some(Array(device_bytes)) = block_data.get("Device") {
+                                let unpacked_bytes: Vec<u8> = device_bytes
+                                    .iter()
+                                    .map(|x| if let U8(byte) = x { *byte } else { b'?' })
+                                    .filter(|x| *x != 0)
+                                    .collect();
+                                device = String::from_utf8(unpacked_bytes)?;
+                            }
+                            let mut writable = true;
+                            if let Some(Bool(ro)) = block_data.get("ReadOnly") {
+                                writable = !ro;
+                            }
+                            self.add_drive_page(DriveProxy::builder(&conn).path(object_path)?.build().await?, device, writable, object_path.to_string()).await.unwrap_or_default();
                     }
                 }
                 Ok::<(), anyhow::Error>(())
@@ -298,54 +297,40 @@ impl MainWindow {
                     }
                 }
                 Ok(())
-            }
+            },
         )
         .map(|_| ())
         .with_context(|| "async drive watchers failed")
     }
 
-    async fn handle_income_signals(
-        signal: InterfacesAdded,
-        conn: &Connection,
-    ) -> Result<Option<(String, ResDrive, u64)>> {
-        let body: (
-            zbus::zvariant::ObjectPath,
-            HashMap<String, HashMap<String, zbus::zvariant::Value>>,
-        ) = signal.body()?;
-        // we want to grab the signal containing the block device of the inserted drive, not the `Drive`
-        // itself nor any of its partitions, mainly because `Drive` doesn't give us the /dev/ file that
-        // we need for some diagnostics
-        if body.1.get("org.freedesktop.UDisks2.Partition").is_none()
-            && body.1.get("org.freedesktop.UDisks2.Swapspace").is_none()
-        {
-            if let Some(block_data) = body.1.get("org.freedesktop.UDisks2.Block") {
-                if let Some(ObjectPath(object_path)) = block_data.get("Drive") {
-                    let drive_page = ResDrive::new();
-                    let drive = DriveProxy::builder(conn).path(object_path)?.build().await?;
-                    let vendor = drive.vendor().await?;
-                    let model = drive.model().await?;
-                    let mut device = String::new();
-                    if let Some(Array(device_bytes)) = block_data.get("Device") {
-                        let unpacked_bytes: Vec<u8> = device_bytes
-                            .iter()
-                            .map(|x| if let U8(byte) = x { *byte } else { b'?' })
-                            .filter(|x| *x != 0)
-                            .collect();
-                        device = String::from_utf8(unpacked_bytes)?;
-                    }
-                    let capacity = drive.size().await?;
-                    let mut writable = true;
-                    if let Some(Bool(ro)) = block_data.get("ReadOnly") {
-                        writable = !ro;
-                    }
-                    let removable = drive.removable().await?;
-                    drive_page.init(&vendor, &model, &device, capacity, writable, removable);
-
-                    return Ok(Some((object_path.to_string(), drive_page, capacity)));
-                }
-            }
+    async fn add_drive_page(
+        &self,
+        drive: DriveProxy<'_>,
+        device: String,
+        writable: bool,
+        key: String,
+    ) -> Result<()> {
+        let imp = self.imp();
+        let drive_page = ResDrive::new();
+        let vendor = drive.vendor().await?;
+        let model = drive.model().await?;
+        let is_cd_dvd = device.starts_with("/dev/sr");
+        let capacity = drive.size().await?;
+        let removable = drive.removable().await?;
+        drive_page.init(&vendor, &model, &device, capacity, writable, removable);
+        let (capacity_trunc, prefix) = to_largest_unit(capacity as f64, &Base::Decimal);
+        if is_cd_dvd {
+            imp.content_stack
+                .add_titled(&drive_page, None, &gettextrs::gettext("CD/DVD Drive"));
+        } else {
+            imp.content_stack.add_titled(
+                &drive_page,
+                None,
+                &gettextrs::gettext!("{} {}B Drive", capacity_trunc.round(), prefix),
+            );
         }
-        Ok(None)
+        imp.drive_pages.borrow_mut().insert(key, drive_page);
+        Ok(())
     }
 
     fn watch_for_network_interfaces(&self) {
