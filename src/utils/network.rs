@@ -15,6 +15,7 @@ pub enum InterfaceType {
     Wlan,
     Wwan,
     Bluetooth,
+    Wireguard,
     Other,
 }
 
@@ -104,6 +105,7 @@ impl NetworkInterface {
                 "wl" => InterfaceType::Wlan,
                 "ww" => InterfaceType::Wwan,
                 "bn" => InterfaceType::Bluetooth,
+                "wg" => InterfaceType::Wireguard,
                 _ => InterfaceType::Other,
             },
             speed: std::fs::read_to_string(sysfs_path.join("speed"))

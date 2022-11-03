@@ -356,6 +356,7 @@ impl MainWindow {
                         InterfaceType::Wlan => gettextrs::gettext("Wi-Fi Connection"),
                         InterfaceType::Wwan => gettextrs::gettext("WWAN Connection"),
                         InterfaceType::Bluetooth => gettextrs::gettext("Bluetooth Tether"),
+                        InterfaceType::Wireguard => gettextrs::gettext("VPN Interface (WireGuard)"),
                         InterfaceType::Other => gettextrs::gettext("Network Interface"),
                     };
                     page.init(interface);
