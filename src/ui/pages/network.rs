@@ -51,8 +51,9 @@ mod imp {
     }
 
     impl ObjectImpl for ResNetwork {
-        fn constructed(&self, obj: &Self::Type) {
-            self.parent_constructed(obj);
+        fn constructed(&self) {
+            self.parent_constructed();
+            let obj = self.instance();
 
             // Devel Profile
             if PROFILE == "Devel" {
@@ -72,7 +73,7 @@ glib::wrapper! {
 
 impl ResNetwork {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[]).expect("Failed to create ResNetwork")
+        glib::Object::new::<Self>(&[])
     }
 
     pub fn init(&self, network_interface: NetworkInterface) {

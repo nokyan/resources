@@ -27,9 +27,10 @@ mod imp {
     impl ObjectImpl for Application {}
 
     impl ApplicationImpl for Application {
-        fn activate(&self, app: &Self::Type) {
+        fn activate(&self) {
             debug!("GtkApplication<Application>::activate");
-            self.parent_activate(app);
+            self.parent_activate();
+            let app = self.instance();
 
             if let Some(window) = self.window.get() {
                 let window = window.upgrade().unwrap();
@@ -37,7 +38,7 @@ mod imp {
                 return;
             }
 
-            let window = MainWindow::new(app);
+            let window = MainWindow::new(&*app);
             self.window
                 .set(window.downgrade())
                 .expect("Window already set.");
@@ -45,9 +46,11 @@ mod imp {
             app.main_window().present();
         }
 
-        fn startup(&self, app: &Self::Type) {
+
+        fn startup(&self) {
             debug!("GtkApplication<Application>::startup");
-            self.parent_startup(app);
+            self.parent_startup();
+            let app = self.instance();
 
             // Set icons for shell
             gtk::Window::set_default_icon_name(APP_ID);
@@ -56,6 +59,7 @@ mod imp {
             app.setup_gactions();
             app.setup_accels();
         }
+
     }
 
     impl GtkApplicationImpl for Application {}
@@ -71,12 +75,11 @@ glib::wrapper! {
 
 impl Application {
     pub fn new() -> Self {
-        glib::Object::new(&[
+        glib::Object::new::<Self>(&[
             ("application-id", &Some(APP_ID)),
             ("flags", &gio::ApplicationFlags::empty()),
             ("resource-base-path", &Some("/me/nalux/Resources/")),
         ])
-        .expect("Application initialization failed...")
     }
 
     fn main_window(&self) -> MainWindow {

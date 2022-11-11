@@ -46,8 +46,9 @@ mod imp {
     }
 
     impl ObjectImpl for ResMemory {
-        fn constructed(&self, obj: &Self::Type) {
-            self.parent_constructed(obj);
+        fn constructed(&self) {
+            self.parent_constructed();
+            let obj = self.instance();
 
             // Devel Profile
             if PROFILE == "Devel" {
@@ -67,9 +68,7 @@ glib::wrapper! {
 
 impl ResMemory {
     pub fn new() -> Self {
-        let page = glib::Object::new::<Self>(&[]).expect("Failed to create ResMemory");
-        page.init();
-        page
+        glib::Object::new::<Self>(&[])
     }
 
     pub fn init(&self) {

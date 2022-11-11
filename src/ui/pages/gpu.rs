@@ -63,8 +63,9 @@ mod imp {
     }
 
     impl ObjectImpl for ResGPU {
-        fn constructed(&self, obj: &Self::Type) {
-            self.parent_constructed(obj);
+        fn constructed(&self) {
+            self.parent_constructed();
+            let obj = self.instance();
 
             // Devel Profile
             if PROFILE == "Devel" {
@@ -84,7 +85,7 @@ glib::wrapper! {
 
 impl ResGPU {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[]).expect("Failed to create ResGPU")
+        glib::Object::new::<Self>(&[])
     }
 
     pub fn init(&self, gpu: GPU, number: usize) {

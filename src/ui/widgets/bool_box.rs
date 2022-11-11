@@ -32,8 +32,9 @@ mod imp {
     }
 
     impl ObjectImpl for ResBoolBox {
-        fn constructed(&self, obj: &Self::Type) {
-            self.parent_constructed(obj);
+        fn constructed(&self) {
+            self.parent_constructed();
+            let obj = self.instance();
 
             // Devel Profile
             if PROFILE == "Devel" {
@@ -58,7 +59,7 @@ glib::wrapper! {
 
 impl ResBoolBox {
     pub fn new() -> Self {
-        glib::Object::new(&[]).expect("Failed to create ResBoolBox")
+        glib::Object::new::<Self>(&[])
     }
 
     pub fn set_bool(&self, b: bool) {

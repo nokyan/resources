@@ -52,8 +52,9 @@ mod imp {
     }
 
     impl ObjectImpl for ResDrive {
-        fn constructed(&self, obj: &Self::Type) {
-            self.parent_constructed(obj);
+        fn constructed(&self) {
+            self.parent_constructed();
+            let obj = self.instance();
 
             // Devel Profile
             if PROFILE == "Devel" {
@@ -73,7 +74,7 @@ glib::wrapper! {
 
 impl ResDrive {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[]).expect("Failed to create ResDrive")
+        glib::Object::new::<Self>(&[])
     }
 
     pub fn init(
