@@ -35,7 +35,7 @@ impl GPU {
     ///
     /// # Errors
     ///
-    /// Will return `Err` if the are problems detecting
+    /// Will return `Err` if there are problems detecting
     /// the GPUs in the system
     pub fn get_gpus() -> Result<Vec<GPU>> {
         let mut gpu_vec: Vec<GPU> = Vec::new();
@@ -51,14 +51,14 @@ impl GPU {
                 uevent_contents.insert(k.to_owned(), v.to_owned());
             }
 
-            let vid = u16::from_str_radix(
-                uevent_contents["PCI_ID"].split(':').collect::<Vec<&str>>()[0],
-                16,
-            )?;
-            let pid = u16::from_str_radix(
-                uevent_contents["PCI_ID"].split(':').collect::<Vec<&str>>()[1],
-                16,
-            )?;
+            let mut vid: u16 = 0;
+            let mut pid: u16 = 0;
+
+            if let Some(pci_line) = uevent_contents.get("PCI_ID") {
+                let split = pci_line.split(':').collect::<Vec<&str>>();
+                vid = u16::from_str_radix(split[0], 16)?;
+                pid = u16::from_str_radix(split[1], 16)?;
+            }
 
             let mut hwmon_vec: Vec<PathBuf> = Vec::new();
             for hwmon in glob(&format!(
@@ -74,8 +74,14 @@ impl GPU {
 
             gpu_vec.push(GPU {
                 device: Device::from_vid_pid(vid, pid),
-                pci_slot: uevent_contents["PCI_SLOT_NAME"].clone(),
-                driver: uevent_contents["DRIVER"].clone(),
+                pci_slot: uevent_contents
+                    .get("PCI_SLOT_NAME")
+                    .map(|x| x.to_string())
+                    .unwrap_or_else(|| gettextrs::gettext("N/A")),
+                driver: uevent_contents
+                    .get("DRIVER")
+                    .map(|x| x.to_string())
+                    .unwrap_or_else(|| gettextrs::gettext("N/A")),
                 sysfs_path: entry,
                 hwmon_paths: hwmon_vec,
             });

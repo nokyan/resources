@@ -101,7 +101,7 @@ impl ResGPU {
         let gpu = &imp.gpu.get().unwrap();
         imp.gpu_name.set_label(
             &gpu.get_name()
-                .unwrap_or(gettextrs::gettext!("GPU {}", imp.number.get().unwrap() + 1)),
+                .unwrap_or(gettextrs::gettext!("GPU {}", imp.number.get().unwrap())),
         );
         imp.manufacturer.set_info_label(
             &gpu.get_vendor()
