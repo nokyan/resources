@@ -100,7 +100,7 @@ fn parse_proc_stat_line(line: &[u8]) -> Result<(u64, u64)> {
         .name("idle")
         .and_then(|x| String::from_utf8_lossy(x.as_bytes()).parse::<u64>().ok())
         .ok_or_else(|| anyhow!("unable to get idle time"))?
-        - captures
+        + captures
             .name("iowait")
             .and_then(|x| String::from_utf8_lossy(x.as_bytes()).parse::<u64>().ok())
             .ok_or_else(|| anyhow!("unable to get iowait time"))?;
