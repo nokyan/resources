@@ -74,14 +74,14 @@ impl GPU {
 
             gpu_vec.push(GPU {
                 device: Device::from_vid_pid(vid, pid),
-                pci_slot: uevent_contents
-                    .get("PCI_SLOT_NAME")
-                    .map(|x| x.to_string())
-                    .unwrap_or_else(|| gettextrs::gettext("N/A")),
-                driver: uevent_contents
-                    .get("DRIVER")
-                    .map(|x| x.to_string())
-                    .unwrap_or_else(|| gettextrs::gettext("N/A")),
+                pci_slot: uevent_contents.get("PCI_SLOT_NAME").map_or_else(
+                    || gettextrs::gettext("N/A"),
+                    std::string::ToString::to_string,
+                ),
+                driver: uevent_contents.get("DRIVER").map_or_else(
+                    || gettextrs::gettext("N/A"),
+                    std::string::ToString::to_string,
+                ),
                 sysfs_path: entry,
                 hwmon_paths: hwmon_vec,
             });
