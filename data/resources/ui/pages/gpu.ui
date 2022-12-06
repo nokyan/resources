@@ -50,19 +50,19 @@
                     </child>
                     <child>
                       <object class="ResInfoBox" id="gpu_clockspeed">
-                        <property name="title" translatable="yes">GPU Speed</property>
+                        <property name="title" translatable="yes">GPU Frequency</property>
                       </object>
                     </child>
                     <child>
                       <object class="ResInfoBox" id="vram_clockspeed">
-                        <property name="title" translatable="yes">Video Memory Speed</property>
+                        <property name="title" translatable="yes">Video Memory Frequency</property>
                       </object>
                     </child>
                   </object>
                 </child>
                 <child>
                   <object class="AdwPreferencesGroup">
-                    <property name="title" translatable="yes">GPU Information</property>
+                    <property name="title" translatable="yes">Properties</property>
                     <child>
                       <object class="ResInfoBox" id="manufacturer">
                         <property name="title" translatable="yes">Manufacturer</property>

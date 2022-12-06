@@ -30,7 +30,7 @@
                     <property name="title" translatable="yes">Usage</property>
                     <child>
                       <object class="AdwExpanderRow" id="threads_expander">
-                        <property name="title" translatable="yes">Total CPU Usage</property>
+                        <property name="title" translatable="yes">Total Usage</property>
                         <child type="action">
                           <object class="GtkLabel" id="total_usage_label">
                             <style>
@@ -46,10 +46,10 @@
                 </child>
                 <child>
                   <object class="AdwPreferencesGroup">
-                    <property name="title" translatable="yes">CPU Information</property>
+                    <property name="title" translatable="yes">Properties</property>
                     <child>
                       <object class="ResInfoBox" id="max_speed">
-                        <property name="title" translatable="yes">Max Speed</property>
+                        <property name="title" translatable="yes">Max Frequency</property>
                       </object>
                     </child>
                     <child>

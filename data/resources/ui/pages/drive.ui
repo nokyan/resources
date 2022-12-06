@@ -47,7 +47,7 @@
                 </child>
                 <child>
                   <object class="AdwPreferencesGroup" id="modules">
-                    <property name="title" translatable="yes">Drive Information</property>
+                    <property name="title" translatable="yes">Properties</property>
                     <child>
                       <object class="ResInfoBox" id="device">
                         <property name="title" translatable="yes">Device</property>

@@ -52,7 +52,7 @@
                 </child>
                 <child>
                   <object class="AdwPreferencesGroup">
-                    <property name="title" translatable="yes">Network Interface Information</property>
+                    <property name="title" translatable="yes">Properties</property>
                     <child>
                       <object class="ResInfoBox" id="manufacturer">
                         <property name="title" translatable="yes">Manufacturer</property>
