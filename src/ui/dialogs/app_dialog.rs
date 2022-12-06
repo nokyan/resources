@@ -1,8 +1,7 @@
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone, MainContext};
+use gtk::glib;
 
 use crate::config::PROFILE;
-use crate::ui::widgets::progress_box::ResProgressBox;
 use crate::ui::window::MainWindow;
 use crate::utils::processes::{Containerization, SimpleItem};
 use crate::utils::units::{to_largest_unit, Base};
