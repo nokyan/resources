@@ -18,10 +18,16 @@ pub struct CPUInfo {
 }
 
 fn lscpu() -> Result<Value> {
-    String::from_utf8(Command::new("lscpu").output().unwrap().stdout)
-        .with_context(|| "unable to parse lscpu output to UTF-8")?
-        .kv_str_to_json()
-        .map_err(|x| anyhow!("{}", x))
+    String::from_utf8(
+        Command::new("lscpu")
+            .env("LC_ALL", "C")
+            .output()
+            .unwrap()
+            .stdout,
+    )
+    .with_context(|| "unable to parse lscpu output to UTF-8")?
+    .kv_str_to_json()
+    .map_err(|x| anyhow!("{}", x))
 }
 
 /// Returns a `CPUInfo` struct populated with values gathered from `lscpu`.
