@@ -1,0 +1,409 @@
+#
+# ManicRobot <manicrobot@protonmail.com>, 2022.
+#
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Project-Id-Version: resources\n"
+"Last-Translator: ManicRobot <manicrobot@protonmail.com>\n"
+"Language-Team: German - Germany <manicrobot@protonmail.com>\n"
+"Language: de_DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"PO-Revision-Date: 2022-12-06 13:15+0100\n"
+"X-Generator: Gtranslator 42.0\n"
+
+msgid "N/A"
+msgstr "N. V."
+
+#: data/me.nalux.Resources.desktop.in.in:2 src/application.rs:124
+msgid "Resources"
+msgstr "Ressourcen"
+
+#: data/me.nalux.Resources.desktop.in.in:3
+#: data/me.nalux.Resources.metainfo.xml.in.in:7
+msgid "Monitor your Resources and Processes"
+msgstr "Ressourcen und Prozesse überwachen"
+
+#: data/me.nalux.Resources.desktop.in.in:9
+msgid ""
+"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
+msgstr ""
+"System;Ressourcen;Monitor;Überwachung;Prozesse;Benutzung;Auslastung;Task;"
+"Manager;CPU;RAM;Speicher;GPU"
+
+#: data/me.nalux.Resources.metainfo.xml.in.in:9
+msgid "A simple yet powerful monitor for your system resources and processes."
+msgstr ""
+"Ein starker und einfacher Monitor für Ihre Systemressourcen und Prozesse."
+
+#: data/me.nalux.Resources.policy.in.in:11
+msgid "Controll Process"
+msgstr "Prozess kontrollieren"
+
+#: data/me.nalux.Resources.policy.in.in:12
+msgid "Authentication is required to end superuser’s or other users’ processes"
+msgstr ""
+"Authentifizierung wird benötigt um die Prozesse des Administrators oder "
+"anderer Nutzer zu kontrollieren"
+
+#: data/resources/ui/dialogs/app_dialog.ui:9
+msgid "Application Information"
+msgstr "Anwendungsinformationen"
+
+#: data/resources/ui/dialogs/app_dialog.ui:71 data/resources/ui/pages/cpu.ui:30
+#: data/resources/ui/pages/drive.ui:30 data/resources/ui/pages/gpu.ui:30
+#: data/resources/ui/pages/memory.ui:30 data/resources/ui/pages/network.ui:30
+msgid "Usage"
+msgstr "Auslastung"
+
+#: data/resources/ui/dialogs/app_dialog.ui:74 data/resources/ui/window.ui:69
+#: src/ui/pages/applications.rs:204
+msgid "Processor"
+msgstr "Prozessor"
+
+#: data/resources/ui/dialogs/app_dialog.ui:79
+#: data/resources/ui/pages/memory.ui:22 data/resources/ui/window.ui:77
+#: src/ui/pages/applications.rs:168
+msgid "Memory"
+msgstr "Arbeitsspeicher"
+
+#: data/resources/ui/dialogs/app_dialog.ui:86 data/resources/ui/pages/cpu.ui:49
+#: data/resources/ui/pages/drive.ui:50 data/resources/ui/pages/gpu.ui:65
+#: data/resources/ui/pages/network.ui:55
+msgid "Properties"
+msgstr "Eigenschaften"
+
+#: data/resources/ui/dialogs/app_dialog.ui:89
+msgid "ID"
+msgstr "ID"
+
+#: data/resources/ui/dialogs/app_dialog.ui:94
+msgid "Running Processes"
+msgstr "Laufende Prozesse"
+
+#: data/resources/ui/dialogs/app_dialog.ui:98
+msgid "Containerized"
+msgstr "Benutzt Container"
+
+#: data/resources/ui/pages/applications.ui:6 src/ui/pages/applications.rs:439
+msgid "Kill Application"
+msgstr "Anwendung abwürgen"
+
+#: data/resources/ui/pages/applications.ui:10 src/ui/pages/applications.rs:475
+msgid "Halt Application"
+msgstr "Anwendung anhalten"
+
+#: data/resources/ui/pages/applications.ui:14
+msgid "Continue Application"
+msgstr "Anwendung fortsetzen"
+
+#: data/resources/ui/pages/applications.ui:55 src/ui/pages/applications.rs:403
+msgid "End Application"
+msgstr "Anwendung beenden"
+
+#: data/resources/ui/pages/cpu.ui:33 data/resources/ui/pages/drive.ui:33
+msgid "Total Usage"
+msgstr "Gesamtauslastung"
+
+#: data/resources/ui/pages/cpu.ui:52
+msgid "Max Frequency"
+msgstr "Maximale Taktfrequenz"
+
+#: data/resources/ui/pages/cpu.ui:57
+msgid "Logical Cores"
+msgstr "Logische Kerne"
+
+#: data/resources/ui/pages/cpu.ui:62
+msgid "Physical Cores"
+msgstr "Physische Kerne"
+
+#: data/resources/ui/pages/cpu.ui:66
+msgid "Sockets"
+msgstr "Sockel"
+
+#: data/resources/ui/pages/cpu.ui:72
+msgid "Virtualization"
+msgstr "Virtualisierung"
+
+#: data/resources/ui/pages/cpu.ui:77
+msgid "Architecture"
+msgstr "Architektur"
+
+#: data/resources/ui/pages/drive.ui:38
+msgid "Read Speed"
+msgstr "Lesegeschwindigkeit"
+
+#: data/resources/ui/pages/drive.ui:43
+msgid "Write Speed"
+msgstr "Schreibgeschwindigkeit"
+
+#: data/resources/ui/pages/drive.ui:53
+msgid "Device"
+msgstr "Gerät"
+
+#: data/resources/ui/pages/drive.ui:58
+msgid "Capacity"
+msgstr "Kapazität"
+
+#: data/resources/ui/pages/drive.ui:63
+msgid "Writable"
+msgstr "Schreibbar"
+
+#: data/resources/ui/pages/drive.ui:68
+msgid "Removable"
+msgstr "Wechselbar"
+
+#: data/resources/ui/pages/gpu.ui:33
+msgid "GPU Usage"
+msgstr "Grafikauslastung"
+
+#: data/resources/ui/pages/gpu.ui:38
+msgid "Video Memory Usage"
+msgstr "Grafikspeicherauslastung"
+
+#: data/resources/ui/pages/gpu.ui:43
+msgid "Temperature"
+msgstr "Temperatur"
+
+#: data/resources/ui/pages/gpu.ui:48
+msgid "Power Usage"
+msgstr "Leistungsaufnahme"
+
+#: data/resources/ui/pages/gpu.ui:53
+msgid "GPU Frequency"
+msgstr "Grafiktaktfrequenz"
+
+#: data/resources/ui/pages/gpu.ui:58
+msgid "Video Memory Frequency"
+msgstr "Grafikspeichertaktfrequenz"
+
+#: data/resources/ui/pages/gpu.ui:68 data/resources/ui/pages/network.ui:58
+msgid "Manufacturer"
+msgstr "Hersteller"
+
+#: data/resources/ui/pages/gpu.ui:73
+msgid "PCI Slot"
+msgstr "PCI-Slot"
+
+#: data/resources/ui/pages/gpu.ui:78 data/resources/ui/pages/network.ui:63
+msgid "Driver Used"
+msgstr "Benutzter Treiber"
+
+#: data/resources/ui/pages/gpu.ui:83
+msgid "Current Power Cap"
+msgstr "Zurzeitige Leistungsbegrenzung"
+
+#: data/resources/ui/pages/gpu.ui:83
+msgid "Max Power Cap"
+msgstr "Maximale Leistungsbegrenzung"
+
+#: data/resources/ui/pages/memory.ui:38
+msgid "Swap"
+msgstr "Auslagerungsspeicher"
+
+#: data/resources/ui/pages/memory.ui:45
+msgid "Installed Memory Modules"
+msgstr "Installierte Speichermodule"
+
+#: data/resources/ui/pages/network.ui:33
+msgid "Receiving"
+msgstr "Empfangen"
+
+#: data/resources/ui/pages/network.ui:38
+msgid "Sending"
+msgstr "Senden"
+
+#: data/resources/ui/pages/network.ui:43
+msgid "Total Received"
+msgstr "Insgesamt empfangen"
+
+#: data/resources/ui/pages/network.ui:48
+msgid "Total Sent"
+msgstr "Insgesamt gesendet"
+
+#: data/resources/ui/pages/network.ui:68
+msgid "Interface"
+msgstr "Schnittstelle"
+
+#: data/resources/ui/pages/network.ui:73
+msgid "Hardware Address"
+msgstr "Hardware-Adresse"
+
+#: data/resources/ui/window.ui:6
+msgid "Preferences"
+msgstr "Eigenschaften"
+
+#: data/resources/ui/window.ui:10
+msgid "Keyboard Shortcuts"
+msgstr "Tastenkombinationen"
+
+#: data/resources/ui/window.ui:14
+msgid "About Resources"
+msgstr "Über Ressourcen"
+
+#: data/resources/ui/window.ui:61
+msgid "Applications"
+msgstr "Anwendungen"
+
+#: src/ui/dialogs/app_dialog.rs:114
+msgid "Yes (Flatpak)"
+msgstr "Ja (Flatpak)"
+
+#: src/ui/pages/applications.rs:131
+msgid "Application"
+msgstr "Anwendung"
+
+#: src/ui/pages/applications.rs:400
+msgid "End {}?"
+msgstr "{} beenden?"
+
+#: src/ui/pages/applications.rs:401
+msgid "Unsaved work might be lost."
+msgstr "Ungespeicherte Daten könnten verloren gehen."
+
+#: src/ui/pages/applications.rs:406 src/ui/pages/applications.rs:442
+#: src/ui/pages/applications.rs:478
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: src/ui/pages/applications.rs:416
+msgid "Successfully ended {}"
+msgstr "{} wurde erfolgreich beendet"
+
+#: src/ui/pages/applications.rs:418
+msgid "There was a problem ending a process"
+msgid_plural "There were problems ending {} processes"
+msgstr[0] "Es gab ein Problem beim Beenden von {} Prozessen"
+msgstr[1] "Es gab ein Problem beim Beenden eines Prozesses"
+
+#: src/ui/pages/applications.rs:436
+msgid "Kill {}?"
+msgstr "{} abwürgen?"
+
+#: src/ui/pages/applications.rs:437
+msgid ""
+"Killing an application can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"Das Abwürgen einer Anwendung ist mit Risiken wie dem Verlust von Daten sowie "
+"Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
+
+#: src/ui/pages/applications.rs:452
+msgid "Successfully killed {}"
+msgstr "{} wurde erfolgreich abgewürgt"
+
+#: src/ui/pages/applications.rs:54
+msgid "There was a problem killing a process"
+msgid_plural "There were problems killing {} processes"
+msgstr[0] "Es gab ein Problem beim Abwürgen von {} Prozessen"
+msgstr[1] "Es gab ein Problem beim Abwürgen eines Prozesses"
+
+#: src/ui/pages/applications.rs:472
+msgid "Halt {}?"
+msgstr "{} anhalten?"
+
+#: src/ui/pages/applications.rs:473
+msgid ""
+"Halting an application can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"Das Anhalten einer Anwendung ist mit Risiken wie dem Verlust von Daten sowie "
+"Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
+
+#: src/ui/pages/applications.rs:488
+msgid "Successfully halted {}"
+msgstr "{} wurde erfolgreich angehalten"
+
+#: src/ui/pages/applications.rs:490
+msgid "There was a problem halting a process"
+msgid_plural "There were problems halting {} processes"
+msgstr[0] "Es gab ein Problem beim Anhalten von {} Prozessen"
+msgstr[1] "Es gab ein Problem beim Anhalten eines Prozesses"
+
+#: src/ui/pages/applications.rs:510
+msgid "Successfully continued {}"
+msgstr "{} wurde erfolgreich fortgefahren"
+
+#: src/ui/pages/applications.rs:512
+msgid "There was a problem continuing a process"
+msgid_plural "There were problems continuing {} processes"
+msgstr[0] "Es gab ein Problem beim Fortfahren von {} Prozessen"
+msgstr[1] "Es gab ein Problem beim Fortfahren eines Prozesses"
+
+#: src/ui/pages/gpu.rs:105 src/ui/window.rs:160
+msgid "GPU {}"
+msgstr "GPU {}"
+
+#: src/ui/pages/memory.rs
+msgid "Form Factor"
+msgstr "Formfaktor"
+
+#: src/ui/pages/memory.rs
+msgid "Size"
+msgstr "Größe"
+
+#: src/ui/pages/memory.rs
+msgid "Speed"
+msgstr "Geschwindigkeit"
+
+#: src/ui/pages/memory.rs
+msgid "Type"
+msgstr "Typ"
+
+#: src/ui/pages/memory.rs
+msgid "Type Detail"
+msgstr "Typdetail"
+
+#: src/ui/widgets/bool_box.ui:68
+msgid "Yes"
+msgstr "Ja"
+
+#: src/ui/widgets/bool_box.ui:70
+msgid "No"
+msgstr "Nein"
+
+#: src/ui/window.rs:164
+msgid "GPU"
+msgstr "GPU"
+
+#: src/ui/window.rs:335
+msgid "CD/DVD Drive"
+msgstr "CD/DVD-Laufwerk"
+
+#: src/ui/window.rs:340
+msgid "{} {}B Drive"
+msgstr "{}-{}B-Datenträger"
+
+#: src/ui/window.rs:364
+msgid "Ethernet Connection"
+msgstr "Ethernet-Verbindung"
+
+#: src/ui/window.rs:365
+msgid "InfiniBand Connection"
+msgstr "InfiniBand-Verbindung"
+
+#: src/ui/window.rs:366
+msgid "Serial Line IP Connection"
+msgstr "Serial-Line-IP-Verbindung"
+
+#: src/ui/window.rs:367
+msgid "Wi-Fi Connection"
+msgstr "WLAN-Verbindung"
+
+#: src/ui/window.rs:368
+msgid "WWAN Connection"
+msgstr "WWAN-Verbindung"
+
+#: src/ui/window.rs:369
+msgid "Bluetooth Tether"
+msgstr "Bluetooth-Tether"
+
+#: src/ui/window.rs:370
+msgid "VPN Tunnel (WireGuard)"
+msgstr "VPN-Tunnel (WireGuard)"
+
+#: src/ui/window.rs:370
+msgid "Network Interface"
+msgstr "Netzwerkschnittstelle"

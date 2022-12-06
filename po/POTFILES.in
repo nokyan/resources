@@ -1,6 +1,25 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
+
 data/me.nalux.Resources.desktop.in.in
-data/me.nalux.Resources.gschema.xml.in
 data/me.nalux.Resources.metainfo.xml.in.in
+data/me.nalux.Resources.policy.in.in
+
+data/resources/ui/dialogs/app_dialog.ui
+data/resources/ui/pages/applications.ui
+data/resources/ui/pages/cpu.ui
+data/resources/ui/pages/drive.ui
+data/resources/ui/pages/gpu.ui
+data/resources/ui/pages/memory.ui
+data/resources/ui/pages/network.ui
 data/resources/ui/shortcuts.ui
 data/resources/ui/window.ui
+
 src/application.rs
+src/ui/dialogs/app_dialog.rs
+src/ui/pages/applications.rs
+src/ui/pages/gpu.rs
+src/ui/pages/memory.rs
+src/ui/pages/network.rs
+src/ui/widgets/bool_box.rs
+src/ui/window.rs
