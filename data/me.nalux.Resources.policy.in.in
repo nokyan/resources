@@ -7,48 +7,15 @@
   <vendor>The Nalux Team</vendor>
   <icon_name>me.nalux.Resources</icon_name>
 
-  <action id="me.nalux.Resources.term">
-    <description>End Process</description>
-    <message>Authentication is required to end superuser’s or other users’ processes</message>
-    <defaults>
-      <allow_any>no</allow_any>
-      <allow_inactive>no</allow_inactive>
-      <allow_active>auth_admin_keep</allow_active>
-    </defaults>
-    <annotate key="org.freedesktop.policykit.exec.path">@libexecdir@/resources-term</annotate>
-  </action>
-
   <action id="me.nalux.Resources.kill">
-    <description>Kill Process</description>
-    <message>Authentication is required to kill superuser’s or other users’ processes</message>
+    <description>Control Process</description>
+    <message>Authentication is required to control superuser’s or other users’ processes</message>
     <defaults>
       <allow_any>no</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
     <annotate key="org.freedesktop.policykit.exec.path">@libexecdir@/resources-kill</annotate>
-  </action>
-
-  <action id="me.nalux.Resources.stop">
-    <description>Halt Process</description>
-    <message>Authentication is required to halt superuser’s or other users’ processes</message>
-    <defaults>
-      <allow_any>no</allow_any>
-      <allow_inactive>no</allow_inactive>
-      <allow_active>auth_admin_keep</allow_active>
-    </defaults>
-    <annotate key="org.freedesktop.policykit.exec.path">@libexecdir@/resources-stop</annotate>
-  </action>
-
-  <action id="me.nalux.Resources.cont">
-    <description>Continue Process</description>
-    <message>Authentication is required to continue superuser’s or other users’ processes</message>
-    <defaults>
-      <allow_any>no</allow_any>
-      <allow_inactive>no</allow_inactive>
-      <allow_active>auth_admin_keep</allow_active>
-    </defaults>
-    <annotate key="org.freedesktop.policykit.exec.path">@libexecdir@/resources-cont</annotate>
   </action>
 
 </policyconfig>
