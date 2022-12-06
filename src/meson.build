@@ -5,6 +5,7 @@ global_conf.set_quoted('PROFILE', profile)
 global_conf.set_quoted('VERSION', version + version_suffix)
 global_conf.set_quoted('GETTEXT_PACKAGE', gettext_package)
 global_conf.set_quoted('LOCALEDIR', localedir)
+global_conf.set_quoted('LIBEXECDIR', libexecdir)
 config = configure_file(
   input: 'config.rs.in',
   output: 'config.rs',
@@ -21,7 +22,7 @@ run_command(
 cargo_options = [ '--manifest-path', meson.project_source_root() / 'Cargo.toml' ]
 cargo_options += [ '--target-dir', meson.project_build_root() / 'src' ]
 
-if get_option('profile') == 'default'
+if get_option('profile') != 'default'
   cargo_options += [ '--release' ]
   rust_target = 'release'
   message('Building in release mode')
@@ -31,27 +32,6 @@ else
 endif
 
 cargo_env = [ 'CARGO_HOME=' + meson.project_build_root() / 'cargo-home' ]
-
-# cargo_build = custom_target(
-#   'cargo-build',
-#   build_by_default: true,
-#   build_always_stale: true,
-#   output: meson.project_name(),
-#   console: true,
-#   install: true,
-#   install_dir: bindir,
-#   depends: resources,
-#   command: [
-#     'env',
-#     cargo_env,
-#     cargo, 'build',
-#     cargo_options,
-#     '&&',
-#     'cp', 'src' / rust_target / meson.project_name(), '@OUTPUT@',
-#     '&&',
-#     'cp', 'src' / rust_target / meson.project_name() + '-daemon', '@OUTPUT@',
-#   ]
-# )
 
 cargo_build = custom_target(
   'cargo-build',
@@ -97,3 +77,17 @@ copy_daemon_binary = custom_target(
   ],
 )
 
+copy_daemon_binary = custom_target(
+  'cp-kill-binary',
+  depends: cargo_build,
+  build_by_default: true,
+  build_always_stale: true,
+  install: true,
+  install_dir: libexecdir,
+  output: meson.project_name() + '-kill',
+  command: [
+    'cp',
+    'src' / rust_target / meson.project_name() + '-kill',
+    '@OUTPUT@',
+  ],
+)

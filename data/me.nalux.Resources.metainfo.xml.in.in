@@ -15,4 +15,7 @@
   <update_contact>manicrobot@protonmail.com</update_contact>
   <translation type="gettext">@gettext-package@</translation>
   <launchable type="desktop-id">@app-id@.desktop</launchable>
+  <releases>
+    <release version="0.1.0" date="2019-07-11" />
+  </releases>
 </component>

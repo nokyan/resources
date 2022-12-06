@@ -88,3 +88,20 @@ configure_file(
   install: true,
   install_dir: prefix / 'lib' / 'systemd' / 'system'
 )
+
+# polkit Policy file
+policy_conf = configuration_data()
+policy_conf.set('libexecdir', libexecdir)
+policy_conf.set('gettext-package', gettext_package)
+i18n.merge_file(
+  input: configure_file(
+    input: '@0@.policy.in.in'.format(base_id),
+    output: '@BASENAME@',
+    configuration: policy_conf,
+  ),
+  output: '@0@.policy'.format(application_id),
+  po_dir: podir,
+  data_dirs: podir,
+  install: true,
+  install_dir: datadir / 'polkit-1' / 'actions'
+)

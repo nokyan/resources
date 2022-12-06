@@ -57,6 +57,14 @@
                 <property name="vhomogeneous">False</property>
                 <property name="transition_type">crossfade</property>
                 <child>
+                  <object class="GtkStackPage" id="applications_page">
+                    <property name="title" translatable="yes">Applications</property>
+                    <property name="child">
+                      <object class="ResApplications" id="applications"/>
+                    </property>
+                  </object>
+                </child>
+                <child>
                   <object class="GtkStackPage" id="cpu_page">
                     <property name="title" translatable="yes">Processor</property>
                     <property name="child">

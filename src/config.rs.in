@@ -5,3 +5,4 @@ pub const PKGDATADIR: &str = @PKGDATADIR@;
 pub const PROFILE: &str = @PROFILE@;
 pub const RESOURCES_FILE: &str = concat!(@PKGDATADIR@, "/resources.gresource");
 pub const VERSION: &str = @VERSION@;
+pub const LIBEXECDIR: &str = @LIBEXECDIR@;

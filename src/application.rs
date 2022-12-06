@@ -46,7 +46,6 @@ mod imp {
             app.main_window().present();
         }
 
-
         fn startup(&self) {
             debug!("GtkApplication<Application>::startup");
             self.parent_startup();
@@ -59,7 +58,6 @@ mod imp {
             app.setup_gactions();
             app.setup_accels();
         }
-
     }
 
     impl GtkApplicationImpl for Application {}
@@ -151,5 +149,14 @@ impl Application {
         info!("Datadir: {}", PKGDATADIR);
 
         ApplicationExtManual::run(self);
+    }
+}
+
+impl Default for Application {
+    fn default() -> Self {
+        gio::Application::default()
+            .expect("Could not get default GApplication")
+            .downcast()
+            .unwrap()
     }
 }

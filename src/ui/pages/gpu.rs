@@ -18,8 +18,6 @@ mod imp {
     #[derive(Debug, CompositeTemplate, Default)]
     #[template(resource = "/me/nalux/Resources/ui/pages/gpu.ui")]
     pub struct ResGPU {
-        pub gpu: OnceCell<GPU>,
-        pub number: OnceCell<usize>,
         #[template_child]
         pub gpu_name: TemplateChild<gtk::Label>,
         #[template_child]
@@ -44,6 +42,9 @@ mod imp {
         pub current_power_cap: TemplateChild<ResInfoBox>,
         #[template_child]
         pub max_power_cap: TemplateChild<ResInfoBox>,
+
+        pub gpu: OnceCell<GPU>,
+        pub number: OnceCell<usize>,
     }
 
     #[glib::object_subclass]

@@ -27,7 +27,9 @@ use super::pages::gpu::ResGPU;
 mod imp {
     use std::cell::RefCell;
 
-    use crate::ui::pages::{cpu::ResCPU, memory::ResMemory, network::ResNetwork};
+    use crate::ui::pages::{
+        applications::ResApplications, cpu::ResCPU, memory::ResMemory, network::ResNetwork,
+    };
 
     use super::*;
 
@@ -36,8 +38,6 @@ mod imp {
     #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/me/nalux/Resources/ui/window.ui")]
     pub struct MainWindow {
-        pub drive_pages: RefCell<HashMap<String, ResDrive>>,
-        pub network_pages: RefCell<HashMap<PathBuf, ResNetwork>>,
         #[template_child]
         pub flap: TemplateChild<adw::Flap>,
         #[template_child]
@@ -49,9 +49,16 @@ mod imp {
         #[template_child]
         pub cpu_page: TemplateChild<gtk::StackPage>,
         #[template_child]
+        pub applications: TemplateChild<ResApplications>,
+        #[template_child]
+        pub applications_page: TemplateChild<gtk::StackPage>,
+        #[template_child]
         pub memory: TemplateChild<ResMemory>,
         #[template_child]
         pub memory_page: TemplateChild<gtk::StackPage>,
+
+        pub drive_pages: RefCell<HashMap<String, ResDrive>>,
+        pub network_pages: RefCell<HashMap<PathBuf, ResNetwork>>,
 
         pub settings: gio::Settings,
     }
@@ -64,6 +71,8 @@ mod imp {
                 flap: TemplateChild::default(),
                 resources_sidebar: TemplateChild::default(),
                 content_stack: TemplateChild::default(),
+                applications: TemplateChild::default(),
+                applications_page: TemplateChild::default(),
                 cpu: TemplateChild::default(),
                 cpu_page: TemplateChild::default(),
                 memory: TemplateChild::default(),
@@ -102,7 +111,6 @@ mod imp {
             // Load latest window state
             obj.load_window_size();
         }
-
     }
 
     impl WidgetImpl for MainWindow {}
@@ -126,7 +134,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct MainWindow(ObjectSubclass<imp::MainWindow>)
-        @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow,
+        @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow, adw::ApplicationWindow,
         @implements gio::ActionMap, gio::ActionGroup, gtk::Root;
 }
 
@@ -139,6 +147,7 @@ impl MainWindow {
 
     fn setup_widgets(&self) {
         let imp = self.imp();
+        imp.applications.init();
         imp.cpu.init();
         imp.memory.init();
         let gpus = GPU::get_gpus().unwrap_or_default();
@@ -402,5 +411,15 @@ impl MainWindow {
         if is_maximized {
             self.maximize();
         }
+    }
+}
+
+impl Default for MainWindow {
+    fn default() -> Self {
+        Application::default()
+            .active_window()
+            .unwrap()
+            .downcast()
+            .unwrap()
     }
 }

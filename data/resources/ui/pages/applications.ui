@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="end_app_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Kill Application</attribute>
+        <attribute name="action">applications.kill-application</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Halt Application</attribute>
+        <attribute name="action">applications.halt-application</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Continue Application</attribute>
+        <attribute name="action">applications.continue-application</attribute>
+      </item>
+    </section>
+  </menu>
+  <template class="ResApplications" parent="AdwBin">
+    <property name="child">
+      <object class="AdwToastOverlay" id="toast_overlay">
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkScrolledWindow" id="applications_scrolled_window">
+                <property name="hexpand">true</property>
+                <property name="vexpand">true</property>
+                <property name="hscrollbar_policy">never</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="margin-top">16</property>
+                <property name="margin-bottom">16</property>
+                <property name="margin-start">16</property>
+                <property name="margin-end">16</property>
+                <property name="spacing">16</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="hexpand">true</property>
+                    <child>
+                      <object class="GtkButton" id="information_button">
+                      <property name="icon-name">info-symbolic</property>
+                      <property name="sensitive">false</property>
+                        <style>
+                          <class name="circular"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwSplitButton" id="end_application_button">
+                    <property name="label" translatable="yes">End Application</property>
+                    <property name="menu-model">end_app_menu</property>
+                    <property name="sensitive">false</property>
+                    <style>
+                      <class name="destructive-action"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

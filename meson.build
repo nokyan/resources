@@ -3,7 +3,6 @@ project(
   'rust',
   version: '0.1.0',
   meson_version: '>= 0.59',
-  # license: 'MIT',
 )
 
 i18n = import('i18n')
@@ -14,7 +13,7 @@ base_id = 'me.nalux.Resources'
 dependency('glib-2.0', version: '>= 2.66')
 dependency('gio-2.0', version: '>= 2.66')
 dependency('gtk4', version: '>= 4.8.0')
-dependency('libadwaita-1', version: '>= 1.1.0')
+dependency('libadwaita-1', version: '>= 1.2.0')
 
 glib_compile_resources = find_program('glib-compile-resources', required: true)
 glib_compile_schemas = find_program('glib-compile-schemas', required: true)
@@ -27,6 +26,7 @@ version = meson.project_version()
 prefix = get_option('prefix')
 bindir = prefix / get_option('bindir')
 localedir = prefix / get_option('localedir')
+libexecdir = prefix / get_option('libexecdir') / meson.project_name()
 
 datadir = prefix / get_option('datadir')
 pkgdatadir = datadir / meson.project_name()

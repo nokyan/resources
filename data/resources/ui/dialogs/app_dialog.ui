@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ResAppDialog" parent="AdwWindow">
+    <property name="width_request">400</property>
+    <property name="default_width">400</property>
+    <property name="height_request">600</property>
+    <property name="default_height">600</property>
+    <property name="modal">true</property>
+    <property name="title" translatable="yes">Application Information</property>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkHeaderBar">
+            <property name="title-widget">
+              <object class="AdwWindowTitle" id="dialog_title">
+                <property name="visible">False</property>
+              </object>
+            </property>
+            <style>
+              <class name="flat"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="vexpand">True</property>
+            <child>
+              <object class="AdwClamp">
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="margin-bottom">16</property>
+                    <property name="margin-start">16</property>
+                    <property name="margin-end">16</property>
+                    <property name="spacing">16</property>
+                    <child>
+                      <object class="GtkImage" id="icon">
+                        <property name="pixel-size">128</property>
+                        <style>
+                          <class name="icon-dropshadow"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">8</property>
+                        <child>
+                          <object class="GtkLabel" id="name">
+                            <property name="hexpand">true</property>
+                            <property name="wrap">true</property>
+                            <style>
+                              <class name="title-2"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="description">
+                            <property name="hexpand">true</property>
+                            <property name="wrap">true</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwPreferencesGroup">
+                        <property name="title" translatable="yes">Usage</property>
+                        <child>
+                          <object class="ResInfoBox" id="cpu_usage">
+                            <property name="title" translatable="yes">Processor</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ResInfoBox" id="memory_usage">
+                            <property name="title" translatable="yes">Memory</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwPreferencesGroup">
+                        <property name="title" translatable="yes">Properties</property>
+                        <child>
+                          <object class="ResInfoBox" id="id">
+                            <property name="title" translatable="yes">ID</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ResInfoBox" id="processes_amount">
+                            <property name="title" translatable="yes">Running Processes</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ResInfoBox" id="containerized">
+                            <property name="title" translatable="yes">Containerized</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>  
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
+

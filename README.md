@@ -1,6 +1,6 @@
 # Resources
 
-Resources is a simple yet powerful monitor for your system resources and processes, written in Rust and using GTK 4 and libadwaita for its GUI. It's currently very much WIP, but is already capable of displaying usage and details of your CPU and memory.
+Resources is a simple yet powerful monitor for your system resources and processes, written in Rust and using GTK 4 and libadwaita for its GUI. It's currently WIP, but is already capable of displaying usage and details of your CPU, memory, GPUs, network interfaces and block devices. It's also capable of listing and terminating running graphical applications.
 
 ## Dependencies
 
@@ -9,6 +9,7 @@ Resources is a simple yet powerful monitor for your system resources and process
 - `gtk-4`
 - `libadwaita-1`
 - `systemd`
+- `polkit`
 - `cargo`
 
 Other dependencies are handled by `cargo`.
@@ -16,8 +17,8 @@ Note: Right now, Resources requires the nightly version of Rust.
 
 ## Installing
 
-Resources uses Meson as its build system. It alse uses a daemon in order to gather some root-only information (such as your memory specs), which needs to be started before the actual GUI can be started.
-Since Resources requires access to the system's running processes (soon), building it as a Flatpak is not recommended.
+Resources uses Meson as its build system. It alse uses a daemon in order to gather some root-only information (such as your memory specs).
+Since Resources requires access to the system's running processes, building it as a Flatpak is possible but not recommended as it lacks functionality.
 
 ```sh
 meson . build --prefix=/usr
@@ -33,6 +34,8 @@ Running Resources is as simple as typing `resources` into a terminal or running 
 
 ## To-do
 
+- Process viewer
 - Display graphs instead of or alongside the current progress bars
 - Battery usage and details
-- List processes and make them sortable by CPU, memory and maybe GPU usage
+- Preferences such as a unit selection
+- Translations

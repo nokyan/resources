@@ -2,12 +2,15 @@
 <gresources>
   <gresource prefix="/me/nalux/Resources/">
     <!-- see https://gtk-rs.org/gtk4-rs/git/docs/gtk4/struct.Application.html#automatic-resources -->
+    <file compressed="true" preprocess="xml-stripblanks">ui/dialogs/app_dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/pages/applications.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/cpu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/drive.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/gpu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/memory.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/network.ui</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="gtk/help-overlay.ui">ui/shortcuts.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/widgets/application_name_cell.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/bool_box.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/info_box.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/progress_box.ui</file>
@@ -16,5 +19,9 @@
   </gresource>
   <gresource prefix="/me/nalux/Resources/icons/scalable/actions/">
     <file preprocess="xml-stripblanks" alias="flap-symbolic.svg">icons/flap-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="generic-process-symbolic.svg">icons/generic-process-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="info-symbolic.svg">icons/info-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="system-processes-symbolic.svg">icons/system-processes-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="shell-symbolic.svg">icons/shell-symbolic.svg</file>
   </gresource>
 </gresources>
