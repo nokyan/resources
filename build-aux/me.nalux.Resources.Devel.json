@@ -1,10 +1,10 @@
 {
     "id": "me.nalux.Resources.Devel",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "42",
+    "runtime-version": "43",
     "sdk": "org.gnome.Sdk",
     "sdk-extensions": [
-        "org.freedesktop.Sdk.Extension.rust-stable"
+        "org.freedesktop.Sdk.Extension.rust-nightly"
     ],
     "command": "resources",
     "finish-args": [
@@ -17,7 +17,7 @@
         "--socket=system-bus"
     ],
     "build-options": {
-        "append-path": "/usr/lib/sdk/rust-stable/bin",
+        "append-path": "/usr/lib/sdk/rust-nightly/bin",
         "build-args": [
             "--share=network"
         ],
