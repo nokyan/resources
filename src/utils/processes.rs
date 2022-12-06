@@ -11,7 +11,7 @@ use gtk::{
     prelude::AppInfoExt,
 };
 
-use crate::{config, utils};
+use crate::config;
 
 static PAGESIZE: OnceCell<usize> = OnceCell::new();
 
