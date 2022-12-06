@@ -106,7 +106,7 @@ impl ResGPU {
         );
         imp.manufacturer.set_info_label(
             &gpu.get_vendor()
-                .unwrap_or_else(|_| gettextrs::gettext("Unknown")),
+                .unwrap_or_else(|_| gettextrs::gettext("N/A")),
         );
         imp.pci_slot.set_info_label(&gpu.pci_slot);
         imp.driver_used.set_info_label(&gpu.driver);
