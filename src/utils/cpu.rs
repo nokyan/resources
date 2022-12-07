@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Context, Result};
+use anyhow::{anyhow, bail, Context, Result};
 use lazy_static::lazy_static;
 use nparse::KVStrToJson;
 use regex::bytes::Regex;
@@ -131,7 +131,7 @@ fn get_proc_stat(core: Option<usize>) -> Result<String> {
     proc_stat.retain(|x| x.starts_with("cpu"));
     // return an `Error` if `core` is greater than the number of cores
     if selected_line_number > proc_stat.len() {
-        return Err(anyhow!("`core` argument greater than amount of cores"));
+        bail!("`core` argument greater than amount of cores")
     }
     Ok(proc_stat[selected_line_number].to_string())
 }

@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Context, Result};
+use anyhow::{anyhow, bail, Context, Result};
 use nvml_wrapper::{
     enum_wrappers::device::{Clock, TemperatureSensor},
     Nvml,
@@ -157,9 +157,7 @@ impl GPU {
                 .context("failed to get GPU by PCI bus")?;
             return dev.name().context("failed to get utilization rates");
         }
-        Err(anyhow::anyhow!(
-            "no NVML connection, nouveau not implemented yet"
-        ))
+        bail!("no NVML connection, nouveau not implemented yet")
     }
 
     /// Returns the product name of the GPU. If the nvidia driver is used,
@@ -179,7 +177,7 @@ impl GPU {
                 _ => self.get_pid_name(),
             };
         }
-        Err(anyhow::anyhow!("no device"))
+        bail!("no device")
     }
 
     fn get_amd_gpu_usage(&self) -> Result<isize> {
@@ -187,7 +185,7 @@ impl GPU {
     }
 
     fn get_intel_gpu_usage(&self) -> Result<isize> {
-        Err(anyhow::anyhow!("unimplemented"))
+        bail!("unimplemented")
     }
 
     fn get_nvidia_gpu_usage(&self) -> Result<isize> {
@@ -201,9 +199,7 @@ impl GPU {
                 .gpu
                 .try_into()?);
         }
-        Err(anyhow::anyhow!(
-            "no NVML connection, nouveau not implemented yet"
-        ))
+        bail!("no NVML connection, nouveau not implemented yet")
     }
 
     /// Returns the GPU usage in percent
@@ -219,10 +215,10 @@ impl GPU {
                 VID_AMD => self.get_amd_gpu_usage(),
                 VID_INTEL => self.get_intel_gpu_usage(),
                 VID_NVIDIA => self.get_nvidia_gpu_usage(),
-                _ => Err(anyhow::anyhow!("unimplemented")),
+                _ => bail!("unimplemented"),
             };
         }
-        Err(anyhow::anyhow!("no device"))
+        bail!("no device")
     }
 
     fn get_amd_used_vram(&self) -> Result<isize> {
@@ -230,7 +226,7 @@ impl GPU {
     }
 
     fn get_intel_used_vram(&self) -> Result<isize> {
-        Err(anyhow::anyhow!("unimplemented"))
+        bail!("unimplemented")
     }
 
     fn get_nvidia_used_vram(&self) -> Result<isize> {
@@ -244,9 +240,7 @@ impl GPU {
                 .used
                 .try_into()?);
         }
-        Err(anyhow::anyhow!(
-            "no NVML connection, nouveau not implemented yet"
-        ))
+        bail!("no NVML connection, nouveau not implemented yet")
     }
 
     /// Returns the used VRAM in bytes
@@ -263,10 +257,10 @@ impl GPU {
                 VID_AMD => self.get_amd_used_vram(),
                 VID_INTEL => self.get_intel_used_vram(),
                 VID_NVIDIA => self.get_nvidia_used_vram(),
-                _ => Err(anyhow::anyhow!("unimplemented")),
+                _ => bail!("unimplemented"),
             };
         }
-        Err(anyhow::anyhow!("no device"))
+        bail!("no device")
     }
 
     fn get_amd_total_vram(&self) -> Result<isize> {
@@ -274,7 +268,7 @@ impl GPU {
     }
 
     fn get_intel_total_vram(&self) -> Result<isize> {
-        Err(anyhow::anyhow!("unimplemented"))
+        bail!("unimplemented")
     }
 
     fn get_nvidia_total_vram(&self) -> Result<isize> {
@@ -288,9 +282,7 @@ impl GPU {
                 .total
                 .try_into()?);
         }
-        Err(anyhow::anyhow!(
-            "no NVML connection, nouveau not implemented yet"
-        ))
+        bail!("no NVML connection, nouveau not implemented yet")
     }
 
     /// Returns the total VRAM in bytes
@@ -306,10 +298,10 @@ impl GPU {
                 VID_AMD => self.get_amd_total_vram(),
                 VID_INTEL => self.get_intel_total_vram(),
                 VID_NVIDIA => self.get_nvidia_total_vram(),
-                _ => Err(anyhow::anyhow!("unimplemented")),
+                _ => bail!("unimplemented"),
             };
         }
-        Err(anyhow::anyhow!("no device"))
+        bail!("no device")
     }
 
     fn get_amd_gpu_temp(&self) -> Result<f64> {
@@ -317,7 +309,7 @@ impl GPU {
     }
 
     fn get_intel_gpu_temp(&self) -> Result<f64> {
-        Err(anyhow::anyhow!("unimplemented"))
+        bail!("unimplemented")
     }
 
     fn get_nvidia_gpu_temp(&self) -> Result<f64> {
@@ -330,9 +322,7 @@ impl GPU {
                 .context("failed to get temperature info")?
                 .try_into()?);
         }
-        Err(anyhow::anyhow!(
-            "no NVML connection, nouveau not implemented yet"
-        ))
+        bail!("no NVML connection, nouveau not implemented yet")
     }
 
     /// Returns the GPU temperature in °C
@@ -348,10 +338,10 @@ impl GPU {
                 VID_AMD => self.get_amd_gpu_temp(),
                 VID_INTEL => self.get_intel_gpu_temp(),
                 VID_NVIDIA => self.get_nvidia_gpu_temp(),
-                _ => Err(anyhow::anyhow!("unimplemented")),
+                _ => bail!("unimplemented"),
             };
         }
-        Err(anyhow::anyhow!("no device"))
+        bail!("no device")
     }
 
     fn get_amd_power_usage(&self) -> Result<f64> {
@@ -359,7 +349,7 @@ impl GPU {
     }
 
     fn get_intel_power_usage(&self) -> Result<f64> {
-        Err(anyhow::anyhow!("unimplemented"))
+        bail!("unimplemented")
     }
 
     fn get_nvidia_power_usage(&self) -> Result<f64> {
@@ -369,9 +359,7 @@ impl GPU {
                 .context("failed to get GPU by PCI bus")?;
             return Ok(f64::from(dev.power_usage().context("failed to get power usage")?) / 1000.0);
         }
-        Err(anyhow::anyhow!(
-            "no NVML connection, nouveau not implemented yet"
-        ))
+        bail!("no NVML connection, nouveau not implemented yet")
     }
 
     /// Returns the GPU power usage in Watts
@@ -387,10 +375,10 @@ impl GPU {
                 VID_AMD => self.get_amd_power_usage(),
                 VID_INTEL => self.get_intel_power_usage(),
                 VID_NVIDIA => self.get_nvidia_power_usage(),
-                _ => Err(anyhow::anyhow!("unimplemented")),
+                _ => bail!("unimplemented"),
             };
         }
-        Err(anyhow::anyhow!("no device"))
+        bail!("no device")
     }
 
     fn get_amd_gpu_speed(&self) -> Result<f64> {
@@ -411,9 +399,7 @@ impl GPU {
                     .context("failed to get clock info")?,
             ) * 1_000_000.0);
         }
-        Err(anyhow::anyhow!(
-            "no NVML connection, nouveau not implemented yet"
-        ))
+        bail!("no NVML connection, nouveau not implemented yet")
     }
 
     /// Returns the GPU clockspeed (typically the 3-D
@@ -430,10 +416,10 @@ impl GPU {
                 VID_AMD => self.get_amd_gpu_speed(),
                 VID_INTEL => self.get_intel_gpu_speed(),
                 VID_NVIDIA => self.get_nvidia_gpu_speed(),
-                _ => Err(anyhow::anyhow!("unimplemented")),
+                _ => bail!("unimplemented"),
             };
         }
-        Err(anyhow::anyhow!("no device"))
+        bail!("no device")
     }
 
     fn get_amd_vram_speed(&self) -> Result<f64> {
@@ -441,7 +427,7 @@ impl GPU {
     }
 
     fn get_intel_vram_speed(&self) -> Result<f64> {
-        Err(anyhow::anyhow!("unimplemented"))
+        bail!("unimplemented")
     }
 
     fn get_nvidia_vram_speed(&self) -> Result<f64> {
@@ -454,9 +440,7 @@ impl GPU {
                     .context("failed to get clock info")?,
             ) * 1_000_000.0);
         }
-        Err(anyhow::anyhow!(
-            "no NVML connection, nouveau not implemented yet"
-        ))
+        bail!("no NVML connection, nouveau not implemented yet")
     }
 
     /// Returns the VRAM speed in Hz
@@ -472,10 +456,10 @@ impl GPU {
                 VID_AMD => self.get_amd_vram_speed(),
                 VID_INTEL => self.get_intel_vram_speed(),
                 VID_NVIDIA => self.get_nvidia_vram_speed(),
-                _ => Err(anyhow::anyhow!("unimplemented")),
+                _ => bail!("unimplemented"),
             };
         }
-        Err(anyhow::anyhow!("no device"))
+        bail!("no device")
     }
 
     fn get_amd_power_cap(&self) -> Result<f64> {
@@ -483,7 +467,7 @@ impl GPU {
     }
 
     fn get_intel_power_cap(&self) -> Result<f64> {
-        Err(anyhow::anyhow!("unimplemented"))
+        bail!("unimplemented")
     }
 
     fn get_nvidia_power_cap(&self) -> Result<f64> {
@@ -496,9 +480,7 @@ impl GPU {
                     .context("failed to get power cap info")?,
             ) / 1000.0);
         }
-        Err(anyhow::anyhow!(
-            "no NVML connection, nouveau not implemented yet"
-        ))
+        bail!("no NVML connection, nouveau not implemented yet")
     }
 
     /// Returns the current power cap in Watts
@@ -514,10 +496,10 @@ impl GPU {
                 VID_AMD => self.get_amd_power_cap(),
                 VID_INTEL => self.get_intel_power_cap(),
                 VID_NVIDIA => self.get_nvidia_power_cap(),
-                _ => Err(anyhow::anyhow!("unimplemented")),
+                _ => bail!("unimplemented"),
             };
         }
-        Err(anyhow::anyhow!("no device"))
+        bail!("no device")
     }
 
     fn get_amd_power_cap_max(&self) -> Result<f64> {
@@ -525,7 +507,7 @@ impl GPU {
     }
 
     fn get_intel_power_cap_max(&self) -> Result<f64> {
-        Err(anyhow::anyhow!("unimplemented"))
+        bail!("unimplemented")
     }
 
     fn get_nvidia_power_cap_max(&self) -> Result<f64> {
@@ -539,9 +521,7 @@ impl GPU {
                     .max_limit,
             ) / 1000.0);
         }
-        Err(anyhow::anyhow!(
-            "no NVML connection, nouveau not implemented yet"
-        ))
+        bail!("no NVML connection, nouveau not implemented yet")
     }
 
     /// Returns the max power cap in Watts
@@ -557,9 +537,9 @@ impl GPU {
                 VID_AMD => self.get_amd_power_cap_max(),
                 VID_INTEL => self.get_intel_power_cap_max(),
                 VID_NVIDIA => self.get_nvidia_power_cap_max(),
-                _ => Err(anyhow::anyhow!("unimplemented")),
+                _ => bail!("unimplemented"),
             };
         }
-        Err(anyhow::anyhow!("no device"))
+        bail!("no device")
     }
 }
