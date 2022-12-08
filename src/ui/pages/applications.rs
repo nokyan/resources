@@ -408,7 +408,7 @@ impl ResApplications {
             dialog.connect_response(None, clone!(@strong app, @weak self as this => move |_, response| {
                 if response == "yes" {
                     let imp = this.imp();
-                    let res = app.kill();
+                    let res = app.term();
                     let processes_tried = res.len();
                     let processes_successful = res.iter().flatten().count();
                     let processes_unsuccessful = processes_tried - processes_successful;
