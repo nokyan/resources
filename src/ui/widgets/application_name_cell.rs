@@ -62,11 +62,11 @@ impl ResApplicationNameCell {
 
     pub fn set_name<S: Into<String>>(&self, name: S) {
         let imp = self.imp();
-        imp.name.set_text(Some(&name.into()))
+        imp.name.set_text(Some(&name.into()));
     }
 
     pub fn set_icon<P: IsA<Icon>>(&self, gicon: Option<&P>) {
         let imp = self.imp();
-        imp.icon.set_gicon(gicon)
+        imp.icon.set_gicon(gicon);
     }
 }

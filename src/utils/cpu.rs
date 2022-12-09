@@ -88,7 +88,7 @@ pub fn get_cpu_freq(core: usize) -> Result<u64> {
         "/sys/devices/system/cpu/cpu{}/cpufreq/scaling_cur_freq",
         core
     ))
-    .with_context(|| format!("unable to read scaling_cur_freq for core {}", core))?
+    .with_context(|| format!("unable to read scaling_cur_freq for core {core}"))?
     .replace('\n', "")
     .parse::<u64>()
     .with_context(|| "can't parse scaling_cur_freq to usize")
