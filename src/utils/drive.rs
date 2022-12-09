@@ -28,7 +28,7 @@ const SYS_STAT_FIELDS: [&str; 17] = [
 ///
 /// # Errors
 ///
-/// Will return `Err` if the are error during
+/// Will return `Err` if the are errors during
 /// reading or parsing
 pub fn sys_stat(dev: &str) -> Result<HashMap<&'static str, usize>> {
     lazy_static! {
@@ -54,6 +54,12 @@ pub fn sys_stat(dev: &str) -> Result<HashMap<&'static str, usize>> {
     Ok(hash_map)
 }
 
+/// Returns the sector size of the given device
+///
+/// # Errors
+///
+/// Will return `Err` if the are errors during
+/// reading or parsing
 pub fn get_sector_size(dev: &str) -> Result<usize> {
     std::fs::read_to_string(PathBuf::from(format!(
         "/sys/block/{}/queue/hw_sector_size",
