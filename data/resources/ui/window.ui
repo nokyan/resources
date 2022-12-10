@@ -65,6 +65,14 @@
                   </object>
                 </child>
                 <child>
+                  <object class="GtkStackPage" id="processes_page">
+                    <property name="title" translatable="yes">Processes</property>
+                    <property name="child">
+                      <object class="ResProcesses" id="processes"/>
+                    </property>
+                  </object>
+                </child>
+                <child>
                   <object class="GtkStackPage" id="cpu_page">
                     <property name="title" translatable="yes">Processor</property>
                     <property name="child">

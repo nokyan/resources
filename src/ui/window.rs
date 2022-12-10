@@ -29,6 +29,7 @@ mod imp {
 
     use crate::ui::pages::{
         applications::ResApplications, cpu::ResCPU, memory::ResMemory, network::ResNetwork,
+        processes::ResProcesses,
     };
 
     use super::*;
@@ -53,6 +54,10 @@ mod imp {
         #[template_child]
         pub applications_page: TemplateChild<gtk::StackPage>,
         #[template_child]
+        pub processes: TemplateChild<ResProcesses>,
+        #[template_child]
+        pub processes_page: TemplateChild<gtk::StackPage>,
+        #[template_child]
         pub memory: TemplateChild<ResMemory>,
         #[template_child]
         pub memory_page: TemplateChild<gtk::StackPage>,
@@ -73,6 +78,8 @@ mod imp {
                 content_stack: TemplateChild::default(),
                 applications: TemplateChild::default(),
                 applications_page: TemplateChild::default(),
+                processes: TemplateChild::default(),
+                processes_page: TemplateChild::default(),
                 cpu: TemplateChild::default(),
                 cpu_page: TemplateChild::default(),
                 memory: TemplateChild::default(),
@@ -148,6 +155,7 @@ impl MainWindow {
     fn setup_widgets(&self) {
         let imp = self.imp();
         imp.applications.init();
+        imp.processes.init();
         imp.cpu.init();
         imp.memory.init();
         let gpus = GPU::get_gpus().unwrap_or_default();

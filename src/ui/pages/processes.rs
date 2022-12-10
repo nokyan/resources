@@ -1,0 +1,560 @@
+use std::cell::Ref;
+
+use adw::{prelude::*, subclass::prelude::*};
+use adw::{ResponseAppearance, Toast};
+use gtk::glib::{self, clone, BoxedAnyObject};
+use gtk::{gio, CustomSorter, SortType};
+
+use crate::config::PROFILE;
+use crate::ui::dialogs::process_dialog::ResProcessDialog;
+use crate::ui::widgets::process_name_cell::ResProcessNameCell;
+use crate::ui::window::MainWindow;
+use crate::utils::processes::{self, Apps, Process};
+use crate::utils::units::{to_largest_unit, Base};
+
+mod imp {
+    use std::{cell::RefCell, collections::HashMap};
+
+    use super::*;
+
+    use gtk::CompositeTemplate;
+
+    #[derive(Debug, CompositeTemplate, Default)]
+    #[template(resource = "/me/nalux/Resources/ui/pages/processes.ui")]
+    pub struct ResProcesses {
+        #[template_child]
+        pub toast_overlay: TemplateChild<adw::ToastOverlay>,
+        #[template_child]
+        pub processes_scrolled_window: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
+        pub information_button: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub end_process_button: TemplateChild<adw::SplitButton>,
+
+        pub apps: RefCell<Apps>,
+        pub store: RefCell<gio::ListStore>,
+        pub selection_model: RefCell<gtk::SingleSelection>,
+        pub sort_model: RefCell<gtk::SortListModel>,
+        pub column_view: RefCell<gtk::ColumnView>,
+        pub open_dialog: RefCell<Option<(i32, ResProcessDialog)>>,
+        pub uid_map: RefCell<HashMap<u32, String>>,
+    }
+
+    #[glib::object_subclass]
+    impl ObjectSubclass for ResProcesses {
+        const NAME: &'static str = "ResProcesses";
+        type Type = super::ResProcesses;
+        type ParentType = adw::Bin;
+
+        fn class_init(klass: &mut Self::Class) {
+            klass.install_action("processes.kill-process", None, move |resprocesses, _, _| {
+                resprocesses.kill_selected_process();
+            });
+
+            klass.install_action("processes.halt-process", None, move |resprocesses, _, _| {
+                resprocesses.halt_selected_process();
+            });
+
+            klass.install_action(
+                "processes.continue-process",
+                None,
+                move |resprocesses, _, _| {
+                    resprocesses.continue_selected_process();
+                },
+            );
+
+            Self::bind_template(klass);
+        }
+
+        // You must call `Widget`'s `init_template()` within `instance_init()`.
+        fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
+            obj.init_template();
+        }
+    }
+
+    impl ObjectImpl for ResProcesses {
+        fn constructed(&self) {
+            self.parent_constructed();
+            let obj = self.instance();
+
+            // Devel Profile
+            if PROFILE == "Devel" {
+                obj.add_css_class("devel");
+            }
+        }
+    }
+
+    impl WidgetImpl for ResProcesses {}
+    impl BinImpl for ResProcesses {}
+}
+
+glib::wrapper! {
+    pub struct ResProcesses(ObjectSubclass<imp::ResProcesses>)
+        @extends gtk::Widget, adw::Bin;
+}
+
+impl ResProcesses {
+    pub fn new() -> Self {
+        glib::Object::new::<Self>(&[])
+    }
+
+    pub fn init(&self) {
+        self.setup_widgets();
+        self.setup_signals();
+        self.setup_listener();
+    }
+
+    fn get_user_name_by_uid(&self, uid: u32) -> String {
+        let imp = self.imp();
+        // cache all the user names so we don't have
+        // to do expensive lookups all the time
+        (*imp.uid_map.borrow_mut().entry(uid).or_insert_with(|| {
+            users::get_user_by_uid(uid).map_or_else(
+                || gettextrs::gettext("root"),
+                |user| user.name().to_string_lossy().to_string(),
+            )
+        }))
+        .to_string() // TODO: remove .to_string() with something more efficient
+    }
+
+    pub fn setup_widgets(&self) {
+        let imp = self.imp();
+
+        let column_view = gtk::ColumnView::new(None::<&gtk::SingleSelection>);
+        let store = gio::ListStore::new(BoxedAnyObject::static_type());
+        let sort_model = gtk::SortListModel::new(Some(&store), column_view.sorter().as_ref());
+        let selection_model = gtk::SingleSelection::new(Some(&sort_model));
+        column_view.set_model(Some(&selection_model));
+        selection_model.set_can_unselect(true);
+        selection_model.set_autoselect(false);
+
+        *imp.selection_model.borrow_mut() = selection_model;
+        *imp.sort_model.borrow_mut() = sort_model;
+        *imp.store.borrow_mut() = store;
+
+        let name_col_factory = gtk::SignalListItemFactory::new();
+        let name_col = gtk::ColumnViewColumn::new(
+            Some(&gettextrs::gettext("Process")),
+            Some(&name_col_factory),
+        );
+        name_col.set_resizable(true);
+        name_col.set_expand(true);
+        name_col_factory.connect_setup(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let row = ResProcessNameCell::new();
+            item.set_child(Some(&row));
+        });
+        name_col_factory.connect_bind(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let child = item
+                .child()
+                .unwrap()
+                .downcast::<ResProcessNameCell>()
+                .unwrap();
+            let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
+            let r: Ref<Process> = entry.borrow();
+            child.set_name(processes::Process::sanitize_cmdline(&r.comm));
+            child.set_icon(Some(&r.icon));
+            child.set_tooltip(Some(&r.commandline));
+        });
+        let name_col_sorter = CustomSorter::new(move |a, b| {
+            let item_a = a
+                .downcast_ref::<BoxedAnyObject>()
+                .unwrap()
+                .borrow::<Process>();
+            let item_b = b
+                .downcast_ref::<BoxedAnyObject>()
+                .unwrap()
+                .borrow::<Process>();
+            item_a.comm.cmp(&item_b.comm).into()
+        });
+        name_col.set_sorter(Some(&name_col_sorter));
+
+        let pid_col_factory = gtk::SignalListItemFactory::new();
+        let pid_col = gtk::ColumnViewColumn::new(
+            Some(&gettextrs::gettext("Process ID")),
+            Some(&pid_col_factory),
+        );
+        pid_col.set_resizable(true);
+        pid_col_factory.connect_setup(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let row = gtk::Inscription::new(None);
+            item.set_child(Some(&row));
+        });
+        pid_col_factory.connect_bind(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let child = item
+                .child()
+                .unwrap()
+                .downcast::<gtk::Inscription>()
+                .unwrap();
+            let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
+            let r: Ref<Process> = entry.borrow();
+            child.set_text(Some(&r.pid.to_string()));
+        });
+        let pid_col_sorter = CustomSorter::new(move |a, b| {
+            let item_a = a
+                .downcast_ref::<BoxedAnyObject>()
+                .unwrap()
+                .borrow::<Process>();
+            let item_b = b
+                .downcast_ref::<BoxedAnyObject>()
+                .unwrap()
+                .borrow::<Process>();
+            item_a.pid.cmp(&item_b.pid).into()
+        });
+        pid_col.set_sorter(Some(&pid_col_sorter));
+
+        let user_col_factory = gtk::SignalListItemFactory::new();
+        let user_col =
+            gtk::ColumnViewColumn::new(Some(&gettextrs::gettext("User")), Some(&user_col_factory));
+        user_col.set_resizable(true);
+        user_col_factory.connect_setup(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let row = gtk::Inscription::new(None);
+            item.set_child(Some(&row));
+        });
+        user_col_factory.connect_bind(clone!(@strong self as this => move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let child = item
+                .child()
+                .unwrap()
+                .downcast::<gtk::Inscription>()
+                .unwrap();
+            let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
+            let r: Ref<Process> = entry.borrow();
+            child.set_text(Some(&this.get_user_name_by_uid(r.uid)));
+        }));
+        let user_col_sorter = CustomSorter::new(clone!(@strong self as this => move |a, b| {
+            let item_a = a
+                .downcast_ref::<BoxedAnyObject>()
+                .unwrap()
+                .borrow::<Process>();
+            let item_b = b
+                .downcast_ref::<BoxedAnyObject>()
+                .unwrap()
+                .borrow::<Process>();
+            let user_a = this.get_user_name_by_uid(item_a.uid);
+            let user_b = this.get_user_name_by_uid(item_b.uid);
+            user_a.cmp(&user_b).into()
+        }));
+        user_col.set_sorter(Some(&user_col_sorter));
+
+        let memory_col_factory = gtk::SignalListItemFactory::new();
+        let memory_col = gtk::ColumnViewColumn::new(
+            Some(&gettextrs::gettext("Memory")),
+            Some(&memory_col_factory),
+        );
+        memory_col.set_resizable(true);
+        memory_col_factory.connect_setup(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let row = gtk::Inscription::new(None);
+            item.set_child(Some(&row));
+        });
+        memory_col_factory.connect_bind(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let child = item
+                .child()
+                .unwrap()
+                .downcast::<gtk::Inscription>()
+                .unwrap();
+            let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
+            let r: Ref<Process> = entry.borrow();
+            let (number, prefix) = to_largest_unit(r.memory_usage as f64, &Base::Decimal);
+            child.set_text(Some(&format!("{number:.1} {prefix}B")));
+        });
+        let memory_col_sorter = CustomSorter::new(move |a, b| {
+            let item_a = a
+                .downcast_ref::<BoxedAnyObject>()
+                .unwrap()
+                .borrow::<Process>();
+            let item_b = b
+                .downcast_ref::<BoxedAnyObject>()
+                .unwrap()
+                .borrow::<Process>();
+            item_a.memory_usage.cmp(&item_b.memory_usage).into()
+        });
+        memory_col.set_sorter(Some(&memory_col_sorter));
+
+        let cpu_col_factory = gtk::SignalListItemFactory::new();
+        let cpu_col = gtk::ColumnViewColumn::new(
+            Some(&gettextrs::gettext("Processor")),
+            Some(&cpu_col_factory),
+        );
+        cpu_col.set_resizable(true);
+        cpu_col_factory.connect_setup(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let row = gtk::Inscription::new(None);
+            item.set_child(Some(&row));
+        });
+        cpu_col_factory.connect_bind(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let child = item
+                .child()
+                .unwrap()
+                .downcast::<gtk::Inscription>()
+                .unwrap();
+            let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
+            let r: Ref<Process> = entry.borrow();
+            child.set_text(Some(&format!(
+                "{:.1} %",
+                r.cpu_time_ratio().unwrap_or(0.0) * 100.0
+            )));
+        });
+        let cpu_col_sorter = CustomSorter::new(move |a, b| {
+            let item_a = a
+                .downcast_ref::<BoxedAnyObject>()
+                .unwrap()
+                .borrow::<Process>();
+            let item_b = b
+                .downcast_ref::<BoxedAnyObject>()
+                .unwrap()
+                .borrow::<Process>();
+            // floats can only be partially ordered, so just multiply our
+            // 0.0-1.0 floats by u16::MAX to get an "accurate enough" integer
+            // and then compare them instead
+            let ratio_a = (item_a.cpu_time_ratio().unwrap_or(0.0) * f32::from(u16::MAX)) as u16;
+            let ratio_b = (item_b.cpu_time_ratio().unwrap_or(0.0) * f32::from(u16::MAX)) as u16;
+            ratio_a.cmp(&ratio_b).into()
+        });
+        cpu_col.set_sorter(Some(&cpu_col_sorter));
+
+        column_view.append_column(&name_col);
+        column_view.append_column(&pid_col);
+        column_view.append_column(&user_col);
+        column_view.append_column(&memory_col);
+        column_view.append_column(&cpu_col);
+        column_view.sort_by_column(Some(&cpu_col), SortType::Descending);
+        column_view.set_enable_rubberband(true);
+        imp.processes_scrolled_window.set_child(Some(&column_view));
+        *imp.column_view.borrow_mut() = column_view;
+    }
+
+    pub fn setup_signals(&self) {
+        let imp = self.imp();
+
+        imp.selection_model.borrow().connect_selection_changed(
+            clone!(@strong self as this => move |model, _, _| {
+                let imp = this.imp();
+                imp.information_button.set_sensitive(model.selected() != u32::MAX);
+                imp.end_process_button.set_sensitive(model.selected() != u32::MAX);
+            }),
+        );
+
+        imp.information_button
+            .connect_clicked(clone!(@strong self as this => move |_| {
+                let imp = this.imp();
+                let selection_option = imp.selection_model.borrow()
+                .selected_item()
+                .map(|object| {
+                    object
+                    .downcast::<BoxedAnyObject>()
+                    .unwrap()
+                    .borrow::<Process>()
+                    .clone()
+                });
+                if let Some(selection) = selection_option {
+                    let process_dialog = ResProcessDialog::new();
+                    process_dialog.init(&selection, this.get_user_name_by_uid(selection.uid));
+                    process_dialog.show();
+                    *imp.open_dialog.borrow_mut() = Some((selection.pid, process_dialog));
+                }
+            }));
+
+        imp.end_process_button
+            .connect_clicked(clone!(@strong self as this => move |_| {
+                this.end_selected_process();
+            }));
+    }
+
+    pub fn setup_listener(&self) {
+        let imp = self.imp();
+        let model = imp.store.borrow();
+        // TODO: don't use unwrap()
+        *imp.apps.borrow_mut() = Apps::new().unwrap();
+        imp.apps
+            .borrow()
+            .all_processes()
+            .iter()
+            .map(|process| BoxedAnyObject::new(process.clone()))
+            .for_each(|item_box| model.append(&item_box));
+        let statistics_update = clone!(@strong self as this => move || {
+            this.refresh_processes_list()
+        });
+        glib::timeout_add_seconds_local(2, statistics_update);
+    }
+
+    fn get_selected_process(&self) -> Option<Process> {
+        self.imp()
+            .selection_model
+            .borrow()
+            .selected_item()
+            .map(|object| {
+                object
+                    .downcast::<BoxedAnyObject>()
+                    .unwrap()
+                    .borrow::<Process>()
+                    .clone()
+            })
+    }
+
+    fn refresh_processes_list(&self) -> Continue {
+        let imp = self.imp();
+        let selection = imp.selection_model.borrow();
+        let mut apps = imp.apps.borrow_mut();
+
+        // if we reuse the old ListStore, for some reason setting the
+        // vadjustment later just doesn't work most of the time.
+        // so we just make a new one every refresh instead :')
+        // TODO: make this less hacky
+        let new_store = gio::ListStore::new(BoxedAnyObject::static_type());
+
+        // this might be very hacky, but remember the ID of the currently
+        // selected item, clear the list model and repopulate it with the
+        // refreshed apps and stats, then reselect the remembered app.
+        // TODO: make this even less hacky
+        let selected_item = self.get_selected_process().map(|process| process.pid);
+        if apps.refresh().is_ok() {
+            apps.all_processes()
+                .iter()
+                .filter(|process| process.memory_usage > 0)
+                .map(|process| {
+                    if let Some((pid, dialog)) = &*imp.open_dialog.borrow() && process.pid == *pid {
+                        dialog.set_cpu_usage(process.cpu_time_ratio().unwrap_or(0.0));
+                        dialog.set_memory_usage(process.memory_usage);
+                    }
+                    BoxedAnyObject::new(process.clone())
+                })
+                .for_each(|item_box| new_store.append(&item_box));
+        }
+        imp.sort_model.borrow().set_model(Some(&new_store));
+        *imp.store.borrow_mut() = new_store;
+
+        // find the (potentially) new index of the process that was selected
+        // before the refresh and set our selection to that index
+        if let Some(selected_item) = selected_item {
+            let new_index = selection
+                .iter::<glib::Object>()
+                .unwrap()
+                .position(|object| {
+                    object
+                        .unwrap()
+                        .downcast::<BoxedAnyObject>()
+                        .unwrap()
+                        .borrow::<Process>()
+                        .pid
+                        == selected_item
+                })
+                .map(|index| index as u32);
+            if let Some(index) = new_index && index != u32::MAX {
+                selection.set_selected(index);
+            }
+        }
+
+        glib::Continue(true)
+    }
+
+    fn end_selected_process(&self) {
+        let selection_option = self.get_selected_process();
+        if let Some(process) = selection_option {
+            let dialog = adw::MessageDialog::builder()
+                .transient_for(&MainWindow::default())
+                .modal(true)
+                .heading(&gettextrs::gettext!("End {}?", process.comm))
+                .body(&gettextrs::gettext("Unsaved work might be lost."))
+                .build();
+            dialog.add_response("yes", &gettextrs::gettext("End Process"));
+            dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
+            dialog.set_default_response(Some("no"));
+            dialog.add_response("no", &gettextrs::gettext("Cancel"));
+            dialog.set_close_response("no");
+            dialog.connect_response(None, clone!(@strong process, @weak self as this => move |_, response| {
+                if response == "yes" {
+                    let imp = this.imp();
+                    match process.term() {
+                        Ok(_) => { imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("Successfully ended {}", process.comm))); },
+                        Err(_) => { imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("There was a problem ending {}", process.comm))); },
+                    };
+                }
+            }));
+            dialog.show();
+        }
+    }
+
+    fn kill_selected_process(&self) {
+        let selection_option = self.get_selected_process();
+        if let Some(process) = selection_option {
+            let dialog = adw::MessageDialog::builder()
+            .transient_for(&MainWindow::default())
+            .modal(true)
+            .heading(&gettextrs::gettext!("Kill {}?", process.comm))
+            .body(&gettextrs::gettext("Killing a process can come with serious risks such as losing data and security implications. Use with caution."))
+            .build();
+            dialog.add_response("yes", &gettextrs::gettext("Kill Process"));
+            dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
+            dialog.set_default_response(Some("no"));
+            dialog.add_response("no", &gettextrs::gettext("Cancel"));
+            dialog.set_close_response("no");
+            dialog.connect_response(None, clone!(@strong process, @weak self as this => move |_, response| {
+                if response == "yes" {
+                    let imp = this.imp();
+                    match process.kill() {
+                        Ok(_) => { imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("Successfully killed {}", process.comm))); },
+                        Err(_) => { imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("There was a problem killing {}", process.comm))); },
+                    };
+                }
+            }));
+            dialog.show();
+        }
+    }
+
+    fn halt_selected_process(&self) {
+        let selection_option = self.get_selected_process();
+        if let Some(process) = selection_option {
+            let dialog = adw::MessageDialog::builder()
+            .transient_for(&MainWindow::default())
+            .modal(true)
+            .heading(&gettextrs::gettext!("Halt {}?", process.comm))
+            .body(&gettextrs::gettext("Halting a process can come with serious risks such as losing data and security implications. Use with caution."))
+            .build();
+            dialog.add_response("yes", &gettextrs::gettext("Halt Process"));
+            dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
+            dialog.set_default_response(Some("no"));
+            dialog.add_response("no", &gettextrs::gettext("Cancel"));
+            dialog.set_close_response("no");
+            dialog.connect_response(None, clone!(@strong process, @weak self as this => move |_, response| {
+                if response == "yes" {
+                    let imp = this.imp();
+                    match process.stop() {
+                        Ok(_) => { imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("Successfully halted {}", process.comm))); },
+                        Err(_) => { imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("There was a problem halting {}", process.comm))); },
+                    };
+                }
+            }));
+            dialog.show();
+        }
+    }
+
+    fn continue_selected_process(&self) {
+        let imp = self.imp();
+        let selection_option = self.get_selected_process();
+        if let Some(process) = selection_option {
+            match process.cont() {
+                Ok(_) => {
+                    imp.toast_overlay
+                        .add_toast(&Toast::new(&gettextrs::gettext!(
+                            "Successfully continued {}",
+                            process.comm
+                        )));
+                }
+                Err(_) => {
+                    imp.toast_overlay
+                        .add_toast(&Toast::new(&gettextrs::gettext!(
+                            "There was a problem continuing {}",
+                            process.comm
+                        )));
+                }
+            };
+        }
+    }
+}

@@ -17,6 +17,9 @@ msgstr ""
 msgid "N/A"
 msgstr "n. v."
 
+msgid "Cancel"
+msgstr "Abbrechen"
+
 #: data/me.nalux.Resources.desktop.in.in:2 src/application.rs:124
 msgid "Resources"
 msgstr "Ressourcen"
@@ -55,23 +58,27 @@ msgstr "Anwendungsinformationen"
 #: data/resources/ui/dialogs/app_dialog.ui:71 data/resources/ui/pages/cpu.ui:30
 #: data/resources/ui/pages/drive.ui:30 data/resources/ui/pages/gpu.ui:30
 #: data/resources/ui/pages/memory.ui:30 data/resources/ui/pages/network.ui:30
+#: data/resources/ui/dialogs/process_dialog.ui:54
 msgid "Usage"
 msgstr "Auslastung"
 
 #: data/resources/ui/dialogs/app_dialog.ui:74 data/resources/ui/window.ui:69
-#: src/ui/pages/applications.rs:204
+#: src/ui/pages/applications.rs:204 src/ui/pages/processes.rs:281
+#: data/resources/ui/dialogs/process_dialog.ui:57
 msgid "Processor"
 msgstr "Prozessor"
 
 #: data/resources/ui/dialogs/app_dialog.ui:79
 #: data/resources/ui/pages/memory.ui:22 data/resources/ui/window.ui:77
-#: src/ui/pages/applications.rs:168
+#: src/ui/pages/applications.rs:168 src/ui/pages/processes.rs:245
+#: data/resources/ui/dialogs/process_dialog.ui:62
 msgid "Memory"
 msgstr "Arbeitsspeicher"
 
 #: data/resources/ui/dialogs/app_dialog.ui:86 data/resources/ui/pages/cpu.ui:49
 #: data/resources/ui/pages/drive.ui:50 data/resources/ui/pages/gpu.ui:65
 #: data/resources/ui/pages/network.ui:55
+#: data/resources/ui/dialogs/process_dialog.ui:69
 msgid "Properties"
 msgstr "Eigenschaften"
 
@@ -84,8 +91,25 @@ msgid "Running Processes"
 msgstr "Laufende Prozesse"
 
 #: data/resources/ui/dialogs/app_dialog.ui:98
+#: data/resources/ui/dialogs/process_dialog.ui:92
 msgid "Containerized"
 msgstr "Benutzt Container"
+
+#: data/resources/ui/dialogs/process_dialog.ui:9
+msgid "Prcoess Information"
+msgstr "Prozessinformationen"
+
+#: data/resources/ui/dialogs/process_dialog.ui:77
+msgid "Commandline"
+msgstr "Befehlszeile"
+
+#: data/resources/ui/dialogs/process_dialog.ui:82 src/ui/pages/processes.rs:210
+msgid "User"
+msgstr "Benutzer"
+
+#: data/resources/ui/dialogs/process_dialog.ui:87
+msgid "Control Group"
+msgstr "Kontrollgruppe"
 
 #: data/resources/ui/pages/applications.ui:6 src/ui/pages/applications.rs:439
 msgid "Kill Application"
@@ -231,6 +255,22 @@ msgstr "Schnittstelle"
 msgid "Hardware Address"
 msgstr "Hardware-Adresse"
 
+#: data/resources/ui/pages/processes.ui:6 src/ui/pages/processes.rs:493
+msgid "Kill Process"
+msgstr "Prozess abwürgen"
+
+#: data/resources/ui/pages/processes.ui:10 src/ui/pages/processes.rs:520
+msgid "Halt Process"
+msgstr "Prozess anhalten"
+
+#: data/resources/ui/pages/processes.ui:14
+msgid "Continue Process"
+msgstr "Prozess fortsetzen"
+
+#: data/resources/ui/pages/processes.ui:55 src/ui/pages/processes.rs:466
+msgid "End Process"
+msgstr "Prozess beenden"
+
 #: data/resources/ui/window.ui:6
 msgid "Preferences"
 msgstr "Eigenschaften"
@@ -247,6 +287,10 @@ msgstr "Über Ressourcen"
 msgid "Applications"
 msgstr "Anwendungen"
 
+#: data/resources/ui/window.ui:69
+msgid "Processes"
+msgstr "Prozesse"
+
 #: src/ui/dialogs/app_dialog.rs:114
 msgid "Yes (Flatpak)"
 msgstr "Ja (Flatpak)"
@@ -255,20 +299,15 @@ msgstr "Ja (Flatpak)"
 msgid "Application"
 msgstr "Anwendung"
 
-#: src/ui/pages/applications.rs:400
+#: src/ui/pages/applications.rs:400 src/ui/pages/processes.rs:463
 msgid "End {}?"
 msgstr "{} beenden?"
 
-#: src/ui/pages/applications.rs:401
+#: src/ui/pages/applications.rs:401 src/ui/pages/processes.rs:464
 msgid "Unsaved work might be lost."
 msgstr "Ungespeicherte Daten könnten verloren gehen."
 
-#: src/ui/pages/applications.rs:406 src/ui/pages/applications.rs:442
-#: src/ui/pages/applications.rs:478
-msgid "Cancel"
-msgstr "Abbrechen"
-
-#: src/ui/pages/applications.rs:416
+#: src/ui/pages/applications.rs:416 src/ui/pages/processes.rs:475
 msgid "Successfully ended {}"
 msgstr "{} wurde erfolgreich beendet"
 
@@ -278,7 +317,7 @@ msgid_plural "There were problems ending {} processes"
 msgstr[0] "Es gab ein Problem beim Beenden von {} Prozessen"
 msgstr[1] "Es gab ein Problem beim Beenden eines Prozesses"
 
-#: src/ui/pages/applications.rs:436
+#: src/ui/pages/applications.rs:436 src/ui/pages/processes.rs:490
 msgid "Kill {}?"
 msgstr "{} abwürgen?"
 
@@ -290,7 +329,7 @@ msgstr ""
 "Das Abwürgen einer Anwendung ist mit Risiken wie dem Verlust von Daten sowie "
 "Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
 
-#: src/ui/pages/applications.rs:452
+#: src/ui/pages/applications.rs:452 src/ui/pages/processes.rs:502
 msgid "Successfully killed {}"
 msgstr "{} wurde erfolgreich abgewürgt"
 
@@ -300,7 +339,7 @@ msgid_plural "There were problems killing {} processes"
 msgstr[0] "Es gab ein Problem beim Abwürgen von {} Prozessen"
 msgstr[1] "Es gab ein Problem beim Abwürgen eines Prozesses"
 
-#: src/ui/pages/applications.rs:472
+#: src/ui/pages/applications.rs:472 src/ui/pages/processes.rs:517
 msgid "Halt {}?"
 msgstr "{} anhalten?"
 
@@ -312,7 +351,7 @@ msgstr ""
 "Das Anhalten einer Anwendung ist mit Risiken wie dem Verlust von Daten sowie "
 "Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
 
-#: src/ui/pages/applications.rs:488
+#: src/ui/pages/applications.rs:488 src/ui/pages/processes.rs:529
 msgid "Successfully halted {}"
 msgstr "{} wurde erfolgreich angehalten"
 
@@ -322,15 +361,15 @@ msgid_plural "There were problems halting {} processes"
 msgstr[0] "Es gab ein Problem beim Anhalten von {} Prozessen"
 msgstr[1] "Es gab ein Problem beim Anhalten eines Prozesses"
 
-#: src/ui/pages/applications.rs:510
+#: src/ui/pages/applications.rs:510 src/ui/pages/processes.rs:546
 msgid "Successfully continued {}"
-msgstr "{} wurde erfolgreich fortgefahren"
+msgstr "{} wurde erfolgreich fortgesetzt"
 
 #: src/ui/pages/applications.rs:512
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
-msgstr[0] "Es gab ein Problem beim Fortfahren von {} Prozessen"
-msgstr[1] "Es gab ein Problem beim Fortfahren eines Prozesses"
+msgstr[0] "Es gab ein Problem beim Fortsetzen von {} Prozessen"
+msgstr[1] "Es gab ein Problem beim Fortsetzen eines Prozesses"
 
 #: src/ui/pages/gpu.rs:105 src/ui/window.rs:160
 msgid "GPU {}"
@@ -355,6 +394,42 @@ msgstr "Typ"
 #: src/ui/pages/memory.rs
 msgid "Type Detail"
 msgstr "Typdetail"
+
+#: src/ui/pages/processes.rs:131
+msgid "Process"
+msgstr "Prozess"
+
+#: src/ui/pages/processes.rs:476
+msgid "There was a problem ending {}"
+msgstr "Es gab ein Problem beim Beenden von {}"
+
+#: src/ui/pages/processes.rs:491
+msgid ""
+"Killing a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"Das Abwürgen eines Prozesses ist mit Risiken wie dem Verlust von Daten sowie "
+"Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
+
+#: src/ui/pages/processes.rs:503
+msgid "There was a problem killing {}"
+msgstr "Es gab ein Problem beim Abwürgen von {}"
+
+#: src/ui/pages/processes.rs:518
+msgid ""
+"Halting a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"Das Anhalten eines Prozesses ist mit Risiken wie dem Verlust von Daten sowie "
+"Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
+
+#: src/ui/pages/processes.rs:530
+msgid "There was a problem halting {}"
+msgstr "Es gab ein Problem beim Anhalten von {}"
+
+#: src/ui/pages/processes.rs:553
+msgid "There was a problem continuing {}"
+msgstr "Es gab ein Problem beim Fortsetzen von {}"
 
 #: src/ui/widgets/bool_box.ui:68
 msgid "Yes"

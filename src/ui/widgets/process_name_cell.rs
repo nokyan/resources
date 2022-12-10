@@ -9,8 +9,8 @@ mod imp {
     use gtk::{Box, CompositeTemplate};
 
     #[derive(Debug, CompositeTemplate, Default)]
-    #[template(resource = "/me/nalux/Resources/ui/widgets/application_name_cell.ui")]
-    pub struct ResApplicationNameCell {
+    #[template(resource = "/me/nalux/Resources/ui/widgets/process_name_cell.ui")]
+    pub struct ResProcessNameCell {
         #[template_child]
         pub icon: TemplateChild<gtk::Image>,
         #[template_child]
@@ -18,9 +18,9 @@ mod imp {
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for ResApplicationNameCell {
-        const NAME: &'static str = "ResApplicationNameCell";
-        type Type = super::ResApplicationNameCell;
+    impl ObjectSubclass for ResProcessNameCell {
+        const NAME: &'static str = "ResProcessNameCell";
+        type Type = super::ResProcessNameCell;
         type ParentType = Box;
 
         fn class_init(klass: &mut Self::Class) {
@@ -33,7 +33,7 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for ResApplicationNameCell {
+    impl ObjectImpl for ResProcessNameCell {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.instance();
@@ -45,17 +45,17 @@ mod imp {
         }
     }
 
-    impl WidgetImpl for ResApplicationNameCell {}
+    impl WidgetImpl for ResProcessNameCell {}
 
-    impl BoxImpl for ResApplicationNameCell {}
+    impl BoxImpl for ResProcessNameCell {}
 }
 
 glib::wrapper! {
-    pub struct ResApplicationNameCell(ObjectSubclass<imp::ResApplicationNameCell>)
+    pub struct ResProcessNameCell(ObjectSubclass<imp::ResProcessNameCell>)
         @extends gtk::Widget, gtk::Box;
 }
 
-impl ResApplicationNameCell {
+impl ResProcessNameCell {
     pub fn new() -> Self {
         glib::Object::new::<Self>(&[])
     }
@@ -68,5 +68,10 @@ impl ResApplicationNameCell {
     pub fn set_icon<P: IsA<Icon>>(&self, gicon: Option<&P>) {
         let imp = self.imp();
         imp.icon.set_gicon(gicon);
+    }
+
+    pub fn set_tooltip(&self, tooltip: Option<&str>) {
+        let imp = self.imp();
+        imp.name.set_tooltip_text(tooltip);
     }
 }

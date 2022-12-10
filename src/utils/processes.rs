@@ -23,27 +23,29 @@ pub enum Containerization {
 }
 
 /// Represents a process that can be found within procfs.
-#[derive(Debug, Clone, Default, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Process {
-    pid: usize,
-    uid: usize,
+    pub pid: i32,
+    pub uid: u32,
     proc_path: PathBuf,
-    commandline: String,
-    cpu_time: u64,
-    cpu_time_timestamp: u64,
-    cpu_time_before: u64,
-    cpu_time_before_timestamp: u64,
-    mem_usage: usize,
-    cgroup: Option<String>,
+    pub comm: String,
+    pub commandline: String,
+    pub cpu_time: u64,
+    pub cpu_time_timestamp: u64,
+    pub cpu_time_before: u64,
+    pub cpu_time_before_timestamp: u64,
+    pub memory_usage: usize,
+    pub cgroup: Option<String>,
     alive: bool,
-    containerization: Containerization,
+    pub containerization: Containerization,
+    pub icon: Icon,
 }
 
 /// Represents an application installed on the system. It doesn't
 /// have to be running (i.e. have alive processes).
 #[derive(Debug, Clone)]
 pub struct App {
-    processes: HashMap<usize, Process>,
+    processes: HashMap<i32, Process>,
     app_info: AppInfo,
 }
 
@@ -92,20 +94,32 @@ impl TryFrom<PathBuf> for Process {
                 .ok_or_else(|| anyhow!(""))?
                 .parse()?,
             uid: std::fs::read_to_string(value.join("loginuid"))?.parse()?,
-            commandline: std::fs::read_to_string(value.join("cmdline"))?,
+            comm: std::fs::read_to_string(value.join("comm")).map(|s| s.replace('\n', ""))?,
+            commandline: std::fs::read_to_string(value.join("cmdline"))
+                .map(|s| s.replace('\0', " "))?,
             cpu_time: stat[13].parse::<u64>()? + stat[14].parse::<u64>()?,
             cpu_time_timestamp: SystemTime::now()
                 .duration_since(SystemTime::UNIX_EPOCH)?
                 .as_millis() as u64,
             cpu_time_before: 0,
             cpu_time_before_timestamp: 0,
-            mem_usage: (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?)
+            memory_usage: (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?)
                 * PAGESIZE.get_or_init(sysconf::pagesize),
             cgroup: Self::sanitize_cgroup(std::fs::read_to_string(value.join("cgroup"))?),
             proc_path: value,
             alive: true,
             containerization,
+            icon: ThemedIcon::new("generic-process").into(),
         })
+    }
+
+    type Error = anyhow::Error;
+}
+
+impl TryFrom<i32> for Process {
+    fn try_from(value: i32) -> Result<Self> {
+        let path = PathBuf::from("/proc/").join(value.to_string());
+        Process::try_from(path)
     }
 
     type Error = anyhow::Error;
@@ -141,7 +155,7 @@ impl Process {
         self.cpu_time_timestamp = SystemTime::now()
             .duration_since(SystemTime::UNIX_EPOCH)?
             .as_millis() as u64;
-        self.mem_usage = (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?)
+        self.memory_usage = (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?)
             * PAGESIZE.get_or_init(sysconf::pagesize);
         Ok(())
     }
@@ -152,11 +166,7 @@ impl Process {
     }
 
     fn sanitize_cgroup<S: AsRef<str>>(cgroup: S) -> Option<String> {
-        let cgroups_v2_line = cgroup
-            .as_ref()
-            .split('\n')
-            .filter(|s| s.starts_with("0::"))
-            .next()?;
+        let cgroups_v2_line = cgroup.as_ref().split('\n').find(|s| s.starts_with("0::"))?;
         if cgroups_v2_line.ends_with(".scope") {
             let cgroups_segments: Vec<&str> = cgroups_v2_line.split('-').collect();
             if cgroups_segments.len() > 1 {
@@ -196,10 +206,7 @@ impl Process {
     /// that running it with superuser permissions can't solve
     pub fn term(&self) -> Result<()> {
         debug!("sending SIGTERM to pid {}", self.pid);
-        let result = signal::kill(
-            Pid::from_raw(self.pid as i32),
-            Some(signal::Signal::SIGTERM),
-        );
+        let result = signal::kill(Pid::from_raw(self.pid), Some(signal::Signal::SIGTERM));
         if let Err(err) = result {
             return match err {
                 nix::errno::Errno::EPERM => self.pkexec_term(),
@@ -214,7 +221,7 @@ impl Process {
             "using pkexec to send SIGTERM with root privileges to pid {}",
             self.pid
         );
-        let path = format!("{}/resources-kill", LIBEXECDIR);
+        let path = format!("{LIBEXECDIR}/resources-kill");
         Command::new("pkexec")
             .args([
                 "--disable-internal-agent",
@@ -235,10 +242,7 @@ impl Process {
     /// that running it with superuser permissions can't solve
     pub fn kill(&self) -> Result<()> {
         debug!("sending SIGKILL to pid {}", self.pid);
-        let result = signal::kill(
-            Pid::from_raw(self.pid as i32),
-            Some(signal::Signal::SIGKILL),
-        );
+        let result = signal::kill(Pid::from_raw(self.pid), Some(signal::Signal::SIGKILL));
         if let Err(err) = result {
             return match err {
                 nix::errno::Errno::EPERM => self.pkexec_kill(),
@@ -253,7 +257,7 @@ impl Process {
             "using pkexec to send SIGKILL with root privileges to pid {}",
             self.pid
         );
-        let path = format!("{}/resources-kill", LIBEXECDIR);
+        let path = format!("{LIBEXECDIR}/resources-kill");
         Command::new("pkexec")
             .args([
                 "--disable-internal-agent",
@@ -274,10 +278,7 @@ impl Process {
     /// that running it with superuser permissions can't solve
     pub fn stop(&self) -> Result<()> {
         debug!("sending SIGSTOP to pid {}", self.pid);
-        let result = signal::kill(
-            Pid::from_raw(self.pid as i32),
-            Some(signal::Signal::SIGSTOP),
-        );
+        let result = signal::kill(Pid::from_raw(self.pid), Some(signal::Signal::SIGSTOP));
         if let Err(err) = result {
             return match err {
                 nix::errno::Errno::EPERM => self.pkexec_stop(),
@@ -313,10 +314,7 @@ impl Process {
     /// that running it with superuser permissions can't solve
     pub fn cont(&self) -> Result<()> {
         debug!("sending SIGCONT to pid {}", self.pid);
-        let result = signal::kill(
-            Pid::from_raw(self.pid as i32),
-            Some(signal::Signal::SIGCONT),
-        );
+        let result = signal::kill(Pid::from_raw(self.pid), Some(signal::Signal::SIGCONT));
         if let Err(err) = result {
             return match err {
                 nix::errno::Errno::EPERM => self.pkexec_cont(),
@@ -343,9 +341,34 @@ impl Process {
             .map(|_| ())
             .with_context(|| format!("failure calling {} on {} (with pkexec)", &path, self.pid))
     }
+
+    #[must_use]
+    pub fn cpu_time_ratio(&self) -> Option<f32> {
+        if self.cpu_time_before == 0 {
+            None
+        } else {
+            Some(
+                ((self.cpu_time - self.cpu_time_before) as f32
+                    / (self.cpu_time_timestamp - self.cpu_time_before_timestamp) as f32)
+                    .clamp(0.0, 1.0),
+            )
+        }
+    }
+
+    pub fn sanitize_cmdline<S: AsRef<str>>(cmdline: S) -> String {
+        cmdline.as_ref().replace('\0', " ")
+    }
 }
 
 impl App {
+    /// Adds a process to the processes `HashMap` and also
+    /// updates the `Process`' icon to the one of this
+    /// `App`
+    pub fn add_process(&mut self, mut process: Process) {
+        process.icon = self.icon();
+        self.processes.insert(process.pid, process);
+    }
+
     #[must_use]
     pub fn commandline(&self) -> Option<PathBuf> {
         self.app_info.commandline()
@@ -404,7 +427,7 @@ impl App {
     pub fn memory_usage(&self) -> usize {
         self.processes
             .values()
-            .map(|process| process.mem_usage)
+            .map(|process| process.memory_usage)
             .sum()
     }
 
@@ -442,6 +465,19 @@ impl App {
             .sum::<u64>()
             .checked_div(self.processes.len() as u64)
             .unwrap_or(0)
+    }
+
+    #[must_use]
+    pub fn cpu_time_ratio(&self) -> Option<f32> {
+        if self.cpu_time_before() == 0 {
+            None
+        } else {
+            Some(
+                ((self.cpu_time() - self.cpu_time_before()) as f32
+                    / (self.cpu_time_timestamp() - self.cpu_time_before_timestamp()) as f32)
+                    .clamp(0.0, 1.0),
+            )
+        }
     }
 
     #[must_use]
@@ -514,9 +550,9 @@ impl Apps {
             })
             .collect();
         for process in non_system_processes {
-            app_map
-                .get_mut(process.cgroup.as_deref().unwrap_or_default())
-                .and_then(|app| app.processes.insert(process.pid, process));
+            if let Some(app) = app_map.get_mut(process.cgroup.as_deref().unwrap_or_default()) {
+                app.add_process(process);
+            }
         }
         Ok(Apps {
             apps: app_map,
@@ -540,6 +576,15 @@ impl Apps {
     #[must_use]
     pub fn system_processes(&self) -> &Vec<Process> {
         &self.system_processes
+    }
+
+    #[must_use]
+    pub fn all_processes(&self) -> Vec<Process> {
+        self.system_processes
+            .iter()
+            .chain(self.apps.values().flat_map(|app| app.processes.values()))
+            .cloned()
+            .collect()
     }
 
     /// Returns a `Vec` of running graphical applications. For more
@@ -571,16 +616,7 @@ impl Apps {
                     description: app.description(),
                     executable: Some(app.executable()),
                     memory_usage: app.memory_usage(),
-                    cpu_time_ratio: if app.cpu_time_before() == 0 {
-                        None
-                    } else {
-                        Some(
-                            ((app.cpu_time() - app.cpu_time_before()) as f32
-                                / (app.cpu_time_timestamp() - app.cpu_time_before_timestamp())
-                                    as f32)
-                                .clamp(0.0, 1.0),
-                        )
-                    },
+                    cpu_time_ratio: app.cpu_time_ratio(),
                     processes_amount: app.processes.len(),
                     containerization,
                 }
@@ -628,7 +664,7 @@ impl Apps {
             memory_usage: self
                 .system_processes
                 .iter()
-                .map(|process| process.mem_usage)
+                .map(|process| process.memory_usage)
                 .sum(),
             cpu_time_ratio: system_cpu_ratio,
             processes_amount: self.system_processes.len(),
