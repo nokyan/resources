@@ -399,6 +399,10 @@ msgstr "Typdetail"
 msgid "Process"
 msgstr "Prozess"
 
+#: src/ui/pages/processes.rs:175
+msgid "Process ID"
+msgstr "Prozess-ID"
+
 #: src/ui/pages/processes.rs:476
 msgid "There was a problem ending {}"
 msgstr "Es gab ein Problem beim Beenden von {}"
