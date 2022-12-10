@@ -15,7 +15,7 @@ msgstr ""
 "X-Generator: Gtranslator 42.0\n"
 
 msgid "N/A"
-msgstr "N. V."
+msgstr "n. v."
 
 #: data/me.nalux.Resources.desktop.in.in:2 src/application.rs:124
 msgid "Resources"
@@ -407,3 +407,7 @@ msgstr "VPN-Tunnel (WireGuard)"
 #: src/ui/window.rs:370
 msgid "Network Interface"
 msgstr "Netzwerkschnittstelle"
+
+#: src/utils/processes.rs:667
+msgid "System Processes"
+msgstr "Systemprozesse"
