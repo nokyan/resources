@@ -23,7 +23,6 @@ Since Resources requires access to the system's running processes, building it a
 ```sh
 meson . build --prefix=/usr/local
 ninja -C build install
-systemctl enable --now me.nalux.Resources
 ```
 
 ## Running
