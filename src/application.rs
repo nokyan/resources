@@ -2,7 +2,7 @@ use log::{debug, info};
 
 use adw::{prelude::*, subclass::prelude::*};
 use glib::clone;
-use gtk::{gdk, gio, glib};
+use gtk::{gio, glib};
 
 use crate::config::{self, APP_ID, PKGDATADIR, PROFILE, VERSION};
 use crate::ui::window::MainWindow;
@@ -54,7 +54,6 @@ mod imp {
             // Set icons for shell
             gtk::Window::set_default_icon_name(APP_ID);
 
-            app.setup_css();
             app.setup_gactions();
             app.setup_accels();
         }
@@ -105,18 +104,6 @@ impl Application {
     // Sets up keyboard shortcuts
     fn setup_accels(&self) {
         self.set_accels_for_action("app.quit", &["<Control>q"]);
-    }
-
-    fn setup_css(&self) {
-        let provider = gtk::CssProvider::new();
-        provider.load_from_resource("/me/nalux/Resources/style.css");
-        if let Some(display) = gdk::Display::default() {
-            gtk::StyleContext::add_provider_for_display(
-                &display,
-                &provider,
-                gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
-            );
-        }
     }
 
     fn show_about_dialog(&self) {

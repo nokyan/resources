@@ -21,7 +21,7 @@
                     <property name="wrap">true</property>
                     <property name="selectable">true</property>
                     <style>
-                      <class name="title-header"/>
+                      <class name="title-1"/>
                     </style>
                   </object>
                 </child>

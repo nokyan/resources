@@ -18,7 +18,6 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/progress_box.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/process_name_cell.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/window.ui</file>
-    <file compressed="true">style.css</file>
   </gresource>
   <gresource prefix="/me/nalux/Resources/icons/scalable/actions/">
     <file preprocess="xml-stripblanks" alias="flap-symbolic.svg">icons/flap-symbolic.svg</file>
