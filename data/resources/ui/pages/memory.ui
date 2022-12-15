@@ -40,11 +40,6 @@
                     </child>
                   </object>
                 </child>
-                <child>
-                  <object class="AdwPreferencesGroup" id="modules">
-                    <property name="title" translatable="yes">Installed Memory Modules</property>
-                  </object>
-                </child>
               </object>
             </child>
           </object>

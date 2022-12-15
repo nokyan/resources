@@ -17,16 +17,14 @@ Note: Right now, Resources requires the nightly version of Rust.
 
 ## Installing
 
-Resources uses Meson as its build system. It alse uses a daemon in order to gather some root-only information (such as your memory specs).
+Resources uses Meson as its build system.
 Since Resources requires access to the system's running processes, building it as a Flatpak is possible but not recommended as it lacks functionality.
 
 ```sh
-meson . build --prefix=/usr
+meson . build --prefix=/usr/local
 ninja -C build install
 systemctl enable --now me.nalux.Resources
 ```
-
-You can also run the daemon manually by launching `resources-daemon` with root privileges.
 
 ## Running
 
