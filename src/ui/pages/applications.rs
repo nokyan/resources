@@ -2,8 +2,8 @@ use std::cell::Ref;
 
 use adw::{prelude::*, subclass::prelude::*};
 use adw::{ResponseAppearance, Toast};
-use gtk::glib::{self, clone, BoxedAnyObject};
-use gtk::{gio, CustomSorter, SortType};
+use gtk::glib::{self, clone, BoxedAnyObject, Object};
+use gtk::{gio, CustomSorter, SortType, FilterChange, Ordering};
 
 use crate::config::PROFILE;
 use crate::ui::dialogs::app_dialog::ResAppDialog;
@@ -25,7 +25,13 @@ mod imp {
         #[template_child]
         pub toast_overlay: TemplateChild<adw::ToastOverlay>,
         #[template_child]
+        pub search_revealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub search_entry: TemplateChild<gtk::SearchEntry>,
+        #[template_child]
         pub applications_scrolled_window: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
+        pub search_button: TemplateChild<gtk::ToggleButton>,
         #[template_child]
         pub information_button: TemplateChild<gtk::Button>,
         #[template_child]
@@ -34,6 +40,7 @@ mod imp {
         pub apps: RefCell<Apps>,
         pub store: RefCell<gio::ListStore>,
         pub selection_model: RefCell<gtk::SingleSelection>,
+        pub filter_model: RefCell<gtk::FilterListModel>,
         pub sort_model: RefCell<gtk::SortListModel>,
         pub column_view: RefCell<gtk::ColumnView>,
         pub open_dialog: RefCell<Option<(String, ResAppDialog)>>,
@@ -116,7 +123,8 @@ impl ResApplications {
 
         let column_view = gtk::ColumnView::new(None::<&gtk::SingleSelection>);
         let store = gio::ListStore::new(BoxedAnyObject::static_type());
-        let sort_model = gtk::SortListModel::new(Some(&store), column_view.sorter().as_ref());
+        let filter_model = gtk::FilterListModel::new(Some(&store), Some(&gtk::CustomFilter::new(clone!(@strong self as this => move |obj| this.search_filter(obj)))));
+        let sort_model = gtk::SortListModel::new(Some(&filter_model), column_view.sorter().as_ref());
         let selection_model = gtk::SingleSelection::new(Some(&sort_model));
         column_view.set_model(Some(&selection_model));
         selection_model.set_can_unselect(true);
@@ -124,6 +132,7 @@ impl ResApplications {
 
         *imp.selection_model.borrow_mut() = selection_model;
         *imp.sort_model.borrow_mut() = sort_model;
+        *imp.filter_model.borrow_mut() = filter_model;
         *imp.store.borrow_mut() = store;
 
         let name_col_factory = gtk::SignalListItemFactory::new();
@@ -233,12 +242,14 @@ impl ResApplications {
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
                 .borrow::<SimpleItem>();
-            // floats can only be partially ordered, so just multiply our
-            // 0.0-1.0 floats by u16::MAX to get an "accurate enough" integer
-            // and then compare them instead
-            let ratio_a = (item_a.cpu_time_ratio.unwrap_or(0.0) * f32::from(u16::MAX)) as u16;
-            let ratio_b = (item_b.cpu_time_ratio.unwrap_or(0.0) * f32::from(u16::MAX)) as u16;
-            ratio_a.cmp(&ratio_b).into()
+            // we have to do this because f32s do not implement `Ord`
+            if item_a.cpu_time_ratio.unwrap_or(0.0) > item_b.cpu_time_ratio.unwrap_or(0.0) {
+                return Ordering::Larger
+            } else if item_a.cpu_time_ratio.unwrap_or(0.0) < item_b.cpu_time_ratio.unwrap_or(0.0) {
+                return Ordering::Smaller
+            } else {
+                return Ordering::Equal
+            }
         });
         cpu_col.set_sorter(Some(&cpu_col_sorter));
 
@@ -271,6 +282,17 @@ impl ResApplications {
                 imp.end_application_button.set_sensitive(model.selected() != u32::MAX && !is_system_processes);
             }),
         );
+
+        imp.search_button.connect_toggled(clone!(@strong self as this => move |button| {
+            let imp = this.imp();
+            imp.search_revealer.set_reveal_child(button.is_active());
+            imp.filter_model.borrow().filter().map(|filter| filter.changed(FilterChange::Different));
+        }));
+
+        imp.search_entry.connect_search_changed(clone!(@strong self as this => move |_| {
+            let imp = this.imp();
+            imp.filter_model.borrow().filter().map(|filter| filter.changed(FilterChange::Different));
+        }));
 
         imp.information_button
             .connect_clicked(clone!(@strong self as this => move |_| {
@@ -313,6 +335,17 @@ impl ResApplications {
             this.refresh_apps_list()
         });
         glib::timeout_add_seconds_local(2, statistics_update);
+    }
+
+    fn search_filter(&self, obj: &Object) -> bool {
+        let imp = self.imp();
+        let item = obj
+            .downcast_ref::<BoxedAnyObject>()
+            .unwrap()
+            .borrow::<SimpleItem>()
+            .clone();
+        let search_string = imp.search_entry.text().to_string().to_lowercase();
+        !imp.search_revealer.reveals_child() || item.display_name.to_lowercase().contains(&search_string) || item.description.unwrap_or_default().to_lowercase().contains(&search_string)
     }
 
     fn get_selected_simple_item(&self) -> Option<SimpleItem> {
@@ -360,7 +393,7 @@ impl ResApplications {
                 })
                 .for_each(|item_box| new_store.append(&item_box));
         }
-        imp.sort_model.borrow().set_model(Some(&new_store));
+        imp.filter_model.borrow().set_model(Some(&new_store));
         *imp.store.borrow_mut() = new_store;
 
         // find the (potentially) new index of the process that was selected

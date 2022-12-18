@@ -23,6 +23,7 @@
     <file preprocess="xml-stripblanks" alias="flap-symbolic.svg">icons/flap-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="generic-process-symbolic.svg">icons/generic-process-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="info-symbolic.svg">icons/info-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="search-symbolic.svg">icons/search-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="system-processes-symbolic.svg">icons/system-processes-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="shell-symbolic.svg">icons/shell-symbolic.svg</file>
   </gresource>
