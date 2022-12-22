@@ -3,7 +3,7 @@ use std::cell::Ref;
 use adw::{prelude::*, subclass::prelude::*};
 use adw::{ResponseAppearance, Toast};
 use gtk::glib::{self, clone, BoxedAnyObject, Object};
-use gtk::{gio, CustomSorter, SortType, Ordering, FilterChange};
+use gtk::{gio, CustomSorter, FilterChange, Ordering, SortType};
 
 use crate::config::PROFILE;
 use crate::ui::dialogs::process_dialog::ResProcessDialog;
@@ -129,8 +129,14 @@ impl ResProcesses {
 
         let column_view = gtk::ColumnView::new(None::<&gtk::SingleSelection>);
         let store = gio::ListStore::new(BoxedAnyObject::static_type());
-        let filter_model = gtk::FilterListModel::new(Some(&store), Some(&gtk::CustomFilter::new(clone!(@strong self as this => move |obj| this.search_filter(obj)))));
-        let sort_model = gtk::SortListModel::new(Some(&filter_model), column_view.sorter().as_ref());
+        let filter_model = gtk::FilterListModel::new(
+            Some(&store),
+            Some(&gtk::CustomFilter::new(
+                clone!(@strong self as this => move |obj| this.search_filter(obj)),
+            )),
+        );
+        let sort_model =
+            gtk::SortListModel::new(Some(&filter_model), column_view.sorter().as_ref());
         let selection_model = gtk::SingleSelection::new(Some(&sort_model));
         column_view.set_model(Some(&selection_model));
         selection_model.set_can_unselect(true);
@@ -325,11 +331,11 @@ impl ResProcesses {
                 .unwrap_or(0.0);
             // we have to do this because f32s do not implement `Ord`
             if item_a > item_b {
-                return Ordering::Larger
+                return Ordering::Larger;
             } else if item_a < item_b {
-                return Ordering::Smaller
+                return Ordering::Smaller;
             } else {
-                return Ordering::Equal
+                return Ordering::Equal;
             }
         });
         cpu_col.set_sorter(Some(&cpu_col_sorter));
@@ -413,7 +419,6 @@ impl ResProcesses {
         glib::timeout_add_seconds_local(2, statistics_update);
     }
 
-
     fn search_filter(&self, obj: &Object) -> bool {
         let imp = self.imp();
         let item = obj
@@ -422,7 +427,9 @@ impl ResProcesses {
             .borrow::<Process>()
             .clone();
         let search_string = imp.search_entry.text().to_string().to_lowercase();
-        !imp.search_revealer.reveals_child() || item.comm.to_lowercase().contains(&search_string) || item.commandline.to_lowercase().contains(&search_string)
+        !imp.search_revealer.reveals_child()
+            || item.comm.to_lowercase().contains(&search_string)
+            || item.commandline.to_lowercase().contains(&search_string)
     }
 
     fn get_selected_process(&self) -> Option<Process> {

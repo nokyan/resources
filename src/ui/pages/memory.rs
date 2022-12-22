@@ -1,4 +1,3 @@
-
 use adw::{prelude::*, subclass::prelude::*};
 use anyhow::Context;
 use gtk::glib::{self, clone};

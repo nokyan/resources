@@ -3,7 +3,7 @@ use std::cell::Ref;
 use adw::{prelude::*, subclass::prelude::*};
 use adw::{ResponseAppearance, Toast};
 use gtk::glib::{self, clone, BoxedAnyObject, Object};
-use gtk::{gio, CustomSorter, SortType, FilterChange, Ordering};
+use gtk::{gio, CustomSorter, FilterChange, Ordering, SortType};
 
 use crate::config::PROFILE;
 use crate::ui::dialogs::app_dialog::ResAppDialog;
@@ -123,8 +123,14 @@ impl ResApplications {
 
         let column_view = gtk::ColumnView::new(None::<&gtk::SingleSelection>);
         let store = gio::ListStore::new(BoxedAnyObject::static_type());
-        let filter_model = gtk::FilterListModel::new(Some(&store), Some(&gtk::CustomFilter::new(clone!(@strong self as this => move |obj| this.search_filter(obj)))));
-        let sort_model = gtk::SortListModel::new(Some(&filter_model), column_view.sorter().as_ref());
+        let filter_model = gtk::FilterListModel::new(
+            Some(&store),
+            Some(&gtk::CustomFilter::new(
+                clone!(@strong self as this => move |obj| this.search_filter(obj)),
+            )),
+        );
+        let sort_model =
+            gtk::SortListModel::new(Some(&filter_model), column_view.sorter().as_ref());
         let selection_model = gtk::SingleSelection::new(Some(&sort_model));
         column_view.set_model(Some(&selection_model));
         selection_model.set_can_unselect(true);
@@ -244,11 +250,11 @@ impl ResApplications {
                 .borrow::<SimpleItem>();
             // we have to do this because f32s do not implement `Ord`
             if item_a.cpu_time_ratio.unwrap_or(0.0) > item_b.cpu_time_ratio.unwrap_or(0.0) {
-                return Ordering::Larger
+                return Ordering::Larger;
             } else if item_a.cpu_time_ratio.unwrap_or(0.0) < item_b.cpu_time_ratio.unwrap_or(0.0) {
-                return Ordering::Smaller
+                return Ordering::Smaller;
             } else {
-                return Ordering::Equal
+                return Ordering::Equal;
             }
         });
         cpu_col.set_sorter(Some(&cpu_col_sorter));
@@ -348,7 +354,13 @@ impl ResApplications {
             .borrow::<SimpleItem>()
             .clone();
         let search_string = imp.search_entry.text().to_string().to_lowercase();
-        !imp.search_revealer.reveals_child() || item.display_name.to_lowercase().contains(&search_string) || item.description.unwrap_or_default().to_lowercase().contains(&search_string)
+        !imp.search_revealer.reveals_child()
+            || item.display_name.to_lowercase().contains(&search_string)
+            || item
+                .description
+                .unwrap_or_default()
+                .to_lowercase()
+                .contains(&search_string)
     }
 
     fn get_selected_simple_item(&self) -> Option<SimpleItem> {
