@@ -2,27 +2,6 @@ use anyhow::{Context, Result};
 use nparse::KVStrToJson;
 use serde_json::Value;
 
-#[derive(Debug, Clone)]
-pub struct MemInfo {
-    pub mem_type: Option<String>,
-    pub total_slots: Option<usize>,
-    pub slots_used: Option<usize>,
-    pub speed: Option<String>,
-}
-
-pub fn mem_info() -> MemInfo {
-    let mem_type = None;
-    let total_slots = None;
-    let slots_used = None;
-    let speed = None;
-    MemInfo {
-        mem_type,
-        total_slots,
-        slots_used,
-        speed,
-    }
-}
-
 fn proc_meminfo() -> Result<Value, anyhow::Error> {
     std::fs::read_to_string("/proc/meminfo")
         .with_context(|| "unable to read /proc/meminfo")?
