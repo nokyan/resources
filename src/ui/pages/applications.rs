@@ -250,11 +250,11 @@ impl ResApplications {
                 .borrow::<SimpleItem>();
             // we have to do this because f32s do not implement `Ord`
             if item_a.cpu_time_ratio.unwrap_or(0.0) > item_b.cpu_time_ratio.unwrap_or(0.0) {
-                return Ordering::Larger;
+                Ordering::Larger
             } else if item_a.cpu_time_ratio.unwrap_or(0.0) < item_b.cpu_time_ratio.unwrap_or(0.0) {
-                return Ordering::Smaller;
+                Ordering::Smaller
             } else {
-                return Ordering::Equal;
+                Ordering::Equal
             }
         });
         cpu_col.set_sorter(Some(&cpu_col_sorter));
@@ -292,7 +292,9 @@ impl ResApplications {
         imp.search_button.connect_toggled(clone!(@strong self as this => move |button| {
             let imp = this.imp();
             imp.search_revealer.set_reveal_child(button.is_active());
-            imp.filter_model.borrow().filter().map(|filter| filter.changed(FilterChange::Different));
+            if let Some(filter) = imp.filter_model.borrow().filter() {
+                filter.changed(FilterChange::Different)
+            }
             if button.is_active() {
                 imp.search_entry.grab_focus();
             }
@@ -300,7 +302,9 @@ impl ResApplications {
 
         imp.search_entry.connect_search_changed(clone!(@strong self as this => move |_| {
             let imp = this.imp();
-            imp.filter_model.borrow().filter().map(|filter| filter.changed(FilterChange::Different));
+            if let Some(filter) = imp.filter_model.borrow().filter() {
+                filter.changed(FilterChange::Different)
+            }
         }));
 
         imp.information_button
