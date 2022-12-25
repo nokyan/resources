@@ -14,6 +14,8 @@ use std::{
 use glob::glob;
 use pci_ids::Device;
 
+use crate::i18n::i18n;
+
 const VID_AMD: u16 = 4098;
 const VID_INTEL: u16 = 32902;
 const VID_NVIDIA: u16 = 4318;
@@ -74,14 +76,12 @@ impl GPU {
 
             gpu_vec.push(GPU {
                 device: Device::from_vid_pid(vid, pid),
-                pci_slot: uevent_contents.get("PCI_SLOT_NAME").map_or_else(
-                    || gettextrs::gettext("N/A"),
-                    std::string::ToString::to_string,
-                ),
-                driver: uevent_contents.get("DRIVER").map_or_else(
-                    || gettextrs::gettext("N/A"),
-                    std::string::ToString::to_string,
-                ),
+                pci_slot: uevent_contents
+                    .get("PCI_SLOT_NAME")
+                    .map_or_else(|| i18n("N/A"), std::string::ToString::to_string),
+                driver: uevent_contents
+                    .get("DRIVER")
+                    .map_or_else(|| i18n("N/A"), std::string::ToString::to_string),
                 sysfs_path: entry,
                 hwmon_paths: hwmon_vec,
             });

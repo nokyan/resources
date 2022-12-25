@@ -1,7 +1,7 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib;
 
-use crate::config::PROFILE;
+use crate::{config::PROFILE, i18n::i18n};
 
 mod imp {
     use super::*;
@@ -65,9 +65,9 @@ impl ResBoolBox {
     pub fn set_bool(&self, b: bool) {
         let imp = self.imp();
         if b {
-            imp.info_label.set_label(&gettextrs::gettext("Yes"));
+            imp.info_label.set_label(&i18n("Yes"));
         } else {
-            imp.info_label.set_label(&gettextrs::gettext("No"));
+            imp.info_label.set_label(&i18n("No"));
         }
     }
 }

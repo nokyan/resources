@@ -5,6 +5,7 @@ use glib::clone;
 use gtk::{gio, glib};
 
 use crate::config::{self, APP_ID, PKGDATADIR, PROFILE, VERSION};
+use crate::i18n::i18n;
 use crate::ui::window::MainWindow;
 
 mod imp {
@@ -108,9 +109,9 @@ impl Application {
 
     fn show_about_dialog(&self) {
         let about = adw::AboutWindow::builder()
-            .application_name(&gettextrs::gettext("Resources"))
+            .application_name(&i18n("Resources"))
             .application_icon(config::APP_ID)
-            .developer_name(&gettextrs::gettext("The Nalux Team"))
+            .developer_name(&i18n("The Nalux Team"))
             .developers(vec!["ManicRobot <manicrobot@protonmail.com>".to_string()])
             .license_type(gtk::License::Gpl30)
             .version(config::VERSION)
@@ -118,11 +119,11 @@ impl Application {
             .build();
 
         about.add_link(
-            &gettextrs::gettext("Report Issues"),
+            &i18n("Report Issues"),
             "https://github.com/NaluxOS/resources/issues",
         );
 
-        about.add_credit_section(Some(&gettextrs::gettext("Icon by")), &["Avhiren"]);
+        about.add_credit_section(Some(&i18n("Icon by")), &["Avhiren"]);
 
         about.set_transient_for(Some(&self.main_window()));
         about.set_modal(true);

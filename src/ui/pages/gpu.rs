@@ -2,6 +2,7 @@ use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
 
 use crate::config::PROFILE;
+use crate::i18n::{i18n, i18n_f};
 use crate::ui::widgets::info_box::ResInfoBox;
 use crate::utils::gpu::GPU;
 use crate::utils::units::{to_largest_unit, Base};
@@ -100,20 +101,18 @@ impl ResGPU {
     pub fn setup_widgets(&self) {
         let imp = self.imp();
         let gpu = &imp.gpu.get().unwrap();
-        imp.gpu_usage.set_title_label("GPU Usage");
+        imp.gpu_usage.set_title_label(&i18n("GPU Usage"));
         imp.gpu_usage.set_data_points_max_amount(60);
         imp.gpu_usage.set_graph_color(230, 97, 0);
-        imp.vram_usage.set_title_label("Video Memory Usage");
+        imp.vram_usage.set_title_label(&i18n("Video Memory Usage"));
         imp.vram_usage.set_data_points_max_amount(60);
         imp.vram_usage.set_graph_color(192, 28, 40);
         imp.gpu_name.set_label(
             &gpu.get_name()
-                .unwrap_or(gettextrs::gettext!("GPU {}", imp.number.get().unwrap())),
+                .unwrap_or(i18n_f("GPU {}", &[&imp.number.get().unwrap().to_string()])),
         );
-        imp.manufacturer.set_info_label(
-            &gpu.get_vendor()
-                .unwrap_or_else(|_| gettextrs::gettext("N/A")),
-        );
+        imp.manufacturer
+            .set_info_label(&gpu.get_vendor().unwrap_or_else(|_| i18n("N/A")));
         imp.pci_slot.set_info_label(&gpu.pci_slot);
         imp.driver_used.set_info_label(&gpu.driver);
     }
@@ -130,7 +129,7 @@ impl ResGPU {
                     imp.gpu_usage.push_data_point(gpu_usage as f64 / 100.0);
                     imp.gpu_usage.set_graph_visible(true);
                 } else {
-                    imp.gpu_usage.set_info_label(&gettextrs::gettext("N/A"));
+                    imp.gpu_usage.set_info_label(&i18n("N/A"));
                     imp.gpu_usage.push_data_point(0.0);
                     imp.gpu_usage.set_graph_visible(false);
                 }
@@ -143,34 +142,34 @@ impl ResGPU {
                     imp.vram_usage.push_data_point((used_vram as f64) / (total_vram as f64));
                     imp.vram_usage.set_graph_visible(true);
                 } else {
-                    imp.vram_usage.set_info_label(&gettextrs::gettext("N/A"));
+                    imp.vram_usage.set_info_label(&i18n("N/A"));
                     imp.vram_usage.push_data_point(0.0);
                     imp.vram_usage.set_graph_visible(false);
                 }
 
-                // TODO: handle the user's choice of temperatue unit
+                // TODO: handle the user's choice of temperature unit
                 let temp_unit = "C";
-                imp.temperature.set_info_label(&gpu.get_gpu_temp().await.map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x} °{temp_unit}")));
+                imp.temperature.set_info_label(&gpu.get_gpu_temp().await.map_or_else(|_| i18n("N/A"), |x| format!("{x} °{temp_unit}")));
 
-                imp.power_usage.set_info_label(&gpu.get_power_usage().await.map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x:.2} W")));
+                imp.power_usage.set_info_label(&gpu.get_power_usage().await.map_or_else(|_| i18n("N/A"), |x| format!("{x:.2} W")));
 
                 if let Ok(gpu_clockspeed) = gpu.get_gpu_speed().await {
                     let gpu_clockspeed_unit = to_largest_unit(gpu_clockspeed, &Base::Decimal);
                     imp.gpu_clockspeed.set_info_label(&format!("{:.2} {}Hz", gpu_clockspeed_unit.0, gpu_clockspeed_unit.1));
                 } else {
-                    imp.gpu_clockspeed.set_info_label(&gettextrs::gettext("N/A"));
+                    imp.gpu_clockspeed.set_info_label(&i18n("N/A"));
                 }
 
                 if let Ok(vram_clockspeed) = gpu.get_vram_speed().await {
                     let vram_clockspeed_unit = to_largest_unit(vram_clockspeed, &Base::Decimal);
                     imp.vram_clockspeed.set_info_label(&format!("{:.2} {}Hz", vram_clockspeed_unit.0, vram_clockspeed_unit.1));
                 } else {
-                    imp.vram_clockspeed.set_info_label(&gettextrs::gettext("N/A"));
+                    imp.vram_clockspeed.set_info_label(&i18n("N/A"));
                 }
 
-                imp.current_power_cap.set_info_label(&gpu.get_power_cap().await.map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x:.2} W")));
+                imp.current_power_cap.set_info_label(&gpu.get_power_cap().await.map_or_else(|_| i18n("N/A"), |x| format!("{x:.2} W")));
 
-                imp.max_power_cap.set_info_label(&gpu.get_power_cap_max().await.map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x:.2} W")));
+                imp.max_power_cap.set_info_label(&gpu.get_power_cap_max().await.map_or_else(|_| i18n("N/A"), |x| format!("{x:.2} W")));
 
                 timeout_future_seconds(1).await;
             }

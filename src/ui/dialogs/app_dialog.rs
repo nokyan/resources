@@ -2,6 +2,7 @@ use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib;
 
 use crate::config::PROFILE;
+use crate::i18n::i18n;
 use crate::ui::window::MainWindow;
 use crate::utils::processes::{Containerization, SimpleItem};
 use crate::utils::units::{to_largest_unit, Base};
@@ -89,9 +90,9 @@ impl ResAppDialog {
 
         imp.name.set_label(&app.display_name);
 
-        imp.cpu_usage.set_info_label(&gettextrs::gettext("N/A"));
+        imp.cpu_usage.set_info_label(&i18n("N/A"));
 
-        imp.memory_usage.set_info_label(&gettextrs::gettext("N/A"));
+        imp.memory_usage.set_info_label(&i18n("N/A"));
 
         if let Some(description) = &app.description {
             imp.description.set_label(description);
@@ -105,12 +106,11 @@ impl ResAppDialog {
             imp.id.set_visible(false);
         }
 
-        imp.processes_amount
-            .set_info_label(&gettextrs::gettext("N/A"));
+        imp.processes_amount.set_info_label(&i18n("N/A"));
 
         let containerized = match app.containerization {
-            Containerization::None => gettextrs::gettext("No"),
-            Containerization::Flatpak => gettextrs::gettext("Yes (Flatpak)"),
+            Containerization::None => i18n("No"),
+            Containerization::Flatpak => i18n("Yes (Flatpak)"),
         };
         imp.containerized.set_info_label(&containerized);
     }

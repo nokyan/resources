@@ -2,6 +2,7 @@ use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
 
 use crate::config::PROFILE;
+use crate::i18n::i18n;
 use crate::ui::widgets::info_box::ResInfoBox;
 use crate::utils::network::NetworkInterface;
 use crate::utils::units::{to_largest_unit, Base};
@@ -85,27 +86,18 @@ impl ResNetwork {
         let imp = self.imp();
         imp.interface_name
             .set_label(&network_interface.display_name());
-        imp.manufacturer.set_info_label(
-            &network_interface
-                .vendor
-                .unwrap_or_else(|| gettextrs::gettext("N/A")),
-        );
-        imp.driver.set_info_label(
-            &network_interface
-                .driver_name
-                .unwrap_or_else(|| gettextrs::gettext("N/A")),
-        );
+        imp.manufacturer
+            .set_info_label(&network_interface.vendor.unwrap_or_else(|| i18n("N/A")));
+        imp.driver
+            .set_info_label(&network_interface.driver_name.unwrap_or_else(|| i18n("N/A")));
         imp.interface.set_info_label(
             network_interface
                 .interface_name
                 .to_str()
-                .unwrap_or(&gettextrs::gettext("N/A")),
+                .unwrap_or(&i18n("N/A")),
         );
-        imp.hw_address.set_info_label(
-            &network_interface
-                .hw_address
-                .unwrap_or_else(|| gettextrs::gettext("N/A")),
-        );
+        imp.hw_address
+            .set_info_label(&network_interface.hw_address.unwrap_or_else(|| i18n("N/A")));
     }
 
     pub fn setup_listener(&self, network_interface: NetworkInterface) {

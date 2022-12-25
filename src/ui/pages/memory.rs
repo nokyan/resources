@@ -3,6 +3,7 @@ use anyhow::Context;
 use gtk::glib::{self, clone};
 
 use crate::config::PROFILE;
+use crate::i18n::i18n;
 use crate::utils::memory::{get_available_memory, get_free_swap, get_total_memory, get_total_swap};
 use crate::utils::units::{to_largest_unit, Base};
 use crate::utils::NaNDefault;
@@ -72,10 +73,10 @@ impl ResMemory {
 
     pub fn setup_widgets(&self) {
         let imp = self.imp();
-        imp.memory.set_title_label(&gettextrs::gettext("Memory"));
+        imp.memory.set_title_label(&i18n("Memory"));
         imp.memory.set_graph_color(129, 61, 156);
         imp.memory.set_data_points_max_amount(60);
-        imp.swap.set_title_label(&gettextrs::gettext("Swap"));
+        imp.swap.set_title_label(&i18n("Swap"));
         imp.swap.set_graph_color(46, 194, 126);
         imp.swap.set_data_points_max_amount(60);
     }
@@ -101,7 +102,7 @@ impl ResMemory {
             if total_swap == 0 {
                 imp.swap.push_data_point(0.0);
                 imp.swap.set_graph_visible(false);
-                imp.swap.set_info_label(&gettextrs::gettext("N/A"));
+                imp.swap.set_info_label(&i18n("N/A"));
             } else {
                 imp.swap.push_data_point(swap_fraction);
                 imp.swap.set_graph_visible(true);

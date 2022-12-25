@@ -2,6 +2,7 @@ use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib;
 
 use crate::config::PROFILE;
+use crate::i18n::i18n;
 use crate::ui::window::MainWindow;
 use crate::utils::processes::{Containerization, Process};
 use crate::utils::units::{to_largest_unit, Base};
@@ -87,9 +88,9 @@ impl ResProcessDialog {
 
         imp.name.set_label(&process.comm);
 
-        imp.cpu_usage.set_info_label(&gettextrs::gettext("N/A"));
+        imp.cpu_usage.set_info_label(&i18n("N/A"));
 
-        imp.memory_usage.set_info_label(&gettextrs::gettext("N/A"));
+        imp.memory_usage.set_info_label(&i18n("N/A"));
 
         imp.pid.set_info_label(&process.pid.to_string());
 
@@ -98,22 +99,14 @@ impl ResProcessDialog {
 
         imp.user.set_info_label(user);
 
-        imp.cgroup.set_info_label(
-            &process
-                .cgroup
-                .clone()
-                .unwrap_or_else(|| gettextrs::gettext("N/A")),
-        );
-        imp.cgroup.set_tooltip(Some(
-            &process
-                .cgroup
-                .clone()
-                .unwrap_or_else(|| gettextrs::gettext("N/A")),
-        ));
+        imp.cgroup
+            .set_info_label(&process.cgroup.clone().unwrap_or_else(|| i18n("N/A")));
+        imp.cgroup
+            .set_tooltip(Some(&process.cgroup.clone().unwrap_or_else(|| i18n("N/A"))));
 
         let containerized = match process.containerization {
-            Containerization::None => gettextrs::gettext("No"),
-            Containerization::Flatpak => gettextrs::gettext("Yes (Flatpak)"),
+            Containerization::None => i18n("No"),
+            Containerization::Flatpak => i18n("Yes (Flatpak)"),
         };
         imp.containerized.set_info_label(&containerized);
     }

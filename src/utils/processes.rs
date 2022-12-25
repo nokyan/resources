@@ -11,7 +11,7 @@ use gtk::{
     prelude::AppInfoExt,
 };
 
-use crate::config;
+use crate::{config, i18n::i18n};
 
 static PAGESIZE: OnceCell<usize> = OnceCell::new();
 
@@ -661,7 +661,7 @@ impl Apps {
         };
         return_vec.push(SimpleItem {
             id: None,
-            display_name: gettextrs::gettext("System Processes"),
+            display_name: i18n("System Processes"),
             icon: ThemedIcon::new("system-processes").into(),
             description: None,
             executable: None,

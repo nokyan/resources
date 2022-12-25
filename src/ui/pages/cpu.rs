@@ -4,6 +4,7 @@ use gtk::builders::FlowBoxChildBuilder;
 use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
 
 use crate::config::PROFILE;
+use crate::i18n::{i18n, i18n_f};
 use crate::ui::widgets::graph_box::ResGraphBox;
 use crate::utils::units::{to_largest_unit, Base};
 use crate::utils::{cpu, NaNDefault};
@@ -102,14 +103,11 @@ impl ResCPU {
             .with_context(|| "unable to get CPUInfo")
             .unwrap_or_default();
         let imp = self.imp();
-        imp.cpu_name.set_label(
-            &cpu_info
-                .model_name
-                .unwrap_or_else(|| gettextrs::gettext("N/A")),
-        );
+        imp.cpu_name
+            .set_label(&cpu_info.model_name.unwrap_or_else(|| i18n("N/A")));
 
-        imp.total_cpu.set_title_label(&gettextrs::gettext("CPU"));
-        imp.total_cpu.set_info_label(&gettextrs::gettext("N/A"));
+        imp.total_cpu.set_title_label(&i18n("CPU"));
+        imp.total_cpu.set_info_label(&i18n("N/A"));
         imp.total_cpu.set_data_points_max_amount(60);
         imp.total_cpu.set_graph_color(28, 113, 216);
 
@@ -121,8 +119,8 @@ impl ResCPU {
             imp.logical_switch.set_sensitive(true);
             for i in 0..logical_cpus {
                 let thread_box = ResGraphBox::new();
-                thread_box.set_info_label(&gettextrs::gettext!("CPU {}", i + 1));
-                thread_box.set_title_label(&gettextrs::gettext("N/A"));
+                thread_box.set_info_label(&i18n_f("CPU {}", &[&(i + 1).to_string()]));
+                thread_box.set_title_label(&i18n("N/A"));
                 thread_box.set_graph_height_request(72);
                 thread_box.set_data_points_max_amount(60);
                 thread_box.set_graph_color(28, 113, 216);
@@ -137,7 +135,7 @@ impl ResCPU {
 
         imp.max_speed
             .set_info_label(&cpu_info.max_speed.map_or_else(
-                || gettextrs::gettext("N/A"),
+                || i18n("N/A"),
                 |x| {
                     format!(
                         "{:.2} {}Hz",
@@ -150,32 +148,26 @@ impl ResCPU {
         imp.logical_cpus.set_info_label(
             &cpu_info
                 .logical_cpus
-                .map_or_else(|| gettextrs::gettext("N/A"), |x| x.to_string()),
+                .map_or_else(|| i18n("N/A"), |x| x.to_string()),
         );
 
         imp.physical_cpus.set_info_label(
             &cpu_info
                 .physical_cpus
-                .map_or_else(|| gettextrs::gettext("N/A"), |x| x.to_string()),
+                .map_or_else(|| i18n("N/A"), |x| x.to_string()),
         );
 
         imp.sockets.set_info_label(
             &cpu_info
                 .sockets
-                .map_or_else(|| gettextrs::gettext("N/A"), |x| x.to_string()),
+                .map_or_else(|| i18n("N/A"), |x| x.to_string()),
         );
 
-        imp.virtualization.set_info_label(
-            &cpu_info
-                .virtualization
-                .unwrap_or_else(|| gettextrs::gettext("N/A")),
-        );
+        imp.virtualization
+            .set_info_label(&cpu_info.virtualization.unwrap_or_else(|| i18n("N/A")));
 
-        imp.architecture.set_info_label(
-            &cpu_info
-                .architecture
-                .unwrap_or_else(|| gettextrs::gettext("N/A")),
-        );
+        imp.architecture
+            .set_info_label(&cpu_info.architecture.unwrap_or_else(|| i18n("N/A")));
     }
 
     pub fn setup_signals(&self) {

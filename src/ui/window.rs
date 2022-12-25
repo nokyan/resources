@@ -15,6 +15,7 @@ use crate::config::{APP_ID, PROFILE};
 use crate::dbus_proxies::udisks2::{
     BlockProxy, DriveProxy, PartitionProxy, SwapspaceProxy, UDisks2ManagerProxy,
 };
+use crate::i18n::{i18n, i18n_f};
 use crate::ui::pages::drive::ResDrive;
 use crate::ui::pages::network::ResNetwork;
 use crate::utils::gpu::GPU;
@@ -172,11 +173,11 @@ impl MainWindow {
                 page.init(gpu.clone(), i);
                 if gpus.len() > 1 {
                     imp.content_stack
-                        .add_titled(&page, None, &gettextrs::gettext!("GPU {}", i));
+                        .add_titled(&page, None, &i18n_f("GPU {}", &[&i.to_string()]));
                     i += 1;
                 } else {
                     imp.content_stack
-                        .add_titled(&page, None, &gettextrs::gettext("GPU"));
+                        .add_titled(&page, None, &i18n("GPU"));
                     i += 1;
                 }
             }
@@ -345,12 +346,15 @@ impl MainWindow {
         let (capacity_trunc, prefix) = to_largest_unit(capacity as f64, &Base::Decimal);
         if is_cd_dvd {
             imp.content_stack
-                .add_titled(&drive_page, None, &gettextrs::gettext("CD/DVD Drive"));
+                .add_titled(&drive_page, None, &i18n("CD/DVD Drive"));
         } else {
             imp.content_stack.add_titled(
                 &drive_page,
                 None,
-                &gettextrs::gettext!("{} {}B Drive", capacity_trunc.round(), prefix),
+                &i18n_f(
+                    "{} {}B Drive",
+                    &[&capacity_trunc.round().to_string(), prefix],
+                ),
             );
         }
         imp.drive_pages.borrow_mut().insert(key, drive_page);
@@ -374,14 +378,14 @@ impl MainWindow {
                 let page = ResNetwork::new();
                 if let Ok(interface) = NetworkInterface::from_sysfs(&dir_path).await {
                     let sidebar_title = match interface.interface_type {
-                        InterfaceType::Ethernet => gettextrs::gettext("Ethernet Connection"),
-                        InterfaceType::InfiniBand => gettextrs::gettext("InfiniBand Connection"),
-                        InterfaceType::Slip => gettextrs::gettext("Serial Line IP Connection"),
-                        InterfaceType::Wlan => gettextrs::gettext("Wi-Fi Connection"),
-                        InterfaceType::Wwan => gettextrs::gettext("WWAN Connection"),
-                        InterfaceType::Bluetooth => gettextrs::gettext("Bluetooth Tether"),
-                        InterfaceType::Wireguard => gettextrs::gettext("VPN Tunnel (WireGuard)"),
-                        InterfaceType::Other => gettextrs::gettext("Network Interface"),
+                        InterfaceType::Ethernet => i18n("Ethernet Connection"),
+                        InterfaceType::InfiniBand => i18n("InfiniBand Connection"),
+                        InterfaceType::Slip => i18n("Serial Line IP Connection"),
+                        InterfaceType::Wlan => i18n("Wi-Fi Connection"),
+                        InterfaceType::Wwan => i18n("WWAN Connection"),
+                        InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
+                        InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
+                        InterfaceType::Other => i18n("Network Interface"),
                     };
                     page.init(interface);
                     imp.content_stack.add_titled(&page, None, &sidebar_title);

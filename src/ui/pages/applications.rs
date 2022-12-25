@@ -6,6 +6,7 @@ use gtk::glib::{self, clone, timeout_future_seconds, BoxedAnyObject, MainContext
 use gtk::{gio, CustomSorter, FilterChange, Ordering, SortType};
 
 use crate::config::PROFILE;
+use crate::i18n::{i18n, i18n_f, ni18n_f};
 use crate::ui::dialogs::app_dialog::ResAppDialog;
 use crate::ui::widgets::application_name_cell::ResApplicationNameCell;
 use crate::ui::window::MainWindow;
@@ -142,10 +143,8 @@ impl ResApplications {
         *imp.store.borrow_mut() = store;
 
         let name_col_factory = gtk::SignalListItemFactory::new();
-        let name_col = gtk::ColumnViewColumn::new(
-            Some(&gettextrs::gettext("Application")),
-            Some(&name_col_factory),
-        );
+        let name_col =
+            gtk::ColumnViewColumn::new(Some(&i18n("Application")), Some(&name_col_factory));
         name_col.set_resizable(true);
         name_col.set_expand(true);
         name_col_factory.connect_setup(move |_factory, item| {
@@ -179,10 +178,8 @@ impl ResApplications {
         name_col.set_sorter(Some(&name_col_sorter));
 
         let memory_col_factory = gtk::SignalListItemFactory::new();
-        let memory_col = gtk::ColumnViewColumn::new(
-            Some(&gettextrs::gettext("Memory")),
-            Some(&memory_col_factory),
-        );
+        let memory_col =
+            gtk::ColumnViewColumn::new(Some(&i18n("Memory")), Some(&memory_col_factory));
         memory_col.set_resizable(true);
         memory_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -215,10 +212,7 @@ impl ResApplications {
         memory_col.set_sorter(Some(&memory_col_sorter));
 
         let cpu_col_factory = gtk::SignalListItemFactory::new();
-        let cpu_col = gtk::ColumnViewColumn::new(
-            Some(&gettextrs::gettext("Processor")),
-            Some(&cpu_col_factory),
-        );
+        let cpu_col = gtk::ColumnViewColumn::new(Some(&i18n("Processor")), Some(&cpu_col_factory));
         cpu_col.set_resizable(true);
         cpu_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -451,13 +445,13 @@ impl ResApplications {
             let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(&gettextrs::gettext!("End {}?", app.display_name()))
-            .body(&gettextrs::gettext("Unsaved work might be lost."))
+            .heading(&i18n_f("End {}?", &[&app.display_name()]))
+            .body(&i18n("Unsaved work might be lost."))
             .build();
-            dialog.add_response("yes", &gettextrs::gettext("End Application"));
+            dialog.add_response("yes", &i18n("End Application"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
             dialog.set_default_response(Some("no"));
-            dialog.add_response("no", &gettextrs::gettext("Cancel"));
+            dialog.add_response("no", &i18n("Cancel"));
             dialog.set_close_response("no");
             dialog.connect_response(None, clone!(@strong app, @weak self as this => move |_, response| {
                 if response == "yes" {
@@ -467,9 +461,9 @@ impl ResApplications {
                     let processes_successful = res.iter().flatten().count();
                     let processes_unsuccessful = processes_tried - processes_successful;
                     if processes_tried == processes_successful {
-                        imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("Successfully ended {}", app.display_name())));
+                        imp.toast_overlay.add_toast(&Toast::new(&i18n_f("Successfully ended {}", &[&app.display_name()])));
                     } else {
-                        imp.toast_overlay.add_toast(&Toast::new(&gettextrs::ngettext!("There was a problem ending a process", "There were problems ending {} processes", processes_unsuccessful as u32, processes_unsuccessful)));
+                        imp.toast_overlay.add_toast(&Toast::new(&ni18n_f("There was a problem ending a process", "There were problems ending {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
                     }
                 }
             }));
@@ -487,13 +481,13 @@ impl ResApplications {
             let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(&gettextrs::gettext!("Kill {}?", app.display_name()))
-            .body(&gettextrs::gettext("Killing an application can come with serious risks such as losing data and security implications. Use with caution."))
+            .heading(&i18n_f("Kill {}?", &[&app.display_name()]))
+            .body(&i18n("Killing an application can come with serious risks such as losing data and security implications. Use with caution."))
             .build();
-            dialog.add_response("yes", &gettextrs::gettext("Kill Application"));
+            dialog.add_response("yes", &i18n("Kill Application"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
             dialog.set_default_response(Some("no"));
-            dialog.add_response("no", &gettextrs::gettext("Cancel"));
+            dialog.add_response("no", &i18n("Cancel"));
             dialog.set_close_response("no");
             dialog.connect_response(None, clone!(@strong app, @weak self as this => move |_, response| {
                 if response == "yes" {
@@ -503,9 +497,9 @@ impl ResApplications {
                     let processes_successful = res.iter().flatten().count();
                     let processes_unsuccessful = processes_tried - processes_successful;
                     if processes_tried == processes_successful {
-                        imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("Successfully killed {}", app.display_name())));
+                        imp.toast_overlay.add_toast(&Toast::new(&i18n_f("Successfully killed {}", &[&app.display_name()])));
                     } else {
-                        imp.toast_overlay.add_toast(&Toast::new(&gettextrs::ngettext!("There was a problem killing a process", "There were problems killing {} processes", processes_unsuccessful as u32, processes_unsuccessful)));
+                        imp.toast_overlay.add_toast(&Toast::new(&ni18n_f("There was a problem killing a process", "There were problems killing {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
                     }
                 }
             }));
@@ -523,13 +517,13 @@ impl ResApplications {
             let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(&gettextrs::gettext!("Halt {}?", app.display_name()))
-            .body(&gettextrs::gettext("Halting an application can come with serious risks such as losing data and security implications. Use with caution."))
+            .heading(&i18n_f("Halt {}?", &[&app.display_name()]))
+            .body(&i18n("Halting an application can come with serious risks such as losing data and security implications. Use with caution."))
             .build();
-            dialog.add_response("yes", &gettextrs::gettext("Halt Application"));
+            dialog.add_response("yes", &i18n("Halt Application"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
             dialog.set_default_response(Some("no"));
-            dialog.add_response("no", &gettextrs::gettext("Cancel"));
+            dialog.add_response("no", &i18n("Cancel"));
             dialog.set_close_response("no");
             dialog.connect_response(None, clone!(@strong app, @weak self as this => move |_, response| {
                 if response == "yes" {
@@ -539,9 +533,9 @@ impl ResApplications {
                     let processes_successful = res.iter().flatten().count();
                     let processes_unsuccessful = processes_tried - processes_successful;
                     if processes_tried == processes_successful {
-                        imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("Successfully halted {}", app.display_name())));
+                        imp.toast_overlay.add_toast(&Toast::new(&i18n_f("Successfully halted {}", &[&app.display_name()])));
                     } else {
-                        imp.toast_overlay.add_toast(&Toast::new(&gettextrs::ngettext!("There was a problem halting a process", "There were problems halting {} processes", processes_unsuccessful as u32, processes_unsuccessful)));
+                        imp.toast_overlay.add_toast(&Toast::new(&ni18n_f("There was a problem halting a process", "There were problems halting {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
                     }
                 }
             }));
@@ -561,9 +555,9 @@ impl ResApplications {
             let processes_successful = res.iter().flatten().count();
             let processes_unsuccessful = processes_tried - processes_successful;
             if processes_tried == processes_successful {
-                imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("Successfully continued {}", app.display_name())));
+                imp.toast_overlay.add_toast(&Toast::new(&i18n_f("Successfully continued {}", &[&app.display_name()])));
             } else {
-                imp.toast_overlay.add_toast(&Toast::new(&gettextrs::ngettext!("There was a problem continuing a process", "There were problems continuing {} processes", processes_unsuccessful as u32, processes_unsuccessful)));
+                imp.toast_overlay.add_toast(&Toast::new(&ni18n_f("There was a problem continuing a process", "There were problems continuing {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
             }
         }
     }

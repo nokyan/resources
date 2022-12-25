@@ -1,47 +1,46 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the resources package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# ManicRobot <manicrobot@protonmail.com>, 2022.
-#
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2022-12-25 15:53+0100\n"
-"Last-Translator: ManicRobot <manicrobot@protonmail.com>\n"
-"Language-Team: German - Germany <manicrobot@protonmail.com>\n"
-"Language: de_DE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.1.1\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: data/me.nalux.Resources.desktop.in.in:3
 #: data/me.nalux.Resources.metainfo.xml.in.in:6 src/application.rs:112
 msgid "Resources"
-msgstr "Ressourcen"
+msgstr ""
 
 #: data/me.nalux.Resources.desktop.in.in:4
 #: data/me.nalux.Resources.metainfo.xml.in.in:7
 msgid "Monitor your Resources and Processes"
-msgstr "Ressourcen und Prozesse überwachen"
+msgstr ""
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/me.nalux.Resources.desktop.in.in:10
 msgid ""
 "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 msgstr ""
-"System;Ressourcen;Monitor;Überwachung;Prozesse;Benutzung;Auslastung;Task;"
-"Manager;CPU;RAM;Speicher;GPU;"
 
 #: data/me.nalux.Resources.metainfo.xml.in.in:9
 msgid "A simple yet powerful monitor for your system resources and processes."
 msgstr ""
-"Ein starker und einfacher Monitor für Ihre Systemressourcen und Prozesse."
 
 #: data/resources/ui/dialogs/app_dialog.ui:9
 msgid "Application Information"
-msgstr "Anwendungsinformationen"
+msgstr ""
 
 #: data/resources/ui/dialogs/app_dialog.ui:71
 #: data/resources/ui/dialogs/process_dialog.ui:54
@@ -49,14 +48,14 @@ msgstr "Anwendungsinformationen"
 #: data/resources/ui/pages/drive.ui:30 data/resources/ui/pages/gpu.ui:30
 #: data/resources/ui/pages/memory.ui:30 data/resources/ui/pages/network.ui:30
 msgid "Usage"
-msgstr "Auslastung"
+msgstr ""
 
 #: data/resources/ui/dialogs/app_dialog.ui:74
 #: data/resources/ui/dialogs/process_dialog.ui:57
 #: data/resources/ui/window.ui:77 src/ui/pages/applications.rs:215
 #: src/ui/pages/processes.rs:287
 msgid "Processor"
-msgstr "Prozessor"
+msgstr ""
 
 #: data/resources/ui/dialogs/app_dialog.ui:79
 #: data/resources/ui/dialogs/process_dialog.ui:62
@@ -64,242 +63,242 @@ msgstr "Prozessor"
 #: src/ui/pages/applications.rs:182 src/ui/pages/memory.rs:76
 #: src/ui/pages/processes.rs:254
 msgid "Memory"
-msgstr "Arbeitsspeicher"
+msgstr ""
 
 #: data/resources/ui/dialogs/app_dialog.ui:86
 #: data/resources/ui/dialogs/process_dialog.ui:69
 #: data/resources/ui/pages/cpu.ui:84 data/resources/ui/pages/drive.ui:48
 #: data/resources/ui/pages/gpu.ui:61 data/resources/ui/pages/network.ui:55
 msgid "Properties"
-msgstr "Eigenschaften"
+msgstr ""
 
 #: data/resources/ui/dialogs/app_dialog.ui:89
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 #: data/resources/ui/dialogs/app_dialog.ui:94
 msgid "Running Processes"
-msgstr "Laufende Prozesse"
+msgstr ""
 
 #: data/resources/ui/dialogs/app_dialog.ui:99
 #: data/resources/ui/dialogs/process_dialog.ui:92
 msgid "Containerized"
-msgstr "Benutzt Container"
+msgstr ""
 
 #: data/resources/ui/dialogs/process_dialog.ui:9
 msgid "Process Information"
-msgstr "Prozessinformationen"
+msgstr ""
 
 #: data/resources/ui/dialogs/process_dialog.ui:72 src/ui/pages/processes.rs:187
 msgid "Process ID"
-msgstr "Prozess-ID"
+msgstr ""
 
 #: data/resources/ui/dialogs/process_dialog.ui:77
 msgid "Commandline"
-msgstr "Befehlszeile"
+msgstr ""
 
 #: data/resources/ui/dialogs/process_dialog.ui:82 src/ui/pages/processes.rs:219
 msgid "User"
-msgstr "Benutzer"
+msgstr ""
 
 #: data/resources/ui/dialogs/process_dialog.ui:87
 msgid "Control Group"
-msgstr "Kontrollgruppe"
+msgstr ""
 
 #: data/resources/ui/pages/applications.ui:6 src/ui/pages/applications.rs:487
 msgid "Kill Application"
-msgstr "Anwendung abwürgen"
+msgstr ""
 
 #: data/resources/ui/pages/applications.ui:10 src/ui/pages/applications.rs:523
 msgid "Halt Application"
-msgstr "Anwendung anhalten"
+msgstr ""
 
 #: data/resources/ui/pages/applications.ui:14
 msgid "Continue Application"
-msgstr "Anwendung fortsetzen"
+msgstr ""
 
 #: data/resources/ui/pages/applications.ui:81 src/ui/pages/applications.rs:451
 msgid "End Application"
-msgstr "Anwendung beenden"
+msgstr ""
 
 #: data/resources/ui/pages/cpu.ui:30
 msgid "Options"
-msgstr "Optionen"
+msgstr ""
 
 #: data/resources/ui/pages/cpu.ui:33
 msgid "Show Usages of Logical CPUs"
-msgstr "Auslastung der logischen Prozessoren anzeigen"
+msgstr ""
 
 #: data/resources/ui/pages/cpu.ui:87
 msgid "Max Frequency"
-msgstr "Maximale Taktfrequenz"
+msgstr ""
 
 #: data/resources/ui/pages/cpu.ui:92
 msgid "Logical Cores"
-msgstr "Logische Kerne"
+msgstr ""
 
 #: data/resources/ui/pages/cpu.ui:97
 msgid "Physical Cores"
-msgstr "Physische Kerne"
+msgstr ""
 
 #: data/resources/ui/pages/cpu.ui:102
 msgid "Sockets"
-msgstr "Sockel"
+msgstr ""
 
 #: data/resources/ui/pages/cpu.ui:107
 msgid "Virtualization"
-msgstr "Virtualisierung"
+msgstr ""
 
 #: data/resources/ui/pages/cpu.ui:112
 msgid "Architecture"
-msgstr "Architektur"
+msgstr ""
 
 #: data/resources/ui/pages/drive.ui:36
 msgid "Read Speed"
-msgstr "Lesegeschwindigkeit"
+msgstr ""
 
 #: data/resources/ui/pages/drive.ui:41
 msgid "Write Speed"
-msgstr "Schreibgeschwindigkeit"
+msgstr ""
 
 #: data/resources/ui/pages/drive.ui:51
 msgid "Device"
-msgstr "Gerät"
+msgstr ""
 
 #: data/resources/ui/pages/drive.ui:56
 msgid "Capacity"
-msgstr "Kapazität"
+msgstr ""
 
 #: data/resources/ui/pages/drive.ui:61
 msgid "Writable"
-msgstr "Schreibbar"
+msgstr ""
 
 #: data/resources/ui/pages/drive.ui:66
 msgid "Removable"
-msgstr "Wechselbar"
+msgstr ""
 
 #: data/resources/ui/pages/gpu.ui:39
 msgid "Temperature"
-msgstr "Temperatur"
+msgstr ""
 
 #: data/resources/ui/pages/gpu.ui:44
 msgid "Power Usage"
-msgstr "Leistungsaufnahme"
+msgstr ""
 
 #: data/resources/ui/pages/gpu.ui:49
 msgid "GPU Frequency"
-msgstr "Grafiktaktfrequenz"
+msgstr ""
 
 #: data/resources/ui/pages/gpu.ui:54
 msgid "Video Memory Frequency"
-msgstr "Grafikspeichertaktfrequenz"
+msgstr ""
 
 #: data/resources/ui/pages/gpu.ui:64 data/resources/ui/pages/network.ui:58
 msgid "Manufacturer"
-msgstr "Hersteller"
+msgstr ""
 
 #: data/resources/ui/pages/gpu.ui:69
 msgid "PCI Slot"
-msgstr "PCI-Slot"
+msgstr ""
 
 #: data/resources/ui/pages/gpu.ui:74 data/resources/ui/pages/network.ui:63
 msgid "Driver Used"
-msgstr "Benutzter Treiber"
+msgstr ""
 
 #: data/resources/ui/pages/gpu.ui:79
 msgid "Current Power Cap"
-msgstr "Zurzeitige Leistungsbegrenzung"
+msgstr ""
 
 #: data/resources/ui/pages/gpu.ui:84
 msgid "Max Power Cap"
-msgstr "Maximale Leistungsbegrenzung"
+msgstr ""
 
 #: data/resources/ui/pages/network.ui:33
 msgid "Receiving"
-msgstr "Empfangen"
+msgstr ""
 
 #: data/resources/ui/pages/network.ui:38
 msgid "Sending"
-msgstr "Senden"
+msgstr ""
 
 #: data/resources/ui/pages/network.ui:43
 msgid "Total Received"
-msgstr "Insgesamt empfangen"
+msgstr ""
 
 #: data/resources/ui/pages/network.ui:48
 msgid "Total Sent"
-msgstr "Insgesamt gesendet"
+msgstr ""
 
 #: data/resources/ui/pages/network.ui:68
 msgid "Interface"
-msgstr "Schnittstelle"
+msgstr ""
 
 #: data/resources/ui/pages/network.ui:73
 msgid "Hardware Address"
-msgstr "Hardware-Adresse"
+msgstr ""
 
 #: data/resources/ui/pages/processes.ui:6 src/ui/pages/processes.rs:536
 msgid "Kill Process"
-msgstr "Prozess abwürgen"
+msgstr ""
 
 #: data/resources/ui/pages/processes.ui:10 src/ui/pages/processes.rs:563
 msgid "Halt Process"
-msgstr "Prozess anhalten"
+msgstr ""
 
 #: data/resources/ui/pages/processes.ui:14
 msgid "Continue Process"
-msgstr "Prozess fortsetzen"
+msgstr ""
 
 #: data/resources/ui/pages/processes.ui:81 src/ui/pages/processes.rs:509
 msgid "End Process"
-msgstr "Prozess beenden"
+msgstr ""
 
 #: data/resources/ui/shortcuts.ui:11
 msgctxt "shortcut window"
 msgid "General"
-msgstr "Allgemein"
+msgstr ""
 
 #: data/resources/ui/shortcuts.ui:14
 msgctxt "shortcut window"
 msgid "Show Shortcuts"
-msgstr "Tastenkombinationen"
+msgstr ""
 
 #: data/resources/ui/shortcuts.ui:20
 msgctxt "shortcut window"
 msgid "Quit"
-msgstr "Beenden"
+msgstr ""
 
 #: data/resources/ui/window.ui:6
 msgid "Preferences"
-msgstr "Eigenschaften"
+msgstr ""
 
 #: data/resources/ui/window.ui:10
 msgid "Keyboard Shortcuts"
-msgstr "Tastenkombinationen"
+msgstr ""
 
 #: data/resources/ui/window.ui:14
 msgid "About Resources"
-msgstr "Über Ressourcen"
+msgstr ""
 
 #: data/resources/ui/window.ui:61
 msgid "Applications"
-msgstr "Anwendungen"
+msgstr ""
 
 #: data/resources/ui/window.ui:69
 msgid "Processes"
-msgstr "Prozesse"
+msgstr ""
 
 #: src/application.rs:114
 msgid "The Nalux Team"
-msgstr "Das Nalux-Team"
+msgstr ""
 
 #: src/application.rs:122
 msgid "Report Issues"
-msgstr "Probleme melden"
+msgstr ""
 
 #: src/application.rs:126
 msgid "Icon by"
-msgstr "Icon von"
+msgstr ""
 
 #: src/ui/dialogs/app_dialog.rs:93 src/ui/dialogs/app_dialog.rs:95
 #: src/ui/dialogs/app_dialog.rs:109 src/ui/dialogs/process_dialog.rs:91
@@ -315,211 +314,203 @@ msgstr "Icon von"
 #: src/ui/pages/network.rs:97 src/ui/pages/network.rs:100 src/utils/gpu.rs:81
 #: src/utils/gpu.rs:84
 msgid "N/A"
-msgstr "n. v."
+msgstr ""
 
 #: src/ui/dialogs/app_dialog.rs:112 src/ui/dialogs/process_dialog.rs:108
 #: src/ui/widgets/bool_box.rs:70
 msgid "No"
-msgstr "Nein"
+msgstr ""
 
 #: src/ui/dialogs/app_dialog.rs:113 src/ui/dialogs/process_dialog.rs:109
 msgid "Yes (Flatpak)"
-msgstr "Ja (Flatpak)"
+msgstr ""
 
 #: src/ui/pages/applications.rs:147
 msgid "Application"
-msgstr "Anwendung"
+msgstr ""
 
 #: src/ui/pages/applications.rs:448 src/ui/pages/processes.rs:506
 msgid "End {}?"
-msgstr "{} beenden?"
+msgstr ""
 
 #: src/ui/pages/applications.rs:449 src/ui/pages/processes.rs:507
 msgid "Unsaved work might be lost."
-msgstr "Ungespeicherte Daten könnten verloren gehen."
+msgstr ""
 
 #: src/ui/pages/applications.rs:454 src/ui/pages/applications.rs:490
 #: src/ui/pages/applications.rs:526 src/ui/pages/processes.rs:512
 #: src/ui/pages/processes.rs:539 src/ui/pages/processes.rs:566
 msgid "Cancel"
-msgstr "Abbrechen"
+msgstr ""
 
 #: src/ui/pages/applications.rs:464 src/ui/pages/processes.rs:518
 msgid "Successfully ended {}"
-msgstr "{} wurde erfolgreich beendet"
+msgstr ""
 
 #: src/ui/pages/applications.rs:466
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
-msgstr[0] "Es gab ein Problem beim Beenden von {} Prozessen"
-msgstr[1] "Es gab ein Problem beim Beenden eines Prozesses"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/ui/pages/applications.rs:484 src/ui/pages/processes.rs:533
 msgid "Kill {}?"
-msgstr "{} abwürgen?"
+msgstr ""
 
 #: src/ui/pages/applications.rs:485
 msgid ""
 "Killing an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
-"Das Abwürgen einer Anwendung ist mit Risiken wie dem Verlust von Daten sowie "
-"Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
 
 #: src/ui/pages/applications.rs:500 src/ui/pages/processes.rs:545
 msgid "Successfully killed {}"
-msgstr "{} wurde erfolgreich abgewürgt"
+msgstr ""
 
 #: src/ui/pages/applications.rs:502
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
-msgstr[0] "Es gab ein Problem beim Abwürgen von {} Prozessen"
-msgstr[1] "Es gab ein Problem beim Abwürgen eines Prozesses"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/ui/pages/applications.rs:520 src/ui/pages/processes.rs:560
 msgid "Halt {}?"
-msgstr "{} anhalten?"
+msgstr ""
 
 #: src/ui/pages/applications.rs:521
 msgid ""
 "Halting an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
-"Das Anhalten einer Anwendung ist mit Risiken wie dem Verlust von Daten sowie "
-"Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
 
 #: src/ui/pages/applications.rs:536 src/ui/pages/processes.rs:572
 msgid "Successfully halted {}"
-msgstr "{} wurde erfolgreich angehalten"
+msgstr ""
 
 #: src/ui/pages/applications.rs:538
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
-msgstr[0] "Es gab ein Problem beim Anhalten von {} Prozessen"
-msgstr[1] "Es gab ein Problem beim Anhalten eines Prozesses"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/ui/pages/applications.rs:558 src/ui/pages/processes.rs:588
 msgid "Successfully continued {}"
-msgstr "{} wurde erfolgreich fortgesetzt"
+msgstr ""
 
 #: src/ui/pages/applications.rs:560
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
-msgstr[0] "Es gab ein Problem beim Fortsetzen von {} Prozessen"
-msgstr[1] "Es gab ein Problem beim Fortsetzen eines Prozesses"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/ui/pages/cpu.rs:109
 msgid "CPU"
-msgstr "CPU"
+msgstr ""
 
 #: src/ui/pages/cpu.rs:122
 msgid "CPU {}"
-msgstr "CPU {}"
+msgstr ""
 
 #: src/ui/pages/gpu.rs:104
 msgid "GPU Usage"
-msgstr "Grafikauslastung"
+msgstr ""
 
 #: src/ui/pages/gpu.rs:107
 msgid "Video Memory Usage"
-msgstr "Grafikspeicherauslastung"
+msgstr ""
 
 #: src/ui/pages/gpu.rs:112 src/ui/window.rs:176
 msgid "GPU {}"
-msgstr "GPU {}"
+msgstr ""
 
 #: src/ui/pages/memory.rs:79
 msgid "Swap"
-msgstr "Auslagerungsspeicher"
+msgstr ""
 
 #: src/ui/pages/processes.rs:121
 msgid "root"
-msgstr "root"
+msgstr ""
 
 #: src/ui/pages/processes.rs:152
 msgid "Process"
-msgstr "Prozess"
+msgstr ""
 
 #: src/ui/pages/processes.rs:519
 msgid "There was a problem ending {}"
-msgstr "Es gab ein Problem beim Beenden von {}"
+msgstr ""
 
 #: src/ui/pages/processes.rs:534
 msgid ""
 "Killing a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
-"Das Abwürgen eines Prozesses ist mit Risiken wie dem Verlust von Daten sowie "
-"Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
 
 #: src/ui/pages/processes.rs:546
 msgid "There was a problem killing {}"
-msgstr "Es gab ein Problem beim Abwürgen von {}"
+msgstr ""
 
 #: src/ui/pages/processes.rs:561
 msgid ""
 "Halting a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
-"Das Anhalten eines Prozesses ist mit Risiken wie dem Verlust von Daten sowie "
-"Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
 
 #: src/ui/pages/processes.rs:573
 msgid "There was a problem halting {}"
-msgstr "Es gab ein Problem beim Anhalten von {}"
+msgstr ""
 
 #: src/ui/pages/processes.rs:594
 msgid "There was a problem continuing {}"
-msgstr "Es gab ein Problem beim Fortsetzen von {}"
+msgstr ""
 
 #: src/ui/widgets/bool_box.rs:68
 msgid "Yes"
-msgstr "Ja"
+msgstr ""
 
 #: src/ui/window.rs:180
 msgid "GPU"
-msgstr "GPU"
+msgstr ""
 
 #: src/ui/window.rs:349
 msgid "CD/DVD Drive"
-msgstr "CD/DVD-Laufwerk"
+msgstr ""
 
 #: src/ui/window.rs:355
 msgid "{} {}B Drive"
-msgstr "{}-{}B-Datenträger"
+msgstr ""
 
 #: src/ui/window.rs:381
 msgid "Ethernet Connection"
-msgstr "Ethernet-Verbindung"
+msgstr ""
 
 #: src/ui/window.rs:382
 msgid "InfiniBand Connection"
-msgstr "InfiniBand-Verbindung"
+msgstr ""
 
 #: src/ui/window.rs:383
 msgid "Serial Line IP Connection"
-msgstr "Serial-Line-IP-Verbindung"
+msgstr ""
 
 #: src/ui/window.rs:384
 msgid "Wi-Fi Connection"
-msgstr "WLAN-Verbindung"
+msgstr ""
 
 #: src/ui/window.rs:385
 msgid "WWAN Connection"
-msgstr "WWAN-Verbindung"
+msgstr ""
 
 #: src/ui/window.rs:386
 msgid "Bluetooth Tether"
-msgstr "Bluetooth-Tether"
+msgstr ""
 
 #: src/ui/window.rs:387
 msgid "VPN Tunnel (WireGuard)"
-msgstr "VPN-Tunnel (WireGuard)"
+msgstr ""
 
 #: src/ui/window.rs:388
 msgid "Network Interface"
-msgstr "Netzwerkschnittstelle"
+msgstr ""
 
 #: src/utils/processes.rs:664
 msgid "System Processes"
-msgstr "Systemprozesse"
+msgstr ""

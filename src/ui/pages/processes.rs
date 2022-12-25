@@ -6,6 +6,7 @@ use gtk::glib::{self, clone, timeout_future_seconds, BoxedAnyObject, MainContext
 use gtk::{gio, CustomSorter, FilterChange, Ordering, SortType};
 
 use crate::config::PROFILE;
+use crate::i18n::{i18n, i18n_f};
 use crate::ui::dialogs::process_dialog::ResProcessDialog;
 use crate::ui::widgets::process_name_cell::ResProcessNameCell;
 use crate::ui::window::MainWindow;
@@ -117,7 +118,7 @@ impl ResProcesses {
         // to do expensive lookups all the time
         (*imp.uid_map.borrow_mut().entry(uid).or_insert_with(|| {
             users::get_user_by_uid(uid).map_or_else(
-                || gettextrs::gettext("root"),
+                || i18n("root"),
                 |user| user.name().to_string_lossy().to_string(),
             )
         }))
@@ -148,10 +149,7 @@ impl ResProcesses {
         *imp.store.borrow_mut() = store;
 
         let name_col_factory = gtk::SignalListItemFactory::new();
-        let name_col = gtk::ColumnViewColumn::new(
-            Some(&gettextrs::gettext("Process")),
-            Some(&name_col_factory),
-        );
+        let name_col = gtk::ColumnViewColumn::new(Some(&i18n("Process")), Some(&name_col_factory));
         name_col.set_resizable(true);
         name_col.set_expand(true);
         name_col_factory.connect_setup(move |_factory, item| {
@@ -186,10 +184,7 @@ impl ResProcesses {
         name_col.set_sorter(Some(&name_col_sorter));
 
         let pid_col_factory = gtk::SignalListItemFactory::new();
-        let pid_col = gtk::ColumnViewColumn::new(
-            Some(&gettextrs::gettext("Process ID")),
-            Some(&pid_col_factory),
-        );
+        let pid_col = gtk::ColumnViewColumn::new(Some(&i18n("Process ID")), Some(&pid_col_factory));
         pid_col.set_resizable(true);
         pid_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -221,8 +216,7 @@ impl ResProcesses {
         pid_col.set_sorter(Some(&pid_col_sorter));
 
         let user_col_factory = gtk::SignalListItemFactory::new();
-        let user_col =
-            gtk::ColumnViewColumn::new(Some(&gettextrs::gettext("User")), Some(&user_col_factory));
+        let user_col = gtk::ColumnViewColumn::new(Some(&i18n("User")), Some(&user_col_factory));
         user_col.set_resizable(true);
         user_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -256,10 +250,8 @@ impl ResProcesses {
         user_col.set_sorter(Some(&user_col_sorter));
 
         let memory_col_factory = gtk::SignalListItemFactory::new();
-        let memory_col = gtk::ColumnViewColumn::new(
-            Some(&gettextrs::gettext("Memory")),
-            Some(&memory_col_factory),
-        );
+        let memory_col =
+            gtk::ColumnViewColumn::new(Some(&i18n("Memory")), Some(&memory_col_factory));
         memory_col.set_resizable(true);
         memory_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -292,10 +284,7 @@ impl ResProcesses {
         memory_col.set_sorter(Some(&memory_col_sorter));
 
         let cpu_col_factory = gtk::SignalListItemFactory::new();
-        let cpu_col = gtk::ColumnViewColumn::new(
-            Some(&gettextrs::gettext("Processor")),
-            Some(&cpu_col_factory),
-        );
+        let cpu_col = gtk::ColumnViewColumn::new(Some(&i18n("Processor")), Some(&cpu_col_factory));
         cpu_col.set_resizable(true);
         cpu_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -514,20 +503,20 @@ impl ResProcesses {
             let dialog = adw::MessageDialog::builder()
                 .transient_for(&MainWindow::default())
                 .modal(true)
-                .heading(&gettextrs::gettext!("End {}?", process.comm))
-                .body(&gettextrs::gettext("Unsaved work might be lost."))
+                .heading(&i18n_f("End {}?", &[&process.comm]))
+                .body(&i18n("Unsaved work might be lost."))
                 .build();
-            dialog.add_response("yes", &gettextrs::gettext("End Process"));
+            dialog.add_response("yes", &i18n("End Process"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
             dialog.set_default_response(Some("no"));
-            dialog.add_response("no", &gettextrs::gettext("Cancel"));
+            dialog.add_response("no", &i18n("Cancel"));
             dialog.set_close_response("no");
             dialog.connect_response(None, clone!(@strong process, @weak self as this => move |_, response| {
                 if response == "yes" {
                     let imp = this.imp();
                     match process.term() {
-                        Ok(_) => { imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("Successfully ended {}", process.comm))); },
-                        Err(_) => { imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("There was a problem ending {}", process.comm))); },
+                        Ok(_) => { imp.toast_overlay.add_toast(&Toast::new(&i18n_f("Successfully ended {}", &[&process.comm]))); },
+                        Err(_) => { imp.toast_overlay.add_toast(&Toast::new(&i18n_f("There was a problem ending {}", &[&process.comm]))); },
                     };
                 }
             }));
@@ -541,20 +530,20 @@ impl ResProcesses {
             let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(&gettextrs::gettext!("Kill {}?", process.comm))
-            .body(&gettextrs::gettext("Killing a process can come with serious risks such as losing data and security implications. Use with caution."))
+            .heading(&i18n_f("Kill {}?", &[&process.comm]))
+            .body(&i18n("Killing a process can come with serious risks such as losing data and security implications. Use with caution."))
             .build();
-            dialog.add_response("yes", &gettextrs::gettext("Kill Process"));
+            dialog.add_response("yes", &i18n("Kill Process"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
             dialog.set_default_response(Some("no"));
-            dialog.add_response("no", &gettextrs::gettext("Cancel"));
+            dialog.add_response("no", &i18n("Cancel"));
             dialog.set_close_response("no");
             dialog.connect_response(None, clone!(@strong process, @weak self as this => move |_, response| {
                 if response == "yes" {
                     let imp = this.imp();
                     match process.kill() {
-                        Ok(_) => { imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("Successfully killed {}", process.comm))); },
-                        Err(_) => { imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("There was a problem killing {}", process.comm))); },
+                        Ok(_) => { imp.toast_overlay.add_toast(&Toast::new(&i18n_f("Successfully killed {}", &[&process.comm]))); },
+                        Err(_) => { imp.toast_overlay.add_toast(&Toast::new(&i18n_f("There was a problem killing {}", &[&process.comm]))); },
                     };
                 }
             }));
@@ -568,20 +557,20 @@ impl ResProcesses {
             let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(&gettextrs::gettext!("Halt {}?", process.comm))
-            .body(&gettextrs::gettext("Halting a process can come with serious risks such as losing data and security implications. Use with caution."))
+            .heading(&i18n_f("Halt {}?", &[&process.comm]))
+            .body(&i18n("Halting a process can come with serious risks such as losing data and security implications. Use with caution."))
             .build();
-            dialog.add_response("yes", &gettextrs::gettext("Halt Process"));
+            dialog.add_response("yes", &i18n("Halt Process"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
             dialog.set_default_response(Some("no"));
-            dialog.add_response("no", &gettextrs::gettext("Cancel"));
+            dialog.add_response("no", &i18n("Cancel"));
             dialog.set_close_response("no");
             dialog.connect_response(None, clone!(@strong process, @weak self as this => move |_, response| {
                 if response == "yes" {
                     let imp = this.imp();
                     match process.stop() {
-                        Ok(_) => { imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("Successfully halted {}", process.comm))); },
-                        Err(_) => { imp.toast_overlay.add_toast(&Toast::new(&gettextrs::gettext!("There was a problem halting {}", process.comm))); },
+                        Ok(_) => { imp.toast_overlay.add_toast(&Toast::new(&i18n_f("Successfully halted {}", &[&process.comm]))); },
+                        Err(_) => { imp.toast_overlay.add_toast(&Toast::new(&i18n_f("There was a problem halting {}", &[&process.comm]))); },
                     };
                 }
             }));
@@ -595,18 +584,16 @@ impl ResProcesses {
         if let Some(process) = selection_option {
             match process.cont() {
                 Ok(_) => {
-                    imp.toast_overlay
-                        .add_toast(&Toast::new(&gettextrs::gettext!(
-                            "Successfully continued {}",
-                            process.comm
-                        )));
+                    imp.toast_overlay.add_toast(&Toast::new(&i18n_f(
+                        "Successfully continued {}",
+                        &[&process.comm],
+                    )));
                 }
                 Err(_) => {
-                    imp.toast_overlay
-                        .add_toast(&Toast::new(&gettextrs::gettext!(
-                            "There was a problem continuing {}",
-                            process.comm
-                        )));
+                    imp.toast_overlay.add_toast(&Toast::new(&i18n_f(
+                        "There was a problem continuing {}",
+                        &[&process.comm],
+                    )));
                 }
             };
         }
