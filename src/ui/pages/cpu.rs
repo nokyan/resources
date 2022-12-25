@@ -1,7 +1,7 @@
 use adw::{prelude::*, subclass::prelude::*};
 use anyhow::Context;
 use gtk::builders::FlowBoxChildBuilder;
-use gtk::glib::{self, clone};
+use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
 
 use crate::config::PROFILE;
 use crate::ui::widgets::graph_box::ResGraphBox;
@@ -192,49 +192,51 @@ impl ResCPU {
     }
 
     pub fn setup_listener(&self) {
-        let cpu_info = cpu::cpu_info()
-            .with_context(|| "unable to get CPUInfo")
-            .unwrap_or_default();
-        let logical_cpus = cpu_info.logical_cpus.unwrap_or(0);
-        let mut old_total_usage = cpu::get_cpu_usage(None).unwrap_or((0, 0));
-        let mut old_thread_usages: Vec<(u64, u64)> = Vec::new();
-
-        let thread_usage_update = clone!(@strong self as this => move || {
+        let main_context = MainContext::default();
+        let thread_usage_update = clone!(@strong self as this => async move {
             let imp = this.imp();
-            for i in 0..logical_cpus {
-                old_thread_usages.push(cpu::get_cpu_usage(Some(i)).unwrap_or((0,0)));
-            }
-
-            let new_total_usage = cpu::get_cpu_usage(None).unwrap_or((0,0));
-            let idle_total_delta = new_total_usage.0 - old_total_usage.0;
-            let sum_total_delta = new_total_usage.1 - old_total_usage.1;
-            let work_total_time = sum_total_delta - idle_total_delta;
-            let total_fraction = ((work_total_time as f64) / (sum_total_delta as f64)).nan_default(0.0);
-            imp.total_cpu.push_data_point(total_fraction);
-            imp.total_cpu.set_info_label(&format!("{} %", (total_fraction*100.0).round()));
-            old_total_usage = new_total_usage;
-
-            if logical_cpus > 1 {
-                for (i, old_thread_usage) in old_thread_usages.iter_mut().enumerate().take(logical_cpus) {
-                    let new_thread_usage = cpu::get_cpu_usage(Some(i)).unwrap_or((0,0));
-                    let idle_thread_delta = new_thread_usage.0 - old_thread_usage.0;
-                    let sum_thread_delta = new_thread_usage.1 - old_thread_usage.1;
-                    let work_thread_time = sum_thread_delta - idle_thread_delta;
-                    let curr_threadbox = &imp.thread_graphs.borrow()[i];
-                    let thread_fraction = ((work_thread_time as f64) / (sum_thread_delta as f64)).nan_default(0.0);
-                    curr_threadbox.push_data_point(thread_fraction);
-                    curr_threadbox.set_title_label(&format!("{} %", (thread_fraction*100.0).round()));
-                    if let Ok(freq) = cpu::get_cpu_freq(i) {
-                        let (frequency, base) = to_largest_unit(freq as f64, &Base::Decimal);
-                        curr_threadbox.set_info_label(&format!("{frequency:.2} {base}Hz"));
-                    }
-                    *old_thread_usage = new_thread_usage;
+            let cpu_info = cpu::cpu_info()
+                .with_context(|| "unable to get CPUInfo")
+                .unwrap_or_default();
+            let logical_cpus = cpu_info.logical_cpus.unwrap_or(0);
+            let mut old_total_usage = cpu::get_cpu_usage(None).await.unwrap_or((0, 0));
+            let mut old_thread_usages: Vec<(u64, u64)> = Vec::new();
+            loop {
+                for i in 0..logical_cpus {
+                    old_thread_usages.push(cpu::get_cpu_usage(Some(i)).await.unwrap_or((0,0)));
                 }
-            }
 
-            glib::Continue(true)
+                let new_total_usage = cpu::get_cpu_usage(None).await.unwrap_or((0,0));
+                let idle_total_delta = new_total_usage.0 - old_total_usage.0;
+                let sum_total_delta = new_total_usage.1 - old_total_usage.1;
+                let work_total_time = sum_total_delta - idle_total_delta;
+                let total_fraction = ((work_total_time as f64) / (sum_total_delta as f64)).nan_default(0.0);
+                imp.total_cpu.push_data_point(total_fraction);
+                imp.total_cpu.set_info_label(&format!("{} %", (total_fraction*100.0).round()));
+                old_total_usage = new_total_usage;
+
+                if logical_cpus > 1 {
+                    for (i, old_thread_usage) in old_thread_usages.iter_mut().enumerate().take(logical_cpus) {
+                        let new_thread_usage = cpu::get_cpu_usage(Some(i)).await.unwrap_or((0,0));
+                        let idle_thread_delta = new_thread_usage.0 - old_thread_usage.0;
+                        let sum_thread_delta = new_thread_usage.1 - old_thread_usage.1;
+                        let work_thread_time = sum_thread_delta - idle_thread_delta;
+                        let curr_threadbox = &imp.thread_graphs.borrow()[i];
+                        let thread_fraction = ((work_thread_time as f64) / (sum_thread_delta as f64)).nan_default(0.0);
+                        curr_threadbox.push_data_point(thread_fraction);
+                        curr_threadbox.set_title_label(&format!("{} %", (thread_fraction*100.0).round()));
+                        if let Ok(freq) = cpu::get_cpu_freq(i) {
+                            let (frequency, base) = to_largest_unit(freq as f64, &Base::Decimal);
+                            curr_threadbox.set_info_label(&format!("{frequency:.2} {base}Hz"));
+                        }
+                        *old_thread_usage = new_thread_usage;
+                    }
+                }
+
+                timeout_future_seconds(1).await;
+            }
         });
 
-        glib::timeout_add_seconds_local(1, thread_usage_update);
+        main_context.spawn_local(thread_usage_update);
     }
 }

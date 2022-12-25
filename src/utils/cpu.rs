@@ -121,12 +121,13 @@ fn parse_proc_stat_line(line: &[u8]) -> Result<(u64, u64)> {
     Ok((idle_time, sum))
 }
 
-fn get_proc_stat(core: Option<usize>) -> Result<String> {
+async fn get_proc_stat(core: Option<usize>) -> Result<String> {
     // the combined stats are in line 0, the other cores are in the following lines,
     // since our `core` argument starts with 0, we must add 1 to it if it's not `None`.
     let selected_line_number = core.map_or(0, |x| x + 1);
-    let proc_stat_raw =
-        std::fs::read_to_string("/proc/stat").with_context(|| "unable to read /proc/stat")?;
+    let proc_stat_raw = async_std::fs::read_to_string("/proc/stat")
+        .await
+        .with_context(|| "unable to read /proc/stat")?;
     let mut proc_stat = proc_stat_raw.split('\n').collect::<Vec<&str>>();
     proc_stat.retain(|x| x.starts_with("cpu"));
     // return an `Error` if `core` is greater than the number of cores
@@ -145,6 +146,6 @@ fn get_proc_stat(core: Option<usize>) -> Result<String> {
 ///
 /// Will return `Err` if the are problems during reading or parsing
 /// of /proc/stat
-pub fn get_cpu_usage(core: Option<usize>) -> Result<(u64, u64)> {
-    parse_proc_stat_line(get_proc_stat(core)?.as_bytes())
+pub async fn get_cpu_usage(core: Option<usize>) -> Result<(u64, u64)> {
+    parse_proc_stat_line(get_proc_stat(core).await?.as_bytes())
 }

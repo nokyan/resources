@@ -51,8 +51,9 @@ impl PartialEq for NetworkInterface {
 }
 
 impl NetworkInterface {
-    fn read_uevent(uevent_path: PathBuf) -> Result<HashMap<String, String>> {
-        let entries: Vec<Vec<String>> = std::fs::read_to_string(uevent_path)?
+    async fn read_uevent(uevent_path: PathBuf) -> Result<HashMap<String, String>> {
+        let entries: Vec<Vec<String>> = async_std::fs::read_to_string(uevent_path)
+            .await?
             .split('\n')
             .map(|x| x.split('=').map(str::to_string).collect())
             .collect();
@@ -73,8 +74,10 @@ impl NetworkInterface {
     /// Will return `Err` if an invalid sysfs Path has
     /// been passed or if there has been problems parsing
     /// information
-    pub fn from_sysfs(sysfs_path: &Path) -> Result<NetworkInterface> {
-        let dev_uevent = Self::read_uevent(sysfs_path.join("device/uevent")).unwrap_or_default();
+    pub async fn from_sysfs(sysfs_path: &Path) -> Result<NetworkInterface> {
+        let dev_uevent = Self::read_uevent(sysfs_path.join("device/uevent"))
+            .await
+            .unwrap_or_default();
         let interface_name = sysfs_path
             .file_name()
             .with_context(|| "invalid sysfs path")?
@@ -142,8 +145,9 @@ impl NetworkInterface {
     ///
     /// Will return `Err` if the `tx_bytes` file in sysfs
     /// is unreadable or not parsable to a `usize`
-    pub fn received_bytes(&self) -> Result<usize> {
-        std::fs::read_to_string(&self.received_bytes_path)
+    pub async fn received_bytes(&self) -> Result<usize> {
+        async_std::fs::read_to_string(&self.received_bytes_path)
+            .await
             .with_context(|| "read failure")?
             .replace('\n', "")
             .parse()
@@ -157,8 +161,9 @@ impl NetworkInterface {
     ///
     /// Will return `Err` if the `tx_bytes` file in sysfs
     /// is unreadable or not parsable to a `usize`
-    pub fn sent_bytes(&self) -> Result<usize> {
-        std::fs::read_to_string(&self.sent_bytes_path)
+    pub async fn sent_bytes(&self) -> Result<usize> {
+        async_std::fs::read_to_string(&self.sent_bytes_path)
+            .await
             .with_context(|| "read failure")?
             .replace('\n', "")
             .parse()

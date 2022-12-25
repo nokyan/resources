@@ -1,5 +1,5 @@
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone};
+use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
 
 use crate::config::PROFILE;
 use crate::ui::widgets::info_box::ResInfoBox;
@@ -109,28 +109,34 @@ impl ResNetwork {
     }
 
     pub fn setup_listener(&self, network_interface: NetworkInterface) {
-        let mut old_received_bytes = 0;
-        let mut old_sent_bytes = 0;
-        let statistics_update = clone!(@strong self as this => move || {
+        let main_context = MainContext::default();
+        let statistics_update = clone!(@strong self as this => async move {
             let imp = this.imp();
-            let received_bytes = network_interface.received_bytes().unwrap_or(0);
-            let sent_bytes = network_interface.sent_bytes().unwrap_or(0);
-            let received_delta = received_bytes - old_received_bytes;
-            let sent_delta = sent_bytes - old_sent_bytes;
 
-            let received_delta_formatted = to_largest_unit(received_delta as f64, &Base::Decimal);
-            let sent_delta_formatted = to_largest_unit(sent_delta as f64, &Base::Decimal);
-            let received_formatted = to_largest_unit(received_bytes as f64, &Base::Decimal);
-            let sent_formatted = to_largest_unit(sent_bytes as f64, &Base::Decimal);
-            imp.receiving.set_info_label(&format!("{:.2} {}B/s", received_delta_formatted.0, received_delta_formatted.1));
-            imp.sending.set_info_label(&format!("{:.2} {}B/s", sent_delta_formatted.0, sent_delta_formatted.1));
-            imp.total_received.set_info_label(&format!("{:.2} {}B", received_formatted.0, received_formatted.1));
-            imp.total_sent.set_info_label(&format!("{:.2} {}B", sent_formatted.0, sent_formatted.1));
+            let mut old_received_bytes = 0;
+            let mut old_sent_bytes = 0;
 
-            old_received_bytes = received_bytes;
-            old_sent_bytes = sent_bytes;
-            glib::Continue(true)
+            loop {
+                let received_bytes = network_interface.received_bytes().await.unwrap_or(0);
+                let sent_bytes = network_interface.sent_bytes().await.unwrap_or(0);
+                let received_delta = received_bytes - old_received_bytes;
+                let sent_delta = sent_bytes - old_sent_bytes;
+
+                let received_delta_formatted = to_largest_unit(received_delta as f64, &Base::Decimal);
+                let sent_delta_formatted = to_largest_unit(sent_delta as f64, &Base::Decimal);
+                let received_formatted = to_largest_unit(received_bytes as f64, &Base::Decimal);
+                let sent_formatted = to_largest_unit(sent_bytes as f64, &Base::Decimal);
+                imp.receiving.set_info_label(&format!("{:.2} {}B/s", received_delta_formatted.0, received_delta_formatted.1));
+                imp.sending.set_info_label(&format!("{:.2} {}B/s", sent_delta_formatted.0, sent_delta_formatted.1));
+                imp.total_received.set_info_label(&format!("{:.2} {}B", received_formatted.0, received_formatted.1));
+                imp.total_sent.set_info_label(&format!("{:.2} {}B", sent_formatted.0, sent_formatted.1));
+
+                old_received_bytes = received_bytes;
+                old_sent_bytes = sent_bytes;
+
+                timeout_future_seconds(1).await;
+            }
         });
-        glib::timeout_add_seconds_local(1, statistics_update);
+        main_context.spawn_local(statistics_update);
     }
 }

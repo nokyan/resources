@@ -1,5 +1,5 @@
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone};
+use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
 
 use crate::config::PROFILE;
 use crate::ui::widgets::info_box::ResInfoBox;
@@ -119,59 +119,62 @@ impl ResGPU {
     }
 
     pub fn setup_listener(&self) {
-        let gpu_usage_update = clone!(@strong self as this => move || {
+        let main_context = MainContext::default();
+        let gpu_usage_update = clone!(@strong self as this => async move {
             let imp = this.imp();
             let gpu = imp.gpu.get().unwrap();
 
-            if let Ok(gpu_usage) = gpu.get_gpu_usage() {
-                imp.gpu_usage.set_info_label(&format!("{gpu_usage} %"));
-                imp.gpu_usage.push_data_point(gpu_usage as f64 / 100.0);
-                imp.gpu_usage.set_graph_visible(true);
-            } else {
-                imp.gpu_usage.set_info_label(&gettextrs::gettext("N/A"));
-                imp.gpu_usage.push_data_point(0.0);
-                imp.gpu_usage.set_graph_visible(false);
+            loop {
+                if let Ok(gpu_usage) = gpu.get_gpu_usage().await {
+                    imp.gpu_usage.set_info_label(&format!("{gpu_usage} %"));
+                    imp.gpu_usage.push_data_point(gpu_usage as f64 / 100.0);
+                    imp.gpu_usage.set_graph_visible(true);
+                } else {
+                    imp.gpu_usage.set_info_label(&gettextrs::gettext("N/A"));
+                    imp.gpu_usage.push_data_point(0.0);
+                    imp.gpu_usage.set_graph_visible(false);
+                }
+
+                if let (Ok(total_vram), Ok(used_vram)) = (gpu.get_total_vram().await, gpu.get_used_vram().await) {
+                    let total_vram_unit = to_largest_unit(total_vram as f64, &Base::Decimal);
+                    let used_vram_unit = to_largest_unit(used_vram as f64, &Base::Decimal);
+                    let used_vram_percentage = (used_vram as f64 / total_vram as f64).nan_default(0.0) * 100.0;
+                    imp.vram_usage.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {:.1}%", used_vram_unit.0, used_vram_unit.1, total_vram_unit.0, total_vram_unit.1, used_vram_percentage));
+                    imp.vram_usage.push_data_point((used_vram as f64) / (total_vram as f64));
+                    imp.vram_usage.set_graph_visible(true);
+                } else {
+                    imp.vram_usage.set_info_label(&gettextrs::gettext("N/A"));
+                    imp.vram_usage.push_data_point(0.0);
+                    imp.vram_usage.set_graph_visible(false);
+                }
+
+                // TODO: handle the user's choice of temperatue unit
+                let temp_unit = "C";
+                imp.temperature.set_info_label(&gpu.get_gpu_temp().await.map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x} °{temp_unit}")));
+
+                imp.power_usage.set_info_label(&gpu.get_power_usage().await.map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x:.2} W")));
+
+                if let Ok(gpu_clockspeed) = gpu.get_gpu_speed().await {
+                    let gpu_clockspeed_unit = to_largest_unit(gpu_clockspeed, &Base::Decimal);
+                    imp.gpu_clockspeed.set_info_label(&format!("{:.2} {}Hz", gpu_clockspeed_unit.0, gpu_clockspeed_unit.1));
+                } else {
+                    imp.gpu_clockspeed.set_info_label(&gettextrs::gettext("N/A"));
+                }
+
+                if let Ok(vram_clockspeed) = gpu.get_vram_speed().await {
+                    let vram_clockspeed_unit = to_largest_unit(vram_clockspeed, &Base::Decimal);
+                    imp.vram_clockspeed.set_info_label(&format!("{:.2} {}Hz", vram_clockspeed_unit.0, vram_clockspeed_unit.1));
+                } else {
+                    imp.vram_clockspeed.set_info_label(&gettextrs::gettext("N/A"));
+                }
+
+                imp.current_power_cap.set_info_label(&gpu.get_power_cap().await.map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x:.2} W")));
+
+                imp.max_power_cap.set_info_label(&gpu.get_power_cap_max().await.map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x:.2} W")));
+
+                timeout_future_seconds(1).await;
             }
-
-            if let (Ok(total_vram), Ok(used_vram)) = (gpu.get_total_vram(), gpu.get_used_vram()) {
-                let total_vram_unit = to_largest_unit(total_vram as f64, &Base::Decimal);
-                let used_vram_unit = to_largest_unit(used_vram as f64, &Base::Decimal);
-                let used_vram_percentage = (used_vram as f64 / total_vram as f64).nan_default(0.0) * 100.0;
-                imp.vram_usage.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {:.1}%", used_vram_unit.0, used_vram_unit.1, total_vram_unit.0, total_vram_unit.1, used_vram_percentage));
-                imp.vram_usage.push_data_point((used_vram as f64) / (total_vram as f64));
-                imp.vram_usage.set_graph_visible(true);
-            } else {
-                imp.vram_usage.set_info_label(&gettextrs::gettext("N/A"));
-                imp.vram_usage.push_data_point(0.0);
-                imp.vram_usage.set_graph_visible(false);
-            }
-
-            // TODO: handle the user's choice of temperatue unit
-            let temp_unit = "C";
-            imp.temperature.set_info_label(&gpu.get_gpu_temp().map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x} °{temp_unit}")));
-
-            imp.power_usage.set_info_label(&gpu.get_power_usage().map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x:.2} W")));
-
-            if let Ok(gpu_clockspeed) = gpu.get_gpu_speed() {
-                let gpu_clockspeed_unit = to_largest_unit(gpu_clockspeed, &Base::Decimal);
-                imp.gpu_clockspeed.set_info_label(&format!("{:.2} {}Hz", gpu_clockspeed_unit.0, gpu_clockspeed_unit.1));
-            } else {
-                imp.gpu_clockspeed.set_info_label(&gettextrs::gettext("N/A"));
-            }
-
-            if let Ok(vram_clockspeed) = gpu.get_vram_speed() {
-                let vram_clockspeed_unit = to_largest_unit(vram_clockspeed, &Base::Decimal);
-                imp.vram_clockspeed.set_info_label(&format!("{:.2} {}Hz", vram_clockspeed_unit.0, vram_clockspeed_unit.1));
-            } else {
-                imp.vram_clockspeed.set_info_label(&gettextrs::gettext("N/A"));
-            }
-
-            imp.current_power_cap.set_info_label(&gpu.get_power_cap().map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x:.2} W")));
-
-            imp.max_power_cap.set_info_label(&gpu.get_power_cap_max().map_or_else(|_| gettextrs::gettext("N/A"), |x| format!("{x:.2} W")));
-
-            glib::Continue(true)
         });
-        glib::timeout_add_seconds_local(1, gpu_usage_update);
+        main_context.spawn_local(gpu_usage_update);
     }
 }

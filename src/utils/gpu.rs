@@ -8,7 +8,6 @@ use once_cell::sync::OnceCell;
 use std::{
     collections::HashMap,
     convert::TryInto,
-    fs,
     path::{Path, PathBuf},
 };
 
@@ -37,12 +36,13 @@ impl GPU {
     ///
     /// Will return `Err` if there are problems detecting
     /// the GPUs in the system
-    pub fn get_gpus() -> Result<Vec<GPU>> {
+    pub async fn get_gpus() -> Result<Vec<GPU>> {
         let mut gpu_vec: Vec<GPU> = Vec::new();
         for entry in glob("/sys/class/drm/card?")?.flatten() {
             let sysfs_device_path = entry.join("device");
             let mut uevent_contents: HashMap<String, String> = HashMap::new();
-            let uevent_raw = fs::read_to_string(sysfs_device_path.join("uevent"))?;
+            let uevent_raw =
+                async_std::fs::read_to_string(sysfs_device_path.join("uevent")).await?;
 
             for line in uevent_raw.trim().split('\n') {
                 let (k, v) = line
@@ -103,9 +103,10 @@ impl GPU {
         Ok(self.device.context("no device")?.vendor().name().to_owned())
     }
 
-    fn read_sysfs_int<P: AsRef<Path>>(&self, file: P) -> Result<isize> {
+    async fn read_sysfs_int<P: AsRef<Path>>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path.join(file);
-        fs::read_to_string(&path)?
+        async_std::fs::read_to_string(&path)
+            .await?
             .replace('\n', "")
             .parse::<isize>()
             .context(format!(
@@ -116,9 +117,10 @@ impl GPU {
             ))
     }
 
-    fn read_device_int<P: AsRef<Path>>(&self, file: P) -> Result<isize> {
+    async fn read_device_int<P: AsRef<Path>>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path.join("device").join(file);
-        fs::read_to_string(&path)?
+        async_std::fs::read_to_string(&path)
+            .await?
             .replace('\n', "")
             .parse::<isize>()
             .context(format!(
@@ -129,9 +131,10 @@ impl GPU {
             ))
     }
 
-    fn read_hwmon_int<P: AsRef<Path>>(&self, hwmon: usize, file: P) -> Result<isize> {
+    async fn read_hwmon_int<P: AsRef<Path>>(&self, hwmon: usize, file: P) -> Result<isize> {
         let path = self.hwmon_paths[hwmon].join(file);
-        fs::read_to_string(&path)?
+        async_std::fs::read_to_string(&path)
+            .await?
             .replace('\n', "")
             .parse::<isize>()
             .context(format!(
@@ -180,8 +183,8 @@ impl GPU {
         bail!("no device")
     }
 
-    fn get_amd_gpu_usage(&self) -> Result<isize> {
-        self.read_device_int("gpu_busy_percent")
+    async fn get_amd_gpu_usage(&self) -> Result<isize> {
+        self.read_device_int("gpu_busy_percent").await
     }
 
     fn get_intel_gpu_usage(&self) -> Result<isize> {
@@ -209,10 +212,10 @@ impl GPU {
     /// Will return `Err` if the GPU usage
     /// is for some reason unreadable or is simply
     /// not exposed
-    pub fn get_gpu_usage(&self) -> Result<isize> {
+    pub async fn get_gpu_usage(&self) -> Result<isize> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
-                VID_AMD => self.get_amd_gpu_usage(),
+                VID_AMD => self.get_amd_gpu_usage().await,
                 VID_INTEL => self.get_intel_gpu_usage(),
                 VID_NVIDIA => self.get_nvidia_gpu_usage(),
                 _ => bail!("unimplemented"),
@@ -221,8 +224,8 @@ impl GPU {
         bail!("no device")
     }
 
-    fn get_amd_used_vram(&self) -> Result<isize> {
-        self.read_device_int("mem_info_vram_used")
+    async fn get_amd_used_vram(&self) -> Result<isize> {
+        self.read_device_int("mem_info_vram_used").await
     }
 
     fn get_intel_used_vram(&self) -> Result<isize> {
@@ -251,10 +254,10 @@ impl GPU {
     /// Will return `Err` if the used amount of VRAM
     /// is for some reason unreadable or is simply
     /// not exposed
-    pub fn get_used_vram(&self) -> Result<isize> {
+    pub async fn get_used_vram(&self) -> Result<isize> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
-                VID_AMD => self.get_amd_used_vram(),
+                VID_AMD => self.get_amd_used_vram().await,
                 VID_INTEL => self.get_intel_used_vram(),
                 VID_NVIDIA => self.get_nvidia_used_vram(),
                 _ => bail!("unimplemented"),
@@ -263,8 +266,8 @@ impl GPU {
         bail!("no device")
     }
 
-    fn get_amd_total_vram(&self) -> Result<isize> {
-        self.read_device_int("mem_info_vram_total")
+    async fn get_amd_total_vram(&self) -> Result<isize> {
+        self.read_device_int("mem_info_vram_total").await
     }
 
     fn get_intel_total_vram(&self) -> Result<isize> {
@@ -292,10 +295,10 @@ impl GPU {
     /// Will return `Err` if the VRAM size
     /// is for some reason unreadable or is simply
     /// not exposed
-    pub fn get_total_vram(&self) -> Result<isize> {
+    pub async fn get_total_vram(&self) -> Result<isize> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
-                VID_AMD => self.get_amd_total_vram(),
+                VID_AMD => self.get_amd_total_vram().await,
                 VID_INTEL => self.get_intel_total_vram(),
                 VID_NVIDIA => self.get_nvidia_total_vram(),
                 _ => bail!("unimplemented"),
@@ -304,8 +307,8 @@ impl GPU {
         bail!("no device")
     }
 
-    fn get_amd_gpu_temp(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int(0, "temp1_input")? as f64 / 1000.0)
+    async fn get_amd_gpu_temp(&self) -> Result<f64> {
+        Ok(self.read_hwmon_int(0, "temp1_input").await? as f64 / 1000.0)
     }
 
     fn get_intel_gpu_temp(&self) -> Result<f64> {
@@ -332,10 +335,10 @@ impl GPU {
     /// Will return `Err` if the temperature
     /// is for some reason unreadable or is simply
     /// not exposed
-    pub fn get_gpu_temp(&self) -> Result<f64> {
+    pub async fn get_gpu_temp(&self) -> Result<f64> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
-                VID_AMD => self.get_amd_gpu_temp(),
+                VID_AMD => self.get_amd_gpu_temp().await,
                 VID_INTEL => self.get_intel_gpu_temp(),
                 VID_NVIDIA => self.get_nvidia_gpu_temp(),
                 _ => bail!("unimplemented"),
@@ -344,8 +347,8 @@ impl GPU {
         bail!("no device")
     }
 
-    fn get_amd_power_usage(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int(0, "power1_average")? as f64 / 1_000_000.0)
+    async fn get_amd_power_usage(&self) -> Result<f64> {
+        Ok(self.read_hwmon_int(0, "power1_average").await? as f64 / 1_000_000.0)
     }
 
     fn get_intel_power_usage(&self) -> Result<f64> {
@@ -369,10 +372,10 @@ impl GPU {
     /// Will return `Err` if the power usage
     /// is for some reason unreadable or is simply
     /// not exposed
-    pub fn get_power_usage(&self) -> Result<f64> {
+    pub async fn get_power_usage(&self) -> Result<f64> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
-                VID_AMD => self.get_amd_power_usage(),
+                VID_AMD => self.get_amd_power_usage().await,
                 VID_INTEL => self.get_intel_power_usage(),
                 VID_NVIDIA => self.get_nvidia_power_usage(),
                 _ => bail!("unimplemented"),
@@ -381,12 +384,12 @@ impl GPU {
         bail!("no device")
     }
 
-    fn get_amd_gpu_speed(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int(0, "freq1_input")? as f64)
+    async fn get_amd_gpu_speed(&self) -> Result<f64> {
+        Ok(self.read_hwmon_int(0, "freq1_input").await? as f64)
     }
 
-    fn get_intel_gpu_speed(&self) -> Result<f64> {
-        Ok(self.read_sysfs_int("gt_cur_freq_mhz")? as f64 * 1_000_000.0)
+    async fn get_intel_gpu_speed(&self) -> Result<f64> {
+        Ok(self.read_sysfs_int("gt_cur_freq_mhz").await? as f64 * 1_000_000.0)
     }
 
     fn get_nvidia_gpu_speed(&self) -> Result<f64> {
@@ -410,11 +413,11 @@ impl GPU {
     /// Will return `Err` if the clockspeed
     /// is for some reason unreadable or is simply
     /// not exposed
-    pub fn get_gpu_speed(&self) -> Result<f64> {
+    pub async fn get_gpu_speed(&self) -> Result<f64> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
-                VID_AMD => self.get_amd_gpu_speed(),
-                VID_INTEL => self.get_intel_gpu_speed(),
+                VID_AMD => self.get_amd_gpu_speed().await,
+                VID_INTEL => self.get_intel_gpu_speed().await,
                 VID_NVIDIA => self.get_nvidia_gpu_speed(),
                 _ => bail!("unimplemented"),
             };
@@ -422,8 +425,8 @@ impl GPU {
         bail!("no device")
     }
 
-    fn get_amd_vram_speed(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int(0, "freq2_input")? as f64)
+    async fn get_amd_vram_speed(&self) -> Result<f64> {
+        Ok(self.read_hwmon_int(0, "freq2_input").await? as f64)
     }
 
     fn get_intel_vram_speed(&self) -> Result<f64> {
@@ -450,10 +453,10 @@ impl GPU {
     /// Will return `Err` if the VRAM speed
     /// is for some reason unreadable or is simply
     /// not exposed
-    pub fn get_vram_speed(&self) -> Result<f64> {
+    pub async fn get_vram_speed(&self) -> Result<f64> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
-                VID_AMD => self.get_amd_vram_speed(),
+                VID_AMD => self.get_amd_vram_speed().await,
                 VID_INTEL => self.get_intel_vram_speed(),
                 VID_NVIDIA => self.get_nvidia_vram_speed(),
                 _ => bail!("unimplemented"),
@@ -462,8 +465,8 @@ impl GPU {
         bail!("no device")
     }
 
-    fn get_amd_power_cap(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int(0, "power1_cap")? as f64 / 1_000_000.0)
+    async fn get_amd_power_cap(&self) -> Result<f64> {
+        Ok(self.read_hwmon_int(0, "power1_cap").await? as f64 / 1_000_000.0)
     }
 
     fn get_intel_power_cap(&self) -> Result<f64> {
@@ -490,10 +493,10 @@ impl GPU {
     /// Will return `Err` if the current power cap
     /// is for some reason unreadable or is simply
     /// not exposed
-    pub fn get_power_cap(&self) -> Result<f64> {
+    pub async fn get_power_cap(&self) -> Result<f64> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
-                VID_AMD => self.get_amd_power_cap(),
+                VID_AMD => self.get_amd_power_cap().await,
                 VID_INTEL => self.get_intel_power_cap(),
                 VID_NVIDIA => self.get_nvidia_power_cap(),
                 _ => bail!("unimplemented"),
@@ -502,8 +505,8 @@ impl GPU {
         bail!("no device")
     }
 
-    fn get_amd_power_cap_max(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int(0, "power1_cap_max")? as f64 / 1_000_000.0)
+    async fn get_amd_power_cap_max(&self) -> Result<f64> {
+        Ok(self.read_hwmon_int(0, "power1_cap_max").await? as f64 / 1_000_000.0)
     }
 
     fn get_intel_power_cap_max(&self) -> Result<f64> {
@@ -531,10 +534,10 @@ impl GPU {
     /// Will return `Err` if the max power cap
     /// is for some reason unreadable or is simply
     /// not exposed
-    pub fn get_power_cap_max(&self) -> Result<f64> {
+    pub async fn get_power_cap_max(&self) -> Result<f64> {
         if let Some(dev) = self.device {
             return match dev.vendor().id() {
-                VID_AMD => self.get_amd_power_cap_max(),
+                VID_AMD => self.get_amd_power_cap_max().await,
                 VID_INTEL => self.get_intel_power_cap_max(),
                 VID_NVIDIA => self.get_nvidia_power_cap_max(),
                 _ => bail!("unimplemented"),

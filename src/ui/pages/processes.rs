@@ -2,7 +2,7 @@ use std::cell::Ref;
 
 use adw::{prelude::*, subclass::prelude::*};
 use adw::{ResponseAppearance, Toast};
-use gtk::glib::{self, clone, BoxedAnyObject, Object};
+use gtk::glib::{self, clone, timeout_future_seconds, BoxedAnyObject, MainContext, Object};
 use gtk::{gio, CustomSorter, FilterChange, Ordering, SortType};
 
 use crate::config::PROFILE;
@@ -349,6 +349,14 @@ impl ResProcesses {
         column_view.set_enable_rubberband(true);
         imp.processes_scrolled_window.set_child(Some(&column_view));
         *imp.column_view.borrow_mut() = column_view;
+
+        *imp.apps.borrow_mut() = futures::executor::block_on(Apps::new()).unwrap();
+        imp.apps
+            .borrow()
+            .all_processes()
+            .iter()
+            .map(|process| BoxedAnyObject::new(process.clone()))
+            .for_each(|item_box| imp.store.borrow().append(&item_box));
     }
 
     pub fn setup_signals(&self) {
@@ -362,23 +370,25 @@ impl ResProcesses {
             }),
         );
 
-        imp.search_button.connect_toggled(clone!(@strong self as this => move |button| {
-            let imp = this.imp();
-            imp.search_revealer.set_reveal_child(button.is_active());
-            if let Some(filter) = imp.filter_model.borrow().filter() {
-                filter.changed(FilterChange::Different)
-            }
-            if button.is_active() {
-                imp.search_entry.grab_focus();
-            }
-        }));
+        imp.search_button
+            .connect_toggled(clone!(@strong self as this => move |button| {
+                let imp = this.imp();
+                imp.search_revealer.set_reveal_child(button.is_active());
+                if let Some(filter) = imp.filter_model.borrow().filter() {
+                    filter.changed(FilterChange::Different)
+                }
+                if button.is_active() {
+                    imp.search_entry.grab_focus();
+                }
+            }));
 
-        imp.search_entry.connect_search_changed(clone!(@strong self as this => move |_| {
-            let imp = this.imp();
-            if let Some(filter) = imp.filter_model.borrow().filter() {
-                filter.changed(FilterChange::Different)
-            }
-        }));
+        imp.search_entry
+            .connect_search_changed(clone!(@strong self as this => move |_| {
+                let imp = this.imp();
+                if let Some(filter) = imp.filter_model.borrow().filter() {
+                    filter.changed(FilterChange::Different)
+                }
+            }));
 
         imp.information_button
             .connect_clicked(clone!(@strong self as this => move |_| {
@@ -407,20 +417,14 @@ impl ResProcesses {
     }
 
     pub fn setup_listener(&self) {
-        let imp = self.imp();
-        let model = imp.store.borrow();
         // TODO: don't use unwrap()
-        *imp.apps.borrow_mut() = Apps::new().unwrap();
-        imp.apps
-            .borrow()
-            .all_processes()
-            .iter()
-            .map(|process| BoxedAnyObject::new(process.clone()))
-            .for_each(|item_box| model.append(&item_box));
-        let statistics_update = clone!(@strong self as this => move || {
-            this.refresh_processes_list()
-        });
-        glib::timeout_add_seconds_local(2, statistics_update);
+        let main_context = MainContext::default();
+        main_context.spawn_local(clone!(@strong self as this => async move {
+            loop {
+                timeout_future_seconds(2).await;
+                this.refresh_processes_list().await;
+            }
+        }));
     }
 
     fn search_filter(&self, obj: &Object) -> bool {
@@ -450,7 +454,7 @@ impl ResProcesses {
             })
     }
 
-    fn refresh_processes_list(&self) -> Continue {
+    async fn refresh_processes_list(&self) {
         let imp = self.imp();
         let selection = imp.selection_model.borrow();
         let mut apps = imp.apps.borrow_mut();
@@ -466,7 +470,7 @@ impl ResProcesses {
         // refreshed apps and stats, then reselect the remembered app.
         // TODO: make this even less hacky
         let selected_item = self.get_selected_process().map(|process| process.pid);
-        if apps.refresh().is_ok() {
+        if apps.refresh().await.is_ok() {
             apps.all_processes()
                 .iter()
                 .filter(|process| process.memory_usage > 0)
@@ -502,8 +506,6 @@ impl ResProcesses {
                 selection.set_selected(index);
             }
         }
-
-        glib::Continue(true)
     }
 
     fn end_selected_process(&self) {

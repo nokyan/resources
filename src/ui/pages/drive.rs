@@ -1,5 +1,5 @@
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone};
+use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
 
 use crate::config::PROFILE;
 use crate::ui::widgets::info_box::ResInfoBox;
@@ -114,42 +114,45 @@ impl ResDrive {
     }
 
     pub fn setup_listener(&self, device: String) {
-        let hw_sector_size = utils::drive::get_sector_size(&device).unwrap_or(512);
-        let mut old_stats = utils::drive::sys_stat(&device).unwrap_or_default();
-        let refresh_seconds = 1;
-        let drive_usage_update = clone!(@strong self as this => move || {
+        let main_context = MainContext::default();
+        let drive_usage_update = clone!(@strong self as this => async move {
+            let hw_sector_size = utils::drive::get_sector_size(&device).await.unwrap_or(512);
+            let mut old_stats = utils::drive::sys_stat(&device).await.unwrap_or_default();
+            let refresh_seconds = 1;
             let imp = this.imp();
 
-            let disk_stats = utils::drive::sys_stat(&device).unwrap_or_default();
+            loop {
+                let disk_stats = utils::drive::sys_stat(&device).await.unwrap_or_default();
 
-            if let (Some(read_ticks), Some(write_ticks), Some(old_read_ticks), Some(old_write_ticks)) = (disk_stats.get("read_ticks"), disk_stats.get("write_ticks"), old_stats.get("read_ticks"), old_stats.get("write_ticks")) {
-                let delta_read_ticks = read_ticks - old_read_ticks;
-                let delta_write_ticks = write_ticks - old_write_ticks;
-                let refresh_millis = f64::from(refresh_seconds) * 1000.0;
-                let read_ratio = delta_read_ticks as f64 / refresh_millis;
-                let write_ratio = delta_write_ticks as f64 / refresh_millis;
-                let percentage = f64::max(read_ratio, write_ratio).clamp(0.0, 1.0);
-                let percentage_string = format!("{} %", (percentage * 100.0) as u8);
-                imp.total_usage.push_data_point(percentage);
-                imp.total_usage.set_info_label(&percentage_string);
+                if let (Some(read_ticks), Some(write_ticks), Some(old_read_ticks), Some(old_write_ticks)) = (disk_stats.get("read_ticks"), disk_stats.get("write_ticks"), old_stats.get("read_ticks"), old_stats.get("write_ticks")) {
+                    let delta_read_ticks = read_ticks - old_read_ticks;
+                    let delta_write_ticks = write_ticks - old_write_ticks;
+                    let refresh_millis = f64::from(refresh_seconds) * 1000.0;
+                    let read_ratio = delta_read_ticks as f64 / refresh_millis;
+                    let write_ratio = delta_write_ticks as f64 / refresh_millis;
+                    let percentage = f64::max(read_ratio, write_ratio).clamp(0.0, 1.0);
+                    let percentage_string = format!("{} %", (percentage * 100.0) as u8);
+                    imp.total_usage.push_data_point(percentage);
+                    imp.total_usage.set_info_label(&percentage_string);
+                }
+
+                if let (Some(read_sectors), Some(write_sectors), Some(old_read_sectors), Some(old_write_sectors)) = (disk_stats.get("read_sectors"), disk_stats.get("write_sectors"), old_stats.get("read_sectors"), old_stats.get("write_sectors")) {
+                    let delta_read_sectors = read_sectors - old_read_sectors;
+                    let delta_write_sectors = write_sectors - old_write_sectors;
+                    let read_bytes_per_second = (delta_read_sectors * hw_sector_size) / refresh_seconds as usize;
+                    let write_bytes_per_second = (delta_write_sectors * hw_sector_size) / refresh_seconds as usize;
+                    let rbps_formatted = to_largest_unit(read_bytes_per_second as f64, &Base::Decimal);
+                    let wbps_formatted = to_largest_unit(write_bytes_per_second as f64, &Base::Decimal);
+                    imp.read.set_info_label(&format!("{:.2} {}B/s", rbps_formatted.0, rbps_formatted.1));
+                    imp.write.set_info_label(&format!("{:.2} {}B/s", wbps_formatted.0, wbps_formatted.1));
+                }
+
+                old_stats = disk_stats;
+
+                timeout_future_seconds(refresh_seconds).await;
             }
-
-            if let (Some(read_sectors), Some(write_sectors), Some(old_read_sectors), Some(old_write_sectors)) = (disk_stats.get("read_sectors"), disk_stats.get("write_sectors"), old_stats.get("read_sectors"), old_stats.get("write_sectors")) {
-                let delta_read_sectors = read_sectors - old_read_sectors;
-                let delta_write_sectors = write_sectors - old_write_sectors;
-                let read_bytes_per_second = (delta_read_sectors * hw_sector_size) / refresh_seconds as usize;
-                let write_bytes_per_second = (delta_write_sectors * hw_sector_size) / refresh_seconds as usize;
-                let rbps_formatted = to_largest_unit(read_bytes_per_second as f64, &Base::Decimal);
-                let wbps_formatted = to_largest_unit(write_bytes_per_second as f64, &Base::Decimal);
-                imp.read.set_info_label(&format!("{:.2} {}B/s", rbps_formatted.0, rbps_formatted.1));
-                imp.write.set_info_label(&format!("{:.2} {}B/s", wbps_formatted.0, wbps_formatted.1));
-            }
-
-            old_stats = disk_stats;
-
-            glib::Continue(true)
         });
-        glib::timeout_add_seconds_local(refresh_seconds, drive_usage_update);
+        main_context.spawn_local(drive_usage_update);
     }
 
     pub fn set_writable(&self, writable: bool) {

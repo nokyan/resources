@@ -71,60 +71,6 @@ pub struct Apps {
     known_proc_paths: Vec<PathBuf>,
 }
 
-// TODO: use Into<PathBuf> instead of PathBuf
-impl TryFrom<PathBuf> for Process {
-    fn try_from(value: PathBuf) -> Result<Self> {
-        let stat: Vec<String> = std::fs::read_to_string(value.join("stat"))?
-            .split(' ')
-            .map(std::string::ToString::to_string)
-            .collect();
-        let statm: Vec<String> = std::fs::read_to_string(value.join("statm"))?
-            .split(' ')
-            .map(std::string::ToString::to_string)
-            .collect();
-        let containerization = match &value.join("root").join(".flatpak-info").exists() {
-            true => Containerization::Flatpak,
-            false => Containerization::None,
-        };
-        Ok(Process {
-            pid: value
-                .file_name()
-                .ok_or_else(|| anyhow!(""))?
-                .to_str()
-                .ok_or_else(|| anyhow!(""))?
-                .parse()?,
-            uid: std::fs::read_to_string(value.join("loginuid"))?.parse()?,
-            comm: std::fs::read_to_string(value.join("comm")).map(|s| s.replace('\n', ""))?,
-            commandline: std::fs::read_to_string(value.join("cmdline"))
-                .map(|s| s.replace('\0', " "))?,
-            cpu_time: stat[13].parse::<u64>()? + stat[14].parse::<u64>()?,
-            cpu_time_timestamp: SystemTime::now()
-                .duration_since(SystemTime::UNIX_EPOCH)?
-                .as_millis() as u64,
-            cpu_time_before: 0,
-            cpu_time_before_timestamp: 0,
-            memory_usage: (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?)
-                * PAGESIZE.get_or_init(sysconf::pagesize),
-            cgroup: Self::sanitize_cgroup(std::fs::read_to_string(value.join("cgroup"))?),
-            proc_path: value,
-            alive: true,
-            containerization,
-            icon: ThemedIcon::new("generic-process").into(),
-        })
-    }
-
-    type Error = anyhow::Error;
-}
-
-impl TryFrom<i32> for Process {
-    fn try_from(value: i32) -> Result<Self> {
-        let path = PathBuf::from("/proc/").join(value.to_string());
-        Process::try_from(path)
-    }
-
-    type Error = anyhow::Error;
-}
-
 impl Process {
     /// Returns a `Vec` containing all currently running processes.
     ///
@@ -132,20 +78,22 @@ impl Process {
     ///
     /// Will return `Err` if there are problems traversing and
     /// parsing procfs
-    pub fn all() -> Result<Vec<Self>> {
+    pub async fn all() -> Result<Vec<Self>> {
         let mut return_vec = Vec::new();
         for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-            return_vec.push(Self::try_from(entry));
+            return_vec.push(Self::try_from_path(entry).await);
         }
         Ok(return_vec.into_iter().flatten().collect())
     }
 
-    fn refresh_result(&mut self) -> Result<()> {
-        let stat: Vec<String> = std::fs::read_to_string(self.proc_path.join("stat"))?
+    async fn refresh_result(&mut self) -> Result<()> {
+        let stat: Vec<String> = async_std::fs::read_to_string(self.proc_path.join("stat"))
+            .await?
             .split(' ')
             .map(std::string::ToString::to_string)
             .collect();
-        let statm: Vec<String> = std::fs::read_to_string(self.proc_path.join("statm"))?
+        let statm: Vec<String> = async_std::fs::read_to_string(self.proc_path.join("statm"))
+            .await?
             .split(' ')
             .map(std::string::ToString::to_string)
             .collect();
@@ -160,8 +108,8 @@ impl Process {
         Ok(())
     }
 
-    pub fn refresh(&mut self) -> bool {
-        self.alive = self.proc_path.exists() && self.refresh_result().is_ok();
+    pub async fn refresh(&mut self) -> bool {
+        self.alive = self.proc_path.exists() && self.refresh_result().await.is_ok();
         self.alive
     }
 
@@ -358,6 +306,55 @@ impl Process {
     pub fn sanitize_cmdline<S: AsRef<str>>(cmdline: S) -> String {
         cmdline.as_ref().replace('\0', " ")
     }
+
+    async fn try_from_path(value: PathBuf) -> Result<Self> {
+        let stat: Vec<String> = async_std::fs::read_to_string(value.join("stat"))
+            .await?
+            .split(' ')
+            .map(std::string::ToString::to_string)
+            .collect();
+        let statm: Vec<String> = async_std::fs::read_to_string(value.join("statm"))
+            .await?
+            .split(' ')
+            .map(std::string::ToString::to_string)
+            .collect();
+        let containerization = match &value.join("root").join(".flatpak-info").exists() {
+            true => Containerization::Flatpak,
+            false => Containerization::None,
+        };
+        Ok(Process {
+            pid: value
+                .file_name()
+                .ok_or_else(|| anyhow!(""))?
+                .to_str()
+                .ok_or_else(|| anyhow!(""))?
+                .parse()?,
+            uid: async_std::fs::read_to_string(value.join("loginuid"))
+                .await?
+                .parse()?,
+            comm: async_std::fs::read_to_string(value.join("comm"))
+                .await
+                .map(|s| s.replace('\n', ""))?,
+            commandline: async_std::fs::read_to_string(value.join("cmdline"))
+                .await
+                .map(|s| s.replace('\0', " "))?,
+            cpu_time: stat[13].parse::<u64>()? + stat[14].parse::<u64>()?,
+            cpu_time_timestamp: SystemTime::now()
+                .duration_since(SystemTime::UNIX_EPOCH)?
+                .as_millis() as u64,
+            cpu_time_before: 0,
+            cpu_time_before_timestamp: 0,
+            memory_usage: (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?)
+                * PAGESIZE.get_or_init(sysconf::pagesize),
+            cgroup: Self::sanitize_cgroup(
+                async_std::fs::read_to_string(value.join("cgroup")).await?,
+            ),
+            proc_path: value,
+            alive: true,
+            containerization,
+            icon: ThemedIcon::new("generic-process").into(),
+        })
+    }
 }
 
 impl App {
@@ -411,11 +408,18 @@ impl App {
         self.app_info.name().to_string()
     }
 
-    pub fn refresh(&mut self) -> Vec<PathBuf> {
-        self.processes
-            .drain_filter(|_, process| !process.refresh())
-            .map(|(_, process)| process.proc_path)
-            .collect()
+    pub async fn refresh(&mut self) -> Vec<PathBuf> {
+        /*self.processes
+        .drain_filter(|_, process| !process.refresh().await)
+        .map(|(_, process)| process.proc_path)
+        .collect()*/
+        let mut remaining_processes = Vec::new();
+        for process in self.processes.values_mut() {
+            if !process.refresh().await {
+                remaining_processes.push(process.proc_path.clone());
+            }
+        }
+        remaining_processes
     }
 
     #[must_use]
@@ -513,10 +517,10 @@ impl Apps {
     ///
     /// Will return `Err` if there are problems getting the list of
     /// running processes.
-    pub fn new() -> Result<Self> {
+    pub async fn new() -> Result<Self> {
         let app_infos = gtk::gio::AppInfo::all();
         let mut app_map = HashMap::new();
-        let mut processes = Process::all()?;
+        let mut processes = Process::all().await?;
         let mut known_proc_paths = Vec::new();
         for app_info in app_infos {
             if let Some(id) = app_info
@@ -680,19 +684,27 @@ impl Apps {
     /// Will return `Err` if there are problems getting the new list of
     /// running processes or if there are anomalies in a process procfs
     /// directory.
-    pub fn refresh(&mut self) -> Result<()> {
+    pub async fn refresh(&mut self) -> Result<()> {
         // look for processes that might have died since we last checked
         // and update the stats of the processes that are still alive
         // while we're at it
         let mut dead_processes = Vec::new();
-        self.apps
-            .values_mut()
-            .for_each(|app| dead_processes.extend(app.refresh()));
-        dead_processes.extend(
+        /*self.apps
+        .values_mut()
+        .for_each(|app| dead_processes.extend(app.refresh()));*/
+        for app in self.apps.values_mut() {
+            dead_processes.extend(app.refresh().await);
+        }
+        /*dead_processes.extend(
             self.system_processes
                 .drain_filter(|process| !process.refresh())
                 .map(|process| process.proc_path),
-        );
+        );*/
+        for process in self.system_processes.iter_mut() {
+            if !process.refresh().await {
+                dead_processes.push(process.proc_path.clone())
+            }
+        }
         // now get the processes that might have been added:
         for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
             // is the current proc_path already known?
@@ -705,7 +717,7 @@ impl Apps {
                 continue;
             }
             // if not, insert it into our known_proc_paths
-            let process = Process::try_from(entry.clone())?;
+            let process = Process::try_from_path(entry.clone()).await?;
             if let Some(app) = self
                 .apps
                 .get_mut(process.cgroup.as_deref().unwrap_or_default())

@@ -158,34 +158,39 @@ impl MainWindow {
         imp.processes.init();
         imp.cpu.init();
         imp.memory.init();
-        let gpus = GPU::get_gpus().unwrap_or_default();
-        let mut i = 1;
-        for gpu in &gpus {
-            let page = ResGPU::new();
-            page.init(gpu.clone(), i);
-            if gpus.len() > 1 {
-                imp.content_stack
-                    .add_titled(&page, None, &gettextrs::gettext!("GPU {}", i));
-                i += 1;
-            } else {
-                imp.content_stack
-                    .add_titled(&page, None, &gettextrs::gettext("GPU"));
-                i += 1;
-            }
-        }
 
         let main_context = MainContext::default();
         main_context.spawn_local(clone!(@strong self as this => async move {
+            let imp = this.imp();
+
             this.look_for_drives().await.unwrap_or_default();
+
+            let gpus = GPU::get_gpus().await.unwrap_or_default();
+            let mut i = 1;
+            for gpu in &gpus {
+                let page = ResGPU::new();
+                page.init(gpu.clone(), i);
+                if gpus.len() > 1 {
+                    imp.content_stack
+                        .add_titled(&page, None, &gettextrs::gettext!("GPU {}", i));
+                    i += 1;
+                } else {
+                    imp.content_stack
+                        .add_titled(&page, None, &gettextrs::gettext("GPU"));
+                    i += 1;
+                }
+            }
+
             futures_util::try_join!(
                 this.watch_for_drives(),
+
                 async {
                     // because NetworkManager exposes weird "virtual" devices,
                     // is inconsistent (at least for our case) with its UDI
                     // path, we watch for network interfaces the old-fashioned
                     // way: just poll /sys/class/net/ every second
                     loop {
-                        this.watch_for_network_interfaces();
+                        this.watch_for_network_interfaces().await;
                         timeout_future_seconds(1).await;
                     }
                     #[allow(unreachable_code)]
@@ -352,7 +357,7 @@ impl MainWindow {
         Ok(())
     }
 
-    fn watch_for_network_interfaces(&self) {
+    async fn watch_for_network_interfaces(&self) {
         let imp = self.imp();
         let mut still_active_interfaces = Vec::new();
         if let Ok(paths) = std::fs::read_dir("/sys/class/net") {
@@ -367,7 +372,7 @@ impl MainWindow {
                     continue;
                 }
                 let page = ResNetwork::new();
-                if let Ok(interface) = NetworkInterface::from_sysfs(&dir_path) {
+                if let Ok(interface) = NetworkInterface::from_sysfs(&dir_path).await {
                     let sidebar_title = match interface.interface_type {
                         InterfaceType::Ethernet => gettextrs::gettext("Ethernet Connection"),
                         InterfaceType::InfiniBand => gettextrs::gettext("InfiniBand Connection"),

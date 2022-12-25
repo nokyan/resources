@@ -30,12 +30,13 @@ const SYS_STAT_FIELDS: [&str; 17] = [
 ///
 /// Will return `Err` if the are errors during
 /// reading or parsing
-pub fn sys_stat(dev: &str) -> Result<HashMap<&'static str, usize>> {
+pub async fn sys_stat(dev: &str) -> Result<HashMap<&'static str, usize>> {
     lazy_static! {
         // TODO: maybe generate this regex automatically from `SYS_STAT_FIELDS`?
         static ref DRIVE_REGEX: Regex = Regex::new(r" *(?P<read_ios>[0-9]*) *(?P<read_merges>[0-9]*) *(?P<read_sectors>[0-9]*) *(?P<read_ticks>[0-9]*) *(?P<write_ios>[0-9]*) *(?P<write_merges>[0-9]*) *(?P<write_sectors>[0-9]*) *(?P<write_ticks>[0-9]*) *(?P<in_flight>[0-9]*) *(?P<io_ticks>[0-9]*) *(?P<time_in_queue>[0-9]*) *(?P<discard_ios>[0-9]*) *(?P<discard_merges>[0-9]*) *(?P<discard_sectors>[0-9]*) *(?P<discard_ticks>[0-9]*) *(?P<flush_ios>[0-9]*) *(?P<flush_ticks>[0-9]*)").unwrap();
     }
-    let stat = std::fs::read_to_string(PathBuf::from(format!("/sys/block/{dev}/stat")))
+    let stat = async_std::fs::read_to_string(PathBuf::from(format!("/sys/block/{dev}/stat")))
+        .await
         .with_context(|| format!("unable to read /sys/block/{dev}/stat"))?;
     let captures = DRIVE_REGEX
         .captures(&stat)
@@ -60,11 +61,12 @@ pub fn sys_stat(dev: &str) -> Result<HashMap<&'static str, usize>> {
 ///
 /// Will return `Err` if the are errors during
 /// reading or parsing
-pub fn get_sector_size(dev: &str) -> Result<usize> {
-    std::fs::read_to_string(PathBuf::from(format!(
+pub async fn get_sector_size(dev: &str) -> Result<usize> {
+    async_std::fs::read_to_string(PathBuf::from(format!(
         "/sys/block/{}/queue/hw_sector_size",
         dev
-    )))?
+    )))
+    .await?
     .parse()
     .with_context(|| "unable to parse hw_sector_size")
 }
