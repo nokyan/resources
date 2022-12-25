@@ -29,14 +29,10 @@
                   <object class="AdwPreferencesGroup">
                     <property name="title" translatable="yes">Usage</property>
                     <child>
-                      <object class="ResProgressBox" id="memory">
-                        <property name="title" translatable="yes">Memory</property>
-                      </object>
+                      <object class="ResGraphBox" id="memory"/>
                     </child>
                     <child>
-                      <object class="ResProgressBox" id="swap">
-                        <property name="title" translatable="yes">Swap</property>
-                      </object>
+                      <object class="ResGraphBox" id="swap"/>
                     </child>
                   </object>
                 </child>

@@ -1,16 +1,17 @@
 use adw::{prelude::*, subclass::prelude::*};
 use anyhow::Context;
+use gtk::builders::FlowBoxChildBuilder;
 use gtk::glib::{self, clone};
 
 use crate::config::PROFILE;
-use crate::ui::widgets::progress_box::ResProgressBox;
+use crate::ui::widgets::graph_box::ResGraphBox;
 use crate::utils::units::{to_largest_unit, Base};
 use crate::utils::{cpu, NaNDefault};
 
 mod imp {
     use std::cell::RefCell;
 
-    use crate::ui::widgets::info_box::ResInfoBox;
+    use crate::ui::widgets::{graph_box::ResGraphBox, info_box::ResInfoBox};
 
     use super::*;
 
@@ -19,13 +20,20 @@ mod imp {
     #[derive(Debug, CompositeTemplate, Default)]
     #[template(resource = "/me/nalux/Resources/ui/pages/cpu.ui")]
     pub struct ResCPU {
-        pub thread_boxes: RefCell<Vec<ResProgressBox>>,
         #[template_child]
         pub cpu_name: TemplateChild<gtk::Label>,
         #[template_child]
-        pub threads_expander: TemplateChild<adw::ExpanderRow>,
+        pub logical_switch: TemplateChild<gtk::Switch>,
         #[template_child]
-        pub total_usage_label: TemplateChild<gtk::Label>,
+        pub stack: TemplateChild<gtk::Stack>,
+        #[template_child]
+        pub total_page: TemplateChild<adw::PreferencesGroup>,
+        #[template_child]
+        pub logical_page: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub total_cpu: TemplateChild<ResGraphBox>,
+        #[template_child]
+        pub thread_box: TemplateChild<gtk::FlowBox>,
         #[template_child]
         pub max_speed: TemplateChild<ResInfoBox>,
         #[template_child]
@@ -38,6 +46,7 @@ mod imp {
         pub virtualization: TemplateChild<ResInfoBox>,
         #[template_child]
         pub architecture: TemplateChild<ResInfoBox>,
+        pub thread_graphs: RefCell<Vec<ResGraphBox>>,
     }
 
     #[glib::object_subclass]
@@ -85,6 +94,7 @@ impl ResCPU {
     pub fn init(&self) {
         self.setup_widgets();
         self.setup_signals();
+        self.setup_listener();
     }
 
     pub fn setup_widgets(&self) {
@@ -98,19 +108,33 @@ impl ResCPU {
                 .unwrap_or_else(|| gettextrs::gettext("N/A")),
         );
 
+        imp.total_cpu.set_title_label(&gettextrs::gettext("CPU"));
+        imp.total_cpu.set_info_label(&gettextrs::gettext("N/A"));
+        imp.total_cpu.set_data_points_max_amount(60);
+        imp.total_cpu.set_graph_color(28, 113, 216);
+
         let logical_cpus = cpu_info.logical_cpus.unwrap_or(1);
         // if our CPU happens to only have one thread, showing a single thread box with the exact
         // same fraction as the progress bar for total CPU usage would be silly, so only do
         // thread boxes if we have more than one thread
         if logical_cpus > 1 {
+            imp.logical_switch.set_sensitive(true);
             for i in 0..logical_cpus {
-                let progress_box = ResProgressBox::new();
-                progress_box.set_title(&format!("CPU {}", i + 1));
-                progress_box.set_percentage_label("0 %");
-                imp.threads_expander.add_row(&progress_box);
-                imp.thread_boxes.borrow_mut().push(progress_box);
+                let thread_box = ResGraphBox::new();
+                thread_box.set_info_label(&gettextrs::gettext!("CPU {}", i + 1));
+                thread_box.set_title_label(&gettextrs::gettext("N/A"));
+                thread_box.set_graph_height_request(72);
+                thread_box.set_data_points_max_amount(60);
+                thread_box.set_graph_color(28, 113, 216);
+                let flow_box_chld = FlowBoxChildBuilder::new()
+                    .child(&thread_box)
+                    .css_classes(vec!["tile".into(), "card".into()])
+                    .build();
+                imp.thread_box.append(&flow_box_chld);
+                imp.thread_graphs.borrow_mut().push(thread_box);
             }
         }
+
         imp.max_speed
             .set_info_label(&cpu_info.max_speed.map_or_else(
                 || gettextrs::gettext("N/A"),
@@ -122,26 +146,31 @@ impl ResCPU {
                     )
                 },
             ));
+
         imp.logical_cpus.set_info_label(
             &cpu_info
                 .logical_cpus
                 .map_or_else(|| gettextrs::gettext("N/A"), |x| x.to_string()),
         );
+
         imp.physical_cpus.set_info_label(
             &cpu_info
                 .physical_cpus
                 .map_or_else(|| gettextrs::gettext("N/A"), |x| x.to_string()),
         );
+
         imp.sockets.set_info_label(
             &cpu_info
                 .sockets
                 .map_or_else(|| gettextrs::gettext("N/A"), |x| x.to_string()),
         );
+
         imp.virtualization.set_info_label(
             &cpu_info
                 .virtualization
                 .unwrap_or_else(|| gettextrs::gettext("N/A")),
         );
+
         imp.architecture.set_info_label(
             &cpu_info
                 .architecture
@@ -150,6 +179,19 @@ impl ResCPU {
     }
 
     pub fn setup_signals(&self) {
+        let imp = self.imp();
+        imp.logical_switch
+            .connect_active_notify(clone!(@weak self as this => move |switch| {
+                let imp = this.imp();
+                if switch.is_active() {
+                    imp.stack.set_visible_child(&imp.logical_page.get());
+                } else {
+                    imp.stack.set_visible_child(&imp.total_page.get());
+                }
+            }));
+    }
+
+    pub fn setup_listener(&self) {
         let cpu_info = cpu::cpu_info()
             .with_context(|| "unable to get CPUInfo")
             .unwrap_or_default();
@@ -168,7 +210,8 @@ impl ResCPU {
             let sum_total_delta = new_total_usage.1 - old_total_usage.1;
             let work_total_time = sum_total_delta - idle_total_delta;
             let total_fraction = ((work_total_time as f64) / (sum_total_delta as f64)).nan_default(0.0);
-            imp.total_usage_label.set_label(&format!("{} %", (total_fraction*100.0).round()));
+            imp.total_cpu.push_data_point(total_fraction);
+            imp.total_cpu.set_info_label(&format!("{} %", (total_fraction*100.0).round()));
             old_total_usage = new_total_usage;
 
             if logical_cpus > 1 {
@@ -177,13 +220,13 @@ impl ResCPU {
                     let idle_thread_delta = new_thread_usage.0 - old_thread_usage.0;
                     let sum_thread_delta = new_thread_usage.1 - old_thread_usage.1;
                     let work_thread_time = sum_thread_delta - idle_thread_delta;
-                    let curr_threadbox = &imp.thread_boxes.borrow()[i];
+                    let curr_threadbox = &imp.thread_graphs.borrow()[i];
                     let thread_fraction = ((work_thread_time as f64) / (sum_thread_delta as f64)).nan_default(0.0);
-                    curr_threadbox.set_fraction(thread_fraction);
-                    curr_threadbox.set_percentage_label(&format!("{} %", (thread_fraction*100.0).round()));
+                    curr_threadbox.push_data_point(thread_fraction);
+                    curr_threadbox.set_title_label(&format!("{} %", (thread_fraction*100.0).round()));
                     if let Ok(freq) = cpu::get_cpu_freq(i) {
                         let (frequency, base) = to_largest_unit(freq as f64, &Base::Decimal);
-                        curr_threadbox.set_title(&format!("CPU {} · {frequency:.2} {base}Hz", i + 1));
+                        curr_threadbox.set_info_label(&format!("{frequency:.2} {base}Hz"));
                     }
                     *old_thread_usage = new_thread_usage;
                 }

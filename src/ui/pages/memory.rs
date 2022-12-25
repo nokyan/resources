@@ -3,12 +3,13 @@ use anyhow::Context;
 use gtk::glib::{self, clone};
 
 use crate::config::PROFILE;
-use crate::ui::widgets::progress_box::ResProgressBox;
 use crate::utils::memory::{get_available_memory, get_free_swap, get_total_memory, get_total_swap};
 use crate::utils::units::{to_largest_unit, Base};
 use crate::utils::NaNDefault;
 
 mod imp {
+    use crate::ui::widgets::graph_box::ResGraphBox;
+
     use super::*;
 
     use gtk::CompositeTemplate;
@@ -17,9 +18,9 @@ mod imp {
     #[template(resource = "/me/nalux/Resources/ui/pages/memory.ui")]
     pub struct ResMemory {
         #[template_child]
-        pub memory: TemplateChild<ResProgressBox>,
+        pub memory: TemplateChild<ResGraphBox>,
         #[template_child]
-        pub swap: TemplateChild<ResProgressBox>,
+        pub swap: TemplateChild<ResGraphBox>,
     }
 
     #[glib::object_subclass]
@@ -65,7 +66,18 @@ impl ResMemory {
     }
 
     pub fn init(&self) {
+        self.setup_widgets();
         self.setup_signals();
+    }
+
+    pub fn setup_widgets(&self) {
+        let imp = self.imp();
+        imp.memory.set_title_label(&gettextrs::gettext("Memory"));
+        imp.memory.set_graph_color(129, 61, 156);
+        imp.memory.set_data_points_max_amount(60);
+        imp.swap.set_title_label(&gettextrs::gettext("Swap"));
+        imp.swap.set_graph_color(46, 194, 126);
+        imp.swap.set_data_points_max_amount(60);
     }
 
     pub fn setup_signals(&self) {
@@ -81,15 +93,19 @@ impl ResMemory {
             let total_swap_unit = to_largest_unit(total_swap as f64, &Base::Decimal);
             let used_swap_unit = to_largest_unit((total_swap - free_swap) as f64, &Base::Decimal);
 
-            imp.memory.set_fraction(1.0 - (available_mem as f64 / total_mem as f64));
-            imp.memory.set_percentage_label(&format!("{:.2} {}B / {:.2} {}B", used_mem_unit.0, used_mem_unit.1, total_mem_unit.0, total_mem_unit.1));
+            let memory_fraction = 1.0 - (available_mem as f64 / total_mem as f64);
+            let swap_fraction = 1.0 - (free_swap as f64 / total_swap as f64).nan_default(1.0);
+
+            imp.memory.push_data_point(memory_fraction);
+            imp.memory.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {:.1}%", used_mem_unit.0, used_mem_unit.1, total_mem_unit.0, total_mem_unit.1, memory_fraction*100.0));
             if total_swap == 0 {
-                imp.swap.set_progressbar_visible(false);
-                imp.swap.set_percentage_label(&gettextrs::gettext("N/A"));
+                imp.swap.push_data_point(0.0);
+                imp.swap.set_graph_visible(false);
+                imp.swap.set_info_label(&gettextrs::gettext("N/A"));
             } else {
-                imp.swap.set_fraction(1.0 - (free_swap as f64 / total_swap as f64).nan_default(1.0));
-                imp.swap.set_progressbar_visible(true);
-                imp.swap.set_percentage_label(&format!("{:.2} {}B / {:.2} {}B", used_swap_unit.0, used_swap_unit.1, total_swap_unit.0, total_swap_unit.1));
+                imp.swap.push_data_point(swap_fraction);
+                imp.swap.set_graph_visible(true);
+                imp.swap.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {:.1}%", used_swap_unit.0, used_swap_unit.1, total_swap_unit.0, total_swap_unit.1, swap_fraction*100.0));
             }
 
             glib::Continue(true)

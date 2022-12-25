@@ -27,17 +27,52 @@
                 </child>
                 <child>
                   <object class="AdwPreferencesGroup">
-                    <property name="title" translatable="yes">Usage</property>
+                    <property name="title" translatable="yes">Options</property>
                     <child>
-                      <object class="AdwExpanderRow" id="threads_expander">
-                        <property name="title" translatable="yes">Total Usage</property>
-                        <child type="action">
-                          <object class="GtkLabel" id="total_usage_label">
+                      <object class="AdwActionRow">
+                        <property name="title" translatable="yes">Show Usages of Logical CPUs</property>
+                        <child type="suffix">
+                          <object class="GtkSwitch" id="logical_switch">
+                            <property name="valign">3</property>
+                            <property name="sensitive">false</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStack" id="stack">
+                    <property name="vhomogeneous">0</property>
+                    <child>
+                      <object class="AdwPreferencesGroup" id="total_page">
+                        <property name="title" translatable="yes">Usage</property>
+                        <child>
+                          <object class="ResGraphBox" id="total_cpu"/>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="logical_page">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">16</property>
+                        <property name="margin-top">6</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="label" translatable="yes">Usage</property>
+                            <property name="xalign">0</property>
                             <style>
-                              <class name="dim-label"/>
+                              <class name="heading"/>
+                              <class name="h4"/>
                             </style>
-                            <property name="justify">right</property>
-                            <property name="halign">start</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkFlowBox" id="thread_box">
+                            <property name="row_spacing">8</property>
+                            <property name="column_spacing">8</property>
+                            <property name="homogeneous">true</property>
+                            <property name="selection-mode">none</property>
                           </object>
                         </child>
                       </object>

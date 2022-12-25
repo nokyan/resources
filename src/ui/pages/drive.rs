@@ -3,12 +3,11 @@ use gtk::glib::{self, clone};
 
 use crate::config::PROFILE;
 use crate::ui::widgets::info_box::ResInfoBox;
-use crate::ui::widgets::progress_box::ResProgressBox;
 use crate::utils;
 use crate::utils::units::{to_largest_unit, Base};
 
 mod imp {
-    use crate::ui::widgets::bool_box::ResBoolBox;
+    use crate::ui::widgets::{bool_box::ResBoolBox, graph_box::ResGraphBox};
 
     use super::*;
 
@@ -20,7 +19,7 @@ mod imp {
         #[template_child]
         pub drive_name: TemplateChild<gtk::Label>,
         #[template_child]
-        pub total_usage: TemplateChild<ResProgressBox>,
+        pub total_usage: TemplateChild<ResGraphBox>,
         #[template_child]
         pub read: TemplateChild<ResInfoBox>,
         #[template_child]
@@ -100,6 +99,9 @@ impl ResDrive {
         removable: bool,
     ) {
         let imp = self.imp();
+        imp.total_usage.set_title_label("Total Usage");
+        imp.total_usage.set_data_points_max_amount(60);
+        imp.total_usage.set_graph_color(229, 165, 10);
         imp.drive_name.set_label(&vec![vendor, model].join(" "));
         imp.device.set_info_label(device);
         let formatted_capacity = to_largest_unit(capacity as f64, &Base::Decimal);
@@ -128,8 +130,8 @@ impl ResDrive {
                 let write_ratio = delta_write_ticks as f64 / refresh_millis;
                 let percentage = f64::max(read_ratio, write_ratio).clamp(0.0, 1.0);
                 let percentage_string = format!("{} %", (percentage * 100.0) as u8);
-                imp.total_usage.set_fraction(percentage);
-                imp.total_usage.set_percentage_label(&percentage_string);
+                imp.total_usage.push_data_point(percentage);
+                imp.total_usage.set_info_label(&percentage_string);
             }
 
             if let (Some(read_sectors), Some(write_sectors), Some(old_read_sectors), Some(old_write_sectors)) = (disk_stats.get("read_sectors"), disk_stats.get("write_sectors"), old_stats.get("read_sectors"), old_stats.get("write_sectors")) {

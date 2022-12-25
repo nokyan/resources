@@ -27,3 +27,5 @@ futures-util = "0.3.25"
 unescape = "0.1.0"
 nix = { version = "0.26.1", features = ["signal"] }
 users = "0.11.0"
+plotters = { git = "https://github.com/plotters-rs/plotters", default_features = false, features = ["area_series"] }
+plotters-cairo = { git = "https://github.com/sdroege/plotters-cairo", branch = "cairo-rs-0.16" }

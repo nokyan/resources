@@ -14,8 +14,8 @@
     <file compressed="true" preprocess="xml-stripblanks" alias="gtk/help-overlay.ui">ui/shortcuts.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/application_name_cell.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/bool_box.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/widgets/graph_box.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/info_box.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/widgets/progress_box.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/process_name_cell.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/window.ui</file>
   </gresource>

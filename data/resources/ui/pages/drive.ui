@@ -29,9 +29,7 @@
                   <object class="AdwPreferencesGroup">
                     <property name="title" translatable="yes">Usage</property>
                     <child>
-                      <object class="ResProgressBox" id="total_usage">
-                        <property name="title" translatable="yes">Total Usage</property>
-                      </object>
+                      <object class="ResGraphBox" id="total_usage"/>
                     </child>
                     <child>
                       <object class="ResInfoBox" id="read">

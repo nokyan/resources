@@ -3,12 +3,12 @@ use gtk::glib::{self, clone};
 
 use crate::config::PROFILE;
 use crate::ui::widgets::info_box::ResInfoBox;
-use crate::ui::widgets::progress_box::ResProgressBox;
 use crate::utils::gpu::GPU;
 use crate::utils::units::{to_largest_unit, Base};
+use crate::utils::NaNDefault;
 
 mod imp {
-    use crate::utils::gpu::GPU;
+    use crate::{ui::widgets::graph_box::ResGraphBox, utils::gpu::GPU};
 
     use super::*;
 
@@ -21,9 +21,9 @@ mod imp {
         #[template_child]
         pub gpu_name: TemplateChild<gtk::Label>,
         #[template_child]
-        pub gpu_usage: TemplateChild<ResProgressBox>,
+        pub gpu_usage: TemplateChild<ResGraphBox>,
         #[template_child]
-        pub vram_usage: TemplateChild<ResProgressBox>,
+        pub vram_usage: TemplateChild<ResGraphBox>,
         #[template_child]
         pub temperature: TemplateChild<ResInfoBox>,
         #[template_child]
@@ -100,6 +100,12 @@ impl ResGPU {
     pub fn setup_widgets(&self) {
         let imp = self.imp();
         let gpu = &imp.gpu.get().unwrap();
+        imp.gpu_usage.set_title_label("GPU Usage");
+        imp.gpu_usage.set_data_points_max_amount(60);
+        imp.gpu_usage.set_graph_color(230, 97, 0);
+        imp.vram_usage.set_title_label("Video Memory Usage");
+        imp.vram_usage.set_data_points_max_amount(60);
+        imp.vram_usage.set_graph_color(192, 28, 40);
         imp.gpu_name.set_label(
             &gpu.get_name()
                 .unwrap_or(gettextrs::gettext!("GPU {}", imp.number.get().unwrap())),
@@ -118,23 +124,26 @@ impl ResGPU {
             let gpu = imp.gpu.get().unwrap();
 
             if let Ok(gpu_usage) = gpu.get_gpu_usage() {
-                imp.gpu_usage.set_percentage_label(&format!("{gpu_usage} %"));
-                imp.gpu_usage.set_fraction(gpu_usage as f64 / 100.0);
-                imp.gpu_usage.set_progressbar_visible(true);
+                imp.gpu_usage.set_info_label(&format!("{gpu_usage} %"));
+                imp.gpu_usage.push_data_point(gpu_usage as f64 / 100.0);
+                imp.gpu_usage.set_graph_visible(true);
             } else {
-                imp.gpu_usage.set_percentage_label(&gettextrs::gettext("N/A"));
-                imp.gpu_usage.set_progressbar_visible(false);
+                imp.gpu_usage.set_info_label(&gettextrs::gettext("N/A"));
+                imp.gpu_usage.push_data_point(0.0);
+                imp.gpu_usage.set_graph_visible(false);
             }
 
             if let (Ok(total_vram), Ok(used_vram)) = (gpu.get_total_vram(), gpu.get_used_vram()) {
                 let total_vram_unit = to_largest_unit(total_vram as f64, &Base::Decimal);
                 let used_vram_unit = to_largest_unit(used_vram as f64, &Base::Decimal);
-                imp.vram_usage.set_percentage_label(&format!("{:.2} {}B / {:.2} {}B", used_vram_unit.0, used_vram_unit.1, total_vram_unit.0, total_vram_unit.1));
-                imp.vram_usage.set_fraction((used_vram as f64) / (total_vram as f64));
-                imp.vram_usage.set_progressbar_visible(true);
+                let used_vram_percentage = (used_vram as f64 / total_vram as f64).nan_default(0.0) * 100.0;
+                imp.vram_usage.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {:.1}%", used_vram_unit.0, used_vram_unit.1, total_vram_unit.0, total_vram_unit.1, used_vram_percentage));
+                imp.vram_usage.push_data_point((used_vram as f64) / (total_vram as f64));
+                imp.vram_usage.set_graph_visible(true);
             } else {
-                imp.vram_usage.set_percentage_label(&gettextrs::gettext("N/A"));
-                imp.vram_usage.set_progressbar_visible(false);
+                imp.vram_usage.set_info_label(&gettextrs::gettext("N/A"));
+                imp.vram_usage.push_data_point(0.0);
+                imp.vram_usage.set_graph_visible(false);
             }
 
             // TODO: handle the user's choice of temperatue unit

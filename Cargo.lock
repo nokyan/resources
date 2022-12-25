@@ -1216,6 +1216,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "num-traits"
+version = "0.2.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "578ede34cf02f8924ab9447f50c28075b4d3e5b269972345e7e0372b38c6cdcd"
+dependencies = [
+ "autocfg",
+]
+
+[[package]]
 name = "nvml-wrapper"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1418,6 +1427,31 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6ac9a59f73473f1b8d852421e59e64809f025994837ef743615c6d0c5b305160"
 
 [[package]]
+name = "plotters"
+version = "0.3.5"
+source = "git+https://github.com/plotters-rs/plotters#ff806a3ac2cd4aab68a927ca78eda28eeb086057"
+dependencies = [
+ "num-traits",
+ "plotters-backend",
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
+name = "plotters-backend"
+version = "0.3.4"
+source = "git+https://github.com/plotters-rs/plotters#ff806a3ac2cd4aab68a927ca78eda28eeb086057"
+
+[[package]]
+name = "plotters-cairo"
+version = "0.3.3"
+source = "git+https://github.com/sdroege/plotters-cairo?branch=cairo-rs-0.16#b7e94302cb7bf8ec995c856cdc61a3208c64cf08"
+dependencies = [
+ "cairo-rs",
+ "plotters-backend",
+]
+
+[[package]]
 name = "polling"
 version = "2.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1606,6 +1640,8 @@ dependencies = [
  "nvml-wrapper",
  "once_cell",
  "pci-ids",
+ "plotters",
+ "plotters-cairo",
  "pretty_env_logger",
  "regex",
  "serde_json",

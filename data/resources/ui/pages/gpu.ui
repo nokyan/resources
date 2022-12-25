@@ -29,14 +29,10 @@
                   <object class="AdwPreferencesGroup">
                     <property name="title" translatable="yes">Usage</property>
                     <child>
-                      <object class="ResProgressBox" id="gpu_usage">
-                        <property name="title" translatable="yes">GPU Usage</property>
-                      </object>
+                      <object class="ResGraphBox" id="gpu_usage"/>
                     </child>
                     <child>
-                      <object class="ResProgressBox" id="vram_usage">
-                        <property name="title" translatable="yes">Video Memory Usage</property>
-                      </object>
+                      <object class="ResGraphBox" id="vram_usage"/>
                     </child>
                     <child>
                       <object class="ResInfoBox" id="temperature">
