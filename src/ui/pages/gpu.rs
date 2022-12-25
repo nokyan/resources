@@ -138,7 +138,7 @@ impl ResGPU {
                     let total_vram_unit = to_largest_unit(total_vram as f64, &Base::Decimal);
                     let used_vram_unit = to_largest_unit(used_vram as f64, &Base::Decimal);
                     let used_vram_percentage = (used_vram as f64 / total_vram as f64).nan_default(0.0) * 100.0;
-                    imp.vram_usage.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {:.1}%", used_vram_unit.0, used_vram_unit.1, total_vram_unit.0, total_vram_unit.1, used_vram_percentage));
+                    imp.vram_usage.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {} %", used_vram_unit.0, used_vram_unit.1, total_vram_unit.0, total_vram_unit.1, used_vram_percentage as u8));
                     imp.vram_usage.push_data_point((used_vram as f64) / (total_vram as f64));
                     imp.vram_usage.set_graph_visible(true);
                 } else {

@@ -98,7 +98,7 @@ impl ResMemory {
             let swap_fraction = 1.0 - (free_swap as f64 / total_swap as f64).nan_default(1.0);
 
             imp.memory.push_data_point(memory_fraction);
-            imp.memory.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {:.1}%", used_mem_unit.0, used_mem_unit.1, total_mem_unit.0, total_mem_unit.1, memory_fraction*100.0));
+            imp.memory.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {} %", used_mem_unit.0, used_mem_unit.1, total_mem_unit.0, total_mem_unit.1, (memory_fraction * 100.0) as u8));
             if total_swap == 0 {
                 imp.swap.push_data_point(0.0);
                 imp.swap.set_graph_visible(false);
@@ -106,7 +106,7 @@ impl ResMemory {
             } else {
                 imp.swap.push_data_point(swap_fraction);
                 imp.swap.set_graph_visible(true);
-                imp.swap.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {:.1}%", used_swap_unit.0, used_swap_unit.1, total_swap_unit.0, total_swap_unit.1, swap_fraction*100.0));
+                imp.swap.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {} %", used_swap_unit.0, used_swap_unit.1, total_swap_unit.0, total_swap_unit.1, (swap_fraction * 100.0) as u8));
             }
 
             glib::Continue(true)
