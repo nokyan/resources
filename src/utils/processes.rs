@@ -409,17 +409,14 @@ impl App {
     }
 
     pub async fn refresh(&mut self) -> Vec<PathBuf> {
-        /*self.processes
-        .drain_filter(|_, process| !process.refresh().await)
-        .map(|(_, process)| process.proc_path)
-        .collect()*/
-        let mut remaining_processes = Vec::new();
+        let mut dead_processes = Vec::new();
         for process in self.processes.values_mut() {
             if !process.refresh().await {
-                remaining_processes.push(process.proc_path.clone());
+                dead_processes.push(process.proc_path.clone());
             }
         }
-        remaining_processes
+        self.processes.retain(|_, process| !dead_processes.contains(&process.proc_path));
+        dead_processes
     }
 
     #[must_use]
@@ -688,23 +685,18 @@ impl Apps {
         // look for processes that might have died since we last checked
         // and update the stats of the processes that are still alive
         // while we're at it
-        let mut dead_processes = Vec::new();
-        /*self.apps
-        .values_mut()
-        .for_each(|app| dead_processes.extend(app.refresh()));*/
+        let mut dead_app_processes = Vec::new();
         for app in self.apps.values_mut() {
-            dead_processes.extend(app.refresh().await);
+            dead_app_processes.extend(app.refresh().await);
         }
-        /*dead_processes.extend(
-            self.system_processes
-                .drain_filter(|process| !process.refresh())
-                .map(|process| process.proc_path),
-        );*/
+        let mut dead_sys_processes = Vec::new();
         for process in self.system_processes.iter_mut() {
             if !process.refresh().await {
-                dead_processes.push(process.proc_path.clone())
+                dead_sys_processes.push(process.proc_path.clone())
             }
         }
+        self.system_processes.retain(|process| !dead_sys_processes.contains(&process.proc_path));
+        
         // now get the processes that might have been added:
         for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
             // is the current proc_path already known?
@@ -728,9 +720,10 @@ impl Apps {
             }
             self.known_proc_paths.push(entry);
         }
+
         // we still have to remove the processes that died from
         // known_proc_paths
-        for dead_process in &dead_processes {
+        for dead_process in dead_app_processes.iter().chain(dead_sys_processes.iter()) {
             if let Some(pos) = self
                 .known_proc_paths
                 .iter()
