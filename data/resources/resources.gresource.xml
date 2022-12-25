@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
+  <gresource prefix="/me/nalux/Resources/icons/scalable/actions/">
+    <file preprocess="xml-stripblanks" alias="flap-symbolic.svg">icons/flap-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="generic-process-symbolic.svg">icons/generic-process-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="info-symbolic.svg">icons/info-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="search-symbolic.svg">icons/search-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="shell-symbolic.svg">icons/shell-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="system-processes-symbolic.svg">icons/system-processes-symbolic.svg</file>
+  </gresource>
   <gresource prefix="/me/nalux/Resources/">
     <!-- see https://gtk-rs.org/gtk4-rs/git/docs/gtk4/struct.Application.html#automatic-resources -->
     <file compressed="true" preprocess="xml-stripblanks">ui/dialogs/app_dialog.ui</file>
@@ -18,13 +26,5 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/info_box.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/process_name_cell.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/window.ui</file>
-  </gresource>
-  <gresource prefix="/me/nalux/Resources/icons/scalable/actions/">
-    <file preprocess="xml-stripblanks" alias="flap-symbolic.svg">icons/flap-symbolic.svg</file>
-    <file preprocess="xml-stripblanks" alias="generic-process-symbolic.svg">icons/generic-process-symbolic.svg</file>
-    <file preprocess="xml-stripblanks" alias="info-symbolic.svg">icons/info-symbolic.svg</file>
-    <file preprocess="xml-stripblanks" alias="search-symbolic.svg">icons/search-symbolic.svg</file>
-    <file preprocess="xml-stripblanks" alias="system-processes-symbolic.svg">icons/system-processes-symbolic.svg</file>
-    <file preprocess="xml-stripblanks" alias="shell-symbolic.svg">icons/shell-symbolic.svg</file>
   </gresource>
 </gresources>
