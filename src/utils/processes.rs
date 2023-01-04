@@ -415,7 +415,8 @@ impl App {
                 dead_processes.push(process.proc_path.clone());
             }
         }
-        self.processes.retain(|_, process| !dead_processes.contains(&process.proc_path));
+        self.processes
+            .retain(|_, process| !dead_processes.contains(&process.proc_path));
         dead_processes
     }
 
@@ -695,8 +696,9 @@ impl Apps {
                 dead_sys_processes.push(process.proc_path.clone())
             }
         }
-        self.system_processes.retain(|process| !dead_sys_processes.contains(&process.proc_path));
-        
+        self.system_processes
+            .retain(|process| !dead_sys_processes.contains(&process.proc_path));
+
         // now get the processes that might have been added:
         for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
             // is the current proc_path already known?
