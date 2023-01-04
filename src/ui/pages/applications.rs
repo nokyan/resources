@@ -230,7 +230,7 @@ impl ResApplications {
             let r: Ref<SimpleItem> = entry.borrow();
             child.set_text(Some(&format!(
                 "{:.1} %",
-                r.cpu_time_ratio.unwrap_or(0.0) * 100.0
+                r.cpu_time_ratio * 100.0
             )));
         });
         let cpu_col_sorter = CustomSorter::new(move |a, b| {
@@ -243,9 +243,9 @@ impl ResApplications {
                 .unwrap()
                 .borrow::<SimpleItem>();
             // we have to do this because f32s do not implement `Ord`
-            if item_a.cpu_time_ratio.unwrap_or(0.0) > item_b.cpu_time_ratio.unwrap_or(0.0) {
+            if item_a.cpu_time_ratio > item_b.cpu_time_ratio {
                 Ordering::Larger
-            } else if item_a.cpu_time_ratio.unwrap_or(0.0) < item_b.cpu_time_ratio.unwrap_or(0.0) {
+            } else if item_a.cpu_time_ratio < item_b.cpu_time_ratio {
                 Ordering::Smaller
             } else {
                 Ordering::Equal
@@ -402,7 +402,7 @@ impl ResApplications {
                 .iter()
                 .map(|simple_item| {
                     if let Some((id, dialog)) = &*imp.open_dialog.borrow() && simple_item.id.clone().unwrap_or_default().as_str() == id.as_str() {
-                        dialog.set_cpu_usage(simple_item.cpu_time_ratio.unwrap_or(0.0));
+                        dialog.set_cpu_usage(simple_item.cpu_time_ratio);
                         dialog.set_memory_usage(simple_item.memory_usage);
                         dialog.set_processes_amount(simple_item.processes_amount);
                     }

@@ -302,7 +302,7 @@ impl ResProcesses {
             let r: Ref<Process> = entry.borrow();
             child.set_text(Some(&format!(
                 "{:.1} %",
-                r.cpu_time_ratio().unwrap_or(0.0) * 100.0
+                r.cpu_time_ratio() * 100.0
             )));
         });
         let cpu_col_sorter = CustomSorter::new(move |a, b| {
@@ -310,14 +310,12 @@ impl ResProcesses {
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
                 .borrow::<Process>()
-                .cpu_time_ratio()
-                .unwrap_or(0.0);
+                .cpu_time_ratio();
             let item_b = b
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
                 .borrow::<Process>()
-                .cpu_time_ratio()
-                .unwrap_or(0.0);
+                .cpu_time_ratio();
             // we have to do this because f32s do not implement `Ord`
             if item_a > item_b {
                 Ordering::Larger
@@ -465,7 +463,7 @@ impl ResProcesses {
                 .filter(|process| process.memory_usage > 0)
                 .map(|process| {
                     if let Some((pid, dialog)) = &*imp.open_dialog.borrow() && process.pid == *pid {
-                        dialog.set_cpu_usage(process.cpu_time_ratio().unwrap_or(0.0));
+                        dialog.set_cpu_usage(process.cpu_time_ratio());
                         dialog.set_memory_usage(process.memory_usage);
                     }
                     BoxedAnyObject::new(process.clone())

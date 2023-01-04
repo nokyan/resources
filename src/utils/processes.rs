@@ -59,7 +59,7 @@ pub struct SimpleItem {
     pub description: Option<String>,
     pub executable: Option<PathBuf>,
     pub memory_usage: usize,
-    pub cpu_time_ratio: Option<f32>,
+    pub cpu_time_ratio: f32,
     pub processes_amount: usize,
     pub containerization: Containerization,
 }
@@ -291,15 +291,13 @@ impl Process {
     }
 
     #[must_use]
-    pub fn cpu_time_ratio(&self) -> Option<f32> {
+    pub fn cpu_time_ratio(&self) -> f32 {
         if self.cpu_time_before == 0 {
-            None
+            0.0
         } else {
-            Some(
-                ((self.cpu_time - self.cpu_time_before) as f32
-                    / (self.cpu_time_timestamp - self.cpu_time_before_timestamp) as f32)
-                    .clamp(0.0, 1.0),
-            )
+            ((self.cpu_time.checked_sub(self.cpu_time_before).unwrap_or(0)) as f32
+                / (self.cpu_time_timestamp - self.cpu_time_before_timestamp) as f32)
+                .clamp(0.0, 1.0)
         }
     }
 
@@ -470,15 +468,13 @@ impl App {
     }
 
     #[must_use]
-    pub fn cpu_time_ratio(&self) -> Option<f32> {
+    pub fn cpu_time_ratio(&self) -> f32 {
         if self.cpu_time_before() == 0 {
-            None
+            0.0
         } else {
-            Some(
-                ((self.cpu_time() - self.cpu_time_before()) as f32
-                    / (self.cpu_time_timestamp() - self.cpu_time_before_timestamp()) as f32)
-                    .clamp(0.0, 1.0),
-            )
+            ((self.cpu_time().checked_sub(self.cpu_time_before()).unwrap_or(0)) as f32
+                / (self.cpu_time_timestamp() - self.cpu_time_before_timestamp()) as f32)
+                .clamp(0.0, 1.0)
         }
     }
 
@@ -649,13 +645,11 @@ impl Apps {
             .checked_div(self.system_processes.len() as u64)
             .unwrap_or(0);
         let system_cpu_ratio = if system_cpu_time_before == 0 {
-            None
+            0.0
         } else {
-            Some(
-                ((system_cpu_time - system_cpu_time_before) as f32
-                    / (system_cpu_time_timestamp - system_cpu_time_before_timestamp) as f32)
-                    .clamp(0.0, 1.0),
-            )
+            ((system_cpu_time.checked_sub(system_cpu_time_before).unwrap_or(0)) as f32
+                / (system_cpu_time_timestamp - system_cpu_time_before_timestamp) as f32)
+                .clamp(0.0, 1.0)
         };
         return_vec.push(SimpleItem {
             id: None,
