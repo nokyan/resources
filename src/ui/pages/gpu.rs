@@ -109,7 +109,7 @@ impl ResGPU {
         imp.vram_usage.set_graph_color(192, 28, 40);
         imp.gpu_name.set_label(
             &gpu.get_name()
-                .unwrap_or(i18n_f("GPU {}", &[&imp.number.get().unwrap().to_string()])),
+                .unwrap_or_else(|_| i18n_f("GPU {}", &[&imp.number.get().unwrap().to_string()])),
         );
         imp.manufacturer
             .set_info_label(&gpu.get_vendor().unwrap_or_else(|_| i18n("N/A")));
