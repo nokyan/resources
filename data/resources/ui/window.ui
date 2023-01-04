@@ -53,7 +53,7 @@
             <property name="content">
               <object class="GtkStack" id="content_stack">
                 <property name="vexpand">True</property>
-                <property name="width-request">440</property>
+                <property name="width-request">432</property>
                 <property name="vhomogeneous">False</property>
                 <property name="transition_type">crossfade</property>
                 <child>
