@@ -22,7 +22,7 @@ fn lscpu() -> Result<Value> {
         Command::new("lscpu")
             .env("LC_ALL", "C")
             .output()
-            .unwrap()
+            .with_context(|| "unable to run lscpu, is util-linux installed?")?
             .stdout,
     )
     .with_context(|| "unable to parse lscpu output to UTF-8")?
