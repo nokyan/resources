@@ -4,6 +4,7 @@
     <property name="hexpand">true</property>
     <property name="overflow">hidden</property>
     <property name="activatable">false</property>
+    <property name="width-request">160</property>
     <child type="suffix">
       <object class="GtkBox">
         <property name="orientation">vertical</property>
