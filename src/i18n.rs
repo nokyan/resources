@@ -34,7 +34,7 @@ fn freplace(input: String, args: &[&str]) -> String {
 fn kreplace(input: String, kwargs: &[(&str, &str)]) -> String {
     let mut s = input;
     for (k, v) in kwargs {
-        if let Ok(re) = Regex::new(&format!("\\{{{}\\}}", k)) {
+        if let Ok(re) = Regex::new(&format!("\\{{{k}\\}}")) {
             s = re
                 .replace_all(&s, |_: &Captures<'_>| v.to_string())
                 .to_string();

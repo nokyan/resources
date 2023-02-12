@@ -109,9 +109,9 @@ impl Application {
 
     fn show_about_dialog(&self) {
         let about = adw::AboutWindow::builder()
-            .application_name(&i18n("Resources"))
+            .application_name(i18n("Resources"))
             .application_icon(config::APP_ID)
-            .developer_name(&i18n("The Nalux Team"))
+            .developer_name(i18n("The Nalux Team"))
             .developers(vec!["ManicRobot <manicrobot@protonmail.com>".to_string()])
             .license_type(gtk::License::Gpl30)
             .version(config::VERSION)

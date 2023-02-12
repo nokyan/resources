@@ -85,8 +85,7 @@ pub fn cpu_info() -> Result<CPUInfo> {
 /// of the corresponding file in sysfs
 pub fn get_cpu_freq(core: usize) -> Result<u64> {
     std::fs::read_to_string(format!(
-        "/sys/devices/system/cpu/cpu{}/cpufreq/scaling_cur_freq",
-        core
+        "/sys/devices/system/cpu/cpu{core}/cpufreq/scaling_cur_freq"
     ))
     .with_context(|| format!("unable to read scaling_cur_freq for core {core}"))?
     .replace('\n', "")

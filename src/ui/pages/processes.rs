@@ -500,8 +500,8 @@ impl ResProcesses {
             let dialog = adw::MessageDialog::builder()
                 .transient_for(&MainWindow::default())
                 .modal(true)
-                .heading(&i18n_f("End {}?", &[&process.comm]))
-                .body(&i18n("Unsaved work might be lost."))
+                .heading(i18n_f("End {}?", &[&process.comm]))
+                .body(i18n("Unsaved work might be lost."))
                 .build();
             dialog.add_response("yes", &i18n("End Process"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
@@ -527,8 +527,8 @@ impl ResProcesses {
             let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(&i18n_f("Kill {}?", &[&process.comm]))
-            .body(&i18n("Killing a process can come with serious risks such as losing data and security implications. Use with caution."))
+            .heading(i18n_f("Kill {}?", &[&process.comm]))
+            .body(i18n("Killing a process can come with serious risks such as losing data and security implications. Use with caution."))
             .build();
             dialog.add_response("yes", &i18n("Kill Process"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
@@ -554,8 +554,8 @@ impl ResProcesses {
             let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(&i18n_f("Halt {}?", &[&process.comm]))
-            .body(&i18n("Halting a process can come with serious risks such as losing data and security implications. Use with caution."))
+            .heading(i18n_f("Halt {}?", &[&process.comm]))
+            .body(i18n("Halting a process can come with serious risks such as losing data and security implications. Use with caution."))
             .build();
             dialog.add_response("yes", &i18n("Halt Process"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
