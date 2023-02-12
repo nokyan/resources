@@ -31,7 +31,7 @@ mod imp {
         fn activate(&self) {
             debug!("GtkApplication<Application>::activate");
             self.parent_activate();
-            let app = self.instance();
+            let app = self.obj();
 
             if let Some(window) = self.window.get() {
                 let window = window.upgrade().unwrap();
@@ -50,7 +50,7 @@ mod imp {
         fn startup(&self) {
             debug!("GtkApplication<Application>::startup");
             self.parent_startup();
-            let app = self.instance();
+            let app = self.obj();
 
             // Set icons for shell
             gtk::Window::set_default_icon_name(APP_ID);

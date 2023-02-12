@@ -54,7 +54,7 @@ mod imp {
     impl ObjectImpl for ResProcessDialog {
         fn constructed(&self) {
             self.parent_constructed();
-            let obj = self.instance();
+            let obj = self.obj();
 
             // Devel Profile
             if PROFILE == "Devel" {
