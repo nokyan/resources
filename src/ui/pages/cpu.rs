@@ -1,7 +1,6 @@
 use adw::{prelude::*, subclass::prelude::*};
 use anyhow::Context;
-use gtk::builders::FlowBoxChildBuilder;
-use gtk::glib::{self, clone, timeout_future_seconds, MainContext, StrV};
+use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
 use gtk::FlowBoxChild;
 
 use crate::config::PROFILE;
