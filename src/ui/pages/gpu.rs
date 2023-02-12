@@ -87,7 +87,7 @@ glib::wrapper! {
 
 impl ResGPU {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[])
+        glib::Object::new::<Self>()
     }
 
     pub fn init(&self, gpu: GPU, number: usize) {

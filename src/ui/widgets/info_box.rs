@@ -59,7 +59,7 @@ glib::wrapper! {
 
 impl ResInfoBox {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[])
+        glib::Object::new::<Self>()
     }
 
     pub fn set_info_label(&self, str: &str) {

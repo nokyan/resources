@@ -57,7 +57,7 @@ glib::wrapper! {
 
 impl ResProcessNameCell {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[])
+        glib::Object::new::<Self>()
     }
 
     pub fn set_name<S: AsRef<str>>(&self, name: S) {

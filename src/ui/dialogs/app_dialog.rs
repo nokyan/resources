@@ -75,7 +75,7 @@ glib::wrapper! {
 
 impl ResAppDialog {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[])
+        glib::Object::new::<Self>()
     }
 
     pub fn init(&self, app: &SimpleItem) {

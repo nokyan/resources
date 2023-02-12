@@ -110,7 +110,7 @@ glib::wrapper! {
 
 impl ResApplications {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[])
+        glib::Object::new::<Self>()
     }
 
     pub fn init(&self) {
@@ -122,17 +122,16 @@ impl ResApplications {
     pub fn setup_widgets(&self) {
         let imp = self.imp();
 
-        let column_view = gtk::ColumnView::new(None::<&gtk::SingleSelection>);
+        let column_view = gtk::ColumnView::new(None::<gtk::SingleSelection>);
         let store = gio::ListStore::new(BoxedAnyObject::static_type());
         let filter_model = gtk::FilterListModel::new(
-            Some(&store),
-            Some(&gtk::CustomFilter::new(
+            Some(store.clone()),
+            Some(gtk::CustomFilter::new(
                 clone!(@strong self as this => move |obj| this.search_filter(obj)),
             )),
         );
-        let sort_model =
-            gtk::SortListModel::new(Some(&filter_model), column_view.sorter().as_ref());
-        let selection_model = gtk::SingleSelection::new(Some(&sort_model));
+        let sort_model = gtk::SortListModel::new(Some(filter_model.clone()), column_view.sorter());
+        let selection_model = gtk::SingleSelection::new(Some(sort_model.clone()));
         column_view.set_model(Some(&selection_model));
         selection_model.set_can_unselect(true);
         selection_model.set_autoselect(false);
@@ -144,7 +143,7 @@ impl ResApplications {
 
         let name_col_factory = gtk::SignalListItemFactory::new();
         let name_col =
-            gtk::ColumnViewColumn::new(Some(&i18n("Application")), Some(&name_col_factory));
+            gtk::ColumnViewColumn::new(Some(&i18n("Application")), Some(name_col_factory.clone()));
         name_col.set_resizable(true);
         name_col.set_expand(true);
         name_col_factory.connect_setup(move |_factory, item| {
@@ -179,7 +178,7 @@ impl ResApplications {
 
         let memory_col_factory = gtk::SignalListItemFactory::new();
         let memory_col =
-            gtk::ColumnViewColumn::new(Some(&i18n("Memory")), Some(&memory_col_factory));
+            gtk::ColumnViewColumn::new(Some(&i18n("Memory")), Some(memory_col_factory.clone()));
         memory_col.set_resizable(true);
         memory_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -212,7 +211,8 @@ impl ResApplications {
         memory_col.set_sorter(Some(&memory_col_sorter));
 
         let cpu_col_factory = gtk::SignalListItemFactory::new();
-        let cpu_col = gtk::ColumnViewColumn::new(Some(&i18n("Processor")), Some(&cpu_col_factory));
+        let cpu_col =
+            gtk::ColumnViewColumn::new(Some(&i18n("Processor")), Some(cpu_col_factory.clone()));
         cpu_col.set_resizable(true);
         cpu_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -228,10 +228,7 @@ impl ResApplications {
                 .unwrap();
             let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
             let r: Ref<SimpleItem> = entry.borrow();
-            child.set_text(Some(&format!(
-                "{:.1} %",
-                r.cpu_time_ratio * 100.0
-            )));
+            child.set_text(Some(&format!("{:.1} %", r.cpu_time_ratio * 100.0)));
         });
         let cpu_col_sorter = CustomSorter::new(move |a, b| {
             let item_a = a
@@ -418,7 +415,6 @@ impl ResApplications {
         if let Some(selected_item) = selected_item {
             let new_index = selection
                 .iter::<glib::Object>()
-                .unwrap()
                 .position(|object| {
                     object
                         .unwrap()
@@ -461,9 +457,9 @@ impl ResApplications {
                     let processes_successful = res.iter().flatten().count();
                     let processes_unsuccessful = processes_tried - processes_successful;
                     if processes_tried == processes_successful {
-                        imp.toast_overlay.add_toast(&Toast::new(&i18n_f("Successfully ended {}", &[&app.display_name()])));
+                        imp.toast_overlay.add_toast(Toast::new(&i18n_f("Successfully ended {}", &[&app.display_name()])));
                     } else {
-                        imp.toast_overlay.add_toast(&Toast::new(&ni18n_f("There was a problem ending a process", "There were problems ending {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
+                        imp.toast_overlay.add_toast(Toast::new(&ni18n_f("There was a problem ending a process", "There were problems ending {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
                     }
                 }
             }));
@@ -497,9 +493,9 @@ impl ResApplications {
                     let processes_successful = res.iter().flatten().count();
                     let processes_unsuccessful = processes_tried - processes_successful;
                     if processes_tried == processes_successful {
-                        imp.toast_overlay.add_toast(&Toast::new(&i18n_f("Successfully killed {}", &[&app.display_name()])));
+                        imp.toast_overlay.add_toast(Toast::new(&i18n_f("Successfully killed {}", &[&app.display_name()])));
                     } else {
-                        imp.toast_overlay.add_toast(&Toast::new(&ni18n_f("There was a problem killing a process", "There were problems killing {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
+                        imp.toast_overlay.add_toast(Toast::new(&ni18n_f("There was a problem killing a process", "There were problems killing {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
                     }
                 }
             }));
@@ -533,9 +529,9 @@ impl ResApplications {
                     let processes_successful = res.iter().flatten().count();
                     let processes_unsuccessful = processes_tried - processes_successful;
                     if processes_tried == processes_successful {
-                        imp.toast_overlay.add_toast(&Toast::new(&i18n_f("Successfully halted {}", &[&app.display_name()])));
+                        imp.toast_overlay.add_toast(Toast::new(&i18n_f("Successfully halted {}", &[&app.display_name()])));
                     } else {
-                        imp.toast_overlay.add_toast(&Toast::new(&ni18n_f("There was a problem halting a process", "There were problems halting {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
+                        imp.toast_overlay.add_toast(Toast::new(&ni18n_f("There was a problem halting a process", "There were problems halting {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
                     }
                 }
             }));
@@ -555,9 +551,9 @@ impl ResApplications {
             let processes_successful = res.iter().flatten().count();
             let processes_unsuccessful = processes_tried - processes_successful;
             if processes_tried == processes_successful {
-                imp.toast_overlay.add_toast(&Toast::new(&i18n_f("Successfully continued {}", &[&app.display_name()])));
+                imp.toast_overlay.add_toast(Toast::new(&i18n_f("Successfully continued {}", &[&app.display_name()])));
             } else {
-                imp.toast_overlay.add_toast(&Toast::new(&ni18n_f("There was a problem continuing a process", "There were problems continuing {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
+                imp.toast_overlay.add_toast(Toast::new(&ni18n_f("There was a problem continuing a process", "There were problems continuing {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
             }
         }
     }

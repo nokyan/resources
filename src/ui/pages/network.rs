@@ -74,7 +74,7 @@ glib::wrapper! {
 
 impl ResNetwork {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[])
+        glib::Object::new::<Self>()
     }
 
     pub fn init(&self, network_interface: NetworkInterface) {

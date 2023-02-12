@@ -75,7 +75,7 @@ glib::wrapper! {
 
 impl ResProcessDialog {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[])
+        glib::Object::new::<Self>()
     }
 
     pub fn init<S: AsRef<str>>(&self, process: &Process, user: S) {

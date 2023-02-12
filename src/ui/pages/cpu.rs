@@ -1,7 +1,8 @@
 use adw::{prelude::*, subclass::prelude::*};
 use anyhow::Context;
 use gtk::builders::FlowBoxChildBuilder;
-use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
+use gtk::glib::{self, clone, timeout_future_seconds, MainContext, StrV};
+use gtk::FlowBoxChild;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
@@ -89,7 +90,7 @@ glib::wrapper! {
 
 impl ResCPU {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[])
+        glib::Object::new::<Self>()
     }
 
     pub fn init(&self) {
@@ -124,9 +125,9 @@ impl ResCPU {
                 thread_box.set_graph_height_request(72);
                 thread_box.set_data_points_max_amount(60);
                 thread_box.set_graph_color(28, 113, 216);
-                let flow_box_chld = FlowBoxChildBuilder::new()
+                let flow_box_chld = FlowBoxChild::builder()
                     .child(&thread_box)
-                    .css_classes(vec!["tile".into(), "card".into()])
+                    .css_classes(vec!["tile", "card"])
                     .build();
                 imp.thread_box.append(&flow_box_chld);
                 imp.thread_graphs.borrow_mut().push(thread_box);
