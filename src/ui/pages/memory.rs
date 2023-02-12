@@ -63,7 +63,7 @@ glib::wrapper! {
 
 impl ResMemory {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[])
+        glib::Object::new::<Self>()
     }
 
     pub fn init(&self) {

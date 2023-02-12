@@ -148,7 +148,10 @@ glib::wrapper! {
 
 impl MainWindow {
     pub fn new(app: &Application) -> Self {
-        let window = glib::Object::new::<Self>(&[("application", app)]);
+        let window = glib::Object::builder::<Self>()
+            .property("application", app)
+            .build();
+
         window.setup_widgets();
         window
     }

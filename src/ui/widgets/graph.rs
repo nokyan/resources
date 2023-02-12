@@ -55,10 +55,10 @@ mod imp {
     }
 
     impl ResGraph {
-        pub fn plot_graph<'a, DB: DrawingBackend + 'a>(
-            &self,
-            backend: DB,
-        ) -> Result<(), Box<dyn Error + 'a>> {
+        pub fn plot_graph<'a, DB>(&self, backend: DB) -> Result<(), Box<dyn Error + 'a>>
+        where
+            DB: DrawingBackend + 'a,
+        {
             let data_points = self.data_points.borrow();
             let data_points_max_amount = self.data_points_max_amount.borrow();
             let color = self.graph_color.borrow();
@@ -102,7 +102,7 @@ glib::wrapper! {
 
 impl ResGraph {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[])
+        glib::Object::new::<Self>()
     }
 
     pub fn set_data_points_max_amount(&self, max_amount: usize) {

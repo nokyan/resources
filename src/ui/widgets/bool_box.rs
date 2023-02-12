@@ -59,7 +59,7 @@ glib::wrapper! {
 
 impl ResBoolBox {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[])
+        glib::Object::new::<Self>()
     }
 
     pub fn set_bool(&self, b: bool) {

@@ -73,11 +73,11 @@ glib::wrapper! {
 
 impl Application {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[
-            ("application-id", &Some(APP_ID)),
-            ("flags", &gio::ApplicationFlags::empty()),
-            ("resource-base-path", &Some("/me/nalux/Resources/")),
-        ])
+        glib::Object::builder::<Self>()
+            .property("application-id", &Some(APP_ID))
+            .property("flags", &gio::ApplicationFlags::empty())
+            .property("resource-base-path", &Some("/me/nalux/Resources/"))
+            .build()
     }
 
     fn main_window(&self) -> MainWindow {

@@ -15,8 +15,8 @@ log = "0.4"
 pretty_env_logger = "0.4"
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
 once_cell = "1.16.0"
-gtk = { version = "0.5.3", features = ["v4_8"], package = "gtk4" }
-adw = { version = "0.2.1", features = ["v1_2"], package = "libadwaita" }
+gtk = { version = "0.6.0", features = ["v4_8"], package = "gtk4" }
+adw = { version = "0.3.0", features = ["v1_2"], package = "libadwaita" }
 nparse = "0.0.4"
 regex = "1.7.0"
 serde_json = "1.0"
@@ -28,5 +28,5 @@ futures-util = "0.3.25"
 unescape = "0.1.0"
 nix = { version = "0.26.1", features = ["signal"] }
 users = "0.11.0"
-plotters = { git = "https://github.com/plotters-rs/plotters", default_features = false, features = ["area_series"] }
-plotters-cairo = { git = "https://github.com/sdroege/plotters-cairo", branch = "cairo-rs-0.16" }
+plotters = { version = "0.3.4", default_features = false, features = ["area_series"] }
+plotters-cairo = { path = "lib/plotters-cairo" }

@@ -103,7 +103,7 @@ glib::wrapper! {
 
 impl ResProcesses {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[])
+        glib::Object::new::<Self>()
     }
 
     pub fn init(&self) {
@@ -128,17 +128,17 @@ impl ResProcesses {
     pub fn setup_widgets(&self) {
         let imp = self.imp();
 
-        let column_view = gtk::ColumnView::new(None::<&gtk::SingleSelection>);
+        let column_view = gtk::ColumnView::new(None::<gtk::SingleSelection>);
         let store = gio::ListStore::new(BoxedAnyObject::static_type());
         let filter_model = gtk::FilterListModel::new(
-            Some(&store),
-            Some(&gtk::CustomFilter::new(
+            Some(store.clone()),
+            Some(gtk::CustomFilter::new(
                 clone!(@strong self as this => move |obj| this.search_filter(obj)),
             )),
         );
         let sort_model =
-            gtk::SortListModel::new(Some(&filter_model), column_view.sorter().as_ref());
-        let selection_model = gtk::SingleSelection::new(Some(&sort_model));
+            gtk::SortListModel::new(Some(filter_model.clone()), column_view.sorter());
+        let selection_model = gtk::SingleSelection::new(Some(sort_model.clone()));
         column_view.set_model(Some(&selection_model));
         selection_model.set_can_unselect(true);
         selection_model.set_autoselect(false);
@@ -149,7 +149,7 @@ impl ResProcesses {
         *imp.store.borrow_mut() = store;
 
         let name_col_factory = gtk::SignalListItemFactory::new();
-        let name_col = gtk::ColumnViewColumn::new(Some(&i18n("Process")), Some(&name_col_factory));
+        let name_col = gtk::ColumnViewColumn::new(Some(&i18n("Process")), Some(name_col_factory.clone()));
         name_col.set_resizable(true);
         name_col.set_expand(true);
         name_col_factory.connect_setup(move |_factory, item| {
@@ -184,7 +184,7 @@ impl ResProcesses {
         name_col.set_sorter(Some(&name_col_sorter));
 
         let pid_col_factory = gtk::SignalListItemFactory::new();
-        let pid_col = gtk::ColumnViewColumn::new(Some(&i18n("Process ID")), Some(&pid_col_factory));
+        let pid_col = gtk::ColumnViewColumn::new(Some(&i18n("Process ID")), Some(pid_col_factory.clone()));
         pid_col.set_resizable(true);
         pid_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -216,7 +216,7 @@ impl ResProcesses {
         pid_col.set_sorter(Some(&pid_col_sorter));
 
         let user_col_factory = gtk::SignalListItemFactory::new();
-        let user_col = gtk::ColumnViewColumn::new(Some(&i18n("User")), Some(&user_col_factory));
+        let user_col = gtk::ColumnViewColumn::new(Some(&i18n("User")), Some(user_col_factory.clone()));
         user_col.set_resizable(true);
         user_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -251,7 +251,7 @@ impl ResProcesses {
 
         let memory_col_factory = gtk::SignalListItemFactory::new();
         let memory_col =
-            gtk::ColumnViewColumn::new(Some(&i18n("Memory")), Some(&memory_col_factory));
+            gtk::ColumnViewColumn::new(Some(&i18n("Memory")), Some(memory_col_factory.clone()));
         memory_col.set_resizable(true);
         memory_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -284,7 +284,7 @@ impl ResProcesses {
         memory_col.set_sorter(Some(&memory_col_sorter));
 
         let cpu_col_factory = gtk::SignalListItemFactory::new();
-        let cpu_col = gtk::ColumnViewColumn::new(Some(&i18n("Processor")), Some(&cpu_col_factory));
+        let cpu_col = gtk::ColumnViewColumn::new(Some(&i18n("Processor")), Some(cpu_col_factory.clone()));
         cpu_col.set_resizable(true);
         cpu_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -478,7 +478,6 @@ impl ResProcesses {
         if let Some(selected_item) = selected_item {
             let new_index = selection
                 .iter::<glib::Object>()
-                .unwrap()
                 .position(|object| {
                     object
                         .unwrap()
@@ -513,8 +512,8 @@ impl ResProcesses {
                 if response == "yes" {
                     let imp = this.imp();
                     match process.term() {
-                        Ok(_) => { imp.toast_overlay.add_toast(&Toast::new(&i18n_f("Successfully ended {}", &[&process.comm]))); },
-                        Err(_) => { imp.toast_overlay.add_toast(&Toast::new(&i18n_f("There was a problem ending {}", &[&process.comm]))); },
+                        Ok(_) => { imp.toast_overlay.add_toast(Toast::new(&i18n_f("Successfully ended {}", &[&process.comm]))); },
+                        Err(_) => { imp.toast_overlay.add_toast(Toast::new(&i18n_f("There was a problem ending {}", &[&process.comm]))); },
                     };
                 }
             }));
@@ -540,8 +539,8 @@ impl ResProcesses {
                 if response == "yes" {
                     let imp = this.imp();
                     match process.kill() {
-                        Ok(_) => { imp.toast_overlay.add_toast(&Toast::new(&i18n_f("Successfully killed {}", &[&process.comm]))); },
-                        Err(_) => { imp.toast_overlay.add_toast(&Toast::new(&i18n_f("There was a problem killing {}", &[&process.comm]))); },
+                        Ok(_) => { imp.toast_overlay.add_toast(Toast::new(&i18n_f("Successfully killed {}", &[&process.comm]))); },
+                        Err(_) => { imp.toast_overlay.add_toast(Toast::new(&i18n_f("There was a problem killing {}", &[&process.comm]))); },
                     };
                 }
             }));
@@ -567,8 +566,8 @@ impl ResProcesses {
                 if response == "yes" {
                     let imp = this.imp();
                     match process.stop() {
-                        Ok(_) => { imp.toast_overlay.add_toast(&Toast::new(&i18n_f("Successfully halted {}", &[&process.comm]))); },
-                        Err(_) => { imp.toast_overlay.add_toast(&Toast::new(&i18n_f("There was a problem halting {}", &[&process.comm]))); },
+                        Ok(_) => { imp.toast_overlay.add_toast(Toast::new(&i18n_f("Successfully halted {}", &[&process.comm]))); },
+                        Err(_) => { imp.toast_overlay.add_toast(Toast::new(&i18n_f("There was a problem halting {}", &[&process.comm]))); },
                     };
                 }
             }));
@@ -582,13 +581,13 @@ impl ResProcesses {
         if let Some(process) = selection_option {
             match process.cont() {
                 Ok(_) => {
-                    imp.toast_overlay.add_toast(&Toast::new(&i18n_f(
+                    imp.toast_overlay.add_toast(Toast::new(&i18n_f(
                         "Successfully continued {}",
                         &[&process.comm],
                     )));
                 }
                 Err(_) => {
-                    imp.toast_overlay.add_toast(&Toast::new(&i18n_f(
+                    imp.toast_overlay.add_toast(Toast::new(&i18n_f(
                         "There was a problem continuing {}",
                         &[&process.comm],
                     )));

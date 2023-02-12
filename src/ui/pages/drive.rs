@@ -78,7 +78,7 @@ glib::wrapper! {
 
 impl ResDrive {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[])
+        glib::Object::new::<Self>()
     }
 
     pub fn init(

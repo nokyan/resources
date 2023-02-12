@@ -63,7 +63,7 @@ glib::wrapper! {
 
 impl ResGraphBox {
     pub fn new() -> Self {
-        glib::Object::new::<Self>(&[])
+        glib::Object::new::<Self>()
     }
 
     pub fn set_data_points_max_amount(&self, max_amount: usize) {
