@@ -109,7 +109,7 @@ mod imp {
     impl ObjectImpl for MainWindow {
         fn constructed(&self) {
             self.parent_constructed();
-            let obj = self.instance();
+            let obj = self.obj();
 
             // Devel Profile
             if PROFILE == "Devel" {
@@ -126,7 +126,7 @@ mod imp {
     impl WindowImpl for MainWindow {
         // Save window state on delete event
         fn close_request(&self) -> gtk::Inhibit {
-            if let Err(err) = self.instance().save_window_size() {
+            if let Err(err) = self.obj().save_window_size() {
                 log::warn!("Failed to save window state, {}", &err);
             }
 

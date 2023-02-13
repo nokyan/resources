@@ -90,7 +90,7 @@ mod imp {
     impl ObjectImpl for ResApplications {
         fn constructed(&self) {
             self.parent_constructed();
-            let obj = self.instance();
+            let obj = self.obj();
 
             // Devel Profile
             if PROFILE == "Devel" {
@@ -441,8 +441,8 @@ impl ResApplications {
             let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(&i18n_f("End {}?", &[&app.display_name()]))
-            .body(&i18n("Unsaved work might be lost."))
+            .heading(i18n_f("End {}?", &[&app.display_name()]))
+            .body(i18n("Unsaved work might be lost."))
             .build();
             dialog.add_response("yes", &i18n("End Application"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
@@ -477,8 +477,8 @@ impl ResApplications {
             let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(&i18n_f("Kill {}?", &[&app.display_name()]))
-            .body(&i18n("Killing an application can come with serious risks such as losing data and security implications. Use with caution."))
+            .heading(i18n_f("Kill {}?", &[&app.display_name()]))
+            .body(i18n("Killing an application can come with serious risks such as losing data and security implications. Use with caution."))
             .build();
             dialog.add_response("yes", &i18n("Kill Application"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
@@ -513,8 +513,8 @@ impl ResApplications {
             let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(&i18n_f("Halt {}?", &[&app.display_name()]))
-            .body(&i18n("Halting an application can come with serious risks such as losing data and security implications. Use with caution."))
+            .heading(i18n_f("Halt {}?", &[&app.display_name()]))
+            .body(i18n("Halting an application can come with serious risks such as losing data and security implications. Use with caution."))
             .build();
             dialog.add_response("yes", &i18n("Halt Application"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);

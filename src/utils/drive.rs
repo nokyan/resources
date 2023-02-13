@@ -63,8 +63,7 @@ pub async fn sys_stat(dev: &str) -> Result<HashMap<&'static str, usize>> {
 /// reading or parsing
 pub async fn get_sector_size(dev: &str) -> Result<usize> {
     async_std::fs::read_to_string(PathBuf::from(format!(
-        "/sys/block/{}/queue/hw_sector_size",
-        dev
+        "/sys/block/{dev}/queue/hw_sector_size"
     )))
     .await?
     .parse()

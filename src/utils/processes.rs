@@ -295,7 +295,7 @@ impl Process {
         if self.cpu_time_before == 0 {
             0.0
         } else {
-            ((self.cpu_time.checked_sub(self.cpu_time_before).unwrap_or(0)) as f32
+            (self.cpu_time.saturating_sub(self.cpu_time_before) as f32
                 / (self.cpu_time_timestamp - self.cpu_time_before_timestamp) as f32)
                 .clamp(0.0, 1.0)
         }
@@ -472,7 +472,7 @@ impl App {
         if self.cpu_time_before() == 0 {
             0.0
         } else {
-            ((self.cpu_time().checked_sub(self.cpu_time_before()).unwrap_or(0)) as f32
+            ((self.cpu_time().saturating_sub(self.cpu_time_before())) as f32
                 / (self.cpu_time_timestamp() - self.cpu_time_before_timestamp()) as f32)
                 .clamp(0.0, 1.0)
         }
@@ -647,7 +647,7 @@ impl Apps {
         let system_cpu_ratio = if system_cpu_time_before == 0 {
             0.0
         } else {
-            ((system_cpu_time.checked_sub(system_cpu_time_before).unwrap_or(0)) as f32
+            (system_cpu_time.saturating_sub(system_cpu_time_before) as f32
                 / (system_cpu_time_timestamp - system_cpu_time_before_timestamp) as f32)
                 .clamp(0.0, 1.0)
         };

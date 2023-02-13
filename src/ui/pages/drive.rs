@@ -58,7 +58,7 @@ mod imp {
     impl ObjectImpl for ResDrive {
         fn constructed(&self) {
             self.parent_constructed();
-            let obj = self.instance();
+            let obj = self.obj();
 
             // Devel Profile
             if PROFILE == "Devel" {
@@ -130,12 +130,12 @@ impl ResDrive {
             // TODO: make this maybe configurable?
             let refresh_seconds: u32 = 1;
             let imp = this.imp();
-            
+
             let mut last_checked_timestamp = *imp.last_checked_timestamp.borrow_mut();
-            
+
             loop {
                 let disk_stats = utils::drive::sys_stat(&device).await.unwrap_or_default();
-                
+
                 let time_passed_millis = (SystemTime::now()
                     .duration_since(SystemTime::UNIX_EPOCH)
                     // if that for some reason doesn't work, just assume that

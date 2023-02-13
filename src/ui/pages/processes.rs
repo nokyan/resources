@@ -83,7 +83,7 @@ mod imp {
     impl ObjectImpl for ResProcesses {
         fn constructed(&self) {
             self.parent_constructed();
-            let obj = self.instance();
+            let obj = self.obj();
 
             // Devel Profile
             if PROFILE == "Devel" {
@@ -136,8 +136,7 @@ impl ResProcesses {
                 clone!(@strong self as this => move |obj| this.search_filter(obj)),
             )),
         );
-        let sort_model =
-            gtk::SortListModel::new(Some(filter_model.clone()), column_view.sorter());
+        let sort_model = gtk::SortListModel::new(Some(filter_model.clone()), column_view.sorter());
         let selection_model = gtk::SingleSelection::new(Some(sort_model.clone()));
         column_view.set_model(Some(&selection_model));
         selection_model.set_can_unselect(true);
@@ -149,7 +148,8 @@ impl ResProcesses {
         *imp.store.borrow_mut() = store;
 
         let name_col_factory = gtk::SignalListItemFactory::new();
-        let name_col = gtk::ColumnViewColumn::new(Some(&i18n("Process")), Some(name_col_factory.clone()));
+        let name_col =
+            gtk::ColumnViewColumn::new(Some(&i18n("Process")), Some(name_col_factory.clone()));
         name_col.set_resizable(true);
         name_col.set_expand(true);
         name_col_factory.connect_setup(move |_factory, item| {
@@ -184,7 +184,8 @@ impl ResProcesses {
         name_col.set_sorter(Some(&name_col_sorter));
 
         let pid_col_factory = gtk::SignalListItemFactory::new();
-        let pid_col = gtk::ColumnViewColumn::new(Some(&i18n("Process ID")), Some(pid_col_factory.clone()));
+        let pid_col =
+            gtk::ColumnViewColumn::new(Some(&i18n("Process ID")), Some(pid_col_factory.clone()));
         pid_col.set_resizable(true);
         pid_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -216,7 +217,8 @@ impl ResProcesses {
         pid_col.set_sorter(Some(&pid_col_sorter));
 
         let user_col_factory = gtk::SignalListItemFactory::new();
-        let user_col = gtk::ColumnViewColumn::new(Some(&i18n("User")), Some(user_col_factory.clone()));
+        let user_col =
+            gtk::ColumnViewColumn::new(Some(&i18n("User")), Some(user_col_factory.clone()));
         user_col.set_resizable(true);
         user_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -284,7 +286,8 @@ impl ResProcesses {
         memory_col.set_sorter(Some(&memory_col_sorter));
 
         let cpu_col_factory = gtk::SignalListItemFactory::new();
-        let cpu_col = gtk::ColumnViewColumn::new(Some(&i18n("Processor")), Some(cpu_col_factory.clone()));
+        let cpu_col =
+            gtk::ColumnViewColumn::new(Some(&i18n("Processor")), Some(cpu_col_factory.clone()));
         cpu_col.set_resizable(true);
         cpu_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -300,10 +303,7 @@ impl ResProcesses {
                 .unwrap();
             let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
             let r: Ref<Process> = entry.borrow();
-            child.set_text(Some(&format!(
-                "{:.1} %",
-                r.cpu_time_ratio() * 100.0
-            )));
+            child.set_text(Some(&format!("{:.1} %", r.cpu_time_ratio() * 100.0)));
         });
         let cpu_col_sorter = CustomSorter::new(move |a, b| {
             let item_a = a
@@ -500,8 +500,8 @@ impl ResProcesses {
             let dialog = adw::MessageDialog::builder()
                 .transient_for(&MainWindow::default())
                 .modal(true)
-                .heading(&i18n_f("End {}?", &[&process.comm]))
-                .body(&i18n("Unsaved work might be lost."))
+                .heading(i18n_f("End {}?", &[&process.comm]))
+                .body(i18n("Unsaved work might be lost."))
                 .build();
             dialog.add_response("yes", &i18n("End Process"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
@@ -527,8 +527,8 @@ impl ResProcesses {
             let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(&i18n_f("Kill {}?", &[&process.comm]))
-            .body(&i18n("Killing a process can come with serious risks such as losing data and security implications. Use with caution."))
+            .heading(i18n_f("Kill {}?", &[&process.comm]))
+            .body(i18n("Killing a process can come with serious risks such as losing data and security implications. Use with caution."))
             .build();
             dialog.add_response("yes", &i18n("Kill Process"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
@@ -554,8 +554,8 @@ impl ResProcesses {
             let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(&i18n_f("Halt {}?", &[&process.comm]))
-            .body(&i18n("Halting a process can come with serious risks such as losing data and security implications. Use with caution."))
+            .heading(i18n_f("Halt {}?", &[&process.comm]))
+            .body(i18n("Halting a process can come with serious risks such as losing data and security implications. Use with caution."))
             .build();
             dialog.add_response("yes", &i18n("Halt Process"));
             dialog.set_response_appearance("yes", ResponseAppearance::Destructive);

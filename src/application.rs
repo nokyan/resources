@@ -31,7 +31,7 @@ mod imp {
         fn activate(&self) {
             debug!("GtkApplication<Application>::activate");
             self.parent_activate();
-            let app = self.instance();
+            let app = self.obj();
 
             if let Some(window) = self.window.get() {
                 let window = window.upgrade().unwrap();
@@ -50,7 +50,7 @@ mod imp {
         fn startup(&self) {
             debug!("GtkApplication<Application>::startup");
             self.parent_startup();
-            let app = self.instance();
+            let app = self.obj();
 
             // Set icons for shell
             gtk::Window::set_default_icon_name(APP_ID);
@@ -109,9 +109,9 @@ impl Application {
 
     fn show_about_dialog(&self) {
         let about = adw::AboutWindow::builder()
-            .application_name(&i18n("Resources"))
+            .application_name(i18n("Resources"))
             .application_icon(config::APP_ID)
-            .developer_name(&i18n("The Nalux Team"))
+            .developer_name(i18n("The Nalux Team"))
             .developers(vec!["ManicRobot <manicrobot@protonmail.com>".to_string()])
             .license_type(gtk::License::Gpl30)
             .version(config::VERSION)
