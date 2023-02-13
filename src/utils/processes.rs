@@ -49,6 +49,15 @@ pub struct App {
     app_info: AppInfo,
 }
 
+// TODO: Better name?
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ProcessAction {
+    TERM,
+    STOP,
+    KILL,
+    CONT,
+}
+
 /// Convenience struct for displaying running applications and
 /// displaying a "System Processes" item.
 #[derive(Debug, Clone)]
@@ -66,7 +75,7 @@ pub struct SimpleItem {
 
 #[derive(Debug, Clone, Default)]
 pub struct Apps {
-    apps: HashMap<String, App>,
+    pub apps: HashMap<String, App>,
     system_processes: Vec<Process>,
     known_proc_paths: Vec<PathBuf>,
 }
@@ -475,6 +484,15 @@ impl App {
             ((self.cpu_time().saturating_sub(self.cpu_time_before())) as f32
                 / (self.cpu_time_timestamp() - self.cpu_time_before_timestamp()) as f32)
                 .clamp(0.0, 1.0)
+        }
+    }
+
+    pub fn execute_process_action(&self, action: ProcessAction) -> Vec<Result<()>> {
+        match action {
+            ProcessAction::TERM => self.term(),
+            ProcessAction::STOP => self.stop(),
+            ProcessAction::KILL => self.kill(),
+            ProcessAction::CONT => self.cont(),
         }
     }
 
