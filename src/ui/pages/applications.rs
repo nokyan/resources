@@ -6,11 +6,11 @@ use gtk::glib::{self, clone, timeout_future_seconds, BoxedAnyObject, MainContext
 use gtk::{gio, CustomSorter, FilterChange, Ordering, SortType};
 
 use crate::config::PROFILE;
-use crate::i18n::{i18n, i18n_f, ni18n_f};
+use crate::i18n::{i18n, i18n_f};
 use crate::ui::dialogs::app_dialog::ResAppDialog;
 use crate::ui::widgets::application_name_cell::ResApplicationNameCell;
 use crate::ui::window::MainWindow;
-use crate::utils::processes::{Apps, SimpleItem};
+use crate::utils::processes::{App, Apps, ProcessAction, SimpleItem};
 use crate::utils::units::{to_largest_unit, Base};
 
 mod imp {
@@ -57,24 +57,27 @@ mod imp {
             klass.install_action(
                 "applications.kill-application",
                 None,
-                move |resapplications, _, _| {
-                    resapplications.kill_selected_application();
+                move |res_applications, _, _| {
+                    res_applications
+                        .execute_process_action_dialog_selected_app(ProcessAction::KILL);
                 },
             );
 
             klass.install_action(
                 "applications.halt-application",
                 None,
-                move |resapplications, _, _| {
-                    resapplications.halt_selected_application();
+                move |res_applications, _, _| {
+                    res_applications
+                        .execute_process_action_dialog_selected_app(ProcessAction::STOP);
                 },
             );
 
             klass.install_action(
                 "applications.continue-application",
                 None,
-                move |resapplications, _, _| {
-                    resapplications.continue_selected_application();
+                move |res_applications, _, _| {
+                    res_applications
+                        .execute_process_action_dialog_selected_app(ProcessAction::CONT);
                 },
             );
 
@@ -330,7 +333,7 @@ impl ResApplications {
 
         imp.end_application_button
             .connect_clicked(clone!(@strong self as this => move |_| {
-                this.end_selected_application();
+                this.execute_process_action_dialog_selected_app(ProcessAction::TERM);
             }));
     }
 
@@ -431,130 +434,128 @@ impl ResApplications {
         }
     }
 
-    fn end_selected_application(&self) {
-        let imp = self.imp();
-        let apps = imp.apps.borrow();
-        let selection_option = self
-            .get_selected_simple_item()
-            .and_then(|simple_item| simple_item.id);
-        if let Some(selection) = selection_option && let Some(app) = apps.get_app(selection) {
-            let dialog = adw::MessageDialog::builder()
-            .transient_for(&MainWindow::default())
-            .modal(true)
-            .heading(i18n_f("End {}?", &[&app.display_name()]))
-            .body(i18n("Unsaved work might be lost."))
-            .build();
-            dialog.add_response("yes", &i18n("End Application"));
-            dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
-            dialog.set_default_response(Some("no"));
-            dialog.add_response("no", &i18n("Cancel"));
-            dialog.set_close_response("no");
-            dialog.connect_response(None, clone!(@strong app, @weak self as this => move |_, response| {
-                if response == "yes" {
-                    let imp = this.imp();
-                    let res = app.term();
-                    let processes_tried = res.len();
-                    let processes_successful = res.iter().flatten().count();
-                    let processes_unsuccessful = processes_tried - processes_successful;
-                    if processes_tried == processes_successful {
-                        imp.toast_overlay.add_toast(Toast::new(&i18n_f("Successfully ended {}", &[&app.display_name()])));
-                    } else {
-                        imp.toast_overlay.add_toast(Toast::new(&ni18n_f("There was a problem ending a process", "There were problems ending {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
-                    }
-                }
-            }));
-            dialog.show();
-        }
+    fn get_selected_app(&self) -> Option<App> {
+        let apps = &self.imp().apps.borrow().apps;
+
+        self.get_selected_simple_item()
+            .and_then(|simple_item| simple_item.id)
+            .and_then(|id| apps.get(&id).cloned())
     }
 
-    fn kill_selected_application(&self) {
-        let imp = self.imp();
-        let apps = imp.apps.borrow();
-        let selection_option = self
-            .get_selected_simple_item()
-            .and_then(|simple_item| simple_item.id);
-        if let Some(selection) = selection_option && let Some(app) = apps.get_app(selection) {
-            let dialog = adw::MessageDialog::builder()
-            .transient_for(&MainWindow::default())
-            .modal(true)
-            .heading(i18n_f("Kill {}?", &[&app.display_name()]))
-            .body(i18n("Killing an application can come with serious risks such as losing data and security implications. Use with caution."))
-            .build();
-            dialog.add_response("yes", &i18n("Kill Application"));
-            dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
-            dialog.set_default_response(Some("no"));
-            dialog.add_response("no", &i18n("Cancel"));
-            dialog.set_close_response("no");
-            dialog.connect_response(None, clone!(@strong app, @weak self as this => move |_, response| {
-                if response == "yes" {
-                    let imp = this.imp();
-                    let res = app.kill();
-                    let processes_tried = res.len();
-                    let processes_successful = res.iter().flatten().count();
-                    let processes_unsuccessful = processes_tried - processes_successful;
-                    if processes_tried == processes_successful {
-                        imp.toast_overlay.add_toast(Toast::new(&i18n_f("Successfully killed {}", &[&app.display_name()])));
-                    } else {
-                        imp.toast_overlay.add_toast(Toast::new(&ni18n_f("There was a problem killing a process", "There were problems killing {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
-                    }
-                }
-            }));
-            dialog.show();
-        }
+    fn execute_process_action(&self, app: &App, action: ProcessAction) {
+        let res = app.execute_process_action(action);
+
+        let processes_tried = res.len();
+        let processes_successful = res.iter().flatten().count();
+        let processes_unsuccessful = processes_tried - processes_successful;
+
+        #[rustfmt::skip]
+        let toast_message = match processes_unsuccessful {
+            0 => i18n_f("{} {}", &[get_action_success(action), &app.display_name()]),
+            1 => i18n(get_action_failure(action)),
+            _ => i18n_f("{} {} processes", &[get_action_failure_multiple(action), &processes_unsuccessful.to_string()]),
+        };
+
+        self.imp()
+            .toast_overlay
+            .add_toast(Toast::new(&toast_message));
     }
 
-    fn halt_selected_application(&self) {
-        let imp = self.imp();
-        let apps = imp.apps.borrow();
-        let selection_option = self
-            .get_selected_simple_item()
-            .and_then(|simple_item| simple_item.id);
-        if let Some(selection) = selection_option && let Some(app) = apps.get_app(selection) {
-            let dialog = adw::MessageDialog::builder()
+    pub fn execute_process_action_dialog(&self, app: &App, action: ProcessAction) {
+        // Nothing too bad can happen on Continue so dont show the dialog
+        if action == ProcessAction::CONT {
+            self.execute_process_action(&app, action);
+            return;
+        }
+
+        // Confirmation dialog & warning
+        let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(i18n_f("Halt {}?", &[&app.display_name()]))
-            .body(i18n("Halting an application can come with serious risks such as losing data and security implications. Use with caution."))
+            .heading(i18n_f(
+                "{} {}?",
+                &[get_action_name(action), &app.display_name()],
+            ))
+            .body(i18n(get_action_warning(action)))
             .build();
-            dialog.add_response("yes", &i18n("Halt Application"));
-            dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
-            dialog.set_default_response(Some("no"));
-            dialog.add_response("no", &i18n("Cancel"));
-            dialog.set_close_response("no");
-            dialog.connect_response(None, clone!(@strong app, @weak self as this => move |_, response| {
+
+        dialog.add_response("yes", &i18n(get_action_description(action)));
+        dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
+
+        dialog.add_response("no", &i18n("Cancel"));
+        dialog.set_default_response(Some("no"));
+        dialog.set_close_response("no");
+
+        // Called when "yes" or "no" were clicked
+        dialog.connect_response(
+            None,
+            clone!(@strong self as this, @strong app => move |_, response| {
                 if response == "yes" {
-                    let imp = this.imp();
-                    let res = app.stop();
-                    let processes_tried = res.len();
-                    let processes_successful = res.iter().flatten().count();
-                    let processes_unsuccessful = processes_tried - processes_successful;
-                    if processes_tried == processes_successful {
-                        imp.toast_overlay.add_toast(Toast::new(&i18n_f("Successfully halted {}", &[&app.display_name()])));
-                    } else {
-                        imp.toast_overlay.add_toast(Toast::new(&ni18n_f("There was a problem halting a process", "There were problems halting {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
-                    }
+                    this.execute_process_action(&app, action);
                 }
-            }));
-            dialog.show();
-        }
+            }),
+        );
+
+        dialog.show();
     }
 
-    fn continue_selected_application(&self) {
-        let imp = self.imp();
-        let apps = imp.apps.borrow();
-        let selection_option = self
-            .get_selected_simple_item()
-            .and_then(|simple_item| simple_item.id);
-        if let Some(selection) = selection_option && let Some(app) = apps.get_app(selection) {
-            let res = app.cont();
-            let processes_tried = res.len();
-            let processes_successful = res.iter().flatten().count();
-            let processes_unsuccessful = processes_tried - processes_successful;
-            if processes_tried == processes_successful {
-                imp.toast_overlay.add_toast(Toast::new(&i18n_f("Successfully continued {}", &[&app.display_name()])));
-            } else {
-                imp.toast_overlay.add_toast(Toast::new(&ni18n_f("There was a problem continuing a process", "There were problems continuing {} processes", processes_unsuccessful as u32, &[&processes_unsuccessful.to_string()])));
-            }
+    pub fn execute_process_action_dialog_selected_app(&self, action: ProcessAction) {
+        if let Some(app) = self.get_selected_app() {
+            self.execute_process_action_dialog(&app, action);
         }
+    }
+}
+
+const fn get_action_name(action: ProcessAction) -> &'static str {
+    match action {
+        ProcessAction::TERM => "End",
+        ProcessAction::STOP => "Halt",
+        ProcessAction::KILL => "Kill",
+        ProcessAction::CONT => "Continue",
+    }
+}
+
+const fn get_action_warning(action: ProcessAction) -> &'static str {
+    match action {
+            ProcessAction::TERM => "Unsaved work might be lost.",
+            ProcessAction::STOP => "Halting an application can come with serious risks such as losing data and security implications. Use with caution.",
+            ProcessAction::KILL => "Killing an application can come with serious risks such as losing data and security implications. Use with caution.",
+            ProcessAction::CONT => "",
+        }
+}
+
+const fn get_action_description(action: ProcessAction) -> &'static str {
+    match action {
+        ProcessAction::TERM => "End application",
+        ProcessAction::STOP => "Halt application",
+        ProcessAction::KILL => "Kill application",
+        ProcessAction::CONT => "Continue application",
+    }
+}
+
+const fn get_action_success(action: ProcessAction) -> &'static str {
+    match action {
+        ProcessAction::TERM => "Successfully ended",
+        ProcessAction::STOP => "Successfully halted",
+        ProcessAction::KILL => "Successfully killed",
+        ProcessAction::CONT => "Successfully continued",
+    }
+}
+
+const fn get_action_failure(action: ProcessAction) -> &'static str {
+    match action {
+        ProcessAction::TERM => "There was a problem ending a process",
+        ProcessAction::STOP => "There was a problem halting a process",
+        ProcessAction::KILL => "There was a problem killing a process",
+        ProcessAction::CONT => "There was a problem continuing a process",
+    }
+}
+
+const fn get_action_failure_multiple(action: ProcessAction) -> &'static str {
+    match action {
+        ProcessAction::TERM => "There were problems ending",
+        ProcessAction::STOP => "There were problems halting",
+        ProcessAction::KILL => "There were problems killing",
+        ProcessAction::CONT => "There were problems continuing",
     }
 }
