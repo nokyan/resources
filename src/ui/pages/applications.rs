@@ -464,7 +464,7 @@ impl ResApplications {
     pub fn execute_process_action_dialog(&self, app: &App, action: ProcessAction) {
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
-            self.execute_process_action(&app, action);
+            self.execute_process_action(app, action);
             return;
         }
 
