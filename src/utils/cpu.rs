@@ -1,9 +1,11 @@
 use anyhow::{anyhow, bail, Context, Result};
-use lazy_static::lazy_static;
 use nparse::KVStrToJson;
+use once_cell::sync::OnceCell;
 use regex::bytes::Regex;
 use serde_json::Value;
 use std::process::Command;
+
+static PROC_STAT_REGEX: OnceCell<Regex> = OnceCell::new();
 
 #[derive(Debug, Clone, Default)]
 pub struct CPUInfo {
@@ -95,10 +97,8 @@ pub fn get_cpu_freq(core: usize) -> Result<u64> {
 }
 
 fn parse_proc_stat_line(line: &[u8]) -> Result<(u64, u64)> {
-    lazy_static! {
-        static ref PROC_STAT_REGEX: Regex = Regex::new(r"cpu[0-9]* *(?P<user>[0-9]*) *(?P<nice>[0-9]*) *(?P<system>[0-9]*) *(?P<idle>[0-9]*) *(?P<iowait>[0-9]*) *(?P<irq>[0-9]*) *(?P<softirq>[0-9]*) *(?P<steal>[0-9]*) *(?P<guest>[0-9]*) *(?P<guest_nice>[0-9]*)").unwrap();
-    }
     let captures = PROC_STAT_REGEX
+        .get_or_init(|| Regex::new(r"cpu[0-9]* *(?P<user>[0-9]*) *(?P<nice>[0-9]*) *(?P<system>[0-9]*) *(?P<idle>[0-9]*) *(?P<iowait>[0-9]*) *(?P<irq>[0-9]*) *(?P<softirq>[0-9]*) *(?P<steal>[0-9]*) *(?P<guest>[0-9]*) *(?P<guest_nice>[0-9]*)").unwrap())
         .captures(line)
         .ok_or_else(|| anyhow!("using regex to parse /proc/stat failed"))?;
     let idle_time = captures

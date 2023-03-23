@@ -1,7 +1,9 @@
 use anyhow::{anyhow, Context, Result};
-use lazy_static::lazy_static;
+use once_cell::sync::OnceCell;
 use regex::Regex;
 use std::{collections::HashMap, path::PathBuf};
+
+static DRIVE_REGEX: OnceCell<Regex> = OnceCell::new();
 
 const SYS_STAT_FIELDS: [&str; 17] = [
     "read_ios",
@@ -31,14 +33,12 @@ const SYS_STAT_FIELDS: [&str; 17] = [
 /// Will return `Err` if the are errors during
 /// reading or parsing
 pub async fn sys_stat(dev: &str) -> Result<HashMap<&'static str, usize>> {
-    lazy_static! {
-        // TODO: maybe generate this regex automatically from `SYS_STAT_FIELDS`?
-        static ref DRIVE_REGEX: Regex = Regex::new(r" *(?P<read_ios>[0-9]*) *(?P<read_merges>[0-9]*) *(?P<read_sectors>[0-9]*) *(?P<read_ticks>[0-9]*) *(?P<write_ios>[0-9]*) *(?P<write_merges>[0-9]*) *(?P<write_sectors>[0-9]*) *(?P<write_ticks>[0-9]*) *(?P<in_flight>[0-9]*) *(?P<io_ticks>[0-9]*) *(?P<time_in_queue>[0-9]*) *(?P<discard_ios>[0-9]*) *(?P<discard_merges>[0-9]*) *(?P<discard_sectors>[0-9]*) *(?P<discard_ticks>[0-9]*) *(?P<flush_ios>[0-9]*) *(?P<flush_ticks>[0-9]*)").unwrap();
-    }
     let stat = async_std::fs::read_to_string(PathBuf::from(format!("/sys/block/{dev}/stat")))
         .await
         .with_context(|| format!("unable to read /sys/block/{dev}/stat"))?;
+    // TODO: maybe generate this regex automatically from `SYS_STAT_FIELDS`?
     let captures = DRIVE_REGEX
+        .get_or_init(|| Regex::new(r" *(?P<read_ios>[0-9]*) *(?P<read_merges>[0-9]*) *(?P<read_sectors>[0-9]*) *(?P<read_ticks>[0-9]*) *(?P<write_ios>[0-9]*) *(?P<write_merges>[0-9]*) *(?P<write_sectors>[0-9]*) *(?P<write_ticks>[0-9]*) *(?P<in_flight>[0-9]*) *(?P<io_ticks>[0-9]*) *(?P<time_in_queue>[0-9]*) *(?P<discard_ios>[0-9]*) *(?P<discard_merges>[0-9]*) *(?P<discard_sectors>[0-9]*) *(?P<discard_ticks>[0-9]*) *(?P<flush_ios>[0-9]*) *(?P<flush_ticks>[0-9]*)").unwrap())
         .captures(&stat)
         .ok_or_else(|| anyhow!("unable to parse /sys/block/{dev}/stat"))?;
     let mut hash_map = HashMap::new();
