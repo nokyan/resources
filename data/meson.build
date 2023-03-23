@@ -79,15 +79,15 @@ endif
 install_data('me.nalux.Resources.conf', install_dir : datadir / 'dbus-1' / 'system.d')
 
 # systemd Service file
-service_conf = configuration_data()
-service_conf.set('bindir', bindir)
-configure_file(
-  input: '@0@.service.in'.format(base_id),
-  output: '@0@.service'.format(application_id),
-  configuration: service_conf,
-  install: true,
-  install_dir: prefix / 'lib' / 'systemd' / 'system'
-)
+#service_conf = configuration_data()
+#service_conf.set('bindir', bindir)
+#configure_file(
+#  input: '@0@.service.in'.format(base_id),
+#  output: '@0@.service'.format(application_id),
+#  configuration: service_conf,
+#  install: true,
+#  install_dir: prefix / 'lib' / 'systemd' / 'system'
+#)
 
 # polkit Policy file
 policy_conf = configuration_data()
