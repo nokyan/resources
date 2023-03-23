@@ -460,7 +460,7 @@ impl ResProcesses {
         if apps.refresh().await.is_ok() {
             apps.all_processes()
                 .iter()
-                .filter(|process| process.memory_usage > 0)
+                .filter(|process| !process.commandline.is_empty())
                 .map(|process| {
                     if let Some((pid, dialog)) = &*imp.open_dialog.borrow() && process.pid == *pid {
                         dialog.set_cpu_usage(process.cpu_time_ratio());
