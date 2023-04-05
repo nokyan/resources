@@ -1,7 +1,7 @@
 [package]
 name = "resources"
 version = "0.1.0"
-authors = ["ManicRobot <manicrobot@protonmail.com>"]
+authors = ["nokyan <nokyan@tuta.io>"]
 edition = "2021"
 
 [dependencies]

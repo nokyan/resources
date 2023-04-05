@@ -112,7 +112,7 @@ impl Application {
             .application_name(i18n("Resources"))
             .application_icon(config::APP_ID)
             .developer_name(i18n("The Nalux Team"))
-            .developers(vec!["ManicRobot <manicrobot@protonmail.com>".to_string()])
+            .developers(vec!["nokyan <nokyan@tuta.io>".to_string()])
             .license_type(gtk::License::Gpl30)
             .version(config::VERSION)
             .website("https://github.com/NaluxOS/resources")
