@@ -342,14 +342,14 @@ impl MainWindow {
         let drive_page = ResDrive::new();
         let vendor = drive.vendor().await?;
         let model = drive.model().await?;
-        let is_cd_dvd = device.starts_with("/dev/sr");
+        let is_cd_dvd_bluray = device.starts_with("/dev/sr");
         let capacity = drive.size().await?;
         let removable = drive.removable().await?;
         drive_page.init(&vendor, &model, &device, capacity, writable, removable);
         let (capacity_trunc, prefix) = to_largest_unit(capacity as f64, &Base::Decimal);
-        if is_cd_dvd {
+        if is_cd_dvd_bluray {
             imp.content_stack
-                .add_titled(&drive_page, None, &i18n("CD/DVD Drive"));
+                .add_titled(&drive_page, None, &i18n("CD/DVD/Blu-ray Drive"));
         } else {
             imp.content_stack.add_titled(
                 &drive_page,
