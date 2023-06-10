@@ -33,7 +33,6 @@ Running Resources is as simple as typing `resources` into a terminal or running 
 
 ## To-do
 
-- Display graphs instead of or alongside the current progress bars
 - Battery usage and details
 - Preferences such as a unit selection
 - Translations
