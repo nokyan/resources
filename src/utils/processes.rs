@@ -703,9 +703,9 @@ impl Apps {
             dead_app_processes.extend(app.refresh().await);
         }
         let mut dead_sys_processes = Vec::new();
-        for process in self.system_processes.iter_mut() {
+        for process in &mut self.system_processes {
             if !process.refresh().await {
-                dead_sys_processes.push(process.proc_path.clone())
+                dead_sys_processes.push(process.proc_path.clone());
             }
         }
         self.system_processes

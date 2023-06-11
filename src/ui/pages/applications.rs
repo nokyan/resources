@@ -296,7 +296,7 @@ impl ResApplications {
                 let imp = this.imp();
                 imp.search_revealer.set_reveal_child(button.is_active());
                 if let Some(filter) = imp.filter_model.borrow().filter() {
-                    filter.changed(FilterChange::Different)
+                    filter.changed(FilterChange::Different);
                 }
                 if button.is_active() {
                     imp.search_entry.grab_focus();
@@ -307,7 +307,7 @@ impl ResApplications {
             .connect_search_changed(clone!(@strong self as this => move |_| {
                 let imp = this.imp();
                 if let Some(filter) = imp.filter_model.borrow().filter() {
-                    filter.changed(FilterChange::Different)
+                    filter.changed(FilterChange::Different);
                 }
             }));
 
