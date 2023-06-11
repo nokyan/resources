@@ -401,7 +401,7 @@ impl MainWindow {
         // during the last time this method was called and now
         imp.network_pages
             .borrow_mut()
-            .drain_filter(|k, _| !still_active_interfaces.iter().any(|x| *x == **k)) // remove entry from network_pages HashMap
+            .drain_filter(|k, _| !still_active_interfaces.iter().any(|x| *x == *k)) // remove entry from network_pages HashMap
             .for_each(|(_, v)| imp.content_stack.remove(&v)); // remove page from the UI
     }
 
