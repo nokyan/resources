@@ -81,6 +81,16 @@
                 </child>
                 <child>
                   <object class="AdwPreferencesGroup">
+                    <property name="title" translatable="yes">Sensors</property>
+                    <child>
+                      <object class="ResInfoBox" id="temperature">
+                        <property name="title" translatable="yes">Temperature</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
                     <property name="title" translatable="yes">Properties</property>
                     <child>
                       <object class="ResInfoBox" id="max_speed">

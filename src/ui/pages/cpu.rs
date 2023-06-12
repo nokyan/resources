@@ -47,6 +47,8 @@ mod imp {
         pub virtualization: TemplateChild<ResInfoBox>,
         #[template_child]
         pub architecture: TemplateChild<ResInfoBox>,
+        #[template_child]
+        pub temperature: TemplateChild<ResInfoBox>,
         pub thread_graphs: RefCell<Vec<ResGraphBox>>,
     }
 
@@ -194,6 +196,7 @@ impl ResCPU {
             let mut old_total_usage = cpu::get_cpu_usage(None).await.unwrap_or((0, 0));
             let mut old_thread_usages: Vec<(u64, u64)> = Vec::new();
             loop {
+
                 for i in 0..logical_cpus {
                     old_thread_usages.push(cpu::get_cpu_usage(Some(i)).await.unwrap_or((0,0)));
                 }
@@ -223,6 +226,14 @@ impl ResCPU {
                         }
                         *old_thread_usage = new_thread_usage;
                     }
+                }
+
+                let temp_unit = "C";
+                let temperature = cpu::get_temperature().await;
+                if let Ok(temp) = temperature {
+                    imp.temperature.set_info_label(&format!("{} °{temp_unit}", temp.round()));
+                } else {
+                    imp.temperature.set_info_label(&i18n("N/A"));
                 }
 
                 timeout_future_seconds(1).await;

@@ -1,4 +1,6 @@
 use anyhow::{anyhow, bail, Context, Result};
+use async_std::path::PathBuf;
+use glob::glob;
 use nparse::KVStrToJson;
 use once_cell::sync::OnceCell;
 use regex::bytes::Regex;
@@ -6,6 +8,11 @@ use serde_json::Value;
 use std::process::Command;
 
 static PROC_STAT_REGEX: OnceCell<Regex> = OnceCell::new();
+
+static ZENPOWER: OnceCell<PathBuf> = OnceCell::new();
+static CORETEMP: OnceCell<PathBuf> = OnceCell::new();
+static X86_PKG_TEMP: OnceCell<PathBuf> = OnceCell::new();
+static ACPI: OnceCell<PathBuf> = OnceCell::new();
 
 #[derive(Debug, Clone, Default)]
 pub struct CPUInfo {
@@ -147,4 +154,71 @@ async fn get_proc_stat(core: Option<usize>) -> Result<String> {
 /// of /proc/stat
 pub async fn get_cpu_usage(core: Option<usize>) -> Result<(u64, u64)> {
     parse_proc_stat_line(get_proc_stat(core).await?.as_bytes())
+}
+
+/// Returns the CPU temperature.
+///
+/// # Errors
+///
+/// Will return `Err` if there was no way to read the CPU temperature.
+pub async fn get_temperature() -> Result<f32> {
+    if ZENPOWER.get().is_none()
+        && CORETEMP.get().is_none()
+        && ACPI.get().is_none()
+        && X86_PKG_TEMP.get().is_none()
+    {
+        // collect all the known hwmons
+        for path in (glob("/sys/class/hwmon/hwmon*")?).flatten() {
+            match async_std::fs::read_to_string(path.join("name"))
+                .await
+                .as_deref()
+            {
+                Ok("zenpower\n") => std::mem::drop(ZENPOWER.set(path.join("temp1_input").into())),
+                Ok("coretemp\n") => std::mem::drop(CORETEMP.set(path.join("temp1_input").into())),
+                Ok(_) | Err(_) => {
+                    continue;
+                }
+            };
+        }
+
+        // collect all the known thermal zones
+        for path in (glob("/sys/class/thermal/thermal_zone*")?).flatten() {
+            match async_std::fs::read_to_string(path.join("type"))
+                .await
+                .as_deref()
+            {
+                Ok("x86_pkg_temp\n") => std::mem::drop(X86_PKG_TEMP.set(path.join("temp").into())),
+                Ok("acpitz\n") => std::mem::drop(ACPI.set(path.join("temp").into())),
+                Ok(_) | Err(_) => {
+                    continue;
+                }
+            };
+        }
+    }
+
+    if let Some(path) = ZENPOWER.get() {
+        return read_sysfs_thermal(path).await;
+    }
+    if let Some(path) = CORETEMP.get() {
+        return read_sysfs_thermal(path).await;
+    }
+    if let Some(path) = X86_PKG_TEMP.get() {
+        return read_sysfs_thermal(path).await;
+    }
+    if let Some(path) = ACPI.get() {
+        return read_sysfs_thermal(path).await;
+    }
+
+    bail!("no CPU temperature sensor found")
+}
+
+async fn read_sysfs_thermal(path: &PathBuf) -> Result<f32> {
+    let temp_string = async_std::fs::read_to_string(path)
+        .await
+        .with_context(|| format!("unable to read {}", path.display()))?;
+    temp_string
+        .replace('\n', "")
+        .parse::<f32>()
+        .with_context(|| format!("unable to parse {}", path.display()))
+        .map(|t| t / 1000f32)
 }

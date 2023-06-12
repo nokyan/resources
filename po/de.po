@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-06-10 23:51+0200\n"
+"PO-Revision-Date: 2023-06-12 19:36+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: de\n"
@@ -130,27 +130,31 @@ msgstr "Optionen"
 msgid "Show Usages of Logical CPUs"
 msgstr "Auslastung der logischen Prozessoren anzeigen"
 
+#: data/resources/ui/pages/cpu.ui:84
+msgid "Sensors"
+msgstr "Sensoren"
+
 #: data/resources/ui/pages/cpu.ui:87
 msgid "Max Frequency"
 msgstr "Maximale Taktfrequenz"
 
-#: data/resources/ui/pages/cpu.ui:92
+#: data/resources/ui/pages/cpu.ui:102
 msgid "Logical Cores"
 msgstr "Logische Kerne"
 
-#: data/resources/ui/pages/cpu.ui:97
+#: data/resources/ui/pages/cpu.ui:107
 msgid "Physical Cores"
 msgstr "Physische Kerne"
 
-#: data/resources/ui/pages/cpu.ui:102
+#: data/resources/ui/pages/cpu.ui:112
 msgid "Sockets"
 msgstr "Sockel"
 
-#: data/resources/ui/pages/cpu.ui:107
+#: data/resources/ui/pages/cpu.ui:117
 msgid "Virtualization"
 msgstr "Virtualisierung"
 
-#: data/resources/ui/pages/cpu.ui:112
+#: data/resources/ui/pages/cpu.ui:122
 msgid "Architecture"
 msgstr "Architektur"
 
