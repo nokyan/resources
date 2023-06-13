@@ -11,6 +11,7 @@ static PROC_STAT_REGEX: OnceCell<Regex> = OnceCell::new();
 
 static ZENPOWER: OnceCell<PathBuf> = OnceCell::new();
 static CORETEMP: OnceCell<PathBuf> = OnceCell::new();
+static K10TEMP: OnceCell<PathBuf> = OnceCell::new();
 static X86_PKG_TEMP: OnceCell<PathBuf> = OnceCell::new();
 static ACPI: OnceCell<PathBuf> = OnceCell::new();
 
@@ -175,6 +176,7 @@ pub async fn get_temperature() -> Result<f32> {
             {
                 Ok("zenpower\n") => std::mem::drop(ZENPOWER.set(path.join("temp1_input").into())),
                 Ok("coretemp\n") => std::mem::drop(CORETEMP.set(path.join("temp1_input").into())),
+                Ok("k10temp\n") => std::mem::drop(K10TEMP.set(path.join("temp1_input").into())),
                 Ok(_) | Err(_) => {
                     continue;
                 }
@@ -197,6 +199,9 @@ pub async fn get_temperature() -> Result<f32> {
     }
 
     if let Some(path) = ZENPOWER.get() {
+        return read_sysfs_thermal(path).await;
+    }
+    if let Some(path) = K10TEMP.get() {
         return read_sysfs_thermal(path).await;
     }
     if let Some(path) = CORETEMP.get() {
