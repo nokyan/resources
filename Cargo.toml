@@ -28,4 +28,4 @@ unescape = "0.1.0"
 nix = { version = "0.26.2", features = ["signal"] }
 users = "0.11.0"
 plotters = { version = "0.3.4", default_features = false, features = ["area_series"] }
-plotters-cairo = { path = "lib/plotters-cairo" }
+plotters-cairo = "0.4.0"
