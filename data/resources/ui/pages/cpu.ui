@@ -69,8 +69,8 @@
                         </child>
                         <child>
                           <object class="GtkFlowBox" id="thread_box">
-                            <property name="row_spacing">8</property>
-                            <property name="column_spacing">8</property>
+                            <property name="row_spacing">6</property>
+                            <property name="column_spacing">6</property>
                             <property name="homogeneous">true</property>
                             <property name="selection-mode">none</property>
                           </object>
