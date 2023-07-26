@@ -7,9 +7,9 @@ use std::{
     path::{Path, PathBuf},
 };
 
-static DRIVE_REGEX: OnceCell<Regex> = OnceCell::new();
+static RE_DRIVE: OnceCell<Regex> = OnceCell::new();
 
-const SYS_STAT_REGEX: &'static str = r" *(?P<read_ios>[0-9]*) *(?P<read_merges>[0-9]*) *(?P<read_sectors>[0-9]*) *(?P<read_ticks>[0-9]*) *(?P<write_ios>[0-9]*) *(?P<write_merges>[0-9]*) *(?P<write_sectors>[0-9]*) *(?P<write_ticks>[0-9]*) *(?P<in_flight>[0-9]*) *(?P<io_ticks>[0-9]*) *(?P<time_in_queue>[0-9]*) *(?P<discard_ios>[0-9]*) *(?P<discard_merges>[0-9]*) *(?P<discard_sectors>[0-9]*) *(?P<discard_ticks>[0-9]*) *(?P<flush_ios>[0-9]*) *(?P<flush_ticks>[0-9]*)";
+const SYS_STATS: &str = r" *(?P<read_ios>[0-9]*) *(?P<read_merges>[0-9]*) *(?P<read_sectors>[0-9]*) *(?P<read_ticks>[0-9]*) *(?P<write_ios>[0-9]*) *(?P<write_merges>[0-9]*) *(?P<write_sectors>[0-9]*) *(?P<write_ticks>[0-9]*) *(?P<in_flight>[0-9]*) *(?P<io_ticks>[0-9]*) *(?P<time_in_queue>[0-9]*) *(?P<discard_ios>[0-9]*) *(?P<discard_merges>[0-9]*) *(?P<discard_sectors>[0-9]*) *(?P<discard_ticks>[0-9]*) *(?P<flush_ios>[0-9]*) *(?P<flush_ticks>[0-9]*)";
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub enum DriveType {
@@ -104,13 +104,13 @@ impl Drive {
             .await
             .with_context(|| format!("unable to read /sys/block/{}/stat", self.block_device))?;
 
-        let captures = DRIVE_REGEX
-            .get_or_init(|| Regex::new(SYS_STAT_REGEX).unwrap())
+        let re_drive = RE_DRIVE.get_or_init(|| Regex::new(SYS_STATS).unwrap());
+
+        let captures = re_drive
             .captures(&stat)
             .with_context(|| format!("unable to parse /sys/block/{}/stat", self.block_device))?;
 
-        Ok(DRIVE_REGEX
-            .get_or_init(|| Regex::new(SYS_STAT_REGEX).unwrap())
+        Ok(re_drive
             .capture_names()
             .flatten()
             .filter_map(|named_capture| {

@@ -2,37 +2,78 @@
 <interface>
   <template class="ResMemory" parent="AdwBin">
     <property name="child">
-      <object class="GtkScrolledWindow">
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
         <child>
-          <object class="AdwClamp">
+          <object class="AdwBanner" id="authentication_banner">
+            <property name="title" translatable="yes">You need to authenticate to see memory properties</property>
+            <property name="button-label" translatable="yes">Authenticate</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
             <child>
-              <object class="GtkBox">
-                <property name="margin-top">24</property>
-                <property name="margin-bottom">24</property>
-                <property name="margin-start">16</property>
-                <property name="margin-end">16</property>
-                <property name="spacing">24</property>
-                <property name="orientation">vertical</property>
-                <property name="hexpand">true</property>
-                <property name="valign">start</property>
-                <property name="vexpand">true</property>
+              <object class="AdwClamp">
                 <child>
-                  <object class="GtkLabel">
-                    <property name="wrap">true</property>
-                    <property name="label" translatable="yes">Memory</property>
-                    <style>
-                      <class name="title-1"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwPreferencesGroup">
-                    <property name="title" translatable="yes">Usage</property>
+                  <object class="GtkBox">
+                    <property name="margin-top">24</property>
+                    <property name="margin-bottom">24</property>
+                    <property name="margin-start">16</property>
+                    <property name="margin-end">16</property>
+                    <property name="spacing">24</property>
+                    <property name="orientation">vertical</property>
+                    <property name="hexpand">true</property>
+                    <property name="valign">start</property>
+                    <property name="vexpand">true</property>
                     <child>
-                      <object class="ResGraphBox" id="memory"/>
+                      <object class="GtkLabel">
+                        <property name="wrap">true</property>
+                        <property name="label" translatable="yes">Memory</property>
+                        <style>
+                          <class name="title-1"/>
+                        </style>
+                      </object>
                     </child>
                     <child>
-                      <object class="ResGraphBox" id="swap"/>
+                      <object class="AdwPreferencesGroup">
+                        <property name="title" translatable="yes">Usage</property>
+                        <child>
+                          <object class="ResGraphBox" id="memory"/>
+                        </child>
+                        <child>
+                          <object class="ResGraphBox" id="swap"/>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwPreferencesGroup" id="properties">
+                        <property name="title" translatable="yes">Properties</property>
+                        <child>
+                          <object class="ResInfoBox" id="slots_used">
+                            <property name="title" translatable="yes">Slots Used</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ResInfoBox" id="speed">
+                            <property name="title" translatable="yes">Speed</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ResInfoBox" id="form_factor">
+                            <property name="title" translatable="yes">Form Factor</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ResInfoBox" id="memory_type">
+                            <property name="title" translatable="yes">Type</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ResInfoBox" id="type_detail">
+                            <property name="title" translatable="yes">Type Detail</property>
+                          </object>
+                        </child>
+                      </object>
                     </child>
                   </object>
                 </child>

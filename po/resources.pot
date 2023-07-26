@@ -66,7 +66,8 @@ msgstr ""
 #: data/resources/ui/dialogs/app_dialog.ui:86
 #: data/resources/ui/dialogs/process_dialog.ui:69
 #: data/resources/ui/pages/cpu.ui:84 data/resources/ui/pages/drive.ui:48
-#: data/resources/ui/pages/gpu.ui:61 data/resources/ui/pages/network.ui:55
+#: data/resources/ui/pages/gpu.ui:61 data/resources/ui/pages/memory.ui:50
+#: data/resources/ui/pages/network.ui:55
 msgid "Properties"
 msgstr ""
 
@@ -163,7 +164,15 @@ msgstr ""
 msgid "Write Speed"
 msgstr ""
 
-#: data/resources/ui/pages/drive.ui:51
+#: data/resources/ui/pages/memory.ui:9
+msgid "You need to authenticate to see memory properties"
+msgstr ""
+
+#: data/resources/ui/pages/memory.ui:10
+msgid "Authenticate"
+msgstr ""
+
+#: data/resources/ui/pages/drive.ui:51 data/resources/ui/pages/memory.ui:68
 msgid "Type"
 msgstr ""
 
@@ -217,6 +226,22 @@ msgstr ""
 
 #: data/resources/ui/pages/gpu.ui:84
 msgid "Max Power Cap"
+msgstr ""
+
+#: data/resources/ui/pages/memory.ui:53
+msgid "Slots Used"
+msgstr ""
+
+#: data/resources/ui/pages/memory.ui:58
+msgid "Speed"
+msgstr ""
+
+#: data/resources/ui/pages/memory.ui:63
+msgid "Form Factor"
+msgstr ""
+
+#: data/resources/ui/pages/memory.ui:73
+msgid "Type Detail"
 msgstr ""
 
 #: data/resources/ui/pages/network.ui:33
@@ -316,9 +341,11 @@ msgstr ""
 #: src/ui/pages/gpu.rs:115 src/ui/pages/gpu.rs:132 src/ui/pages/gpu.rs:145
 #: src/ui/pages/gpu.rs:152 src/ui/pages/gpu.rs:154 src/ui/pages/gpu.rs:160
 #: src/ui/pages/gpu.rs:167 src/ui/pages/gpu.rs:170 src/ui/pages/gpu.rs:172
-#: src/ui/pages/memory.rs:105 src/ui/pages/network.rs:90
-#: src/ui/pages/network.rs:92 src/ui/pages/network.rs:97
-#: src/ui/pages/network.rs:100 src/utils/gpu.rs:81 src/utils/gpu.rs:84
+#: src/ui/pages/memory.rs:126 src/ui/pages/memory.rs:132
+#: src/ui/pages/memory.rs:138 src/ui/pages/memory.rs:178
+#: src/ui/pages/network.rs:90 src/ui/pages/network.rs:92
+#: src/ui/pages/network.rs:97 src/ui/pages/network.rs:100 src/utils/gpu.rs:81
+#: src/utils/gpu.rs:84
 msgid "N/A"
 msgstr ""
 
@@ -455,6 +482,10 @@ msgstr ""
 
 #: src/ui/pages/memory.rs:79
 msgid "Swap"
+msgstr ""
+
+#: src/ui/pages/memory.rs:140
+msgid "{} of {}"
 msgstr ""
 
 #: src/ui/pages/processes.rs:121

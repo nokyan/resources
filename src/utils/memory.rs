@@ -1,6 +1,15 @@
-use anyhow::{Context, Result};
+use std::process::Command;
+
+use anyhow::{bail, Context, Result};
 use nparse::KVStrToJson;
+use once_cell::sync::OnceCell;
+use regex::Regex;
 use serde_json::Value;
+
+static RE_SPEED: OnceCell<Regex> = OnceCell::new();
+static RE_FORMFACTOR: OnceCell<Regex> = OnceCell::new();
+static RE_TYPE: OnceCell<Regex> = OnceCell::new();
+static RE_TYPE_DETAIL: OnceCell<Regex> = OnceCell::new();
 
 fn proc_meminfo() -> Result<Value, anyhow::Error> {
     std::fs::read_to_string("/proc/meminfo")
@@ -42,4 +51,72 @@ pub fn get_free_swap() -> Option<usize> {
         .as_str()
         .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
         .map(|y| y * 1000)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct MemoryDevice {
+    pub speed: Option<u32>,
+    pub form_factor: String,
+    pub r#type: String,
+    pub type_detail: String,
+    pub installed: bool,
+}
+
+fn parse_dmidecode(dmi: String) -> Result<Vec<MemoryDevice>> {
+    let mut devices = Vec::new();
+
+    let device_strings = dmi.split("\n\n");
+
+    let re_speed = RE_SPEED.get_or_init(|| Regex::new(r"Speed: (\d+) MT/s").unwrap());
+    let re_form_factor = RE_FORMFACTOR.get_or_init(|| Regex::new(r"Form Factor: (.+)").unwrap());
+    let re_type = RE_TYPE.get_or_init(|| Regex::new(r"Type: (.+)").unwrap());
+    let re_type_detail = RE_TYPE_DETAIL.get_or_init(|| Regex::new(r"Type Detail: (.+)").unwrap());
+
+    for device_string in device_strings {
+        if device_string.is_empty() {
+            continue;
+        }
+        let memory_device = MemoryDevice {
+            speed: re_speed
+                .captures(&device_string)
+                .map(|x| x[1].parse().unwrap()),
+            form_factor: re_form_factor
+                .captures(&device_string)
+                .map(|x| x[1].to_string())
+                .unwrap_or_else(|| "N/A".to_string()),
+            r#type: re_type
+                .captures(&device_string)
+                .map(|x| x[1].to_string())
+                .unwrap_or_else(|| "N/A".to_string()),
+            type_detail: re_type_detail
+                .captures(&device_string)
+                .map(|x| x[1].to_string())
+                .unwrap_or_else(|| "N/A".to_string()),
+            installed: re_speed
+                .captures(&device_string)
+                .map(|x| x[1].to_string())
+                .is_some(),
+        };
+
+        devices.push(memory_device);
+    }
+
+    Ok(devices)
+}
+
+pub fn get_memory_devices() -> Result<Vec<MemoryDevice>> {
+    let output = Command::new("dmidecode")
+        .args(["-t", "17", "-q"])
+        .output()?;
+    if output.status.code().unwrap_or(1) == 1 {
+        bail!("no permission")
+    }
+    parse_dmidecode(String::from_utf8(output.stdout)?)
+}
+
+pub fn pkexec_get_memory_devices() -> Result<Vec<MemoryDevice>> {
+    let output = Command::new("pkexec")
+        .args(["--disable-internal-agent", "dmidecode", "-t", "17", "-q"])
+        .output()?;
+    parse_dmidecode(String::from_utf8(output.stdout)?)
 }
