@@ -170,6 +170,13 @@ impl ResDrive {
                     imp.write.set_info_label(&format!("{:.2} {}B/s", wbps_formatted.0, wbps_formatted.1));
                 }
 
+                let formatted_capacity =
+                    to_largest_unit((drive.capacity().await.unwrap_or(0) * hw_sector_size as u64) as f64, &Base::Decimal);
+                imp.capacity.set_info_label(&format!(
+                    "{:.1} {}B",
+                    formatted_capacity.0, formatted_capacity.1
+                ));
+
                 old_stats = disk_stats;
                 last_checked_timestamp = SystemTime::now()
                 .duration_since(SystemTime::UNIX_EPOCH)
