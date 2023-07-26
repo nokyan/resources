@@ -77,7 +77,7 @@ impl Drive {
         while let Some(entry) = entries.next().await {
             let entry = entry?;
             let block_device = entry.file_name().to_string_lossy().to_string();
-            if block_device == ""
+            if block_device.is_empty()
                 || (skip_virtual_devices
                     && (block_device.starts_with("loop")
                         || block_device.starts_with("ram")
@@ -131,22 +131,22 @@ impl Drive {
             Ok(DriveType::Floppy)
         } else if self.block_device.starts_with("sr") {
             Ok(DriveType::CdDvdBluray)
-        } else {
-            if let Ok(rot) =
-                async_std::fs::read_to_string(self.sys_fs_path.join("queue/rotational")).await
-            {
-                // turn rot into a boolean
-                let rot = rot.replace('\n', "").parse::<u8>().map(|rot| rot != 0)?;
-                match rot {
-                    true => Ok(DriveType::Hdd),
-                    false => match self.removable().await? {
-                        true => Ok(DriveType::Flash),
-                        false => Ok(DriveType::Ssd),
-                    },
-                }
+        } else if let Ok(rot) =
+            async_std::fs::read_to_string(self.sys_fs_path.join("queue/rotational")).await
+        {
+            // turn rot into a boolean
+            let rot = rot.replace('\n', "").parse::<u8>().map(|rot| rot != 0)?;
+            if rot {
+                Ok(DriveType::Hdd)
             } else {
-                Ok(DriveType::Unknown)
+                if self.removable().await? {
+                    Ok(DriveType::Flash)
+                } else {
+                    Ok(DriveType::Ssd)
+                }
             }
+        } else {
+            Ok(DriveType::Unknown)
         }
     }
 

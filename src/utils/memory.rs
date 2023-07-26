@@ -62,7 +62,7 @@ pub struct MemoryDevice {
     pub installed: bool,
 }
 
-fn parse_dmidecode(dmi: String) -> Result<Vec<MemoryDevice>> {
+fn parse_dmidecode(dmi: String) -> Vec<MemoryDevice> {
     let mut devices = Vec::new();
 
     let device_strings = dmi.split("\n\n");
@@ -78,22 +78,19 @@ fn parse_dmidecode(dmi: String) -> Result<Vec<MemoryDevice>> {
         }
         let memory_device = MemoryDevice {
             speed: re_speed
-                .captures(&device_string)
+                .captures(device_string)
                 .map(|x| x[1].parse().unwrap()),
             form_factor: re_form_factor
-                .captures(&device_string)
-                .map(|x| x[1].to_string())
-                .unwrap_or_else(|| "N/A".to_string()),
+                .captures(device_string)
+                .map_or_else(|| "N/A".to_string(), |x| x[1].to_string()),
             r#type: re_type
-                .captures(&device_string)
-                .map(|x| x[1].to_string())
-                .unwrap_or_else(|| "N/A".to_string()),
+                .captures(device_string)
+                .map_or_else(|| "N/A".to_string(), |x| x[1].to_string()),
             type_detail: re_type_detail
-                .captures(&device_string)
-                .map(|x| x[1].to_string())
-                .unwrap_or_else(|| "N/A".to_string()),
+                .captures(device_string)
+                .map_or_else(|| "N/A".to_string(), |x| x[1].to_string()),
             installed: re_speed
-                .captures(&device_string)
+                .captures(device_string)
                 .map(|x| x[1].to_string())
                 .is_some(),
         };
@@ -101,7 +98,7 @@ fn parse_dmidecode(dmi: String) -> Result<Vec<MemoryDevice>> {
         devices.push(memory_device);
     }
 
-    Ok(devices)
+    devices
 }
 
 pub fn get_memory_devices() -> Result<Vec<MemoryDevice>> {
@@ -111,12 +108,12 @@ pub fn get_memory_devices() -> Result<Vec<MemoryDevice>> {
     if output.status.code().unwrap_or(1) == 1 {
         bail!("no permission")
     }
-    parse_dmidecode(String::from_utf8(output.stdout)?)
+    Ok(parse_dmidecode(String::from_utf8(output.stdout)?))
 }
 
 pub fn pkexec_get_memory_devices() -> Result<Vec<MemoryDevice>> {
     let output = Command::new("pkexec")
         .args(["--disable-internal-agent", "dmidecode", "-t", "17", "-q"])
         .output()?;
-    parse_dmidecode(String::from_utf8(output.stdout)?)
+    Ok(parse_dmidecode(String::from_utf8(output.stdout)?))
 }

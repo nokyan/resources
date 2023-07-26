@@ -97,14 +97,14 @@ impl ResMemory {
         imp.swap.set_data_points_max_amount(60);
 
         if let Ok(memory_devices) = memory::get_memory_devices() {
-            self.setup_properties(memory_devices);
+            self.setup_properties(&memory_devices);
         } else {
             imp.properties.set_visible(false);
-            imp.authentication_banner.set_revealed(true)
+            imp.authentication_banner.set_revealed(true);
         }
     }
 
-    pub fn setup_properties(&self, memory_devices: Vec<MemoryDevice>) {
+    pub fn setup_properties(&self, memory_devices: &[MemoryDevice]) {
         let imp = self.imp();
         let slots_used = memory_devices
             .iter()
@@ -120,25 +120,20 @@ impl ResMemory {
             .unwrap_or(0);
         let form_factor = memory_devices
             .iter()
-            .filter(|md| md.installed)
-            .nth(0)
+            .find(|md| md.installed)
             .map(|md| md.form_factor.clone())
-            .unwrap_or(i18n("N/A"));
+            .unwrap_or_else(|| i18n("N/A"));
         let r#type = memory_devices
             .iter()
-            .filter(|md| md.installed)
-            .nth(0)
-            .map(|md| md.r#type.clone())
-            .unwrap_or(i18n("N/A"));
+            .find(|md| md.installed)
+            .map_or_else(|| i18n("N/A"), |md| md.r#type.clone());
         let type_detail = memory_devices
             .iter()
-            .filter(|md| md.installed)
-            .nth(0)
-            .map(|md| md.type_detail.clone())
-            .unwrap_or(i18n("N/A"));
+            .find(|md| md.installed)
+            .map_or_else(|| i18n("N/A"), |md| md.type_detail.clone());
         imp.slots_used
             .set_info_label(&i18n_f("{} of {}", &[slots_used.as_str(), slots.as_str()]));
-        imp.speed.set_info_label(&format!("{} MT/s", speed));
+        imp.speed.set_info_label(&format!("{speed} MT/s"));
         imp.form_factor.set_info_label(&form_factor);
         imp.memory_type.set_info_label(&r#type);
         imp.type_detail.set_info_label(&type_detail);
@@ -150,7 +145,7 @@ impl ResMemory {
             .connect_button_clicked(clone!(@strong self as this => move |_| {
                 let imp = this.imp();
                 if let Ok(memory_devices) = memory::pkexec_get_memory_devices() {
-                    this.setup_properties(memory_devices);
+                    this.setup_properties(&memory_devices);
                     imp.properties.set_visible(true);
                 }
                 imp.authentication_banner.set_revealed(false)

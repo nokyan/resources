@@ -344,8 +344,8 @@ msgstr "Icon von"
 #: src/ui/pages/gpu.rs:115 src/ui/pages/gpu.rs:132 src/ui/pages/gpu.rs:145
 #: src/ui/pages/gpu.rs:152 src/ui/pages/gpu.rs:154 src/ui/pages/gpu.rs:160
 #: src/ui/pages/gpu.rs:167 src/ui/pages/gpu.rs:170 src/ui/pages/gpu.rs:172
-#: src/ui/pages/memory.rs:126 src/ui/pages/memory.rs:132
-#: src/ui/pages/memory.rs:138 src/ui/pages/memory.rs:178
+#: src/ui/pages/memory.rs:125 src/ui/pages/memory.rs:129
+#: src/ui/pages/memory.rs:133 src/ui/pages/memory.rs:173
 #: src/ui/pages/network.rs:90 src/ui/pages/network.rs:92
 #: src/ui/pages/network.rs:97 src/ui/pages/network.rs:100 src/utils/gpu.rs:81
 #: src/utils/gpu.rs:84
@@ -491,7 +491,7 @@ msgstr "GPU {}"
 msgid "Swap"
 msgstr "Auslagerungsspeicher"
 
-#: src/ui/pages/memory.rs:140
+#: src/ui/pages/memory.rs:135
 msgid "{} of {}"
 msgstr "{} von {}"
 
