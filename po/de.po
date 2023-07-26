@@ -520,35 +520,35 @@ msgstr "CD/DVD/Blu-ray-Laufwerk"
 msgid "{} {}B Drive"
 msgstr "{}-{}B-Datenträger"
 
-#: src/ui/window.rs:254
+#: src/ui/window.rs:249
 msgid "Ethernet Connection"
 msgstr "Ethernet-Verbindung"
 
-#: src/ui/window.rs:255
+#: src/ui/window.rs:250
 msgid "InfiniBand Connection"
 msgstr "InfiniBand-Verbindung"
 
-#: src/ui/window.rs:256
+#: src/ui/window.rs:251
 msgid "Serial Line IP Connection"
 msgstr "Serial-Line-IP-Verbindung"
 
-#: src/ui/window.rs:257
+#: src/ui/window.rs:252
 msgid "Wi-Fi Connection"
 msgstr "WLAN-Verbindung"
 
-#: src/ui/window.rs:258
+#: src/ui/window.rs:253
 msgid "WWAN Connection"
 msgstr "WWAN-Verbindung"
 
-#: src/ui/window.rs:259
+#: src/ui/window.rs:254
 msgid "Bluetooth Tether"
 msgstr "Bluetooth-Tether"
 
-#: src/ui/window.rs:260
+#: src/ui/window.rs:255
 msgid "VPN Tunnel (WireGuard)"
 msgstr "VPN-Tunnel (WireGuard)"
 
-#: src/ui/window.rs:261
+#: src/ui/window.rs:256
 msgid "Network Interface"
 msgstr "Netzwerkschnittstelle"
 

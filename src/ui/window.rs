@@ -194,10 +194,8 @@ impl MainWindow {
     async fn watch_for_drives(&self) {
         let imp = self.imp();
         let mut still_active_drives = Vec::with_capacity(imp.drive_pages.borrow().len());
-        for path in Drive::get_sysfs_paths(true)
-            .await
-            .expect("can't access sysfs")
-        {
+        for path in Drive::get_sysfs_paths(true).await.unwrap_or_default() {
+            // ignore drive pages that are already listed
             if imp.drive_pages.borrow().contains_key(&path) {
                 still_active_drives.push(path);
                 continue;
@@ -237,34 +235,31 @@ impl MainWindow {
     async fn watch_for_network_interfaces(&self) {
         let imp = self.imp();
         let mut still_active_interfaces = Vec::with_capacity(imp.network_pages.borrow().len());
-        if let Ok(paths) = std::fs::read_dir("/sys/class/net") {
-            for path in paths.flatten() {
-                let dir_path = path.path();
-                // skip loopback (or non-UTF-8 names) and already found network pages
-                if path.file_name().to_str().unwrap_or("lo") == "lo" {
-                    continue;
-                }
-                if imp.network_pages.borrow().contains_key(&dir_path) {
-                    still_active_interfaces.push(dir_path);
-                    continue;
-                }
+        for path in NetworkInterface::get_sysfs_paths()
+            .await
+            .unwrap_or_default()
+        {
+            // ignore network pages that are already listed
+            if imp.network_pages.borrow().contains_key(&path) {
+                still_active_interfaces.push(path);
+                continue;
+            }
+            if let Ok(interface) = NetworkInterface::from_sysfs(&path).await {
+                let sidebar_title = match interface.interface_type {
+                    InterfaceType::Ethernet => i18n("Ethernet Connection"),
+                    InterfaceType::InfiniBand => i18n("InfiniBand Connection"),
+                    InterfaceType::Slip => i18n("Serial Line IP Connection"),
+                    InterfaceType::Wlan => i18n("Wi-Fi Connection"),
+                    InterfaceType::Wwan => i18n("WWAN Connection"),
+                    InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
+                    InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
+                    InterfaceType::Other => i18n("Network Interface"),
+                };
                 let page = ResNetwork::new();
-                if let Ok(interface) = NetworkInterface::from_sysfs(&dir_path).await {
-                    let sidebar_title = match interface.interface_type {
-                        InterfaceType::Ethernet => i18n("Ethernet Connection"),
-                        InterfaceType::InfiniBand => i18n("InfiniBand Connection"),
-                        InterfaceType::Slip => i18n("Serial Line IP Connection"),
-                        InterfaceType::Wlan => i18n("Wi-Fi Connection"),
-                        InterfaceType::Wwan => i18n("WWAN Connection"),
-                        InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
-                        InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
-                        InterfaceType::Other => i18n("Network Interface"),
-                    };
-                    page.init(interface);
-                    imp.content_stack.add_titled(&page, None, &sidebar_title);
-                    imp.network_pages.borrow_mut().insert(path.path(), page);
-                    still_active_interfaces.push(dir_path);
-                }
+                page.init(interface);
+                imp.content_stack.add_titled(&page, None, &sidebar_title);
+                imp.network_pages.borrow_mut().insert(path.clone(), page);
+                still_active_interfaces.push(path);
             }
         }
         // remove all the pages of network interfaces that have been removed from the system

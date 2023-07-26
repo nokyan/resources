@@ -5,6 +5,7 @@ use std::{
 };
 
 use anyhow::{Context, Result};
+use futures_util::StreamExt;
 use pci_ids::FromId;
 
 #[derive(Debug, Clone, Copy)]
@@ -51,6 +52,20 @@ impl PartialEq for NetworkInterface {
 }
 
 impl NetworkInterface {
+    pub async fn get_sysfs_paths() -> Result<Vec<PathBuf>> {
+        let mut list = Vec::new();
+        let mut entries = async_std::fs::read_dir("/sys/class/net").await?;
+        while let Some(entry) = entries.next().await {
+            let entry = entry?;
+            let block_device = entry.file_name().to_string_lossy().to_string();
+            if block_device.starts_with("lo") {
+                continue;
+            }
+            list.push(entry.path().into());
+        }
+        Ok(list)
+    }
+
     async fn read_uevent(uevent_path: PathBuf) -> Result<HashMap<String, String>> {
         let entries: Vec<Vec<String>> = async_std::fs::read_to_string(uevent_path)
             .await?
