@@ -164,18 +164,22 @@ msgid "Write Speed"
 msgstr ""
 
 #: data/resources/ui/pages/drive.ui:51
-msgid "Device"
+msgid "Type"
 msgstr ""
 
 #: data/resources/ui/pages/drive.ui:56
-msgid "Capacity"
+msgid "Device"
 msgstr ""
 
 #: data/resources/ui/pages/drive.ui:61
-msgid "Writable"
+msgid "Capacity"
 msgstr ""
 
 #: data/resources/ui/pages/drive.ui:66
+msgid "Writable"
+msgstr ""
+
+#: data/resources/ui/pages/drive.ui:71
 msgid "Removable"
 msgstr ""
 
@@ -308,13 +312,13 @@ msgstr ""
 #: src/ui/dialogs/process_dialog.rs:105 src/ui/pages/cpu.rs:107
 #: src/ui/pages/cpu.rs:110 src/ui/pages/cpu.rs:123 src/ui/pages/cpu.rs:138
 #: src/ui/pages/cpu.rs:151 src/ui/pages/cpu.rs:157 src/ui/pages/cpu.rs:163
-#: src/ui/pages/cpu.rs:167 src/ui/pages/cpu.rs:170 src/ui/pages/gpu.rs:115
-#: src/ui/pages/gpu.rs:132 src/ui/pages/gpu.rs:145 src/ui/pages/gpu.rs:152
-#: src/ui/pages/gpu.rs:154 src/ui/pages/gpu.rs:160 src/ui/pages/gpu.rs:167
-#: src/ui/pages/gpu.rs:170 src/ui/pages/gpu.rs:172 src/ui/pages/memory.rs:105
-#: src/ui/pages/network.rs:90 src/ui/pages/network.rs:92
-#: src/ui/pages/network.rs:97 src/ui/pages/network.rs:100 src/utils/gpu.rs:81
-#: src/utils/gpu.rs:84
+#: src/ui/pages/cpu.rs:167 src/ui/pages/cpu.rs:170 src/ui/pages/drive.rs:113
+#: src/ui/pages/gpu.rs:115 src/ui/pages/gpu.rs:132 src/ui/pages/gpu.rs:145
+#: src/ui/pages/gpu.rs:152 src/ui/pages/gpu.rs:154 src/ui/pages/gpu.rs:160
+#: src/ui/pages/gpu.rs:167 src/ui/pages/gpu.rs:170 src/ui/pages/gpu.rs:172
+#: src/ui/pages/memory.rs:105 src/ui/pages/network.rs:90
+#: src/ui/pages/network.rs:92 src/ui/pages/network.rs:97
+#: src/ui/pages/network.rs:100 src/utils/gpu.rs:81 src/utils/gpu.rs:84
 msgid "N/A"
 msgstr ""
 
@@ -413,6 +417,30 @@ msgstr ""
 msgid "CPU {}"
 msgstr ""
 
+#: src/ui/pages/drive.rs:107
+msgid "eMMC Storage"
+msgstr ""
+
+#: src/ui/pages/drive.rs:108
+msgid "Flash Storage"
+msgstr ""
+
+#: src/ui/pages/drive.rs:109
+msgid "Floppy Drive"
+msgstr ""
+
+#: src/ui/pages/drive.rs:110
+msgid "Hard Disk Drive"
+msgstr ""
+
+#: src/ui/pages/drive.rs:111
+msgid "NVMe Drive"
+msgstr ""
+
+#: src/ui/pages/drive.rs:113
+msgid "Solid State Drive"
+msgstr ""
+
 #: src/ui/pages/gpu.rs:104
 msgid "GPU Usage"
 msgstr ""
@@ -473,7 +501,7 @@ msgstr ""
 msgid "GPU"
 msgstr ""
 
-#: src/ui/window.rs:349
+#: src/ui/window.rs:349 src/ui/pages/drive.rs:106
 msgid "CD/DVD/Blu-ray Drive"
 msgstr ""
 
@@ -481,35 +509,35 @@ msgstr ""
 msgid "{} {}B Drive"
 msgstr ""
 
-#: src/ui/window.rs:381
+#: src/ui/window.rs:254
 msgid "Ethernet Connection"
 msgstr ""
 
-#: src/ui/window.rs:382
+#: src/ui/window.rs:255
 msgid "InfiniBand Connection"
 msgstr ""
 
-#: src/ui/window.rs:383
+#: src/ui/window.rs:256
 msgid "Serial Line IP Connection"
 msgstr ""
 
-#: src/ui/window.rs:384
+#: src/ui/window.rs:257
 msgid "Wi-Fi Connection"
 msgstr ""
 
-#: src/ui/window.rs:385
+#: src/ui/window.rs:258
 msgid "WWAN Connection"
 msgstr ""
 
-#: src/ui/window.rs:386
+#: src/ui/window.rs:259
 msgid "Bluetooth Tether"
 msgstr ""
 
-#: src/ui/window.rs:387
+#: src/ui/window.rs:260
 msgid "VPN Tunnel (WireGuard)"
 msgstr ""
 
-#: src/ui/window.rs:388
+#: src/ui/window.rs:261
 msgid "Network Interface"
 msgstr ""
 

@@ -2,28 +2,21 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 
 use adw::{prelude::*, subclass::prelude::*};
-use anyhow::{Context, Result};
-use futures_util::stream::StreamExt;
+use anyhow::Result;
 use gtk::glib::{clone, timeout_future_seconds, MainContext};
 use gtk::{gio, glib};
-use zbus::export::futures_util;
-use zbus::Connection;
-use zvariant::Value::{Array, Bool, ObjectPath, U8};
 
 use crate::application::Application;
 use crate::config::{APP_ID, PROFILE};
-use crate::dbus_proxies::udisks2::{
-    BlockProxy, DriveProxy, PartitionProxy, SwapspaceProxy, UDisks2ManagerProxy,
-};
 use crate::i18n::{i18n, i18n_f};
 use crate::ui::pages::drive::ResDrive;
-use crate::ui::pages::network::ResNetwork;
+use crate::utils::drive::{Drive, DriveType};
 use crate::utils::gpu::GPU;
-use crate::utils::network::InterfaceType;
-use crate::utils::network::NetworkInterface;
+use crate::utils::network::{InterfaceType, NetworkInterface};
 use crate::utils::units::{to_largest_unit, Base};
 
 use super::pages::gpu::ResGPU;
+use super::pages::network::ResNetwork;
 
 mod imp {
     use std::cell::RefCell;
@@ -63,7 +56,7 @@ mod imp {
         #[template_child]
         pub memory_page: TemplateChild<gtk::StackPage>,
 
-        pub drive_pages: RefCell<HashMap<String, ResDrive>>,
+        pub drive_pages: RefCell<HashMap<PathBuf, ResDrive>>,
         pub network_pages: RefCell<HashMap<PathBuf, ResNetwork>>,
 
         pub settings: gio::Settings,
@@ -167,8 +160,6 @@ impl MainWindow {
         main_context.spawn_local(clone!(@strong self as this => async move {
             let imp = this.imp();
 
-            this.look_for_drives().await.unwrap_or_default();
-
             let gpus = GPU::get_gpus().await.unwrap_or_default();
             let mut i = 1;
             for gpu in &gpus {
@@ -185,188 +176,67 @@ impl MainWindow {
                 }
             }
 
-            futures_util::try_join!(
-                this.watch_for_drives(),
-
-                async {
-                    // because NetworkManager exposes weird "virtual" devices,
-                    // is inconsistent (at least for our case) with its UDI
-                    // path, we watch for network interfaces the old-fashioned
-                    // way: just poll /sys/class/net/ every second
-                    loop {
-                        this.watch_for_network_interfaces().await;
-                        timeout_future_seconds(1).await;
-                    }
-                    #[allow(unreachable_code)]
-                    Ok(())    // this is to make the compiler happy
+            futures_util::join!(
+            async {
+                loop {
+                    this.watch_for_drives().await;
+                    timeout_future_seconds(1).await;
                 }
-            ).unwrap_or_default();
+            }, async {
+                loop {
+                    this.watch_for_network_interfaces().await;
+                    timeout_future_seconds(1).await;
+                }
+            });
         }));
     }
 
-    async fn look_for_drives(&self) -> Result<()> {
-        let conn = Connection::system()
+    async fn watch_for_drives(&self) {
+        let imp = self.imp();
+        let mut still_active_drives = Vec::with_capacity(imp.drive_pages.borrow().len());
+        for path in Drive::get_sysfs_paths(true)
             .await
-            .with_context(|| "unable to establish connection to system bus")?;
-        let manager = UDisks2ManagerProxy::new(&conn)
-            .await
-            .with_context(|| "unable to connect to UDisks2 bus")?;
-        let block_devices = manager
-            .get_block_devices(HashMap::new())
-            .await
-            .with_context(|| "unable to get connected devices")?;
-        for block_device in &block_devices {
-            let block = BlockProxy::builder(&conn)
-                .path(block_device)?
-                .build()
-                .await?;
-            // This is an incredibly awkward way to make sure that this block device is neither
-            // a partition nor a swapspace: try to get a property from the UDisks2 Partition
-            // (or Swapspace) dbus interface and proceed if it fails
-            // TODO: make this less horrible
-            let is_partition = PartitionProxy::builder(&conn)
-                .path(block_device)?
-                .build()
-                .await?
-                .name()
-                .await
-                .is_ok();
-            let is_swapspace = SwapspaceProxy::builder(&conn)
-                .path(block_device)?
-                .build()
-                .await?
-                .active()
-                .await
-                .is_ok();
-            let has_crypto_backing_device = block.crypto_backing_device().await?.as_str() != "/";
-            let drive_object_path = block.drive().await?;
-            if !is_partition && !is_swapspace && !has_crypto_backing_device {
-                if let Ok(drive) = DriveProxy::builder(&conn)
-                    .path(&drive_object_path)?
-                    .build()
-                    .await
-                {
-                    let mut device = String::new();
-                    if let Ok(device_bytes) = block.device().await {
-                        device = String::from_utf8(
-                            device_bytes.into_iter().filter(|x| *x != 0).collect(),
-                        )?;
-                    }
-                    let mut writable = true;
-                    if let Ok(ro) = block.read_only().await {
-                        writable = !ro;
-                    }
-                    self.add_drive_page(drive, device, writable, drive_object_path.to_string())
-                        .await
-                        .unwrap_or_default();
-                }
+            .expect("can't access sysfs")
+        {
+            if imp.drive_pages.borrow().contains_key(&path) {
+                still_active_drives.push(path);
+                continue;
+            }
+            if let Ok(drive) = Drive::from_sysfs(&path).await {
+                let (capacity_trunc, prefix) = to_largest_unit(
+                    (drive.capacity().await.unwrap_or(0) * drive.sector_size().await.unwrap_or(512))
+                        as f64,
+                    &Base::Decimal,
+                );
+                let title = match drive.drive_type {
+                    DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),
+                    DriveType::Floppy => i18n("Floppy Drive"),
+                    _ => i18n_f(
+                        "{} {}B Drive",
+                        &[&capacity_trunc.round().to_string(), prefix],
+                    ),
+                };
+
+                let page = ResDrive::new();
+                page.init(drive, title.clone());
+                imp.content_stack.add_titled(&page, None, &title);
+                imp.drive_pages.borrow_mut().insert(path.clone(), page);
+                still_active_drives.push(path);
             }
         }
-        Ok(())
-    }
-
-    async fn watch_for_drives(&self) -> Result<()> {
-        let imp = self.imp();
-        let conn = Connection::system()
-            .await
-            .with_context(|| "unable to establish connection to system bus")?;
-        let object_manager = zbus::fdo::ObjectManagerProxy::builder(&conn)
-            .path("/org/freedesktop/UDisks2")?
-            .interface("org.freedesktop.UDisks2")?
-            .build()
-            .await
-            .with_context(|| "unable to connect to UDisks2 ObjectManager bus")?;
-        let mut interfaces_added = object_manager
-            .receive_interfaces_added()
-            .await
-            .with_context(|| "unable to establish connection to UDisk2's InterfacesAdded")?;
-        let mut interfaces_removed = object_manager
-            .receive_interfaces_removed()
-            .await
-            .with_context(|| "unable to establish connection to UDisk2's InterfacesRemoved")?;
-        futures_util::try_join!(
-            async {
-                while let Some(signal) = interfaces_added.next().await {
-                    let body: (
-                        zbus::zvariant::ObjectPath,
-                        HashMap<String, HashMap<String, zbus::zvariant::Value>>,
-                    ) = signal.body()?;
-                    if body.1.get("org.freedesktop.UDisks2.Partition").is_none()
-                        && body.1.get("org.freedesktop.UDisks2.Swapspace").is_none()
-                        && let Some(block_data) = body.1.get("org.freedesktop.UDisks2.Block")
-                        && let Some(ObjectPath(object_path)) = block_data.get("Drive") {
-                            let mut device = String::new();
-                            if let Some(Array(device_bytes)) = block_data.get("Device") {
-                                let unpacked_bytes: Vec<u8> = device_bytes
-                                    .iter()
-                                    .map(|x| if let U8(byte) = x { *byte } else { b'?' })
-                                    .filter(|x| *x != 0)
-                                    .collect();
-                                device = String::from_utf8(unpacked_bytes)?;
-                            }
-                            let mut writable = true;
-                            if let Some(Bool(ro)) = block_data.get("ReadOnly") {
-                                writable = !ro;
-                            }
-                            self.add_drive_page(DriveProxy::builder(&conn).path(object_path)?.build().await?, device, writable, object_path.to_string()).await.unwrap_or_default();
-                    }
-                }
-                Ok::<(), anyhow::Error>(())
-            },
-            async {
-                while let Some(signal) = interfaces_removed.next().await {
-                    let body: (zbus::zvariant::ObjectPath, Vec<String>) = signal.body()?;
-                    if body.1.iter().any(|x| x == "org.freedesktop.UDisks2.Drive") {
-                        let mut borrowed_drive_pages = imp.drive_pages.borrow_mut();
-                        if let Some(drive_page) = borrowed_drive_pages.get(body.0.as_str()) {
-                            imp.content_stack.remove(drive_page);
-                            borrowed_drive_pages.remove(body.0.as_str());
-                        }
-                    }
-                }
-                Ok(())
-            },
-        )
-        .map(|_| ())
-        .with_context(|| "async drive watchers failed")
-    }
-
-    async fn add_drive_page(
-        &self,
-        drive: DriveProxy<'_>,
-        device: String,
-        writable: bool,
-        key: String,
-    ) -> Result<()> {
-        let imp = self.imp();
-        let drive_page = ResDrive::new();
-        let vendor = drive.vendor().await?;
-        let model = drive.model().await?;
-        let is_cd_dvd_bluray = device.starts_with("/dev/sr");
-        let capacity = drive.size().await?;
-        let removable = drive.removable().await?;
-        drive_page.init(&vendor, &model, &device, capacity, writable, removable);
-        let (capacity_trunc, prefix) = to_largest_unit(capacity as f64, &Base::Decimal);
-        if is_cd_dvd_bluray {
-            imp.content_stack
-                .add_titled(&drive_page, None, &i18n("CD/DVD/Blu-ray Drive"));
-        } else {
-            imp.content_stack.add_titled(
-                &drive_page,
-                None,
-                &i18n_f(
-                    "{} {}B Drive",
-                    &[&capacity_trunc.round().to_string(), prefix],
-                ),
-            );
-        }
-        imp.drive_pages.borrow_mut().insert(key, drive_page);
-        Ok(())
+        // remove all the pages of drives that have been removed from the system
+        // during the last time this method was called and now
+        imp.drive_pages
+            .borrow_mut()
+            .drain_filter(|k, _| !still_active_drives.iter().any(|x| *x == *k)) // remove entry from drives HashMap
+            .for_each(|(_, page)| {
+                imp.content_stack.remove(&page);
+            }); // remove page from the UI
     }
 
     async fn watch_for_network_interfaces(&self) {
         let imp = self.imp();
-        let mut still_active_interfaces = Vec::new();
+        let mut still_active_interfaces = Vec::with_capacity(imp.network_pages.borrow().len());
         if let Ok(paths) = std::fs::read_dir("/sys/class/net") {
             for path in paths.flatten() {
                 let dir_path = path.path();

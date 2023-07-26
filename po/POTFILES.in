@@ -22,6 +22,7 @@ src/ui/dialogs/app_dialog.rs
 src/ui/dialogs/process_dialog.rs
 src/ui/pages/applications.rs
 src/ui/pages/cpu.rs
+src/ui/pages/drive.rs
 src/ui/pages/gpu.rs
 src/ui/pages/memory.rs
 src/ui/pages/network.rs

@@ -4,8 +4,9 @@ use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
 
 use crate::config::PROFILE;
+use crate::i18n::i18n;
 use crate::ui::widgets::info_box::ResInfoBox;
-use crate::utils;
+use crate::utils::drive::Drive;
 use crate::utils::units::{to_largest_unit, Base};
 
 mod imp {
@@ -28,6 +29,8 @@ mod imp {
         pub read: TemplateChild<ResInfoBox>,
         #[template_child]
         pub write: TemplateChild<ResInfoBox>,
+        #[template_child]
+        pub drive_type: TemplateChild<ResInfoBox>,
         #[template_child]
         pub device: TemplateChild<ResInfoBox>,
         #[template_child]
@@ -81,52 +84,54 @@ impl ResDrive {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(
-        &self,
-        vendor: &str,
-        model: &str,
-        device: &str,
-        capacity: u64,
-        writable: bool,
-        removable: bool,
-    ) {
+    pub fn init(&self, drive: Drive, fallback_title: String) {
         let imp = self.imp();
         *imp.last_checked_timestamp.borrow_mut() = SystemTime::now()
             .duration_since(SystemTime::UNIX_EPOCH)
             .map_or(0, |duration| duration.as_millis() as u64);
-        self.setup_widgets(vendor, model, device, capacity, writable, removable);
-        self.setup_listener(device.replace("/dev/", ""));
+        self.setup_widgets(drive.clone(), fallback_title);
+        self.setup_listener(drive)
     }
 
-    pub fn setup_widgets(
-        &self,
-        vendor: &str,
-        model: &str,
-        device: &str,
-        capacity: u64,
-        writable: bool,
-        removable: bool,
-    ) {
-        let imp = self.imp();
-        imp.total_usage.set_title_label("Total Usage");
-        imp.total_usage.set_data_points_max_amount(60);
-        imp.total_usage.set_graph_color(229, 165, 10);
-        imp.drive_name.set_label(&vec![vendor, model].join(" "));
-        imp.device.set_info_label(device);
-        let formatted_capacity = to_largest_unit(capacity as f64, &Base::Decimal);
-        imp.capacity.set_info_label(&format!(
-            "{:.1} {}B",
-            formatted_capacity.0, formatted_capacity.1
-        ));
-        imp.writable.set_bool(writable);
-        imp.removable.set_bool(removable);
+    pub fn setup_widgets(&self, drive: Drive, fallback_title: String) {
+        let main_context = MainContext::default();
+        let drive_stats = clone!(@strong self as this => async move {
+            let imp = this.imp();
+            imp.total_usage.set_title_label("Total Usage");
+            imp.total_usage.set_data_points_max_amount(60);
+            imp.total_usage.set_graph_color(229, 165, 10);
+            imp.drive_name
+                .set_label(drive.model.as_ref().unwrap_or(&fallback_title));
+            imp.drive_type.set_info_label(&(match drive.drive_type {
+                crate::utils::drive::DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),
+                crate::utils::drive::DriveType::Emmc => i18n("eMMC Storage"),
+                crate::utils::drive::DriveType::Flash => i18n("Flash Storage"),
+                crate::utils::drive::DriveType::Floppy => i18n("Floppy Drive"),
+                crate::utils::drive::DriveType::Hdd => i18n("Hard Disk Drive"),
+                crate::utils::drive::DriveType::Nvme => i18n("NVMe Drive"),
+                crate::utils::drive::DriveType::Unknown => i18n("N/A"),
+                crate::utils::drive::DriveType::Ssd => i18n("Solid State Drive"),
+            }));
+            imp.device.set_info_label(&drive.block_device);
+            let formatted_capacity =
+                to_largest_unit((drive.capacity().await.unwrap_or(0) * drive.sector_size().await.unwrap_or(512)) as f64, &Base::Decimal);
+            imp.capacity.set_info_label(&format!(
+                "{:.1} {}B",
+                formatted_capacity.0, formatted_capacity.1
+            ));
+            imp.writable
+                .set_bool(drive.writable().await.unwrap_or(false));
+            imp.removable
+                .set_bool(drive.removable().await.unwrap_or(false));
+        });
+        main_context.spawn_local(drive_stats);
     }
 
-    pub fn setup_listener(&self, device: String) {
+    pub fn setup_listener(&self, drive: Drive) {
         let main_context = MainContext::default();
         let drive_usage_update = clone!(@strong self as this => async move {
-            let hw_sector_size = utils::drive::get_sector_size(&device).await.unwrap_or(512);
-            let mut old_stats = utils::drive::sys_stat(&device).await.unwrap_or_default();
+            let hw_sector_size = drive.sector_size().await.unwrap_or(512) as usize;
+            let mut old_stats = drive.sys_stats().await.unwrap_or_default();
             // TODO: make this maybe configurable?
             let refresh_seconds: u32 = 1;
             let imp = this.imp();
@@ -134,7 +139,7 @@ impl ResDrive {
             let mut last_checked_timestamp = *imp.last_checked_timestamp.borrow_mut();
 
             loop {
-                let disk_stats = utils::drive::sys_stat(&device).await.unwrap_or_default();
+                let disk_stats = drive.sys_stats().await.unwrap_or_default();
 
                 let time_passed_millis = (SystemTime::now()
                     .duration_since(SystemTime::UNIX_EPOCH)

@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-06-12 19:36+0200\n"
+"PO-Revision-Date: 2023-07-26 14:47+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: de\n"
@@ -134,7 +134,7 @@ msgstr "Auslastung der logischen Prozessoren anzeigen"
 msgid "Sensors"
 msgstr "Sensoren"
 
-#: data/resources/ui/pages/cpu.ui:87
+#: data/resources/ui/pages/cpu.ui:97
 msgid "Max Frequency"
 msgstr "Maximale Taktfrequenz"
 
@@ -167,18 +167,22 @@ msgid "Write Speed"
 msgstr "Schreibgeschwindigkeit"
 
 #: data/resources/ui/pages/drive.ui:51
+msgid "Type"
+msgstr "Typ"
+
+#: data/resources/ui/pages/drive.ui:56
 msgid "Device"
 msgstr "Gerät"
 
-#: data/resources/ui/pages/drive.ui:56
+#: data/resources/ui/pages/drive.ui:61
 msgid "Capacity"
 msgstr "Kapazität"
 
-#: data/resources/ui/pages/drive.ui:61
+#: data/resources/ui/pages/drive.ui:66
 msgid "Writable"
 msgstr "Schreibbar"
 
-#: data/resources/ui/pages/drive.ui:66
+#: data/resources/ui/pages/drive.ui:71
 msgid "Removable"
 msgstr "Wechselbar"
 
@@ -311,13 +315,13 @@ msgstr "Icon von"
 #: src/ui/dialogs/process_dialog.rs:105 src/ui/pages/cpu.rs:107
 #: src/ui/pages/cpu.rs:110 src/ui/pages/cpu.rs:123 src/ui/pages/cpu.rs:138
 #: src/ui/pages/cpu.rs:151 src/ui/pages/cpu.rs:157 src/ui/pages/cpu.rs:163
-#: src/ui/pages/cpu.rs:167 src/ui/pages/cpu.rs:170 src/ui/pages/gpu.rs:115
-#: src/ui/pages/gpu.rs:132 src/ui/pages/gpu.rs:145 src/ui/pages/gpu.rs:152
-#: src/ui/pages/gpu.rs:154 src/ui/pages/gpu.rs:160 src/ui/pages/gpu.rs:167
-#: src/ui/pages/gpu.rs:170 src/ui/pages/gpu.rs:172 src/ui/pages/memory.rs:105
-#: src/ui/pages/network.rs:90 src/ui/pages/network.rs:92
-#: src/ui/pages/network.rs:97 src/ui/pages/network.rs:100 src/utils/gpu.rs:81
-#: src/utils/gpu.rs:84
+#: src/ui/pages/cpu.rs:167 src/ui/pages/cpu.rs:170 src/ui/pages/drive.rs:113
+#: src/ui/pages/gpu.rs:115 src/ui/pages/gpu.rs:132 src/ui/pages/gpu.rs:145
+#: src/ui/pages/gpu.rs:152 src/ui/pages/gpu.rs:154 src/ui/pages/gpu.rs:160
+#: src/ui/pages/gpu.rs:167 src/ui/pages/gpu.rs:170 src/ui/pages/gpu.rs:172
+#: src/ui/pages/memory.rs:105 src/ui/pages/network.rs:90
+#: src/ui/pages/network.rs:92 src/ui/pages/network.rs:97
+#: src/ui/pages/network.rs:100 src/utils/gpu.rs:81 src/utils/gpu.rs:84
 msgid "N/A"
 msgstr "n. v."
 
@@ -420,6 +424,30 @@ msgstr "CPU"
 msgid "CPU {}"
 msgstr "CPU {}"
 
+#: src/ui/pages/drive.rs:107
+msgid "eMMC Storage"
+msgstr "eMMC-Speicher"
+
+#: src/ui/pages/drive.rs:108
+msgid "Flash Storage"
+msgstr "Flash-Speicher"
+
+#: src/ui/pages/drive.rs:109
+msgid "Floppy Drive"
+msgstr "Diskettenlaufwerk"
+
+#: src/ui/pages/drive.rs:110
+msgid "Hard Disk Drive"
+msgstr "Festplatte"
+
+#: src/ui/pages/drive.rs:111
+msgid "NVMe Drive"
+msgstr "NVMe-Speicher"
+
+#: src/ui/pages/drive.rs:113
+msgid "Solid State Drive"
+msgstr "Solid-State-Drive"
+
 #: src/ui/pages/gpu.rs:104
 msgid "GPU Usage"
 msgstr "Grafikauslastung"
@@ -484,7 +512,7 @@ msgstr "Ja"
 msgid "GPU"
 msgstr "GPU"
 
-#: src/ui/window.rs:349
+#: src/ui/window.rs:349 src/ui/pages/drive.rs:106
 msgid "CD/DVD/Blu-ray Drive"
 msgstr "CD/DVD/Blu-ray-Laufwerk"
 
@@ -492,35 +520,35 @@ msgstr "CD/DVD/Blu-ray-Laufwerk"
 msgid "{} {}B Drive"
 msgstr "{}-{}B-Datenträger"
 
-#: src/ui/window.rs:381
+#: src/ui/window.rs:254
 msgid "Ethernet Connection"
 msgstr "Ethernet-Verbindung"
 
-#: src/ui/window.rs:382
+#: src/ui/window.rs:255
 msgid "InfiniBand Connection"
 msgstr "InfiniBand-Verbindung"
 
-#: src/ui/window.rs:383
+#: src/ui/window.rs:256
 msgid "Serial Line IP Connection"
 msgstr "Serial-Line-IP-Verbindung"
 
-#: src/ui/window.rs:384
+#: src/ui/window.rs:257
 msgid "Wi-Fi Connection"
 msgstr "WLAN-Verbindung"
 
-#: src/ui/window.rs:385
+#: src/ui/window.rs:258
 msgid "WWAN Connection"
 msgstr "WWAN-Verbindung"
 
-#: src/ui/window.rs:386
+#: src/ui/window.rs:259
 msgid "Bluetooth Tether"
 msgstr "Bluetooth-Tether"
 
-#: src/ui/window.rs:387
+#: src/ui/window.rs:260
 msgid "VPN Tunnel (WireGuard)"
 msgstr "VPN-Tunnel (WireGuard)"
 
-#: src/ui/window.rs:388
+#: src/ui/window.rs:261
 msgid "Network Interface"
 msgstr "Netzwerkschnittstelle"
 
