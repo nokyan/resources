@@ -226,7 +226,7 @@ impl MainWindow {
         // during the last time this method was called and now
         imp.drive_pages
             .borrow_mut()
-            .drain_filter(|k, _| !still_active_drives.iter().any(|x| *x == *k)) // remove entry from drives HashMap
+            .extract_if(|k, _| !still_active_drives.iter().any(|x| *x == *k)) // remove entry from drives HashMap
             .for_each(|(_, page)| {
                 imp.content_stack.remove(&page);
             }); // remove page from the UI
@@ -266,7 +266,7 @@ impl MainWindow {
         // during the last time this method was called and now
         imp.network_pages
             .borrow_mut()
-            .drain_filter(|k, _| !still_active_interfaces.iter().any(|x| *x == *k)) // remove entry from network_pages HashMap
+            .extract_if(|k, _| !still_active_interfaces.iter().any(|x| *x == *k)) // remove entry from network_pages HashMap
             .for_each(|(_, v)| imp.content_stack.remove(&v)); // remove page from the UI
     }
 

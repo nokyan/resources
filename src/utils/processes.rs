@@ -557,7 +557,7 @@ impl Apps {
         // process belongs to a graphical application) and one where
         // this is not possible. the latter are our system processes
         let non_system_processes: Vec<Process> = processes
-            .drain_filter(|process| {
+            .extract_if(|process| {
                 process
                     .cgroup
                     .as_deref()
