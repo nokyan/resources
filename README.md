@@ -4,9 +4,13 @@ Resources is a simple yet powerful monitor for your system resources and process
 
 <details>
   <summary>Click me for screenshots!</summary>
+
   ![Applications View of Resources](data/resources/screenshots/1.png?raw=true "Applications View of Resources")
-  ![Applications View of Resources](data/resources/screenshots/2.png?raw=true "Applications View of Resources")
-  ![Applications View of Resources](data/resources/screenshots/3.png?raw=true "Applications View of Resources")
+
+  ![Applications View of Resources](data/resources/screenshots/2.png?raw=true "Processor View of Resources")
+
+  ![Applications View of Resources](data/resources/screenshots/3.png?raw=true "Network Interface View of Resources")
+  
 </details>
 
 ## Dependencies
