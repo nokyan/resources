@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-07-26 20:24+0200\n"
+"PO-Revision-Date: 2023-07-27 13:35+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: de\n"
@@ -47,7 +47,7 @@ msgstr "Anwendungsinformationen"
 #: data/resources/ui/dialogs/process_dialog.ui:54
 #: data/resources/ui/pages/cpu.ui:49 data/resources/ui/pages/cpu.ui:62
 #: data/resources/ui/pages/drive.ui:30 data/resources/ui/pages/gpu.ui:30
-#: data/resources/ui/pages/memory.ui:30 data/resources/ui/pages/network.ui:30
+#: data/resources/ui/pages/memory.ui:30 data/resources/ui/pages/network.ui:31
 msgid "Usage"
 msgstr "Auslastung"
 
@@ -70,7 +70,7 @@ msgstr "Arbeitsspeicher"
 #: data/resources/ui/dialogs/process_dialog.ui:69
 #: data/resources/ui/pages/cpu.ui:84 data/resources/ui/pages/drive.ui:48
 #: data/resources/ui/pages/gpu.ui:61 data/resources/ui/pages/memory.ui:50
-#: data/resources/ui/pages/network.ui:55
+#: data/resources/ui/pages/network.ui:52
 msgid "Properties"
 msgstr "Eigenschaften"
 
@@ -211,7 +211,7 @@ msgstr "Grafiktaktfrequenz"
 msgid "Video Memory Frequency"
 msgstr "Grafikspeichertaktfrequenz"
 
-#: data/resources/ui/pages/gpu.ui:64 data/resources/ui/pages/network.ui:58
+#: data/resources/ui/pages/gpu.ui:64 data/resources/ui/pages/network.ui:55
 msgid "Manufacturer"
 msgstr "Hersteller"
 
@@ -219,7 +219,7 @@ msgstr "Hersteller"
 msgid "PCI Slot"
 msgstr "PCI-Slot"
 
-#: data/resources/ui/pages/gpu.ui:74 data/resources/ui/pages/network.ui:63
+#: data/resources/ui/pages/gpu.ui:74 data/resources/ui/pages/network.ui:60
 msgid "Driver Used"
 msgstr "Benutzter Treiber"
 
@@ -247,27 +247,19 @@ msgstr "Formfaktor"
 msgid "Type Detail"
 msgstr "Typdetails"
 
-#: data/resources/ui/pages/network.ui:33
-msgid "Receiving"
-msgstr "Empfangen"
-
-#: data/resources/ui/pages/network.ui:38
-msgid "Sending"
-msgstr "Senden"
-
-#: data/resources/ui/pages/network.ui:43
+#: data/resources/ui/pages/network.ui:40
 msgid "Total Received"
 msgstr "Insgesamt empfangen"
 
-#: data/resources/ui/pages/network.ui:48
+#: data/resources/ui/pages/network.ui:45
 msgid "Total Sent"
 msgstr "Insgesamt gesendet"
 
-#: data/resources/ui/pages/network.ui:68
+#: data/resources/ui/pages/network.ui:65
 msgid "Interface"
 msgstr "Schnittstelle"
 
-#: data/resources/ui/pages/network.ui:73
+#: data/resources/ui/pages/network.ui:70
 msgid "Hardware Address"
 msgstr "Hardware-Adresse"
 
@@ -494,6 +486,18 @@ msgstr "Auslagerungsspeicher"
 #: src/ui/pages/memory.rs:135
 msgid "{} of {}"
 msgstr "{} von {}"
+
+#: src/ui/pages/network.rs:89
+msgid "Receiving"
+msgstr "Empfangen"
+
+#: src/ui/pages/network.rs:93
+msgid "Sending"
+msgstr "Senden"
+
+#: src/ui/pages/network.rs:135 src/ui/pages/network.rs:138
+msgid "Highest:"
+msgstr "Höchste:"
 
 #: src/ui/pages/processes.rs:121
 msgid "root"

@@ -30,14 +30,10 @@
                   <object class="AdwPreferencesGroup">
                     <property name="title" translatable="yes">Usage</property>
                     <child>
-                      <object class="ResInfoBox" id="receiving">
-                        <property name="title" translatable="yes">Receiving</property>
-                      </object>
+                      <object class="ResGraphBox" id="receiving"/>
                     </child>
                     <child>
-                      <object class="ResInfoBox" id="sending">
-                        <property name="title" translatable="yes">Sending</property>
-                      </object>
+                      <object class="ResGraphBox" id="sending"/>
                     </child>
                     <child>
                       <object class="ResInfoBox" id="total_received">

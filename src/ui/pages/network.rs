@@ -8,6 +8,8 @@ use crate::utils::network::NetworkInterface;
 use crate::utils::units::{to_largest_unit, Base};
 
 mod imp {
+    use crate::ui::widgets::graph_box::ResGraphBox;
+
     use super::*;
 
     use gtk::CompositeTemplate;
@@ -18,9 +20,9 @@ mod imp {
         #[template_child]
         pub interface_name: TemplateChild<gtk::Label>,
         #[template_child]
-        pub receiving: TemplateChild<ResInfoBox>,
+        pub receiving: TemplateChild<ResGraphBox>,
         #[template_child]
-        pub sending: TemplateChild<ResInfoBox>,
+        pub sending: TemplateChild<ResGraphBox>,
         #[template_child]
         pub total_received: TemplateChild<ResInfoBox>,
         #[template_child]
@@ -84,6 +86,14 @@ impl ResNetwork {
 
     pub fn setup_widgets(&self, network_interface: NetworkInterface) {
         let imp = self.imp();
+        imp.receiving.set_title_label(&i18n("Receiving"));
+        imp.receiving.set_graph_color(52, 170, 175);
+        imp.receiving.set_data_points_max_amount(60);
+        imp.receiving.set_locked_max_y(None);
+        imp.sending.set_title_label(&i18n("Sending"));
+        imp.sending.set_graph_color(222, 77, 119);
+        imp.sending.set_data_points_max_amount(60);
+        imp.sending.set_locked_max_y(None);
         imp.interface_name
             .set_label(&network_interface.display_name());
         imp.manufacturer
@@ -105,8 +115,8 @@ impl ResNetwork {
         let statistics_update = clone!(@strong self as this => async move {
             let imp = this.imp();
 
-            let mut old_received_bytes = 0;
-            let mut old_sent_bytes = 0;
+            let mut old_received_bytes = network_interface.received_bytes().await.unwrap_or(0);
+            let mut old_sent_bytes = network_interface.sent_bytes().await.unwrap_or(0);
 
             loop {
                 let received_bytes = network_interface.received_bytes().await.unwrap_or(0);
@@ -118,10 +128,14 @@ impl ResNetwork {
                 let sent_delta_formatted = to_largest_unit(sent_delta as f64, &Base::Decimal);
                 let received_formatted = to_largest_unit(received_bytes as f64, &Base::Decimal);
                 let sent_formatted = to_largest_unit(sent_bytes as f64, &Base::Decimal);
-                imp.receiving.set_info_label(&format!("{:.2} {}B/s", received_delta_formatted.0, received_delta_formatted.1));
-                imp.sending.set_info_label(&format!("{:.2} {}B/s", sent_delta_formatted.0, sent_delta_formatted.1));
                 imp.total_received.set_info_label(&format!("{:.2} {}B", received_formatted.0, received_formatted.1));
                 imp.total_sent.set_info_label(&format!("{:.2} {}B", sent_formatted.0, sent_formatted.1));
+                imp.receiving.push_data_point(received_delta as f64);
+                let highest_received = to_largest_unit(imp.receiving.get_highest_value(), &Base::Decimal);
+                imp.receiving.set_info_label(&format!("{:.2} {}B/s · {} {:.2} {}B/s", received_delta_formatted.0, received_delta_formatted.1, i18n("Highest:"), highest_received.0, highest_received.1));
+                imp.sending.push_data_point(sent_delta as f64);
+                let highest_sent = to_largest_unit(imp.sending.get_highest_value(), &Base::Decimal);
+                imp.sending.set_info_label(&format!("{:.2} {}B/s · {} {:.2} {}B/s", sent_delta_formatted.0, sent_delta_formatted.1, i18n("Highest:"), highest_sent.0, highest_sent.1));
 
                 old_received_bytes = received_bytes;
                 old_sent_bytes = sent_bytes;
