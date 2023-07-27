@@ -105,4 +105,14 @@ impl ResGraphBox {
         let imp = self.imp();
         imp.graph.set_height_request(height_request);
     }
+
+    pub fn set_locked_max_y(&self, y_max: Option<f64>) {
+        let imp = self.imp();
+        imp.graph.set_locked_max_y(y_max);
+    }
+
+    pub fn get_highest_value(&self) -> f64 {
+        let imp = self.imp();
+        imp.graph.get_highest_value()
+    }
 }

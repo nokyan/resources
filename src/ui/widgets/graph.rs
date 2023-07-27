@@ -19,15 +19,27 @@ mod imp {
     use plotters::{
         prelude::*,
         series::AreaSeries,
-        style::{Color, RGBColor, TRANSPARENT},
+        style::{Color, RGBColor},
     };
     use plotters_cairo::CairoBackend;
 
-    #[derive(Debug, Default)]
+    #[derive(Debug)]
     pub struct ResGraph {
         pub data_points: RefCell<VecDeque<f64>>,
         pub data_points_max_amount: RefCell<usize>,
+        pub max_y: RefCell<Option<f64>>,
         pub graph_color: RefCell<RGBColor>,
+    }
+
+    impl Default for ResGraph {
+        fn default() -> Self {
+            Self {
+                data_points: RefCell::default(),
+                data_points_max_amount: RefCell::default(),
+                max_y: RefCell::new(Some(1.0)),
+                graph_color: RefCell::default(),
+            }
+        }
     }
 
     #[glib::object_subclass]
@@ -65,7 +77,7 @@ mod imp {
 
             let root = backend.into_drawing_area();
 
-            root.fill(&TRANSPARENT)?;
+            root.fill(&self.graph_color.borrow().mix(0.1))?;
 
             // in case we don't have enough data points for the whole graph
             // (because the program hasn't been running long enough e.g.),
@@ -76,8 +88,15 @@ mod imp {
                 filled_data_points.push(*i);
             }
 
+            let y_max = self.max_y.borrow().unwrap_or_else(|| {
+                *filled_data_points
+                    .iter()
+                    .max_by(|x, y| x.total_cmp(y))
+                    .unwrap()
+            });
+
             let mut chart = ChartBuilder::on(&root)
-                .build_cartesian_2d(0f64..(*data_points_max_amount as f64 - 1.0), 0f64..1.0)?;
+                .build_cartesian_2d(0f64..(*data_points_max_amount as f64 - 1.0), 0f64..y_max)?;
 
             chart.draw_series(
                 AreaSeries::new(
@@ -115,6 +134,21 @@ impl ResGraph {
         let imp = self.imp();
         *imp.graph_color.borrow_mut() = RGBColor(r, g, b);
         imp.obj().queue_draw();
+    }
+
+    pub fn set_locked_max_y(&self, y_max: Option<f64>) {
+        let imp = self.imp();
+        *imp.max_y.borrow_mut() = y_max;
+        imp.obj().queue_draw();
+    }
+
+    pub fn get_highest_value(&self) -> f64 {
+        let imp = self.imp();
+        *imp.data_points
+            .borrow()
+            .iter()
+            .max_by(|x, y| x.total_cmp(y))
+            .unwrap_or(&0.0)
     }
 
     pub fn push_data_point(&self, data: f64) {
