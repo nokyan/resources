@@ -1,5 +1,5 @@
-#![feature(drain_filter)]
-#![feature(hash_drain_filter)]
+#![feature(extract_if)]
+#![feature(hash_extract_if)]
 #![feature(let_chains)]
 #![feature(never_type)]
 // Very annoying for GObjects just impl Default when you need it
