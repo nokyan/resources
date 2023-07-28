@@ -42,6 +42,7 @@ Running Resources is as simple as typing `resources` into a terminal or running 
 
 ## To-do
 
+- Make process reading work when packaged as a Flatpak
 - Battery usage and details
 - Preferences such as a unit selection
 - Translations
