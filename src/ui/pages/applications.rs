@@ -383,18 +383,16 @@ impl ResApplications {
         // selected item, clear the list model and repopulate it with the
         // refreshed apps and stats, then reselect the remembered app.
         // TODO: make this even less hacky
-        let selected_item = self
-            .get_selected_app_item()
-            .map(|simple_item| simple_item.id);
+        let selected_item = self.get_selected_app_item().map(|app_item| app_item.id);
         apps.app_items()
             .iter()
-            .map(|simple_item| {
-                if let Some((id, dialog)) = &*imp.open_dialog.borrow() && simple_item.id.clone().unwrap_or_default().as_str() == id.as_str() {
-                    dialog.set_cpu_usage(simple_item.cpu_time_ratio);
-                    dialog.set_memory_usage(simple_item.memory_usage);
-                    dialog.set_processes_amount(simple_item.processes_amount);
+            .map(|app_item| {
+                if let Some((id, dialog)) = &*imp.open_dialog.borrow() && app_item.id.clone().unwrap_or_default().as_str() == id.as_str() {
+                    dialog.set_cpu_usage(app_item.cpu_time_ratio);
+                    dialog.set_memory_usage(app_item.memory_usage);
+                    dialog.set_processes_amount(app_item.processes_amount);
                 }
-                BoxedAnyObject::new(simple_item.clone())
+                BoxedAnyObject::new(app_item.clone())
             })
             .for_each(|item_box| new_store.append(&item_box));
 
