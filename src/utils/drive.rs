@@ -138,12 +138,10 @@ impl Drive {
             let rot = rot.replace('\n', "").parse::<u8>().map(|rot| rot != 0)?;
             if rot {
                 Ok(DriveType::Hdd)
+            } else if self.removable().await? {
+                Ok(DriveType::Flash)
             } else {
-                if self.removable().await? {
-                    Ok(DriveType::Flash)
-                } else {
-                    Ok(DriveType::Ssd)
-                }
+                Ok(DriveType::Ssd)
             }
         } else {
             Ok(DriveType::Unknown)

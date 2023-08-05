@@ -62,7 +62,7 @@ copy_binary = custom_target(
   ],
 )
 
-copy_daemon_binary = custom_target(
+copy_kill_binary = custom_target(
   'cp-kill-binary',
   depends: cargo_build,
   build_by_default: true,
@@ -73,6 +73,21 @@ copy_daemon_binary = custom_target(
   command: [
     'cp',
     'src' / rust_target / meson.project_name() + '-kill',
+    '@OUTPUT@',
+  ],
+)
+
+copy_processes_binary = custom_target(
+  'cp-processes-binary',
+  depends: cargo_build,
+  build_by_default: true,
+  build_always_stale: true,
+  install: true,
+  install_dir: libexecdir,
+  output: meson.project_name() + '-processes',
+  command: [
+    'cp',
+    'src' / rust_target / meson.project_name() + '-processes',
     '@OUTPUT@',
   ],
 )

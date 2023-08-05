@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 
 use adw::{prelude::*, subclass::prelude::*};
+use adw::{Toast, ToastOverlay};
 use anyhow::Result;
 use gtk::glib::{clone, timeout_future_seconds, MainContext};
 use gtk::{gio, glib};
@@ -13,22 +14,35 @@ use crate::ui::pages::drive::ResDrive;
 use crate::utils::drive::{Drive, DriveType};
 use crate::utils::gpu::GPU;
 use crate::utils::network::{InterfaceType, NetworkInterface};
+use crate::utils::processes::{AppsContext, ProcessAction};
 use crate::utils::units::{to_largest_unit, Base};
 
 use super::pages::gpu::ResGPU;
 use super::pages::network::ResNetwork;
 
+#[derive(Debug, Clone)]
+pub enum Action {
+    ManipulateProcess(ProcessAction, i32, String, ToastOverlay),
+    ManipulateApp(ProcessAction, String, ToastOverlay),
+}
+
 mod imp {
     use std::cell::RefCell;
 
-    use crate::ui::pages::{
-        applications::ResApplications, cpu::ResCPU, memory::ResMemory, network::ResNetwork,
-        processes::ResProcesses,
+    use crate::{
+        ui::pages::{
+            applications::ResApplications, cpu::ResCPU, memory::ResMemory, network::ResNetwork,
+            processes::ResProcesses,
+        },
+        utils::processes::AppsContext,
     };
 
     use super::*;
 
-    use gtk::CompositeTemplate;
+    use gtk::{
+        glib::{Receiver, Sender},
+        CompositeTemplate,
+    };
 
     #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/me/nalux/Resources/ui/window.ui")]
@@ -57,13 +71,22 @@ mod imp {
         pub memory_page: TemplateChild<gtk::StackPage>,
 
         pub drive_pages: RefCell<HashMap<PathBuf, ResDrive>>,
+
         pub network_pages: RefCell<HashMap<PathBuf, ResNetwork>>,
+
+        pub apps_context: RefCell<AppsContext>,
+
+        pub sender: Sender<Action>,
+        pub receiver: RefCell<Option<Receiver<Action>>>,
 
         pub settings: gio::Settings,
     }
 
     impl Default for MainWindow {
         fn default() -> Self {
+            let (sender, r) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+            let receiver = RefCell::new(Some(r));
+
             Self {
                 drive_pages: RefCell::default(),
                 network_pages: RefCell::default(),
@@ -78,7 +101,10 @@ mod imp {
                 cpu_page: TemplateChild::default(),
                 memory: TemplateChild::default(),
                 memory_page: TemplateChild::default(),
+                apps_context: RefCell::default(),
                 settings: gio::Settings::new(APP_ID),
+                sender,
+                receiver,
             }
         }
     }
@@ -145,20 +171,30 @@ impl MainWindow {
             .property("application", app)
             .build();
 
+        let imp = window.imp();
+
+        imp.receiver.borrow_mut().take().unwrap().attach(
+            None,
+            clone!(@strong window => move |action| window.process_action(action)),
+        );
+
         window.setup_widgets();
         window
     }
 
     fn setup_widgets(&self) {
         let imp = self.imp();
-        imp.applications.init();
-        imp.processes.init();
+
+        imp.applications.init(imp.sender.clone());
+        imp.processes.init(imp.sender.clone());
         imp.cpu.init();
         imp.memory.init();
 
         let main_context = MainContext::default();
         main_context.spawn_local(clone!(@strong self as this => async move {
             let imp = this.imp();
+
+            *imp.apps_context.borrow_mut() = AppsContext::new().await.unwrap();
 
             let gpus = GPU::get_gpus().await.unwrap_or_default();
             let mut i = 1;
@@ -186,6 +222,13 @@ impl MainWindow {
                 loop {
                     this.watch_for_network_interfaces().await;
                     timeout_future_seconds(1).await;
+                }
+            }, async {
+                loop {
+                    let _ = imp.apps_context.borrow_mut().refresh().await;
+                    imp.applications.refresh_apps_list(&imp.apps_context.borrow());
+                    imp.processes.refresh_processes_list(&imp.apps_context.borrow());
+                    timeout_future_seconds(3).await;
                 }
             });
         }));
@@ -270,6 +313,44 @@ impl MainWindow {
             .for_each(|(_, v)| imp.content_stack.remove(&v)); // remove page from the UI
     }
 
+    fn process_action(&self, action: Action) -> glib::Continue {
+        let imp = self.imp();
+
+        match action {
+            Action::ManipulateProcess(action, pid, display_name, toast_overlay) => {
+                let apps_context = imp.apps_context.borrow();
+                if let Some(process) = apps_context.get_process(pid) {
+                    let toast_message = match process.execute_process_action(action) {
+                        Ok(_) => get_action_success(action, &[&display_name]),
+                        Err(_) => get_process_action_failure(action, &[&display_name]),
+                    };
+                    toast_overlay.add_toast(Toast::new(&toast_message));
+                }
+            }
+
+            Action::ManipulateApp(action, id, toast_overlay) => {
+                let apps = imp.apps_context.borrow();
+                let app = apps.get_app(&id).unwrap();
+                let res = app.execute_process_action(&apps, action);
+
+                let processes_tried = res.len();
+                let processes_successful = res.iter().flatten().count();
+                let processes_unsuccessful = processes_tried - processes_successful;
+
+                #[rustfmt::skip]
+                let toast_message = match processes_unsuccessful {
+                    0 => get_action_success(action, &[&app.display_name]),
+                    1 => get_app_action_failure(action),
+                    _ => get_app_action_failure_multiple(action, &[&processes_unsuccessful.to_string()]),
+                };
+
+                toast_overlay.add_toast(Toast::new(&toast_message));
+            }
+        };
+
+        glib::Continue(true)
+    }
+
     fn save_window_size(&self) -> Result<(), glib::BoolError> {
         let imp = self.imp();
 
@@ -306,5 +387,68 @@ impl Default for MainWindow {
             .unwrap()
             .downcast()
             .unwrap()
+    }
+}
+
+pub fn get_action_name(action: ProcessAction, args: &[&str]) -> String {
+    match action {
+        ProcessAction::TERM => i18n_f("End {}?", args),
+        ProcessAction::STOP => i18n_f("Halt {}?", args),
+        ProcessAction::KILL => i18n_f("Kill {}?", args),
+        ProcessAction::CONT => i18n_f("Continue {}?", args),
+    }
+}
+
+pub fn get_app_action_warning(action: ProcessAction) -> String {
+    match action {
+            ProcessAction::TERM => i18n("Unsaved work might be lost."),
+            ProcessAction::STOP => i18n("Halting an application can come with serious risks such as losing data and security implications. Use with caution."),
+            ProcessAction::KILL => i18n("Killing an application can come with serious risks such as losing data and security implications. Use with caution."),
+            ProcessAction::CONT => "".into(),
+        }
+}
+
+pub fn get_app_action_description(action: ProcessAction) -> String {
+    match action {
+        ProcessAction::TERM => i18n("End application"),
+        ProcessAction::STOP => i18n("Halt application"),
+        ProcessAction::KILL => i18n("Kill application"),
+        ProcessAction::CONT => i18n("Continue application"),
+    }
+}
+
+pub fn get_action_success(action: ProcessAction, args: &[&str]) -> String {
+    match action {
+        ProcessAction::TERM => i18n_f("Successfully ended {}", args),
+        ProcessAction::STOP => i18n_f("Successfully halted {}", args),
+        ProcessAction::KILL => i18n_f("Successfully killed {}", args),
+        ProcessAction::CONT => i18n_f("Successfully continued {}", args),
+    }
+}
+
+pub fn get_app_action_failure(action: ProcessAction) -> String {
+    match action {
+        ProcessAction::TERM => i18n("There was a problem ending a process"),
+        ProcessAction::STOP => i18n("There was a problem halting a process"),
+        ProcessAction::KILL => i18n("There was a problem killing a process"),
+        ProcessAction::CONT => i18n("There was a problem continuing a process"),
+    }
+}
+
+pub fn get_process_action_failure(action: ProcessAction, args: &[&str]) -> String {
+    match action {
+        ProcessAction::TERM => i18n_f("There was a problem ending {}", args),
+        ProcessAction::STOP => i18n_f("There was a problem halting {}", args),
+        ProcessAction::KILL => i18n_f("There was a problem killing {}", args),
+        ProcessAction::CONT => i18n_f("There was a problem continuing {}", args),
+    }
+}
+
+pub fn get_app_action_failure_multiple(action: ProcessAction, args: &[&str]) -> String {
+    match action {
+        ProcessAction::TERM => i18n_f("There were problems ending {} processes", args),
+        ProcessAction::STOP => i18n_f("There were problems halting {} processes", args),
+        ProcessAction::KILL => i18n_f("There were problems killing {} processes", args),
+        ProcessAction::CONT => i18n_f("There were problems continuing {} processes", args),
     }
 }

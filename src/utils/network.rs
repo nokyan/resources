@@ -8,7 +8,7 @@ use anyhow::{Context, Result};
 use futures_util::StreamExt;
 use pci_ids::FromId;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default)]
 pub enum InterfaceType {
     Ethernet,
     InfiniBand,
@@ -17,13 +17,8 @@ pub enum InterfaceType {
     Wwan,
     Bluetooth,
     Wireguard,
+    #[default]
     Other,
-}
-
-impl Default for InterfaceType {
-    fn default() -> Self {
-        InterfaceType::Other
-    }
 }
 
 #[derive(Debug, Clone, Default)]

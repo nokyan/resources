@@ -1,24 +1,30 @@
 use std::cell::Ref;
 
+use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
-use adw::{ResponseAppearance, Toast};
-use gtk::glib::{self, clone, timeout_future_seconds, BoxedAnyObject, MainContext, Object};
+use gtk::glib::{self, clone, BoxedAnyObject, Object, Sender};
 use gtk::{gio, CustomSorter, FilterChange, Ordering, SortType};
+use gtk_macros::send;
+
+use log::error;
 
 use crate::config::PROFILE;
-use crate::i18n::{i18n, i18n_f};
+use crate::i18n::i18n;
 use crate::ui::dialogs::process_dialog::ResProcessDialog;
 use crate::ui::widgets::process_name_cell::ResProcessNameCell;
-use crate::ui::window::MainWindow;
-use crate::utils::processes::{self, Apps, Process};
+use crate::ui::window::{self, Action, MainWindow};
+use crate::utils::processes::{AppsContext, ProcessAction, ProcessItem};
 use crate::utils::units::{to_largest_unit, Base};
 
 mod imp {
     use std::{cell::RefCell, collections::HashMap};
 
+    use crate::{ui::window::Action, utils::processes::ProcessAction};
+
     use super::*;
 
-    use gtk::CompositeTemplate;
+    use gtk::{glib::Sender, CompositeTemplate};
+    use once_cell::sync::OnceCell;
 
     #[derive(Debug, CompositeTemplate, Default)]
     #[template(resource = "/me/nalux/Resources/ui/pages/processes.ui")]
@@ -38,14 +44,16 @@ mod imp {
         #[template_child]
         pub end_process_button: TemplateChild<adw::SplitButton>,
 
-        pub apps: RefCell<Apps>,
         pub store: RefCell<gio::ListStore>,
         pub selection_model: RefCell<gtk::SingleSelection>,
         pub filter_model: RefCell<gtk::FilterListModel>,
         pub sort_model: RefCell<gtk::SortListModel>,
         pub column_view: RefCell<gtk::ColumnView>,
         pub open_dialog: RefCell<Option<(i32, ResProcessDialog)>>,
-        pub uid_map: RefCell<HashMap<u32, String>>,
+
+        pub username_cache: RefCell<HashMap<u32, String>>,
+
+        pub sender: OnceCell<Sender<Action>>,
     }
 
     #[glib::object_subclass]
@@ -56,18 +64,19 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.install_action("processes.kill-process", None, move |resprocesses, _, _| {
-                resprocesses.kill_selected_process();
+                resprocesses.execute_process_action_dialog_selected_process(ProcessAction::KILL);
             });
 
             klass.install_action("processes.halt-process", None, move |resprocesses, _, _| {
-                resprocesses.halt_selected_process();
+                resprocesses.execute_process_action_dialog_selected_process(ProcessAction::STOP);
             });
 
             klass.install_action(
                 "processes.continue-process",
                 None,
                 move |resprocesses, _, _| {
-                    resprocesses.continue_selected_process();
+                    resprocesses
+                        .execute_process_action_dialog_selected_process(ProcessAction::CONT);
                 },
             );
 
@@ -106,23 +115,12 @@ impl ResProcesses {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self) {
+    pub fn init(&self, sender: Sender<Action>) {
+        let imp = self.imp();
+        imp.sender.set(sender).unwrap();
+
         self.setup_widgets();
         self.setup_signals();
-        self.setup_listener();
-    }
-
-    fn get_user_name_by_uid(&self, uid: u32) -> String {
-        let imp = self.imp();
-        // cache all the user names so we don't have
-        // to do expensive lookups all the time
-        (*imp.uid_map.borrow_mut().entry(uid).or_insert_with(|| {
-            users::get_user_by_uid(uid).map_or_else(
-                || i18n("root"),
-                |user| user.name().to_string_lossy().to_string(),
-            )
-        }))
-        .to_string() // TODO: remove .to_string() with something more efficient
     }
 
     pub fn setup_widgets(&self) {
@@ -165,8 +163,8 @@ impl ResProcesses {
                 .downcast::<ResProcessNameCell>()
                 .unwrap();
             let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<Process> = entry.borrow();
-            child.set_name(processes::Process::sanitize_cmdline(&r.comm));
+            let r: Ref<ProcessItem> = entry.borrow();
+            child.set_name(&r.display_name);
             child.set_icon(Some(&r.icon));
             child.set_tooltip(Some(&r.commandline));
         });
@@ -174,12 +172,12 @@ impl ResProcesses {
             let item_a = a
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<Process>();
+                .borrow::<ProcessItem>();
             let item_b = b
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<Process>();
-            item_a.comm.cmp(&item_b.comm).into()
+                .borrow::<ProcessItem>();
+            item_a.display_name.cmp(&item_b.display_name).into()
         });
         name_col.set_sorter(Some(&name_col_sorter));
 
@@ -200,18 +198,18 @@ impl ResProcesses {
                 .downcast::<gtk::Inscription>()
                 .unwrap();
             let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<Process> = entry.borrow();
+            let r: Ref<ProcessItem> = entry.borrow();
             child.set_text(Some(&r.pid.to_string()));
         });
         let pid_col_sorter = CustomSorter::new(move |a, b| {
             let item_a = a
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<Process>();
+                .borrow::<ProcessItem>();
             let item_b = b
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<Process>();
+                .borrow::<ProcessItem>();
             item_a.pid.cmp(&item_b.pid).into()
         });
         pid_col.set_sorter(Some(&pid_col_sorter));
@@ -233,21 +231,21 @@ impl ResProcesses {
                 .downcast::<gtk::Inscription>()
                 .unwrap();
             let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<Process> = entry.borrow();
+            let r: Ref<ProcessItem> = entry.borrow();
             child.set_text(Some(&this.get_user_name_by_uid(r.uid)));
         }));
         let user_col_sorter = CustomSorter::new(clone!(@strong self as this => move |a, b| {
             let item_a = a
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<Process>();
+                .borrow::<ProcessItem>();
             let item_b = b
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<Process>();
-            let user_a = this.get_user_name_by_uid(item_a.uid);
-            let user_b = this.get_user_name_by_uid(item_b.uid);
-            user_a.cmp(&user_b).into()
+                .borrow::<ProcessItem>();
+            let user_a = &this.get_user_name_by_uid(item_a.uid);
+            let user_b = &this.get_user_name_by_uid(item_b.uid);
+            user_a.cmp(user_b).into()
         }));
         user_col.set_sorter(Some(&user_col_sorter));
 
@@ -268,7 +266,7 @@ impl ResProcesses {
                 .downcast::<gtk::Inscription>()
                 .unwrap();
             let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<Process> = entry.borrow();
+            let r: Ref<ProcessItem> = entry.borrow();
             let (number, prefix) = to_largest_unit(r.memory_usage as f64, &Base::Decimal);
             child.set_text(Some(&format!("{number:.1} {prefix}B")));
         });
@@ -276,11 +274,11 @@ impl ResProcesses {
             let item_a = a
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<Process>();
+                .borrow::<ProcessItem>();
             let item_b = b
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<Process>();
+                .borrow::<ProcessItem>();
             item_a.memory_usage.cmp(&item_b.memory_usage).into()
         });
         memory_col.set_sorter(Some(&memory_col_sorter));
@@ -302,24 +300,24 @@ impl ResProcesses {
                 .downcast::<gtk::Inscription>()
                 .unwrap();
             let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<Process> = entry.borrow();
-            child.set_text(Some(&format!("{:.1} %", r.cpu_time_ratio() * 100.0)));
+            let r: Ref<ProcessItem> = entry.borrow();
+            child.set_text(Some(&format!("{:.1} %", r.cpu_time_ratio * 100.0)));
         });
         let cpu_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a
+            let ratio_a = a
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<Process>()
-                .cpu_time_ratio();
-            let item_b = b
+                .borrow::<ProcessItem>()
+                .cpu_time_ratio;
+            let ratio_b = b
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<Process>()
-                .cpu_time_ratio();
+                .borrow::<ProcessItem>()
+                .cpu_time_ratio;
             // we have to do this because f32s do not implement `Ord`
-            if item_a > item_b {
+            if ratio_a > ratio_b {
                 Ordering::Larger
-            } else if item_a < item_b {
+            } else if ratio_a < ratio_b {
                 Ordering::Smaller
             } else {
                 Ordering::Equal
@@ -336,14 +334,6 @@ impl ResProcesses {
         column_view.set_enable_rubberband(true);
         imp.processes_scrolled_window.set_child(Some(&column_view));
         *imp.column_view.borrow_mut() = column_view;
-
-        *imp.apps.borrow_mut() = futures::executor::block_on(Apps::new()).unwrap();
-        imp.apps
-            .borrow()
-            .all_processes()
-            .iter()
-            .map(|process| BoxedAnyObject::new(process.clone()))
-            .for_each(|item_box| imp.store.borrow().append(&item_box));
     }
 
     pub fn setup_signals(&self) {
@@ -386,7 +376,7 @@ impl ResProcesses {
                     object
                     .downcast::<BoxedAnyObject>()
                     .unwrap()
-                    .borrow::<Process>()
+                    .borrow::<ProcessItem>()
                     .clone()
                 });
                 if let Some(selection) = selection_option {
@@ -399,35 +389,26 @@ impl ResProcesses {
 
         imp.end_process_button
             .connect_clicked(clone!(@strong self as this => move |_| {
-                this.end_selected_process();
+                this.execute_process_action_dialog_selected_process(ProcessAction::TERM);
             }));
     }
 
-    pub fn setup_listener(&self) {
-        // TODO: don't use unwrap()
-        let main_context = MainContext::default();
-        main_context.spawn_local(clone!(@strong self as this => async move {
-            loop {
-                timeout_future_seconds(2).await;
-                this.refresh_processes_list().await;
-            }
-        }));
-    }
+    pub fn setup_listener(&self) {}
 
     fn search_filter(&self, obj: &Object) -> bool {
         let imp = self.imp();
         let item = obj
             .downcast_ref::<BoxedAnyObject>()
             .unwrap()
-            .borrow::<Process>()
+            .borrow::<ProcessItem>()
             .clone();
         let search_string = imp.search_entry.text().to_string().to_lowercase();
         !imp.search_revealer.reveals_child()
-            || item.comm.to_lowercase().contains(&search_string)
+            || item.display_name.to_lowercase().contains(&search_string)
             || item.commandline.to_lowercase().contains(&search_string)
     }
 
-    fn get_selected_process(&self) -> Option<Process> {
+    fn get_selected_process_item(&self) -> Option<ProcessItem> {
         self.imp()
             .selection_model
             .borrow()
@@ -436,15 +417,14 @@ impl ResProcesses {
                 object
                     .downcast::<BoxedAnyObject>()
                     .unwrap()
-                    .borrow::<Process>()
+                    .borrow::<ProcessItem>()
                     .clone()
             })
     }
 
-    async fn refresh_processes_list(&self) {
+    pub fn refresh_processes_list(&self, apps: &AppsContext) {
         let imp = self.imp();
         let selection = imp.selection_model.borrow();
-        let mut apps = imp.apps.borrow_mut();
 
         // if we reuse the old ListStore, for some reason setting the
         // vadjustment later just doesn't work most of the time.
@@ -456,20 +436,20 @@ impl ResProcesses {
         // selected item, clear the list model and repopulate it with the
         // refreshed apps and stats, then reselect the remembered app.
         // TODO: make this even less hacky
-        let selected_item = self.get_selected_process().map(|process| process.pid);
-        if apps.refresh().await.is_ok() {
-            apps.all_processes()
-                .iter()
-                .filter(|process| !process.commandline.is_empty())
-                .map(|process| {
-                    if let Some((pid, dialog)) = &*imp.open_dialog.borrow() && process.pid == *pid {
-                        dialog.set_cpu_usage(process.cpu_time_ratio());
-                        dialog.set_memory_usage(process.memory_usage);
-                    }
-                    BoxedAnyObject::new(process.clone())
-                })
-                .for_each(|item_box| new_store.append(&item_box));
-        }
+        let selected_item = self
+            .get_selected_process_item()
+            .map(|process_item| process_item.pid);
+        apps.process_items()
+            .iter()
+            .map(|process_item| {
+                if let Some((pid, dialog)) = &*imp.open_dialog.borrow() && process_item.pid == *pid {
+                    dialog.set_cpu_usage(process_item.cpu_time_ratio);
+                    dialog.set_memory_usage(process_item.memory_usage);
+                }
+                BoxedAnyObject::new(process_item.clone())
+            })
+            .for_each(|item_box| new_store.append(&item_box));
+
         imp.filter_model.borrow().set_model(Some(&new_store));
         *imp.store.borrow_mut() = new_store;
 
@@ -483,7 +463,7 @@ impl ResProcesses {
                         .unwrap()
                         .downcast::<BoxedAnyObject>()
                         .unwrap()
-                        .borrow::<Process>()
+                        .borrow::<ProcessItem>()
                         .pid
                         == selected_item
                 })
@@ -494,105 +474,74 @@ impl ResProcesses {
         }
     }
 
-    fn end_selected_process(&self) {
-        let selection_option = self.get_selected_process();
-        if let Some(process) = selection_option {
-            let dialog = adw::MessageDialog::builder()
-                .transient_for(&MainWindow::default())
-                .modal(true)
-                .heading(i18n_f("End {}?", &[&process.comm]))
-                .body(i18n("Unsaved work might be lost."))
-                .build();
-            dialog.add_response("yes", &i18n("End Process"));
-            dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
-            dialog.set_default_response(Some("no"));
-            dialog.add_response("no", &i18n("Cancel"));
-            dialog.set_close_response("no");
-            dialog.connect_response(None, clone!(@strong process, @weak self as this => move |_, response| {
-                if response == "yes" {
-                    let imp = this.imp();
-                    match process.term() {
-                        Ok(_) => { imp.toast_overlay.add_toast(Toast::new(&i18n_f("Successfully ended {}", &[&process.comm]))); },
-                        Err(_) => { imp.toast_overlay.add_toast(Toast::new(&i18n_f("There was a problem ending {}", &[&process.comm]))); },
-                    };
-                }
-            }));
-            dialog.show();
-        }
-    }
-
-    fn kill_selected_process(&self) {
-        let selection_option = self.get_selected_process();
-        if let Some(process) = selection_option {
-            let dialog = adw::MessageDialog::builder()
-            .transient_for(&MainWindow::default())
-            .modal(true)
-            .heading(i18n_f("Kill {}?", &[&process.comm]))
-            .body(i18n("Killing a process can come with serious risks such as losing data and security implications. Use with caution."))
-            .build();
-            dialog.add_response("yes", &i18n("Kill Process"));
-            dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
-            dialog.set_default_response(Some("no"));
-            dialog.add_response("no", &i18n("Cancel"));
-            dialog.set_close_response("no");
-            dialog.connect_response(None, clone!(@strong process, @weak self as this => move |_, response| {
-                if response == "yes" {
-                    let imp = this.imp();
-                    match process.kill() {
-                        Ok(_) => { imp.toast_overlay.add_toast(Toast::new(&i18n_f("Successfully killed {}", &[&process.comm]))); },
-                        Err(_) => { imp.toast_overlay.add_toast(Toast::new(&i18n_f("There was a problem killing {}", &[&process.comm]))); },
-                    };
-                }
-            }));
-            dialog.show();
-        }
-    }
-
-    fn halt_selected_process(&self) {
-        let selection_option = self.get_selected_process();
-        if let Some(process) = selection_option {
-            let dialog = adw::MessageDialog::builder()
-            .transient_for(&MainWindow::default())
-            .modal(true)
-            .heading(i18n_f("Halt {}?", &[&process.comm]))
-            .body(i18n("Halting a process can come with serious risks such as losing data and security implications. Use with caution."))
-            .build();
-            dialog.add_response("yes", &i18n("Halt Process"));
-            dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
-            dialog.set_default_response(Some("no"));
-            dialog.add_response("no", &i18n("Cancel"));
-            dialog.set_close_response("no");
-            dialog.connect_response(None, clone!(@strong process, @weak self as this => move |_, response| {
-                if response == "yes" {
-                    let imp = this.imp();
-                    match process.stop() {
-                        Ok(_) => { imp.toast_overlay.add_toast(Toast::new(&i18n_f("Successfully halted {}", &[&process.comm]))); },
-                        Err(_) => { imp.toast_overlay.add_toast(Toast::new(&i18n_f("There was a problem halting {}", &[&process.comm]))); },
-                    };
-                }
-            }));
-            dialog.show();
-        }
-    }
-
-    fn continue_selected_process(&self) {
+    fn execute_process_action(&self, process: ProcessItem, action: ProcessAction) {
         let imp = self.imp();
-        let selection_option = self.get_selected_process();
-        if let Some(process) = selection_option {
-            match process.cont() {
-                Ok(_) => {
-                    imp.toast_overlay.add_toast(Toast::new(&i18n_f(
-                        "Successfully continued {}",
-                        &[&process.comm],
-                    )));
-                }
-                Err(_) => {
-                    imp.toast_overlay.add_toast(Toast::new(&i18n_f(
-                        "There was a problem continuing {}",
-                        &[&process.comm],
-                    )));
-                }
-            };
+
+        send!(
+            imp.sender.get().unwrap(),
+            Action::ManipulateProcess(
+                action,
+                process.pid,
+                process.display_name,
+                self.imp().toast_overlay.get()
+            )
+        );
+    }
+
+    pub fn execute_process_action_dialog(&self, process: ProcessItem, action: ProcessAction) {
+        // Nothing too bad can happen on Continue so dont show the dialog
+        if action == ProcessAction::CONT {
+            self.execute_process_action(process, action);
+            return;
         }
+
+        // Confirmation dialog & warning
+        let dialog = adw::MessageDialog::builder()
+            .transient_for(&MainWindow::default())
+            .modal(true)
+            .heading(window::get_action_name(action, &[&process.display_name]))
+            .body(window::get_app_action_warning(action))
+            .build();
+
+        dialog.add_response("yes", &window::get_app_action_description(action));
+        dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
+
+        dialog.add_response("no", &i18n("Cancel"));
+        dialog.set_default_response(Some("no"));
+        dialog.set_close_response("no");
+
+        // Called when "yes" or "no" were clicked
+        dialog.connect_response(
+            None,
+            clone!(@strong self as this, @strong process => move |_, response| {
+                if response == "yes" {
+                    this.execute_process_action(process.clone(), action);
+                }
+            }),
+        );
+
+        dialog.show();
+    }
+
+    pub fn execute_process_action_dialog_selected_process(&self, action: ProcessAction) {
+        if let Some(app) = self.get_selected_process_item() {
+            self.execute_process_action_dialog(app, action);
+        }
+    }
+
+    fn get_user_name_by_uid(&self, uid: u32) -> String {
+        let imp = self.imp();
+        // cache all the user names so we don't have
+        // to do expensive lookups all the time
+        (imp.username_cache
+            .borrow_mut()
+            .entry(uid)
+            .or_insert_with(|| {
+                users::get_user_by_uid(uid).map_or_else(
+                    || i18n("root"),
+                    |user| user.name().to_string_lossy().to_string(),
+                )
+            }))
+        .to_string()
     }
 }

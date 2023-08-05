@@ -29,20 +29,34 @@ Note: Right now, Resources requires the nightly version of Rust.
 ## Installing
 
 Resources uses Meson as its build system.
-Since Resources requires access to the system's running processes, building it as a Flatpak is possible but not recommended as it lacks functionality.
+You can either build and install Resources natively on your system like this:
 
 ```sh
 meson . build --prefix=/usr/local
 ninja -C build install
 ```
 
+Or, even better, use the Flatpak CLI to build:
+
+```sh
+flatpak install --user org.gnome.Sdk//44 org.freedesktop.Sdk.Extension.rust-nightly//22.08 org.gnome.Platform//44
+flatpak-builder --user flatpak_app build-aux/me.nalux.Resources.Devel.json
+```
+
+Flatpak support is still experimental, bugs might occur.
+If you use [GNOME Builder](https://apps.gnome.org/app/org.gnome.Builder/) or Visual Studio Code with the [Flatpak extension](https://marketplace.visualstudio.com/items?itemName=bilelmoussaoui.flatpak-vscode), Resources can be built and run automatically.
+
 ## Running
 
-Running Resources is as simple as typing `resources` into a terminal or running it from your application launcher.
+Running Resources is as simple as typing `resources` into a terminal or running it from your application launcher. If you've built Resources using Flatpak, type `
+flatpak-builder --run flatpak_app build-aux/me.nalux.Resources.Devel.json resources` into your terminal or use one of the afforementioned IDEs to do that automatically.
 
 ## To-do
 
-- Make process reading work when packaged as a Flatpak
 - Battery usage and details
 - Preferences such as a unit selection
 - Translations
+
+## Contributing
+
+If you have an idea, bug report, question or something else, don't hesitate to [open an issue](https://github.com/nokyan/resources/issues)! Translations are always welcome.

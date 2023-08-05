@@ -1,21 +1,27 @@
 use anyhow::{anyhow, bail, Context, Result};
 use config::LIBEXECDIR;
 use glob::glob;
-use log::debug;
-use nix::{sys::signal, unistd::Pid};
 use once_cell::sync::OnceCell;
-use std::{collections::HashMap, path::PathBuf, process::Command, time::SystemTime};
+use serde::{Deserialize, Serialize};
+use std::{
+    collections::{HashMap, HashSet},
+    path::PathBuf,
+    process::Command,
+    time::SystemTime,
+};
 
 use gtk::{
-    gio::{AppInfo, Icon, ThemedIcon},
+    gio::{Icon, ThemedIcon},
     prelude::AppInfoExt,
 };
 
-use crate::{config, i18n::i18n};
+use crate::{config, i18n::i18n, utils::flatpak_app_path};
+
+use super::{is_flatpak, FLATPAK_SPAWN};
 
 static PAGESIZE: OnceCell<usize> = OnceCell::new();
 
-#[derive(Debug, Clone, Default, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Default, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Containerization {
     #[default]
     None,
@@ -25,6 +31,18 @@ pub enum Containerization {
 /// Represents a process that can be found within procfs.
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Process {
+    pub data: ProcessData,
+    pub icon: Icon,
+    pub cpu_time_before: u64,
+    pub cpu_time_before_timestamp: u64,
+    alive: bool,
+}
+
+/// Data that could be transferred using `resources-processes`, seperated from
+/// `Process` mainly due to `Icon` not being able to derive `Serialize` and
+/// `Deserialize`.
+#[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ProcessData {
     pub pid: i32,
     pub uid: u32,
     proc_path: PathBuf,
@@ -32,21 +50,21 @@ pub struct Process {
     pub commandline: String,
     pub cpu_time: u64,
     pub cpu_time_timestamp: u64,
-    pub cpu_time_before: u64,
-    pub cpu_time_before_timestamp: u64,
     pub memory_usage: usize,
     pub cgroup: Option<String>,
-    alive: bool,
     pub containerization: Containerization,
-    pub icon: Icon,
 }
 
 /// Represents an application installed on the system. It doesn't
 /// have to be running (i.e. have alive processes).
 #[derive(Debug, Clone)]
 pub struct App {
-    processes: HashMap<i32, Process>,
-    app_info: AppInfo,
+    processes: Vec<i32>,
+    pub display_name: String,
+    pub description: Option<String>,
+    pub icon: Icon,
+    pub id: String,
+    pub name: String,
 }
 
 // TODO: Better name?
@@ -61,23 +79,36 @@ pub enum ProcessAction {
 /// Convenience struct for displaying running applications and
 /// displaying a "System Processes" item.
 #[derive(Debug, Clone)]
-pub struct SimpleItem {
+pub struct AppItem {
     pub id: Option<String>,
     pub display_name: String,
     pub icon: Icon,
     pub description: Option<String>,
-    pub executable: Option<PathBuf>,
     pub memory_usage: usize,
     pub cpu_time_ratio: f32,
     pub processes_amount: usize,
     pub containerization: Containerization,
 }
 
+/// Convenience struct for displaying running processes
+#[derive(Debug, Clone)]
+pub struct ProcessItem {
+    pub pid: i32,
+    pub uid: u32,
+    pub display_name: String,
+    pub icon: Icon,
+    pub memory_usage: usize,
+    pub cpu_time_ratio: f32,
+    pub commandline: String,
+    pub containerization: Containerization,
+    pub cgroup: Option<String>,
+}
+
 #[derive(Debug, Clone, Default)]
-pub struct Apps {
-    pub apps: HashMap<String, App>,
-    system_processes: Vec<Process>,
-    known_proc_paths: Vec<PathBuf>,
+pub struct AppsContext {
+    apps: HashMap<String, App>,
+    processes: HashMap<i32, Process>,
+    processes_assigned_to_apps: HashSet<i32>,
 }
 
 impl Process {
@@ -89,39 +120,139 @@ impl Process {
     /// parsing procfs
     pub async fn all() -> Result<Vec<Self>> {
         let mut return_vec = Vec::new();
-        for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-            return_vec.push(Self::try_from_path(entry).await);
+
+        if is_flatpak() {
+            let proxy_path = format!(
+                "{}/libexec/resources/resources-processes",
+                flatpak_app_path()
+            );
+            let command = async_process::Command::new(FLATPAK_SPAWN)
+                .args(["--host", proxy_path.as_str()])
+                .output()
+                .await?;
+            let output = command.stdout;
+            let proxy_output: Vec<ProcessData> =
+                rmp_serde::from_slice::<Vec<ProcessData>>(&output)?;
+            for process_data in proxy_output {
+                return_vec.push(Self {
+                    data: process_data,
+                    icon: ThemedIcon::new("generic-process").into(),
+                    cpu_time_before: 0,
+                    cpu_time_before_timestamp: 0,
+                    alive: true,
+                });
+            }
+        } else {
+            for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
+                if let Ok(process_data) = ProcessData::try_from_path(entry).await {
+                    return_vec.push(Self {
+                        data: process_data,
+                        icon: ThemedIcon::new("generic-process").into(),
+                        cpu_time_before: 0,
+                        cpu_time_before_timestamp: 0,
+                        alive: true,
+                    });
+                }
+            }
         }
-        Ok(return_vec.into_iter().flatten().collect())
+        Ok(return_vec)
     }
 
-    async fn refresh_result(&mut self) -> Result<()> {
-        let stat: Vec<String> = async_std::fs::read_to_string(self.proc_path.join("stat"))
-            .await?
-            .split(' ')
-            .map(std::string::ToString::to_string)
-            .collect();
-        let statm: Vec<String> = async_std::fs::read_to_string(self.proc_path.join("statm"))
-            .await?
-            .split(' ')
-            .map(std::string::ToString::to_string)
-            .collect();
-        self.cpu_time_before = self.cpu_time;
-        self.cpu_time_before_timestamp = self.cpu_time_timestamp;
-        self.cpu_time = stat[13].parse::<u64>()? + stat[14].parse::<u64>()?;
-        self.cpu_time_timestamp = SystemTime::now()
-            .duration_since(SystemTime::UNIX_EPOCH)?
-            .as_millis() as u64;
-        self.memory_usage = (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?)
-            * PAGESIZE.get_or_init(sysconf::pagesize);
-        Ok(())
+    pub fn execute_process_action(&self, action: ProcessAction) -> Result<()> {
+        let action_str = match action {
+            ProcessAction::TERM => "TERM",
+            ProcessAction::STOP => "STOP",
+            ProcessAction::KILL => "KILL",
+            ProcessAction::CONT => "CONT",
+        };
+
+        // TODO: tidy this mess up
+
+        if is_flatpak() {
+            let kill_path = format!("{}/libexec/resources/resources-kill", flatpak_app_path());
+            let command = Command::new(FLATPAK_SPAWN)
+                .args([
+                    "--host",
+                    kill_path.as_str(),
+                    action_str,
+                    self.data.pid.to_string().as_str(),
+                ])
+                .output()?;
+            if command.status.code().with_context(|| "no status code?")? == 0 {
+                Ok(())
+            } else if command.status.code().with_context(|| "no status code?")? == 2 {
+                let elevated_command = Command::new(FLATPAK_SPAWN)
+                    .args([
+                        "--host",
+                        "pkexec",
+                        "--disable-internal-agent",
+                        kill_path.as_str(),
+                        action_str,
+                        self.data.pid.to_string().as_str(),
+                    ])
+                    .output()?;
+                return elevated_command.status.exit_ok().with_context(|| {
+                    format!("couldn't kill {} with elevated permissions", self.data.pid)
+                });
+            } else {
+                bail!("couldn't kill {} due to unknown reasons", self.data.pid)
+            }
+        } else {
+            let kill_path = format!("{LIBEXECDIR}/resources-kill");
+            let command = Command::new(kill_path.as_str())
+                .args([
+                    kill_path.as_str(),
+                    action_str,
+                    self.data.pid.to_string().as_str(),
+                ])
+                .output()?;
+            if command.status.code().with_context(|| "no status code?")? == 0 {
+                Ok(())
+            } else if command.status.code().with_context(|| "no status code?")? == 2 {
+                let elevated_command = Command::new("pkexec")
+                    .args([
+                        "--disable-internal-agent",
+                        kill_path.as_str(),
+                        action_str,
+                        self.data.pid.to_string().as_str(),
+                    ])
+                    .output()?;
+                return elevated_command.status.exit_ok().with_context(|| {
+                    format!("couldn't kill {} with elevated permissions", self.data.pid)
+                });
+            } else {
+                bail!("couldn't kill {} due to unknown reasons", self.data.pid)
+            }
+        }
     }
 
-    pub async fn refresh(&mut self) -> bool {
-        self.alive = self.proc_path.exists() && self.refresh_result().await.is_ok();
-        self.alive
+    #[must_use]
+    pub fn cpu_time_ratio(&self) -> f32 {
+        if self.cpu_time_before == 0 {
+            0.0
+        } else {
+            (self.data.cpu_time.saturating_sub(self.cpu_time_before) as f32
+                / (self.data.cpu_time_timestamp - self.cpu_time_before_timestamp) as f32)
+                .clamp(0.0, 1.0)
+        }
     }
 
+    pub fn sanitize_cmdline<S: AsRef<str>>(cmdline: S) -> String {
+        cmdline.as_ref().replace('\0', " ")
+    }
+
+    pub async fn try_from_path(value: PathBuf) -> Result<Self> {
+        Ok(Process {
+            data: ProcessData::try_from_path(value.clone()).await?,
+            icon: ThemedIcon::new("generic-process").into(),
+            cpu_time_before: 0,
+            cpu_time_before_timestamp: 0,
+            alive: true,
+        })
+    }
+}
+
+impl ProcessData {
     fn sanitize_cgroup<S: AsRef<str>>(cgroup: S) -> Option<String> {
         let cgroups_v2_line = cgroup.as_ref().split('\n').find(|s| s.starts_with("0::"))?;
         if cgroups_v2_line.ends_with(".scope") {
@@ -155,166 +286,7 @@ impl Process {
         }
     }
 
-    /// Terminates the processes
-    ///
-    /// # Errors
-    ///
-    /// Will return `Err` if there are problems terminating the process
-    /// that running it with superuser permissions can't solve
-    pub fn term(&self) -> Result<()> {
-        debug!("sending SIGTERM to pid {}", self.pid);
-        let result = signal::kill(Pid::from_raw(self.pid), Some(signal::Signal::SIGTERM));
-        if let Err(err) = result {
-            return match err {
-                nix::errno::Errno::EPERM => self.pkexec_term(),
-                _ => bail!("unable to term {}", self.pid),
-            };
-        }
-        Ok(())
-    }
-
-    fn pkexec_term(&self) -> Result<()> {
-        debug!(
-            "using pkexec to send SIGTERM with root privileges to pid {}",
-            self.pid
-        );
-        let path = format!("{LIBEXECDIR}/resources-kill");
-        Command::new("pkexec")
-            .args([
-                "--disable-internal-agent",
-                &path,
-                "TERM",
-                self.pid.to_string().as_str(),
-            ])
-            .spawn()
-            .map(|_| ())
-            .with_context(|| format!("failure calling {} on {} (with pkexec)", &path, self.pid))
-    }
-
-    /// Kills the process
-    ///
-    /// # Errors
-    ///
-    /// Will return `Err` if there are problems killing the process
-    /// that running it with superuser permissions can't solve
-    pub fn kill(&self) -> Result<()> {
-        debug!("sending SIGKILL to pid {}", self.pid);
-        let result = signal::kill(Pid::from_raw(self.pid), Some(signal::Signal::SIGKILL));
-        if let Err(err) = result {
-            return match err {
-                nix::errno::Errno::EPERM => self.pkexec_kill(),
-                _ => bail!("unable to kill {}", self.pid),
-            };
-        }
-        Ok(())
-    }
-
-    fn pkexec_kill(&self) -> Result<()> {
-        debug!(
-            "using pkexec to send SIGKILL with root privileges to pid {}",
-            self.pid
-        );
-        let path = format!("{LIBEXECDIR}/resources-kill");
-        Command::new("pkexec")
-            .args([
-                "--disable-internal-agent",
-                &path,
-                "KILL",
-                self.pid.to_string().as_str(),
-            ])
-            .spawn()
-            .map(|_| ())
-            .with_context(|| format!("failure calling {} on {} (with pkexec)", &path, self.pid))
-    }
-
-    /// Stops the process
-    ///
-    /// # Errors
-    ///
-    /// Will return `Err` if there are problems stopping the process
-    /// that running it with superuser permissions can't solve
-    pub fn stop(&self) -> Result<()> {
-        debug!("sending SIGSTOP to pid {}", self.pid);
-        let result = signal::kill(Pid::from_raw(self.pid), Some(signal::Signal::SIGSTOP));
-        if let Err(err) = result {
-            return match err {
-                nix::errno::Errno::EPERM => self.pkexec_stop(),
-                _ => bail!("unable to stop {}", self.pid),
-            };
-        }
-        Ok(())
-    }
-
-    fn pkexec_stop(&self) -> Result<()> {
-        debug!(
-            "using pkexec to send SIGSTOP with root privileges to pid {}",
-            self.pid
-        );
-        let path = format!("{LIBEXECDIR}/resources-kill");
-        Command::new("pkexec")
-            .args([
-                "--disable-internal-agent",
-                &path,
-                "STOP",
-                self.pid.to_string().as_str(),
-            ])
-            .spawn()
-            .map(|_| ())
-            .with_context(|| format!("failure calling {} on {} (with pkexec)", &path, self.pid))
-    }
-
-    /// Continues the processes
-    ///
-    /// # Errors
-    ///
-    /// Will return `Err` if there are problems continuing the process
-    /// that running it with superuser permissions can't solve
-    pub fn cont(&self) -> Result<()> {
-        debug!("sending SIGCONT to pid {}", self.pid);
-        let result = signal::kill(Pid::from_raw(self.pid), Some(signal::Signal::SIGCONT));
-        if let Err(err) = result {
-            return match err {
-                nix::errno::Errno::EPERM => self.pkexec_cont(),
-                _ => bail!("unable to cont {}", self.pid),
-            };
-        }
-        Ok(())
-    }
-
-    fn pkexec_cont(&self) -> Result<()> {
-        debug!(
-            "using pkexec to send SIGCONT with root privileges to pid {}",
-            self.pid
-        );
-        let path = format!("{LIBEXECDIR}/resources-kill");
-        Command::new("pkexec")
-            .args([
-                "--disable-internal-agent",
-                &path,
-                "CONT",
-                self.pid.to_string().as_str(),
-            ])
-            .spawn()
-            .map(|_| ())
-            .with_context(|| format!("failure calling {} on {} (with pkexec)", &path, self.pid))
-    }
-
-    #[must_use]
-    pub fn cpu_time_ratio(&self) -> f32 {
-        if self.cpu_time_before == 0 {
-            0.0
-        } else {
-            (self.cpu_time.saturating_sub(self.cpu_time_before) as f32
-                / (self.cpu_time_timestamp - self.cpu_time_before_timestamp) as f32)
-                .clamp(0.0, 1.0)
-        }
-    }
-
-    pub fn sanitize_cmdline<S: AsRef<str>>(cmdline: S) -> String {
-        cmdline.as_ref().replace('\0', " ")
-    }
-
-    async fn try_from_path(value: PathBuf) -> Result<Self> {
+    pub async fn try_from_path(value: PathBuf) -> Result<Self> {
         let stat: Vec<String> = async_std::fs::read_to_string(value.join("stat"))
             .await?
             .split(' ')
@@ -329,7 +301,7 @@ impl Process {
             true => Containerization::Flatpak,
             false => Containerization::None,
         };
-        Ok(Process {
+        Ok(Self {
             pid: value
                 .file_name()
                 .ok_or_else(|| anyhow!(""))?
@@ -349,127 +321,89 @@ impl Process {
             cpu_time_timestamp: SystemTime::now()
                 .duration_since(SystemTime::UNIX_EPOCH)?
                 .as_millis() as u64,
-            cpu_time_before: 0,
-            cpu_time_before_timestamp: 0,
             memory_usage: (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?)
                 * PAGESIZE.get_or_init(sysconf::pagesize),
             cgroup: Self::sanitize_cgroup(
                 async_std::fs::read_to_string(value.join("cgroup")).await?,
             ),
             proc_path: value,
-            alive: true,
             containerization,
-            icon: ThemedIcon::new("generic-process").into(),
         })
     }
 }
 
 impl App {
+    pub fn refresh(&mut self, apps: &mut AppsContext) {
+        self.processes = self
+            .processes_iter_mut(apps)
+            .filter_map(|p| if p.alive { Some(p.data.pid) } else { None })
+            .collect();
+    }
+
     /// Adds a process to the processes `HashMap` and also
     /// updates the `Process`' icon to the one of this
     /// `App`
-    pub fn add_process(&mut self, mut process: Process) {
-        process.icon = self.icon();
-        self.processes.insert(process.pid, process);
+    pub fn add_process(&mut self, process: &mut Process) {
+        process.icon = self.icon.clone();
+        self.processes.push(process.data.pid);
+    }
+
+    pub fn remove_process(&mut self, process: &Process) {
+        self.processes.retain(|p| *p != process.data.pid);
     }
 
     #[must_use]
-    pub fn commandline(&self) -> Option<PathBuf> {
-        self.app_info.commandline()
+    pub fn is_running(&self, apps: &AppsContext) -> bool {
+        self.processes_iter(apps).count() > 0
+    }
+
+    pub fn processes_iter<'a>(&'a self, apps: &'a AppsContext) -> impl Iterator<Item = &Process> {
+        apps.all_processes()
+            .filter(move |process| self.processes.contains(&process.data.pid) && process.alive)
+    }
+
+    pub fn processes_iter_mut<'a>(
+        &'a mut self,
+        apps: &'a mut AppsContext,
+    ) -> impl Iterator<Item = &mut Process> {
+        apps.all_processes_mut()
+            .filter(move |process| self.processes.contains(&process.data.pid) && process.alive)
     }
 
     #[must_use]
-    pub fn description(&self) -> Option<String> {
-        self.app_info.description().map(|x| x.to_string())
-    }
-
-    #[must_use]
-    pub fn display_name(&self) -> String {
-        self.app_info.display_name().to_string()
-    }
-
-    #[must_use]
-    pub fn executable(&self) -> PathBuf {
-        self.app_info.executable()
-    }
-
-    #[must_use]
-    pub fn icon(&self) -> Icon {
-        if let Some(id) = self.id() && id == "org.gnome.Shell" {
-            return ThemedIcon::new("shell").into();
-        }
-        self.app_info
-            .icon()
-            .unwrap_or_else(|| ThemedIcon::new("generic-process").into())
-    }
-
-    #[must_use]
-    pub fn id(&self) -> Option<String> {
-        self.app_info
-            .id()
-            .map(|id| Apps::sanitize_appid(id.to_string()))
-    }
-
-    #[must_use]
-    pub fn name(&self) -> String {
-        self.app_info.name().to_string()
-    }
-
-    pub async fn refresh(&mut self) -> Vec<PathBuf> {
-        let mut dead_processes = Vec::new();
-        for process in self.processes.values_mut() {
-            if !process.refresh().await {
-                dead_processes.push(process.proc_path.clone());
-            }
-        }
-        self.processes
-            .retain(|_, process| !dead_processes.contains(&process.proc_path));
-        dead_processes
-    }
-
-    #[must_use]
-    pub fn is_running(&self) -> bool {
-        !self.processes.is_empty()
-    }
-
-    #[must_use]
-    pub fn memory_usage(&self) -> usize {
-        self.processes
-            .values()
-            .map(|process| process.memory_usage)
+    pub fn memory_usage(&self, apps: &AppsContext) -> usize {
+        self.processes_iter(apps)
+            .map(|process| process.data.memory_usage)
             .sum()
     }
 
     #[must_use]
-    pub fn cpu_time(&self) -> u64 {
-        self.processes
-            .values()
-            .map(|process| process.cpu_time)
+    pub fn cpu_time(&self, apps: &AppsContext) -> u64 {
+        self.processes_iter(apps)
+            .map(|process| process.data.cpu_time)
             .sum()
     }
 
     #[must_use]
-    pub fn cpu_time_timestamp(&self) -> u64 {
-        self.processes
-            .values()
-            .map(|process| process.cpu_time_timestamp)
+    pub fn cpu_time_timestamp(&self, apps: &AppsContext) -> u64 {
+        self.processes_iter(apps)
+            .map(|process| process.data.cpu_time_timestamp)
             .sum::<u64>()
             .checked_div(self.processes.len() as u64) // the timestamps of the last cpu time check should be pretty much equal but to be sure, take the average of all of them
             .unwrap_or(0)
     }
 
     #[must_use]
-    pub fn cpu_time_before(&self) -> u64 {
-        self.processes
-            .values()
+    pub fn cpu_time_before(&self, apps: &AppsContext) -> u64 {
+        self.processes_iter(apps)
             .map(|process| process.cpu_time_before)
             .sum()
     }
 
     #[must_use]
-    pub fn cpu_time_before_timestamp(&self) -> u64 {
-        self.processes
-            .values()
+    pub fn cpu_time_before_timestamp(&self, apps: &AppsContext) -> u64 {
+        apps.all_processes()
+            .filter(|process| self.processes.contains(&process.data.pid))
             .map(|process| process.cpu_time_before_timestamp)
             .sum::<u64>()
             .checked_div(self.processes.len() as u64)
@@ -477,51 +411,22 @@ impl App {
     }
 
     #[must_use]
-    pub fn cpu_time_ratio(&self) -> f32 {
-        if self.cpu_time_before() == 0 {
-            0.0
-        } else {
-            ((self.cpu_time().saturating_sub(self.cpu_time_before())) as f32
-                / (self.cpu_time_timestamp() - self.cpu_time_before_timestamp()) as f32)
-                .clamp(0.0, 1.0)
-        }
+    pub fn cpu_time_ratio(&self, apps: &AppsContext) -> f32 {
+        self.processes_iter(apps).map(Process::cpu_time_ratio).sum()
     }
 
-    pub fn execute_process_action(&self, action: ProcessAction) -> Vec<Result<()>> {
-        match action {
-            ProcessAction::TERM => self.term(),
-            ProcessAction::STOP => self.stop(),
-            ProcessAction::KILL => self.kill(),
-            ProcessAction::CONT => self.cont(),
-        }
-    }
-
-    #[must_use]
-    pub fn term(&self) -> Vec<Result<()>> {
-        debug!("sending SIGTERM to processes of {}", self.display_name());
-        self.processes.values().map(Process::term).collect()
-    }
-
-    #[must_use]
-    pub fn kill(&self) -> Vec<Result<()>> {
-        debug!("sending SIGKILL to processes of {}", self.display_name());
-        self.processes.values().map(Process::kill).collect()
-    }
-
-    #[must_use]
-    pub fn stop(&self) -> Vec<Result<()>> {
-        debug!("sending SIGSTOP to processes of {}", self.display_name());
-        self.processes.values().map(Process::stop).collect()
-    }
-
-    #[must_use]
-    pub fn cont(&self) -> Vec<Result<()>> {
-        debug!("sending SIGCONT to processes of {}", self.display_name());
-        self.processes.values().map(Process::cont).collect()
+    pub fn execute_process_action(
+        &self,
+        apps: &AppsContext,
+        action: ProcessAction,
+    ) -> Vec<Result<()>> {
+        self.processes_iter(apps)
+            .map(|process| process.execute_process_action(action))
+            .collect()
     }
 }
 
-impl Apps {
+impl AppsContext {
     /// Creates a new `Apps` object, this operation is quite expensive
     /// so try to do it only one time during the lifetime of the program.
     ///
@@ -529,52 +434,52 @@ impl Apps {
     ///
     /// Will return `Err` if there are problems getting the list of
     /// running processes.
-    pub async fn new() -> Result<Self> {
+    pub async fn new() -> Result<AppsContext> {
+        let mut apps = HashMap::new();
         let app_infos = gtk::gio::AppInfo::all();
-        let mut app_map = HashMap::new();
-        let mut processes = Process::all().await?;
-        let mut known_proc_paths = Vec::new();
+        // turn AppInfo into App
         for app_info in app_infos {
             if let Some(id) = app_info
                 .id()
                 .map(|gstring| Self::sanitize_appid(gstring.to_string()))
             {
-                app_map.insert(
+                apps.insert(
                     id.clone(),
                     App {
-                        processes: HashMap::new(),
-                        app_info,
+                        processes: Vec::new(),
+                        display_name: app_info.display_name().to_string(),
+                        description: app_info.description().map(|gs| gs.to_string()),
+                        id,
+                        name: app_info.name().to_string(),
+                        icon: app_info
+                            .icon()
+                            .unwrap_or_else(|| ThemedIcon::new("generic-process").into()),
                     },
                 );
             }
         }
-        processes
-            .iter()
-            .for_each(|process| known_proc_paths.push(process.proc_path.clone()));
-        // split the processes `Vec` into two `Vec`s:
-        // one, where the process' cgroup can be found as an ID
-        // of the installed graphical applications (meaning that the
-        // process belongs to a graphical application) and one where
-        // this is not possible. the latter are our system processes
-        let non_system_processes: Vec<Process> = processes
-            .extract_if(|process| {
-                process
-                    .cgroup
-                    .as_deref()
-                    .map_or(true, |cgroup| !cgroup.starts_with("xdg-desktop-portal")) // throw out the portals
-                    && app_map.contains_key(process.cgroup.as_deref().unwrap_or_default())
-            })
-            .collect();
-        for process in non_system_processes {
-            if let Some(app) = app_map.get_mut(process.cgroup.as_deref().unwrap_or_default()) {
-                app.add_process(process);
+
+        let mut processes = HashMap::new();
+        let processes_list = Process::all().await?;
+        let mut processes_assigned_to_apps = HashSet::new();
+
+        for mut process in processes_list {
+            if let Some(app) = apps.get_mut(process.data.cgroup.as_deref().unwrap_or_default()) {
+                processes_assigned_to_apps.insert(process.data.pid);
+                app.add_process(&mut process);
             }
+            processes.insert(process.data.pid, process);
         }
-        Ok(Apps {
-            apps: app_map,
-            system_processes: processes,
-            known_proc_paths,
+
+        Ok(AppsContext {
+            apps,
+            processes,
+            processes_assigned_to_apps,
         })
+    }
+
+    pub fn get_process(&self, pid: i32) -> Option<&Process> {
+        self.processes.get(&pid)
     }
 
     fn sanitize_appid<S: Into<String>>(a: S) -> String {
@@ -585,103 +490,100 @@ impl Apps {
         appid
     }
 
-    pub fn get_app<S: AsRef<str>>(&self, id: S) -> Option<&App> {
-        self.apps.get(id.as_ref())
+    pub fn get_app(&self, id: &str) -> Option<&App> {
+        self.apps.get(id)
     }
 
     #[must_use]
-    pub fn system_processes(&self) -> &Vec<Process> {
-        &self.system_processes
+    pub fn all_processes(&self) -> impl Iterator<Item = &Process> {
+        self.processes.values().filter(|p| p.alive)
     }
 
     #[must_use]
-    pub fn all_processes(&self) -> Vec<Process> {
-        self.system_processes
-            .iter()
-            .chain(self.apps.values().flat_map(|app| app.processes.values()))
-            .cloned()
+    pub fn all_processes_mut(&mut self) -> impl Iterator<Item = &mut Process> {
+        self.processes.values_mut().filter(|p| p.alive)
+    }
+
+    /// Returns a `Vec` of running processes. For more info, refer to
+    /// `ProcessItem`.
+    pub fn process_items(&self) -> Vec<ProcessItem> {
+        self.all_processes()
+            .filter(|process| !process.data.commandline.is_empty()) // find a way to display procs without commandlines
+            .map(|process| ProcessItem {
+                pid: process.data.pid,
+                display_name: process.data.comm.clone(),
+                icon: process.icon.clone(),
+                memory_usage: process.data.memory_usage,
+                cpu_time_ratio: process.cpu_time_ratio(),
+                commandline: Process::sanitize_cmdline(process.data.commandline.clone()),
+                containerization: process.data.containerization.clone(),
+                cgroup: process.data.cgroup.clone(),
+                uid: process.data.uid,
+            })
             .collect()
     }
 
-    /// Returns a `Vec` of running graphical applications. For more
-    /// info, refer to `SimpleItem`.
+    /// Returns a `Vec` of running graphical applications. For more info, refer
+    /// to `AppItem`.
     #[must_use]
-    pub fn simple(&self) -> Vec<SimpleItem> {
+    pub fn app_items(&self) -> Vec<AppItem> {
+        let mut app_pids = HashSet::new();
+
         let mut return_vec = self
             .apps
             .iter()
-            .filter(|(_, app)| app.is_running())
+            .filter(|(_, app)| app.is_running(self) && !app.id.starts_with("xdg-desktop-portal"))
             .map(|(_, app)| {
+                app.processes_iter(self).for_each(|process| {
+                    app_pids.insert(process.data.pid);
+                });
+
                 let containerization = if app
-                    .processes
-                    .values()
+                    .processes_iter(self)
                     .filter(|process| {
-                        !process.commandline.starts_with("bwrap") && !process.commandline.is_empty()
+                        !process.data.commandline.starts_with("bwrap")
+                            && !process.data.commandline.is_empty()
                     })
-                    .all(|process| process.containerization == Containerization::Flatpak)
+                    .all(|process| process.data.containerization == Containerization::Flatpak)
                 {
                     Containerization::Flatpak
                 } else {
                     Containerization::None
                 };
 
-                SimpleItem {
-                    id: app.id(),
-                    display_name: app.display_name(),
-                    icon: app.icon(),
-                    description: app.description(),
-                    executable: Some(app.executable()),
-                    memory_usage: app.memory_usage(),
-                    cpu_time_ratio: app.cpu_time_ratio(),
-                    processes_amount: app.processes.len(),
+                AppItem {
+                    id: Some(app.id.clone()),
+                    display_name: app.display_name.clone(),
+                    icon: app.icon.clone(),
+                    description: app.description.clone(),
+                    memory_usage: app.memory_usage(self),
+                    cpu_time_ratio: app.cpu_time_ratio(self),
+                    processes_amount: app.processes_iter(self).count(),
                     containerization,
                 }
             })
-            .collect::<Vec<SimpleItem>>();
-        let system_cpu_time: u64 = self
-            .system_processes
-            .iter()
-            .map(|process| process.cpu_time)
+            .collect::<Vec<AppItem>>();
+
+        let system_cpu_ratio = self
+            .all_processes()
+            .filter(|process| !app_pids.contains(&process.data.pid) && process.alive)
+            .map(Process::cpu_time_ratio)
             .sum();
-        let system_cpu_time_timestamp = self
-            .system_processes
-            .iter()
-            .map(|process| process.cpu_time_timestamp)
-            .sum::<u64>()
-            .checked_div(self.system_processes.len() as u64)
-            .unwrap_or(0);
-        let system_cpu_time_before: u64 = self
-            .system_processes
-            .iter()
-            .map(|process| process.cpu_time_before)
+
+        let system_memory_usage: usize = self
+            .all_processes()
+            .filter(|process| !app_pids.contains(&process.data.pid) && process.alive)
+            .map(|process| process.data.memory_usage)
             .sum();
-        let system_cpu_time_before_timestamp = self
-            .system_processes
-            .iter()
-            .map(|process| process.cpu_time_before_timestamp)
-            .sum::<u64>()
-            .checked_div(self.system_processes.len() as u64)
-            .unwrap_or(0);
-        let system_cpu_ratio = if system_cpu_time_before == 0 {
-            0.0
-        } else {
-            (system_cpu_time.saturating_sub(system_cpu_time_before) as f32
-                / (system_cpu_time_timestamp - system_cpu_time_before_timestamp) as f32)
-                .clamp(0.0, 1.0)
-        };
-        return_vec.push(SimpleItem {
+
+        return_vec.push(AppItem {
             id: None,
             display_name: i18n("System Processes"),
             icon: ThemedIcon::new("system-processes").into(),
             description: None,
-            executable: None,
-            memory_usage: self
-                .system_processes
-                .iter()
-                .map(|process| process.memory_usage)
-                .sum(),
+            memory_usage: system_memory_usage,
             cpu_time_ratio: system_cpu_ratio,
-            processes_amount: self.system_processes.len(),
+            processes_amount: self.processes.len(),
             containerization: Containerization::None,
         });
         return_vec
@@ -695,57 +597,47 @@ impl Apps {
     /// running processes or if there are anomalies in a process procfs
     /// directory.
     pub async fn refresh(&mut self) -> Result<()> {
-        // look for processes that might have died since we last checked
-        // and update the stats of the processes that are still alive
-        // while we're at it
-        let mut dead_app_processes = Vec::new();
-        for app in self.apps.values_mut() {
-            dead_app_processes.extend(app.refresh().await);
-        }
-        let mut dead_sys_processes = Vec::new();
-        for process in &mut self.system_processes {
-            if !process.refresh().await {
-                dead_sys_processes.push(process.proc_path.clone());
-            }
-        }
-        self.system_processes
-            .retain(|process| !dead_sys_processes.contains(&process.proc_path));
+        let newly_gathered_processes = Process::all().await?;
+        let mut updated_processes = HashSet::new();
 
-        // now get the processes that might have been added:
-        for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-            // is the current proc_path already known?
-            if self
-                .known_proc_paths
-                .iter()
-                .any(|proc_path| *proc_path == entry)
-            {
-                // if so, we can continue
-                continue;
-            }
-            // if not, insert it into our known_proc_paths
-            let process = Process::try_from_path(entry.clone()).await?;
-            if let Some(app) = self
-                .apps
-                .get_mut(process.cgroup.as_deref().unwrap_or_default())
-            {
-                app.processes.insert(process.pid, process);
+        for mut refreshed_process in newly_gathered_processes {
+            updated_processes.insert(refreshed_process.data.pid);
+            // refresh our old processes
+            if let Some(old_process) = self.processes.get_mut(&refreshed_process.data.pid) {
+                old_process.cpu_time_before = old_process.data.cpu_time;
+                old_process.cpu_time_before_timestamp = old_process.data.cpu_time_timestamp;
+                old_process.data = refreshed_process.data.clone();
             } else {
-                self.system_processes.push(process);
+                // this is a new process, see if it belongs to a graphical app
+
+                if self
+                    .processes_assigned_to_apps
+                    .contains(&refreshed_process.data.pid)
+                {
+                    continue;
+                }
+
+                if let Some(app) = self
+                    .apps
+                    .get_mut(refreshed_process.data.cgroup.as_deref().unwrap_or_default())
+                {
+                    self.processes_assigned_to_apps
+                        .insert(refreshed_process.data.pid);
+                    app.add_process(&mut refreshed_process);
+                }
+
+                self.processes
+                    .insert(refreshed_process.data.pid, refreshed_process);
             }
-            self.known_proc_paths.push(entry);
         }
 
-        // we still have to remove the processes that died from
-        // known_proc_paths
-        for dead_process in dead_app_processes.iter().chain(dead_sys_processes.iter()) {
-            if let Some(pos) = self
-                .known_proc_paths
-                .iter()
-                .position(|x| *x == *dead_process)
-            {
-                self.known_proc_paths.swap_remove(pos);
+        // all the not-updated processes have unfortunately died, probably
+        for process in self.processes.values_mut() {
+            if !updated_processes.contains(&process.data.pid) {
+                process.alive = false;
             }
         }
+
         Ok(())
     }
 }

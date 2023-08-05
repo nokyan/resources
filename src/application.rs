@@ -74,9 +74,9 @@ glib::wrapper! {
 impl Application {
     pub fn new() -> Self {
         glib::Object::builder::<Self>()
-            .property("application-id", &Some(APP_ID))
-            .property("flags", &gio::ApplicationFlags::empty())
-            .property("resource-base-path", &Some("/me/nalux/Resources/"))
+            .property("application-id", Some(APP_ID))
+            .property("flags", gio::ApplicationFlags::empty())
+            .property("resource-base-path", Some("/me/nalux/Resources/"))
             .build()
     }
 

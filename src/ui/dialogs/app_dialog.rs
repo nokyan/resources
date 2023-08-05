@@ -4,7 +4,7 @@ use gtk::glib;
 use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::ui::window::MainWindow;
-use crate::utils::processes::{Containerization, SimpleItem};
+use crate::utils::processes::{AppItem, Containerization};
 use crate::utils::units::{to_largest_unit, Base};
 
 mod imp {
@@ -78,12 +78,12 @@ impl ResAppDialog {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self, app: &SimpleItem) {
+    pub fn init(&self, app: &AppItem) {
         self.set_transient_for(Some(&MainWindow::default()));
         self.setup_widgets(app);
     }
 
-    pub fn setup_widgets(&self, app: &SimpleItem) {
+    pub fn setup_widgets(&self, app: &AppItem) {
         let imp = self.imp();
 
         imp.icon.set_gicon(Some(&app.icon));

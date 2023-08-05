@@ -4,9 +4,16 @@ version = "0.1.0"
 authors = ["nokyan <nokyan@tuta.io>"]
 edition = "2021"
 
+[profile.dev]
+opt-level = 1
+
+[profile.release]
+opt-level = 3
+strip = true
+lto = true
+
 [dependencies]
 async-std = { version = "1.12.0", features = ["attributes"] }
-futures = "0.3.28"
 pci-ids = "0.2.5"
 glob = "0.3.1"
 anyhow = "1.0.71"
@@ -29,3 +36,8 @@ plotters = { version = "0.3.4", default_features = false, features = [
     "area_series",
 ] }
 plotters-cairo = "0.4.0"
+serde = { version = "1.0.180", features = ["serde_derive"] }
+rmp-serde = "1.1.2"
+async-process = "1.7.0"
+rust-ini = "0.19.0"
+gtk-macros = "0.3.0"

@@ -4,7 +4,7 @@ use gtk::glib;
 use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::ui::window::MainWindow;
-use crate::utils::processes::{Containerization, Process};
+use crate::utils::processes::{Containerization, ProcessItem};
 use crate::utils::units::{to_largest_unit, Base};
 
 mod imp {
@@ -78,15 +78,15 @@ impl ResProcessDialog {
         glib::Object::new::<Self>()
     }
 
-    pub fn init<S: AsRef<str>>(&self, process: &Process, user: S) {
+    pub fn init<S: AsRef<str>>(&self, process: &ProcessItem, user: S) {
         self.set_transient_for(Some(&MainWindow::default()));
         self.setup_widgets(process, user.as_ref());
     }
 
-    pub fn setup_widgets(&self, process: &Process, user: &str) {
+    pub fn setup_widgets(&self, process: &ProcessItem, user: &str) {
         let imp = self.imp();
 
-        imp.name.set_label(&process.comm);
+        imp.name.set_label(&process.display_name);
 
         imp.cpu_usage.set_info_label(&i18n("N/A"));
 

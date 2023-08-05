@@ -6,6 +6,10 @@ use once_cell::sync::OnceCell;
 use regex::Regex;
 use serde_json::Value;
 
+use crate::utils::flatpak_app_path;
+
+use super::{is_flatpak, FLATPAK_SPAWN};
+
 static RE_SPEED: OnceCell<Regex> = OnceCell::new();
 static RE_FORMFACTOR: OnceCell<Regex> = OnceCell::new();
 static RE_TYPE: OnceCell<Regex> = OnceCell::new();
@@ -62,7 +66,7 @@ pub struct MemoryDevice {
     pub installed: bool,
 }
 
-fn parse_dmidecode(dmi: String) -> Vec<MemoryDevice> {
+fn parse_dmidecode(dmi: &str) -> Vec<MemoryDevice> {
     let mut devices = Vec::new();
 
     let device_strings = dmi.split("\n\n");
@@ -108,12 +112,26 @@ pub fn get_memory_devices() -> Result<Vec<MemoryDevice>> {
     if output.status.code().unwrap_or(1) == 1 {
         bail!("no permission")
     }
-    Ok(parse_dmidecode(String::from_utf8(output.stdout)?))
+    Ok(parse_dmidecode(String::from_utf8(output.stdout)?.as_str()))
 }
 
 pub fn pkexec_get_memory_devices() -> Result<Vec<MemoryDevice>> {
-    let output = Command::new("pkexec")
-        .args(["--disable-internal-agent", "dmidecode", "-t", "17", "-q"])
-        .output()?;
-    Ok(parse_dmidecode(String::from_utf8(output.stdout)?))
+    let output = if is_flatpak() {
+        Command::new(FLATPAK_SPAWN)
+            .args([
+                "--host",
+                "/usr/bin/pkexec",
+                "--disable-internal-agent",
+                &format!("{}/bin/dmidecode", flatpak_app_path()),
+                "-t",
+                "17",
+                "-q",
+            ])
+            .output()?
+    } else {
+        Command::new("pkexec")
+            .args(["--disable-internal-agent", "dmidecode", "-t", "17", "-q"])
+            .output()?
+    };
+    Ok(parse_dmidecode(String::from_utf8(output.stdout)?.as_str()))
 }

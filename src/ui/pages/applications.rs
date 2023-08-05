@@ -1,24 +1,30 @@
 use std::cell::Ref;
 
+use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
-use adw::{ResponseAppearance, Toast};
-use gtk::glib::{self, clone, timeout_future_seconds, BoxedAnyObject, MainContext, Object};
+use gtk::glib::{self, clone, BoxedAnyObject, Object, Sender};
 use gtk::{gio, CustomSorter, FilterChange, Ordering, SortType};
+use gtk_macros::send;
+
+use log::error;
 
 use crate::config::PROFILE;
-use crate::i18n::{i18n, i18n_f};
+use crate::i18n::i18n;
 use crate::ui::dialogs::app_dialog::ResAppDialog;
 use crate::ui::widgets::application_name_cell::ResApplicationNameCell;
-use crate::ui::window::MainWindow;
-use crate::utils::processes::{App, Apps, ProcessAction, SimpleItem};
+use crate::ui::window::{self, Action, MainWindow};
+use crate::utils::processes::{AppItem, AppsContext, ProcessAction};
 use crate::utils::units::{to_largest_unit, Base};
 
 mod imp {
     use std::cell::RefCell;
 
+    use crate::ui::window::Action;
+
     use super::*;
 
-    use gtk::CompositeTemplate;
+    use gtk::{glib::Sender, CompositeTemplate};
+    use once_cell::sync::OnceCell;
 
     #[derive(Debug, CompositeTemplate, Default)]
     #[template(resource = "/me/nalux/Resources/ui/pages/applications.ui")]
@@ -38,13 +44,14 @@ mod imp {
         #[template_child]
         pub end_application_button: TemplateChild<adw::SplitButton>,
 
-        pub apps: RefCell<Apps>,
         pub store: RefCell<gio::ListStore>,
         pub selection_model: RefCell<gtk::SingleSelection>,
         pub filter_model: RefCell<gtk::FilterListModel>,
         pub sort_model: RefCell<gtk::SortListModel>,
         pub column_view: RefCell<gtk::ColumnView>,
         pub open_dialog: RefCell<Option<(String, ResAppDialog)>>,
+
+        pub sender: OnceCell<Sender<Action>>,
     }
 
     #[glib::object_subclass]
@@ -116,10 +123,12 @@ impl ResApplications {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self) {
+    pub fn init(&self, sender: Sender<Action>) {
+        let imp = self.imp();
+        imp.sender.set(sender).unwrap();
+
         self.setup_widgets();
         self.setup_signals();
-        self.setup_listener();
     }
 
     pub fn setup_widgets(&self) {
@@ -162,7 +171,7 @@ impl ResApplications {
                 .downcast::<ResApplicationNameCell>()
                 .unwrap();
             let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<SimpleItem> = entry.borrow();
+            let r: Ref<AppItem> = entry.borrow();
             child.set_name(&r.display_name);
             child.set_icon(Some(&r.icon));
         });
@@ -170,11 +179,11 @@ impl ResApplications {
             let item_a = a
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<SimpleItem>();
+                .borrow::<AppItem>();
             let item_b = b
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<SimpleItem>();
+                .borrow::<AppItem>();
             item_a.display_name.cmp(&item_b.display_name).into()
         });
         name_col.set_sorter(Some(&name_col_sorter));
@@ -196,7 +205,7 @@ impl ResApplications {
                 .downcast::<gtk::Inscription>()
                 .unwrap();
             let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<SimpleItem> = entry.borrow();
+            let r: Ref<AppItem> = entry.borrow();
             let (number, prefix) = to_largest_unit(r.memory_usage as f64, &Base::Decimal);
             child.set_text(Some(&format!("{number:.1} {prefix}B")));
         });
@@ -204,11 +213,11 @@ impl ResApplications {
             let item_a = a
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<SimpleItem>();
+                .borrow::<AppItem>();
             let item_b = b
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<SimpleItem>();
+                .borrow::<AppItem>();
             item_a.memory_usage.cmp(&item_b.memory_usage).into()
         });
         memory_col.set_sorter(Some(&memory_col_sorter));
@@ -230,18 +239,18 @@ impl ResApplications {
                 .downcast::<gtk::Inscription>()
                 .unwrap();
             let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<SimpleItem> = entry.borrow();
+            let r: Ref<AppItem> = entry.borrow();
             child.set_text(Some(&format!("{:.1} %", r.cpu_time_ratio * 100.0)));
         });
         let cpu_col_sorter = CustomSorter::new(move |a, b| {
             let item_a = a
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<SimpleItem>();
+                .borrow::<AppItem>();
             let item_b = b
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<SimpleItem>();
+                .borrow::<AppItem>();
             // we have to do this because f32s do not implement `Ord`
             if item_a.cpu_time_ratio > item_b.cpu_time_ratio {
                 Ordering::Larger
@@ -261,14 +270,6 @@ impl ResApplications {
         imp.applications_scrolled_window
             .set_child(Some(&column_view));
         *imp.column_view.borrow_mut() = column_view;
-
-        *imp.apps.borrow_mut() = futures::executor::block_on(Apps::new()).unwrap();
-        imp.apps
-            .borrow()
-            .simple()
-            .iter()
-            .map(|simple_item| BoxedAnyObject::new(simple_item.clone()))
-            .for_each(|item_box| imp.store.borrow().append(&item_box));
     }
 
     pub fn setup_signals(&self) {
@@ -281,7 +282,7 @@ impl ResApplications {
                     object
                     .downcast::<BoxedAnyObject>()
                     .unwrap()
-                    .borrow::<SimpleItem>()
+                    .borrow::<AppItem>()
                     .clone()
                     .id
                     .is_none()
@@ -320,7 +321,7 @@ impl ResApplications {
                     object
                     .downcast::<BoxedAnyObject>()
                     .unwrap()
-                    .borrow::<SimpleItem>()
+                    .borrow::<AppItem>()
                     .clone()
                 });
                 if let Some(selection) = selection_option {
@@ -337,23 +338,12 @@ impl ResApplications {
             }));
     }
 
-    pub fn setup_listener(&self) {
-        // TODO: don't use unwrap()
-        let main_context = MainContext::default();
-        main_context.spawn_local(clone!(@strong self as this => async move {
-            loop {
-                timeout_future_seconds(2).await;
-                this.refresh_apps_list().await;
-            }
-        }));
-    }
-
     fn search_filter(&self, obj: &Object) -> bool {
         let imp = self.imp();
         let item = obj
             .downcast_ref::<BoxedAnyObject>()
             .unwrap()
-            .borrow::<SimpleItem>()
+            .borrow::<AppItem>()
             .clone();
         let search_string = imp.search_entry.text().to_string().to_lowercase();
         !imp.search_revealer.reveals_child()
@@ -365,7 +355,7 @@ impl ResApplications {
                 .contains(&search_string)
     }
 
-    fn get_selected_simple_item(&self) -> Option<SimpleItem> {
+    fn get_selected_app_item(&self) -> Option<AppItem> {
         self.imp()
             .selection_model
             .borrow()
@@ -374,15 +364,14 @@ impl ResApplications {
                 object
                     .downcast::<BoxedAnyObject>()
                     .unwrap()
-                    .borrow::<SimpleItem>()
+                    .borrow::<AppItem>()
                     .clone()
             })
     }
 
-    async fn refresh_apps_list(&self) {
+    pub fn refresh_apps_list(&self, apps: &AppsContext) {
         let imp = self.imp();
         let selection = imp.selection_model.borrow();
-        let mut apps = imp.apps.borrow_mut();
 
         // if we reuse the old ListStore, for some reason setting the
         // vadjustment later just doesn't work most of the time.
@@ -395,21 +384,20 @@ impl ResApplications {
         // refreshed apps and stats, then reselect the remembered app.
         // TODO: make this even less hacky
         let selected_item = self
-            .get_selected_simple_item()
+            .get_selected_app_item()
             .map(|simple_item| simple_item.id);
-        if apps.refresh().await.is_ok() {
-            apps.simple()
-                .iter()
-                .map(|simple_item| {
-                    if let Some((id, dialog)) = &*imp.open_dialog.borrow() && simple_item.id.clone().unwrap_or_default().as_str() == id.as_str() {
-                        dialog.set_cpu_usage(simple_item.cpu_time_ratio);
-                        dialog.set_memory_usage(simple_item.memory_usage);
-                        dialog.set_processes_amount(simple_item.processes_amount);
-                    }
-                    BoxedAnyObject::new(simple_item.clone())
-                })
-                .for_each(|item_box| new_store.append(&item_box));
-        }
+        apps.app_items()
+            .iter()
+            .map(|simple_item| {
+                if let Some((id, dialog)) = &*imp.open_dialog.borrow() && simple_item.id.clone().unwrap_or_default().as_str() == id.as_str() {
+                    dialog.set_cpu_usage(simple_item.cpu_time_ratio);
+                    dialog.set_memory_usage(simple_item.memory_usage);
+                    dialog.set_processes_amount(simple_item.processes_amount);
+                }
+                BoxedAnyObject::new(simple_item.clone())
+            })
+            .for_each(|item_box| new_store.append(&item_box));
+
         imp.filter_model.borrow().set_model(Some(&new_store));
         *imp.store.borrow_mut() = new_store;
 
@@ -423,7 +411,7 @@ impl ResApplications {
                         .unwrap()
                         .downcast::<BoxedAnyObject>()
                         .unwrap()
-                        .borrow::<SimpleItem>()
+                        .borrow::<AppItem>()
                         .id
                         == selected_item
                 })
@@ -434,34 +422,16 @@ impl ResApplications {
         }
     }
 
-    fn get_selected_app(&self) -> Option<App> {
-        let apps = &self.imp().apps.borrow().apps;
+    fn execute_process_action(&self, app: AppItem, action: ProcessAction) {
+        let imp = self.imp();
 
-        self.get_selected_simple_item()
-            .and_then(|simple_item| simple_item.id)
-            .and_then(|id| apps.get(&id).cloned())
+        send!(
+            imp.sender.get().unwrap(),
+            Action::ManipulateApp(action, app.id.unwrap(), self.imp().toast_overlay.get())
+        );
     }
 
-    fn execute_process_action(&self, app: &App, action: ProcessAction) {
-        let res = app.execute_process_action(action);
-
-        let processes_tried = res.len();
-        let processes_successful = res.iter().flatten().count();
-        let processes_unsuccessful = processes_tried - processes_successful;
-
-        #[rustfmt::skip]
-        let toast_message = match processes_unsuccessful {
-            0 => i18n_f("{} {}", &[get_action_success(action), &app.display_name()]),
-            1 => i18n(get_action_failure(action)),
-            _ => i18n_f("{} {} processes", &[get_action_failure_multiple(action), &processes_unsuccessful.to_string()]),
-        };
-
-        self.imp()
-            .toast_overlay
-            .add_toast(Toast::new(&toast_message));
-    }
-
-    pub fn execute_process_action_dialog(&self, app: &App, action: ProcessAction) {
+    pub fn execute_process_action_dialog(&self, app: AppItem, action: ProcessAction) {
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
             self.execute_process_action(app, action);
@@ -472,14 +442,11 @@ impl ResApplications {
         let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(i18n_f(
-                "{} {}?",
-                &[get_action_name(action), &app.display_name()],
-            ))
-            .body(i18n(get_action_warning(action)))
+            .heading(window::get_action_name(action, &[&app.display_name]))
+            .body(window::get_app_action_warning(action))
             .build();
 
-        dialog.add_response("yes", &i18n(get_action_description(action)));
+        dialog.add_response("yes", &window::get_app_action_description(action));
         dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
 
         dialog.add_response("no", &i18n("Cancel"));
@@ -491,7 +458,7 @@ impl ResApplications {
             None,
             clone!(@strong self as this, @strong app => move |_, response| {
                 if response == "yes" {
-                    this.execute_process_action(&app, action);
+                    this.execute_process_action(app.clone(), action);
                 }
             }),
         );
@@ -500,62 +467,8 @@ impl ResApplications {
     }
 
     pub fn execute_process_action_dialog_selected_app(&self, action: ProcessAction) {
-        if let Some(app) = self.get_selected_app() {
-            self.execute_process_action_dialog(&app, action);
+        if let Some(app) = self.get_selected_app_item() {
+            self.execute_process_action_dialog(app, action);
         }
-    }
-}
-
-const fn get_action_name(action: ProcessAction) -> &'static str {
-    match action {
-        ProcessAction::TERM => "End",
-        ProcessAction::STOP => "Halt",
-        ProcessAction::KILL => "Kill",
-        ProcessAction::CONT => "Continue",
-    }
-}
-
-const fn get_action_warning(action: ProcessAction) -> &'static str {
-    match action {
-            ProcessAction::TERM => "Unsaved work might be lost.",
-            ProcessAction::STOP => "Halting an application can come with serious risks such as losing data and security implications. Use with caution.",
-            ProcessAction::KILL => "Killing an application can come with serious risks such as losing data and security implications. Use with caution.",
-            ProcessAction::CONT => "",
-        }
-}
-
-const fn get_action_description(action: ProcessAction) -> &'static str {
-    match action {
-        ProcessAction::TERM => "End application",
-        ProcessAction::STOP => "Halt application",
-        ProcessAction::KILL => "Kill application",
-        ProcessAction::CONT => "Continue application",
-    }
-}
-
-const fn get_action_success(action: ProcessAction) -> &'static str {
-    match action {
-        ProcessAction::TERM => "Successfully ended",
-        ProcessAction::STOP => "Successfully halted",
-        ProcessAction::KILL => "Successfully killed",
-        ProcessAction::CONT => "Successfully continued",
-    }
-}
-
-const fn get_action_failure(action: ProcessAction) -> &'static str {
-    match action {
-        ProcessAction::TERM => "There was a problem ending a process",
-        ProcessAction::STOP => "There was a problem halting a process",
-        ProcessAction::KILL => "There was a problem killing a process",
-        ProcessAction::CONT => "There was a problem continuing a process",
-    }
-}
-
-const fn get_action_failure_multiple(action: ProcessAction) -> &'static str {
-    match action {
-        ProcessAction::TERM => "There were problems ending",
-        ProcessAction::STOP => "There were problems halting",
-        ProcessAction::KILL => "There were problems killing",
-        ProcessAction::CONT => "There were problems continuing",
     }
 }

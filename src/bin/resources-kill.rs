@@ -1,11 +1,26 @@
 #![feature(let_chains)]
 
-use std::{env, process::Command};
+use std::env;
+
+use nix::{sys::signal, unistd::Pid};
 
 fn main() {
-    if let Some(arg) = env::args().nth(1) && let Some(pid) = env::args().nth(2){
-        let ret_value = Command::new("kill").args(["-s", &arg, &pid]).output().unwrap().status.code().unwrap_or(1);
-        std::process::exit(ret_value);
+    if let Some(arg) = env::args().nth(1) && let Some(pid) = env::args().nth(2).and_then(|s| s.trim().parse().ok()) {
+        let signal = match arg.as_str() {
+            "STOP" => signal::Signal::SIGSTOP,
+            "CONT" => signal::Signal::SIGCONT,
+            "TERM" => signal::Signal::SIGTERM,
+            "KILL" => signal::Signal::SIGKILL,
+            _ => std::process::exit(1),
+        };
+        let result = signal::kill(Pid::from_raw(pid), Some(signal));
+        if let Err(err) = result {
+            match err {
+                nix::errno::Errno::EPERM => std::process::exit(2),
+                _ => std::process::exit(1),
+            };
+        }
+        std::process::exit(0);
     };
     std::process::exit(1);
 }
