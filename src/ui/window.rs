@@ -197,18 +197,15 @@ impl MainWindow {
             *imp.apps_context.borrow_mut() = AppsContext::new().await.unwrap();
 
             let gpus = GPU::get_gpus().await.unwrap_or_default();
-            let mut i = 1;
-            for gpu in &gpus {
+            for (i, gpu) in gpus.iter().enumerate() {
                 let page = ResGPU::new();
                 page.init(gpu.clone(), i);
                 if gpus.len() > 1 {
                     imp.content_stack
                         .add_titled(&page, None, &i18n_f("GPU {}", &[&i.to_string()]));
-                    i += 1;
                 } else {
                     imp.content_stack
                         .add_titled(&page, None, &i18n("GPU"));
-                    i += 1;
                 }
             }
 
@@ -228,7 +225,7 @@ impl MainWindow {
                     let _ = imp.apps_context.borrow_mut().refresh().await;
                     imp.applications.refresh_apps_list(&imp.apps_context.borrow());
                     imp.processes.refresh_processes_list(&imp.apps_context.borrow());
-                    timeout_future_seconds(3).await;
+                    timeout_future_seconds(2).await;
                 }
             });
         }));

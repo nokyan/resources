@@ -5,7 +5,6 @@ use std::env;
 use nix::{sys::signal, unistd::Pid};
 
 fn main() {
-    println!("{:#?}", env::args().collect::<Vec<String>>());
     if let Some(arg) = env::args().nth(1) && let Some(pid) = env::args().nth(2).and_then(|s| s.trim().parse().ok()) {
         let signal = match arg.as_str() {
             "STOP" => signal::Signal::SIGSTOP,

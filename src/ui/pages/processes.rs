@@ -63,20 +63,33 @@ mod imp {
         type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
-            klass.install_action("processes.kill-process", None, move |resprocesses, _, _| {
-                resprocesses.execute_process_action_dialog_selected_process(ProcessAction::KILL);
-            });
+            klass.install_action(
+                "processes.kill-process",
+                None,
+                move |res_processes, _, _| {
+                    if let Some(app) = res_processes.get_selected_process_item() {
+                        res_processes.execute_process_action_dialog(app, ProcessAction::KILL);
+                    }
+                },
+            );
 
-            klass.install_action("processes.halt-process", None, move |resprocesses, _, _| {
-                resprocesses.execute_process_action_dialog_selected_process(ProcessAction::STOP);
-            });
+            klass.install_action(
+                "processes.halt-process",
+                None,
+                move |res_processes, _, _| {
+                    if let Some(app) = res_processes.get_selected_process_item() {
+                        res_processes.execute_process_action_dialog(app, ProcessAction::STOP);
+                    }
+                },
+            );
 
             klass.install_action(
                 "processes.continue-process",
                 None,
-                move |resprocesses, _, _| {
-                    resprocesses
-                        .execute_process_action_dialog_selected_process(ProcessAction::CONT);
+                move |res_processes, _, _| {
+                    if let Some(app) = res_processes.get_selected_process_item() {
+                        res_processes.execute_process_action_dialog(app, ProcessAction::CONT);
+                    }
                 },
             );
 
@@ -389,7 +402,9 @@ impl ResProcesses {
 
         imp.end_process_button
             .connect_clicked(clone!(@strong self as this => move |_| {
-                this.execute_process_action_dialog_selected_process(ProcessAction::TERM);
+                if let Some(app) = this.get_selected_process_item() {
+                    this.execute_process_action_dialog(app, ProcessAction::TERM);
+                }
             }));
     }
 
@@ -474,24 +489,20 @@ impl ResProcesses {
         }
     }
 
-    fn execute_process_action(&self, process: ProcessItem, action: ProcessAction) {
+    pub fn execute_process_action_dialog(&self, process: ProcessItem, action: ProcessAction) {
         let imp = self.imp();
 
-        send!(
-            imp.sender.get().unwrap(),
-            Action::ManipulateProcess(
-                action,
-                process.pid,
-                process.display_name,
-                self.imp().toast_overlay.get()
-            )
-        );
-    }
-
-    pub fn execute_process_action_dialog(&self, process: ProcessItem, action: ProcessAction) {
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
-            self.execute_process_action(process, action);
+            send!(
+                imp.sender.get().unwrap(),
+                Action::ManipulateProcess(
+                    action,
+                    process.pid,
+                    process.display_name,
+                    imp.toast_overlay.get()
+                )
+            );
             return;
         }
 
@@ -515,18 +526,21 @@ impl ResProcesses {
             None,
             clone!(@strong self as this, @strong process => move |_, response| {
                 if response == "yes" {
-                    this.execute_process_action(process.clone(), action);
+                    let imp = this.imp();
+                    send!(
+                        imp.sender.get().unwrap(),
+                        Action::ManipulateProcess(
+                            action,
+                            process.pid,
+                            process.clone().display_name,
+                            imp.toast_overlay.get()
+                        )
+                    );
                 }
             }),
         );
 
         dialog.show();
-    }
-
-    pub fn execute_process_action_dialog_selected_process(&self, action: ProcessAction) {
-        if let Some(app) = self.get_selected_process_item() {
-            self.execute_process_action_dialog(app, action);
-        }
     }
 
     fn get_user_name_by_uid(&self, uid: u32) -> String {

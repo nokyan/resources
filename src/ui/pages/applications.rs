@@ -65,8 +65,9 @@ mod imp {
                 "applications.kill-application",
                 None,
                 move |res_applications, _, _| {
-                    res_applications
-                        .execute_process_action_dialog_selected_app(ProcessAction::KILL);
+                    if let Some(app) = res_applications.get_selected_app_item() {
+                        res_applications.execute_process_action_dialog(app, ProcessAction::KILL);
+                    }
                 },
             );
 
@@ -74,8 +75,9 @@ mod imp {
                 "applications.halt-application",
                 None,
                 move |res_applications, _, _| {
-                    res_applications
-                        .execute_process_action_dialog_selected_app(ProcessAction::STOP);
+                    if let Some(app) = res_applications.get_selected_app_item() {
+                        res_applications.execute_process_action_dialog(app, ProcessAction::STOP);
+                    }
                 },
             );
 
@@ -83,8 +85,9 @@ mod imp {
                 "applications.continue-application",
                 None,
                 move |res_applications, _, _| {
-                    res_applications
-                        .execute_process_action_dialog_selected_app(ProcessAction::CONT);
+                    if let Some(app) = res_applications.get_selected_app_item() {
+                        res_applications.execute_process_action_dialog(app, ProcessAction::CONT);
+                    }
                 },
             );
 
@@ -334,7 +337,9 @@ impl ResApplications {
 
         imp.end_application_button
             .connect_clicked(clone!(@strong self as this => move |_| {
-                this.execute_process_action_dialog_selected_app(ProcessAction::TERM);
+                if let Some(app) = this.get_selected_app_item() {
+                    this.execute_process_action_dialog(app, ProcessAction::TERM);
+                }
             }));
     }
 
@@ -420,19 +425,15 @@ impl ResApplications {
         }
     }
 
-    fn execute_process_action(&self, app: AppItem, action: ProcessAction) {
+    pub fn execute_process_action_dialog(&self, app: AppItem, action: ProcessAction) {
         let imp = self.imp();
 
-        send!(
-            imp.sender.get().unwrap(),
-            Action::ManipulateApp(action, app.id.unwrap(), self.imp().toast_overlay.get())
-        );
-    }
-
-    pub fn execute_process_action_dialog(&self, app: AppItem, action: ProcessAction) {
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
-            self.execute_process_action(app, action);
+            send!(
+                imp.sender.get().unwrap(),
+                Action::ManipulateApp(action, app.id.unwrap(), self.imp().toast_overlay.get())
+            );
             return;
         }
 
@@ -456,17 +457,15 @@ impl ResApplications {
             None,
             clone!(@strong self as this, @strong app => move |_, response| {
                 if response == "yes" {
-                    this.execute_process_action(app.clone(), action);
+                    let imp = this.imp();
+                    send!(
+                        imp.sender.get().unwrap(),
+                        Action::ManipulateApp(action, app.id.clone().unwrap(), imp.toast_overlay.get())
+                    );
                 }
             }),
         );
 
         dialog.show();
-    }
-
-    pub fn execute_process_action_dialog_selected_app(&self, action: ProcessAction) {
-        if let Some(app) = self.get_selected_app_item() {
-            self.execute_process_action_dialog(app, action);
-        }
     }
 }
