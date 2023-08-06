@@ -336,6 +336,12 @@ impl MainWindow {
                 let app = apps.get_app(&id).unwrap();
                 let res = app.execute_process_action(&apps, action);
 
+                for r in res.iter() {
+                    if let Err(e) = r {
+                        log::error!("Unable to kill a process: {}", e);
+                    }
+                }
+
                 let processes_tried = res.len();
                 let processes_successful = res.iter().flatten().count();
                 let processes_unsuccessful = processes_tried - processes_successful;

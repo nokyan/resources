@@ -168,65 +168,92 @@ impl Process {
 
         // TODO: tidy this mess up
 
-        if is_flatpak() {
-            let kill_path = format!("{}/libexec/resources/resources-kill", flatpak_app_path());
-            let command = Command::new(FLATPAK_SPAWN)
+        let kill_path = if is_flatpak() {
+            format!("{}/libexec/resources/resources-kill", flatpak_app_path())
+        } else {
+            format!("{LIBEXECDIR}/resources-kill")
+        };
+
+        let status_code = if is_flatpak() {
+            Command::new(FLATPAK_SPAWN)
                 .args([
                     "--host",
                     kill_path.as_str(),
                     action_str,
                     self.data.pid.to_string().as_str(),
                 ])
-                .output()?;
-            if command.status.code().with_context(|| "no status code?")? == 0 {
-                Ok(())
-            } else if command.status.code().with_context(|| "no status code?")? == 2 {
-                let elevated_command = Command::new(FLATPAK_SPAWN)
-                    .args([
-                        "--host",
-                        "pkexec",
-                        "--disable-internal-agent",
-                        kill_path.as_str(),
-                        action_str,
-                        self.data.pid.to_string().as_str(),
-                    ])
-                    .output()?;
-                return elevated_command.status.exit_ok().with_context(|| {
-                    format!("couldn't kill {} with elevated permissions", self.data.pid)
-                });
-            } else {
-                bail!(
-                    "couldn't kill {} due to unknown reasons, status code: {}",
-                    self.data.pid,
-                    command.status.code().unwrap()
-                )
-            }
+                .output()?
+                .status
+                .code()
+                .with_context(|| "no status code?")?
         } else {
-            let kill_path = format!("{LIBEXECDIR}/resources-kill");
-            let command = Command::new(kill_path.as_str())
+            Command::new(kill_path.as_str())
                 .args([action_str, self.data.pid.to_string().as_str()])
-                .output()?;
-            if command.status.code().with_context(|| "no status code?")? == 0 {
-                Ok(())
-            } else if command.status.code().with_context(|| "no status code?")? == 2 {
-                let elevated_command = Command::new("pkexec")
-                    .args([
-                        "--disable-internal-agent",
-                        kill_path.as_str(),
-                        action_str,
-                        self.data.pid.to_string().as_str(),
-                    ])
-                    .output()?;
-                return elevated_command.status.exit_ok().with_context(|| {
-                    format!("couldn't kill {} with elevated permissions", self.data.pid)
-                });
-            } else {
-                bail!(
-                    "couldn't kill {} due to unknown reasons, status code: {}",
-                    self.data.pid,
-                    command.status.code().unwrap()
-                )
-            }
+                .output()?
+                .status
+                .code()
+                .with_context(|| "no status code?")?
+        };
+
+        if status_code == 0 || status_code == 3 {
+            // 0 := successful; 3 := process not found which we don't care
+            // about because that might happen because we killed the
+            // process' parent first, killing the child before we explicitly
+            // did
+            Ok(())
+        } else if status_code == 1 {
+            // 1 := no permissions
+            self.pkexec_execute_process_action(action_str, &kill_path)
+        } else {
+            bail!(
+                "couldn't kill {} due to unknown reasons, status code: {}",
+                self.data.pid,
+                status_code
+            )
+        }
+    }
+
+    fn pkexec_execute_process_action(&self, action: &str, kill_path: &str) -> Result<()> {
+        let status_code = if is_flatpak() {
+            Command::new(FLATPAK_SPAWN)
+                .args([
+                    "--host",
+                    "pkexec",
+                    "--disable-internal-agent",
+                    kill_path,
+                    action,
+                    self.data.pid.to_string().as_str(),
+                ])
+                .output()?
+                .status
+                .code()
+                .with_context(|| "no status code?")?
+        } else {
+            Command::new("pkexec")
+                .args([
+                    "--disable-internal-agent",
+                    kill_path,
+                    action,
+                    self.data.pid.to_string().as_str(),
+                ])
+                .output()?
+                .status
+                .code()
+                .with_context(|| "no status code?")?
+        };
+
+        if status_code == 0 || status_code == 3 {
+            // 0 := successful; 3 := process not found which we don't care
+            // about because that might happen because we killed the
+            // process' parent first, killing the child before we explicitly
+            // did
+            Ok(())
+        } else {
+            bail!(
+                "couldn't kill {} with elevated privileges due to unknown reasons, status code: {}",
+                self.data.pid,
+                status_code
+            )
         }
     }
 

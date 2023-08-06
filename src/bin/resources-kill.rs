@@ -12,16 +12,16 @@ fn main() {
             "CONT" => signal::Signal::SIGCONT,
             "TERM" => signal::Signal::SIGTERM,
             "KILL" => signal::Signal::SIGKILL,
-            _ => std::process::exit(3),
+            _ => std::process::exit(254),
         };
         let result = signal::kill(Pid::from_raw(pid), Some(signal));
         if let Err(err) = result {
             match err {
-                nix::errno::Errno::EPERM => std::process::exit(2),
-                _ => std::process::exit(4),
+                nix::errno::Errno::UnknownErrno => std::process::exit(253),
+                _ => std::process::exit(err as i32),
             };
         }
         std::process::exit(0);
     };
-    std::process::exit(1);
+    std::process::exit(255);
 }
