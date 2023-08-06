@@ -322,7 +322,10 @@ impl MainWindow {
                 if let Some(process) = apps_context.get_process(pid) {
                     let toast_message = match process.execute_process_action(action) {
                         Ok(_) => get_action_success(action, &[&display_name]),
-                        Err(_) => get_process_action_failure(action, &[&display_name]),
+                        Err(e) => {
+                            log::error!("Unable to kill process {}: {}", pid, e);
+                            get_process_action_failure(action, &[&display_name])
+                        }
                     };
                     toast_overlay.add_toast(Toast::new(&toast_message));
                 }

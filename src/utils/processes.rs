@@ -195,16 +195,16 @@ impl Process {
                     format!("couldn't kill {} with elevated permissions", self.data.pid)
                 });
             } else {
-                bail!("couldn't kill {} due to unknown reasons", self.data.pid)
+                bail!(
+                    "couldn't kill {} due to unknown reasons, status code: {}",
+                    self.data.pid,
+                    command.status.code().unwrap()
+                )
             }
         } else {
             let kill_path = format!("{LIBEXECDIR}/resources-kill");
             let command = Command::new(kill_path.as_str())
-                .args([
-                    kill_path.as_str(),
-                    action_str,
-                    self.data.pid.to_string().as_str(),
-                ])
+                .args([action_str, self.data.pid.to_string().as_str()])
                 .output()?;
             if command.status.code().with_context(|| "no status code?")? == 0 {
                 Ok(())
@@ -221,7 +221,11 @@ impl Process {
                     format!("couldn't kill {} with elevated permissions", self.data.pid)
                 });
             } else {
-                bail!("couldn't kill {} due to unknown reasons", self.data.pid)
+                bail!(
+                    "couldn't kill {} due to unknown reasons, status code: {}",
+                    self.data.pid,
+                    command.status.code().unwrap()
+                )
             }
         }
     }
