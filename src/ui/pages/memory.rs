@@ -177,7 +177,7 @@ impl ResMemory {
                 imp.swap.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {} %", used_swap_unit.0, used_swap_unit.1, total_swap_unit.0, total_swap_unit.1, (swap_fraction * 100.0) as u8));
             }
 
-            glib::Continue(true)
+            glib::ControlFlow::Continue
         });
 
         glib::timeout_add_seconds_local(1, mem_usage_update);

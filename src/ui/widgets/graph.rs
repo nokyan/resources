@@ -60,7 +60,7 @@ mod imp {
             }
 
             let bounds = gtk::graphene::Rect::new(0.0, 0.0, width as f32, height as f32);
-            let cr = snapshot.append_cairo(&bounds);
+            let cr: gtk::cairo::Context = snapshot.append_cairo(&bounds);
             let backend = CairoBackend::new(&cr, (width, height)).unwrap();
             self.plot_graph(backend).unwrap();
         }

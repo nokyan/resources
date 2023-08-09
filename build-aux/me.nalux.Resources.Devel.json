@@ -14,7 +14,6 @@
         "--env=RUST_LOG=resources=debug",
         "--env=G_MESSAGES_DEBUG=none",
         "--env=RUST_BACKTRACE=full",
-        "--socket=system-bus",
         "--share=ipc",
         "--talk-name=org.freedesktop.Flatpak",
         "--filesystem=host:ro",

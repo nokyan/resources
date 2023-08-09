@@ -84,7 +84,7 @@ mod imp {
 
     impl Default for MainWindow {
         fn default() -> Self {
-            let (sender, r) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+            let (sender, r) = glib::MainContext::channel(glib::Priority::default());
             let receiver = RefCell::new(Some(r));
 
             Self {
@@ -144,7 +144,7 @@ mod imp {
 
     impl WindowImpl for MainWindow {
         // Save window state on delete event
-        fn close_request(&self) -> gtk::Inhibit {
+        fn close_request(&self) -> glib::Propagation {
             if let Err(err) = self.obj().save_window_size() {
                 log::warn!("Failed to save window state, {}", &err);
             }
@@ -310,7 +310,7 @@ impl MainWindow {
             .for_each(|(_, v)| imp.content_stack.remove(&v)); // remove page from the UI
     }
 
-    fn process_action(&self, action: Action) -> glib::Continue {
+    fn process_action(&self, action: Action) -> glib::ControlFlow {
         let imp = self.imp();
 
         match action {
@@ -354,7 +354,7 @@ impl MainWindow {
             }
         };
 
-        glib::Continue(true)
+        glib::ControlFlow::Continue
     }
 
     fn save_window_size(&self) -> Result<(), glib::BoolError> {

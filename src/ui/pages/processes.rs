@@ -26,7 +26,7 @@ mod imp {
     use gtk::{glib::Sender, CompositeTemplate};
     use once_cell::sync::OnceCell;
 
-    #[derive(Debug, CompositeTemplate, Default)]
+    #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/me/nalux/Resources/ui/pages/processes.ui")]
     pub struct ResProcesses {
         #[template_child]
@@ -54,6 +54,28 @@ mod imp {
         pub username_cache: RefCell<HashMap<u32, String>>,
 
         pub sender: OnceCell<Sender<Action>>,
+    }
+
+    impl Default for ResProcesses {
+        fn default() -> Self {
+            Self {
+                toast_overlay: Default::default(),
+                search_revealer: Default::default(),
+                search_entry: Default::default(),
+                processes_scrolled_window: Default::default(),
+                search_button: Default::default(),
+                information_button: Default::default(),
+                end_process_button: Default::default(),
+                store: gio::ListStore::new::<BoxedAnyObject>().into(),
+                selection_model: Default::default(),
+                filter_model: Default::default(),
+                sort_model: Default::default(),
+                column_view: Default::default(),
+                open_dialog: Default::default(),
+                username_cache: Default::default(),
+                sender: Default::default(),
+            }
+        }
     }
 
     #[glib::object_subclass]
@@ -140,7 +162,7 @@ impl ResProcesses {
         let imp = self.imp();
 
         let column_view = gtk::ColumnView::new(None::<gtk::SingleSelection>);
-        let store = gio::ListStore::new(BoxedAnyObject::static_type());
+        let store = imp.store.borrow_mut();
         let filter_model = gtk::FilterListModel::new(
             Some(store.clone()),
             Some(gtk::CustomFilter::new(
@@ -156,7 +178,6 @@ impl ResProcesses {
         *imp.selection_model.borrow_mut() = selection_model;
         *imp.sort_model.borrow_mut() = sort_model;
         *imp.filter_model.borrow_mut() = filter_model;
-        *imp.store.borrow_mut() = store;
 
         let name_col_factory = gtk::SignalListItemFactory::new();
         let name_col =
@@ -445,7 +466,7 @@ impl ResProcesses {
         // vadjustment later just doesn't work most of the time.
         // so we just make a new one every refresh instead :')
         // TODO: make this less hacky
-        let new_store = gio::ListStore::new(BoxedAnyObject::static_type());
+        let new_store = gio::ListStore::new::<BoxedAnyObject>();
 
         // this might be very hacky, but remember the ID of the currently
         // selected item, clear the list model and repopulate it with the
