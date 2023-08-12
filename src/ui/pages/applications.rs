@@ -1,4 +1,5 @@
 use std::cell::Ref;
+use std::collections::HashSet;
 
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
@@ -49,7 +50,7 @@ mod imp {
         pub filter_model: RefCell<gtk::FilterListModel>,
         pub sort_model: RefCell<gtk::SortListModel>,
         pub column_view: RefCell<gtk::ColumnView>,
-        pub open_dialog: RefCell<Option<(String, ResAppDialog)>>,
+        pub open_dialog: RefCell<Option<(Option<String>, ResAppDialog)>>,
 
         pub sender: OnceCell<Sender<Action>>,
     }
@@ -351,7 +352,7 @@ impl ResApplications {
                     let app_dialog = ResAppDialog::new();
                     app_dialog.init(&selection);
                     app_dialog.show();
-                    *imp.open_dialog.borrow_mut() = Some((selection.id.unwrap_or_default(), app_dialog));
+                    *imp.open_dialog.borrow_mut() = Some((selection.id, app_dialog));
                 }
             }));
 
@@ -396,53 +397,57 @@ impl ResApplications {
 
     pub fn refresh_apps_list(&self, apps: &AppsContext) {
         let imp = self.imp();
-        let selection = imp.selection_model.borrow();
 
-        // if we reuse the old ListStore, for some reason setting the
-        // vadjustment later just doesn't work most of the time.
-        // so we just make a new one every refresh instead :')
-        // TODO: make this less hacky
-        let new_store = gio::ListStore::new::<BoxedAnyObject>();
+        let store = imp.store.borrow_mut();
+        let model = imp.filter_model.borrow();
+        let mut dialog_opt = &*imp.open_dialog.borrow_mut();
 
-        // this might be very hacky, but remember the ID of the currently
-        // selected item, clear the list model and repopulate it with the
-        // refreshed apps and stats, then reselect the remembered app.
-        // TODO: make this even less hacky
-        let selected_item = self.get_selected_app_item().map(|app_item| app_item.id);
-        apps.app_items()
-            .iter()
-            .map(|app_item| {
-                if let Some((id, dialog)) = &*imp.open_dialog.borrow() && app_item.id.clone().unwrap_or_default().as_str() == id.as_str() {
-                    dialog.set_cpu_usage(app_item.cpu_time_ratio);
-                    dialog.set_memory_usage(app_item.memory_usage);
-                    dialog.set_processes_amount(app_item.processes_amount);
+        let mut new_items = apps.app_items();
+        let mut ids_to_remove = HashSet::new();
+
+        // change process entries of apps that have run before
+        store.iter::<BoxedAnyObject>().flatten().for_each(|object| {
+            let app_id = object.borrow::<AppItem>().clone().id;
+            // filter out apps that have run before but don't anymore
+            if app_id.is_some() // don't try to filter out "System Processes"
+                    && !apps
+                        .get_app(&app_id.clone().unwrap_or_default())
+                        .unwrap()
+                        .is_running(apps)
+            {
+                if let Some((dialog_id, dialog)) = dialog_opt && dialog_id.as_deref() == app_id.as_deref() {
+                    dialog.close();
+                    dialog_opt = &None;
                 }
-                BoxedAnyObject::new(app_item.clone())
-            })
-            .for_each(|item_box| new_store.append(&item_box));
-
-        imp.filter_model.borrow().set_model(Some(&new_store));
-        *imp.store.borrow_mut() = new_store;
-
-        // find the (potentially) new index of the process that was selected
-        // before the refresh and set our selection to that index
-        if let Some(selected_item) = selected_item {
-            let new_index = selection
-                .iter::<glib::Object>()
-                .position(|object| {
-                    object
-                        .unwrap()
-                        .downcast::<BoxedAnyObject>()
-                        .unwrap()
-                        .borrow::<AppItem>()
-                        .id
-                        == selected_item
-                })
-                .map(|index| index as u32);
-            if let Some(index) = new_index && index != u32::MAX {
-                selection.set_selected(index);
+                ids_to_remove.insert(app_id.clone());
             }
-        }
+            if let Some((_, new_item)) = new_items.remove_entry(&app_id) {
+                if let Some((dialog_pid, dialog)) = dialog_opt && *dialog_pid == app_id {
+                        dialog.set_cpu_usage(new_item.cpu_time_ratio);
+                        dialog.set_memory_usage(new_item.memory_usage);
+                    }
+                object.replace(new_item);
+            }
+        });
+
+        // remove apps that recently have stopped running
+        store.retain(|object| {
+            !ids_to_remove.contains(
+                &object
+                    .clone()
+                    .downcast::<BoxedAnyObject>()
+                    .unwrap()
+                    .borrow::<AppItem>()
+                    .id,
+            )
+        });
+
+        // add the processes that are new to the list
+        new_items
+            .drain()
+            .for_each(|(_, new_item)| store.append(&BoxedAnyObject::new(new_item)));
+
+        model.items_changed(0, model.n_items(), model.n_items());
     }
 
     pub fn execute_process_action_dialog(&self, app: AppItem, action: ProcessAction) {

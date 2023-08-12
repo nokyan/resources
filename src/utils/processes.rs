@@ -35,7 +35,7 @@ pub struct Process {
     pub icon: Icon,
     pub cpu_time_before: u64,
     pub cpu_time_before_timestamp: u64,
-    alive: bool,
+    pub alive: bool,
 }
 
 /// Data that could be transferred using `resources-processes`, seperated from
@@ -535,12 +535,23 @@ impl AppsContext {
         self.processes.values_mut().filter(|p| p.alive)
     }
 
-    /// Returns a `Vec` of running processes. For more info, refer to
+    /// Returns a `HashMap` of running processes. For more info, refer to
     /// `ProcessItem`.
-    pub fn process_items(&self) -> Vec<ProcessItem> {
+    pub fn process_items(&self) -> HashMap<i32, ProcessItem> {
         self.all_processes()
             .filter(|process| !process.data.commandline.is_empty()) // find a way to display procs without commandlines
-            .map(|process| ProcessItem {
+            .map(|process| {
+                (
+                    process.data.pid,
+                    self.process_item(process.data.pid).unwrap(),
+                )
+            })
+            .collect()
+    }
+
+    pub fn process_item(&self, pid: i32) -> Option<ProcessItem> {
+        if let Some(process) = self.get_process(pid) {
+            Some(ProcessItem {
                 pid: process.data.pid,
                 display_name: process.data.comm.clone(),
                 icon: process.icon.clone(),
@@ -551,16 +562,18 @@ impl AppsContext {
                 cgroup: process.data.cgroup.clone(),
                 uid: process.data.uid,
             })
-            .collect()
+        } else {
+            None
+        }
     }
 
-    /// Returns a `Vec` of running graphical applications. For more info, refer
-    /// to `AppItem`.
+    /// Returns a `HashMap` of running graphical applications. For more info,
+    /// refer to `AppItem`.
     #[must_use]
-    pub fn app_items(&self) -> Vec<AppItem> {
+    pub fn app_items(&self) -> HashMap<Option<String>, AppItem> {
         let mut app_pids = HashSet::new();
 
-        let mut return_vec = self
+        let mut return_map = self
             .apps
             .iter()
             .filter(|(_, app)| app.is_running(self) && !app.id.starts_with("xdg-desktop-portal"))
@@ -582,18 +595,21 @@ impl AppsContext {
                     Containerization::None
                 };
 
-                AppItem {
-                    id: Some(app.id.clone()),
-                    display_name: app.display_name.clone(),
-                    icon: app.icon.clone(),
-                    description: app.description.clone(),
-                    memory_usage: app.memory_usage(self),
-                    cpu_time_ratio: app.cpu_time_ratio(self),
-                    processes_amount: app.processes_iter(self).count(),
-                    containerization,
-                }
+                (
+                    Some(app.id.clone()),
+                    AppItem {
+                        id: Some(app.id.clone()),
+                        display_name: app.display_name.clone(),
+                        icon: app.icon.clone(),
+                        description: app.description.clone(),
+                        memory_usage: app.memory_usage(self),
+                        cpu_time_ratio: app.cpu_time_ratio(self),
+                        processes_amount: app.processes_iter(self).count(),
+                        containerization,
+                    },
+                )
             })
-            .collect::<Vec<AppItem>>();
+            .collect::<HashMap<Option<String>, AppItem>>();
 
         let system_cpu_ratio = self
             .all_processes()
@@ -607,17 +623,20 @@ impl AppsContext {
             .map(|process| process.data.memory_usage)
             .sum();
 
-        return_vec.push(AppItem {
-            id: None,
-            display_name: i18n("System Processes"),
-            icon: ThemedIcon::new("system-processes").into(),
-            description: None,
-            memory_usage: system_memory_usage,
-            cpu_time_ratio: system_cpu_ratio,
-            processes_amount: self.processes.len(),
-            containerization: Containerization::None,
-        });
-        return_vec
+        return_map.insert(
+            None,
+            AppItem {
+                id: None,
+                display_name: i18n("System Processes"),
+                icon: ThemedIcon::new("system-processes").into(),
+                description: None,
+                memory_usage: system_memory_usage,
+                cpu_time_ratio: system_cpu_ratio,
+                processes_amount: self.processes.len(),
+                containerization: Containerization::None,
+            },
+        );
+        return_map
     }
 
     /// Refreshes the statistics about the running applications and processes.
@@ -663,7 +682,7 @@ impl AppsContext {
         }
 
         // all the not-updated processes have unfortunately died, probably
-        for process in self.processes.values_mut() {
+        for (pid, process) in self.processes.iter_mut() {
             if !updated_processes.contains(&process.data.pid) {
                 process.alive = false;
             }

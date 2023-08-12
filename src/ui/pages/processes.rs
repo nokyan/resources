@@ -1,4 +1,5 @@
 use std::cell::Ref;
+use std::collections::HashSet;
 
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
@@ -460,54 +461,52 @@ impl ResProcesses {
 
     pub fn refresh_processes_list(&self, apps: &AppsContext) {
         let imp = self.imp();
-        let selection = imp.selection_model.borrow();
 
-        // if we reuse the old ListStore, for some reason setting the
-        // vadjustment later just doesn't work most of the time.
-        // so we just make a new one every refresh instead :')
-        // TODO: make this less hacky
-        let new_store = gio::ListStore::new::<BoxedAnyObject>();
+        let store = imp.store.borrow_mut();
+        let model = imp.filter_model.borrow();
+        let mut dialog_opt = &*imp.open_dialog.borrow_mut();
 
-        // this might be very hacky, but remember the ID of the currently
-        // selected item, clear the list model and repopulate it with the
-        // refreshed apps and stats, then reselect the remembered app.
-        // TODO: make this even less hacky
-        let selected_item = self
-            .get_selected_process_item()
-            .map(|process_item| process_item.pid);
-        apps.process_items()
-            .iter()
-            .map(|process_item| {
-                if let Some((pid, dialog)) = &*imp.open_dialog.borrow() && process_item.pid == *pid {
-                    dialog.set_cpu_usage(process_item.cpu_time_ratio);
-                    dialog.set_memory_usage(process_item.memory_usage);
+        let mut new_items = apps.process_items();
+        let mut pids_to_remove = HashSet::new();
+
+        // change process entries of processes that have existed before
+        store.iter::<BoxedAnyObject>().flatten().for_each(|object| {
+            let item_pid = object.borrow::<ProcessItem>().pid;
+            // filter out processes that have existed before but don't anymore
+            if !apps.get_process(item_pid).unwrap().alive {
+                if let Some((dialog_pid, dialog)) = dialog_opt && *dialog_pid == item_pid {
+                    dialog.close();
+                    dialog_opt = &None;
                 }
-                BoxedAnyObject::new(process_item.clone())
-            })
-            .for_each(|item_box| new_store.append(&item_box));
-
-        imp.filter_model.borrow().set_model(Some(&new_store));
-        *imp.store.borrow_mut() = new_store;
-
-        // find the (potentially) new index of the process that was selected
-        // before the refresh and set our selection to that index
-        if let Some(selected_item) = selected_item {
-            let new_index = selection
-                .iter::<glib::Object>()
-                .position(|object| {
-                    object
-                        .unwrap()
-                        .downcast::<BoxedAnyObject>()
-                        .unwrap()
-                        .borrow::<ProcessItem>()
-                        .pid
-                        == selected_item
-                })
-                .map(|index| index as u32);
-            if let Some(index) = new_index && index != u32::MAX {
-                selection.set_selected(index);
+                pids_to_remove.insert(item_pid);
             }
-        }
+            if let Some((_, new_item)) = new_items.remove_entry(&item_pid) {
+                if let Some((dialog_pid, dialog)) = dialog_opt && *dialog_pid == item_pid {
+                        dialog.set_cpu_usage(new_item.cpu_time_ratio);
+                        dialog.set_memory_usage(new_item.memory_usage);
+                    }
+                object.replace(new_item);
+            }
+        });
+
+        // remove recently deceased processes
+        store.retain(|object| {
+            !pids_to_remove.contains(
+                &object
+                    .clone()
+                    .downcast::<BoxedAnyObject>()
+                    .unwrap()
+                    .borrow::<ProcessItem>()
+                    .pid,
+            )
+        });
+
+        // add the newly started process to the store
+        new_items
+            .drain()
+            .for_each(|(_, new_item)| store.append(&BoxedAnyObject::new(new_item)));
+
+        model.items_changed(0, model.n_items(), model.n_items());
     }
 
     pub fn execute_process_action_dialog(&self, process: ProcessItem, action: ProcessAction) {
