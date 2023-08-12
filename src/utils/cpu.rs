@@ -2,18 +2,17 @@ use anyhow::{anyhow, bail, Context, Result};
 use async_std::path::PathBuf;
 use glob::glob;
 use nparse::KVStrToJson;
-use once_cell::sync::OnceCell;
 use regex::bytes::Regex;
 use serde_json::Value;
-use std::process::Command;
+use std::{process::Command, sync::OnceLock};
 
-static PROC_STAT_REGEX: OnceCell<Regex> = OnceCell::new();
+static PROC_STAT_REGEX: OnceLock<Regex> = OnceLock::new();
 
-static ZENPOWER: OnceCell<PathBuf> = OnceCell::new();
-static CORETEMP: OnceCell<PathBuf> = OnceCell::new();
-static K10TEMP: OnceCell<PathBuf> = OnceCell::new();
-static X86_PKG_TEMP: OnceCell<PathBuf> = OnceCell::new();
-static ACPI: OnceCell<PathBuf> = OnceCell::new();
+static ZENPOWER: OnceLock<PathBuf> = OnceLock::new();
+static CORETEMP: OnceLock<PathBuf> = OnceLock::new();
+static K10TEMP: OnceLock<PathBuf> = OnceLock::new();
+static X86_PKG_TEMP: OnceLock<PathBuf> = OnceLock::new();
+static ACPI: OnceLock<PathBuf> = OnceLock::new();
 
 #[derive(Debug, Clone, Default)]
 pub struct CPUInfo {

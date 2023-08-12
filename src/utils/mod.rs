@@ -1,6 +1,7 @@
+use std::sync::OnceLock;
+
 use anyhow::{Context, Result};
 use ini::Ini;
-use once_cell::sync::OnceCell;
 
 pub mod cpu;
 pub mod drive;
@@ -10,9 +11,9 @@ pub mod network;
 pub mod processes;
 pub mod units;
 
-static IS_FLATPAK: OnceCell<bool> = OnceCell::new();
+static IS_FLATPAK: OnceLock<bool> = OnceLock::new();
 
-static FLATPAK_APP_PATH: OnceCell<String> = OnceCell::new();
+static FLATPAK_APP_PATH: OnceLock<String> = OnceLock::new();
 
 static FLATPAK_SPAWN: &str = "/usr/bin/flatpak-spawn";
 

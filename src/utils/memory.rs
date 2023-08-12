@@ -1,8 +1,7 @@
-use std::process::Command;
+use std::{process::Command, sync::OnceLock};
 
 use anyhow::{bail, Context, Result};
 use nparse::KVStrToJson;
-use once_cell::sync::OnceCell;
 use regex::Regex;
 use serde_json::Value;
 
@@ -10,10 +9,10 @@ use crate::utils::flatpak_app_path;
 
 use super::{is_flatpak, FLATPAK_SPAWN};
 
-static RE_SPEED: OnceCell<Regex> = OnceCell::new();
-static RE_FORMFACTOR: OnceCell<Regex> = OnceCell::new();
-static RE_TYPE: OnceCell<Regex> = OnceCell::new();
-static RE_TYPE_DETAIL: OnceCell<Regex> = OnceCell::new();
+static RE_SPEED: OnceLock<Regex> = OnceLock::new();
+static RE_FORMFACTOR: OnceLock<Regex> = OnceLock::new();
+static RE_TYPE: OnceLock<Regex> = OnceLock::new();
+static RE_TYPE_DETAIL: OnceLock<Regex> = OnceLock::new();
 
 fn proc_meminfo() -> Result<Value, anyhow::Error> {
     std::fs::read_to_string("/proc/meminfo")

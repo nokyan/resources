@@ -3,12 +3,12 @@ use nvml_wrapper::{
     enum_wrappers::device::{Clock, TemperatureSensor},
     Nvml,
 };
-use once_cell::sync::OnceCell;
 
 use std::{
     collections::HashMap,
     convert::TryInto,
     path::{Path, PathBuf},
+    sync::OnceLock,
 };
 
 use glob::glob;
@@ -20,7 +20,7 @@ const VID_AMD: u16 = 4098;
 const VID_INTEL: u16 = 32902;
 const VID_NVIDIA: u16 = 4318;
 
-static NVML: OnceCell<Nvml> = OnceCell::new();
+static NVML: OnceLock<Nvml> = OnceLock::new();
 
 #[derive(Debug, Clone, Default)]
 pub struct GPU {

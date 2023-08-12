@@ -5,6 +5,7 @@
 // Very annoying for GObjects just impl Default when you need it
 #![allow(clippy::new_without_default)]
 #![feature(exit_status_error)]
+#![feature(once_cell_try)]
 
 pub mod application;
 pub mod config;

@@ -1498,7 +1498,6 @@ dependencies = [
  "nix",
  "nparse",
  "nvml-wrapper",
- "once_cell",
  "pci-ids",
  "plotters",
  "plotters-cairo",

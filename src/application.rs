@@ -9,13 +9,14 @@ use crate::i18n::i18n;
 use crate::ui::window::MainWindow;
 
 mod imp {
+    use std::sync::OnceLock;
+
     use super::*;
     use glib::WeakRef;
-    use once_cell::sync::OnceCell;
 
     #[derive(Debug, Default)]
     pub struct Application {
-        pub window: OnceCell<WeakRef<MainWindow>>,
+        pub window: OnceLock<WeakRef<MainWindow>>,
     }
 
     #[glib::object_subclass]

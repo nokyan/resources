@@ -18,14 +18,13 @@ use crate::utils::processes::{AppItem, AppsContext, ProcessAction};
 use crate::utils::units::{to_largest_unit, Base};
 
 mod imp {
-    use std::cell::RefCell;
+    use std::{cell::RefCell, sync::OnceLock};
 
     use crate::ui::window::Action;
 
     use super::*;
 
     use gtk::{glib::Sender, CompositeTemplate};
-    use once_cell::sync::OnceCell;
 
     #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/me/nalux/Resources/ui/pages/applications.ui")]
@@ -52,7 +51,7 @@ mod imp {
         pub column_view: RefCell<gtk::ColumnView>,
         pub open_dialog: RefCell<Option<(Option<String>, ResAppDialog)>>,
 
-        pub sender: OnceCell<Sender<Action>>,
+        pub sender: OnceLock<Sender<Action>>,
     }
 
     impl Default for ResApplications {
@@ -442,7 +441,7 @@ impl ResApplications {
             )
         });
 
-        // add the processes that are new to the list
+        // add the newly started apps to the store
         new_items
             .drain()
             .for_each(|(_, new_item)| store.append(&BoxedAnyObject::new(new_item)));

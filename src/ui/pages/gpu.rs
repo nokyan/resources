@@ -9,12 +9,13 @@ use crate::utils::units::{to_largest_unit, Base};
 use crate::utils::NaNDefault;
 
 mod imp {
+    use std::sync::OnceLock;
+
     use crate::{ui::widgets::graph_box::ResGraphBox, utils::gpu::GPU};
 
     use super::*;
 
     use gtk::CompositeTemplate;
-    use once_cell::sync::OnceCell;
 
     #[derive(Debug, CompositeTemplate, Default)]
     #[template(resource = "/me/nalux/Resources/ui/pages/gpu.ui")]
@@ -44,8 +45,8 @@ mod imp {
         #[template_child]
         pub max_power_cap: TemplateChild<ResInfoBox>,
 
-        pub gpu: OnceCell<GPU>,
-        pub number: OnceCell<usize>,
+        pub gpu: OnceLock<GPU>,
+        pub number: OnceLock<usize>,
     }
 
     #[glib::object_subclass]

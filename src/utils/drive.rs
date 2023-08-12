@@ -1,13 +1,13 @@
 use anyhow::{Context, Result};
 use async_std::stream::StreamExt;
-use once_cell::sync::OnceCell;
 use regex::Regex;
 use std::{
     collections::HashMap,
     path::{Path, PathBuf},
+    sync::OnceLock,
 };
 
-static RE_DRIVE: OnceCell<Regex> = OnceCell::new();
+static RE_DRIVE: OnceLock<Regex> = OnceLock::new();
 
 const SYS_STATS: &str = r" *(?P<read_ios>[0-9]*) *(?P<read_merges>[0-9]*) *(?P<read_sectors>[0-9]*) *(?P<read_ticks>[0-9]*) *(?P<write_ios>[0-9]*) *(?P<write_merges>[0-9]*) *(?P<write_sectors>[0-9]*) *(?P<write_ticks>[0-9]*) *(?P<in_flight>[0-9]*) *(?P<io_ticks>[0-9]*) *(?P<time_in_queue>[0-9]*) *(?P<discard_ios>[0-9]*) *(?P<discard_merges>[0-9]*) *(?P<discard_sectors>[0-9]*) *(?P<discard_ticks>[0-9]*) *(?P<flush_ios>[0-9]*) *(?P<flush_ticks>[0-9]*)";
 

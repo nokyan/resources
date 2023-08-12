@@ -1,12 +1,12 @@
 use anyhow::{anyhow, bail, Context, Result};
 use config::LIBEXECDIR;
 use glob::glob;
-use once_cell::sync::OnceCell;
 use serde::{Deserialize, Serialize};
 use std::{
     collections::{HashMap, HashSet},
     path::PathBuf,
     process::Command,
+    sync::OnceLock,
     time::SystemTime,
 };
 
@@ -19,7 +19,7 @@ use crate::{config, i18n::i18n, utils::flatpak_app_path};
 
 use super::{is_flatpak, FLATPAK_SPAWN};
 
-static PAGESIZE: OnceCell<usize> = OnceCell::new();
+static PAGESIZE: OnceLock<usize> = OnceLock::new();
 
 #[derive(Debug, Clone, Default, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Containerization {
@@ -682,7 +682,7 @@ impl AppsContext {
         }
 
         // all the not-updated processes have unfortunately died, probably
-        for (pid, process) in self.processes.iter_mut() {
+        for process in self.processes.values_mut() {
             if !updated_processes.contains(&process.data.pid) {
                 process.alive = false;
             }

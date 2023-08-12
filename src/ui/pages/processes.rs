@@ -18,14 +18,13 @@ use crate::utils::processes::{AppsContext, ProcessAction, ProcessItem};
 use crate::utils::units::{to_largest_unit, Base};
 
 mod imp {
-    use std::{cell::RefCell, collections::HashMap};
+    use std::{cell::RefCell, collections::HashMap, sync::OnceLock};
 
     use crate::{ui::window::Action, utils::processes::ProcessAction};
 
     use super::*;
 
     use gtk::{glib::Sender, CompositeTemplate};
-    use once_cell::sync::OnceCell;
 
     #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/me/nalux/Resources/ui/pages/processes.ui")]
@@ -54,7 +53,7 @@ mod imp {
 
         pub username_cache: RefCell<HashMap<u32, String>>,
 
-        pub sender: OnceCell<Sender<Action>>,
+        pub sender: OnceLock<Sender<Action>>,
     }
 
     impl Default for ResProcesses {
