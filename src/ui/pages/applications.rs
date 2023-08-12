@@ -424,6 +424,7 @@ impl ResApplications {
                 if let Some((dialog_pid, dialog)) = dialog_opt && *dialog_pid == app_id {
                         dialog.set_cpu_usage(new_item.cpu_time_ratio);
                         dialog.set_memory_usage(new_item.memory_usage);
+                        dialog.set_processes_amount(new_item.processes_amount);
                     }
                 object.replace(new_item);
             }
