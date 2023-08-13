@@ -55,7 +55,6 @@ flatpak-builder --run flatpak_app build-aux/me.nalux.Resources.Devel.json resour
 
 The following list is *roughly* in order of their importance with the most important item being first in the list.
 
-- Reduce lag from refreshing the Applications and Processes views
 - Battery usage and details
 - Preferences such as a unit selection
 - Translations
