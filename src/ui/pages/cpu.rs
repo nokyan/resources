@@ -194,7 +194,7 @@ impl ResCPU {
                 .unwrap_or_default();
             let logical_cpus = cpu_info.logical_cpus.unwrap_or(0);
             let mut old_total_usage = cpu::get_cpu_usage(None).await.unwrap_or((0, 0));
-            let mut old_thread_usages: Vec<(u64, u64)> = Vec::new();
+            let mut old_thread_usages: Vec<(u64, u64)> = Vec::with_capacity(logical_cpus);
             loop {
 
                 for i in 0..logical_cpus {
