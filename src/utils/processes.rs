@@ -433,8 +433,7 @@ impl App {
 
     #[must_use]
     pub fn cpu_time_before_timestamp(&self, apps: &AppsContext) -> u64 {
-        apps.all_processes()
-            .filter(|process| self.processes.contains(&process.data.pid))
+        self.processes_iter(apps)
             .map(|process| process.cpu_time_before_timestamp)
             .sum::<u64>()
             .checked_div(self.processes.len() as u64)
@@ -443,7 +442,10 @@ impl App {
 
     #[must_use]
     pub fn cpu_time_ratio(&self, apps: &AppsContext) -> f32 {
-        self.processes_iter(apps).map(Process::cpu_time_ratio).sum()
+        self.processes_iter(apps)
+            .map(Process::cpu_time_ratio)
+            .sum::<f32>()
+            .clamp(0.0, 1.0)
     }
 
     pub fn execute_process_action(
