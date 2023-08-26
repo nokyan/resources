@@ -245,8 +245,7 @@ impl Process {
         if status_code == 0 || status_code == 3 {
             // 0 := successful; 3 := process not found which we don't care
             // about because that might happen because we killed the
-            // process' parent first, killing the child before we explicitly
-            // did
+            // process' parent first, killing the child before we explicitly do
             Ok(())
         } else {
             bail!(
@@ -552,21 +551,17 @@ impl AppsContext {
     }
 
     pub fn process_item(&self, pid: i32) -> Option<ProcessItem> {
-        if let Some(process) = self.get_process(pid) {
-            Some(ProcessItem {
-                pid: process.data.pid,
-                display_name: process.data.comm.clone(),
-                icon: process.icon.clone(),
-                memory_usage: process.data.memory_usage,
-                cpu_time_ratio: process.cpu_time_ratio(),
-                commandline: Process::sanitize_cmdline(process.data.commandline.clone()),
-                containerization: process.data.containerization.clone(),
-                cgroup: process.data.cgroup.clone(),
-                uid: process.data.uid,
-            })
-        } else {
-            None
-        }
+        self.get_process(pid).map(|process| ProcessItem {
+            pid: process.data.pid,
+            display_name: process.data.comm.clone(),
+            icon: process.icon.clone(),
+            memory_usage: process.data.memory_usage,
+            cpu_time_ratio: process.cpu_time_ratio(),
+            commandline: Process::sanitize_cmdline(process.data.commandline.clone()),
+            containerization: process.data.containerization.clone(),
+            cgroup: process.data.cgroup.clone(),
+            uid: process.data.uid,
+        })
     }
 
     /// Returns a `HashMap` of running graphical applications. For more info,
