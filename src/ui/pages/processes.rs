@@ -570,7 +570,7 @@ impl ResProcesses {
             .borrow_mut()
             .entry(uid)
             .or_insert_with(|| {
-                users::get_user_by_uid(uid).map_or_else(
+                uzers::get_user_by_uid(uid).map_or_else(
                     || i18n("root"),
                     |user| user.name().to_string_lossy().to_string(),
                 )
