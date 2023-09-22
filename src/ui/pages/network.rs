@@ -101,8 +101,12 @@ impl ResNetwork {
                 .to_str()
                 .unwrap_or(&i18n("N/A")),
         );
-        imp.hw_address
-            .set_subtitle(&network_interface.hw_address.unwrap_or_else(|| i18n("N/A")));
+        let hw_address = network_interface.hw_address.unwrap_or_else(|| i18n("N/A"));
+        if hw_address.is_empty() {
+            imp.hw_address.set_subtitle(&i18n("N/A"));
+        } else {
+            imp.hw_address.set_subtitle(&hw_address);
+        }
     }
 
     pub fn setup_listener(&self, network_interface: NetworkInterface) {
