@@ -5,7 +5,7 @@ use adw::{prelude::*, subclass::prelude::*};
 use adw::{Toast, ToastOverlay};
 use anyhow::Result;
 use gtk::glib::{clone, timeout_future_seconds, MainContext};
-use gtk::{gio, glib};
+use gtk::{gio, glib, Widget};
 
 use crate::application::Application;
 use crate::config::{APP_ID, PROFILE};
@@ -31,8 +31,7 @@ mod imp {
 
     use crate::{
         ui::pages::{
-            applications::ResApplications, cpu::ResCPU, memory::ResMemory, network::ResNetwork,
-            processes::ResProcesses,
+            applications::ResApplications, cpu::ResCPU, memory::ResMemory, processes::ResProcesses,
         },
         utils::processes::AppsContext,
     };
@@ -48,7 +47,9 @@ mod imp {
     #[template(resource = "/me/nalux/Resources/ui/window.ui")]
     pub struct MainWindow {
         #[template_child]
-        pub flap: TemplateChild<adw::Flap>,
+        pub split_view: TemplateChild<adw::OverlaySplitView>,
+        #[template_child]
+        pub processor_window_title: TemplateChild<adw::WindowTitle>,
         #[template_child]
         pub resources_sidebar: TemplateChild<gtk::StackSidebar>,
         #[template_child]
@@ -70,9 +71,9 @@ mod imp {
         #[template_child]
         pub memory_page: TemplateChild<gtk::StackPage>,
 
-        pub drive_pages: RefCell<HashMap<PathBuf, ResDrive>>,
+        pub drive_pages: RefCell<HashMap<PathBuf, adw::ToolbarView>>,
 
-        pub network_pages: RefCell<HashMap<PathBuf, ResNetwork>>,
+        pub network_pages: RefCell<HashMap<PathBuf, adw::ToolbarView>>,
 
         pub apps_context: RefCell<AppsContext>,
 
@@ -90,7 +91,7 @@ mod imp {
             Self {
                 drive_pages: RefCell::default(),
                 network_pages: RefCell::default(),
-                flap: TemplateChild::default(),
+                split_view: TemplateChild::default(),
                 resources_sidebar: TemplateChild::default(),
                 content_stack: TemplateChild::default(),
                 applications: TemplateChild::default(),
@@ -105,6 +106,7 @@ mod imp {
                 settings: gio::Settings::new(APP_ID),
                 sender,
                 receiver,
+                processor_window_title: TemplateChild::default(),
             }
         }
     }
@@ -187,7 +189,7 @@ impl MainWindow {
 
         imp.applications.init(imp.sender.clone());
         imp.processes.init(imp.sender.clone());
-        imp.cpu.init();
+        imp.cpu.init(&imp.processor_window_title);
         imp.memory.init();
 
         let main_context = MainContext::default();
@@ -200,12 +202,15 @@ impl MainWindow {
             for (i, gpu) in gpus.iter().enumerate() {
                 let page = ResGPU::new();
                 page.init(gpu.clone(), i);
-                if gpus.len() > 1 {
-                    imp.content_stack
-                        .add_titled(&page, None, &i18n_f("GPU {}", &[&i.to_string()]));
+                let title = if gpus.len() > 1 {
+                    i18n_f("GPU {}", &[&i.to_string()])
                 } else {
-                    imp.content_stack
-                        .add_titled(&page, None, &i18n("GPU"));
+                    i18n("GPU")
+                };
+                if let Ok(gpu_name) = gpu.get_name() {
+                    this.add_page(&page, &title, &gpu_name, &title);
+                } else {
+                    this.add_page(&page, &title, &title, "");
                 }
             }
 
@@ -256,9 +261,14 @@ impl MainWindow {
                 };
 
                 let page = ResDrive::new();
-                page.init(drive, title.clone());
-                imp.content_stack.add_titled(&page, None, &title);
-                imp.drive_pages.borrow_mut().insert(path.clone(), page);
+                page.init(drive.clone());
+                /*imp.content_stack.add_titled(&page, None, &title);*/
+                let toolbar = if let Some(model) = drive.model {
+                    self.add_page(&page, &title, &model, &title)
+                } else {
+                    self.add_page(&page, &title, &title, "")
+                };
+                imp.drive_pages.borrow_mut().insert(path.clone(), toolbar);
                 still_active_drives.push(path);
             }
         }
@@ -296,9 +306,15 @@ impl MainWindow {
                     InterfaceType::Other => i18n("Network Interface"),
                 };
                 let page = ResNetwork::new();
-                page.init(interface);
-                imp.content_stack.add_titled(&page, None, &sidebar_title);
-                imp.network_pages.borrow_mut().insert(path.clone(), page);
+                page.init(interface.clone());
+                //imp.content_stack.add_titled(&page, None, &sidebar_title);
+                let toolbar = self.add_page(
+                    &page,
+                    &sidebar_title,
+                    &interface.display_name(),
+                    &sidebar_title,
+                );
+                imp.network_pages.borrow_mut().insert(path.clone(), toolbar);
                 still_active_interfaces.push(path);
             }
         }
@@ -383,6 +399,43 @@ impl MainWindow {
         if is_maximized {
             self.maximize();
         }
+    }
+
+    fn add_page(
+        &self,
+        widget: &impl IsA<Widget>,
+        sidebar_title: &str,
+        window_title: &str,
+        window_subtitle: &str,
+    ) -> adw::ToolbarView {
+        let imp = self.imp();
+
+        let title_widget = adw::WindowTitle::new(window_title, window_subtitle);
+
+        let sidebar_button = gtk::ToggleButton::new();
+        sidebar_button.set_icon_name("sidebar-show-symbolic");
+        imp.split_view
+            .bind_property("collapsed", &sidebar_button, "visible")
+            .sync_create()
+            .build();
+        imp.split_view
+            .bind_property("show-sidebar", &sidebar_button, "active")
+            .sync_create()
+            .bidirectional()
+            .build();
+
+        let header_bar = adw::HeaderBar::new();
+        header_bar.add_css_class("flat");
+        header_bar.set_title_widget(Some(&title_widget));
+        header_bar.pack_start(&sidebar_button);
+
+        let toolbar = adw::ToolbarView::new();
+        toolbar.add_top_bar(&header_bar);
+        toolbar.set_content(Some(widget));
+
+        imp.content_stack.add_titled(&toolbar, None, sidebar_title);
+
+        toolbar
     }
 }
 

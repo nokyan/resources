@@ -8,7 +8,6 @@ use crate::utils::processes::{AppItem, Containerization};
 use crate::utils::units::{to_largest_unit, Base};
 
 mod imp {
-    use crate::ui::widgets::info_box::ResInfoBox;
 
     use super::*;
 
@@ -24,15 +23,15 @@ mod imp {
         #[template_child]
         pub description: TemplateChild<gtk::Label>,
         #[template_child]
-        pub cpu_usage: TemplateChild<ResInfoBox>,
+        pub cpu_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub memory_usage: TemplateChild<ResInfoBox>,
+        pub memory_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub id: TemplateChild<ResInfoBox>,
+        pub id: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub processes_amount: TemplateChild<ResInfoBox>,
+        pub processes_amount: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub containerized: TemplateChild<ResInfoBox>,
+        pub containerized: TemplateChild<adw::ActionRow>,
     }
 
     #[glib::object_subclass]
@@ -90,9 +89,9 @@ impl ResAppDialog {
 
         imp.name.set_label(&app.display_name);
 
-        imp.cpu_usage.set_info_label(&i18n("N/A"));
+        imp.cpu_usage.set_subtitle(&i18n("N/A"));
 
-        imp.memory_usage.set_info_label(&i18n("N/A"));
+        imp.memory_usage.set_subtitle(&i18n("N/A"));
 
         if let Some(description) = &app.description {
             imp.description.set_label(description);
@@ -101,35 +100,35 @@ impl ResAppDialog {
         }
 
         if let Some(id) = &app.id {
-            imp.id.set_info_label(id);
+            imp.id.set_subtitle(id);
         } else {
             imp.id.set_visible(false);
         }
 
-        imp.processes_amount.set_info_label(&i18n("N/A"));
+        imp.processes_amount.set_subtitle(&i18n("N/A"));
 
         let containerized = match app.containerization {
             Containerization::None => i18n("No"),
             Containerization::Flatpak => i18n("Yes (Flatpak)"),
         };
-        imp.containerized.set_info_label(&containerized);
+        imp.containerized.set_subtitle(&containerized);
     }
 
     pub fn set_cpu_usage(&self, usage: f32) {
         let imp = self.imp();
         imp.cpu_usage
-            .set_info_label(&format!("{:.1} %", usage * 100.0));
+            .set_subtitle(&format!("{:.1} %", usage * 100.0));
     }
 
     pub fn set_memory_usage(&self, usage: usize) {
         let imp = self.imp();
         let (number, prefix) = to_largest_unit(usage as f64, &Base::Decimal);
         imp.memory_usage
-            .set_info_label(&format!("{number:.1} {prefix}B"));
+            .set_subtitle(&format!("{number:.1} {prefix}B"));
     }
 
     pub fn set_processes_amount(&self, amount: usize) {
         let imp = self.imp();
-        imp.processes_amount.set_info_label(&amount.to_string());
+        imp.processes_amount.set_subtitle(&amount.to_string());
     }
 }

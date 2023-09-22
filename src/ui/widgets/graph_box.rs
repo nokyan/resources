@@ -91,7 +91,7 @@ impl ResGraphBox {
         imp.title_label.set_label(str);
     }
 
-    pub fn set_info_label(&self, str: &str) {
+    pub fn set_subtitle(&self, str: &str) {
         let imp = self.imp();
         imp.info_label.set_label(str);
     }

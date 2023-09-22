@@ -429,8 +429,6 @@ impl ResProcesses {
             }));
     }
 
-    pub fn setup_listener(&self) {}
-
     fn search_filter(&self, obj: &Object) -> bool {
         let imp = self.imp();
         let item = obj
@@ -481,9 +479,9 @@ impl ResProcesses {
             }
             if let Some((_, new_item)) = new_items.remove_entry(&item_pid) {
                 if let Some((dialog_pid, dialog)) = dialog_opt && *dialog_pid == item_pid {
-                        dialog.set_cpu_usage(new_item.cpu_time_ratio);
-                        dialog.set_memory_usage(new_item.memory_usage);
-                    }
+                    dialog.set_cpu_usage(new_item.cpu_time_ratio);
+                    dialog.set_memory_usage(new_item.memory_usage);
+                }
                 object.replace(new_item);
             }
         });

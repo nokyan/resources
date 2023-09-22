@@ -266,18 +266,20 @@ impl ResApplications {
             child.set_text(Some(&format!("{:.1} %", r.cpu_time_ratio * 100.0)));
         });
         let cpu_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a
+            let ratio_a = a
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<AppItem>();
-            let item_b = b
+                .borrow::<AppItem>()
+                .cpu_time_ratio;
+            let ratio_b = b
                 .downcast_ref::<BoxedAnyObject>()
                 .unwrap()
-                .borrow::<AppItem>();
+                .borrow::<AppItem>()
+                .cpu_time_ratio;
             // we have to do this because f32s do not implement `Ord`
-            if item_a.cpu_time_ratio > item_b.cpu_time_ratio {
+            if ratio_a > ratio_b {
                 Ordering::Larger
-            } else if item_a.cpu_time_ratio < item_b.cpu_time_ratio {
+            } else if ratio_a < ratio_b {
                 Ordering::Smaller
             } else {
                 Ordering::Equal
@@ -421,11 +423,11 @@ impl ResApplications {
                 ids_to_remove.insert(app_id.clone());
             }
             if let Some((_, new_item)) = new_items.remove_entry(&app_id) {
-                if let Some((dialog_pid, dialog)) = dialog_opt && *dialog_pid == app_id {
-                        dialog.set_cpu_usage(new_item.cpu_time_ratio);
-                        dialog.set_memory_usage(new_item.memory_usage);
-                        dialog.set_processes_amount(new_item.processes_amount);
-                    }
+                if let Some((dialog_id, dialog)) = dialog_opt && *dialog_id == app_id {
+                    dialog.set_cpu_usage(new_item.cpu_time_ratio);
+                    dialog.set_memory_usage(new_item.memory_usage);
+                    dialog.set_processes_amount(new_item.processes_amount);
+                }
                 object.replace(new_item);
             }
         });

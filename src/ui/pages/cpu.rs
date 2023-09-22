@@ -12,7 +12,7 @@ use crate::utils::{cpu, NaNDefault};
 mod imp {
     use std::cell::RefCell;
 
-    use crate::ui::widgets::{graph_box::ResGraphBox, info_box::ResInfoBox};
+    use crate::ui::widgets::graph_box::ResGraphBox;
 
     use super::*;
 
@@ -21,8 +21,6 @@ mod imp {
     #[derive(Debug, CompositeTemplate, Default)]
     #[template(resource = "/me/nalux/Resources/ui/pages/cpu.ui")]
     pub struct ResCPU {
-        #[template_child]
-        pub cpu_name: TemplateChild<gtk::Label>,
         #[template_child]
         pub logical_switch: TemplateChild<gtk::Switch>,
         #[template_child]
@@ -36,19 +34,19 @@ mod imp {
         #[template_child]
         pub thread_box: TemplateChild<gtk::FlowBox>,
         #[template_child]
-        pub max_speed: TemplateChild<ResInfoBox>,
+        pub max_speed: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub logical_cpus: TemplateChild<ResInfoBox>,
+        pub logical_cpus: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub physical_cpus: TemplateChild<ResInfoBox>,
+        pub physical_cpus: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub sockets: TemplateChild<ResInfoBox>,
+        pub sockets: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub virtualization: TemplateChild<ResInfoBox>,
+        pub virtualization: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub architecture: TemplateChild<ResInfoBox>,
+        pub architecture: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub temperature: TemplateChild<ResInfoBox>,
+        pub temperature: TemplateChild<adw::ActionRow>,
         pub thread_graphs: RefCell<Vec<ResGraphBox>>,
     }
 
@@ -94,22 +92,25 @@ impl ResCPU {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self) {
-        self.setup_widgets();
+    pub fn init(&self, window_title: &adw::WindowTitle) {
+        self.setup_widgets(window_title);
         self.setup_signals();
         self.setup_listener();
     }
 
-    pub fn setup_widgets(&self) {
+    pub fn setup_widgets(&self, window_title: &adw::WindowTitle) {
         let cpu_info = cpu::cpu_info()
             .with_context(|| "unable to get CPUInfo")
             .unwrap_or_default();
         let imp = self.imp();
-        imp.cpu_name
-            .set_label(&cpu_info.model_name.unwrap_or_else(|| i18n("N/A")));
+
+        if let Some(cpu_name) = cpu_info.model_name {
+            window_title.set_title(&cpu_name);
+            window_title.set_subtitle(&i18n("Processor"))
+        }
 
         imp.total_cpu.set_title_label(&i18n("CPU"));
-        imp.total_cpu.set_info_label(&i18n("N/A"));
+        imp.total_cpu.set_subtitle(&i18n("N/A"));
         imp.total_cpu.set_data_points_max_amount(60);
         imp.total_cpu.set_graph_color(28, 113, 216);
 
@@ -121,7 +122,7 @@ impl ResCPU {
             imp.logical_switch.set_sensitive(true);
             for i in 0..logical_cpus {
                 let thread_box = ResGraphBox::new();
-                thread_box.set_info_label(&i18n_f("CPU {}", &[&(i + 1).to_string()]));
+                thread_box.set_subtitle(&i18n_f("CPU {}", &[&(i + 1).to_string()]));
                 thread_box.set_title_label(&i18n("N/A"));
                 thread_box.set_graph_height_request(72);
                 thread_box.set_data_points_max_amount(60);
@@ -135,41 +136,40 @@ impl ResCPU {
             }
         }
 
-        imp.max_speed
-            .set_info_label(&cpu_info.max_speed.map_or_else(
-                || i18n("N/A"),
-                |x| {
-                    format!(
-                        "{:.2} {}Hz",
-                        to_largest_unit(x.into(), &Base::Decimal).0,
-                        to_largest_unit(x.into(), &Base::Decimal).1
-                    )
-                },
-            ));
+        imp.max_speed.set_subtitle(&cpu_info.max_speed.map_or_else(
+            || i18n("N/A"),
+            |x| {
+                format!(
+                    "{:.2} {}Hz",
+                    to_largest_unit(x.into(), &Base::Decimal).0,
+                    to_largest_unit(x.into(), &Base::Decimal).1
+                )
+            },
+        ));
 
-        imp.logical_cpus.set_info_label(
+        imp.logical_cpus.set_subtitle(
             &cpu_info
                 .logical_cpus
                 .map_or_else(|| i18n("N/A"), |x| x.to_string()),
         );
 
-        imp.physical_cpus.set_info_label(
+        imp.physical_cpus.set_subtitle(
             &cpu_info
                 .physical_cpus
                 .map_or_else(|| i18n("N/A"), |x| x.to_string()),
         );
 
-        imp.sockets.set_info_label(
+        imp.sockets.set_subtitle(
             &cpu_info
                 .sockets
                 .map_or_else(|| i18n("N/A"), |x| x.to_string()),
         );
 
         imp.virtualization
-            .set_info_label(&cpu_info.virtualization.unwrap_or_else(|| i18n("N/A")));
+            .set_subtitle(&cpu_info.virtualization.unwrap_or_else(|| i18n("N/A")));
 
         imp.architecture
-            .set_info_label(&cpu_info.architecture.unwrap_or_else(|| i18n("N/A")));
+            .set_subtitle(&cpu_info.architecture.unwrap_or_else(|| i18n("N/A")));
     }
 
     pub fn setup_signals(&self) {
@@ -207,7 +207,7 @@ impl ResCPU {
                 let work_total_time = sum_total_delta - idle_total_delta;
                 let total_fraction = ((work_total_time as f64) / (sum_total_delta as f64)).nan_default(0.0);
                 imp.total_cpu.push_data_point(total_fraction);
-                imp.total_cpu.set_info_label(&format!("{} %", (total_fraction*100.0).round()));
+                imp.total_cpu.set_subtitle(&format!("{} %", (total_fraction*100.0).round()));
                 old_total_usage = new_total_usage;
 
                 if logical_cpus > 1 {
@@ -222,7 +222,7 @@ impl ResCPU {
                         curr_threadbox.set_title_label(&format!("{} %", (thread_fraction*100.0).round()));
                         if let Ok(freq) = cpu::get_cpu_freq(i) {
                             let (frequency, base) = to_largest_unit(freq as f64, &Base::Decimal);
-                            curr_threadbox.set_info_label(&format!("{frequency:.2} {base}Hz"));
+                            curr_threadbox.set_subtitle(&format!("{frequency:.2} {base}Hz"));
                         }
                         *old_thread_usage = new_thread_usage;
                     }
@@ -231,9 +231,9 @@ impl ResCPU {
                 let temp_unit = "C";
                 let temperature = cpu::get_temperature().await;
                 if let Ok(temp) = temperature {
-                    imp.temperature.set_info_label(&format!("{} °{temp_unit}", temp.round()));
+                    imp.temperature.set_subtitle(&format!("{} °{temp_unit}", temp.round()));
                 } else {
-                    imp.temperature.set_info_label(&i18n("N/A"));
+                    imp.temperature.set_subtitle(&i18n("N/A"));
                 }
 
                 timeout_future_seconds(1).await;

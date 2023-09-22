@@ -11,7 +11,7 @@ use crate::utils::units::{to_largest_unit, Base};
 use crate::utils::NaNDefault;
 
 mod imp {
-    use crate::ui::widgets::{graph_box::ResGraphBox, info_box::ResInfoBox};
+    use crate::ui::widgets::graph_box::ResGraphBox;
 
     use super::*;
 
@@ -29,15 +29,15 @@ mod imp {
         #[template_child]
         pub properties: TemplateChild<adw::PreferencesGroup>,
         #[template_child]
-        pub slots_used: TemplateChild<ResInfoBox>,
+        pub slots_used: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub speed: TemplateChild<ResInfoBox>,
+        pub speed: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub form_factor: TemplateChild<ResInfoBox>,
+        pub form_factor: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub memory_type: TemplateChild<ResInfoBox>,
+        pub memory_type: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub type_detail: TemplateChild<ResInfoBox>,
+        pub type_detail: TemplateChild<adw::ActionRow>,
     }
 
     #[glib::object_subclass]
@@ -132,11 +132,11 @@ impl ResMemory {
             .find(|md| md.installed)
             .map_or_else(|| i18n("N/A"), |md| md.type_detail.clone());
         imp.slots_used
-            .set_info_label(&i18n_f("{} of {}", &[slots_used.as_str(), slots.as_str()]));
-        imp.speed.set_info_label(&format!("{speed} MT/s"));
-        imp.form_factor.set_info_label(&form_factor);
-        imp.memory_type.set_info_label(&r#type);
-        imp.type_detail.set_info_label(&type_detail);
+            .set_subtitle(&i18n_f("{} of {}", &[slots_used.as_str(), slots.as_str()]));
+        imp.speed.set_subtitle(&format!("{speed} MT/s"));
+        imp.form_factor.set_subtitle(&form_factor);
+        imp.memory_type.set_subtitle(&r#type);
+        imp.type_detail.set_subtitle(&type_detail);
     }
 
     pub fn setup_signals(&self) {
@@ -166,15 +166,15 @@ impl ResMemory {
             let swap_fraction = 1.0 - (free_swap as f64 / total_swap as f64).nan_default(1.0);
 
             imp.memory.push_data_point(memory_fraction);
-            imp.memory.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {} %", used_mem_unit.0, used_mem_unit.1, total_mem_unit.0, total_mem_unit.1, (memory_fraction * 100.0) as u8));
+            imp.memory.set_subtitle(&format!("{:.2} {}B / {:.2} {}B · {} %", used_mem_unit.0, used_mem_unit.1, total_mem_unit.0, total_mem_unit.1, (memory_fraction * 100.0) as u8));
             if total_swap == 0 {
                 imp.swap.push_data_point(0.0);
                 imp.swap.set_graph_visible(false);
-                imp.swap.set_info_label(&i18n("N/A"));
+                imp.swap.set_subtitle(&i18n("N/A"));
             } else {
                 imp.swap.push_data_point(swap_fraction);
                 imp.swap.set_graph_visible(true);
-                imp.swap.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {} %", used_swap_unit.0, used_swap_unit.1, total_swap_unit.0, total_swap_unit.1, (swap_fraction * 100.0) as u8));
+                imp.swap.set_subtitle(&format!("{:.2} {}B / {:.2} {}B · {} %", used_swap_unit.0, used_swap_unit.1, total_swap_unit.0, total_swap_unit.1, (swap_fraction * 100.0) as u8));
             }
 
             glib::ControlFlow::Continue

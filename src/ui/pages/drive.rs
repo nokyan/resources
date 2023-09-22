@@ -5,14 +5,13 @@ use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
-use crate::ui::widgets::info_box::ResInfoBox;
 use crate::utils::drive::Drive;
 use crate::utils::units::{to_largest_unit, Base};
 
 mod imp {
     use std::cell::RefCell;
 
-    use crate::ui::widgets::{bool_box::ResBoolBox, graph_box::ResGraphBox};
+    use crate::ui::widgets::graph_box::ResGraphBox;
 
     use super::*;
 
@@ -22,23 +21,21 @@ mod imp {
     #[template(resource = "/me/nalux/Resources/ui/pages/drive.ui")]
     pub struct ResDrive {
         #[template_child]
-        pub drive_name: TemplateChild<gtk::Label>,
-        #[template_child]
         pub total_usage: TemplateChild<ResGraphBox>,
         #[template_child]
-        pub read: TemplateChild<ResInfoBox>,
+        pub read: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub write: TemplateChild<ResInfoBox>,
+        pub write: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub drive_type: TemplateChild<ResInfoBox>,
+        pub drive_type: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub device: TemplateChild<ResInfoBox>,
+        pub device: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub capacity: TemplateChild<ResInfoBox>,
+        pub capacity: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub writable: TemplateChild<ResBoolBox>,
+        pub writable: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub removable: TemplateChild<ResBoolBox>,
+        pub removable: TemplateChild<adw::ActionRow>,
         pub last_checked_timestamp: RefCell<u64>,
     }
 
@@ -84,25 +81,23 @@ impl ResDrive {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self, drive: Drive, fallback_title: String) {
+    pub fn init(&self, drive: Drive) {
         let imp = self.imp();
         *imp.last_checked_timestamp.borrow_mut() = SystemTime::now()
             .duration_since(SystemTime::UNIX_EPOCH)
             .map_or(0, |duration| duration.as_millis() as u64);
-        self.setup_widgets(drive.clone(), fallback_title);
+        self.setup_widgets(drive.clone());
         self.setup_listener(drive)
     }
 
-    pub fn setup_widgets(&self, drive: Drive, fallback_title: String) {
+    pub fn setup_widgets(&self, drive: Drive) {
         let main_context = MainContext::default();
         let drive_stats = clone!(@strong self as this => async move {
             let imp = this.imp();
             imp.total_usage.set_title_label("Total Usage");
             imp.total_usage.set_data_points_max_amount(60);
             imp.total_usage.set_graph_color(229, 165, 10);
-            imp.drive_name
-                .set_label(drive.model.as_ref().unwrap_or(&fallback_title));
-            imp.drive_type.set_info_label(&(match drive.drive_type {
+            imp.drive_type.set_subtitle(&(match drive.drive_type {
                 crate::utils::drive::DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),
                 crate::utils::drive::DriveType::Emmc => i18n("eMMC Storage"),
                 crate::utils::drive::DriveType::Flash => i18n("Flash Storage"),
@@ -112,17 +107,25 @@ impl ResDrive {
                 crate::utils::drive::DriveType::Unknown => i18n("N/A"),
                 crate::utils::drive::DriveType::Ssd => i18n("Solid State Drive"),
             }));
-            imp.device.set_info_label(&drive.block_device);
+            imp.device.set_subtitle(&drive.block_device);
             let formatted_capacity =
                 to_largest_unit((drive.capacity().await.unwrap_or(0) * drive.sector_size().await.unwrap_or(512)) as f64, &Base::Decimal);
-            imp.capacity.set_info_label(&format!(
+            imp.capacity.set_subtitle(&format!(
                 "{:.1} {}B",
                 formatted_capacity.0, formatted_capacity.1
             ));
-            imp.writable
-                .set_bool(drive.writable().await.unwrap_or(false));
-            imp.removable
-                .set_bool(drive.removable().await.unwrap_or(false));
+
+            if drive.writable().await.unwrap_or(false) {
+                imp.writable.set_subtitle(&i18n("Yes"));
+            } else {
+                imp.writable.set_subtitle(&i18n("No"))
+            }
+
+            if drive.removable().await.unwrap_or(false) {
+                imp.removable.set_subtitle(&i18n("Yes"));
+            } else {
+                imp.removable.set_subtitle(&i18n("No"))
+            }
         });
         main_context.spawn_local(drive_stats);
     }
@@ -156,7 +159,7 @@ impl ResDrive {
                     let percentage = f64::max(read_ratio, write_ratio).clamp(0.0, 1.0);
                     let percentage_string = format!("{} %", (percentage * 100.0) as u8);
                     imp.total_usage.push_data_point(percentage);
-                    imp.total_usage.set_info_label(&percentage_string);
+                    imp.total_usage.set_subtitle(&percentage_string);
                 }
 
                 if let (Some(read_sectors), Some(write_sectors), Some(old_read_sectors), Some(old_write_sectors)) = (disk_stats.get("read_sectors"), disk_stats.get("write_sectors"), old_stats.get("read_sectors"), old_stats.get("write_sectors")) {
@@ -166,13 +169,13 @@ impl ResDrive {
                     let write_bytes_per_second = (delta_write_sectors * hw_sector_size) as f64 / time_passed_millis * 1000.0;
                     let rbps_formatted = to_largest_unit(read_bytes_per_second, &Base::Decimal);
                     let wbps_formatted = to_largest_unit(write_bytes_per_second, &Base::Decimal);
-                    imp.read.set_info_label(&format!("{:.2} {}B/s", rbps_formatted.0, rbps_formatted.1));
-                    imp.write.set_info_label(&format!("{:.2} {}B/s", wbps_formatted.0, wbps_formatted.1));
+                    imp.read.set_subtitle(&format!("{:.2} {}B/s", rbps_formatted.0, rbps_formatted.1));
+                    imp.write.set_subtitle(&format!("{:.2} {}B/s", wbps_formatted.0, wbps_formatted.1));
                 }
 
                 let formatted_capacity =
                     to_largest_unit((drive.capacity().await.unwrap_or(0) * hw_sector_size as u64) as f64, &Base::Decimal);
-                imp.capacity.set_info_label(&format!(
+                imp.capacity.set_subtitle(&format!(
                     "{:.1} {}B",
                     formatted_capacity.0, formatted_capacity.1
                 ));
@@ -192,13 +195,17 @@ impl ResDrive {
 
     pub fn set_writable(&self, writable: bool) {
         let imp = self.imp();
-        imp.writable.set_bool(writable);
+        if writable {
+            imp.writable.set_subtitle(&i18n("Yes"));
+        } else {
+            imp.writable.set_subtitle(&i18n("No"))
+        }
     }
 
     pub fn set_capacity(&self, capacity: u64) {
         let imp = self.imp();
         let capacity_formatted = to_largest_unit(capacity as f64, &Base::Decimal);
-        imp.capacity.set_info_label(&format!(
+        imp.capacity.set_subtitle(&format!(
             "{:.1} {}B",
             capacity_formatted.0, capacity_formatted.1
         ));
