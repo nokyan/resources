@@ -4,7 +4,7 @@ use std::collections::HashSet;
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, BoxedAnyObject, Object, Sender};
-use gtk::{gio, CustomSorter, FilterChange, Ordering, SortType};
+use gtk::{gio, CustomSorter, FilterChange, Ordering, SelectionModel, SortType};
 use gtk_macros::send;
 
 use log::error;
@@ -400,7 +400,6 @@ impl ResApplications {
         let imp = self.imp();
 
         let store = imp.store.borrow_mut();
-        let model = imp.filter_model.borrow();
         let mut dialog_opt = &*imp.open_dialog.borrow_mut();
 
         let mut new_items = apps.app_items();
@@ -449,7 +448,13 @@ impl ResApplications {
             .drain()
             .for_each(|(_, new_item)| store.append(&BoxedAnyObject::new(new_item)));
 
-        model.items_changed(0, model.n_items(), model.n_items());
+        store.items_changed(0, store.n_items(), store.n_items());
+        imp.column_view
+            .borrow()
+            .set_model(None::<SelectionModel>.as_ref());
+        imp.column_view
+            .borrow()
+            .set_model(Some(&*imp.selection_model.borrow()));
     }
 
     pub fn execute_process_action_dialog(&self, app: AppItem, action: ProcessAction) {
