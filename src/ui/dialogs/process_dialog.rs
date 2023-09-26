@@ -87,9 +87,9 @@ impl ResProcessDialog {
 
         imp.name.set_label(&process.display_name);
 
-        imp.cpu_usage.set_subtitle(&i18n("N/A"));
+        self.set_cpu_usage(process.cpu_time_ratio);
 
-        imp.memory_usage.set_subtitle(&i18n("N/A"));
+        self.set_memory_usage(process.memory_usage);
 
         imp.pid.set_subtitle(&process.pid.to_string());
 

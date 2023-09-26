@@ -89,9 +89,9 @@ impl ResAppDialog {
 
         imp.name.set_label(&app.display_name);
 
-        imp.cpu_usage.set_subtitle(&i18n("N/A"));
+        self.set_cpu_usage(app.cpu_time_ratio);
 
-        imp.memory_usage.set_subtitle(&i18n("N/A"));
+        self.set_memory_usage(app.memory_usage);
 
         if let Some(description) = &app.description {
             imp.description.set_label(description);
@@ -105,7 +105,7 @@ impl ResAppDialog {
             imp.id.set_visible(false);
         }
 
-        imp.processes_amount.set_subtitle(&i18n("N/A"));
+        self.set_processes_amount(app.processes_amount);
 
         let containerized = match app.containerization {
             Containerization::None => i18n("No"),

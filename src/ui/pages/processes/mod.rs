@@ -1,10 +1,12 @@
-use std::cell::Ref;
+mod process_entry;
+mod process_name_cell;
+
 use std::collections::HashSet;
 
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone, BoxedAnyObject, Object, Sender};
-use gtk::{gio, CustomSorter, FilterChange, Ordering, SelectionModel, SortType};
+use gtk::glib::{self, clone, closure, Object, Sender};
+use gtk::{gio, CustomSorter, FilterChange, Ordering, SortType, Widget};
 use gtk_macros::send;
 
 use log::error;
@@ -12,10 +14,12 @@ use log::error;
 use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::ui::dialogs::process_dialog::ResProcessDialog;
-use crate::ui::widgets::process_name_cell::ResProcessNameCell;
 use crate::ui::window::{self, Action, MainWindow};
 use crate::utils::processes::{AppsContext, ProcessAction, ProcessItem};
 use crate::utils::units::{to_largest_unit, Base};
+
+use self::process_entry::ProcessEntry;
+use self::process_name_cell::ResProcessNameCell;
 
 mod imp {
     use std::{cell::RefCell, collections::HashMap, sync::OnceLock};
@@ -66,7 +70,7 @@ mod imp {
                 search_button: Default::default(),
                 information_button: Default::default(),
                 end_process_button: Default::default(),
-                store: gio::ListStore::new::<BoxedAnyObject>().into(),
+                store: gio::ListStore::new::<ProcessEntry>().into(),
                 selection_model: Default::default(),
                 filter_model: Default::default(),
                 sort_model: Default::default(),
@@ -162,7 +166,7 @@ impl ResProcesses {
         let imp = self.imp();
 
         let column_view = gtk::ColumnView::new(None::<gtk::SingleSelection>);
-        let store = imp.store.borrow_mut();
+        let store = gio::ListStore::new::<ProcessEntry>();
         let filter_model = gtk::FilterListModel::new(
             Some(store.clone()),
             Some(gtk::CustomFilter::new(
@@ -175,6 +179,7 @@ impl ResProcesses {
         selection_model.set_can_unselect(true);
         selection_model.set_autoselect(false);
 
+        *imp.store.borrow_mut() = store;
         *imp.selection_model.borrow_mut() = selection_model;
         *imp.sort_model.borrow_mut() = sort_model;
         *imp.filter_model.borrow_mut() = filter_model;
@@ -188,30 +193,20 @@ impl ResProcesses {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
             let row = ResProcessNameCell::new();
             item.set_child(Some(&row));
-        });
-        name_col_factory.connect_bind(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            let child = item
-                .child()
-                .unwrap()
-                .downcast::<ResProcessNameCell>()
-                .unwrap();
-            let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<ProcessItem> = entry.borrow();
-            child.set_name(&r.display_name);
-            child.set_icon(Some(&r.icon));
-            child.set_tooltip(Some(&r.commandline));
+            item.property_expression("item")
+                .chain_property::<ProcessEntry>("name")
+                .bind(&row, "name", Widget::NONE);
+            item.property_expression("item")
+                .chain_property::<ProcessEntry>("icon")
+                .bind(&row, "icon", Widget::NONE);
+            item.property_expression("item")
+                .chain_property::<ProcessEntry>("commandline")
+                .bind(&row, "tooltip", Widget::NONE);
         });
         let name_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<ProcessItem>();
-            let item_b = b
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<ProcessItem>();
-            item_a.display_name.cmp(&item_b.display_name).into()
+            let item_a = a.downcast_ref::<ProcessEntry>().unwrap();
+            let item_b = b.downcast_ref::<ProcessEntry>().unwrap();
+            item_a.name().cmp(&item_b.name()).into()
         });
         name_col.set_sorter(Some(&name_col_sorter));
 
@@ -223,28 +218,14 @@ impl ResProcesses {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
             let row = gtk::Inscription::new(None);
             item.set_child(Some(&row));
-        });
-        pid_col_factory.connect_bind(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            let child = item
-                .child()
-                .unwrap()
-                .downcast::<gtk::Inscription>()
-                .unwrap();
-            let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<ProcessItem> = entry.borrow();
-            child.set_text(Some(&r.pid.to_string()));
+            item.property_expression("item")
+                .chain_property::<ProcessEntry>("pid")
+                .bind(&row, "text", Widget::NONE);
         });
         let pid_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<ProcessItem>();
-            let item_b = b
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<ProcessItem>();
-            item_a.pid.cmp(&item_b.pid).into()
+            let item_a = a.downcast_ref::<ProcessEntry>().unwrap();
+            let item_b = b.downcast_ref::<ProcessEntry>().unwrap();
+            item_a.pid().cmp(&item_b.pid()).into()
         });
         pid_col.set_sorter(Some(&pid_col_sorter));
 
@@ -256,31 +237,15 @@ impl ResProcesses {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
             let row = gtk::Inscription::new(None);
             item.set_child(Some(&row));
+            item.property_expression("item")
+                .chain_property::<ProcessEntry>("user")
+                .bind(&row, "text", Widget::NONE);
         });
-        user_col_factory.connect_bind(clone!(@strong self as this => move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            let child = item
-                .child()
-                .unwrap()
-                .downcast::<gtk::Inscription>()
-                .unwrap();
-            let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<ProcessItem> = entry.borrow();
-            child.set_text(Some(&this.get_user_name_by_uid(r.uid)));
-        }));
-        let user_col_sorter = CustomSorter::new(clone!(@strong self as this => move |a, b| {
-            let item_a = a
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<ProcessItem>();
-            let item_b = b
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<ProcessItem>();
-            let user_a = &this.get_user_name_by_uid(item_a.uid);
-            let user_b = &this.get_user_name_by_uid(item_b.uid);
-            user_a.cmp(user_b).into()
-        }));
+        let user_col_sorter = CustomSorter::new(move |a, b| {
+            let item_a = a.downcast_ref::<ProcessEntry>().unwrap();
+            let item_b = b.downcast_ref::<ProcessEntry>().unwrap();
+            item_a.user().cmp(&item_b.user()).into()
+        });
         user_col.set_sorter(Some(&user_col_sorter));
 
         let memory_col_factory = gtk::SignalListItemFactory::new();
@@ -291,29 +256,18 @@ impl ResProcesses {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
             let row = gtk::Inscription::new(None);
             item.set_child(Some(&row));
-        });
-        memory_col_factory.connect_bind(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            let child = item
-                .child()
-                .unwrap()
-                .downcast::<gtk::Inscription>()
-                .unwrap();
-            let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<ProcessItem> = entry.borrow();
-            let (number, prefix) = to_largest_unit(r.memory_usage as f64, &Base::Decimal);
-            child.set_text(Some(&format!("{number:.1} {prefix}B")));
+            item.property_expression("item")
+                .chain_property::<ProcessEntry>("memory_usage")
+                .chain_closure::<String>(closure!(|_: Option<Object>, memory_usage: u64| {
+                    let (number, prefix) = to_largest_unit(memory_usage as f64, &Base::Decimal);
+                    format!("{number:.1} {prefix}B")
+                }))
+                .bind(&row, "text", Widget::NONE);
         });
         let memory_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<ProcessItem>();
-            let item_b = b
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<ProcessItem>();
-            item_a.memory_usage.cmp(&item_b.memory_usage).into()
+            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().memory_usage();
+            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().memory_usage();
+            item_a.cmp(&item_b).into()
         });
         memory_col.set_sorter(Some(&memory_col_sorter));
 
@@ -325,33 +279,19 @@ impl ResProcesses {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
             let row = gtk::Inscription::new(None);
             item.set_child(Some(&row));
-        });
-        cpu_col_factory.connect_bind(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            let child = item
-                .child()
-                .unwrap()
-                .downcast::<gtk::Inscription>()
-                .unwrap();
-            let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<ProcessItem> = entry.borrow();
-            child.set_text(Some(&format!("{:.1} %", r.cpu_time_ratio * 100.0)));
+            item.property_expression("item")
+                .chain_property::<ProcessEntry>("cpu_usage")
+                .chain_closure::<String>(closure!(|_: Option<Object>, cpu_usage: f32| {
+                    format!("{:.1} %", cpu_usage * 100.0)
+                }))
+                .bind(&row, "text", Widget::NONE);
         });
         let cpu_col_sorter = CustomSorter::new(move |a, b| {
-            let ratio_a = a
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<ProcessItem>()
-                .cpu_time_ratio;
-            let ratio_b = b
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<ProcessItem>()
-                .cpu_time_ratio;
-            // we have to do this because f32s do not implement `Ord`
-            if ratio_a > ratio_b {
+            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().cpu_usage();
+            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().cpu_usage();
+            if item_a > item_b {
                 Ordering::Larger
-            } else if ratio_a < ratio_b {
+            } else if item_a < item_b {
                 Ordering::Smaller
             } else {
                 Ordering::Equal
@@ -364,7 +304,7 @@ impl ResProcesses {
         column_view.append_column(&user_col);
         column_view.append_column(&memory_col);
         column_view.append_column(&cpu_col);
-        column_view.sort_by_column(Some(&cpu_col), SortType::Descending);
+        column_view.sort_by_column(Some(&memory_col), SortType::Descending);
         column_view.set_enable_rubberband(true);
         imp.processes_scrolled_window.set_child(Some(&column_view));
         *imp.column_view.borrow_mut() = column_view;
@@ -408,16 +348,14 @@ impl ResProcesses {
                 .selected_item()
                 .map(|object| {
                     object
-                    .downcast::<BoxedAnyObject>()
+                    .downcast::<ProcessEntry>()
                     .unwrap()
-                    .borrow::<ProcessItem>()
-                    .clone()
                 });
                 if let Some(selection) = selection_option {
                     let process_dialog = ResProcessDialog::new();
-                    process_dialog.init(&selection, this.get_user_name_by_uid(selection.uid));
+                    process_dialog.init(selection.process_item().as_ref().unwrap(), selection.user());
                     process_dialog.show();
-                    *imp.open_dialog.borrow_mut() = Some((selection.pid, process_dialog));
+                    *imp.open_dialog.borrow_mut() = Some((selection.pid(), process_dialog));
                 }
             }));
 
@@ -431,15 +369,11 @@ impl ResProcesses {
 
     fn search_filter(&self, obj: &Object) -> bool {
         let imp = self.imp();
-        let item = obj
-            .downcast_ref::<BoxedAnyObject>()
-            .unwrap()
-            .borrow::<ProcessItem>()
-            .clone();
+        let item = obj.downcast_ref::<ProcessEntry>().unwrap();
         let search_string = imp.search_entry.text().to_string().to_lowercase();
         !imp.search_revealer.reveals_child()
-            || item.display_name.to_lowercase().contains(&search_string)
-            || item.commandline.to_lowercase().contains(&search_string)
+            || item.name().to_lowercase().contains(&search_string)
+            || item.commandline().to_lowercase().contains(&search_string)
     }
 
     fn get_selected_process_item(&self) -> Option<ProcessItem> {
@@ -447,13 +381,7 @@ impl ResProcesses {
             .selection_model
             .borrow()
             .selected_item()
-            .map(|object| {
-                object
-                    .downcast::<BoxedAnyObject>()
-                    .unwrap()
-                    .borrow::<ProcessItem>()
-                    .clone()
-            })
+            .and_then(|object| object.downcast::<ProcessEntry>().unwrap().process_item())
     }
 
     pub fn refresh_processes_list(&self, apps: &AppsContext) {
@@ -466,8 +394,8 @@ impl ResProcesses {
         let mut pids_to_remove = HashSet::new();
 
         // change process entries of processes that have existed before
-        store.iter::<BoxedAnyObject>().flatten().for_each(|object| {
-            let item_pid = object.borrow::<ProcessItem>().pid;
+        store.iter::<ProcessEntry>().flatten().for_each(|object| {
+            let item_pid = object.pid();
             // filter out processes that have existed before but don't anymore
             if !apps.get_process(item_pid).unwrap().alive {
                 if let Some((dialog_pid, dialog)) = dialog_opt && *dialog_pid == item_pid {
@@ -481,34 +409,23 @@ impl ResProcesses {
                     dialog.set_cpu_usage(new_item.cpu_time_ratio);
                     dialog.set_memory_usage(new_item.memory_usage);
                 }
-                object.replace(new_item);
+                object.set_cpu_usage(new_item.cpu_time_ratio);
+                object.set_memory_usage(new_item.memory_usage as u64);
             }
         });
 
         // remove recently deceased processes
         store.retain(|object| {
-            !pids_to_remove.contains(
-                &object
-                    .clone()
-                    .downcast::<BoxedAnyObject>()
-                    .unwrap()
-                    .borrow::<ProcessItem>()
-                    .pid,
-            )
+            !pids_to_remove.contains(&object.clone().downcast::<ProcessEntry>().unwrap().pid())
         });
 
         // add the newly started process to the store
-        new_items
-            .drain()
-            .for_each(|(_, new_item)| store.append(&BoxedAnyObject::new(new_item)));
+        new_items.drain().for_each(|(_, new_item)| {
+            let user_name = self.get_user_name_by_uid(new_item.uid);
+            store.append(&ProcessEntry::new(new_item, &user_name))
+        });
 
         store.items_changed(0, store.n_items(), store.n_items());
-        imp.column_view
-            .borrow()
-            .set_model(None::<SelectionModel>.as_ref());
-        imp.column_view
-            .borrow()
-            .set_model(Some(&*imp.selection_model.borrow()));
     }
 
     pub fn execute_process_action_dialog(&self, process: ProcessItem, action: ProcessAction) {
