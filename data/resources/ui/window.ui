@@ -32,6 +32,9 @@
           <object class="AdwOverlaySplitView" id="split_view">
             <property name="sidebar">
               <object class="AdwToolbarView">
+                <style>
+                  <class name="undershoot-top"/>
+                </style>
                 <child type="top">
                   <object class="AdwHeaderBar">
                     <child type="end">

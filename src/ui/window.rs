@@ -187,6 +187,8 @@ impl MainWindow {
     fn setup_widgets(&self) {
         let imp = self.imp();
 
+        imp.resources_sidebar.remove_css_class("sidebar");
+
         imp.applications.init(imp.sender.clone());
         imp.processes.init(imp.sender.clone());
         imp.cpu.init(&imp.processor_window_title);
