@@ -50,8 +50,7 @@ If you use [GNOME Builder](https://apps.gnome.org/app/org.gnome.Builder/) or Vis
 
 ## Running
 
-Running Resources is as simple as typing `resources` into a terminal or running it from your application launcher. If you've built Resources using Flatpak, type `
-flatpak-builder --run flatpak_app build-aux/me.nalux.Resources.Devel.json resources` into your terminal or use one of the afforementioned IDEs to do that automatically.
+Running Resources is as simple as typing `resources` into a terminal or running it from your application launcher. If you've built Resources using Flatpak, type `flatpak-builder --run flatpak_app build-aux/me.nalux.Resources.Devel.json resources` into your terminal or use one of the afforementioned IDEs to do that automatically.
 
 ## To-do
 
