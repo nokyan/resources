@@ -9,7 +9,9 @@ Resources is a simple yet powerful monitor for your system resources and process
 
   ![Applications View of Resources](data/resources/screenshots/2.png?raw=true "Processor View of Resources")
 
-  ![Applications View of Resources](data/resources/screenshots/3.png?raw=true "Network Interface View of Resources")
+  ![Applications View of Resources](data/resources/screenshots/3.png?raw=true "GPU View of Resources")
+
+  ![Applications View of Resources](data/resources/screenshots/4.png?raw=true "Network Interface View of Resources")
   
 </details>
 
