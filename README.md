@@ -41,7 +41,7 @@ ninja -C build install
 Or, even better, use the Flatpak CLI to build:
 
 ```sh
-flatpak install --user org.gnome.Sdk//44 org.freedesktop.Sdk.Extension.rust-nightly//22.08 org.gnome.Platform//44
+flatpak install --user org.gnome.Sdk//45 org.freedesktop.Sdk.Extension.rust-nightly//23.08 org.gnome.Platform//45
 flatpak-builder --user flatpak_app build-aux/me.nalux.Resources.Devel.json
 ```
 
