@@ -420,10 +420,10 @@ impl ResProcesses {
         });
 
         // add the newly started process to the store
-        new_items.drain().for_each(|(_, new_item)| {
+        for (_, new_item) in new_items.drain() {
             let user_name = self.get_user_name_by_uid(new_item.uid);
-            store.append(&ProcessEntry::new(new_item, &user_name))
-        });
+            store.append(&ProcessEntry::new(new_item, &user_name));
+        }
 
         store.items_changed(0, store.n_items(), store.n_items());
     }
@@ -486,7 +486,8 @@ impl ResProcesses {
         let imp = self.imp();
         // cache all the user names so we don't have
         // to do expensive lookups all the time
-        (imp.username_cache
+        (*(imp
+            .username_cache
             .borrow_mut()
             .entry(uid)
             .or_insert_with(|| {
@@ -494,7 +495,7 @@ impl ResProcesses {
                     || i18n("root"),
                     |user| user.name().to_string_lossy().to_string(),
                 )
-            }))
+            })))
         .to_string()
     }
 }

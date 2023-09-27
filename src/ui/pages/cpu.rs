@@ -106,7 +106,7 @@ impl ResCPU {
 
         if let Some(cpu_name) = cpu_info.model_name {
             window_title.set_title(&cpu_name);
-            window_title.set_subtitle(&i18n("Processor"))
+            window_title.set_subtitle(&i18n("Processor"));
         }
 
         imp.total_cpu.set_title_label(&i18n("CPU"));

@@ -336,7 +336,7 @@ impl MainWindow {
                 let apps_context = imp.apps_context.borrow();
                 if let Some(process) = apps_context.get_process(pid) {
                     let toast_message = match process.execute_process_action(action) {
-                        Ok(_) => get_action_success(action, &[&display_name]),
+                        Ok(()) => get_action_success(action, &[&display_name]),
                         Err(e) => {
                             log::error!("Unable to kill process {}: {}", pid, e);
                             get_process_action_failure(action, &[&display_name])
@@ -351,7 +351,7 @@ impl MainWindow {
                 let app = apps.get_app(&id).unwrap();
                 let res = app.execute_process_action(&apps, action);
 
-                for r in res.iter() {
+                for r in &res {
                     if let Err(e) = r {
                         log::error!("Unable to kill a process: {}", e);
                     }
@@ -465,7 +465,7 @@ pub fn get_app_action_warning(action: ProcessAction) -> String {
             ProcessAction::TERM => i18n("Unsaved work might be lost."),
             ProcessAction::STOP => i18n("Halting an application can come with serious risks such as losing data and security implications. Use with caution."),
             ProcessAction::KILL => i18n("Killing an application can come with serious risks such as losing data and security implications. Use with caution."),
-            ProcessAction::CONT => "".into(),
+            ProcessAction::CONT => String::new(),
         }
 }
 

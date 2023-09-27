@@ -121,8 +121,7 @@ impl ResMemory {
         let form_factor = memory_devices
             .iter()
             .find(|md| md.installed)
-            .map(|md| md.form_factor.clone())
-            .unwrap_or_else(|| i18n("N/A"));
+            .map_or_else(|| i18n("N/A"), |md| md.form_factor.clone());
         let r#type = memory_devices
             .iter()
             .find(|md| md.installed)

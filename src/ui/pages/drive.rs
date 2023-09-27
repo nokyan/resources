@@ -118,13 +118,13 @@ impl ResDrive {
             if drive.writable().await.unwrap_or(false) {
                 imp.writable.set_subtitle(&i18n("Yes"));
             } else {
-                imp.writable.set_subtitle(&i18n("No"))
+                imp.writable.set_subtitle(&i18n("No"));
             }
 
             if drive.removable().await.unwrap_or(false) {
                 imp.removable.set_subtitle(&i18n("Yes"));
             } else {
-                imp.removable.set_subtitle(&i18n("No"))
+                imp.removable.set_subtitle(&i18n("No"));
             }
         });
         main_context.spawn_local(drive_stats);
@@ -198,7 +198,7 @@ impl ResDrive {
         if writable {
             imp.writable.set_subtitle(&i18n("Yes"));
         } else {
-            imp.writable.set_subtitle(&i18n("No"))
+            imp.writable.set_subtitle(&i18n("No"));
         }
     }
 
