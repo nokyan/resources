@@ -142,6 +142,8 @@ impl ProcessEntry {
             .property("icon", &process_item.icon)
             .property("pid", process_item.pid)
             .build();
+        this.set_cpu_usage(process_item.cpu_time_ratio);
+        this.set_memory_usage(process_item.memory_usage as u64);
         this.imp().process_item.replace(Some(process_item));
         this
     }

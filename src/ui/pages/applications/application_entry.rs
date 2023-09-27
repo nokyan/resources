@@ -137,6 +137,8 @@ impl ApplicationEntry {
             .property("icon", &app_item.icon)
             .property("id", &app_item.id)
             .build();
+        this.set_cpu_usage(app_item.cpu_time_ratio);
+        this.set_memory_usage(app_item.memory_usage as u64);
         this.imp().app_item.replace(Some(app_item));
         this
     }

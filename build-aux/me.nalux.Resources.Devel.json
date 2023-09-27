@@ -17,6 +17,7 @@
         "--env=RUST_BACKTRACE=full",
         "--share=ipc",
         "--talk-name=org.freedesktop.Flatpak",
+        "--talk-name=me.nalux.Resources",
         "--filesystem=host:ro",
         "--filesystem=xdg-data/flatpak:ro",
         "--filesystem=/var/lib/flatpak:ro",
