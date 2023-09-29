@@ -10,16 +10,21 @@ use crate::utils::units::{to_largest_unit, Base};
 use crate::utils::{cpu, NaNDefault};
 
 mod imp {
-    use std::cell::RefCell;
+    use std::cell::{Cell, RefCell};
 
     use crate::ui::widgets::graph_box::ResGraphBox;
 
     use super::*;
 
-    use gtk::CompositeTemplate;
+    use gtk::{
+        gio::{Icon, ThemedIcon},
+        glib::{ParamSpec, Properties, Value},
+        CompositeTemplate,
+    };
 
-    #[derive(Debug, CompositeTemplate, Default)]
+    #[derive(CompositeTemplate, Properties)]
     #[template(resource = "/me/nalux/Resources/ui/pages/cpu.ui")]
+    #[properties(wrapper_type = super::ResCPU)]
     pub struct ResCPU {
         #[template_child]
         pub logical_switch: TemplateChild<gtk::Switch>,
@@ -48,6 +53,52 @@ mod imp {
         #[template_child]
         pub temperature: TemplateChild<adw::ActionRow>,
         pub thread_graphs: RefCell<Vec<ResGraphBox>>,
+
+        #[property(get)]
+        uses_progress_bar: Cell<bool>,
+
+        #[property(get)]
+        icon: RefCell<Icon>,
+
+        #[property(get, set)]
+        usage: Cell<f64>,
+
+        #[property(get = Self::tab_name, type = glib::GString)]
+        tab_name: Cell<glib::GString>,
+    }
+
+    impl ResCPU {
+        pub fn tab_name(&self) -> glib::GString {
+            let tab_name = self.tab_name.take();
+            let result = tab_name.clone();
+            self.tab_name.set(tab_name);
+            result
+        }
+    }
+
+    impl Default for ResCPU {
+        fn default() -> Self {
+            Self {
+                logical_switch: Default::default(),
+                stack: Default::default(),
+                total_page: Default::default(),
+                logical_page: Default::default(),
+                total_cpu: Default::default(),
+                thread_box: Default::default(),
+                max_speed: Default::default(),
+                logical_cpus: Default::default(),
+                physical_cpus: Default::default(),
+                sockets: Default::default(),
+                virtualization: Default::default(),
+                architecture: Default::default(),
+                temperature: Default::default(),
+                thread_graphs: Default::default(),
+                uses_progress_bar: Cell::new(true),
+                icon: RefCell::new(ThemedIcon::new("processor-symbolic").into()),
+                usage: Default::default(),
+                tab_name: Cell::new(glib::GString::from(i18n("Processor"))),
+            }
+        }
     }
 
     #[glib::object_subclass]
@@ -75,6 +126,18 @@ mod imp {
             if PROFILE == "Devel" {
                 obj.add_css_class("devel");
             }
+        }
+
+        fn properties() -> &'static [ParamSpec] {
+            Self::derived_properties()
+        }
+
+        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
+            self.derived_set_property(id, value, pspec);
+        }
+
+        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
+            self.derived_property(id, pspec)
         }
     }
 
@@ -237,6 +300,8 @@ impl ResCPU {
                 } else {
                     imp.temperature.set_subtitle(&i18n("N/A"));
                 }
+
+                this.set_property("usage", total_fraction);
 
                 timeout_future_seconds(1).await;
             }

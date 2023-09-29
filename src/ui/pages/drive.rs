@@ -9,14 +9,21 @@ use crate::utils::drive::Drive;
 use crate::utils::units::{to_largest_unit, Base};
 
 mod imp {
+    use std::cell::{Cell, RefCell};
+
     use crate::ui::widgets::graph_box::ResGraphBox;
 
     use super::*;
 
-    use gtk::CompositeTemplate;
+    use gtk::{
+        gio::Icon,
+        glib::{ParamSpec, Properties, Value},
+        CompositeTemplate,
+    };
 
-    #[derive(Debug, CompositeTemplate, Default)]
+    #[derive(CompositeTemplate, Properties)]
     #[template(resource = "/me/nalux/Resources/ui/pages/drive.ui")]
+    #[properties(wrapper_type = super::ResDrive)]
     pub struct ResDrive {
         #[template_child]
         pub total_usage: TemplateChild<ResGraphBox>,
@@ -34,6 +41,61 @@ mod imp {
         pub writable: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub removable: TemplateChild<adw::ActionRow>,
+
+        #[property(get)]
+        uses_progress_bar: Cell<bool>,
+
+        #[property(get = Self::icon, set = Self::set_icon, type = Icon)]
+        icon: RefCell<Icon>,
+
+        #[property(get, set)]
+        usage: Cell<f64>,
+
+        #[property(get = Self::tab_name, set = Self::set_tab_name, type = glib::GString)]
+        tab_name: Cell<glib::GString>,
+    }
+
+    impl ResDrive {
+        pub fn tab_name(&self) -> glib::GString {
+            let tab_name = self.tab_name.take();
+            let result = tab_name.clone();
+            self.tab_name.set(tab_name);
+            result
+        }
+
+        pub fn set_tab_name(&self, tab_name: &str) {
+            self.tab_name.set(glib::GString::from(tab_name));
+        }
+
+        pub fn icon(&self) -> Icon {
+            let icon = self.icon.replace_with(|_| Drive::default_icon());
+            let result = icon.clone();
+            self.icon.set(icon);
+            result
+        }
+
+        pub fn set_icon(&self, icon: &Icon) {
+            self.icon.set(icon.clone());
+        }
+    }
+
+    impl Default for ResDrive {
+        fn default() -> Self {
+            Self {
+                total_usage: Default::default(),
+                read: Default::default(),
+                write: Default::default(),
+                drive_type: Default::default(),
+                device: Default::default(),
+                capacity: Default::default(),
+                writable: Default::default(),
+                removable: Default::default(),
+                uses_progress_bar: Cell::new(true),
+                icon: RefCell::new(Drive::default_icon()),
+                usage: Default::default(),
+                tab_name: Cell::new(glib::GString::from(i18n("Drive"))),
+            }
+        }
     }
 
     #[glib::object_subclass]
@@ -62,6 +124,18 @@ mod imp {
                 obj.add_css_class("devel");
             }
         }
+
+        fn properties() -> &'static [ParamSpec] {
+            Self::derived_properties()
+        }
+
+        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
+            self.derived_set_property(id, value, pspec);
+        }
+
+        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
+            self.derived_property(id, pspec)
+        }
     }
 
     impl WidgetImpl for ResDrive {}
@@ -79,6 +153,7 @@ impl ResDrive {
     }
 
     pub fn init(&self, drive: Drive) {
+        self.imp().set_icon(&drive.icon());
         self.setup_widgets(drive.clone());
         self.setup_listener(drive);
     }
@@ -139,19 +214,20 @@ impl ResDrive {
                 if let (Some(read_ticks), Some(write_ticks), Some(old_read_ticks), Some(old_write_ticks)) = (disk_stats.get("read_ticks"), disk_stats.get("write_ticks"), old_stats.get("read_ticks"), old_stats.get("write_ticks")) {
                     let delta_read_ticks = read_ticks - old_read_ticks;
                     let delta_write_ticks = write_ticks - old_write_ticks;
-                    let read_ratio = delta_read_ticks as f64 / time_passed;
-                    let write_ratio = delta_write_ticks as f64 / time_passed;
-                    let percentage = f64::max(read_ratio, write_ratio).clamp(0.0, 1.0);
-                    let percentage_string = format!("{} %", (percentage * 100.0) as u8);
-                    imp.total_usage.push_data_point(percentage);
+                    let read_ratio = delta_read_ticks as f64 / (time_passed * 1000.0);
+                    let write_ratio = delta_write_ticks as f64 / (time_passed * 1000.0);
+                    let fraction = f64::max(read_ratio, write_ratio).clamp(0.0, 1.0);
+                    let percentage_string = format!("{} %", (fraction * 100.0) as u8);
+                    imp.total_usage.push_data_point(fraction);
                     imp.total_usage.set_subtitle(&percentage_string);
+                    this.set_property("usage", fraction);
                 }
 
                 if let (Some(read_sectors), Some(write_sectors), Some(old_read_sectors), Some(old_write_sectors)) = (disk_stats.get("read_sectors"), disk_stats.get("write_sectors"), old_stats.get("read_sectors"), old_stats.get("write_sectors")) {
                     let delta_read_sectors = read_sectors - old_read_sectors;
                     let delta_write_sectors = write_sectors - old_write_sectors;
-                    let read_bytes_per_second = (delta_read_sectors * hw_sector_size) as f64 / time_passed * 1000.0;
-                    let write_bytes_per_second = (delta_write_sectors * hw_sector_size) as f64 / time_passed * 1000.0;
+                    let read_bytes_per_second = (delta_read_sectors * hw_sector_size) as f64 / time_passed;
+                    let write_bytes_per_second = (delta_write_sectors * hw_sector_size) as f64 / time_passed;
                     let rbps_formatted = to_largest_unit(read_bytes_per_second, &Base::Decimal);
                     let wbps_formatted = to_largest_unit(write_bytes_per_second, &Base::Decimal);
                     imp.read.set_subtitle(&format!("{:.2} {}B/s", rbps_formatted.0, rbps_formatted.1));

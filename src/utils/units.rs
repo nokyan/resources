@@ -23,3 +23,11 @@ pub fn to_largest_unit(amount: f64, prefix_base: &Base) -> (f64, &'static str) {
     }
     (x, prefixes[prefixes.len() - 1])
 }
+
+pub fn celsius_to_fahrenheit(celsius: f64) -> f64 {
+    celsius * 1.8 + 32.0
+}
+
+pub fn celsius_to_kelvin(celsius: f64) -> f64 {
+    celsius + 273.15
+}

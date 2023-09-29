@@ -6,6 +6,7 @@ use std::{
 
 use anyhow::{Context, Result};
 use futures_util::StreamExt;
+use gtk::gio::{Icon, ThemedIcon};
 use pci_ids::FromId;
 
 #[derive(Debug, Clone, Copy, Default)]
@@ -178,5 +179,23 @@ impl NetworkInterface {
             .replace('\n', "")
             .parse()
             .with_context(|| "parsing failure")
+    }
+
+    /// Returns the appropriate Icon for the type of drive
+    pub fn icon(&self) -> Icon {
+        match self.interface_type {
+            InterfaceType::Ethernet => ThemedIcon::new("ethernet-symbolic").into(),
+            InterfaceType::InfiniBand => ThemedIcon::new("infiniband-symbolic").into(),
+            InterfaceType::Slip => ThemedIcon::new("slip-symbolic").into(),
+            InterfaceType::Wlan => ThemedIcon::new("wlan-symbolic").into(),
+            InterfaceType::Wwan => ThemedIcon::new("wwan-symbolic").into(),
+            InterfaceType::Bluetooth => ThemedIcon::new("bluetooth-symbolic").into(),
+            InterfaceType::Wireguard => ThemedIcon::new("vpn-symbolic").into(),
+            InterfaceType::Other => Self::default_icon(),
+        }
+    }
+
+    pub fn default_icon() -> Icon {
+        ThemedIcon::new("unknown-network-type-symbolic").into()
     }
 }

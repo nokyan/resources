@@ -30,8 +30,12 @@ mod imp {
     use std::cell::RefCell;
 
     use crate::{
-        ui::pages::{
-            applications::ResApplications, cpu::ResCPU, memory::ResMemory, processes::ResProcesses,
+        ui::{
+            pages::{
+                applications::ResApplications, cpu::ResCPU, memory::ResMemory,
+                processes::ResProcesses,
+            },
+            widgets::stack_sidebar::ResStackSidebar,
         },
         utils::processes::AppsContext,
     };
@@ -51,7 +55,7 @@ mod imp {
         #[template_child]
         pub processor_window_title: TemplateChild<adw::WindowTitle>,
         #[template_child]
-        pub resources_sidebar: TemplateChild<gtk::StackSidebar>,
+        pub resources_sidebar: TemplateChild<ResStackSidebar>,
         #[template_child]
         pub content_stack: TemplateChild<gtk::Stack>,
         #[template_child]
@@ -187,7 +191,7 @@ impl MainWindow {
     fn setup_widgets(&self) {
         let imp = self.imp();
 
-        imp.resources_sidebar.remove_css_class("sidebar");
+        imp.resources_sidebar.set_stack(&imp.content_stack);
 
         imp.applications.init(imp.sender.clone());
         imp.processes.init(imp.sender.clone());
@@ -209,6 +213,7 @@ impl MainWindow {
                 } else {
                     i18n("GPU")
                 };
+                page.set_tab_name(&*title);
                 if let Ok(gpu_name) = gpu.get_name() {
                     this.add_page(&page, &title, &gpu_name, &title);
                 } else {
@@ -253,7 +258,7 @@ impl MainWindow {
                         as f64,
                     &Base::Decimal,
                 );
-                let title = match drive.drive_type {
+                let sidebar_title = match drive.drive_type {
                     DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),
                     DriveType::Floppy => i18n("Floppy Drive"),
                     _ => i18n_f(
@@ -264,11 +269,12 @@ impl MainWindow {
 
                 let page = ResDrive::new();
                 page.init(drive.clone());
+                page.set_tab_name(&*sidebar_title);
                 /*imp.content_stack.add_titled(&page, None, &title);*/
                 let toolbar = if let Some(model) = drive.model {
-                    self.add_page(&page, &title, &model, &title)
+                    self.add_page(&page, &sidebar_title, &model, &sidebar_title)
                 } else {
-                    self.add_page(&page, &title, &title, "")
+                    self.add_page(&page, &sidebar_title, &sidebar_title, "")
                 };
                 imp.drive_pages.borrow_mut().insert(path.clone(), toolbar);
                 still_active_drives.push(path);
@@ -309,6 +315,7 @@ impl MainWindow {
                 };
                 let page = ResNetwork::new();
                 page.init(interface.clone());
+                page.set_tab_name(&*sidebar_title);
                 //imp.content_stack.add_titled(&page, None, &sidebar_title);
                 let toolbar = self.add_page(
                     &page,

@@ -22,16 +22,24 @@ use self::application_entry::ApplicationEntry;
 use self::application_name_cell::ResApplicationNameCell;
 
 mod imp {
-    use std::{cell::RefCell, sync::OnceLock};
+    use std::{
+        cell::{Cell, RefCell},
+        sync::OnceLock,
+    };
 
     use crate::ui::window::Action;
 
     use super::*;
 
-    use gtk::{glib::Sender, CompositeTemplate};
+    use gtk::{
+        gio::{Icon, ThemedIcon},
+        glib::{ParamSpec, Properties, Sender, Value},
+        CompositeTemplate,
+    };
 
-    #[derive(Debug, CompositeTemplate)]
+    #[derive(CompositeTemplate, Properties)]
     #[template(resource = "/me/nalux/Resources/ui/pages/applications.ui")]
+    #[properties(wrapper_type = super::ResApplications)]
     pub struct ResApplications {
         #[template_child]
         pub toast_overlay: TemplateChild<adw::ToastOverlay>,
@@ -56,6 +64,24 @@ mod imp {
         pub open_dialog: RefCell<Option<(Option<String>, ResAppDialog)>>,
 
         pub sender: OnceLock<Sender<Action>>,
+
+        #[property(get)]
+        uses_progress_bar: Cell<bool>,
+
+        #[property(get)]
+        icon: RefCell<Icon>,
+
+        #[property(get = Self::tab_name, type = glib::GString)]
+        tab_name: Cell<glib::GString>,
+    }
+
+    impl ResApplications {
+        pub fn tab_name(&self) -> glib::GString {
+            let tab_name = self.tab_name.take();
+            let result = tab_name.clone();
+            self.tab_name.set(tab_name);
+            result
+        }
     }
 
     impl Default for ResApplications {
@@ -75,6 +101,9 @@ mod imp {
                 sender: Default::default(),
                 applications_scrolled_window: Default::default(),
                 end_application_button: Default::default(),
+                uses_progress_bar: Cell::new(false),
+                icon: RefCell::new(ThemedIcon::new("app-symbolic").into()),
+                tab_name: Cell::from(glib::GString::from(i18n("Applications"))),
             }
         }
     }
@@ -134,6 +163,18 @@ mod imp {
             if PROFILE == "Devel" {
                 obj.add_css_class("devel");
             }
+        }
+
+        fn properties() -> &'static [ParamSpec] {
+            Self::derived_properties()
+        }
+
+        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
+            self.derived_set_property(id, value, pspec);
+        }
+
+        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
+            self.derived_property(id, pspec)
         }
     }
 

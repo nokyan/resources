@@ -11,14 +11,21 @@ use crate::utils::units::{to_largest_unit, Base};
 use crate::utils::NaNDefault;
 
 mod imp {
+    use std::cell::{Cell, RefCell};
+
     use crate::ui::widgets::graph_box::ResGraphBox;
 
     use super::*;
 
-    use gtk::CompositeTemplate;
+    use gtk::{
+        gio::{Icon, ThemedIcon},
+        glib::{ParamSpec, Properties, Value},
+        CompositeTemplate,
+    };
 
-    #[derive(Debug, CompositeTemplate, Default)]
+    #[derive(CompositeTemplate, Properties)]
     #[template(resource = "/me/nalux/Resources/ui/pages/memory.ui")]
+    #[properties(wrapper_type = super::ResMemory)]
     pub struct ResMemory {
         #[template_child]
         pub memory: TemplateChild<ResGraphBox>,
@@ -38,6 +45,46 @@ mod imp {
         pub memory_type: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub type_detail: TemplateChild<adw::ActionRow>,
+
+        #[property(get)]
+        uses_progress_bar: Cell<bool>,
+
+        #[property(get)]
+        icon: RefCell<Icon>,
+
+        #[property(get, set)]
+        usage: Cell<f64>,
+        #[property(get = Self::tab_name, type = glib::GString)]
+        tab_name: Cell<glib::GString>,
+    }
+
+    impl ResMemory {
+        pub fn tab_name(&self) -> glib::GString {
+            let tab_name = self.tab_name.take();
+            let result = tab_name.clone();
+            self.tab_name.set(tab_name);
+            result
+        }
+    }
+
+    impl Default for ResMemory {
+        fn default() -> Self {
+            Self {
+                memory: Default::default(),
+                swap: Default::default(),
+                authentication_banner: Default::default(),
+                properties: Default::default(),
+                slots_used: Default::default(),
+                speed: Default::default(),
+                form_factor: Default::default(),
+                memory_type: Default::default(),
+                type_detail: Default::default(),
+                uses_progress_bar: Cell::new(true),
+                icon: RefCell::new(ThemedIcon::new("memory-symbolic").into()),
+                usage: Default::default(),
+                tab_name: Cell::new(glib::GString::from(i18n("Memory"))),
+            }
+        }
     }
 
     #[glib::object_subclass]
@@ -65,6 +112,18 @@ mod imp {
             if PROFILE == "Devel" {
                 obj.add_css_class("devel");
             }
+        }
+
+        fn properties() -> &'static [ParamSpec] {
+            Self::derived_properties()
+        }
+
+        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
+            self.derived_set_property(id, value, pspec);
+        }
+
+        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
+            self.derived_property(id, pspec)
         }
     }
 
@@ -175,6 +234,8 @@ impl ResMemory {
                 imp.swap.set_graph_visible(true);
                 imp.swap.set_subtitle(&format!("{:.2} {}B / {:.2} {}B · {} %", used_swap_unit.0, used_swap_unit.1, total_swap_unit.0, total_swap_unit.1, (swap_fraction * 100.0) as u8));
             }
+
+            this.set_property("usage", memory_fraction);
 
             glib::ControlFlow::Continue
         });

@@ -46,9 +46,8 @@
                   </object>
                 </child>
                 <property name="content">
-                  <object class="GtkStackSidebar" id="resources_sidebar">
+                  <object class="ResStackSidebar" id="resources_sidebar">
                     <property name="vexpand">True</property>
-                    <property name="stack">content_stack</property>
                   </object>
                 </property>
               </object>

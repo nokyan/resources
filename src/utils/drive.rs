@@ -1,5 +1,6 @@
 use anyhow::{Context, Result};
 use async_std::stream::StreamExt;
+use gtk::gio::{Icon, ThemedIcon};
 use regex::Regex;
 use std::{
     collections::HashMap,
@@ -228,5 +229,23 @@ impl Drive {
             .replace('\n', "")
             .parse()
             .with_context(|| "unable to parse hw_sector_size")
+    }
+
+    /// Returns the appropriate Icon for the type of drive
+    pub fn icon(&self) -> Icon {
+        match self.drive_type {
+            DriveType::CdDvdBluray => ThemedIcon::new("cd-dvd-bluray-symbolic").into(),
+            DriveType::Emmc => ThemedIcon::new("emmc-symbolic").into(),
+            DriveType::Flash => ThemedIcon::new("flash-symbolic").into(),
+            DriveType::Floppy => ThemedIcon::new("floppy-symbolic").into(),
+            DriveType::Hdd => ThemedIcon::new("hdd-symbolic").into(),
+            DriveType::Nvme => ThemedIcon::new("nvme-symbolic").into(),
+            DriveType::Unknown => Self::default_icon(),
+            DriveType::Ssd => ThemedIcon::new("ssd-symbolic").into(),
+        }
+    }
+
+    pub fn default_icon() -> Icon {
+        ThemedIcon::new("unknown-drive-type-symbolic").into()
     }
 }

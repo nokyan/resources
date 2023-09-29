@@ -22,15 +22,24 @@ use self::process_entry::ProcessEntry;
 use self::process_name_cell::ResProcessNameCell;
 
 mod imp {
-    use std::{cell::RefCell, collections::HashMap, sync::OnceLock};
+    use std::{
+        cell::{Cell, RefCell},
+        collections::HashMap,
+        sync::OnceLock,
+    };
 
     use crate::{ui::window::Action, utils::processes::ProcessAction};
 
     use super::*;
 
-    use gtk::{glib::Sender, CompositeTemplate};
+    use gtk::{
+        gio::{Icon, ThemedIcon},
+        glib::{ParamSpec, Properties, Sender, Value},
+        CompositeTemplate,
+    };
 
-    #[derive(Debug, CompositeTemplate)]
+    #[derive(CompositeTemplate, Properties)]
+    #[properties(wrapper_type = super::ResProcesses)]
     #[template(resource = "/me/nalux/Resources/ui/pages/processes.ui")]
     pub struct ResProcesses {
         #[template_child]
@@ -58,6 +67,24 @@ mod imp {
         pub username_cache: RefCell<HashMap<u32, String>>,
 
         pub sender: OnceLock<Sender<Action>>,
+
+        #[property(get)]
+        uses_progress_bar: Cell<bool>,
+
+        #[property(get)]
+        icon: RefCell<Icon>,
+
+        #[property(get = Self::tab_name, type = glib::GString)]
+        tab_name: Cell<glib::GString>,
+    }
+
+    impl ResProcesses {
+        pub fn tab_name(&self) -> glib::GString {
+            let tab_name = self.tab_name.take();
+            let result = tab_name.clone();
+            self.tab_name.set(tab_name);
+            result
+        }
     }
 
     impl Default for ResProcesses {
@@ -78,6 +105,9 @@ mod imp {
                 open_dialog: Default::default(),
                 username_cache: Default::default(),
                 sender: Default::default(),
+                uses_progress_bar: Cell::new(false),
+                icon: RefCell::new(ThemedIcon::new("generic-process-symbolic").into()),
+                tab_name: Cell::new(glib::GString::from(i18n("Processes"))),
             }
         }
     }
@@ -137,6 +167,18 @@ mod imp {
             if PROFILE == "Devel" {
                 obj.add_css_class("devel");
             }
+        }
+
+        fn properties() -> &'static [ParamSpec] {
+            Self::derived_properties()
+        }
+
+        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
+            self.derived_set_property(id, value, pspec);
+        }
+
+        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
+            self.derived_property(id, pspec)
         }
     }
 

@@ -7,16 +7,24 @@ use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::utils::network::NetworkInterface;
 use crate::utils::units::{to_largest_unit, Base};
+use crate::utils::NaNDefault;
 
 mod imp {
+    use std::cell::{Cell, RefCell};
+
     use crate::ui::widgets::graph_box::ResGraphBox;
 
     use super::*;
 
-    use gtk::CompositeTemplate;
+    use gtk::{
+        gio::{Icon, ThemedIcon},
+        glib::{ParamSpec, Properties, Value},
+        CompositeTemplate,
+    };
 
-    #[derive(Debug, CompositeTemplate, Default)]
+    #[derive(CompositeTemplate, Properties)]
     #[template(resource = "/me/nalux/Resources/ui/pages/network.ui")]
+    #[properties(wrapper_type = super::ResNetwork)]
     pub struct ResNetwork {
         #[template_child]
         pub receiving: TemplateChild<ResGraphBox>,
@@ -34,6 +42,61 @@ mod imp {
         pub interface: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub hw_address: TemplateChild<adw::ActionRow>,
+
+        #[property(get)]
+        uses_progress_bar: Cell<bool>,
+
+        #[property(get = Self::icon, set = Self::set_icon, type = Icon)]
+        icon: RefCell<Icon>,
+
+        #[property(get, set)]
+        usage: Cell<f64>,
+
+        #[property(get = Self::tab_name, set = Self::set_tab_name, type = glib::GString)]
+        tab_name: Cell<glib::GString>,
+    }
+
+    impl ResNetwork {
+        pub fn tab_name(&self) -> glib::GString {
+            let tab_name = self.tab_name.take();
+            let result = tab_name.clone();
+            self.tab_name.set(tab_name);
+            result
+        }
+
+        pub fn set_tab_name(&self, tab_name: &str) {
+            self.tab_name.set(glib::GString::from(tab_name));
+        }
+
+        pub fn icon(&self) -> Icon {
+            let icon = self.icon.replace_with(|_| NetworkInterface::default_icon());
+            let result = icon.clone();
+            self.icon.set(icon);
+            result
+        }
+
+        pub fn set_icon(&self, icon: &Icon) {
+            self.icon.set(icon.clone());
+        }
+    }
+
+    impl Default for ResNetwork {
+        fn default() -> Self {
+            Self {
+                receiving: Default::default(),
+                sending: Default::default(),
+                total_received: Default::default(),
+                total_sent: Default::default(),
+                manufacturer: Default::default(),
+                driver: Default::default(),
+                interface: Default::default(),
+                hw_address: Default::default(),
+                uses_progress_bar: Cell::new(true),
+                icon: RefCell::new(ThemedIcon::new("unknown-network-type-symbolic").into()),
+                usage: Default::default(),
+                tab_name: Cell::new(glib::GString::from(i18n("Network Interface"))),
+            }
+        }
     }
 
     #[glib::object_subclass]
@@ -62,6 +125,18 @@ mod imp {
                 obj.add_css_class("devel");
             }
         }
+
+        fn properties() -> &'static [ParamSpec] {
+            Self::derived_properties()
+        }
+
+        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
+            self.derived_set_property(id, value, pspec);
+        }
+
+        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
+            self.derived_property(id, pspec)
+        }
     }
 
     impl WidgetImpl for ResNetwork {}
@@ -79,6 +154,7 @@ impl ResNetwork {
     }
 
     pub fn init(&self, network_interface: NetworkInterface) {
+        self.imp().set_icon(&network_interface.icon());
         self.setup_widgets(network_interface.clone());
         self.setup_listener(network_interface);
     }
@@ -138,12 +214,16 @@ impl ResNetwork {
                 imp.total_sent.set_subtitle(&format!("{:.2} {}B", sent_formatted.0, sent_formatted.1));
 
                 imp.receiving.push_data_point(received_delta as f64);
-                let highest_received = to_largest_unit(imp.receiving.get_highest_value(), &Base::Decimal);
-                imp.receiving.set_subtitle(&format!("{:.2} {}B/s · {} {:.2} {}B/s", received_delta_formatted.0, received_delta_formatted.1, i18n("Highest:"), highest_received.0, highest_received.1));
+                let highest_received = imp.receiving.get_highest_value();
+                let highest_received_formatted = to_largest_unit(imp.receiving.get_highest_value(), &Base::Decimal);
+                imp.receiving.set_subtitle(&format!("{:.2} {}B/s · {} {:.2} {}B/s", received_delta_formatted.0, received_delta_formatted.1, i18n("Highest:"), highest_received_formatted.0, highest_received_formatted.1));
 
                 imp.sending.push_data_point(sent_delta as f64);
-                let highest_sent = to_largest_unit(imp.sending.get_highest_value(), &Base::Decimal);
-                imp.sending.set_subtitle(&format!("{:.2} {}B/s · {} {:.2} {}B/s", sent_delta_formatted.0, sent_delta_formatted.1, i18n("Highest:"), highest_sent.0, highest_sent.1));
+                let highest_sent = imp.sending.get_highest_value();
+                let highest_sent_formatted = to_largest_unit(imp.sending.get_highest_value(), &Base::Decimal);
+                imp.sending.set_subtitle(&format!("{:.2} {}B/s · {} {:.2} {}B/s", sent_delta_formatted.0, sent_delta_formatted.1, i18n("Highest:"), highest_sent_formatted.0, highest_sent_formatted.1));
+
+                this.set_property("usage", f64::max(received_delta / highest_received, sent_delta / highest_sent).nan_default(1.0));
 
                 old_received_bytes = received_bytes;
                 old_sent_bytes = sent_bytes;

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ResStackSidebar" parent="AdwBin">
+    <property name="child">
+      <object class="GtkScrolledWindow">
+        <property name="vexpand">1</property>
+        <property name="child">
+          <object class="GtkViewport">
+            <child>
+              <object class="GtkListBox" id="list_box">
+                <property name="selection_mode">single</property>
+                <style>
+                  <class name="navigation-sidebar"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+</interface>

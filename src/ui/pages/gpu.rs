@@ -8,16 +8,24 @@ use crate::utils::units::{to_largest_unit, Base};
 use crate::utils::NaNDefault;
 
 mod imp {
-    use std::sync::OnceLock;
+    use std::{
+        cell::{Cell, RefCell},
+        sync::OnceLock,
+    };
 
     use crate::{ui::widgets::graph_box::ResGraphBox, utils::gpu::GPU};
 
     use super::*;
 
-    use gtk::CompositeTemplate;
+    use gtk::{
+        gio::{Icon, ThemedIcon},
+        glib::{ParamSpec, Properties, Value},
+        CompositeTemplate,
+    };
 
-    #[derive(Debug, CompositeTemplate, Default)]
+    #[derive(CompositeTemplate, Properties)]
     #[template(resource = "/me/nalux/Resources/ui/pages/gpu.ui")]
+    #[properties(wrapper_type = super::ResGPU)]
     pub struct ResGPU {
         #[template_child]
         pub gpu_usage: TemplateChild<ResGraphBox>,
@@ -44,6 +52,55 @@ mod imp {
 
         pub gpu: OnceLock<GPU>,
         pub number: OnceLock<usize>,
+
+        #[property(get)]
+        uses_progress_bar: Cell<bool>,
+
+        #[property(get)]
+        icon: RefCell<Icon>,
+
+        #[property(get, set)]
+        usage: Cell<f64>,
+
+        #[property(get = Self::tab_name, set = Self::set_tab_name, type = glib::GString)]
+        tab_name: Cell<glib::GString>,
+    }
+
+    impl ResGPU {
+        pub fn tab_name(&self) -> glib::GString {
+            let tab_name = self.tab_name.take();
+            let result = tab_name.clone();
+            self.tab_name.set(tab_name);
+            result
+        }
+
+        pub fn set_tab_name(&self, tab_name: &str) {
+            self.tab_name.set(glib::GString::from(tab_name));
+        }
+    }
+
+    impl Default for ResGPU {
+        fn default() -> Self {
+            Self {
+                gpu_usage: Default::default(),
+                vram_usage: Default::default(),
+                temperature: Default::default(),
+                power_usage: Default::default(),
+                gpu_clockspeed: Default::default(),
+                vram_clockspeed: Default::default(),
+                manufacturer: Default::default(),
+                pci_slot: Default::default(),
+                driver_used: Default::default(),
+                current_power_cap: Default::default(),
+                max_power_cap: Default::default(),
+                gpu: Default::default(),
+                number: Default::default(),
+                uses_progress_bar: Cell::new(true),
+                icon: RefCell::new(ThemedIcon::new("gpu-symbolic").into()),
+                usage: Default::default(),
+                tab_name: Cell::new(glib::GString::from(i18n("GPU"))),
+            }
+        }
     }
 
     #[glib::object_subclass]
@@ -71,6 +128,18 @@ mod imp {
             if PROFILE == "Devel" {
                 obj.add_css_class("devel");
             }
+        }
+
+        fn properties() -> &'static [ParamSpec] {
+            Self::derived_properties()
+        }
+
+        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
+            self.derived_set_property(id, value, pspec);
+        }
+
+        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
+            self.derived_property(id, pspec)
         }
     }
 
@@ -119,9 +188,11 @@ impl ResGPU {
 
             loop {
                 if let Ok(gpu_usage) = gpu.get_gpu_usage().await {
+                    let gpu_usage_fraction = gpu_usage as f64 / 100.0;
                     imp.gpu_usage.set_subtitle(&format!("{gpu_usage} %"));
-                    imp.gpu_usage.push_data_point(gpu_usage as f64 / 100.0);
+                    imp.gpu_usage.push_data_point(gpu_usage_fraction);
                     imp.gpu_usage.set_graph_visible(true);
+                    this.set_property("usage", gpu_usage_fraction);
                 } else {
                     imp.gpu_usage.set_subtitle(&i18n("N/A"));
                     imp.gpu_usage.push_data_point(0.0);
