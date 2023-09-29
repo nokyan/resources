@@ -42,5 +42,6 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/stack_sidebar.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/stack_sidebar_item.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/window.ui</file>
+    <file compressed="true">style.css</file>
   </gresource>
 </gresources>

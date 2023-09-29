@@ -34,7 +34,11 @@
           </object>
         </child>
         <child>
-          <object class="GtkProgressBar" id="progress_bar"></object>
+          <object class="GtkProgressBar" id="progress_bar">
+            <style>
+              <class name="slim"/>
+            </style>
+          </object>
         </child>
       </object>
     </property>
