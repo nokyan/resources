@@ -1,3 +1,5 @@
+use std::time::{Duration, SystemTime};
+
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
 
@@ -117,27 +119,35 @@ impl ResNetwork {
             let mut old_received_bytes = network_interface.received_bytes().await.unwrap_or(0);
             let mut old_sent_bytes = network_interface.sent_bytes().await.unwrap_or(0);
 
+            let mut last_timestamp = SystemTime::now().checked_sub(Duration::from_secs(1)).unwrap();
+
             loop {
+                let time_passed = SystemTime::now().duration_since(last_timestamp).map_or(1.0f64, |timestamp| timestamp.as_secs_f64());
+
                 let received_bytes = network_interface.received_bytes().await.unwrap_or(0);
                 let sent_bytes = network_interface.sent_bytes().await.unwrap_or(0);
-                let received_delta = received_bytes - old_received_bytes;
-                let sent_delta = sent_bytes - old_sent_bytes;
+                let received_delta = (received_bytes - old_received_bytes) as f64 / time_passed;
+                let sent_delta = (sent_bytes - old_sent_bytes) as f64 / time_passed;
 
-                let received_delta_formatted = to_largest_unit(received_delta as f64, &Base::Decimal);
-                let sent_delta_formatted = to_largest_unit(sent_delta as f64, &Base::Decimal);
+                let received_delta_formatted = to_largest_unit(received_delta, &Base::Decimal);
+                let sent_delta_formatted = to_largest_unit(sent_delta, &Base::Decimal);
                 let received_formatted = to_largest_unit(received_bytes as f64, &Base::Decimal);
                 let sent_formatted = to_largest_unit(sent_bytes as f64, &Base::Decimal);
+
                 imp.total_received.set_subtitle(&format!("{:.2} {}B", received_formatted.0, received_formatted.1));
                 imp.total_sent.set_subtitle(&format!("{:.2} {}B", sent_formatted.0, sent_formatted.1));
+
                 imp.receiving.push_data_point(received_delta as f64);
                 let highest_received = to_largest_unit(imp.receiving.get_highest_value(), &Base::Decimal);
                 imp.receiving.set_subtitle(&format!("{:.2} {}B/s · {} {:.2} {}B/s", received_delta_formatted.0, received_delta_formatted.1, i18n("Highest:"), highest_received.0, highest_received.1));
+
                 imp.sending.push_data_point(sent_delta as f64);
                 let highest_sent = to_largest_unit(imp.sending.get_highest_value(), &Base::Decimal);
                 imp.sending.set_subtitle(&format!("{:.2} {}B/s · {} {:.2} {}B/s", sent_delta_formatted.0, sent_delta_formatted.1, i18n("Highest:"), highest_sent.0, highest_sent.1));
 
                 old_received_bytes = received_bytes;
                 old_sent_bytes = sent_bytes;
+                last_timestamp = SystemTime::now();
 
                 timeout_future_seconds(1).await;
             }

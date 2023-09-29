@@ -189,14 +189,16 @@ impl ResCPU {
         let main_context = MainContext::default();
         let thread_usage_update = clone!(@strong self as this => async move {
             let imp = this.imp();
+
             let cpu_info = cpu::cpu_info()
                 .with_context(|| "unable to get CPUInfo")
                 .unwrap_or_default();
             let logical_cpus = cpu_info.logical_cpus.unwrap_or(0);
+
             let mut old_total_usage = cpu::get_cpu_usage(None).await.unwrap_or((0, 0));
             let mut old_thread_usages: Vec<(u64, u64)> = Vec::with_capacity(logical_cpus);
-            loop {
 
+            loop {
                 for i in 0..logical_cpus {
                     old_thread_usages.push(cpu::get_cpu_usage(Some(i)).await.unwrap_or((0,0)));
                 }

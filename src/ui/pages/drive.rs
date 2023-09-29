@@ -1,4 +1,4 @@
-use std::time::SystemTime;
+use std::time::{Duration, SystemTime};
 
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
@@ -9,8 +9,6 @@ use crate::utils::drive::Drive;
 use crate::utils::units::{to_largest_unit, Base};
 
 mod imp {
-    use std::cell::RefCell;
-
     use crate::ui::widgets::graph_box::ResGraphBox;
 
     use super::*;
@@ -36,7 +34,6 @@ mod imp {
         pub writable: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub removable: TemplateChild<adw::ActionRow>,
-        pub last_checked_timestamp: RefCell<u64>,
     }
 
     #[glib::object_subclass]
@@ -82,12 +79,8 @@ impl ResDrive {
     }
 
     pub fn init(&self, drive: Drive) {
-        let imp = self.imp();
-        *imp.last_checked_timestamp.borrow_mut() = SystemTime::now()
-            .duration_since(SystemTime::UNIX_EPOCH)
-            .map_or(0, |duration| duration.as_millis() as u64);
         self.setup_widgets(drive.clone());
-        self.setup_listener(drive)
+        self.setup_listener(drive);
     }
 
     pub fn setup_widgets(&self, drive: Drive) {
@@ -135,27 +128,19 @@ impl ResDrive {
         let drive_usage_update = clone!(@strong self as this => async move {
             let hw_sector_size = drive.sector_size().await.unwrap_or(512) as usize;
             let mut old_stats = drive.sys_stats().await.unwrap_or_default();
-            // TODO: make this maybe configurable?
-            let refresh_seconds: u32 = 1;
             let imp = this.imp();
 
-            let mut last_checked_timestamp = *imp.last_checked_timestamp.borrow_mut();
+            let mut last_timestamp = SystemTime::now().checked_sub(Duration::from_secs(1)).unwrap();
 
             loop {
                 let disk_stats = drive.sys_stats().await.unwrap_or_default();
-
-                let time_passed_millis = (SystemTime::now()
-                    .duration_since(SystemTime::UNIX_EPOCH)
-                    // if that for some reason doesn't work, just assume that
-                    // exactly 1000ms did actually pass
-                    .map_or(1000, |duration| duration.as_millis() as u64)
-                    - last_checked_timestamp) as f64;
+                let time_passed = SystemTime::now().duration_since(last_timestamp).map_or(1.0f64, |timestamp| timestamp.as_secs_f64());
 
                 if let (Some(read_ticks), Some(write_ticks), Some(old_read_ticks), Some(old_write_ticks)) = (disk_stats.get("read_ticks"), disk_stats.get("write_ticks"), old_stats.get("read_ticks"), old_stats.get("write_ticks")) {
                     let delta_read_ticks = read_ticks - old_read_ticks;
                     let delta_write_ticks = write_ticks - old_write_ticks;
-                    let read_ratio = delta_read_ticks as f64 / time_passed_millis;
-                    let write_ratio = delta_write_ticks as f64 / time_passed_millis;
+                    let read_ratio = delta_read_ticks as f64 / time_passed;
+                    let write_ratio = delta_write_ticks as f64 / time_passed;
                     let percentage = f64::max(read_ratio, write_ratio).clamp(0.0, 1.0);
                     let percentage_string = format!("{} %", (percentage * 100.0) as u8);
                     imp.total_usage.push_data_point(percentage);
@@ -165,8 +150,8 @@ impl ResDrive {
                 if let (Some(read_sectors), Some(write_sectors), Some(old_read_sectors), Some(old_write_sectors)) = (disk_stats.get("read_sectors"), disk_stats.get("write_sectors"), old_stats.get("read_sectors"), old_stats.get("write_sectors")) {
                     let delta_read_sectors = read_sectors - old_read_sectors;
                     let delta_write_sectors = write_sectors - old_write_sectors;
-                    let read_bytes_per_second = (delta_read_sectors * hw_sector_size) as f64 / time_passed_millis * 1000.0;
-                    let write_bytes_per_second = (delta_write_sectors * hw_sector_size) as f64 / time_passed_millis * 1000.0;
+                    let read_bytes_per_second = (delta_read_sectors * hw_sector_size) as f64 / time_passed * 1000.0;
+                    let write_bytes_per_second = (delta_write_sectors * hw_sector_size) as f64 / time_passed * 1000.0;
                     let rbps_formatted = to_largest_unit(read_bytes_per_second, &Base::Decimal);
                     let wbps_formatted = to_largest_unit(write_bytes_per_second, &Base::Decimal);
                     imp.read.set_subtitle(&format!("{:.2} {}B/s", rbps_formatted.0, rbps_formatted.1));
@@ -181,13 +166,9 @@ impl ResDrive {
                 ));
 
                 old_stats = disk_stats;
-                last_checked_timestamp = SystemTime::now()
-                .duration_since(SystemTime::UNIX_EPOCH)
-                // if that for some reason doesn't work, just assume that
-                // exactly 1000ms did actually pass
-                .map_or_else(|_| last_checked_timestamp + (refresh_seconds as u64) * 1000, |duration| duration.as_millis() as u64);
+                last_timestamp = SystemTime::now();
 
-                timeout_future_seconds(refresh_seconds).await;
+                timeout_future_seconds(1).await;
             }
         });
         main_context.spawn_local(drive_usage_update);
