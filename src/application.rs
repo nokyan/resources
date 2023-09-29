@@ -116,12 +116,12 @@ impl Application {
             .developers(vec!["nokyan <nokyan@tuta.io>".to_string()])
             .license_type(gtk::License::Gpl30)
             .version(config::VERSION)
-            .website("https://github.com/NaluxOS/resources")
+            .website("https://github.com/nokyan/resources")
             .build();
 
         about.add_link(
             &i18n("Report Issues"),
-            "https://github.com/NaluxOS/resources/issues",
+            "https://github.com/nokyan/resources/issues",
         );
 
         about.add_credit_section(Some(&i18n("Icon by")), &["Avhiren"]);
