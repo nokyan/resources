@@ -4,7 +4,7 @@ pub enum Base {
     Binary,
 }
 
-static GENERIC_DECIMAL_PREFIXES: &[&str] = &["", "k", "M", "G", "T", "P", "E", "Z", "Y"];
+static GENERIC_DECIMAL_PREFIXES: &[&str] = &["", "k", "M", "G", "T", "P", "E", "Z", "Y", "R", "Q"];
 
 static GENERIC_BINARY_PREFIXES: &[&str] = &["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi"];
 
