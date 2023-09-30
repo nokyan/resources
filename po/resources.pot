@@ -31,28 +31,8 @@ msgid ""
 "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 msgstr ""
 
-#: data/me.nalux.Resources.gschema.xml.in:6
-msgid "Window width"
-msgstr ""
-
-#: data/me.nalux.Resources.gschema.xml.in:10
-msgid "Window height"
-msgstr ""
-
-#: data/me.nalux.Resources.gschema.xml.in:14
-msgid "Window maximized state"
-msgstr ""
-
-#: data/me.nalux.Resources.gschema.xml.in:18
-msgid "Temperature unit"
-msgstr ""
-
 #: data/me.nalux.Resources.metainfo.xml.in.in:9
 msgid "A simple yet powerful monitor for your system resources and processes."
-msgstr ""
-
-#: data/me.nalux.Resources.metainfo.xml.in.in:14
-msgid "nokyan"
 msgstr ""
 
 #: src/application.rs:128
@@ -66,64 +46,6 @@ msgstr ""
 #: src/application.rs:140
 msgid "Icon by"
 msgstr ""
-
-#: src/i18n.rs:134 src/i18n.rs:137 src/i18n.rs:139
-msgid "translate1"
-msgid_plural "translate multi"
-msgstr[0] ""
-msgstr[1] ""
-
-#: src/i18n.rs:145
-msgid "{} param"
-msgstr ""
-
-#: src/i18n.rs:148
-msgid "middle {} param"
-msgstr ""
-
-#: src/i18n.rs:151
-msgid "end {}"
-msgstr ""
-
-#: src/i18n.rs:154
-msgid "multiple {} and {}"
-msgstr ""
-
-#: src/i18n.rs:157 src/i18n.rs:159
-msgid "singular {} and {}"
-msgid_plural "plural {} and {}"
-msgstr[0] ""
-msgstr[1] ""
-
-#: src/i18n.rs:165
-msgid "{one} param"
-msgstr ""
-
-#: src/i18n.rs:168
-msgid "middle {one} param"
-msgstr ""
-
-#: src/i18n.rs:171
-msgid "end {one}"
-msgstr ""
-
-#: src/i18n.rs:174
-msgid "multiple {one} and {two}"
-msgstr ""
-
-#: src/i18n.rs:177
-msgid "multiple {two} and {one}"
-msgstr ""
-
-#: src/i18n.rs:180
-msgid "multiple {one} and {one}"
-msgstr ""
-
-#: src/i18n.rs:184 src/i18n.rs:191
-msgid "singular {one} and {two}"
-msgid_plural "plural {one} and {two}"
-msgstr[0] ""
-msgstr[1] ""
 
 #: src/ui/dialogs/app_dialog.rs:111 src/ui/dialogs/process_dialog.rs:107
 #: src/ui/pages/drive.rs:189 src/ui/pages/drive.rs:195
