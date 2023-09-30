@@ -2,11 +2,9 @@
 <!DOCTYPE policyconfig PUBLIC
  "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
  "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
-
 <policyconfig>
   <vendor>The Nalux Team</vendor>
   <icon_name>me.nalux.Resources</icon_name>
-
   <action id="me.nalux.Resources.kill">
     <description>Control Process</description>
     <message>Authentication is required to control superuser’s or other users’ processes</message>
@@ -17,6 +15,4 @@
     </defaults>
     <annotate key="org.freedesktop.policykit.exec.path">@libexecdir@/resources-kill</annotate>
   </action>
-
 </policyconfig>
-

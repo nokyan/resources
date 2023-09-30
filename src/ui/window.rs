@@ -9,7 +9,7 @@ use gtk::{gio, glib, Widget};
 
 use crate::application::Application;
 use crate::config::{APP_ID, PROFILE};
-use crate::i18n::{i18n, i18n_f};
+use crate::i18n::{i18n, i18n_f, ni18n_f};
 use crate::ui::pages::drive::ResDrive;
 use crate::utils::drive::{Drive, DriveType};
 use crate::utils::gpu::GPU;
@@ -368,11 +368,10 @@ impl MainWindow {
                 let processes_successful = res.iter().flatten().count();
                 let processes_unsuccessful = processes_tried - processes_successful;
 
-                #[rustfmt::skip]
-                let toast_message = match processes_unsuccessful {
-                    0 => get_action_success(action, &[&app.display_name]),
-                    1 => get_app_action_failure(action),
-                    _ => get_app_action_failure_multiple(action, &[&processes_unsuccessful.to_string()]),
+                let toast_message = if processes_unsuccessful > 0 {
+                    get_app_action_failure(action, processes_unsuccessful as u32)
+                } else {
+                    get_action_success(action, &[&app.display_name])
                 };
 
                 toast_overlay.add_toast(Toast::new(&toast_message));
@@ -494,12 +493,32 @@ pub fn get_action_success(action: ProcessAction, args: &[&str]) -> String {
     }
 }
 
-pub fn get_app_action_failure(action: ProcessAction) -> String {
+pub fn get_app_action_failure(action: ProcessAction, args: u32) -> String {
     match action {
-        ProcessAction::TERM => i18n("There was a problem ending a process"),
-        ProcessAction::STOP => i18n("There was a problem halting a process"),
-        ProcessAction::KILL => i18n("There was a problem killing a process"),
-        ProcessAction::CONT => i18n("There was a problem continuing a process"),
+        ProcessAction::TERM => ni18n_f(
+            "There was a problem ending a process",
+            "There were problems ending {} processes",
+            args,
+            &[&args.to_string()],
+        ),
+        ProcessAction::STOP => ni18n_f(
+            "There was a problem halting a process",
+            "There were problems halting {} processes",
+            args,
+            &[&args.to_string()],
+        ),
+        ProcessAction::KILL => ni18n_f(
+            "There was a problem killing a process",
+            "There were problems killing {} processes",
+            args,
+            &[&args.to_string()],
+        ),
+        ProcessAction::CONT => ni18n_f(
+            "There was a problem continuing a process",
+            "There were problems continuing {} processes",
+            args,
+            &[&args.to_string()],
+        ),
     }
 }
 
@@ -509,14 +528,5 @@ pub fn get_process_action_failure(action: ProcessAction, args: &[&str]) -> Strin
         ProcessAction::STOP => i18n_f("There was a problem halting {}", args),
         ProcessAction::KILL => i18n_f("There was a problem killing {}", args),
         ProcessAction::CONT => i18n_f("There was a problem continuing {}", args),
-    }
-}
-
-pub fn get_app_action_failure_multiple(action: ProcessAction, args: &[&str]) -> String {
-    match action {
-        ProcessAction::TERM => i18n_f("There were problems ending {} processes", args),
-        ProcessAction::STOP => i18n_f("There were problems halting {} processes", args),
-        ProcessAction::KILL => i18n_f("There were problems killing {} processes", args),
-        ProcessAction::CONT => i18n_f("There were problems continuing {} processes", args),
     }
 }
