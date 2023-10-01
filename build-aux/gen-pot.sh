@@ -8,6 +8,8 @@ xgettext data/resources/ui/**/*.ui -o po/ui.tmp.pot
 xgettext data/resources/ui/*.ui -o po/ui_root.tmp.pot
 xgettext data/*.in -o po/in.tmp.pot
 
+sed -i 's/charset=CHARSET/charset=UTF-8/g' po/*.tmp.pot
+
 xgettext po/*.tmp.pot -o po/resources.pot
 
 for file in po/*.po; do

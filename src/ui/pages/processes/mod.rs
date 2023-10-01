@@ -16,7 +16,7 @@ use crate::i18n::i18n;
 use crate::ui::dialogs::process_dialog::ResProcessDialog;
 use crate::ui::window::{self, Action, MainWindow};
 use crate::utils::processes::{AppsContext, ProcessAction, ProcessItem};
-use crate::utils::units::{to_largest_unit, Base};
+use crate::utils::units::convert_storage;
 
 use self::process_entry::ProcessEntry;
 use self::process_name_cell::ResProcessNameCell;
@@ -297,12 +297,12 @@ impl ResProcesses {
         memory_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(9);
             item.set_child(Some(&row));
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("memory_usage")
                 .chain_closure::<String>(closure!(|_: Option<Object>, memory_usage: u64| {
-                    let (number, prefix) = to_largest_unit(memory_usage as f64, &Base::Decimal);
-                    format!("{number:.1} {prefix}B")
+                    convert_storage(memory_usage as f64, false)
                 }))
                 .bind(&row, "text", Widget::NONE);
         });
@@ -324,7 +324,7 @@ impl ResProcesses {
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("cpu_usage")
                 .chain_closure::<String>(closure!(|_: Option<Object>, cpu_usage: f32| {
-                    format!("{:.1} %", cpu_usage * 100.0)
+                    format!("{:.1} %", cpu_usage * 100.0)
                 }))
                 .bind(&row, "text", Widget::NONE);
         });

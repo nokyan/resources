@@ -1,12 +1,15 @@
+use std::time::Duration;
+
 use adw::{prelude::*, subclass::prelude::*};
 use anyhow::Context;
-use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
+use gtk::glib::{self, clone, timeout_future, MainContext};
 use gtk::FlowBoxChild;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::ui::widgets::graph_box::ResGraphBox;
-use crate::utils::units::{to_largest_unit, Base};
+use crate::utils::settings::SETTINGS;
+use crate::utils::units::{convert_frequency, convert_temperature};
 use crate::utils::{cpu, NaNDefault};
 
 mod imp {
@@ -199,16 +202,11 @@ impl ResCPU {
             }
         }
 
-        imp.max_speed.set_subtitle(&cpu_info.max_speed.map_or_else(
-            || i18n("N/A"),
-            |x| {
-                format!(
-                    "{:.2} {}Hz",
-                    to_largest_unit(x.into(), &Base::Decimal).0,
-                    to_largest_unit(x.into(), &Base::Decimal).1
-                )
-            },
-        ));
+        imp.max_speed.set_subtitle(
+            &cpu_info
+                .max_speed
+                .map_or_else(|| i18n("N/A"), |x| convert_frequency(x as f64)),
+        );
 
         imp.logical_cpus.set_subtitle(
             &cpu_info
@@ -261,6 +259,12 @@ impl ResCPU {
             let mut old_total_usage = cpu::get_cpu_usage(None).await.unwrap_or((0, 0));
             let mut old_thread_usages: Vec<(u64, u64)> = Vec::with_capacity(logical_cpus);
 
+            imp.max_speed.set_subtitle(
+                &cpu_info
+                    .max_speed
+                    .map_or_else(|| i18n("N/A"), |x| convert_frequency(x as f64)),
+            );
+
             loop {
                 for i in 0..logical_cpus {
                     old_thread_usages.push(cpu::get_cpu_usage(Some(i)).await.unwrap_or((0,0)));
@@ -272,7 +276,7 @@ impl ResCPU {
                 let work_total_time = sum_total_delta - idle_total_delta;
                 let total_fraction = ((work_total_time as f64) / (sum_total_delta as f64)).nan_default(0.0);
                 imp.total_cpu.push_data_point(total_fraction);
-                imp.total_cpu.set_subtitle(&format!("{} %", (total_fraction*100.0).round()));
+                imp.total_cpu.set_subtitle(&format!("{} %", (total_fraction*100.0).round()));
                 old_total_usage = new_total_usage;
 
                 if logical_cpus > 1 {
@@ -284,26 +288,24 @@ impl ResCPU {
                         let curr_threadbox = &imp.thread_graphs.borrow()[i];
                         let thread_fraction = ((work_thread_time as f64) / (sum_thread_delta as f64)).nan_default(0.0);
                         curr_threadbox.push_data_point(thread_fraction);
-                        curr_threadbox.set_title_label(&format!("{} %", (thread_fraction*100.0).round()));
+                        curr_threadbox.set_title_label(&format!("{} %", (thread_fraction*100.0).round()));
                         if let Ok(freq) = cpu::get_cpu_freq(i) {
-                            let (frequency, base) = to_largest_unit(freq as f64, &Base::Decimal);
-                            curr_threadbox.set_subtitle(&format!("{frequency:.2} {base}Hz"));
+                            curr_threadbox.set_subtitle(&convert_frequency(freq as f64));
                         }
                         *old_thread_usage = new_thread_usage;
                     }
                 }
 
-                let temp_unit = "C";
                 let temperature = cpu::get_temperature().await;
                 if let Ok(temp) = temperature {
-                    imp.temperature.set_subtitle(&format!("{} °{temp_unit}", temp.round()));
+                    imp.temperature.set_subtitle(&convert_temperature(temp as f64));
                 } else {
                     imp.temperature.set_subtitle(&i18n("N/A"));
                 }
 
                 this.set_property("usage", total_fraction);
 
-                timeout_future_seconds(1).await;
+                timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
             }
         });
 

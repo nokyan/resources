@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use adw::{prelude::*, subclass::prelude::*};
 use anyhow::Context;
 use gtk::glib::{self, clone};
@@ -7,7 +9,8 @@ use crate::i18n::{i18n, i18n_f};
 use crate::utils::memory::{
     self, get_available_memory, get_free_swap, get_total_memory, get_total_swap, MemoryDevice,
 };
-use crate::utils::units::{to_largest_unit, Base};
+use crate::utils::settings::SETTINGS;
+use crate::utils::units::convert_storage;
 use crate::utils::NaNDefault;
 
 mod imp {
@@ -144,6 +147,7 @@ impl ResMemory {
     pub fn init(&self) {
         self.setup_widgets();
         self.setup_signals();
+        self.setup_listener();
     }
 
     pub fn setup_widgets(&self) {
@@ -208,23 +212,25 @@ impl ResMemory {
                 }
                 imp.authentication_banner.set_revealed(false)
             }));
+    }
+
+    pub fn setup_listener(&self) {
         let mem_usage_update = clone!(@strong self as this => move || {
             let imp = this.imp();
+
             let total_mem = get_total_memory().with_context(|| "unable to get total memory").unwrap_or_default();
             let available_mem = get_available_memory().with_context(|| "unable to get available memory").unwrap_or_default();
+            let used_mem = total_mem - available_mem;
+
             let total_swap = get_total_swap().with_context(|| "unable to get total swap").unwrap_or_default();
             let free_swap = get_free_swap().with_context(|| "unable to get free swap").unwrap_or_default();
+            let used_swap = total_swap - free_swap;
 
-            let total_mem_unit = to_largest_unit(total_mem as f64, &Base::Decimal);
-            let used_mem_unit = to_largest_unit((total_mem - available_mem) as f64, &Base::Decimal);
-            let total_swap_unit = to_largest_unit(total_swap as f64, &Base::Decimal);
-            let used_swap_unit = to_largest_unit((total_swap - free_swap) as f64, &Base::Decimal);
-
-            let memory_fraction = 1.0 - (available_mem as f64 / total_mem as f64);
-            let swap_fraction = 1.0 - (free_swap as f64 / total_swap as f64).nan_default(1.0);
+            let memory_fraction = used_mem as f64 / total_mem as f64;
+            let swap_fraction = (used_swap as f64 / total_swap as f64).nan_default(0.0);
 
             imp.memory.push_data_point(memory_fraction);
-            imp.memory.set_subtitle(&format!("{:.2} {}B / {:.2} {}B · {} %", used_mem_unit.0, used_mem_unit.1, total_mem_unit.0, total_mem_unit.1, (memory_fraction * 100.0) as u8));
+            imp.memory.set_subtitle(&format!("{} / {} · {} %", &convert_storage(used_mem as f64, false), &convert_storage(total_mem as f64, false), (memory_fraction * 100.0).round()));
             if total_swap == 0 {
                 imp.swap.push_data_point(0.0);
                 imp.swap.set_graph_visible(false);
@@ -232,7 +238,8 @@ impl ResMemory {
             } else {
                 imp.swap.push_data_point(swap_fraction);
                 imp.swap.set_graph_visible(true);
-                imp.swap.set_subtitle(&format!("{:.2} {}B / {:.2} {}B · {} %", used_swap_unit.0, used_swap_unit.1, total_swap_unit.0, total_swap_unit.1, (swap_fraction * 100.0) as u8));
+                imp.swap.set_subtitle(&format!("{} / {} · {} %", &convert_storage(used_swap as f64, false), &convert_storage(total_swap as f64, false), (swap_fraction * 100.0).round()));
+
             }
 
             this.set_property("usage", memory_fraction);
@@ -240,6 +247,9 @@ impl ResMemory {
             glib::ControlFlow::Continue
         });
 
-        glib::timeout_add_seconds_local(1, mem_usage_update);
+        glib::timeout_add_local(
+            Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval()),
+            mem_usage_update,
+        );
     }
 }

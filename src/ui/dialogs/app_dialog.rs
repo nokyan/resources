@@ -5,7 +5,7 @@ use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::ui::window::MainWindow;
 use crate::utils::processes::{AppItem, Containerization};
-use crate::utils::units::{to_largest_unit, Base};
+use crate::utils::units::convert_storage;
 
 mod imp {
 
@@ -117,14 +117,13 @@ impl ResAppDialog {
     pub fn set_cpu_usage(&self, usage: f32) {
         let imp = self.imp();
         imp.cpu_usage
-            .set_subtitle(&format!("{:.1} %", usage * 100.0));
+            .set_subtitle(&format!("{:.1} %", usage * 100.0));
     }
 
     pub fn set_memory_usage(&self, usage: usize) {
         let imp = self.imp();
-        let (number, prefix) = to_largest_unit(usage as f64, &Base::Decimal);
         imp.memory_usage
-            .set_subtitle(&format!("{number:.1} {prefix}B"));
+            .set_subtitle(&convert_storage(usage as f64, false));
     }
 
     pub fn set_processes_amount(&self, amount: usize) {

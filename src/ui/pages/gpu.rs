@@ -1,10 +1,13 @@
+use std::time::Duration;
+
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
+use gtk::glib::{self, clone, timeout_future, MainContext};
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::utils::gpu::GPU;
-use crate::utils::units::{to_largest_unit, Base};
+use crate::utils::settings::SETTINGS;
+use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
 use crate::utils::NaNDefault;
 
 mod imp {
@@ -189,7 +192,7 @@ impl ResGPU {
             loop {
                 if let Ok(gpu_usage) = gpu.get_gpu_usage().await {
                     let gpu_usage_fraction = gpu_usage as f64 / 100.0;
-                    imp.gpu_usage.set_subtitle(&format!("{gpu_usage} %"));
+                    imp.gpu_usage.set_subtitle(&format!("{gpu_usage} %"));
                     imp.gpu_usage.push_data_point(gpu_usage_fraction);
                     imp.gpu_usage.set_graph_visible(true);
                     this.set_property("usage", gpu_usage_fraction);
@@ -200,11 +203,9 @@ impl ResGPU {
                 }
 
                 if let (Ok(total_vram), Ok(used_vram)) = (gpu.get_total_vram().await, gpu.get_used_vram().await) {
-                    let total_vram_unit = to_largest_unit(total_vram as f64, &Base::Decimal);
-                    let used_vram_unit = to_largest_unit(used_vram as f64, &Base::Decimal);
-                    let used_vram_percentage = (used_vram as f64 / total_vram as f64).nan_default(0.0) * 100.0;
-                    imp.vram_usage.set_subtitle(&format!("{:.2} {}B / {:.2} {}B · {} %", used_vram_unit.0, used_vram_unit.1, total_vram_unit.0, total_vram_unit.1, used_vram_percentage as u8));
-                    imp.vram_usage.push_data_point((used_vram as f64) / (total_vram as f64));
+                    let used_vram_fraction = (used_vram as f64 / total_vram as f64).nan_default(0.0);
+                    imp.vram_usage.set_subtitle(&format!("{} / {} · {} %", &convert_storage(used_vram as f64, false), &convert_storage(total_vram as f64, false), (used_vram_fraction * 100.0).round()));
+                    imp.vram_usage.push_data_point(used_vram_fraction);
                     imp.vram_usage.set_graph_visible(true);
                 } else {
                     imp.vram_usage.set_subtitle(&i18n("N/A"));
@@ -212,31 +213,27 @@ impl ResGPU {
                     imp.vram_usage.set_graph_visible(false);
                 }
 
-                // TODO: handle the user's choice of temperature unit
-                let temp_unit = "C";
-                imp.temperature.set_subtitle(&gpu.get_gpu_temp().await.map_or_else(|_| i18n("N/A"), |x| format!("{x} °{temp_unit}")));
+                imp.temperature.set_subtitle(&gpu.get_gpu_temp().await.map_or_else(|_| i18n("N/A"), convert_temperature));
 
-                imp.power_usage.set_subtitle(&gpu.get_power_usage().await.map_or_else(|_| i18n("N/A"), |x| format!("{x:.1} W")));
+                imp.power_usage.set_subtitle(&gpu.get_power_usage().await.map_or_else(|_| i18n("N/A"), convert_power));
 
                 if let Ok(gpu_clockspeed) = gpu.get_gpu_speed().await {
-                    let gpu_clockspeed_unit = to_largest_unit(gpu_clockspeed, &Base::Decimal);
-                    imp.gpu_clockspeed.set_subtitle(&format!("{:.2} {}Hz", gpu_clockspeed_unit.0, gpu_clockspeed_unit.1));
+                    imp.gpu_clockspeed.set_subtitle(&convert_frequency(gpu_clockspeed));
                 } else {
                     imp.gpu_clockspeed.set_subtitle(&i18n("N/A"));
                 }
 
                 if let Ok(vram_clockspeed) = gpu.get_vram_speed().await {
-                    let vram_clockspeed_unit = to_largest_unit(vram_clockspeed, &Base::Decimal);
-                    imp.vram_clockspeed.set_subtitle(&format!("{:.2} {}Hz", vram_clockspeed_unit.0, vram_clockspeed_unit.1));
+                    imp.vram_clockspeed.set_subtitle(&convert_frequency(vram_clockspeed));
                 } else {
                     imp.vram_clockspeed.set_subtitle(&i18n("N/A"));
                 }
 
-                imp.current_power_cap.set_subtitle(&gpu.get_power_cap().await.map_or_else(|_| i18n("N/A"), |x| format!("{x:.1} W")));
+                imp.current_power_cap.set_subtitle(&gpu.get_power_cap().await.map_or_else(|_| i18n("N/A"), convert_power));
 
-                imp.max_power_cap.set_subtitle(&gpu.get_power_cap_max().await.map_or_else(|_| i18n("N/A"), |x| format!("{x:.1} W")));
+                imp.max_power_cap.set_subtitle(&gpu.get_power_cap_max().await.map_or_else(|_| i18n("N/A"), convert_power));
 
-                timeout_future_seconds(1).await;
+                timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
             }
         });
         main_context.spawn_local(gpu_usage_update);

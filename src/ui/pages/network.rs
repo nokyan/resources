@@ -1,12 +1,13 @@
 use std::time::{Duration, SystemTime};
 
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone, timeout_future_seconds, MainContext};
+use gtk::glib::{self, clone, timeout_future, MainContext};
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::utils::network::NetworkInterface;
-use crate::utils::units::{to_largest_unit, Base};
+use crate::utils::settings::SETTINGS;
+use crate::utils::units::{convert_speed, convert_storage};
 use crate::utils::NaNDefault;
 
 mod imp {
@@ -205,23 +206,16 @@ impl ResNetwork {
                 let received_delta = (received_bytes - old_received_bytes) as f64 / time_passed;
                 let sent_delta = (sent_bytes - old_sent_bytes) as f64 / time_passed;
 
-                let received_delta_formatted = to_largest_unit(received_delta, &Base::Decimal);
-                let sent_delta_formatted = to_largest_unit(sent_delta, &Base::Decimal);
-                let received_formatted = to_largest_unit(received_bytes as f64, &Base::Decimal);
-                let sent_formatted = to_largest_unit(sent_bytes as f64, &Base::Decimal);
-
-                imp.total_received.set_subtitle(&format!("{:.2} {}B", received_formatted.0, received_formatted.1));
-                imp.total_sent.set_subtitle(&format!("{:.2} {}B", sent_formatted.0, sent_formatted.1));
+                imp.total_received.set_subtitle(&convert_storage(received_bytes as f64, false));
+                imp.total_sent.set_subtitle(&convert_storage(sent_bytes as f64, false));
 
                 imp.receiving.push_data_point(received_delta as f64);
                 let highest_received = imp.receiving.get_highest_value();
-                let highest_received_formatted = to_largest_unit(imp.receiving.get_highest_value(), &Base::Decimal);
-                imp.receiving.set_subtitle(&format!("{:.2} {}B/s · {} {:.2} {}B/s", received_delta_formatted.0, received_delta_formatted.1, i18n("Highest:"), highest_received_formatted.0, highest_received_formatted.1));
+                imp.receiving.set_subtitle(&format!("{} · {} {}", convert_speed(received_delta), i18n("Highest:"), convert_speed(highest_received)));
 
                 imp.sending.push_data_point(sent_delta as f64);
                 let highest_sent = imp.sending.get_highest_value();
-                let highest_sent_formatted = to_largest_unit(imp.sending.get_highest_value(), &Base::Decimal);
-                imp.sending.set_subtitle(&format!("{:.2} {}B/s · {} {:.2} {}B/s", sent_delta_formatted.0, sent_delta_formatted.1, i18n("Highest:"), highest_sent_formatted.0, highest_sent_formatted.1));
+                imp.sending.set_subtitle(&format!("{} · {} {}", convert_speed(sent_delta), i18n("Highest:"), convert_speed(highest_sent)));
 
                 this.set_property("usage", f64::max(received_delta / highest_received, sent_delta / highest_sent).nan_default(1.0));
 
@@ -229,7 +223,7 @@ impl ResNetwork {
                 old_sent_bytes = sent_bytes;
                 last_timestamp = SystemTime::now();
 
-                timeout_future_seconds(1).await;
+                timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
             }
         });
         main_context.spawn_local(statistics_update);

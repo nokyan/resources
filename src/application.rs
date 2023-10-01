@@ -6,6 +6,7 @@ use gtk::{gdk, gio, glib};
 
 use crate::config::{self, APP_ID, PKGDATADIR, PROFILE, VERSION};
 use crate::i18n::i18n;
+use crate::ui::dialogs::settings_dialog::ResSettingsDialog;
 use crate::ui::window::MainWindow;
 
 mod imp {
@@ -97,6 +98,13 @@ impl Application {
         self.add_action(&action_quit);
 
         // About
+        let action_settings = gio::SimpleAction::new("settings", None);
+        action_settings.connect_activate(clone!(@weak self as app => move |_, _| {
+            app.show_settings_dialog();
+        }));
+        self.add_action(&action_settings);
+
+        // About
         let action_about = gio::SimpleAction::new("about", None);
         action_about.connect_activate(clone!(@weak self as app => move |_, _| {
             app.show_about_dialog();
@@ -119,6 +127,17 @@ impl Application {
                 gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
             );
         }
+    }
+
+    fn show_settings_dialog(&self) {
+        let settings = ResSettingsDialog::new();
+
+        settings.set_transient_for(Some(&self.main_window()));
+        settings.set_modal(true);
+
+        settings.init();
+
+        settings.present();
     }
 
     fn show_about_dialog(&self) {
