@@ -163,7 +163,7 @@ impl ResDrive {
         let main_context = MainContext::default();
         let drive_stats = clone!(@strong self as this => async move {
             let imp = this.imp();
-            imp.total_usage.set_title_label("Total Usage");
+            imp.total_usage.set_title_label(&i18n("Total Usage"));
             imp.total_usage.set_data_points_max_amount(60);
             imp.total_usage.set_graph_color(229, 165, 10);
             imp.drive_type.set_subtitle(&(match drive.drive_type {

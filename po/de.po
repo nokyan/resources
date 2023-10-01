@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-10-01 22:59+0200\n"
+"PO-Revision-Date: 2023-10-02 01:07+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: de\n"
@@ -140,6 +140,10 @@ msgstr "CPU {}"
 #: src/ui/pages/drive.rs:97
 msgid "Drive"
 msgstr "Speicher"
+
+#: src/ui/pages/drive.rs:166
+msgid "Total Usage"
+msgstr "Gesamtauslastung"
 
 #: src/ui/pages/drive.rs:170 src/ui/window.rs:259
 msgid "CD/DVD/Blu-ray Drive"

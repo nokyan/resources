@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-10-01 22:57+0200\n"
+"PO-Revision-Date: 2023-10-02 01:05+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: \n"
@@ -197,6 +197,10 @@ msgstr ""
 
 #: src/ui/pages/drive.rs:97
 msgid "Drive"
+msgstr ""
+
+#: src/ui/pages/drive.rs:166
+msgid "Total Usage"
 msgstr ""
 
 #: src/ui/pages/drive.rs:170 src/ui/window.rs:259
