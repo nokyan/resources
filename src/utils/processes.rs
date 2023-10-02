@@ -585,7 +585,7 @@ impl AppsContext {
                         !process.data.commandline.starts_with("bwrap")
                             && !process.data.commandline.is_empty()
                     })
-                    .all(|process| process.data.containerization == Containerization::Flatpak)
+                    .any(|process| process.data.containerization == Containerization::Flatpak)
                 {
                     Containerization::Flatpak
                 } else {
