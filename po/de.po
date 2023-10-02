@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-10-02 01:07+0200\n"
+"PO-Revision-Date: 2023-10-02 14:16+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: de\n"
@@ -17,14 +17,14 @@ msgstr ""
 "X-Generator: Gtranslator 45.1\n"
 
 #: data/me.nalux.Resources.desktop.in.in:3
-#: data/me.nalux.Resources.metainfo.xml.in.in:6 src/application.rs:145
+#: data/me.nalux.Resources.metainfo.xml.in.in:4 src/application.rs:145
 msgid "Resources"
 msgstr "Ressourcen"
 
 #: data/me.nalux.Resources.desktop.in.in:4
-#: data/me.nalux.Resources.metainfo.xml.in.in:7
-msgid "Monitor your Resources and Processes"
-msgstr "Ressourcen und Prozesse überwachen"
+#: data/me.nalux.Resources.metainfo.xml.in.in:5
+msgid "Monitor your system resources and processes"
+msgstr "Systemressourcen und Prozesse überwachen"
 
 #: data/me.nalux.Resources.desktop.in.in:10
 msgid ""
@@ -58,10 +58,47 @@ msgstr "Basis für Einheitenvorsätze"
 msgid "Refresh Speed"
 msgstr "Aktualisierungsgeschwindigkiet"
 
-#: data/me.nalux.Resources.metainfo.xml.in.in:9
-msgid "A simple yet powerful monitor for your system resources and processes."
+#: data/me.nalux.Resources.metainfo.xml.in.in:14
+msgid ""
+"Resources allows you to check the utilization of your system resources and "
+"control your running processes and applications. It's designed to be user-"
+"friendly and feel right at home on a modern desktop by using GNOME's "
+"libadwaita."
 msgstr ""
-"Ein starker und einfacher Monitor für Ihre Systemressourcen und Prozesse."
+"Ressourcen erlaubt es Ihnen, die Auslastung Ihrer Systemressourcen zu "
+"überwachen und Ihre laufenden Prozesse und Anwendungen zu kontrollieren. "
+"Durch die Verwendung von GNOMEs libadwaita ist Ressourcen benutzerfreundlich "
+"und fühlt sich auf einem modernen Desktop zu Hause."
+
+#: data/me.nalux.Resources.metainfo.xml.in.in:17
+msgid "Resources supports monitoring the following components:"
+msgstr "Ressourcen unterstützt das Überwachen folgender Komponenten:"
+
+#: data/me.nalux.Resources.metainfo.xml.in.in:21 src/ui/pages/cpu.rs:178
+msgid "CPU"
+msgstr "CPU"
+
+#: data/me.nalux.Resources.metainfo.xml.in.in:22
+#: src/ui/pages/applications/mod.rs:250 src/ui/pages/memory.rs:88
+#: src/ui/pages/memory.rs:155 src/ui/pages/processes/mod.rs:295
+#: data/resources/ui/window.ui:155 data/resources/ui/window.ui:162
+#: data/resources/ui/dialogs/app_dialog.ui:83
+#: data/resources/ui/dialogs/process_dialog.ui:70
+msgid "Memory"
+msgstr "Arbeitsspeicher"
+
+#: data/me.nalux.Resources.metainfo.xml.in.in:23 src/ui/pages/gpu.rs:104
+#: src/ui/window.rs:213
+msgid "GPU"
+msgstr "GPU"
+
+#: data/me.nalux.Resources.metainfo.xml.in.in:24
+msgid "Network Interfaces"
+msgstr "Netzwerkschnittstlelen"
+
+#: data/me.nalux.Resources.metainfo.xml.in.in:25
+msgid "Storage Devices"
+msgstr "Speichergeräte"
 
 #: src/application.rs:147
 msgid "The Nalux Team"
@@ -109,14 +146,6 @@ msgstr "Anwendungen"
 msgid "Application"
 msgstr "Anwendung"
 
-#: src/ui/pages/applications/mod.rs:250 src/ui/pages/memory.rs:88
-#: src/ui/pages/memory.rs:155 src/ui/pages/processes/mod.rs:295
-#: data/resources/ui/window.ui:155 data/resources/ui/window.ui:162
-#: data/resources/ui/dialogs/app_dialog.ui:83
-#: data/resources/ui/dialogs/process_dialog.ui:70
-msgid "Memory"
-msgstr "Arbeitsspeicher"
-
 #: src/ui/pages/applications/mod.rs:273 src/ui/pages/cpu.rs:102
 #: src/ui/pages/cpu.rs:175 src/ui/pages/processes/mod.rs:318
 #: data/resources/ui/window.ui:124 data/resources/ui/window.ui:131
@@ -128,10 +157,6 @@ msgstr "Prozessor"
 #: src/ui/pages/applications/mod.rs:473 src/ui/pages/processes/mod.rs:501
 msgid "Cancel"
 msgstr "Abbrechen"
-
-#: src/ui/pages/cpu.rs:178
-msgid "CPU"
-msgstr "CPU"
 
 #: src/ui/pages/cpu.rs:191
 msgid "CPU {}"
@@ -176,10 +201,6 @@ msgstr "Solid-State-Drive"
 #: src/ui/pages/drive.rs:185 src/ui/pages/drive.rs:191
 msgid "Yes"
 msgstr "Ja"
-
-#: src/ui/pages/gpu.rs:104 src/ui/window.rs:213
-msgid "GPU"
-msgstr "GPU"
 
 #: src/ui/pages/gpu.rs:174
 msgid "GPU Usage"
@@ -956,6 +977,14 @@ msgstr "Prozess fortsetzen"
 #: data/resources/ui/pages/processes.ui:81
 msgid "End Process"
 msgstr "Prozess beenden"
+
+#~ msgid "Monitor your Resources and Processes"
+#~ msgstr "Ressourcen und Prozesse überwachen"
+
+#~ msgid ""
+#~ "A simple yet powerful monitor for your system resources and processes."
+#~ msgstr ""
+#~ "Ein starker und einfacher Monitor für Ihre Systemressourcen und Prozesse."
 
 #~ msgid "{} {}B Drive"
 #~ msgstr "{}-{}B-Datenträger"

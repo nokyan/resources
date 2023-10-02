@@ -1,21 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
   <id>@app-id@</id>
-  <metadata_license>CC0</metadata_license>
-  <project_license>GPL-3.0-or-later</project_license>
   <name>Resources</name>
-  <summary>Monitor your Resources and Processes</summary>
+  <summary>Monitor your system resources and processes</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
   <description>
-    <p>A simple yet powerful monitor for your system resources and processes.</p>
+    <p>
+      Resources allows you to check the utilization of your system resources and control your running processes and applications. It&apos;s designed to be user-friendly and feel right at home on a modern desktop by using GNOME&apos;s libadwaita.
+    </p>
+    <p>
+      Resources supports monitoring the following components:
+    </p>
+    <ul>
+      <li>CPU</li>
+      <li>Memory</li>
+      <li>GPU</li>
+      <li>Network Interfaces</li>
+      <li>Storage Devices</li>
+    </ul>
   </description>
-  <url type="homepage">https://github.com/nokyan/resources</url>
-  <url type="bugtracker">https://github.com/nokyan/resources/issues</url>
-  <content_rating type="oars-1.0"/>
+  <content_rating type="oars-1.1"/>
   <developer_name>nokyan</developer_name>
   <update_contact>nokyan@tuta.io</update_contact>
   <translation type="gettext">@gettext-package@</translation>
   <launchable type="desktop-id">@app-id@.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/1.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/2.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/3.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/4.png</image>
+    </screenshot>
+  </screenshots>
   <releases>
-    <release version="0.1.0" date="2019-07-11"/>
+    <release version="1.0.0"/>
   </releases>
 </component>

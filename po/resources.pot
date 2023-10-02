@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-10-02 01:05+0200\n"
+"PO-Revision-Date: 2023-10-02 14:12+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: \n"
@@ -16,13 +16,13 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: data/me.nalux.Resources.desktop.in.in:3
-#: data/me.nalux.Resources.metainfo.xml.in.in:6 src/application.rs:145
+#: data/me.nalux.Resources.metainfo.xml.in.in:4 src/application.rs:145
 msgid "Resources"
 msgstr ""
 
 #: data/me.nalux.Resources.desktop.in.in:4
-#: data/me.nalux.Resources.metainfo.xml.in.in:7
-msgid "Monitor your Resources and Processes"
+#: data/me.nalux.Resources.metainfo.xml.in.in:5
+msgid "Monitor your system resources and processes"
 msgstr ""
 
 #: data/me.nalux.Resources.desktop.in.in:10
@@ -55,12 +55,42 @@ msgstr ""
 msgid "Refresh Speed"
 msgstr ""
 
-#: data/me.nalux.Resources.metainfo.xml.in.in:9
-msgid "A simple yet powerful monitor for your system resources and processes."
+#: data/me.nalux.Resources.metainfo.xml.in.in:14
+msgid ""
+"Resources allows you to check the utilization of your system resources and "
+"control your running processes and applications. It's designed to be user-"
+"friendly and feel right at home on a modern desktop by using GNOME's "
+"libadwaita."
 msgstr ""
 
-#: data/me.nalux.Resources.metainfo.xml.in.in:14
-msgid "nokyan"
+#: data/me.nalux.Resources.metainfo.xml.in.in:17
+msgid "Resources supports monitoring the following components:"
+msgstr ""
+
+#: data/me.nalux.Resources.metainfo.xml.in.in:21 src/ui/pages/cpu.rs:178
+msgid "CPU"
+msgstr ""
+
+#: data/me.nalux.Resources.metainfo.xml.in.in:22
+#: src/ui/pages/applications/mod.rs:250 src/ui/pages/memory.rs:88
+#: src/ui/pages/memory.rs:155 src/ui/pages/processes/mod.rs:295
+#: data/resources/ui/window.ui:155 data/resources/ui/window.ui:162
+#: data/resources/ui/dialogs/app_dialog.ui:83
+#: data/resources/ui/dialogs/process_dialog.ui:70
+msgid "Memory"
+msgstr ""
+
+#: data/me.nalux.Resources.metainfo.xml.in.in:23 src/ui/pages/gpu.rs:104
+#: src/ui/window.rs:213
+msgid "GPU"
+msgstr ""
+
+#: data/me.nalux.Resources.metainfo.xml.in.in:24
+msgid "Network Interfaces"
+msgstr ""
+
+#: data/me.nalux.Resources.metainfo.xml.in.in:25
+msgid "Storage Devices"
 msgstr ""
 
 #: src/application.rs:147
@@ -74,64 +104,6 @@ msgstr ""
 #: src/application.rs:159
 msgid "Icon by"
 msgstr ""
-
-#: src/i18n.rs:134 src/i18n.rs:137 src/i18n.rs:139
-msgid "translate1"
-msgid_plural "translate multi"
-msgstr[0] ""
-msgstr[1] ""
-
-#: src/i18n.rs:145
-msgid "{} param"
-msgstr ""
-
-#: src/i18n.rs:148
-msgid "middle {} param"
-msgstr ""
-
-#: src/i18n.rs:151
-msgid "end {}"
-msgstr ""
-
-#: src/i18n.rs:154
-msgid "multiple {} and {}"
-msgstr ""
-
-#: src/i18n.rs:157 src/i18n.rs:159
-msgid "singular {} and {}"
-msgid_plural "plural {} and {}"
-msgstr[0] ""
-msgstr[1] ""
-
-#: src/i18n.rs:165
-msgid "{one} param"
-msgstr ""
-
-#: src/i18n.rs:168
-msgid "middle {one} param"
-msgstr ""
-
-#: src/i18n.rs:171
-msgid "end {one}"
-msgstr ""
-
-#: src/i18n.rs:174
-msgid "multiple {one} and {two}"
-msgstr ""
-
-#: src/i18n.rs:177
-msgid "multiple {two} and {one}"
-msgstr ""
-
-#: src/i18n.rs:180
-msgid "multiple {one} and {one}"
-msgstr ""
-
-#: src/i18n.rs:184 src/i18n.rs:191
-msgid "singular {one} and {two}"
-msgid_plural "plural {one} and {two}"
-msgstr[0] ""
-msgstr[1] ""
 
 #: src/ui/dialogs/app_dialog.rs:111 src/ui/dialogs/process_dialog.rs:107
 #: src/ui/pages/drive.rs:187 src/ui/pages/drive.rs:193
@@ -167,14 +139,6 @@ msgstr ""
 msgid "Application"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:250 src/ui/pages/memory.rs:88
-#: src/ui/pages/memory.rs:155 src/ui/pages/processes/mod.rs:295
-#: data/resources/ui/window.ui:155 data/resources/ui/window.ui:162
-#: data/resources/ui/dialogs/app_dialog.ui:83
-#: data/resources/ui/dialogs/process_dialog.ui:70
-msgid "Memory"
-msgstr ""
-
 #: src/ui/pages/applications/mod.rs:273 src/ui/pages/cpu.rs:102
 #: src/ui/pages/cpu.rs:175 src/ui/pages/processes/mod.rs:318
 #: data/resources/ui/window.ui:124 data/resources/ui/window.ui:131
@@ -185,10 +149,6 @@ msgstr ""
 
 #: src/ui/pages/applications/mod.rs:473 src/ui/pages/processes/mod.rs:501
 msgid "Cancel"
-msgstr ""
-
-#: src/ui/pages/cpu.rs:178
-msgid "CPU"
 msgstr ""
 
 #: src/ui/pages/cpu.rs:191
@@ -233,10 +193,6 @@ msgstr ""
 
 #: src/ui/pages/drive.rs:185 src/ui/pages/drive.rs:191
 msgid "Yes"
-msgstr ""
-
-#: src/ui/pages/gpu.rs:104 src/ui/window.rs:213
-msgid "GPU"
 msgstr ""
 
 #: src/ui/pages/gpu.rs:174
