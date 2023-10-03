@@ -56,9 +56,9 @@ Running Resources is as simple as typing `resources` into a terminal or running 
 
 The following list is *roughly* in order of their importance with the most important item being first in the list.
 
-- Battery usage and details
-- Preferences such as a unit selection
+- Support reading statistics of Intel GPUs
 - Translations
+- Battery usage and details
 
 ## Contributing
 
