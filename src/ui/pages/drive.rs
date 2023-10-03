@@ -1,7 +1,7 @@
 use std::time::{Duration, SystemTime};
 
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone, MainContext};
+use gtk::glib;
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
@@ -171,13 +171,12 @@ impl ResDrive {
     }
 
     pub fn setup_widgets(&self, drive: Drive) {
-        let main_context = MainContext::default();
-        let drive_stats = clone!(@strong self as this => async move {
-            let imp = this.imp();
-            imp.total_usage.set_title_label(&i18n("Total Usage"));
-            imp.total_usage.set_data_points_max_amount(60);
-            imp.total_usage.set_graph_color(229, 165, 10);
-            imp.drive_type.set_subtitle(&(match drive.drive_type {
+        let imp = self.imp();
+        imp.total_usage.set_title_label(&i18n("Total Usage"));
+        imp.total_usage.set_data_points_max_amount(60);
+        imp.total_usage.set_graph_color(229, 165, 10);
+        imp.drive_type.set_subtitle(
+            &(match drive.drive_type {
                 crate::utils::drive::DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),
                 crate::utils::drive::DriveType::Emmc => i18n("eMMC Storage"),
                 crate::utils::drive::DriveType::Flash => i18n("Flash Storage"),
@@ -186,27 +185,17 @@ impl ResDrive {
                 crate::utils::drive::DriveType::Nvme => i18n("NVMe Drive"),
                 crate::utils::drive::DriveType::Unknown => i18n("N/A"),
                 crate::utils::drive::DriveType::Ssd => i18n("Solid State Drive"),
-            }));
-            imp.device.set_subtitle(&drive.block_device);
+            }),
+        );
+        imp.device.set_subtitle(&drive.block_device);
 
-            let capacity = drive.capacity().await.unwrap_or(0) * drive.sector_size().await.unwrap_or(512);
-            imp.capacity.set_subtitle(&convert_storage(capacity as f64, false));
+        imp.last_timestamp.set(
+            SystemTime::now()
+                .checked_sub(Duration::from_secs(1))
+                .unwrap(),
+        );
 
-            if drive.writable().await.unwrap_or(false) {
-                imp.writable.set_subtitle(&i18n("Yes"));
-            } else {
-                imp.writable.set_subtitle(&i18n("No"));
-            }
-
-            if drive.removable().await.unwrap_or(false) {
-                imp.removable.set_subtitle(&i18n("Yes"));
-            } else {
-                imp.removable.set_subtitle(&i18n("No"));
-            }
-
-            *imp.drive.borrow_mut() = drive;
-        });
-        main_context.spawn_local(drive_stats);
+        *imp.drive.borrow_mut() = drive;
     }
 
     pub async fn refresh_page(&self) {
@@ -218,6 +207,18 @@ impl ResDrive {
         let time_passed = SystemTime::now()
             .duration_since(imp.last_timestamp.get())
             .map_or(1.0f64, |timestamp| timestamp.as_secs_f64());
+
+        if imp.drive.borrow().writable().await.unwrap_or(false) {
+            imp.writable.set_subtitle(&i18n("Yes"));
+        } else {
+            imp.writable.set_subtitle(&i18n("No"));
+        }
+
+        if imp.drive.borrow().removable().await.unwrap_or(false) {
+            imp.removable.set_subtitle(&i18n("Yes"));
+        } else {
+            imp.removable.set_subtitle(&i18n("No"));
+        }
 
         if let (Some(read_ticks), Some(write_ticks), Some(old_read_ticks), Some(old_write_ticks)) = (
             disk_stats.get("read_ticks"),

@@ -1,7 +1,7 @@
 use std::time::{Duration, SystemTime};
 
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self};
+use gtk::glib;
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
