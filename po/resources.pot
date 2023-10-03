@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-10-02 14:12+0200\n"
+"PO-Revision-Date: 2022-08-04 00:15+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: \n"
@@ -67,21 +67,21 @@ msgstr ""
 msgid "Resources supports monitoring the following components:"
 msgstr ""
 
-#: data/me.nalux.Resources.metainfo.xml.in.in:21 src/ui/pages/cpu.rs:178
+#: data/me.nalux.Resources.metainfo.xml.in.in:21 src/ui/pages/cpu.rs:188
 msgid "CPU"
 msgstr ""
 
 #: data/me.nalux.Resources.metainfo.xml.in.in:22
-#: src/ui/pages/applications/mod.rs:250 src/ui/pages/memory.rs:88
-#: src/ui/pages/memory.rs:155 src/ui/pages/processes/mod.rs:295
+#: src/ui/pages/applications/mod.rs:250 src/ui/pages/memory.rs:85
+#: src/ui/pages/memory.rs:151 src/ui/pages/processes/mod.rs:295
 #: data/resources/ui/window.ui:155 data/resources/ui/window.ui:162
 #: data/resources/ui/dialogs/app_dialog.ui:83
 #: data/resources/ui/dialogs/process_dialog.ui:70
 msgid "Memory"
 msgstr ""
 
-#: data/me.nalux.Resources.metainfo.xml.in.in:23 src/ui/pages/gpu.rs:104
-#: src/ui/window.rs:213
+#: data/me.nalux.Resources.metainfo.xml.in.in:23 src/ui/pages/gpu.rs:101
+#: src/ui/window.rs:229
 msgid "GPU"
 msgstr ""
 
@@ -106,7 +106,7 @@ msgid "Icon by"
 msgstr ""
 
 #: src/ui/dialogs/app_dialog.rs:111 src/ui/dialogs/process_dialog.rs:107
-#: src/ui/pages/drive.rs:187 src/ui/pages/drive.rs:193
+#: src/ui/pages/drive.rs:214 src/ui/pages/drive.rs:220
 msgid "No"
 msgstr ""
 
@@ -115,17 +115,17 @@ msgid "Yes (Flatpak)"
 msgstr ""
 
 #: src/ui/dialogs/process_dialog.rs:102 src/ui/dialogs/process_dialog.rs:104
-#: src/ui/pages/cpu.rs:179 src/ui/pages/cpu.rs:192 src/ui/pages/cpu.rs:208
-#: src/ui/pages/cpu.rs:214 src/ui/pages/cpu.rs:220 src/ui/pages/cpu.rs:226
-#: src/ui/pages/cpu.rs:230 src/ui/pages/cpu.rs:233 src/ui/pages/cpu.rs:265
-#: src/ui/pages/cpu.rs:303 src/ui/pages/drive.rs:176 src/ui/pages/gpu.rs:181
-#: src/ui/pages/gpu.rs:200 src/ui/pages/gpu.rs:211 src/ui/pages/gpu.rs:216
-#: src/ui/pages/gpu.rs:218 src/ui/pages/gpu.rs:223 src/ui/pages/gpu.rs:229
-#: src/ui/pages/gpu.rs:232 src/ui/pages/gpu.rs:234 src/ui/pages/memory.rs:187
-#: src/ui/pages/memory.rs:191 src/ui/pages/memory.rs:195
-#: src/ui/pages/memory.rs:237 src/ui/pages/network.rs:174
-#: src/ui/pages/network.rs:176 src/ui/pages/network.rs:181
-#: src/ui/pages/network.rs:183 src/ui/pages/network.rs:185 src/utils/gpu.rs:81
+#: src/ui/pages/cpu.rs:189 src/ui/pages/cpu.rs:201 src/ui/pages/cpu.rs:216
+#: src/ui/pages/cpu.rs:222 src/ui/pages/cpu.rs:228 src/ui/pages/cpu.rs:234
+#: src/ui/pages/cpu.rs:238 src/ui/pages/cpu.rs:241 src/ui/pages/cpu.rs:301
+#: src/ui/pages/drive.rs:186 src/ui/pages/gpu.rs:177 src/ui/pages/gpu.rs:192
+#: src/ui/pages/gpu.rs:210 src/ui/pages/gpu.rs:218 src/ui/pages/gpu.rs:224
+#: src/ui/pages/gpu.rs:231 src/ui/pages/gpu.rs:238 src/ui/pages/gpu.rs:244
+#: src/ui/pages/gpu.rs:250 src/ui/pages/memory.rs:183
+#: src/ui/pages/memory.rs:187 src/ui/pages/memory.rs:191
+#: src/ui/pages/memory.rs:245 src/ui/pages/network.rs:198
+#: src/ui/pages/network.rs:205 src/ui/pages/network.rs:211
+#: src/ui/pages/network.rs:217 src/ui/pages/network.rs:219 src/utils/gpu.rs:81
 #: src/utils/gpu.rs:84
 msgid "N/A"
 msgstr ""
@@ -140,7 +140,7 @@ msgid "Application"
 msgstr ""
 
 #: src/ui/pages/applications/mod.rs:273 src/ui/pages/cpu.rs:102
-#: src/ui/pages/cpu.rs:175 src/ui/pages/processes/mod.rs:318
+#: src/ui/pages/processes/mod.rs:318 src/ui/window.rs:218
 #: data/resources/ui/window.ui:124 data/resources/ui/window.ui:131
 #: data/resources/ui/dialogs/app_dialog.ui:74
 #: data/resources/ui/dialogs/process_dialog.ui:61
@@ -151,79 +151,79 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/ui/pages/cpu.rs:191
+#: src/ui/pages/cpu.rs:200
 msgid "CPU {}"
 msgstr ""
 
-#: src/ui/pages/drive.rs:97
+#: src/ui/pages/drive.rs:102
 msgid "Drive"
 msgstr ""
 
-#: src/ui/pages/drive.rs:166
+#: src/ui/pages/drive.rs:175
 msgid "Total Usage"
 msgstr ""
 
-#: src/ui/pages/drive.rs:170 src/ui/window.rs:259
+#: src/ui/pages/drive.rs:180 src/ui/window.rs:306
 msgid "CD/DVD/Blu-ray Drive"
 msgstr ""
 
-#: src/ui/pages/drive.rs:171
+#: src/ui/pages/drive.rs:181
 msgid "eMMC Storage"
 msgstr ""
 
-#: src/ui/pages/drive.rs:172
+#: src/ui/pages/drive.rs:182
 msgid "Flash Storage"
 msgstr ""
 
-#: src/ui/pages/drive.rs:173 src/ui/window.rs:260
+#: src/ui/pages/drive.rs:183 src/ui/window.rs:307
 msgid "Floppy Drive"
 msgstr ""
 
-#: src/ui/pages/drive.rs:174
+#: src/ui/pages/drive.rs:184
 msgid "Hard Disk Drive"
 msgstr ""
 
-#: src/ui/pages/drive.rs:175
+#: src/ui/pages/drive.rs:185
 msgid "NVMe Drive"
 msgstr ""
 
-#: src/ui/pages/drive.rs:177
+#: src/ui/pages/drive.rs:187
 msgid "Solid State Drive"
 msgstr ""
 
-#: src/ui/pages/drive.rs:185 src/ui/pages/drive.rs:191
+#: src/ui/pages/drive.rs:212 src/ui/pages/drive.rs:218
 msgid "Yes"
 msgstr ""
 
-#: src/ui/pages/gpu.rs:174
+#: src/ui/pages/gpu.rs:170
 msgid "GPU Usage"
 msgstr ""
 
-#: src/ui/pages/gpu.rs:177
+#: src/ui/pages/gpu.rs:173
 msgid "Video Memory Usage"
 msgstr ""
 
-#: src/ui/pages/memory.rs:158
+#: src/ui/pages/memory.rs:154
 msgid "Swap"
 msgstr ""
 
-#: src/ui/pages/memory.rs:197
+#: src/ui/pages/memory.rs:193
 msgid "{} of {}"
 msgstr ""
 
-#: src/ui/pages/network.rs:98 src/ui/window.rs:307
+#: src/ui/pages/network.rs:101 src/ui/window.rs:354
 msgid "Network Interface"
 msgstr ""
 
-#: src/ui/pages/network.rs:165
+#: src/ui/pages/network.rs:185
 msgid "Receiving"
 msgstr ""
 
-#: src/ui/pages/network.rs:169
+#: src/ui/pages/network.rs:189
 msgid "Sending"
 msgstr ""
 
-#: src/ui/pages/network.rs:214 src/ui/pages/network.rs:218
+#: src/ui/pages/network.rs:267 src/ui/pages/network.rs:276
 msgid "Highest:"
 msgstr ""
 
@@ -250,143 +250,143 @@ msgstr ""
 msgid "root"
 msgstr ""
 
-#: src/ui/window.rs:211
+#: src/ui/window.rs:227
 msgid "GPU {}"
 msgstr ""
 
-#: src/ui/window.rs:261
+#: src/ui/window.rs:308
 msgid "{} Drive"
 msgstr ""
 
-#: src/ui/window.rs:300
+#: src/ui/window.rs:347
 msgid "Ethernet Connection"
 msgstr ""
 
-#: src/ui/window.rs:301
+#: src/ui/window.rs:348
 msgid "InfiniBand Connection"
 msgstr ""
 
-#: src/ui/window.rs:302
+#: src/ui/window.rs:349
 msgid "Serial Line IP Connection"
 msgstr ""
 
-#: src/ui/window.rs:303
+#: src/ui/window.rs:350
 msgid "Wi-Fi Connection"
 msgstr ""
 
-#: src/ui/window.rs:304
+#: src/ui/window.rs:351
 msgid "WWAN Connection"
 msgstr ""
 
-#: src/ui/window.rs:305
+#: src/ui/window.rs:352
 msgid "Bluetooth Tether"
 msgstr ""
 
-#: src/ui/window.rs:306
+#: src/ui/window.rs:353
 msgid "VPN Tunnel (WireGuard)"
 msgstr ""
 
-#: src/ui/window.rs:450
+#: src/ui/window.rs:501
 msgid "End {}?"
 msgstr ""
 
-#: src/ui/window.rs:451
+#: src/ui/window.rs:502
 msgid "Halt {}?"
 msgstr ""
 
-#: src/ui/window.rs:452
+#: src/ui/window.rs:503
 msgid "Kill {}?"
 msgstr ""
 
-#: src/ui/window.rs:453
+#: src/ui/window.rs:504
 msgid "Continue {}?"
 msgstr ""
 
-#: src/ui/window.rs:459
+#: src/ui/window.rs:510
 msgid "Unsaved work might be lost."
 msgstr ""
 
-#: src/ui/window.rs:460
+#: src/ui/window.rs:511
 msgid ""
 "Halting an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
 
-#: src/ui/window.rs:461
+#: src/ui/window.rs:512
 msgid ""
 "Killing an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
 
-#: src/ui/window.rs:468
+#: src/ui/window.rs:519
 msgid "End application"
 msgstr ""
 
-#: src/ui/window.rs:469
+#: src/ui/window.rs:520
 msgid "Halt application"
 msgstr ""
 
-#: src/ui/window.rs:470
+#: src/ui/window.rs:521
 msgid "Kill application"
 msgstr ""
 
-#: src/ui/window.rs:471
+#: src/ui/window.rs:522
 msgid "Continue application"
 msgstr ""
 
-#: src/ui/window.rs:477
+#: src/ui/window.rs:528
 msgid "Successfully ended {}"
 msgstr ""
 
-#: src/ui/window.rs:478
+#: src/ui/window.rs:529
 msgid "Successfully halted {}"
 msgstr ""
 
-#: src/ui/window.rs:479
+#: src/ui/window.rs:530
 msgid "Successfully killed {}"
 msgstr ""
 
-#: src/ui/window.rs:480
+#: src/ui/window.rs:531
 msgid "Successfully continued {}"
 msgstr ""
 
-#: src/ui/window.rs:487
+#: src/ui/window.rs:538
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:493
+#: src/ui/window.rs:544
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:499
+#: src/ui/window.rs:550
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:505
+#: src/ui/window.rs:556
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:515
+#: src/ui/window.rs:566
 msgid "There was a problem ending {}"
 msgstr ""
 
-#: src/ui/window.rs:516
+#: src/ui/window.rs:567
 msgid "There was a problem halting {}"
 msgstr ""
 
-#: src/ui/window.rs:517
+#: src/ui/window.rs:568
 msgid "There was a problem killing {}"
 msgstr ""
 
-#: src/ui/window.rs:518
+#: src/ui/window.rs:569
 msgid "There was a problem continuing {}"
 msgstr ""
 
