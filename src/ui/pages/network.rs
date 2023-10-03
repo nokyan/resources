@@ -1,12 +1,11 @@
 use std::time::{Duration, SystemTime};
 
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone, timeout_future, MainContext};
+use gtk::glib::{self};
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::utils::network::NetworkInterface;
-use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_speed, convert_storage};
 use crate::utils::NaNDefault;
 
@@ -43,6 +42,10 @@ mod imp {
         pub interface: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub hw_address: TemplateChild<adw::ActionRow>,
+        pub old_received_bytes: Cell<usize>,
+        pub old_sent_bytes: Cell<usize>,
+        pub last_timestamp: Cell<SystemTime>,
+        pub network_interface: RefCell<NetworkInterface>,
 
         #[property(get)]
         uses_progress_bar: Cell<bool>,
@@ -96,6 +99,14 @@ mod imp {
                 icon: RefCell::new(ThemedIcon::new("unknown-network-type-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("Network Interface"))),
+                old_received_bytes: Cell::default(),
+                old_sent_bytes: Cell::default(),
+                last_timestamp: Cell::new(
+                    SystemTime::now()
+                        .checked_sub(Duration::from_secs(1))
+                        .unwrap(),
+                ),
+                network_interface: RefCell::default(),
             }
         }
     }
@@ -154,13 +165,22 @@ impl ResNetwork {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self, network_interface: NetworkInterface) {
+    pub fn init(
+        &self,
+        network_interface: NetworkInterface,
+        received_bytes: usize,
+        sent_bytes: usize,
+    ) {
         self.imp().set_icon(&network_interface.icon());
-        self.setup_widgets(network_interface.clone());
-        self.setup_listener(network_interface);
+        self.setup_widgets(network_interface, received_bytes, sent_bytes);
     }
 
-    pub fn setup_widgets(&self, network_interface: NetworkInterface) {
+    pub fn setup_widgets(
+        &self,
+        network_interface: NetworkInterface,
+        received_bytes: usize,
+        sent_bytes: usize,
+    ) {
         let imp = self.imp();
         imp.receiving.set_title_label(&i18n("Receiving"));
         imp.receiving.set_graph_color(52, 170, 175);
@@ -170,62 +190,100 @@ impl ResNetwork {
         imp.sending.set_graph_color(222, 77, 119);
         imp.sending.set_data_points_max_amount(60);
         imp.sending.set_locked_max_y(None);
-        imp.manufacturer
-            .set_subtitle(&network_interface.vendor.unwrap_or_else(|| i18n("N/A")));
-        imp.driver
-            .set_subtitle(&network_interface.driver_name.unwrap_or_else(|| i18n("N/A")));
+        imp.manufacturer.set_subtitle(
+            &network_interface
+                .vendor
+                .as_ref()
+                .cloned()
+                .unwrap_or_else(|| i18n("N/A")),
+        );
+        imp.driver.set_subtitle(
+            &network_interface
+                .driver_name
+                .as_ref()
+                .cloned()
+                .unwrap_or_else(|| i18n("N/A")),
+        );
         imp.interface.set_subtitle(
             network_interface
                 .interface_name
                 .to_str()
                 .unwrap_or(&i18n("N/A")),
         );
-        let hw_address = network_interface.hw_address.unwrap_or_else(|| i18n("N/A"));
+        let hw_address = network_interface
+            .hw_address
+            .as_ref()
+            .cloned()
+            .unwrap_or_else(|| i18n("N/A"));
         if hw_address.is_empty() {
             imp.hw_address.set_subtitle(&i18n("N/A"));
         } else {
             imp.hw_address.set_subtitle(&hw_address);
         }
+
+        imp.last_timestamp.set(
+            SystemTime::now()
+                .checked_sub(Duration::from_secs(1))
+                .unwrap(),
+        );
+
+        imp.old_received_bytes.set(received_bytes);
+        imp.old_sent_bytes.set(sent_bytes);
+        *imp.network_interface.borrow_mut() = network_interface;
     }
 
-    pub fn setup_listener(&self, network_interface: NetworkInterface) {
-        let main_context = MainContext::default();
-        let statistics_update = clone!(@strong self as this => async move {
-            let imp = this.imp();
+    pub async fn refresh_page(&self) {
+        let imp = self.imp();
+        let time_passed = SystemTime::now()
+            .duration_since(imp.last_timestamp.get())
+            .map_or(1.0f64, |timestamp| timestamp.as_secs_f64());
 
-            let mut old_received_bytes = network_interface.received_bytes().await.unwrap_or(0);
-            let mut old_sent_bytes = network_interface.sent_bytes().await.unwrap_or(0);
+        let received_bytes = imp
+            .network_interface
+            .borrow()
+            .received_bytes()
+            .await
+            .unwrap_or(0);
+        let sent_bytes = imp
+            .network_interface
+            .borrow()
+            .sent_bytes()
+            .await
+            .unwrap_or(0);
 
-            let mut last_timestamp = SystemTime::now().checked_sub(Duration::from_secs(1)).unwrap();
+        let received_delta = (received_bytes - imp.old_received_bytes.get()) as f64 / time_passed;
+        let sent_delta = (sent_bytes - imp.old_sent_bytes.get()) as f64 / time_passed;
 
-            loop {
-                let time_passed = SystemTime::now().duration_since(last_timestamp).map_or(1.0f64, |timestamp| timestamp.as_secs_f64());
+        imp.total_received
+            .set_subtitle(&convert_storage(received_bytes as f64, false));
+        imp.total_sent
+            .set_subtitle(&convert_storage(sent_bytes as f64, false));
 
-                let received_bytes = network_interface.received_bytes().await.unwrap_or(0);
-                let sent_bytes = network_interface.sent_bytes().await.unwrap_or(0);
-                let received_delta = (received_bytes - old_received_bytes) as f64 / time_passed;
-                let sent_delta = (sent_bytes - old_sent_bytes) as f64 / time_passed;
+        imp.receiving.push_data_point(received_delta as f64);
+        let highest_received = imp.receiving.get_highest_value();
+        imp.receiving.set_subtitle(&format!(
+            "{} · {} {}",
+            convert_speed(received_delta),
+            i18n("Highest:"),
+            convert_speed(highest_received)
+        ));
 
-                imp.total_received.set_subtitle(&convert_storage(received_bytes as f64, false));
-                imp.total_sent.set_subtitle(&convert_storage(sent_bytes as f64, false));
+        imp.sending.push_data_point(sent_delta as f64);
+        let highest_sent = imp.sending.get_highest_value();
+        imp.sending.set_subtitle(&format!(
+            "{} · {} {}",
+            convert_speed(sent_delta),
+            i18n("Highest:"),
+            convert_speed(highest_sent)
+        ));
 
-                imp.receiving.push_data_point(received_delta as f64);
-                let highest_received = imp.receiving.get_highest_value();
-                imp.receiving.set_subtitle(&format!("{} · {} {}", convert_speed(received_delta), i18n("Highest:"), convert_speed(highest_received)));
+        self.set_property(
+            "usage",
+            f64::max(received_delta / highest_received, sent_delta / highest_sent).nan_default(1.0),
+        );
 
-                imp.sending.push_data_point(sent_delta as f64);
-                let highest_sent = imp.sending.get_highest_value();
-                imp.sending.set_subtitle(&format!("{} · {} {}", convert_speed(sent_delta), i18n("Highest:"), convert_speed(highest_sent)));
-
-                this.set_property("usage", f64::max(received_delta / highest_received, sent_delta / highest_sent).nan_default(1.0));
-
-                old_received_bytes = received_bytes;
-                old_sent_bytes = sent_bytes;
-                last_timestamp = SystemTime::now();
-
-                timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
-            }
-        });
-        main_context.spawn_local(statistics_update);
+        imp.old_received_bytes.set(received_bytes);
+        imp.old_sent_bytes.set(sent_bytes);
+        imp.last_timestamp.set(SystemTime::now());
     }
 }

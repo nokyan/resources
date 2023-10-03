@@ -1,12 +1,9 @@
-use std::time::Duration;
-
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone, timeout_future, MainContext};
+use gtk::glib::{self};
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::utils::gpu::GPU;
-use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
 use crate::utils::NaNDefault;
 
@@ -165,7 +162,6 @@ impl ResGPU {
         imp.gpu.set(gpu).unwrap_or_default();
         imp.number.set(number).unwrap_or_default();
         self.setup_widgets();
-        self.setup_listener();
     }
 
     pub fn setup_widgets(&self) {
@@ -183,59 +179,75 @@ impl ResGPU {
         imp.driver_used.set_subtitle(&gpu.driver);
     }
 
-    pub fn setup_listener(&self) {
-        let main_context = MainContext::default();
-        let gpu_usage_update = clone!(@strong self as this => async move {
-            let imp = this.imp();
-            let gpu = imp.gpu.get().unwrap();
+    pub async fn refresh_page(&self) {
+        let imp = self.imp();
+        let gpu = imp.gpu.get().unwrap();
+        if let Ok(gpu_usage) = gpu.get_gpu_usage().await {
+            let gpu_usage_fraction = gpu_usage as f64 / 100.0;
+            imp.gpu_usage.set_subtitle(&format!("{gpu_usage} %"));
+            imp.gpu_usage.push_data_point(gpu_usage_fraction);
+            imp.gpu_usage.set_graph_visible(true);
+            self.set_property("usage", gpu_usage_fraction);
+        } else {
+            imp.gpu_usage.set_subtitle(&i18n("N/A"));
+            imp.gpu_usage.push_data_point(0.0);
+            imp.gpu_usage.set_graph_visible(false);
+        }
 
-            loop {
-                if let Ok(gpu_usage) = gpu.get_gpu_usage().await {
-                    let gpu_usage_fraction = gpu_usage as f64 / 100.0;
-                    imp.gpu_usage.set_subtitle(&format!("{gpu_usage} %"));
-                    imp.gpu_usage.push_data_point(gpu_usage_fraction);
-                    imp.gpu_usage.set_graph_visible(true);
-                    this.set_property("usage", gpu_usage_fraction);
-                } else {
-                    imp.gpu_usage.set_subtitle(&i18n("N/A"));
-                    imp.gpu_usage.push_data_point(0.0);
-                    imp.gpu_usage.set_graph_visible(false);
-                }
+        if let (Ok(total_vram), Ok(used_vram)) =
+            (gpu.get_total_vram().await, gpu.get_used_vram().await)
+        {
+            let used_vram_fraction = (used_vram as f64 / total_vram as f64).nan_default(0.0);
+            imp.vram_usage.set_subtitle(&format!(
+                "{} / {} · {} %",
+                &convert_storage(used_vram as f64, false),
+                &convert_storage(total_vram as f64, false),
+                (used_vram_fraction * 100.0).round()
+            ));
+            imp.vram_usage.push_data_point(used_vram_fraction);
+            imp.vram_usage.set_graph_visible(true);
+        } else {
+            imp.vram_usage.set_subtitle(&i18n("N/A"));
+            imp.vram_usage.push_data_point(0.0);
+            imp.vram_usage.set_graph_visible(false);
+        }
 
-                if let (Ok(total_vram), Ok(used_vram)) = (gpu.get_total_vram().await, gpu.get_used_vram().await) {
-                    let used_vram_fraction = (used_vram as f64 / total_vram as f64).nan_default(0.0);
-                    imp.vram_usage.set_subtitle(&format!("{} / {} · {} %", &convert_storage(used_vram as f64, false), &convert_storage(total_vram as f64, false), (used_vram_fraction * 100.0).round()));
-                    imp.vram_usage.push_data_point(used_vram_fraction);
-                    imp.vram_usage.set_graph_visible(true);
-                } else {
-                    imp.vram_usage.set_subtitle(&i18n("N/A"));
-                    imp.vram_usage.push_data_point(0.0);
-                    imp.vram_usage.set_graph_visible(false);
-                }
+        imp.temperature.set_subtitle(
+            &gpu.get_gpu_temp()
+                .await
+                .map_or_else(|_| i18n("N/A"), convert_temperature),
+        );
 
-                imp.temperature.set_subtitle(&gpu.get_gpu_temp().await.map_or_else(|_| i18n("N/A"), convert_temperature));
+        imp.power_usage.set_subtitle(
+            &gpu.get_power_usage()
+                .await
+                .map_or_else(|_| i18n("N/A"), convert_power),
+        );
 
-                imp.power_usage.set_subtitle(&gpu.get_power_usage().await.map_or_else(|_| i18n("N/A"), convert_power));
+        if let Ok(gpu_clockspeed) = gpu.get_gpu_speed().await {
+            imp.gpu_clockspeed
+                .set_subtitle(&convert_frequency(gpu_clockspeed));
+        } else {
+            imp.gpu_clockspeed.set_subtitle(&i18n("N/A"));
+        }
 
-                if let Ok(gpu_clockspeed) = gpu.get_gpu_speed().await {
-                    imp.gpu_clockspeed.set_subtitle(&convert_frequency(gpu_clockspeed));
-                } else {
-                    imp.gpu_clockspeed.set_subtitle(&i18n("N/A"));
-                }
+        if let Ok(vram_clockspeed) = gpu.get_vram_speed().await {
+            imp.vram_clockspeed
+                .set_subtitle(&convert_frequency(vram_clockspeed));
+        } else {
+            imp.vram_clockspeed.set_subtitle(&i18n("N/A"));
+        }
 
-                if let Ok(vram_clockspeed) = gpu.get_vram_speed().await {
-                    imp.vram_clockspeed.set_subtitle(&convert_frequency(vram_clockspeed));
-                } else {
-                    imp.vram_clockspeed.set_subtitle(&i18n("N/A"));
-                }
+        imp.current_power_cap.set_subtitle(
+            &gpu.get_power_cap()
+                .await
+                .map_or_else(|_| i18n("N/A"), convert_power),
+        );
 
-                imp.current_power_cap.set_subtitle(&gpu.get_power_cap().await.map_or_else(|_| i18n("N/A"), convert_power));
-
-                imp.max_power_cap.set_subtitle(&gpu.get_power_cap_max().await.map_or_else(|_| i18n("N/A"), convert_power));
-
-                timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
-            }
-        });
-        main_context.spawn_local(gpu_usage_update);
+        imp.max_power_cap.set_subtitle(
+            &gpu.get_power_cap_max()
+                .await
+                .map_or_else(|_| i18n("N/A"), convert_power),
+        );
     }
 }

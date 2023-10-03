@@ -1,16 +1,18 @@
 use std::time::{Duration, SystemTime};
 
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone, timeout_future, MainContext};
+use gtk::glib::{self, clone, MainContext};
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::utils::drive::Drive;
-use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_speed, convert_storage};
 
 mod imp {
-    use std::cell::{Cell, RefCell};
+    use std::{
+        cell::{Cell, RefCell},
+        collections::HashMap,
+    };
 
     use crate::ui::widgets::graph_box::ResGraphBox;
 
@@ -42,6 +44,9 @@ mod imp {
         pub writable: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub removable: TemplateChild<adw::ActionRow>,
+        pub old_stats: RefCell<HashMap<String, usize>>,
+        pub drive: RefCell<Drive>,
+        pub last_timestamp: Cell<SystemTime>,
 
         #[property(get)]
         uses_progress_bar: Cell<bool>,
@@ -95,6 +100,13 @@ mod imp {
                 icon: RefCell::new(Drive::default_icon()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("Drive"))),
+                old_stats: Default::default(),
+                drive: Default::default(),
+                last_timestamp: Cell::new(
+                    SystemTime::now()
+                        .checked_sub(Duration::from_secs(1))
+                        .unwrap(),
+                ),
             }
         }
     }
@@ -155,8 +167,7 @@ impl ResDrive {
 
     pub fn init(&self, drive: Drive) {
         self.imp().set_icon(&drive.icon());
-        self.setup_widgets(drive.clone());
-        self.setup_listener(drive);
+        self.setup_widgets(drive);
     }
 
     pub fn setup_widgets(&self, drive: Drive) {
@@ -192,53 +203,65 @@ impl ResDrive {
             } else {
                 imp.removable.set_subtitle(&i18n("No"));
             }
+
+            *imp.drive.borrow_mut() = drive;
         });
         main_context.spawn_local(drive_stats);
     }
 
-    pub fn setup_listener(&self, drive: Drive) {
-        let main_context = MainContext::default();
-        let drive_usage_update = clone!(@strong self as this => async move {
-            let hw_sector_size = drive.sector_size().await.unwrap_or(512) as usize;
-            let mut old_stats = drive.sys_stats().await.unwrap_or_default();
-            let imp = this.imp();
+    pub async fn refresh_page(&self) {
+        let imp = self.imp();
 
-            let mut last_timestamp = SystemTime::now().checked_sub(Duration::from_secs(1)).unwrap();
+        let hw_sector_size = imp.drive.borrow().sector_size().await.unwrap_or(512) as usize;
+        let disk_stats = imp.drive.borrow().sys_stats().await.unwrap_or_default();
 
-            loop {
-                let disk_stats = drive.sys_stats().await.unwrap_or_default();
-                let time_passed = SystemTime::now().duration_since(last_timestamp).map_or(1.0f64, |timestamp| timestamp.as_secs_f64());
+        let time_passed = SystemTime::now()
+            .duration_since(imp.last_timestamp.get())
+            .map_or(1.0f64, |timestamp| timestamp.as_secs_f64());
 
-                if let (Some(read_ticks), Some(write_ticks), Some(old_read_ticks), Some(old_write_ticks)) = (disk_stats.get("read_ticks"), disk_stats.get("write_ticks"), old_stats.get("read_ticks"), old_stats.get("write_ticks")) {
-                    let delta_read_ticks = read_ticks - old_read_ticks;
-                    let delta_write_ticks = write_ticks - old_write_ticks;
-                    let read_ratio = delta_read_ticks as f64 / (time_passed * 1000.0);
-                    let write_ratio = delta_write_ticks as f64 / (time_passed * 1000.0);
-                    let fraction = f64::max(read_ratio, write_ratio).clamp(0.0, 1.0);
-                    let percentage_string = format!("{} %", (fraction * 100.0).round());
-                    imp.total_usage.push_data_point(fraction);
-                    imp.total_usage.set_subtitle(&percentage_string);
-                    this.set_property("usage", fraction);
-                }
+        if let (Some(read_ticks), Some(write_ticks), Some(old_read_ticks), Some(old_write_ticks)) = (
+            disk_stats.get("read_ticks"),
+            disk_stats.get("write_ticks"),
+            imp.old_stats.borrow().get("read_ticks"),
+            imp.old_stats.borrow().get("write_ticks"),
+        ) {
+            let delta_read_ticks = read_ticks - old_read_ticks;
+            let delta_write_ticks = write_ticks - old_write_ticks;
+            let read_ratio = delta_read_ticks as f64 / (time_passed * 1000.0);
+            let write_ratio = delta_write_ticks as f64 / (time_passed * 1000.0);
+            let fraction = f64::max(read_ratio, write_ratio).clamp(0.0, 1.0);
+            let percentage_string = format!("{} %", (fraction * 100.0).round());
+            imp.total_usage.push_data_point(fraction);
+            imp.total_usage.set_subtitle(&percentage_string);
+            self.set_property("usage", fraction);
+        }
 
-                if let (Some(read_sectors), Some(write_sectors), Some(old_read_sectors), Some(old_write_sectors)) = (disk_stats.get("read_sectors"), disk_stats.get("write_sectors"), old_stats.get("read_sectors"), old_stats.get("write_sectors")) {
-                    let delta_read_sectors = read_sectors - old_read_sectors;
-                    let delta_write_sectors = write_sectors - old_write_sectors;
-                    let read_bytes_per_second = (delta_read_sectors * hw_sector_size) as f64 / time_passed;
-                    let write_bytes_per_second = (delta_write_sectors * hw_sector_size) as f64 / time_passed;
-                    imp.read.set_subtitle(&convert_speed(read_bytes_per_second));
-                    imp.write.set_subtitle(&convert_speed(write_bytes_per_second));
-                }
+        if let (
+            Some(read_sectors),
+            Some(write_sectors),
+            Some(old_read_sectors),
+            Some(old_write_sectors),
+        ) = (
+            disk_stats.get("read_sectors"),
+            disk_stats.get("write_sectors"),
+            imp.old_stats.borrow().get("read_sectors"),
+            imp.old_stats.borrow().get("write_sectors"),
+        ) {
+            let delta_read_sectors = read_sectors - old_read_sectors;
+            let delta_write_sectors = write_sectors - old_write_sectors;
+            let read_bytes_per_second = (delta_read_sectors * hw_sector_size) as f64 / time_passed;
+            let write_bytes_per_second =
+                (delta_write_sectors * hw_sector_size) as f64 / time_passed;
+            imp.read.set_subtitle(&convert_speed(read_bytes_per_second));
+            imp.write
+                .set_subtitle(&convert_speed(write_bytes_per_second));
+        }
 
-                let capacity = drive.capacity().await.unwrap_or(0) * drive.sector_size().await.unwrap_or(512);
-                imp.capacity.set_subtitle(&convert_storage(capacity as f64, false));
+        let capacity = imp.drive.borrow().capacity().await.unwrap_or(0) * (hw_sector_size as u64);
+        imp.capacity
+            .set_subtitle(&convert_storage(capacity as f64, false));
 
-                old_stats = disk_stats;
-                last_timestamp = SystemTime::now();
-
-                timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
-            }
-        });
-        main_context.spawn_local(drive_usage_update);
+        *imp.old_stats.borrow_mut() = disk_stats;
+        imp.last_timestamp.set(SystemTime::now());
     }
 }

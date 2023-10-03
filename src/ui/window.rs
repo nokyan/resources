@@ -4,7 +4,7 @@ use std::time::Duration;
 
 use adw::{prelude::*, subclass::prelude::*};
 use adw::{Toast, ToastOverlay};
-use anyhow::Result;
+use anyhow::{Context, Result};
 use gtk::glib::{clone, timeout_future, MainContext};
 use gtk::{gio, glib, Widget};
 
@@ -12,6 +12,7 @@ use crate::application::Application;
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f, ni18n_f};
 use crate::ui::pages::drive::ResDrive;
+use crate::utils::cpu;
 use crate::utils::drive::{Drive, DriveType};
 use crate::utils::gpu::GPU;
 use crate::utils::network::{InterfaceType, NetworkInterface};
@@ -81,6 +82,8 @@ mod imp {
 
         pub network_pages: RefCell<HashMap<PathBuf, adw::ToolbarView>>,
 
+        pub gpu_pages: RefCell<Vec<adw::ToolbarView>>,
+
         pub apps_context: RefCell<AppsContext>,
 
         pub sender: Sender<Action>,
@@ -110,6 +113,7 @@ mod imp {
                 sender,
                 receiver,
                 processor_window_title: TemplateChild::default(),
+                gpu_pages: RefCell::default(),
             }
         }
     }
@@ -194,7 +198,7 @@ impl MainWindow {
 
         imp.applications.init(imp.sender.clone());
         imp.processes.init(imp.sender.clone());
-        imp.cpu.init(&imp.processor_window_title);
+        imp.cpu.init();
         imp.memory.init();
 
         let main_context = MainContext::default();
@@ -203,40 +207,83 @@ impl MainWindow {
 
             *imp.apps_context.borrow_mut() = AppsContext::new().await.unwrap();
 
+            let cpu_info = cpu::cpu_info()
+                .await
+                .with_context(|| "unable to get CPUInfo")
+                .unwrap_or_default();
+            let imp = this.imp();
+
+            if let Some(cpu_name) = cpu_info.model_name {
+                imp.processor_window_title.set_title(&cpu_name);
+                imp.processor_window_title.set_subtitle(&i18n("Processor"));
+            }
+
             let gpus = GPU::get_gpus().await.unwrap_or_default();
             for (i, gpu) in gpus.iter().enumerate() {
                 let page = ResGPU::new();
                 page.init(gpu.clone(), i);
+
                 let title = if gpus.len() > 1 {
                     i18n_f("GPU {}", &[&i.to_string()])
                 } else {
                     i18n("GPU")
                 };
+
                 page.set_tab_name(&*title);
-                if let Ok(gpu_name) = gpu.get_name() {
-                    this.add_page(&page, &title, &gpu_name, &title);
+
+                let added_page = if let Ok(gpu_name) = gpu.get_name() {
+                    this.add_page(&page, &title, &gpu_name, &title)
                 } else {
-                    this.add_page(&page, &title, &title, "");
-                }
+                    this.add_page(&page, &title, &title, "")
+                };
+
+                imp.gpu_pages.borrow_mut().push(added_page);
             }
 
             futures_util::join!(
             async {
                 loop {
+                    let _ = imp.apps_context.borrow_mut().refresh().await;
+                    imp.applications.refresh_apps_list(&imp.apps_context.borrow());
+                    imp.processes.refresh_processes_list(&imp.apps_context.borrow());
+                    timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().process_refresh_interval())).await;
+                }
+            },
+            async {
+                loop {
+                    imp.cpu.refresh_page().await;
+                    timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
+                }
+            },
+            async {
+                loop {
+                    imp.memory.refresh_page().await;
+                    timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
+                }
+            },
+            async {
+                loop {
+                    for gpu_page_toolbar in imp.gpu_pages.borrow().iter() {
+                        gpu_page_toolbar.content().and_downcast::<ResGPU>().unwrap().refresh_page().await;
+                    }
+                    timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
+                }
+            },
+            async {
+                loop {
                     this.refresh_drives().await;
+                    for drive_page_toolbar in imp.drive_pages.borrow().values() {
+                        drive_page_toolbar.content().and_downcast::<ResDrive>().unwrap().refresh_page().await;
+                    }
                     timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
                 }
             }, async {
                 loop {
                     this.refresh_network_interfaces().await;
+                    for network_page_toolbar in imp.network_pages.borrow().values() {
+                        network_page_toolbar.content().and_downcast::<ResNetwork>().unwrap().refresh_page().await;
+                    }
                     timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
-                }
-            }, async {
-                loop {
-                    let _ = imp.apps_context.borrow_mut().refresh().await;
-                    imp.applications.refresh_apps_list(&imp.apps_context.borrow());
-                    imp.processes.refresh_processes_list(&imp.apps_context.borrow());
-                    timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().process_refresh_interval())).await;
                 }
             });
         }));
@@ -307,7 +354,11 @@ impl MainWindow {
                     InterfaceType::Other => i18n("Network Interface"),
                 };
                 let page = ResNetwork::new();
-                page.init(interface.clone());
+                page.init(
+                    interface.clone(),
+                    interface.received_bytes().await.unwrap_or(0),
+                    interface.sent_bytes().await.unwrap_or(0),
+                );
                 page.set_tab_name(&*sidebar_title);
                 //imp.content_stack.add_titled(&page, None, &sidebar_title);
                 let toolbar = self.add_page(
