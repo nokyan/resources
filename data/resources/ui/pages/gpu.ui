@@ -27,24 +27,6 @@
                       <object class="ResGraphBox" id="vram_usage"/>
                     </child>
                     <child>
-                      <object class="AdwActionRow" id="temperature">
-                        <property name="title" translatable="yes">Temperature</property>
-                        <style>
-                          <class name="property"/>
-                        </style>
-                        <property name="subtitle-selectable">true</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwActionRow" id="power_usage">
-                        <property name="title" translatable="yes">Power Usage</property>
-                        <style>
-                          <class name="property"/>
-                        </style>
-                        <property name="subtitle-selectable">true</property>
-                      </object>
-                    </child>
-                    <child>
                       <object class="AdwActionRow" id="gpu_clockspeed">
                         <property name="title" translatable="yes">GPU Frequency</property>
                         <style>
@@ -60,6 +42,29 @@
                         </style>
                         <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">Video Memory Frequency</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow" id="power_usage">
+                        <property name="title" translatable="yes">Power Usage</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title" translatable="yes">Sensors</property>
+                    <child>
+                      <object class="AdwActionRow" id="temperature">
+                        <property name="title" translatable="yes">Temperature</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                       </object>
                     </child>
                   </object>

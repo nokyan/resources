@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2022-08-04 00:15+0200\n"
+"PO-Revision-Date: 2022-08-04 16:13+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: \n"
@@ -705,7 +705,7 @@ msgstr ""
 #: data/resources/ui/dialogs/app_dialog.ui:94
 #: data/resources/ui/dialogs/process_dialog.ui:77
 #: data/resources/ui/pages/cpu.ui:91 data/resources/ui/pages/drive.ui:48
-#: data/resources/ui/pages/gpu.ui:69 data/resources/ui/pages/memory.ui:42
+#: data/resources/ui/pages/gpu.ui:74 data/resources/ui/pages/memory.ui:42
 #: data/resources/ui/pages/network.ui:51
 msgid "Properties"
 msgstr ""
@@ -819,11 +819,11 @@ msgstr ""
 msgid "Show Usages of Logical CPUs"
 msgstr ""
 
-#: data/resources/ui/pages/cpu.ui:77
+#: data/resources/ui/pages/cpu.ui:77 data/resources/ui/pages/gpu.ui:60
 msgid "Sensors"
 msgstr ""
 
-#: data/resources/ui/pages/cpu.ui:84 data/resources/ui/pages/gpu.ui:31
+#: data/resources/ui/pages/cpu.ui:84 data/resources/ui/pages/gpu.ui:63
 msgid "Temperature"
 msgstr ""
 
@@ -879,35 +879,35 @@ msgstr ""
 msgid "Removable"
 msgstr ""
 
-#: data/resources/ui/pages/gpu.ui:40
-msgid "Power Usage"
-msgstr ""
-
-#: data/resources/ui/pages/gpu.ui:49
+#: data/resources/ui/pages/gpu.ui:31
 msgid "GPU Frequency"
 msgstr ""
 
-#: data/resources/ui/pages/gpu.ui:62
+#: data/resources/ui/pages/gpu.ui:44
 msgid "Video Memory Frequency"
 msgstr ""
 
-#: data/resources/ui/pages/gpu.ui:76 data/resources/ui/pages/network.ui:58
+#: data/resources/ui/pages/gpu.ui:49
+msgid "Power Usage"
+msgstr ""
+
+#: data/resources/ui/pages/gpu.ui:81 data/resources/ui/pages/network.ui:58
 msgid "Manufacturer"
 msgstr ""
 
-#: data/resources/ui/pages/gpu.ui:85
+#: data/resources/ui/pages/gpu.ui:90
 msgid "PCI Slot"
 msgstr ""
 
-#: data/resources/ui/pages/gpu.ui:94 data/resources/ui/pages/network.ui:67
+#: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
 msgid "Driver Used"
 msgstr ""
 
-#: data/resources/ui/pages/gpu.ui:103
+#: data/resources/ui/pages/gpu.ui:108
 msgid "Current Power Cap"
 msgstr ""
 
-#: data/resources/ui/pages/gpu.ui:112
+#: data/resources/ui/pages/gpu.ui:117
 msgid "Max Power Cap"
 msgstr ""
 
