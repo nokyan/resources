@@ -76,7 +76,7 @@ if glib_compile_schemas.found()
 endif
 
 # DBus service
-# install_data('me.nalux.Resources.conf', install_dir : datadir / 'dbus-1' / 'system.d')
+# install_data('net.nokyan.Resources.conf', install_dir : datadir / 'dbus-1' / 'system.d')
 
 # systemd Service file
 #service_conf = configuration_data()

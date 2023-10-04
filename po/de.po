@@ -16,49 +16,49 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "X-Generator: Gtranslator 45.2\n"
 
-#: data/me.nalux.Resources.desktop.in.in:3
-#: data/me.nalux.Resources.metainfo.xml.in.in:4 src/application.rs:145
+#: data/net.nokyan.Resources.desktop.in.in:3
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:145
 msgid "Resources"
 msgstr "Ressourcen"
 
-#: data/me.nalux.Resources.desktop.in.in:4
-#: data/me.nalux.Resources.metainfo.xml.in.in:5
+#: data/net.nokyan.Resources.desktop.in.in:4
+#: data/net.nokyan.Resources.metainfo.xml.in.in:5
 msgid "Monitor your system resources and processes"
 msgstr "Systemressourcen und Prozesse überwachen"
 
-#: data/me.nalux.Resources.desktop.in.in:10
+#: data/net.nokyan.Resources.desktop.in.in:10
 msgid ""
 "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 msgstr ""
 "System;Ressourcen;Monitor;Überwachung;Prozesse;Benutzung;Auslastung;Task;"
 "Manager;CPU;RAM;Speicher;GPU;"
 
-#: data/me.nalux.Resources.gschema.xml.in:6
+#: data/net.nokyan.Resources.gschema.xml.in:6
 msgid "Window width"
 msgstr "Fensterbreite"
 
-#: data/me.nalux.Resources.gschema.xml.in:10
+#: data/net.nokyan.Resources.gschema.xml.in:10
 msgid "Window height"
 msgstr "Fensterhöhe"
 
-#: data/me.nalux.Resources.gschema.xml.in:14
+#: data/net.nokyan.Resources.gschema.xml.in:14
 msgid "Window maximized state"
 msgstr "Fenstermaximierung"
 
-#: data/me.nalux.Resources.gschema.xml.in:18
+#: data/net.nokyan.Resources.gschema.xml.in:18
 msgid "Temperature unit"
 msgstr "Temperatureinheit"
 
-#: data/me.nalux.Resources.gschema.xml.in:22
+#: data/net.nokyan.Resources.gschema.xml.in:22
 msgid "Unit Prefix Base"
 msgstr "Basis für Einheitenvorsätze"
 
-#: data/me.nalux.Resources.gschema.xml.in:26
+#: data/net.nokyan.Resources.gschema.xml.in:26
 #: data/resources/ui/dialogs/settings_dialog.ui:48
 msgid "Refresh Speed"
 msgstr "Aktualisierungsgeschwindigkiet"
 
-#: data/me.nalux.Resources.metainfo.xml.in.in:14
+#: data/net.nokyan.Resources.metainfo.xml.in.in:14
 msgid ""
 "Resources allows you to check the utilization of your system resources and "
 "control your running processes and applications. It's designed to be user-"
@@ -70,15 +70,15 @@ msgstr ""
 "Durch die Verwendung von GNOMEs libadwaita ist Ressourcen einfach zu "
 "bedienen und fühlt sich auf einem modernen Desktop wie zu Hause an."
 
-#: data/me.nalux.Resources.metainfo.xml.in.in:17
+#: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid "Resources supports monitoring the following components:"
 msgstr "Ressourcen unterstützt das Überwachen folgender Komponenten:"
 
-#: data/me.nalux.Resources.metainfo.xml.in.in:21 src/ui/pages/cpu.rs:188
+#: data/net.nokyan.Resources.metainfo.xml.in.in:21 src/ui/pages/cpu.rs:188
 msgid "CPU"
 msgstr "CPU"
 
-#: data/me.nalux.Resources.metainfo.xml.in.in:22
+#: data/net.nokyan.Resources.metainfo.xml.in.in:22
 #: src/ui/pages/applications/mod.rs:250 src/ui/pages/memory.rs:85
 #: src/ui/pages/memory.rs:151 src/ui/pages/processes/mod.rs:295
 #: data/resources/ui/window.ui:155 data/resources/ui/window.ui:162
@@ -87,16 +87,16 @@ msgstr "CPU"
 msgid "Memory"
 msgstr "Arbeitsspeicher"
 
-#: data/me.nalux.Resources.metainfo.xml.in.in:23 src/ui/pages/gpu.rs:101
+#: data/net.nokyan.Resources.metainfo.xml.in.in:23 src/ui/pages/gpu.rs:101
 #: src/ui/window.rs:229
 msgid "GPU"
 msgstr "GPU"
 
-#: data/me.nalux.Resources.metainfo.xml.in.in:24
+#: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "Network Interfaces"
 msgstr "Netzwerkschnittstellen"
 
-#: data/me.nalux.Resources.metainfo.xml.in.in:25
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25
 msgid "Storage Devices"
 msgstr "Speichergeräte"
 
