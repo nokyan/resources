@@ -169,7 +169,7 @@ msgstr "Disque"
 msgid "Total Usage"
 msgstr "Utilisation totale"
 
-#: src/ui/pages/drive.rs:180 src/ui/window.rs:306
+#: src/ui/pages/drive.rs:180 src/ui/window.rs:309
 msgid "CD/DVD/Blu-ray Drive"
 msgstr "Disque CD/DVD/Blu-ray"
 
@@ -181,7 +181,7 @@ msgstr "Stockage eMMC"
 msgid "Flash Storage"
 msgstr "Stockage flash"
 
-#: src/ui/pages/drive.rs:183 src/ui/window.rs:307
+#: src/ui/pages/drive.rs:183 src/ui/window.rs:310
 msgid "Floppy Drive"
 msgstr "Lecteur de disquettes"
 
@@ -217,7 +217,7 @@ msgstr "Espace d'échange"
 msgid "{} of {}"
 msgstr "{} sur {}"
 
-#: src/ui/pages/network.rs:101 src/ui/window.rs:354
+#: src/ui/pages/network.rs:101 src/ui/window.rs:357
 msgid "Network Interface"
 msgstr "Interface réseau"
 
@@ -260,59 +260,59 @@ msgstr "root"
 msgid "GPU {}"
 msgstr "GPU {}"
 
-#: src/ui/window.rs:308
+#: src/ui/window.rs:311
 msgid "{} Drive"
 msgstr "Disque {}"
 
-#: src/ui/window.rs:347
+#: src/ui/window.rs:350
 msgid "Ethernet Connection"
 msgstr "Connexion Ethernet"
 
-#: src/ui/window.rs:348
+#: src/ui/window.rs:351
 msgid "InfiniBand Connection"
 msgstr "Connexion InfiniBand"
 
-#: src/ui/window.rs:349
+#: src/ui/window.rs:352
 msgid "Serial Line IP Connection"
 msgstr "Connextion Serial Line IP"
 
-#: src/ui/window.rs:350
+#: src/ui/window.rs:353
 msgid "Wi-Fi Connection"
 msgstr "Connexion Wi-Fi"
 
-#: src/ui/window.rs:351
+#: src/ui/window.rs:354
 msgid "WWAN Connection"
 msgstr "Connexion WWAN"
 
-#: src/ui/window.rs:352
+#: src/ui/window.rs:355
 msgid "Bluetooth Tether"
 msgstr "Partage Bluetooth"
 
-#: src/ui/window.rs:353
+#: src/ui/window.rs:356
 msgid "VPN Tunnel (WireGuard)"
 msgstr "Tunnel VPN (WireGuard)"
 
-#: src/ui/window.rs:501
+#: src/ui/window.rs:503
 msgid "End {}?"
 msgstr "Arrêter {} ?"
 
-#: src/ui/window.rs:502
+#: src/ui/window.rs:504
 msgid "Halt {}?"
 msgstr "Mettre {} en pause ?"
 
-#: src/ui/window.rs:503
+#: src/ui/window.rs:505
 msgid "Kill {}?"
 msgstr "Tuer {} ?"
 
-#: src/ui/window.rs:504
+#: src/ui/window.rs:506
 msgid "Continue {}?"
 msgstr "Continuer {} ?"
 
-#: src/ui/window.rs:510
+#: src/ui/window.rs:512
 msgid "Unsaved work might be lost."
 msgstr "Les travaux non sauvegardés peuvent être perdus."
 
-#: src/ui/window.rs:511
+#: src/ui/window.rs:513
 msgid ""
 "Halting an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
@@ -320,7 +320,7 @@ msgstr ""
 "La mise en pause d'une application comporte des risques tels que la perte de "
 "données ainsi que des problèmes de sécurité. Soyez prudent."
 
-#: src/ui/window.rs:512
+#: src/ui/window.rs:514
 msgid ""
 "Killing an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
@@ -328,75 +328,75 @@ msgstr ""
 "Tuer une application comporte des risques tels que la perte de données ainsi "
 "que des problèmes de sécurité. Soyez prudent."
 
-#: src/ui/window.rs:519
+#: src/ui/window.rs:521
 msgid "End application"
 msgstr "Terminer l'application"
 
-#: src/ui/window.rs:520
+#: src/ui/window.rs:522
 msgid "Halt application"
 msgstr "Mettre l'application en pause"
 
-#: src/ui/window.rs:521
+#: src/ui/window.rs:523
 msgid "Kill application"
 msgstr "Tuer l'application"
 
-#: src/ui/window.rs:522
+#: src/ui/window.rs:524
 msgid "Continue application"
 msgstr "Continuer l'application"
 
-#: src/ui/window.rs:528
+#: src/ui/window.rs:530
 msgid "Successfully ended {}"
 msgstr "Arrêté avec succès {}"
 
-#: src/ui/window.rs:529
+#: src/ui/window.rs:531
 msgid "Successfully halted {}"
 msgstr "Mis en pause avec succès {}"
 
-#: src/ui/window.rs:530
+#: src/ui/window.rs:532
 msgid "Successfully killed {}"
 msgstr "Tué avec succès {}"
 
-#: src/ui/window.rs:531
+#: src/ui/window.rs:533
 msgid "Successfully continued {}"
 msgstr "Continué aven succès {}"
 
-#: src/ui/window.rs:538
+#: src/ui/window.rs:540
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] "Il y a eu un problème pour arrêter un processus"
 msgstr[1] "Il y a eu des problèmes pour terminer {} processus"
 
-#: src/ui/window.rs:544
+#: src/ui/window.rs:546
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "Il y a eu un problème pour la mise en pause d'un processus"
 msgstr[1] "Il y a eu des problèmes pour la mise en pause {} processus"
 
-#: src/ui/window.rs:550
+#: src/ui/window.rs:552
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "Il y a eu un problème pour tuer un processus"
 msgstr[1] "Il y a eu des problèmes pour tuer {} processus"
 
-#: src/ui/window.rs:556
+#: src/ui/window.rs:558
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "Il y a eu un problème pour continuer un processus"
 msgstr[1] "Il y a eu des problèmes pour continuer {} processus"
 
-#: src/ui/window.rs:566
+#: src/ui/window.rs:568
 msgid "There was a problem ending {}"
 msgstr "Il y a eu un problème pour arrêter {}"
 
-#: src/ui/window.rs:567
+#: src/ui/window.rs:569
 msgid "There was a problem halting {}"
 msgstr "Il y a eu un problème pour la mise en pause de {}"
 
-#: src/ui/window.rs:568
+#: src/ui/window.rs:570
 msgid "There was a problem killing {}"
 msgstr "Il y a eu un problème pour tuer {}"
 
-#: src/ui/window.rs:569
+#: src/ui/window.rs:571
 msgid "There was a problem continuing {}"
 msgstr "Il y a eu un problème pour continuer {}"
 

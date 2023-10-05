@@ -240,6 +240,9 @@ impl MainWindow {
                 imp.gpu_pages.borrow_mut().push(added_page);
             }
 
+            this.refresh_drives().await;
+            this.refresh_network_interfaces().await;
+
             futures_util::join!(
             async {
                 loop {
@@ -360,7 +363,6 @@ impl MainWindow {
                     interface.sent_bytes().await.unwrap_or(0),
                 );
                 page.set_tab_name(&*sidebar_title);
-                //imp.content_stack.add_titled(&page, None, &sidebar_title);
                 let toolbar = self.add_page(
                     &page,
                     &sidebar_title,
