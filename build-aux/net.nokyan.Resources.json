@@ -17,6 +17,8 @@
         "--env=RUST_BACKTRACE=full",
         "--share=ipc",
         "--talk-name=org.freedesktop.Flatpak",
+        "--filesystem=xdg-data/flatpak:ro",
+        "--filesystem=/var/lib/flatpak:ro",
         "--env=XDG_DATA_DIRS=/run/host/usr/local/share:/run/host/usr/share:/var/lib/flatpak/exports/share:~/.local/share/flatpak/exports/share"
     ],
     "build-options": {
