@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <schemalist>
-  <schema path="/me/nalux/Resources/" id="@app-id@" gettext-domain="@gettext-package@">
+  <schema path="/net/nokyan/Resources/" id="@app-id@" gettext-domain="@gettext-package@">
     <key name="window-width" type="i">
       <default>1024</default>
       <summary>Window width</summary>

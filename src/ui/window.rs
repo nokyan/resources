@@ -51,7 +51,7 @@ mod imp {
     };
 
     #[derive(Debug, CompositeTemplate)]
-    #[template(resource = "/me/nalux/Resources/ui/window.ui")]
+    #[template(resource = "/net/nokyan/Resources/ui/window.ui")]
     pub struct MainWindow {
         #[template_child]
         pub split_view: TemplateChild<adw::OverlaySplitView>,

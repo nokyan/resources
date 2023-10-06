@@ -23,7 +23,7 @@ mod imp {
     };
 
     #[derive(CompositeTemplate, Properties)]
-    #[template(resource = "/me/nalux/Resources/ui/pages/network.ui")]
+    #[template(resource = "/net/nokyan/Resources/ui/pages/network.ui")]
     #[properties(wrapper_type = super::ResNetwork)]
     pub struct ResNetwork {
         #[template_child]

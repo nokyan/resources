@@ -14,7 +14,7 @@ mod imp {
     use gtk::CompositeTemplate;
 
     #[derive(Debug, CompositeTemplate, Default)]
-    #[template(resource = "/me/nalux/Resources/ui/dialogs/app_dialog.ui")]
+    #[template(resource = "/net/nokyan/Resources/ui/dialogs/app_dialog.ui")]
     pub struct ResAppDialog {
         #[template_child]
         pub icon: TemplateChild<gtk::Image>,

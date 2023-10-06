@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/me/nalux/Resources/icons/scalable/actions/">
+  <gresource prefix="/net/nokyan/Resources/icons/scalable/actions/">
     <file preprocess="xml-stripblanks" alias="app-symbolic.svg">icons/app-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="cd-dvd-bluray-symbolic.svg">icons/cd-dvd-bluray-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="emmc-symbolic.svg">icons/emmc-symbolic.svg</file>
@@ -25,7 +25,7 @@
     <file preprocess="xml-stripblanks" alias="wlan-symbolic.svg">icons/wlan-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="wwan-symbolic.svg">icons/wwan-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/me/nalux/Resources/"><!-- see https://gtk-rs.org/gtk4-rs/git/docs/gtk4/struct.Application.html#automatic-resources -->
+  <gresource prefix="/net/nokyan/Resources/"><!-- see https://gtk-rs.org/gtk4-rs/git/docs/gtk4/struct.Application.html#automatic-resources -->
     <file compressed="true">style.css</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/dialogs/app_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/dialogs/process_dialog.ui</file>

@@ -11,7 +11,7 @@ mod imp {
     use gtk::CompositeTemplate;
 
     #[derive(Debug, CompositeTemplate, Default)]
-    #[template(resource = "/me/nalux/Resources/ui/widgets/graph_box.ui")]
+    #[template(resource = "/net/nokyan/Resources/ui/widgets/graph_box.ui")]
     pub struct ResGraphBox {
         #[template_child]
         pub graph: TemplateChild<ResGraph>,

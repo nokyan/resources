@@ -13,7 +13,7 @@ mod imp {
     };
 
     #[derive(CompositeTemplate, Properties)]
-    #[template(resource = "/me/nalux/Resources/ui/widgets/application_name_cell.ui")]
+    #[template(resource = "/net/nokyan/Resources/ui/widgets/application_name_cell.ui")]
     #[properties(wrapper_type = super::ResApplicationNameCell)]
     pub struct ResApplicationNameCell {
         #[template_child]

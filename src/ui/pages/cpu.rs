@@ -23,7 +23,7 @@ mod imp {
     };
 
     #[derive(CompositeTemplate, Properties)]
-    #[template(resource = "/me/nalux/Resources/ui/pages/cpu.ui")]
+    #[template(resource = "/net/nokyan/Resources/ui/pages/cpu.ui")]
     #[properties(wrapper_type = super::ResCPU)]
     pub struct ResCPU {
         #[template_child]

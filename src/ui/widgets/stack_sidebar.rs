@@ -17,7 +17,7 @@ mod imp {
     use gtk::{gio, CompositeTemplate, SingleSelection};
 
     #[derive(CompositeTemplate)]
-    #[template(resource = "/me/nalux/Resources/ui/widgets/stack_sidebar.ui")]
+    #[template(resource = "/net/nokyan/Resources/ui/widgets/stack_sidebar.ui")]
     pub struct ResStackSidebar {
         #[template_child]
         pub list_box: TemplateChild<gtk::ListBox>,

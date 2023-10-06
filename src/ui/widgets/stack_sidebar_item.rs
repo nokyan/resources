@@ -16,7 +16,7 @@ mod imp {
     };
 
     #[derive(CompositeTemplate, Properties)]
-    #[template(resource = "/me/nalux/Resources/ui/widgets/stack_sidebar_item.ui")]
+    #[template(resource = "/net/nokyan/Resources/ui/widgets/stack_sidebar_item.ui")]
     #[properties(wrapper_type = super::ResStackSidebarItem)]
     pub struct ResStackSidebarItem {
         #[template_child]

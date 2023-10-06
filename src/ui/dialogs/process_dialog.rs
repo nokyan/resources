@@ -14,7 +14,7 @@ mod imp {
     use gtk::CompositeTemplate;
 
     #[derive(Debug, CompositeTemplate, Default)]
-    #[template(resource = "/me/nalux/Resources/ui/dialogs/process_dialog.ui")]
+    #[template(resource = "/net/nokyan/Resources/ui/dialogs/process_dialog.ui")]
     pub struct ResProcessDialog {
         #[template_child]
         pub name: TemplateChild<gtk::Label>,

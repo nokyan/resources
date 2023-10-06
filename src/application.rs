@@ -79,7 +79,7 @@ impl Application {
         glib::Object::builder::<Self>()
             .property("application-id", Some(APP_ID))
             .property("flags", gio::ApplicationFlags::empty())
-            .property("resource-base-path", Some("/me/nalux/Resources/"))
+            .property("resource-base-path", Some("/net/nokyan/Resources/"))
             .build()
     }
 
@@ -119,7 +119,7 @@ impl Application {
 
     fn setup_css(&self) {
         let provider = gtk::CssProvider::new();
-        provider.load_from_resource("/me/nalux/Resources/style.css");
+        provider.load_from_resource("/net/nokyan/Resources/style.css");
         if let Some(display) = gdk::Display::default() {
             gtk::style_context_add_provider_for_display(
                 &display,
