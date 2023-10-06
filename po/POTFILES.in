@@ -7,6 +7,7 @@ data/net.nokyan.Resources.policy.in.in
 
 data/resources/ui/dialogs/app_dialog.ui
 data/resources/ui/dialogs/process_dialog.ui
+data/resources/ui/dialogs/settings_dialog.ui
 data/resources/ui/pages/applications.ui
 data/resources/ui/pages/cpu.ui
 data/resources/ui/pages/drive.ui
@@ -20,14 +21,13 @@ data/resources/ui/window.ui
 src/application.rs
 src/ui/dialogs/app_dialog.rs
 src/ui/dialogs/process_dialog.rs
-src/ui/pages/applications.rs
+src/ui/pages/applications/mod.rs
 src/ui/pages/cpu.rs
 src/ui/pages/drive.rs
 src/ui/pages/gpu.rs
 src/ui/pages/memory.rs
 src/ui/pages/network.rs
-src/ui/pages/processes.rs
-src/ui/widgets/bool_box.rs
+src/ui/pages/processes/mod.rs
 src/ui/window.rs
 src/utils/gpu.rs
 src/utils/processes.rs
