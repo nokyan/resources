@@ -226,8 +226,8 @@ impl ResDrive {
             imp.old_stats.borrow().get("read_ticks"),
             imp.old_stats.borrow().get("write_ticks"),
         ) {
-            let delta_read_ticks = read_ticks - old_read_ticks;
-            let delta_write_ticks = write_ticks - old_write_ticks;
+            let delta_read_ticks = read_ticks.checked_sub(*old_read_ticks).unwrap_or(0);
+            let delta_write_ticks = write_ticks.checked_sub(*old_write_ticks).unwrap_or(0);
             let read_ratio = delta_read_ticks as f64 / (time_passed * 1000.0);
             let write_ratio = delta_write_ticks as f64 / (time_passed * 1000.0);
             let fraction = f64::max(read_ratio, write_ratio).clamp(0.0, 1.0);
@@ -248,8 +248,8 @@ impl ResDrive {
             imp.old_stats.borrow().get("read_sectors"),
             imp.old_stats.borrow().get("write_sectors"),
         ) {
-            let delta_read_sectors = read_sectors - old_read_sectors;
-            let delta_write_sectors = write_sectors - old_write_sectors;
+            let delta_read_sectors = read_sectors.checked_sub(*old_read_sectors).unwrap_or(0);
+            let delta_write_sectors = write_sectors.checked_sub(*old_write_sectors).unwrap_or(0);
             let read_bytes_per_second = (delta_read_sectors * hw_sector_size) as f64 / time_passed;
             let write_bytes_per_second =
                 (delta_write_sectors * hw_sector_size) as f64 / time_passed;
