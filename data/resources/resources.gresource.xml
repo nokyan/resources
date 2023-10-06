@@ -26,6 +26,7 @@
     <file preprocess="xml-stripblanks" alias="wwan-symbolic.svg">icons/wwan-symbolic.svg</file>
   </gresource>
   <gresource prefix="/me/nalux/Resources/"><!-- see https://gtk-rs.org/gtk4-rs/git/docs/gtk4/struct.Application.html#automatic-resources -->
+    <file compressed="true">style.css</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/dialogs/app_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/dialogs/process_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/dialogs/settings_dialog.ui</file>
@@ -43,6 +44,5 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/stack_sidebar.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/stack_sidebar_item.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/window.ui</file>
-    <file compressed="true">style.css</file>
   </gresource>
 </gresources>
