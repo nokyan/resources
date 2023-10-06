@@ -251,11 +251,9 @@ impl ResNetwork {
             .await
             .unwrap_or(0);
 
-        let received_delta = (received_bytes.checked_sub(imp.old_received_bytes.get())).unwrap_or(0)
-            as f64
-            / time_passed;
-        let sent_delta =
-            (sent_bytes.checked_sub(imp.old_sent_bytes.get())).unwrap_or(0) as f64 / time_passed;
+        let received_delta =
+            (received_bytes.saturating_sub(imp.old_received_bytes.get())) as f64 / time_passed;
+        let sent_delta = (sent_bytes.saturating_sub(imp.old_sent_bytes.get())) as f64 / time_passed;
 
         imp.total_received
             .set_subtitle(&convert_storage(received_bytes as f64, false));
