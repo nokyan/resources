@@ -22,7 +22,7 @@ mod imp {
     pub struct ProcessEntry {
         #[property(get = Self::name, set = Self::set_name, type = glib::GString)]
         name: Cell<glib::GString>,
-        #[property(get = Self::name, set = Self::set_name, type = glib::GString)]
+        #[property(get = Self::commandline, set = Self::set_commandline, type = glib::GString)]
         commandline: Cell<glib::GString>,
         #[property(get = Self::user, set = Self::set_user, type = glib::GString)]
         user: Cell<glib::GString>,
