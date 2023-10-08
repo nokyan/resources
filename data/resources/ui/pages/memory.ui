@@ -14,7 +14,7 @@
           <object class="GtkScrolledWindow">
             <child>
               <object class="AdwClamp">
-                <property name="maximum-size">800</property>
+                <property name="maximum-size">768</property>
                 <child>
                   <object class="GtkBox">
                     <property name="margin-top">24</property>
@@ -26,15 +26,6 @@
                     <property name="hexpand">true</property>
                     <property name="valign">start</property>
                     <property name="vexpand">true</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="wrap">true</property>
-                        <property name="label" translatable="yes">Memory</property>
-                        <style>
-                          <class name="title-1"/>
-                        </style>
-                      </object>
-                    </child>
                     <child>
                       <object class="AdwPreferencesGroup">
                         <property name="title" translatable="yes">Usage</property>
@@ -50,28 +41,48 @@
                       <object class="AdwPreferencesGroup" id="properties">
                         <property name="title" translatable="yes">Properties</property>
                         <child>
-                          <object class="ResInfoBox" id="slots_used">
+                          <object class="AdwActionRow" id="slots_used">
                             <property name="title" translatable="yes">Slots Used</property>
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
                           </object>
                         </child>
                         <child>
-                          <object class="ResInfoBox" id="speed">
+                          <object class="AdwActionRow" id="speed">
                             <property name="title" translatable="yes">Speed</property>
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
                           </object>
                         </child>
                         <child>
-                          <object class="ResInfoBox" id="form_factor">
+                          <object class="AdwActionRow" id="form_factor">
                             <property name="title" translatable="yes">Form Factor</property>
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
                           </object>
                         </child>
                         <child>
-                          <object class="ResInfoBox" id="memory_type">
+                          <object class="AdwActionRow" id="memory_type">
                             <property name="title" translatable="yes">Type</property>
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
                           </object>
                         </child>
                         <child>
-                          <object class="ResInfoBox" id="type_detail">
+                          <object class="AdwActionRow" id="type_detail">
                             <property name="title" translatable="yes">Type Detail</property>
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
                           </object>
                         </child>
                       </object>

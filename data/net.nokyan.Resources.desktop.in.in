@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Resources
-Comment=Monitor your Resources and Processes
+Comment=Monitor your system resources and processes
 Type=Application
 Exec=resources
 Terminal=false

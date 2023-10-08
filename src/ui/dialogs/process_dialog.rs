@@ -5,34 +5,33 @@ use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::ui::window::MainWindow;
 use crate::utils::processes::{Containerization, ProcessItem};
-use crate::utils::units::{to_largest_unit, Base};
+use crate::utils::units::convert_storage;
 
 mod imp {
-    use crate::ui::widgets::info_box::ResInfoBox;
 
     use super::*;
 
     use gtk::CompositeTemplate;
 
     #[derive(Debug, CompositeTemplate, Default)]
-    #[template(resource = "/me/nalux/Resources/ui/dialogs/process_dialog.ui")]
+    #[template(resource = "/net/nokyan/Resources/ui/dialogs/process_dialog.ui")]
     pub struct ResProcessDialog {
         #[template_child]
         pub name: TemplateChild<gtk::Label>,
         #[template_child]
-        pub cpu_usage: TemplateChild<ResInfoBox>,
+        pub cpu_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub memory_usage: TemplateChild<ResInfoBox>,
+        pub memory_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub pid: TemplateChild<ResInfoBox>,
+        pub pid: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub commandline: TemplateChild<ResInfoBox>,
+        pub commandline: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub user: TemplateChild<ResInfoBox>,
+        pub user: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub cgroup: TemplateChild<ResInfoBox>,
+        pub cgroup: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub containerized: TemplateChild<ResInfoBox>,
+        pub containerized: TemplateChild<adw::ActionRow>,
     }
 
     #[glib::object_subclass]
@@ -88,39 +87,38 @@ impl ResProcessDialog {
 
         imp.name.set_label(&process.display_name);
 
-        imp.cpu_usage.set_info_label(&i18n("N/A"));
+        self.set_cpu_usage(process.cpu_time_ratio);
 
-        imp.memory_usage.set_info_label(&i18n("N/A"));
+        self.set_memory_usage(process.memory_usage);
 
-        imp.pid.set_info_label(&process.pid.to_string());
+        imp.pid.set_subtitle(&process.pid.to_string());
 
-        imp.commandline.set_info_label(&process.commandline);
-        imp.commandline.set_tooltip(Some(&process.commandline));
+        imp.commandline.set_subtitle(&process.commandline);
+        imp.commandline.set_tooltip_text(Some(&process.commandline));
 
-        imp.user.set_info_label(user);
+        imp.user.set_subtitle(user);
 
         imp.cgroup
-            .set_info_label(&process.cgroup.clone().unwrap_or_else(|| i18n("N/A")));
+            .set_subtitle(&process.cgroup.clone().unwrap_or_else(|| i18n("N/A")));
         imp.cgroup
-            .set_tooltip(Some(&process.cgroup.clone().unwrap_or_else(|| i18n("N/A"))));
+            .set_tooltip_text(Some(&process.cgroup.clone().unwrap_or_else(|| i18n("N/A"))));
 
         let containerized = match process.containerization {
             Containerization::None => i18n("No"),
             Containerization::Flatpak => i18n("Yes (Flatpak)"),
         };
-        imp.containerized.set_info_label(&containerized);
+        imp.containerized.set_subtitle(&containerized);
     }
 
     pub fn set_cpu_usage(&self, usage: f32) {
         let imp = self.imp();
         imp.cpu_usage
-            .set_info_label(&format!("{:.1} %", usage * 100.0));
+            .set_subtitle(&format!("{:.1} %", usage * 100.0));
     }
 
     pub fn set_memory_usage(&self, usage: usize) {
         let imp = self.imp();
-        let (number, prefix) = to_largest_unit(usage as f64, &Base::Decimal);
         imp.memory_usage
-            .set_info_label(&format!("{number:.1} {prefix}B"));
+            .set_subtitle(&convert_storage(usage as f64, false));
     }
 }

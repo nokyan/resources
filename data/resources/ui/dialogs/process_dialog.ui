@@ -53,12 +53,20 @@
                       <object class="AdwPreferencesGroup">
                         <property name="title" translatable="yes">Usage</property>
                         <child>
-                          <object class="ResInfoBox" id="cpu_usage">
+                          <object class="AdwActionRow" id="cpu_usage">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
                             <property name="title" translatable="yes">Processor</property>
                           </object>
                         </child>
                         <child>
-                          <object class="ResInfoBox" id="memory_usage">
+                          <object class="AdwActionRow" id="memory_usage">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
                             <property name="title" translatable="yes">Memory</property>
                           </object>
                         </child>
@@ -68,27 +76,47 @@
                       <object class="AdwPreferencesGroup">
                         <property name="title" translatable="yes">Properties</property>
                         <child>
-                          <object class="ResInfoBox" id="pid">
+                          <object class="AdwActionRow" id="pid">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
                             <property name="title" translatable="yes">Process ID</property>
                           </object>
                         </child>
                         <child>
-                          <object class="ResInfoBox" id="commandline">
+                          <object class="AdwActionRow" id="commandline">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
                             <property name="title" translatable="yes">Commandline</property>
                           </object>
                         </child>
                         <child>
-                          <object class="ResInfoBox" id="user">
+                          <object class="AdwActionRow" id="user">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
                             <property name="title" translatable="yes">User</property>
                           </object>
                         </child>
                         <child>
-                          <object class="ResInfoBox" id="cgroup">
+                          <object class="AdwActionRow" id="cgroup">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
                             <property name="title" translatable="yes">Control Group</property>
                           </object>
                         </child>
                         <child>
-                          <object class="ResInfoBox" id="containerized">
+                          <object class="AdwActionRow" id="containerized">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
                             <property name="title" translatable="yes">Containerized</property>
                           </object>
                         </child>
@@ -97,7 +125,7 @@
                   </object>
                 </child>
               </object>
-            </child>  
+            </child>
           </object>
         </child>
       </object>
@@ -115,4 +143,3 @@
     </child>
   </template>
 </interface>
-

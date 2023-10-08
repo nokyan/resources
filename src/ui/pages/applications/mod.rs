@@ -1,10 +1,12 @@
-use std::cell::Ref;
+mod application_entry;
+mod application_name_cell;
+
 use std::collections::HashSet;
 
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone, BoxedAnyObject, Object, Sender};
-use gtk::{gio, CustomSorter, FilterChange, Ordering, SortType};
+use gtk::glib::{self, clone, closure, Object, Sender};
+use gtk::{gio, CustomSorter, FilterChange, Ordering, SortType, Widget};
 use gtk_macros::send;
 
 use log::error;
@@ -12,22 +14,32 @@ use log::error;
 use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::ui::dialogs::app_dialog::ResAppDialog;
-use crate::ui::widgets::application_name_cell::ResApplicationNameCell;
 use crate::ui::window::{self, Action, MainWindow};
 use crate::utils::processes::{AppItem, AppsContext, ProcessAction};
-use crate::utils::units::{to_largest_unit, Base};
+use crate::utils::units::convert_storage;
+
+use self::application_entry::ApplicationEntry;
+use self::application_name_cell::ResApplicationNameCell;
 
 mod imp {
-    use std::{cell::RefCell, sync::OnceLock};
+    use std::{
+        cell::{Cell, RefCell},
+        sync::OnceLock,
+    };
 
     use crate::ui::window::Action;
 
     use super::*;
 
-    use gtk::{glib::Sender, CompositeTemplate};
+    use gtk::{
+        gio::{Icon, ThemedIcon},
+        glib::{ParamSpec, Properties, Sender, Value},
+        CompositeTemplate,
+    };
 
-    #[derive(Debug, CompositeTemplate)]
-    #[template(resource = "/me/nalux/Resources/ui/pages/applications.ui")]
+    #[derive(CompositeTemplate, Properties)]
+    #[template(resource = "/net/nokyan/Resources/ui/pages/applications.ui")]
+    #[properties(wrapper_type = super::ResApplications)]
     pub struct ResApplications {
         #[template_child]
         pub toast_overlay: TemplateChild<adw::ToastOverlay>,
@@ -52,6 +64,24 @@ mod imp {
         pub open_dialog: RefCell<Option<(Option<String>, ResAppDialog)>>,
 
         pub sender: OnceLock<Sender<Action>>,
+
+        #[property(get)]
+        uses_progress_bar: Cell<bool>,
+
+        #[property(get)]
+        icon: RefCell<Icon>,
+
+        #[property(get = Self::tab_name, type = glib::GString)]
+        tab_name: Cell<glib::GString>,
+    }
+
+    impl ResApplications {
+        pub fn tab_name(&self) -> glib::GString {
+            let tab_name = self.tab_name.take();
+            let result = tab_name.clone();
+            self.tab_name.set(tab_name);
+            result
+        }
     }
 
     impl Default for ResApplications {
@@ -62,7 +92,7 @@ mod imp {
                 search_entry: Default::default(),
                 search_button: Default::default(),
                 information_button: Default::default(),
-                store: gio::ListStore::new::<BoxedAnyObject>().into(),
+                store: gio::ListStore::new::<ApplicationEntry>().into(),
                 selection_model: Default::default(),
                 filter_model: Default::default(),
                 sort_model: Default::default(),
@@ -71,6 +101,9 @@ mod imp {
                 sender: Default::default(),
                 applications_scrolled_window: Default::default(),
                 end_application_button: Default::default(),
+                uses_progress_bar: Cell::new(false),
+                icon: RefCell::new(ThemedIcon::new("app-symbolic").into()),
+                tab_name: Cell::from(glib::GString::from(i18n("Applications"))),
             }
         }
     }
@@ -131,6 +164,18 @@ mod imp {
                 obj.add_css_class("devel");
             }
         }
+
+        fn properties() -> &'static [ParamSpec] {
+            Self::derived_properties()
+        }
+
+        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
+            self.derived_set_property(id, value, pspec);
+        }
+
+        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
+            self.derived_property(id, pspec)
+        }
     }
 
     impl WidgetImpl for ResApplications {}
@@ -159,7 +204,7 @@ impl ResApplications {
         let imp = self.imp();
 
         let column_view = gtk::ColumnView::new(None::<gtk::SingleSelection>);
-        let store = imp.store.borrow_mut();
+        let store = gio::ListStore::new::<ApplicationEntry>();
         let filter_model = gtk::FilterListModel::new(
             Some(store.clone()),
             Some(gtk::CustomFilter::new(
@@ -172,6 +217,7 @@ impl ResApplications {
         selection_model.set_can_unselect(true);
         selection_model.set_autoselect(false);
 
+        *imp.store.borrow_mut() = store;
         *imp.selection_model.borrow_mut() = selection_model;
         *imp.sort_model.borrow_mut() = sort_model;
         *imp.filter_model.borrow_mut() = filter_model;
@@ -185,29 +231,17 @@ impl ResApplications {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
             let row = ResApplicationNameCell::new();
             item.set_child(Some(&row));
-        });
-        name_col_factory.connect_bind(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            let child = item
-                .child()
-                .unwrap()
-                .downcast::<ResApplicationNameCell>()
-                .unwrap();
-            let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<AppItem> = entry.borrow();
-            child.set_name(&r.display_name);
-            child.set_icon(Some(&r.icon));
+            item.property_expression("item")
+                .chain_property::<ApplicationEntry>("name")
+                .bind(&row, "name", Widget::NONE);
+            item.property_expression("item")
+                .chain_property::<ApplicationEntry>("icon")
+                .bind(&row, "icon", Widget::NONE);
         });
         let name_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<AppItem>();
-            let item_b = b
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<AppItem>();
-            item_a.display_name.cmp(&item_b.display_name).into()
+            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap();
+            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap();
+            item_a.name().cmp(&item_b.name()).into()
         });
         name_col.set_sorter(Some(&name_col_sorter));
 
@@ -218,30 +252,19 @@ impl ResApplications {
         memory_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(9);
             item.set_child(Some(&row));
-        });
-        memory_col_factory.connect_bind(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            let child = item
-                .child()
-                .unwrap()
-                .downcast::<gtk::Inscription>()
-                .unwrap();
-            let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<AppItem> = entry.borrow();
-            let (number, prefix) = to_largest_unit(r.memory_usage as f64, &Base::Decimal);
-            child.set_text(Some(&format!("{number:.1} {prefix}B")));
+            item.property_expression("item")
+                .chain_property::<ApplicationEntry>("memory_usage")
+                .chain_closure::<String>(closure!(|_: Option<Object>, memory_usage: u64| {
+                    convert_storage(memory_usage as f64, false)
+                }))
+                .bind(&row, "text", Widget::NONE);
         });
         let memory_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<AppItem>();
-            let item_b = b
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<AppItem>();
-            item_a.memory_usage.cmp(&item_b.memory_usage).into()
+            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().memory_usage();
+            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().memory_usage();
+            item_a.cmp(&item_b).into()
         });
         memory_col.set_sorter(Some(&memory_col_sorter));
 
@@ -253,31 +276,19 @@ impl ResApplications {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
             let row = gtk::Inscription::new(None);
             item.set_child(Some(&row));
-        });
-        cpu_col_factory.connect_bind(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            let child = item
-                .child()
-                .unwrap()
-                .downcast::<gtk::Inscription>()
-                .unwrap();
-            let entry = item.item().unwrap().downcast::<BoxedAnyObject>().unwrap();
-            let r: Ref<AppItem> = entry.borrow();
-            child.set_text(Some(&format!("{:.1} %", r.cpu_time_ratio * 100.0)));
+            item.property_expression("item")
+                .chain_property::<ApplicationEntry>("cpu_usage")
+                .chain_closure::<String>(closure!(|_: Option<Object>, cpu_usage: f32| {
+                    format!("{:.1} %", cpu_usage * 100.0)
+                }))
+                .bind(&row, "text", Widget::NONE);
         });
         let cpu_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<AppItem>();
-            let item_b = b
-                .downcast_ref::<BoxedAnyObject>()
-                .unwrap()
-                .borrow::<AppItem>();
-            // we have to do this because f32s do not implement `Ord`
-            if item_a.cpu_time_ratio > item_b.cpu_time_ratio {
+            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().cpu_usage();
+            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().cpu_usage();
+            if item_a > item_b {
                 Ordering::Larger
-            } else if item_a.cpu_time_ratio < item_b.cpu_time_ratio {
+            } else if item_a < item_b {
                 Ordering::Smaller
             } else {
                 Ordering::Equal
@@ -303,11 +314,9 @@ impl ResApplications {
                 let imp = this.imp();
                 let is_system_processes = model.selected_item().map_or(false, |object| {
                     object
-                    .downcast::<BoxedAnyObject>()
+                    .downcast::<ApplicationEntry>()
                     .unwrap()
-                    .borrow::<AppItem>()
-                    .clone()
-                    .id
+                    .id()
                     .is_none()
                 });
                 imp.information_button.set_sensitive(model.selected() != u32::MAX);
@@ -342,16 +351,14 @@ impl ResApplications {
                 .selected_item()
                 .map(|object| {
                     object
-                    .downcast::<BoxedAnyObject>()
+                    .downcast::<ApplicationEntry>()
                     .unwrap()
-                    .borrow::<AppItem>()
-                    .clone()
                 });
                 if let Some(selection) = selection_option {
                     let app_dialog = ResAppDialog::new();
-                    app_dialog.init(&selection);
+                    app_dialog.init(selection.app_item().as_ref().unwrap());
                     app_dialog.show();
-                    *imp.open_dialog.borrow_mut() = Some((selection.id, app_dialog));
+                    *imp.open_dialog.borrow_mut() = Some((selection.id().map(|gs| gs.to_string()), app_dialog));
                 }
             }));
 
@@ -365,16 +372,12 @@ impl ResApplications {
 
     fn search_filter(&self, obj: &Object) -> bool {
         let imp = self.imp();
-        let item = obj
-            .downcast_ref::<BoxedAnyObject>()
-            .unwrap()
-            .borrow::<AppItem>()
-            .clone();
+        let item = obj.downcast_ref::<ApplicationEntry>().unwrap();
         let search_string = imp.search_entry.text().to_string().to_lowercase();
         !imp.search_revealer.reveals_child()
-            || item.display_name.to_lowercase().contains(&search_string)
+            || item.name().to_lowercase().contains(&search_string)
             || item
-                .description
+                .description()
                 .unwrap_or_default()
                 .to_lowercase()
                 .contains(&search_string)
@@ -385,28 +388,21 @@ impl ResApplications {
             .selection_model
             .borrow()
             .selected_item()
-            .map(|object| {
-                object
-                    .downcast::<BoxedAnyObject>()
-                    .unwrap()
-                    .borrow::<AppItem>()
-                    .clone()
-            })
+            .and_then(|object| object.downcast::<ApplicationEntry>().unwrap().app_item())
     }
 
     pub fn refresh_apps_list(&self, apps: &AppsContext) {
         let imp = self.imp();
 
         let store = imp.store.borrow_mut();
-        let model = imp.filter_model.borrow();
         let mut dialog_opt = &*imp.open_dialog.borrow_mut();
 
         let mut new_items = apps.app_items();
         let mut ids_to_remove = HashSet::new();
 
         // change process entries of apps that have run before
-        store.iter::<BoxedAnyObject>().flatten().for_each(|object| {
-            let app_id = object.borrow::<AppItem>().clone().id;
+        store.iter::<ApplicationEntry>().flatten().for_each(|object| {
+            let app_id = object.id().map(|gs| gs.to_string());
             // filter out apps that have run before but don't anymore
             if app_id.is_some() // don't try to filter out "System Processes"
                     && !apps
@@ -421,12 +417,13 @@ impl ResApplications {
                 ids_to_remove.insert(app_id.clone());
             }
             if let Some((_, new_item)) = new_items.remove_entry(&app_id) {
-                if let Some((dialog_pid, dialog)) = dialog_opt && *dialog_pid == app_id {
-                        dialog.set_cpu_usage(new_item.cpu_time_ratio);
-                        dialog.set_memory_usage(new_item.memory_usage);
-                        dialog.set_processes_amount(new_item.processes_amount);
-                    }
-                object.replace(new_item);
+                if let Some((dialog_id, dialog)) = dialog_opt && *dialog_id == app_id {
+                    dialog.set_cpu_usage(new_item.cpu_time_ratio);
+                    dialog.set_memory_usage(new_item.memory_usage);
+                    dialog.set_processes_amount(new_item.processes_amount);
+                }
+                object.set_cpu_usage(new_item.cpu_time_ratio);
+                object.set_memory_usage(new_item.memory_usage as u64);
             }
         });
 
@@ -435,19 +432,19 @@ impl ResApplications {
             !ids_to_remove.contains(
                 &object
                     .clone()
-                    .downcast::<BoxedAnyObject>()
+                    .downcast::<ApplicationEntry>()
                     .unwrap()
-                    .borrow::<AppItem>()
-                    .id,
+                    .id()
+                    .map(|gs| gs.to_string()),
             )
         });
 
         // add the newly started apps to the store
         new_items
             .drain()
-            .for_each(|(_, new_item)| store.append(&BoxedAnyObject::new(new_item)));
+            .for_each(|(_, new_item)| store.append(&ApplicationEntry::new(new_item)));
 
-        model.items_changed(0, model.n_items(), model.n_items());
+        store.items_changed(0, store.n_items(), store.n_items());
     }
 
     pub fn execute_process_action_dialog(&self, app: AppItem, action: ProcessAction) {

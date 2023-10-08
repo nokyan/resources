@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <schemalist>
-  <schema path="/me/nalux/Resources/" id="@app-id@" gettext-domain="@gettext-package@">
+  <schema path="/net/nokyan/Resources/" id="@app-id@" gettext-domain="@gettext-package@">
     <key name="window-width" type="i">
       <default>1024</default>
       <summary>Window width</summary>
@@ -13,9 +13,17 @@
       <default>false</default>
       <summary>Window maximized state</summary>
     </key>
-    <key name="use-celsius" type="b">
-      <default>true</default>
+    <key name="temperature-unit" type="s">
+      <default>&quot;Celsius&quot;</default>
       <summary>Temperature unit</summary>
+    </key>
+    <key name="base" type="s">
+      <default>&quot;Decimal&quot;</default>
+      <summary>Unit Prefix Base</summary>
+    </key>
+    <key name="refresh-speed" type="s">
+      <default>&quot;Normal&quot;</default>
+      <summary>Refresh Speed</summary>
     </key>
   </schema>
 </schemalist>

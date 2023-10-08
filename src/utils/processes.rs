@@ -38,7 +38,7 @@ pub struct Process {
     pub alive: bool,
 }
 
-/// Data that could be transferred using `resources-processes`, seperated from
+/// Data that could be transferred using `resources-processes`, separated from
 /// `Process` mainly due to `Icon` not being able to derive `Serialize` and
 /// `Deserialize`.
 #[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
@@ -585,7 +585,7 @@ impl AppsContext {
                         !process.data.commandline.starts_with("bwrap")
                             && !process.data.commandline.is_empty()
                     })
-                    .all(|process| process.data.containerization == Containerization::Flatpak)
+                    .any(|process| process.data.containerization == Containerization::Flatpak)
                 {
                     Containerization::Flatpak
                 } else {

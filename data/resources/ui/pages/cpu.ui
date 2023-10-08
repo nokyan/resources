@@ -5,7 +5,7 @@
       <object class="GtkScrolledWindow">
         <child>
           <object class="AdwClamp">
-            <property name="maximum-size">800</property>
+            <property name="maximum-size">768</property>
             <child>
               <object class="GtkBox">
                 <property name="margin-top">24</property>
@@ -18,19 +18,11 @@
                 <property name="valign">start</property>
                 <property name="vexpand">true</property>
                 <child>
-                  <object class="GtkLabel" id="cpu_name">
-                    <property name="wrap">true</property>
-                    <property name="selectable">true</property>
-                    <style>
-                      <class name="title-1"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
                   <object class="AdwPreferencesGroup">
                     <property name="title" translatable="yes">Options</property>
                     <child>
                       <object class="AdwActionRow">
+                        <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">Show Usages of Logical CPUs</property>
                         <child type="suffix">
                           <object class="GtkSwitch" id="logical_switch">
@@ -84,7 +76,11 @@
                   <object class="AdwPreferencesGroup">
                     <property name="title" translatable="yes">Sensors</property>
                     <child>
-                      <object class="ResInfoBox" id="temperature">
+                      <object class="AdwActionRow" id="temperature">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">Temperature</property>
                       </object>
                     </child>
@@ -94,32 +90,56 @@
                   <object class="AdwPreferencesGroup">
                     <property name="title" translatable="yes">Properties</property>
                     <child>
-                      <object class="ResInfoBox" id="max_speed">
+                      <object class="AdwActionRow" id="max_speed">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">Max Frequency</property>
                       </object>
                     </child>
                     <child>
-                      <object class="ResInfoBox" id="logical_cpus">
+                      <object class="AdwActionRow" id="logical_cpus">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">Logical Cores</property>
                       </object>
                     </child>
                     <child>
-                      <object class="ResInfoBox" id="physical_cpus">
+                      <object class="AdwActionRow" id="physical_cpus">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">Physical Cores</property>
                       </object>
                     </child>
                     <child>
-                      <object class="ResInfoBox" id="sockets">
+                      <object class="AdwActionRow" id="sockets">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">Sockets</property>
                       </object>
                     </child>
                     <child>
-                      <object class="ResInfoBox" id="virtualization">
+                      <object class="AdwActionRow" id="virtualization">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">Virtualization</property>
                       </object>
                     </child>
                     <child>
-                      <object class="ResInfoBox" id="architecture">
+                      <object class="AdwActionRow" id="architecture">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">Architecture</property>
                       </object>
                     </child>

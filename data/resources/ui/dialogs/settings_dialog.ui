@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ResSettingsDialog" parent="AdwPreferencesWindow">
+    <property name="default-width">550</property>
+    <property name="default-height">570</property>
+    <property name="can-navigate-back">True</property>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="icon-name">applications-system-symbolic</property>
+        <property name="title" translatable="yes">General</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Units</property>
+            <child>
+              <object class="AdwComboRow" id="prefix_combo_row">
+                <property name="title" translatable="yes">Data Unit Prefix</property>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">Decimal</item>
+                      <item translatable="yes">Binary</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwComboRow" id="temperature_combo_row">
+                <property name="title" translatable="yes">Temperature Unit</property>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">Celsius</item>
+                      <item translatable="yes">Kelvin</item>
+                      <item translatable="yes">Fahrenheit</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">User Interface</property>
+            <child>
+              <object class="AdwComboRow" id="refresh_speed_combo_row">
+                <property name="title" translatable="yes">Refresh Speed</property>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">Very Slow</item>
+                      <item translatable="yes">Slow</item>
+                      <item translatable="yes">Normal</item>
+                      <item translatable="yes">Fast</item>
+                      <item translatable="yes">Very Fast</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

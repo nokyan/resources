@@ -1,10 +1,11 @@
 use anyhow::{anyhow, bail, Context, Result};
+use async_process::Command;
 use async_std::path::PathBuf;
 use glob::glob;
 use nparse::KVStrToJson;
 use regex::bytes::Regex;
 use serde_json::Value;
-use std::{process::Command, sync::OnceLock};
+use std::sync::OnceLock;
 
 static PROC_STAT_REGEX: OnceLock<Regex> = OnceLock::new();
 
@@ -26,11 +27,12 @@ pub struct CPUInfo {
     pub max_speed: Option<f32>,
 }
 
-fn lscpu() -> Result<Value> {
+async fn lscpu() -> Result<Value> {
     String::from_utf8(
         Command::new("lscpu")
             .env("LC_ALL", "C")
             .output()
+            .await
             .with_context(|| "unable to run lscpu, is util-linux installed?")?
             .stdout,
     )
@@ -45,8 +47,8 @@ fn lscpu() -> Result<Value> {
 ///
 /// Will return `Err` if the are problems during reading or parsing
 /// of the `lscpu` command
-pub fn cpu_info() -> Result<CPUInfo> {
-    let lscpu_output = lscpu()?;
+pub async fn cpu_info() -> Result<CPUInfo> {
+    let lscpu_output = lscpu().await?;
 
     let vendor_id = lscpu_output["Vendor ID"]
         .as_str()

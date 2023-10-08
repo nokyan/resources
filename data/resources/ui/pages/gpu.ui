@@ -5,7 +5,7 @@
       <object class="GtkScrolledWindow">
         <child>
           <object class="AdwClamp">
-            <property name="maximum-size">800</property>
+            <property name="maximum-size">768</property>
             <child>
               <object class="GtkBox">
                 <property name="margin-top">24</property>
@@ -18,15 +18,6 @@
                 <property name="valign">start</property>
                 <property name="vexpand">true</property>
                 <child>
-                  <object class="GtkLabel" id="gpu_name">
-                    <property name="wrap">true</property>
-                    <property name="selectable">true</property>
-                    <style>
-                      <class name="title-1"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
                   <object class="AdwPreferencesGroup">
                     <property name="title" translatable="yes">Usage</property>
                     <child>
@@ -36,23 +27,44 @@
                       <object class="ResGraphBox" id="vram_usage"/>
                     </child>
                     <child>
-                      <object class="ResInfoBox" id="temperature">
-                        <property name="title" translatable="yes">Temperature</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="ResInfoBox" id="power_usage">
-                        <property name="title" translatable="yes">Power Usage</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="ResInfoBox" id="gpu_clockspeed">
+                      <object class="AdwActionRow" id="gpu_clockspeed">
                         <property name="title" translatable="yes">GPU Frequency</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                       </object>
                     </child>
                     <child>
-                      <object class="ResInfoBox" id="vram_clockspeed">
+                      <object class="AdwActionRow" id="vram_clockspeed">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">Video Memory Frequency</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow" id="power_usage">
+                        <property name="title" translatable="yes">Power Usage</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title" translatable="yes">Sensors</property>
+                    <child>
+                      <object class="AdwActionRow" id="temperature">
+                        <property name="title" translatable="yes">Temperature</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                       </object>
                     </child>
                   </object>
@@ -61,27 +73,47 @@
                   <object class="AdwPreferencesGroup">
                     <property name="title" translatable="yes">Properties</property>
                     <child>
-                      <object class="ResInfoBox" id="manufacturer">
+                      <object class="AdwActionRow" id="manufacturer">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">Manufacturer</property>
                       </object>
                     </child>
                     <child>
-                      <object class="ResInfoBox" id="pci_slot">
+                      <object class="AdwActionRow" id="pci_slot">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">PCI Slot</property>
                       </object>
                     </child>
                     <child>
-                      <object class="ResInfoBox" id="driver_used">
+                      <object class="AdwActionRow" id="driver_used">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">Driver Used</property>
                       </object>
                     </child>
                     <child>
-                      <object class="ResInfoBox" id="current_power_cap">
+                      <object class="AdwActionRow" id="current_power_cap">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">Current Power Cap</property>
                       </object>
                     </child>
                     <child>
-                      <object class="ResInfoBox" id="max_power_cap">
+                      <object class="AdwActionRow" id="max_power_cap">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
                         <property name="title" translatable="yes">Max Power Cap</property>
                       </object>
                     </child>

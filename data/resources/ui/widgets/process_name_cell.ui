@@ -3,7 +3,7 @@
   <template class="ResProcessNameCell" parent="GtkBox">
     <property name="spacing">12</property>
     <child>
-      <object class="GtkImage" id="icon">
+      <object class="GtkImage" id="image">
         <property name="pixel-size">16</property>
         <style>
           <class name="lowres-icon"/>
@@ -11,7 +11,7 @@
       </object>
     </child>
     <child>
-      <object class="GtkInscription" id="name">
+      <object class="GtkInscription" id="inscription">
         <property name="xalign">0</property>
         <property name="yalign">0.5</property>
         <property name="hexpand">1</property>

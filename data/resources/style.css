@@ -1,0 +1,3 @@
+progressbar.slim > trough, progressbar.slim > trough > progress {
+  min-height: 4px;
+}

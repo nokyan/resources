@@ -9,6 +9,7 @@ pub mod gpu;
 pub mod memory;
 pub mod network;
 pub mod processes;
+pub mod settings;
 pub mod units;
 
 static IS_FLATPAK: OnceLock<bool> = OnceLock::new();

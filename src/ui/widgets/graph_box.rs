@@ -11,7 +11,7 @@ mod imp {
     use gtk::CompositeTemplate;
 
     #[derive(Debug, CompositeTemplate, Default)]
-    #[template(resource = "/me/nalux/Resources/ui/widgets/graph_box.ui")]
+    #[template(resource = "/net/nokyan/Resources/ui/widgets/graph_box.ui")]
     pub struct ResGraphBox {
         #[template_child]
         pub graph: TemplateChild<ResGraph>,
@@ -91,7 +91,7 @@ impl ResGraphBox {
         imp.title_label.set_label(str);
     }
 
-    pub fn set_info_label(&self, str: &str) {
+    pub fn set_subtitle(&self, str: &str) {
         let imp = self.imp();
         imp.info_label.set_label(str);
     }

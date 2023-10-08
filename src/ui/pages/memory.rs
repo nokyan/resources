@@ -7,18 +7,25 @@ use crate::i18n::{i18n, i18n_f};
 use crate::utils::memory::{
     self, get_available_memory, get_free_swap, get_total_memory, get_total_swap, MemoryDevice,
 };
-use crate::utils::units::{to_largest_unit, Base};
+use crate::utils::units::convert_storage;
 use crate::utils::NaNDefault;
 
 mod imp {
-    use crate::ui::widgets::{graph_box::ResGraphBox, info_box::ResInfoBox};
+    use std::cell::{Cell, RefCell};
+
+    use crate::ui::widgets::graph_box::ResGraphBox;
 
     use super::*;
 
-    use gtk::CompositeTemplate;
+    use gtk::{
+        gio::{Icon, ThemedIcon},
+        glib::{ParamSpec, Properties, Value},
+        CompositeTemplate,
+    };
 
-    #[derive(Debug, CompositeTemplate, Default)]
-    #[template(resource = "/me/nalux/Resources/ui/pages/memory.ui")]
+    #[derive(CompositeTemplate, Properties)]
+    #[template(resource = "/net/nokyan/Resources/ui/pages/memory.ui")]
+    #[properties(wrapper_type = super::ResMemory)]
     pub struct ResMemory {
         #[template_child]
         pub memory: TemplateChild<ResGraphBox>,
@@ -29,15 +36,55 @@ mod imp {
         #[template_child]
         pub properties: TemplateChild<adw::PreferencesGroup>,
         #[template_child]
-        pub slots_used: TemplateChild<ResInfoBox>,
+        pub slots_used: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub speed: TemplateChild<ResInfoBox>,
+        pub speed: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub form_factor: TemplateChild<ResInfoBox>,
+        pub form_factor: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub memory_type: TemplateChild<ResInfoBox>,
+        pub memory_type: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub type_detail: TemplateChild<ResInfoBox>,
+        pub type_detail: TemplateChild<adw::ActionRow>,
+
+        #[property(get)]
+        uses_progress_bar: Cell<bool>,
+
+        #[property(get)]
+        icon: RefCell<Icon>,
+
+        #[property(get, set)]
+        usage: Cell<f64>,
+        #[property(get = Self::tab_name, type = glib::GString)]
+        tab_name: Cell<glib::GString>,
+    }
+
+    impl ResMemory {
+        pub fn tab_name(&self) -> glib::GString {
+            let tab_name = self.tab_name.take();
+            let result = tab_name.clone();
+            self.tab_name.set(tab_name);
+            result
+        }
+    }
+
+    impl Default for ResMemory {
+        fn default() -> Self {
+            Self {
+                memory: Default::default(),
+                swap: Default::default(),
+                authentication_banner: Default::default(),
+                properties: Default::default(),
+                slots_used: Default::default(),
+                speed: Default::default(),
+                form_factor: Default::default(),
+                memory_type: Default::default(),
+                type_detail: Default::default(),
+                uses_progress_bar: Cell::new(true),
+                icon: RefCell::new(ThemedIcon::new("memory-symbolic").into()),
+                usage: Default::default(),
+                tab_name: Cell::new(glib::GString::from(i18n("Memory"))),
+            }
+        }
     }
 
     #[glib::object_subclass]
@@ -65,6 +112,18 @@ mod imp {
             if PROFILE == "Devel" {
                 obj.add_css_class("devel");
             }
+        }
+
+        fn properties() -> &'static [ParamSpec] {
+            Self::derived_properties()
+        }
+
+        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
+            self.derived_set_property(id, value, pspec);
+        }
+
+        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
+            self.derived_property(id, pspec)
         }
     }
 
@@ -121,8 +180,7 @@ impl ResMemory {
         let form_factor = memory_devices
             .iter()
             .find(|md| md.installed)
-            .map(|md| md.form_factor.clone())
-            .unwrap_or_else(|| i18n("N/A"));
+            .map_or_else(|| i18n("N/A"), |md| md.form_factor.clone());
         let r#type = memory_devices
             .iter()
             .find(|md| md.installed)
@@ -132,11 +190,11 @@ impl ResMemory {
             .find(|md| md.installed)
             .map_or_else(|| i18n("N/A"), |md| md.type_detail.clone());
         imp.slots_used
-            .set_info_label(&i18n_f("{} of {}", &[slots_used.as_str(), slots.as_str()]));
-        imp.speed.set_info_label(&format!("{speed} MT/s"));
-        imp.form_factor.set_info_label(&form_factor);
-        imp.memory_type.set_info_label(&r#type);
-        imp.type_detail.set_info_label(&type_detail);
+            .set_subtitle(&i18n_f("{} of {}", &[slots_used.as_str(), slots.as_str()]));
+        imp.speed.set_subtitle(&format!("{speed} MT/s"));
+        imp.form_factor.set_subtitle(&form_factor);
+        imp.memory_type.set_subtitle(&r#type);
+        imp.type_detail.set_subtitle(&type_detail);
     }
 
     pub fn setup_signals(&self) {
@@ -150,36 +208,52 @@ impl ResMemory {
                 }
                 imp.authentication_banner.set_revealed(false)
             }));
-        let mem_usage_update = clone!(@strong self as this => move || {
-            let imp = this.imp();
-            let total_mem = get_total_memory().with_context(|| "unable to get total memory").unwrap_or_default();
-            let available_mem = get_available_memory().with_context(|| "unable to get available memory").unwrap_or_default();
-            let total_swap = get_total_swap().with_context(|| "unable to get total swap").unwrap_or_default();
-            let free_swap = get_free_swap().with_context(|| "unable to get free swap").unwrap_or_default();
+    }
 
-            let total_mem_unit = to_largest_unit(total_mem as f64, &Base::Decimal);
-            let used_mem_unit = to_largest_unit((total_mem - available_mem) as f64, &Base::Decimal);
-            let total_swap_unit = to_largest_unit(total_swap as f64, &Base::Decimal);
-            let used_swap_unit = to_largest_unit((total_swap - free_swap) as f64, &Base::Decimal);
+    pub async fn refresh_page(&self) {
+        let imp = self.imp();
 
-            let memory_fraction = 1.0 - (available_mem as f64 / total_mem as f64);
-            let swap_fraction = 1.0 - (free_swap as f64 / total_swap as f64).nan_default(1.0);
+        let total_mem = get_total_memory()
+            .with_context(|| "unable to get total memory")
+            .unwrap_or_default();
+        let available_mem = get_available_memory()
+            .with_context(|| "unable to get available memory")
+            .unwrap_or_default();
+        let used_mem = total_mem - available_mem;
 
-            imp.memory.push_data_point(memory_fraction);
-            imp.memory.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {} %", used_mem_unit.0, used_mem_unit.1, total_mem_unit.0, total_mem_unit.1, (memory_fraction * 100.0) as u8));
-            if total_swap == 0 {
-                imp.swap.push_data_point(0.0);
-                imp.swap.set_graph_visible(false);
-                imp.swap.set_info_label(&i18n("N/A"));
-            } else {
-                imp.swap.push_data_point(swap_fraction);
-                imp.swap.set_graph_visible(true);
-                imp.swap.set_info_label(&format!("{:.2} {}B / {:.2} {}B · {} %", used_swap_unit.0, used_swap_unit.1, total_swap_unit.0, total_swap_unit.1, (swap_fraction * 100.0) as u8));
-            }
+        let total_swap = get_total_swap()
+            .with_context(|| "unable to get total swap")
+            .unwrap_or_default();
+        let free_swap = get_free_swap()
+            .with_context(|| "unable to get free swap")
+            .unwrap_or_default();
+        let used_swap = total_swap - free_swap;
 
-            glib::ControlFlow::Continue
-        });
+        let memory_fraction = used_mem as f64 / total_mem as f64;
+        let swap_fraction = (used_swap as f64 / total_swap as f64).nan_default(0.0);
 
-        glib::timeout_add_seconds_local(1, mem_usage_update);
+        imp.memory.push_data_point(memory_fraction);
+        imp.memory.set_subtitle(&format!(
+            "{} / {} · {} %",
+            &convert_storage(used_mem as f64, false),
+            &convert_storage(total_mem as f64, false),
+            (memory_fraction * 100.0).round()
+        ));
+        if total_swap == 0 {
+            imp.swap.push_data_point(0.0);
+            imp.swap.set_graph_visible(false);
+            imp.swap.set_subtitle(&i18n("N/A"));
+        } else {
+            imp.swap.push_data_point(swap_fraction);
+            imp.swap.set_graph_visible(true);
+            imp.swap.set_subtitle(&format!(
+                "{} / {} · {} %",
+                &convert_storage(used_swap as f64, false),
+                &convert_storage(total_swap as f64, false),
+                (swap_fraction * 100.0).round()
+            ));
+        }
+
+        self.set_property("usage", memory_fraction);
     }
 }
