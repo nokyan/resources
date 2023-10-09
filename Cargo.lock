@@ -1329,7 +1329,7 @@ checksum = "9e76628b4d3a7581389a35d5b6e2139607ad7c75b17aed325f210aa91f4a9609"
 [[package]]
 name = "plotters-cairo"
 version = "0.4.0"
-source = "git+https://github.com/nokyan/plotters-cairo?branch=cairo-rs-0.18#12aa97db499c2e69e4cb698963f78c498ae3e654"
+source = "git+https://github.com/plotters-rs/plotters-cairo?rev=1ffd536#1ffd53659012a0e109ddc844ede314c5bf624666"
 dependencies = [
  "cairo-rs",
  "plotters-backend",
