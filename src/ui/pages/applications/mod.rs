@@ -401,31 +401,38 @@ impl ResApplications {
         let mut ids_to_remove = HashSet::new();
 
         // change process entries of apps that have run before
-        store.iter::<ApplicationEntry>().flatten().for_each(|object| {
-            let app_id = object.id().map(|gs| gs.to_string());
-            // filter out apps that have run before but don't anymore
-            if app_id.is_some() // don't try to filter out "System Processes"
+        store
+            .iter::<ApplicationEntry>()
+            .flatten()
+            .for_each(|object| {
+                let app_id = object.id().map(|gs| gs.to_string());
+                // filter out apps that have run before but don't anymore
+                if app_id.is_some() // don't try to filter out "System Processes"
                     && !apps
                         .get_app(&app_id.clone().unwrap_or_default())
                         .unwrap()
                         .is_running(apps)
-            {
-                if let Some((dialog_id, dialog)) = dialog_opt && dialog_id.as_deref() == app_id.as_deref() {
-                    dialog.close();
-                    dialog_opt = &None;
+                {
+                    if let Some((dialog_id, dialog)) = dialog_opt {
+                        if dialog_id.as_deref() == app_id.as_deref() {
+                            dialog.close();
+                            dialog_opt = &None;
+                        }
+                    }
+                    ids_to_remove.insert(app_id.clone());
                 }
-                ids_to_remove.insert(app_id.clone());
-            }
-            if let Some((_, new_item)) = new_items.remove_entry(&app_id) {
-                if let Some((dialog_id, dialog)) = dialog_opt && *dialog_id == app_id {
-                    dialog.set_cpu_usage(new_item.cpu_time_ratio);
-                    dialog.set_memory_usage(new_item.memory_usage);
-                    dialog.set_processes_amount(new_item.processes_amount);
+                if let Some((_, new_item)) = new_items.remove_entry(&app_id) {
+                    if let Some((dialog_id, dialog)) = dialog_opt {
+                        if *dialog_id == app_id {
+                            dialog.set_cpu_usage(new_item.cpu_time_ratio);
+                            dialog.set_memory_usage(new_item.memory_usage);
+                            dialog.set_processes_amount(new_item.processes_amount);
+                        }
+                    }
+                    object.set_cpu_usage(new_item.cpu_time_ratio);
+                    object.set_memory_usage(new_item.memory_usage as u64);
                 }
-                object.set_cpu_usage(new_item.cpu_time_ratio);
-                object.set_memory_usage(new_item.memory_usage as u64);
-            }
-        });
+            });
 
         // remove apps that recently have stopped running
         store.retain(|object| {

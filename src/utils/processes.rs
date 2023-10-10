@@ -15,9 +15,9 @@ use gtk::{
     prelude::AppInfoExt,
 };
 
-use crate::{config, i18n::i18n, utils::flatpak_app_path};
+use crate::{config, i18n::i18n};
 
-use super::{is_flatpak, FLATPAK_SPAWN};
+use super::{FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
 
 static PAGESIZE: OnceLock<usize> = OnceLock::new();
 
@@ -121,10 +121,10 @@ impl Process {
     pub async fn all() -> Result<Vec<Self>> {
         let mut return_vec = Vec::new();
 
-        if is_flatpak() {
+        if *IS_FLATPAK {
             let proxy_path = format!(
                 "{}/libexec/resources/resources-processes",
-                flatpak_app_path()
+                FLATPAK_APP_PATH.as_str()
             );
             let command = async_process::Command::new(FLATPAK_SPAWN)
                 .args(["--host", proxy_path.as_str()])
@@ -168,13 +168,16 @@ impl Process {
 
         // TODO: tidy this mess up
 
-        let kill_path = if is_flatpak() {
-            format!("{}/libexec/resources/resources-kill", flatpak_app_path())
+        let kill_path = if *IS_FLATPAK {
+            format!(
+                "{}/libexec/resources/resources-kill",
+                FLATPAK_APP_PATH.as_str()
+            )
         } else {
             format!("{LIBEXECDIR}/resources-kill")
         };
 
-        let status_code = if is_flatpak() {
+        let status_code = if *IS_FLATPAK {
             Command::new(FLATPAK_SPAWN)
                 .args([
                     "--host",
@@ -214,7 +217,7 @@ impl Process {
     }
 
     fn pkexec_execute_process_action(&self, action: &str, kill_path: &str) -> Result<()> {
-        let status_code = if is_flatpak() {
+        let status_code = if *IS_FLATPAK {
             Command::new(FLATPAK_SPAWN)
                 .args([
                     "--host",

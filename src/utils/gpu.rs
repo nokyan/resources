@@ -1,14 +1,15 @@
 use anyhow::{anyhow, bail, Context, Result};
 use nvml_wrapper::{
     enum_wrappers::device::{Clock, TemperatureSensor},
+    error::NvmlError,
     Nvml,
 };
+use once_cell::sync::Lazy;
 
 use std::{
     collections::HashMap,
     convert::TryInto,
     path::{Path, PathBuf},
-    sync::OnceLock,
 };
 
 use glob::glob;
@@ -20,7 +21,7 @@ const VID_AMD: u16 = 4098;
 const VID_INTEL: u16 = 32902;
 const VID_NVIDIA: u16 = 4318;
 
-static NVML: OnceLock<Nvml> = OnceLock::new();
+static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(Nvml::init);
 
 #[derive(Debug, Clone, Default)]
 pub struct GPU {
@@ -154,7 +155,7 @@ impl GPU {
     }
 
     fn get_nvidia_name(&self) -> Result<String> {
-        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
+        if let Ok(nv) = NVML.as_ref() {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -192,7 +193,7 @@ impl GPU {
     }
 
     fn get_nvidia_gpu_usage(&self) -> Result<isize> {
-        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
+        if let Ok(nv) = NVML.as_ref() {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -233,7 +234,7 @@ impl GPU {
     }
 
     fn get_nvidia_used_vram(&self) -> Result<isize> {
-        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
+        if let Ok(nv) = NVML.as_ref() {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -275,7 +276,7 @@ impl GPU {
     }
 
     fn get_nvidia_total_vram(&self) -> Result<isize> {
-        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
+        if let Ok(nv) = NVML.as_ref() {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -316,7 +317,7 @@ impl GPU {
     }
 
     fn get_nvidia_gpu_temp(&self) -> Result<f64> {
-        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
+        if let Ok(nv) = NVML.as_ref() {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -356,7 +357,7 @@ impl GPU {
     }
 
     fn get_nvidia_power_usage(&self) -> Result<f64> {
-        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
+        if let Ok(nv) = NVML.as_ref() {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -393,7 +394,7 @@ impl GPU {
     }
 
     fn get_nvidia_gpu_speed(&self) -> Result<f64> {
-        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
+        if let Ok(nv) = NVML.as_ref() {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -434,7 +435,7 @@ impl GPU {
     }
 
     fn get_nvidia_vram_speed(&self) -> Result<f64> {
-        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
+        if let Ok(nv) = NVML.as_ref() {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -474,7 +475,7 @@ impl GPU {
     }
 
     fn get_nvidia_power_cap(&self) -> Result<f64> {
-        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
+        if let Ok(nv) = NVML.as_ref() {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;
@@ -514,7 +515,7 @@ impl GPU {
     }
 
     fn get_nvidia_power_cap_max(&self) -> Result<f64> {
-        if let Ok(nv) = NVML.get_or_try_init(Nvml::init) {
+        if let Ok(nv) = NVML.as_ref() {
             let dev = nv
                 .device_by_pci_bus_id(self.pci_slot.clone())
                 .context("failed to get GPU by PCI bus")?;

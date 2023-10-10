@@ -172,8 +172,10 @@ impl ResStackSidebar {
         imp.list_box.connect_selected_rows_changed(
             clone!(@strong self as this => move |list_box| {
                 let imp = this.imp();
-                if let Some(selected) = list_box.selected_row() && !imp.populating.get() {
-                    imp.stack.borrow().set_visible_child(&imp.rows.borrow().get(&selected).unwrap().child());
+                if let Some(selected) = list_box.selected_row() {
+                    if !imp.populating.get() {
+                        imp.stack.borrow().set_visible_child(&imp.rows.borrow().get(&selected).unwrap().child());
+                    }
                 }
             }),
         );

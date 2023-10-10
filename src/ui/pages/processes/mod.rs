@@ -440,16 +440,20 @@ impl ResProcesses {
             let item_pid = object.pid();
             // filter out processes that have existed before but don't anymore
             if !apps.get_process(item_pid).unwrap().alive {
-                if let Some((dialog_pid, dialog)) = dialog_opt && *dialog_pid == item_pid {
-                    dialog.close();
-                    dialog_opt = &None;
+                if let Some((dialog_pid, dialog)) = dialog_opt {
+                    if *dialog_pid == item_pid {
+                        dialog.close();
+                        dialog_opt = &None;
+                    }
                 }
                 pids_to_remove.insert(item_pid);
             }
             if let Some((_, new_item)) = new_items.remove_entry(&item_pid) {
-                if let Some((dialog_pid, dialog)) = dialog_opt && *dialog_pid == item_pid {
-                    dialog.set_cpu_usage(new_item.cpu_time_ratio);
-                    dialog.set_memory_usage(new_item.memory_usage);
+                if let Some((dialog_pid, dialog)) = dialog_opt {
+                    if *dialog_pid == item_pid {
+                        dialog.set_cpu_usage(new_item.cpu_time_ratio);
+                        dialog.set_memory_usage(new_item.memory_usage);
+                    }
                 }
                 object.set_cpu_usage(new_item.cpu_time_ratio);
                 object.set_memory_usage(new_item.memory_usage as u64);

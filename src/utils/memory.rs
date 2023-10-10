@@ -5,9 +5,7 @@ use nparse::KVStrToJson;
 use regex::Regex;
 use serde_json::Value;
 
-use crate::utils::flatpak_app_path;
-
-use super::{is_flatpak, FLATPAK_SPAWN};
+use super::{FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
 
 static RE_SPEED: OnceLock<Regex> = OnceLock::new();
 static RE_FORMFACTOR: OnceLock<Regex> = OnceLock::new();
@@ -115,13 +113,13 @@ pub fn get_memory_devices() -> Result<Vec<MemoryDevice>> {
 }
 
 pub fn pkexec_get_memory_devices() -> Result<Vec<MemoryDevice>> {
-    let output = if is_flatpak() {
+    let output = if *IS_FLATPAK {
         Command::new(FLATPAK_SPAWN)
             .args([
                 "--host",
                 "/usr/bin/pkexec",
                 "--disable-internal-agent",
-                &format!("{}/bin/dmidecode", flatpak_app_path()),
+                &format!("{}/bin/dmidecode", FLATPAK_APP_PATH.as_str()),
                 "-t",
                 "17",
                 "-q",

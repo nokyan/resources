@@ -1,13 +1,14 @@
-use std::{ops::Deref, str::FromStr, sync::LazyLock};
+use std::{ops::Deref, str::FromStr};
 
 use adw::prelude::*;
 
 use gtk::{gio, glib};
+use once_cell::sync::Lazy;
 use strum_macros::{Display, EnumString, FromRepr};
 
 use crate::config::APP_ID;
 
-pub static SETTINGS: LazyLock<Settings> = LazyLock::new(Settings::default);
+pub static SETTINGS: Lazy<Settings> = Lazy::new(Settings::default);
 
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, Default, EnumString, Display, Hash, FromRepr)]

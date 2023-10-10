@@ -26,7 +26,6 @@ Resources is a simple yet powerful monitor for your system resources and process
 - `cargo`
 
 Other dependencies are handled by `cargo`.
-Note: Right now, Resources requires the nightly version of Rust.
 
 ## Installing
 
@@ -41,7 +40,7 @@ ninja -C build install
 Or, even better, use the Flatpak CLI to build:
 
 ```sh
-flatpak install --user org.gnome.Sdk//45 org.freedesktop.Sdk.Extension.rust-nightly//23.08 org.gnome.Platform//45
+flatpak install --user org.gnome.Sdk//45 org.freedesktop.Sdk.Extension.rust-stable//23.08 org.gnome.Platform//45
 flatpak-builder --user flatpak_app build-aux/net.nokyan.Resources.Devel.json
 ```
 
