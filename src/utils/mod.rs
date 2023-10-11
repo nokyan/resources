@@ -2,6 +2,7 @@ use anyhow::{Context, Result};
 use ini::Ini;
 use once_cell::sync::Lazy;
 
+pub mod app;
 pub mod cpu;
 pub mod drive;
 pub mod gpu;
