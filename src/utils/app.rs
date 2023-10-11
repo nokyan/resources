@@ -17,7 +17,7 @@ static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
     let home = std::env::var("HOME").unwrap_or_else(|_| "/".to_string());
     let mut data_dirs: Vec<PathBuf> = std::env::var("XDG_DATA_DIRS")
         .unwrap_or_else(|_| format!("/usr/share:{}/.local/share", home))
-        .split(":")
+        .split(':')
         .map(PathBuf::from)
         .collect();
     data_dirs.push(PathBuf::from(format!("{}/.local/share", home)));
@@ -69,7 +69,10 @@ impl App {
         DATA_DIRS
             .iter()
             .flat_map(|path| {
-                path.join("applications").read_dir().ok().map(|read| {
+                let applications_path = path.join("applications");
+                let expanded_path = expanduser::expanduser(applications_path.to_string_lossy())
+                    .unwrap_or(applications_path);
+                expanded_path.read_dir().ok().map(|read| {
                     read.filter_map(|file_res| {
                         file_res
                             .ok()
