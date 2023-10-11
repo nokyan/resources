@@ -12,11 +12,12 @@ use crate::application::Application;
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f, ni18n_f};
 use crate::ui::pages::drive::ResDrive;
+use crate::utils::app::AppsContext;
 use crate::utils::cpu;
 use crate::utils::drive::{Drive, DriveType};
 use crate::utils::gpu::GPU;
 use crate::utils::network::{InterfaceType, NetworkInterface};
-use crate::utils::processes::{AppsContext, ProcessAction};
+use crate::utils::processes::ProcessAction;
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::convert_storage;
 
@@ -40,7 +41,7 @@ mod imp {
             },
             widgets::stack_sidebar::ResStackSidebar,
         },
-        utils::processes::AppsContext,
+        utils::app::AppsContext,
     };
 
     use super::*;

@@ -28,6 +28,7 @@
     "build-options": {
         "append-path": "/usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/llvm16/bin",
         "env": {
+            "CARGO_HOME": "/run/build/resources/cargo-home",
             "CARGO_REGISTRIES_CRATES_IO_PROTOCOL": "sparse",
             "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER": "clang",
             "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=-fuse-ld=/usr/lib/sdk/rust-stable/bin/mold",
@@ -44,28 +45,10 @@
     },
     "modules": [
         {
-            "name": "glib",
-            "buildsystem": "meson",
-            "config-opts": [
-                "-Dtests=false",
-                "-Dselinux=disabled"
-            ],
-            "sources": [
-                {
-                    "type": "archive",
-                    "url": "https://download.gnome.org/sources/glib/2.78/glib-2.78.0.tar.xz",
-                    "sha256": "44eaab8b720877ce303c5540b657b126f12dc94972d9880b52959f43fb537b30"
-                },
-                {
-                    "type": "patch",
-                    "path": "0001-do-not-test-exec.patch"
-                }
-            ]
-        },
-        {
             "name": "dmidecode",
             "buildsystem": "simple",
             "build-commands": [
+                "mkdir /app/bin",
                 "make install-bin prefix=/app",
                 "install -v -p -m 755 /app/sbin/dmidecode /app/bin/dmidecode"
             ],
@@ -82,7 +65,7 @@
             "buildsystem": "meson",
             "run-tests": true,
             "config-opts": [
-                "-Dprofile=default"
+                "-Dprofile=development"
             ],
             "sources": [
                 {

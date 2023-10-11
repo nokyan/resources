@@ -4,7 +4,8 @@ use gtk::glib;
 use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::ui::window::MainWindow;
-use crate::utils::processes::{AppItem, Containerization};
+use crate::utils::app::AppItem;
+use crate::utils::processes::Containerization;
 use crate::utils::units::convert_storage;
 
 mod imp {

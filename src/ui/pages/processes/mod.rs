@@ -15,7 +15,8 @@ use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::ui::dialogs::process_dialog::ResProcessDialog;
 use crate::ui::window::{self, Action, MainWindow};
-use crate::utils::processes::{AppsContext, ProcessAction, ProcessItem};
+use crate::utils::app::AppsContext;
+use crate::utils::processes::{ProcessAction, ProcessItem};
 use crate::utils::units::convert_storage;
 
 use self::process_entry::ProcessEntry;
