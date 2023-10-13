@@ -77,7 +77,7 @@ msgstr "\"Ресурсы\" поддерживают мониторинг сле�
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:21 src/ui/pages/cpu.rs:188
 msgid "CPU"
-msgstr "ЦПУ"
+msgstr "ЦП"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:22
 #: src/ui/pages/applications/mod.rs:251 src/ui/pages/memory.rs:85
@@ -91,7 +91,7 @@ msgstr "Память"
 #: data/net.nokyan.Resources.metainfo.xml.in.in:23 src/ui/pages/gpu.rs:101
 #: src/ui/window.rs:230
 msgid "GPU"
-msgstr "ГПУ"
+msgstr "ГП"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "Network Interfaces"
@@ -429,35 +429,35 @@ msgstr "{} Б"
 
 #: src/utils/units.rs:74 src/utils/units.rs:88
 msgid "{} kB"
-msgstr "{}КБ"
+msgstr "{} КБ"
 
 #: src/utils/units.rs:75 src/utils/units.rs:89
 msgid "{} MB"
-msgstr "{}МБ"
+msgstr "{} МБ"
 
 #: src/utils/units.rs:76 src/utils/units.rs:90
 msgid "{} GB"
-msgstr "{}ГБ"
+msgstr "{} ГБ"
 
 #: src/utils/units.rs:77 src/utils/units.rs:91
 msgid "{} TB"
-msgstr "{}ТБ"
+msgstr "{} ТБ"
 
 #: src/utils/units.rs:78 src/utils/units.rs:92
 msgid "{} PB"
-msgstr "{}ПБ"
+msgstr "{} ПБ"
 
 #: src/utils/units.rs:79 src/utils/units.rs:93
 msgid "{} EB"
-msgstr "{}ЭБ"
+msgstr "{} ЭБ"
 
 #: src/utils/units.rs:80 src/utils/units.rs:94
 msgid "{} ZB"
-msgstr "{}ЗБ"
+msgstr "{} ЗБ"
 
 #: src/utils/units.rs:81 src/utils/units.rs:95
 msgid "{} YB"
-msgstr "{}ЙБ"
+msgstr "{} ЙБ"
 
 #: src/utils/units.rs:82 src/utils/units.rs:96
 msgid "{} RB"
@@ -469,35 +469,35 @@ msgstr "{} QB"
 
 #: src/utils/units.rs:108 src/utils/units.rs:122
 msgid "{} KiB"
-msgstr "{}КиБ"
+msgstr "{} КиБ"
 
 #: src/utils/units.rs:109 src/utils/units.rs:123
 msgid "{} MiB"
-msgstr "{}МиБ"
+msgstr "{} МиБ"
 
 #: src/utils/units.rs:110 src/utils/units.rs:124
 msgid "{} GiB"
-msgstr "{}ГиБ"
+msgstr "{} ГиБ"
 
 #: src/utils/units.rs:111 src/utils/units.rs:125
 msgid "{} TiB"
-msgstr "{}ТиБ"
+msgstr "{} ТиБ"
 
 #: src/utils/units.rs:112 src/utils/units.rs:126
 msgid "{} PiB"
-msgstr "{}ПиБ"
+msgstr "{} ПиБ"
 
 #: src/utils/units.rs:113 src/utils/units.rs:127
 msgid "{} EiB"
-msgstr "{}ЭиБ"
+msgstr "{} ЭиБ"
 
 #: src/utils/units.rs:114 src/utils/units.rs:128
 msgid "{} ZiB"
-msgstr "{}ЗиБ"
+msgstr "{} ЗиБ"
 
 #: src/utils/units.rs:115 src/utils/units.rs:129
 msgid "{} YiB"
-msgstr "{}ЙиБ"
+msgstr "{} ЙиБ"
 
 #: src/utils/units.rs:116 src/utils/units.rs:130
 msgid "{} RiB"
@@ -509,35 +509,35 @@ msgstr "{} QiB"
 
 #: src/utils/units.rs:146 src/utils/units.rs:163
 msgid "{} B/s"
-msgstr "{}Б/с"
+msgstr "{} Б/с"
 
 #: src/utils/units.rs:147
 msgid "{} kB/s"
-msgstr "{}кБ/с"
+msgstr "{} кБ/с"
 
 #: src/utils/units.rs:148
 msgid "{} MB/s"
-msgstr "{}МБ/с"
+msgstr "{} МБ/с"
 
 #: src/utils/units.rs:149
 msgid "{} GB/s"
-msgstr "{}ГБ/с"
+msgstr "{} ГБ/с"
 
 #: src/utils/units.rs:150
 msgid "{} TB/s"
-msgstr "{}ТБ/с"
+msgstr "{} ТБ/с"
 
 #: src/utils/units.rs:151
 msgid "{} PB/s"
-msgstr "{}ПБ/с"
+msgstr "{} ПБ/с"
 
 #: src/utils/units.rs:152
 msgid "{} EB/s"
-msgstr "{}ЭБ/с"
+msgstr "{} ЭБ/с"
 
 #: src/utils/units.rs:153
 msgid "{} ZB/s"
-msgstr "{}ЗБ/с"
+msgstr "{} ЗБ/с"
 
 #: src/utils/units.rs:154
 msgid "{} YB/s"
@@ -553,19 +553,19 @@ msgstr "{} QB/s"
 
 #: src/utils/units.rs:164
 msgid "{} KiB/s"
-msgstr "{}КиБ/с"
+msgstr "{} КиБ/с"
 
 #: src/utils/units.rs:165
 msgid "{} MiB/s"
-msgstr "{}МиБ/с"
+msgstr "{} МиБ/с"
 
 #: src/utils/units.rs:166
 msgid "{} GiB/s"
-msgstr "{}ГиБ/с"
+msgstr "{} ГиБ/с"
 
 #: src/utils/units.rs:167
 msgid "{} TiB/s"
-msgstr "{}ТиБ/с"
+msgstr "{} ТиБ/с"
 
 #: src/utils/units.rs:168
 msgid "{} PiB/s"
@@ -897,7 +897,7 @@ msgstr "Съемный"
 
 #: data/resources/ui/pages/gpu.ui:31
 msgid "GPU Frequency"
-msgstr "Частота ГПУ"
+msgstr "Частота ГП"
 
 #: data/resources/ui/pages/gpu.ui:44
 msgid "Video Memory Frequency"
