@@ -16,7 +16,7 @@ use crate::i18n::i18n;
 use crate::ui::dialogs::process_dialog::ResProcessDialog;
 use crate::ui::window::{self, Action, MainWindow};
 use crate::utils::app::AppsContext;
-use crate::utils::processes::{ProcessAction, ProcessItem};
+use crate::utils::process::{ProcessAction, ProcessItem};
 use crate::utils::units::convert_storage;
 
 use self::process_entry::ProcessEntry;
@@ -29,7 +29,7 @@ mod imp {
         sync::OnceLock,
     };
 
-    use crate::{ui::window::Action, utils::processes::ProcessAction};
+    use crate::{ui::window::Action, utils::process::ProcessAction};
 
     use super::*;
 

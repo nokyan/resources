@@ -1,6 +1,8 @@
 use anyhow::{anyhow, bail, Context, Result};
 use config::LIBEXECDIR;
 use glob::glob;
+use once_cell::sync::Lazy;
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::{path::PathBuf, process::Command, sync::OnceLock, time::SystemTime};
 
@@ -11,6 +13,8 @@ use crate::config;
 use super::{FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
 
 static PAGESIZE: OnceLock<usize> = OnceLock::new();
+
+static UID_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"Uid:\s*(\d+)").unwrap());
 
 #[derive(Debug, Clone, Default, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Containerization {
@@ -23,6 +27,7 @@ pub enum Containerization {
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Process {
     pub data: ProcessData,
+    pub executable_name: String,
     pub icon: Icon,
     pub cpu_time_before: u64,
     pub cpu_time_before_timestamp: u64,
@@ -92,6 +97,15 @@ impl Process {
                 rmp_serde::from_slice::<Vec<ProcessData>>(&output)?;
             for process_data in proxy_output {
                 return_vec.push(Self {
+                    executable_name: process_data
+                        .commandline
+                        .split('\0')
+                        .nth(0)
+                        .unwrap()
+                        .split('/')
+                        .nth_back(0)
+                        .unwrap()
+                        .to_string(),
                     data: process_data,
                     icon: ThemedIcon::new("generic-process").into(),
                     cpu_time_before: 0,
@@ -103,6 +117,15 @@ impl Process {
             for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
                 if let Ok(process_data) = ProcessData::try_from_path(entry).await {
                     return_vec.push(Self {
+                        executable_name: process_data
+                            .commandline
+                            .split('\0')
+                            .nth(0)
+                            .unwrap()
+                            .split('/')
+                            .nth_back(0)
+                            .unwrap()
+                            .to_string(),
                         data: process_data,
                         icon: ThemedIcon::new("generic-process").into(),
                         cpu_time_before: 0,
@@ -232,8 +255,18 @@ impl Process {
     }
 
     pub async fn try_from_path(value: PathBuf) -> Result<Self> {
+        let data = ProcessData::try_from_path(value.clone()).await?;
         Ok(Process {
-            data: ProcessData::try_from_path(value.clone()).await?,
+            executable_name: data
+                .commandline
+                .split('\0') // filter any arguments (e. g. from "/usr/bin/firefox %u" to "/usr/bin/firefox")
+                .nth(0)
+                .unwrap()
+                .split('/') // filter the executable path (e. g. from "/usr/bin/firefox" to "firefox")
+                .nth_back(0)
+                .unwrap()
+                .to_string(),
+            data,
             icon: ThemedIcon::new("generic-process").into(),
             cpu_time_before: 0,
             cpu_time_before_timestamp: 0,
@@ -276,37 +309,49 @@ impl ProcessData {
         }
     }
 
-    pub async fn try_from_path(value: PathBuf) -> Result<Self> {
-        let stat: Vec<String> = async_std::fs::read_to_string(value.join("stat"))
+    async fn get_uid(proc_path: &PathBuf) -> Result<u32> {
+        let status = async_std::fs::read_to_string(proc_path.join("status")).await?;
+        if let Some(captures) = UID_REGEX.captures(&status) {
+            let first_num_str = captures.get(1).context("no uid found")?;
+            first_num_str
+                .as_str()
+                .parse::<u32>()
+                .context("couldn't parse uid in /status")
+        } else {
+            Ok(0)
+        }
+    }
+
+    pub async fn try_from_path(proc_path: PathBuf) -> Result<Self> {
+        let stat: Vec<String> = async_std::fs::read_to_string(proc_path.join("stat"))
             .await?
             .split(' ')
             .map(std::string::ToString::to_string)
             .collect();
-        let statm: Vec<String> = async_std::fs::read_to_string(value.join("statm"))
+
+        let statm: Vec<String> = async_std::fs::read_to_string(proc_path.join("statm"))
             .await?
             .split(' ')
             .map(std::string::ToString::to_string)
             .collect();
-        let containerization = match &value.join("root").join(".flatpak-info").exists() {
+
+        let containerization = match &proc_path.join("root").join(".flatpak-info").exists() {
             true => Containerization::Flatpak,
             false => Containerization::None,
         };
+
         Ok(Self {
-            pid: value
+            pid: proc_path
                 .file_name()
                 .ok_or_else(|| anyhow!(""))?
                 .to_str()
                 .ok_or_else(|| anyhow!(""))?
                 .parse()?,
-            uid: async_std::fs::read_to_string(value.join("loginuid"))
-                .await?
-                .parse()?,
-            comm: async_std::fs::read_to_string(value.join("comm"))
+            uid: Self::get_uid(&proc_path).await?,
+            comm: async_std::fs::read_to_string(proc_path.join("comm"))
                 .await
                 .map(|s| s.replace('\n', ""))?,
-            commandline: async_std::fs::read_to_string(value.join("cmdline"))
-                .await
-                .map(|s| s.replace('\0', " "))?,
+            commandline: async_std::fs::read_to_string(proc_path.join("cmdline")).await?,
             cpu_time: stat[13].parse::<u64>()? + stat[14].parse::<u64>()?,
             cpu_time_timestamp: SystemTime::now()
                 .duration_since(SystemTime::UNIX_EPOCH)?
@@ -314,9 +359,9 @@ impl ProcessData {
             memory_usage: (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?)
                 * PAGESIZE.get_or_init(sysconf::pagesize),
             cgroup: Self::sanitize_cgroup(
-                async_std::fs::read_to_string(value.join("cgroup")).await?,
+                async_std::fs::read_to_string(proc_path.join("cgroup")).await?,
             ),
-            proc_path: value,
+            proc_path,
             containerization,
         })
     }

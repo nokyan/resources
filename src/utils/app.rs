@@ -1,16 +1,13 @@
 use std::path::{Path, PathBuf};
 
-use anyhow::{bail, Context, Result};
-use gtk::{
-    gio::{AppInfo, Icon, ThemedIcon},
-    prelude::AppInfoExt,
-};
+use anyhow::{Context, Result};
+use gtk::gio::{Icon, ThemedIcon};
 use hashbrown::{HashMap, HashSet};
 use once_cell::sync::Lazy;
 
 use crate::i18n::i18n;
 
-use super::processes::{Containerization, Process, ProcessAction, ProcessItem};
+use super::process::{Containerization, Process, ProcessAction, ProcessItem};
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
@@ -50,6 +47,7 @@ pub struct AppItem {
 #[derive(Debug, Clone)]
 pub struct App {
     processes: Vec<i32>,
+    pub commandline: Option<String>,
     pub display_name: String,
     pub description: Option<String>,
     pub icon: Icon,
@@ -57,14 +55,6 @@ pub struct App {
 }
 
 impl App {
-    fn sanitize_appid<S: Into<String>>(a: S) -> String {
-        let mut appid: String = a.into();
-        if appid.ends_with(".desktop") {
-            appid = appid[0..appid.len() - 8].to_string();
-        }
-        appid
-    }
-
     pub fn all() -> Vec<App> {
         DATA_DIRS
             .iter()
@@ -86,40 +76,34 @@ impl App {
 
     pub fn from_desktop_file<P: AsRef<Path>>(file_path: P) -> Result<App> {
         let ini = ini::Ini::load_from_file(file_path.as_ref())?;
+
         let desktop_entry = ini
             .section(Some("Desktop Entry"))
             .context("no desktop entry section")?;
-        let id = file_path
-            .as_ref()
-            .file_stem()
-            .context("desktop file has no file stem")?
-            .to_string_lossy();
+
+        let id = desktop_entry
+            .get("X-Flatpak") // is there a X-Flatpak section?
+            .map(str::to_string)
+            .or_else(|| {
+                // if not, presume that the ID is in the file name
+                Some(
+                    file_path
+                        .as_ref()
+                        .file_stem()?
+                        .to_string_lossy()
+                        .to_string(),
+                )
+            })
+            .context("unable to get ID of desktop file")?;
+
         Ok(App {
+            commandline: desktop_entry.get("Exec").map(str::to_string),
             processes: Vec::new(),
             display_name: desktop_entry.get("Name").unwrap_or(&id).to_string(),
-            description: desktop_entry.get("Comment").map(|s| s.to_string()),
+            description: desktop_entry.get("Comment").map(str::to_string),
             icon: ThemedIcon::new(desktop_entry.get("Icon").unwrap_or("generic-process")).into(),
-            id: id.to_string(),
+            id,
         })
-    }
-
-    pub fn from_app_info(app_info: &AppInfo) -> Result<App> {
-        if let Some(id) = app_info
-            .id()
-            .map(|gstring| Self::sanitize_appid(gstring.to_string()))
-        {
-            Ok(App {
-                processes: Vec::new(),
-                display_name: app_info.display_name().to_string(),
-                description: app_info.description().map(|gs| gs.to_string()),
-                id,
-                icon: app_info
-                    .icon()
-                    .unwrap_or_else(|| ThemedIcon::new("generic-process").into()),
-            })
-        } else {
-            bail!("AppInfo has no id")
-        }
     }
 
     pub fn refresh(&mut self, apps: &mut AppsContext) {
@@ -220,33 +204,57 @@ impl App {
 impl AppsContext {
     /// Creates a new `AppsContext` object, this operation is quite expensive
     /// so try to do it only one time during the lifetime of the program.
+    /// Please call refresh() immediately after this function.
     pub async fn new() -> AppsContext {
-        let mut apps: HashMap<String, App> = App::all()
+        let apps: HashMap<String, App> = App::all()
             .into_iter()
             .map(|app| (app.id.clone(), app))
             .collect();
 
-        let mut processes = HashMap::new();
-        let processes_list = Process::all().await.unwrap_or_default();
-
-        if processes_list.is_empty() {
-            log::error!("empty process list? something must have gone wrong")
-        }
-
-        let mut processes_assigned_to_apps = HashSet::new();
-
-        for mut process in processes_list {
-            if let Some(app) = apps.get_mut(process.data.cgroup.as_deref().unwrap_or_default()) {
-                processes_assigned_to_apps.insert(process.data.pid);
-                app.add_process(&mut process);
-            }
-            processes.insert(process.data.pid, process);
-        }
-
         AppsContext {
             apps,
-            processes,
-            processes_assigned_to_apps,
+            processes: HashMap::new(),
+            processes_assigned_to_apps: HashSet::new(),
+        }
+    }
+
+    pub fn app_associated_with_process(&mut self, process: &Process) -> Option<String> {
+        if let Some(app) = self
+            .apps
+            .get_mut(process.data.cgroup.as_deref().unwrap_or_default())
+        {
+            // look for whether we can find an ID in the cgroup
+            Some(app.id.clone())
+        } else if let Some(app) = self
+            .apps
+            .get_mut(process.data.commandline.split('\0').nth(0).unwrap())
+        {
+            // look for whether we can find the ID in the commandline of the process
+            Some(app.id.clone())
+        } else if let Some(app) = self.apps.values_mut().find(|a| {
+            // probably most expensive lookup, therefore only last resort: look for whether the process' commandline
+            // can be found in the apps' commandline
+            if let Some(app_commandline) = &a.commandline {
+                let process_executable_path = process.data.commandline.split('\0').nth(0).unwrap();
+                if app_commandline == process_executable_path {
+                    true
+                } else {
+                    app_commandline
+                        .split(' ') // filter any arguments (e. g. from "/usr/bin/firefox %u" to "/usr/bin/firefox")
+                        .nth(0)
+                        .unwrap()
+                        .split('/') // filter the executable path (e. g. from "/usr/bin/firefox" to "firefox")
+                        .nth_back(0)
+                        .unwrap()
+                        == process.executable_name
+                }
+            } else {
+                false
+            }
+        }) {
+            Some(app.id.clone())
+        } else {
+            None
         }
     }
 
@@ -283,16 +291,23 @@ impl AppsContext {
     }
 
     pub fn process_item(&self, pid: i32) -> Option<ProcessItem> {
-        self.get_process(pid).map(|process| ProcessItem {
-            pid: process.data.pid,
-            display_name: process.data.comm.clone(),
-            icon: process.icon.clone(),
-            memory_usage: process.data.memory_usage,
-            cpu_time_ratio: process.cpu_time_ratio(),
-            commandline: Process::sanitize_cmdline(process.data.commandline.clone()),
-            containerization: process.data.containerization.clone(),
-            cgroup: process.data.cgroup.clone(),
-            uid: process.data.uid,
+        self.get_process(pid).map(|process| {
+            let full_comm = if process.executable_name.starts_with(&process.data.comm) {
+                process.executable_name.clone()
+            } else {
+                process.data.comm.clone()
+            };
+            ProcessItem {
+                pid: process.data.pid,
+                display_name: full_comm,
+                icon: process.icon.clone(),
+                memory_usage: process.data.memory_usage,
+                cpu_time_ratio: process.cpu_time_ratio(),
+                commandline: Process::sanitize_cmdline(process.data.commandline.clone()),
+                containerization: process.data.containerization.clone(),
+                cgroup: process.data.cgroup.clone(),
+                uid: process.data.uid,
+            }
         })
     }
 
@@ -369,14 +384,8 @@ impl AppsContext {
     }
 
     /// Refreshes the statistics about the running applications and processes.
-    ///
-    /// # Errors
-    ///
-    /// Will return `Err` if there are problems getting the new list of
-    /// running processes or if there are anomalies in a process procfs
-    /// directory.
-    pub async fn refresh(&mut self) -> Result<()> {
-        let newly_gathered_processes = Process::all().await?;
+    pub async fn refresh(&mut self) {
+        let newly_gathered_processes = Process::all().await.unwrap_or_default();
         let mut updated_processes = HashSet::new();
 
         for mut refreshed_process in newly_gathered_processes {
@@ -396,13 +405,13 @@ impl AppsContext {
                     continue;
                 }
 
-                if let Some(app) = self
-                    .apps
-                    .get_mut(refreshed_process.data.cgroup.as_deref().unwrap_or_default())
-                {
+                if let Some(app_id) = self.app_associated_with_process(&refreshed_process) {
                     self.processes_assigned_to_apps
                         .insert(refreshed_process.data.pid);
-                    app.add_process(&mut refreshed_process);
+                    self.apps
+                        .get_mut(&app_id)
+                        .unwrap()
+                        .add_process(&mut refreshed_process);
                 }
 
                 self.processes
@@ -416,7 +425,5 @@ impl AppsContext {
                 process.alive = false;
             }
         }
-
-        Ok(())
     }
 }

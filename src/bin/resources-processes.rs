@@ -1,6 +1,6 @@
 use anyhow::{Context, Result};
 use glob::glob;
-use resources::utils::processes::ProcessData;
+use resources::utils::process::ProcessData;
 
 #[async_std::main]
 async fn main() -> Result<()> {
