@@ -2,7 +2,7 @@ use anyhow::{bail, Context, Result};
 use config::LIBEXECDIR;
 use glob::glob;
 use process_data::{Containerization, ProcessData};
-use std::{path::PathBuf, process::Command};
+use std::process::Command;
 
 use gtk::gio::{Icon, ThemedIcon};
 
@@ -14,6 +14,7 @@ use super::{FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Process {
     pub data: ProcessData,
+    pub executable_path: String,
     pub executable_name: String,
     pub icon: Icon,
     pub cpu_time_before: u64,
@@ -65,47 +66,45 @@ impl Process {
             let output = command.stdout;
             let proxy_output: Vec<ProcessData> =
                 rmp_serde::from_slice::<Vec<ProcessData>>(&output)?;
+
             for process_data in proxy_output {
-                return_vec.push(Self {
-                    executable_name: process_data
-                        .commandline
-                        .split('\0')
-                        .nth(0)
-                        .unwrap()
-                        .split('/')
-                        .nth_back(0)
-                        .unwrap()
-                        .to_string(),
-                    data: process_data,
-                    icon: ThemedIcon::new("generic-process").into(),
-                    cpu_time_before: 0,
-                    cpu_time_before_timestamp: 0,
-                    alive: true,
-                });
+                return_vec.push(Ok(Self::from_process_data(process_data)));
             }
         } else {
             for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-                if let Ok(process_data) = ProcessData::try_from_path(entry).await {
-                    return_vec.push(Self {
-                        executable_name: process_data
-                            .commandline
-                            .split('\0')
-                            .nth(0)
-                            .unwrap()
-                            .split('/')
-                            .nth_back(0)
-                            .unwrap()
-                            .to_string(),
-                        data: process_data,
-                        icon: ThemedIcon::new("generic-process").into(),
-                        cpu_time_before: 0,
-                        cpu_time_before_timestamp: 0,
-                        alive: true,
-                    });
-                }
+                return_vec.push(
+                    ProcessData::try_from_path(entry)
+                        .await
+                        .map(|process_data| Self::from_process_data(process_data)),
+                );
             }
         }
-        Ok(return_vec)
+        Ok(return_vec.into_iter().flatten().collect())
+    }
+
+    fn from_process_data(process_data: ProcessData) -> Self {
+        let executable_path = process_data
+            .commandline
+            .split('\0')
+            .nth(0)
+            .unwrap_or_default()
+            .to_string();
+
+        let executable_name = executable_path
+            .split('/')
+            .nth_back(0)
+            .unwrap_or_default()
+            .to_string();
+
+        Self {
+            executable_path,
+            executable_name,
+            data: process_data,
+            icon: ThemedIcon::new("generic-process").into(),
+            cpu_time_before: 0,
+            cpu_time_before_timestamp: 0,
+            alive: true,
+        }
     }
 
     pub fn execute_process_action(&self, action: ProcessAction) -> Result<()> {
@@ -215,32 +214,15 @@ impl Process {
             0.0
         } else {
             (self.data.cpu_time.saturating_sub(self.cpu_time_before) as f32
-                / (self.data.cpu_time_timestamp - self.cpu_time_before_timestamp) as f32)
+                / (self
+                    .data
+                    .cpu_time_timestamp
+                    .saturating_sub(self.cpu_time_before_timestamp)) as f32)
                 .clamp(0.0, 1.0)
         }
     }
 
     pub fn sanitize_cmdline<S: AsRef<str>>(cmdline: S) -> String {
         cmdline.as_ref().replace('\0', " ")
-    }
-
-    pub async fn try_from_path(value: PathBuf) -> Result<Self> {
-        let data = ProcessData::try_from_path(value.clone()).await?;
-        Ok(Process {
-            executable_name: data
-                .commandline
-                .split('\0') // filter any arguments (e. g. from "/usr/bin/firefox %u" to "/usr/bin/firefox")
-                .nth(0)
-                .unwrap()
-                .split('/') // filter the executable path (e. g. from "/usr/bin/firefox" to "firefox")
-                .nth_back(0)
-                .unwrap()
-                .to_string(),
-            data,
-            icon: ThemedIcon::new("generic-process").into(),
-            cpu_time_before: 0,
-            cpu_time_before_timestamp: 0,
-            alive: true,
-        })
     }
 }

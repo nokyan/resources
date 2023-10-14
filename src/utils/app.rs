@@ -22,6 +22,13 @@ static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
     data_dirs
 });
 
+// This contains known occurences of processes having a too distinct name from the actual app
+// The HashMap is used like this:
+//   Key: The name of the executable of the process
+//   Value: What it should be replacaed with when finding out to which app it belongs
+static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: Lazy<HashMap<String, String>> =
+    Lazy::new(|| HashMap::from([("firefox-bin".into(), "firefox".into())]));
+
 #[derive(Debug, Clone, Default)]
 pub struct AppsContext {
     apps: HashMap<String, App>,
@@ -219,39 +226,41 @@ impl AppsContext {
         }
     }
 
-    pub fn app_associated_with_process(&mut self, process: &Process) -> Option<String> {
+    fn app_associated_with_process(&mut self, process: &Process) -> Option<String> {
+        // TODO: tidy this up
+        // ↓ look for whether we can find an ID in the cgroup
         if let Some(app) = self
             .apps
-            .get_mut(process.data.cgroup.as_deref().unwrap_or_default())
+            .get(process.data.cgroup.as_deref().unwrap_or_default())
         {
-            // look for whether we can find an ID in the cgroup
             Some(app.id.clone())
-        } else if let Some(app) = self
-            .apps
-            .get_mut(process.data.commandline.split('\0').nth(0).unwrap())
-        {
-            // look for whether we can find the ID in the commandline of the process
+        } else if let Some(app) = self.apps.get(&process.executable_path) {
+            // ↑ look for whether we can find an ID in the executable path of the process
             Some(app.id.clone())
-        } else if let Some(app) = self.apps.values_mut().find(|a| {
-            // probably most expensive lookup, therefore only last resort: look for whether the process' commandline
-            // can be found in the apps' commandline
-            if let Some(app_commandline) = &a.commandline {
-                let process_executable_path = process.data.commandline.split('\0').nth(0).unwrap();
-                if app_commandline == process_executable_path {
-                    true
-                } else {
-                    app_commandline
+        } else if let Some(app) = self.apps.get(&process.executable_name) {
+            // ↑ look for whether we can find an ID in the executable name of the process
+            Some(app.id.clone())
+        } else if let Some(app) = self.apps.values().find(|a| {
+            // ↓ probably most expensive lookup, therefore only last resort: look for whether the process' commandline
+            //   can be found in the apps' commandline
+            a.commandline
+                .as_ref()
+                .map(|app_commandline| {
+                    let app_executable_name = app_commandline
                         .split(' ') // filter any arguments (e. g. from "/usr/bin/firefox %u" to "/usr/bin/firefox")
                         .nth(0)
-                        .unwrap()
+                        .unwrap_or_default()
                         .split('/') // filter the executable path (e. g. from "/usr/bin/firefox" to "firefox")
                         .nth_back(0)
-                        .unwrap()
-                        == process.executable_name
-                }
-            } else {
-                false
-            }
+                        .unwrap_or_default();
+                    app_commandline == &process.executable_path
+                        || app_executable_name == process.executable_name
+                        || KNOWN_EXECUTABLE_NAME_EXCEPTIONS
+                            .get(&process.executable_name)
+                            .map(|sub_executable_name| sub_executable_name == app_executable_name)
+                            .unwrap_or(false)
+                })
+                .unwrap_or(false)
         }) {
             Some(app.id.clone())
         } else {
@@ -282,12 +291,8 @@ impl AppsContext {
     pub fn process_items(&self) -> HashMap<i32, ProcessItem> {
         self.all_processes()
             .filter(|process| !process.data.commandline.is_empty()) // find a way to display procs without commandlines
-            .map(|process| {
-                (
-                    process.data.pid,
-                    self.process_item(process.data.pid).unwrap(),
-                )
-            })
+            .map(|process| (process.data.pid, self.process_item(process.data.pid)))
+            .filter_map(|(pid, process_opt)| process_opt.map(|process| (pid, process)))
             .collect()
     }
 
