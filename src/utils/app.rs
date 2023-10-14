@@ -218,21 +218,21 @@ impl App {
 }
 
 impl AppsContext {
-    /// Creates a new `Apps` object, this operation is quite expensive
+    /// Creates a new `AppsContext` object, this operation is quite expensive
     /// so try to do it only one time during the lifetime of the program.
-    ///
-    /// # Errors
-    ///
-    /// Will return `Err` if there are problems getting the list of
-    /// running processes.
-    pub async fn new() -> Result<AppsContext> {
+    pub async fn new() -> AppsContext {
         let mut apps: HashMap<String, App> = App::all()
             .into_iter()
             .map(|app| (app.id.clone(), app))
             .collect();
 
         let mut processes = HashMap::new();
-        let processes_list = Process::all().await?;
+        let processes_list = Process::all().await.unwrap_or_default();
+
+        if processes_list.is_empty() {
+            log::error!("empty process list? something must have gone wrong")
+        }
+
         let mut processes_assigned_to_apps = HashSet::new();
 
         for mut process in processes_list {
@@ -243,11 +243,11 @@ impl AppsContext {
             processes.insert(process.data.pid, process);
         }
 
-        Ok(AppsContext {
+        AppsContext {
             apps,
             processes,
             processes_assigned_to_apps,
-        })
+        }
     }
 
     pub fn get_process(&self, pid: i32) -> Option<&Process> {

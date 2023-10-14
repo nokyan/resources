@@ -206,7 +206,7 @@ impl MainWindow {
         main_context.spawn_local(clone!(@strong self as this => async move {
             let imp = this.imp();
 
-            *imp.apps_context.borrow_mut() = AppsContext::new().await.unwrap();
+            *imp.apps_context.borrow_mut() = AppsContext::new().await;
 
             let cpu_info = cpu::cpu_info()
                 .await

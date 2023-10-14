@@ -1,5 +1,7 @@
 # Resources
 
+<a href='https://flathub.org/apps/net.nokyan.Resources'><img width='240' alt='Download on Flathub' src='https://dl.flathub.org/assets/badges/flathub-badge-en.png'/></a>
+
 Resources is a simple yet powerful monitor for your system resources and processes, written in Rust and using GTK 4 and libadwaita for its GUI. It's capable of displaying usage and details of your CPU, memory, GPUs, network interfaces and block devices. It's also capable of listing and terminating running graphical applications as well as processes.
 
 <details>
@@ -40,11 +42,10 @@ ninja -C build install
 Or, even better, use the Flatpak CLI to build:
 
 ```sh
-flatpak install org.gnome.Sdk//45 org.freedesktop.Sdk.Extension.rust-stable//23.08 org.gnome.Platform//45
+flatpak install org.gnome.Sdk//45 org.freedesktop.Sdk.Extension.rust-stable//23.08 org.gnome.Platform//45 org.freedesktop.Sdk.Extension.llvm16//23.08
 flatpak-builder --user flatpak_app build-aux/net.nokyan.Resources.Devel.json
 ```
 
-Flatpak support is still experimental, bugs might occur.
 If you use [GNOME Builder](https://apps.gnome.org/app/org.gnome.Builder/) or Visual Studio Code with the [Flatpak extension](https://marketplace.visualstudio.com/items?itemName=bilelmoussaoui.flatpak-vscode), Resources can be built and run automatically.
 
 ## Running
