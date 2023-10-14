@@ -40,7 +40,7 @@ ninja -C build install
 Or, even better, use the Flatpak CLI to build:
 
 ```sh
-flatpak install --user org.gnome.Sdk//45 org.freedesktop.Sdk.Extension.rust-stable//23.08 org.gnome.Platform//45
+flatpak install org.gnome.Sdk//45 org.freedesktop.Sdk.Extension.rust-stable//23.08 org.gnome.Platform//45
 flatpak-builder --user flatpak_app build-aux/net.nokyan.Resources.Devel.json
 ```
 
