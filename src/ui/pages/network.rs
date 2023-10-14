@@ -280,7 +280,7 @@ impl ResNetwork {
 
         self.set_property(
             "usage",
-            f64::max(received_delta / highest_received, sent_delta / highest_sent).nan_default(1.0),
+            f64::max(received_delta / highest_received, sent_delta / highest_sent).nan_default(0.0),
         );
 
         imp.old_received_bytes.set(received_bytes);
