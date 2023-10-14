@@ -14,6 +14,7 @@ lto = true
 
 [dependencies]
 async-std = { version = "1.12.0", features = ["attributes"] }
+process-data = { path = "lib/process_data" }
 pci-ids = "0.2.5"
 glob = "0.3.1"
 anyhow = "1.0.71"

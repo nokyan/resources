@@ -4,10 +4,11 @@ use anyhow::{Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
 use hashbrown::{HashMap, HashSet};
 use once_cell::sync::Lazy;
+use process_data::Containerization;
 
 use crate::i18n::i18n;
 
-use super::process::{Containerization, Process, ProcessAction, ProcessItem};
+use super::process::{Process, ProcessAction, ProcessItem};
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
