@@ -47,6 +47,15 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.1.0" date="2023-10-15">
+      <description>
+        <ul>
+          <li>Fixed: Resources didn’t work if libadwaita was not installed natively on the host</li>
+          <li>Improvement: The process scanning routine is now parallelized making it faster</li>
+          <li>Languages: Added support for Italian, Polish, Russian and Chinese (Traditional)</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.0.3" date="2023-10-11"/>
     <release version="1.0.2" date="2023-10-10"/>
     <release version="1.0.1" date="2023-10-09"/>

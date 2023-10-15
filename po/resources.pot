@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2022-08-11 21:37+0200\n"
+"PO-Revision-Date: 2022-08-15 17:47+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: \n"
@@ -93,6 +93,24 @@ msgstr ""
 msgid "Storage Devices"
 msgstr ""
 
+#: data/net.nokyan.Resources.metainfo.xml.in.in:53
+msgid ""
+"Fixed: Resources didn’t work if libadwaita was not installed natively on the "
+"host"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:54
+msgid ""
+"Improvement: The process scanning routine is now parallelized making it "
+"faster"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:55
+msgid ""
+"Languages: Added support for Italian, Polish, Russian and Chinese "
+"(Traditional)"
+msgstr ""
+
 #: src/application.rs:147
 msgid "The Nalux Team"
 msgstr ""
@@ -105,16 +123,16 @@ msgstr ""
 msgid "Icon by"
 msgstr ""
 
-#: src/ui/dialogs/app_dialog.rs:112 src/ui/dialogs/process_dialog.rs:107
+#: src/ui/dialogs/app_dialog.rs:112 src/ui/dialogs/process_dialog.rs:108
 #: src/ui/pages/drive.rs:214 src/ui/pages/drive.rs:220
 msgid "No"
 msgstr ""
 
-#: src/ui/dialogs/app_dialog.rs:113 src/ui/dialogs/process_dialog.rs:108
+#: src/ui/dialogs/app_dialog.rs:113 src/ui/dialogs/process_dialog.rs:109
 msgid "Yes (Flatpak)"
 msgstr ""
 
-#: src/ui/dialogs/process_dialog.rs:102 src/ui/dialogs/process_dialog.rs:104
+#: src/ui/dialogs/process_dialog.rs:103 src/ui/dialogs/process_dialog.rs:105
 #: src/ui/pages/cpu.rs:189 src/ui/pages/cpu.rs:201 src/ui/pages/cpu.rs:216
 #: src/ui/pages/cpu.rs:222 src/ui/pages/cpu.rs:228 src/ui/pages/cpu.rs:234
 #: src/ui/pages/cpu.rs:238 src/ui/pages/cpu.rs:241 src/ui/pages/cpu.rs:301
@@ -390,7 +408,7 @@ msgstr ""
 msgid "There was a problem continuing {}"
 msgstr ""
 
-#: src/utils/app.rs:359
+#: src/utils/app.rs:380
 msgid "System Processes"
 msgstr ""
 

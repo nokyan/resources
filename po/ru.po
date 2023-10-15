@@ -101,6 +101,24 @@ msgstr "Сетевые интерфейсы"
 msgid "Storage Devices"
 msgstr "Устройства хранения"
 
+#: data/net.nokyan.Resources.metainfo.xml.in.in:53
+msgid ""
+"Fixed: Resources didn’t work if libadwaita was not installed natively on the "
+"host"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:54
+msgid ""
+"Improvement: The process scanning routine is now parallelized making it "
+"faster"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:55
+msgid ""
+"Languages: Added support for Italian, Polish, Russian and Chinese "
+"(Traditional)"
+msgstr ""
+
 #: src/application.rs:147
 msgid "The Nalux Team"
 msgstr "The Nalux Team"
@@ -113,16 +131,16 @@ msgstr "Сообщить о проблемах"
 msgid "Icon by"
 msgstr "Иконка от"
 
-#: src/ui/dialogs/app_dialog.rs:112 src/ui/dialogs/process_dialog.rs:107
+#: src/ui/dialogs/app_dialog.rs:112 src/ui/dialogs/process_dialog.rs:108
 #: src/ui/pages/drive.rs:214 src/ui/pages/drive.rs:220
 msgid "No"
 msgstr "Нет"
 
-#: src/ui/dialogs/app_dialog.rs:113 src/ui/dialogs/process_dialog.rs:108
+#: src/ui/dialogs/app_dialog.rs:113 src/ui/dialogs/process_dialog.rs:109
 msgid "Yes (Flatpak)"
 msgstr "Да (Flatpak)"
 
-#: src/ui/dialogs/process_dialog.rs:102 src/ui/dialogs/process_dialog.rs:104
+#: src/ui/dialogs/process_dialog.rs:103 src/ui/dialogs/process_dialog.rs:105
 #: src/ui/pages/cpu.rs:189 src/ui/pages/cpu.rs:201 src/ui/pages/cpu.rs:216
 #: src/ui/pages/cpu.rs:222 src/ui/pages/cpu.rs:228 src/ui/pages/cpu.rs:234
 #: src/ui/pages/cpu.rs:238 src/ui/pages/cpu.rs:241 src/ui/pages/cpu.rs:301
@@ -406,7 +424,7 @@ msgstr "Не удалось убить {}"
 msgid "There was a problem continuing {}"
 msgstr "Не удалось продолжить {}"
 
-#: src/utils/app.rs:359
+#: src/utils/app.rs:380
 msgid "System Processes"
 msgstr "Системные процессы"
 

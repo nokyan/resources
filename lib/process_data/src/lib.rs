@@ -1,9 +1,9 @@
-use std::{path::PathBuf, time::SystemTime};
-use async_std::sync::Arc;
 use anyhow::{anyhow, Context, Result};
+use async_std::sync::Arc;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
+use std::{path::PathBuf, time::SystemTime};
 
 static PAGESIZE: Lazy<usize> = Lazy::new(sysconf::pagesize);
 
@@ -116,13 +116,13 @@ impl ProcessData {
         let comm = comm.await?;
         let commandline = commandline.await?;
         let cgroup = cgroup.await?;
-        
+
         let pid = proc_path
-                .file_name()
-                .ok_or_else(|| anyhow!(""))?
-                .to_str()
-                .ok_or_else(|| anyhow!(""))?
-                .parse()?;
+            .file_name()
+            .ok_or_else(|| anyhow!(""))?
+            .to_str()
+            .ok_or_else(|| anyhow!(""))?
+            .parse()?;
 
         let uid = Self::get_uid(&proc_path).await?;
 
@@ -140,9 +140,9 @@ impl ProcessData {
 
         let cpu_time = stat[13].parse::<u64>()? + stat[14].parse::<u64>()?;
 
-        let cpu_time_timestamp =  SystemTime::now()
-                .duration_since(SystemTime::UNIX_EPOCH)?
-                .as_millis() as u64;
+        let cpu_time_timestamp = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)?
+            .as_millis() as u64;
 
         let memory_usage = (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?) * *PAGESIZE;
 

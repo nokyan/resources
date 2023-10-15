@@ -94,6 +94,24 @@ msgstr "網路介面"
 msgid "Storage Devices"
 msgstr "儲存裝置"
 
+#: data/net.nokyan.Resources.metainfo.xml.in.in:53
+msgid ""
+"Fixed: Resources didn’t work if libadwaita was not installed natively on the "
+"host"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:54
+msgid ""
+"Improvement: The process scanning routine is now parallelized making it "
+"faster"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:55
+msgid ""
+"Languages: Added support for Italian, Polish, Russian and Chinese "
+"(Traditional)"
+msgstr ""
+
 #: src/application.rs:147
 msgid "The Nalux Team"
 msgstr "Nalux 團隊"
@@ -106,16 +124,16 @@ msgstr "回報問題"
 msgid "Icon by"
 msgstr "圖示由"
 
-#: src/ui/dialogs/app_dialog.rs:112 src/ui/dialogs/process_dialog.rs:107
+#: src/ui/dialogs/app_dialog.rs:112 src/ui/dialogs/process_dialog.rs:108
 #: src/ui/pages/drive.rs:214 src/ui/pages/drive.rs:220
 msgid "No"
 msgstr "否"
 
-#: src/ui/dialogs/app_dialog.rs:113 src/ui/dialogs/process_dialog.rs:108
+#: src/ui/dialogs/app_dialog.rs:113 src/ui/dialogs/process_dialog.rs:109
 msgid "Yes (Flatpak)"
 msgstr "是 (Flatpak)"
 
-#: src/ui/dialogs/process_dialog.rs:102 src/ui/dialogs/process_dialog.rs:104
+#: src/ui/dialogs/process_dialog.rs:103 src/ui/dialogs/process_dialog.rs:105
 #: src/ui/pages/cpu.rs:189 src/ui/pages/cpu.rs:201 src/ui/pages/cpu.rs:216
 #: src/ui/pages/cpu.rs:222 src/ui/pages/cpu.rs:228 src/ui/pages/cpu.rs:234
 #: src/ui/pages/cpu.rs:238 src/ui/pages/cpu.rs:241 src/ui/pages/cpu.rs:301
@@ -393,7 +411,7 @@ msgstr "終止 {} 時出現問題"
 msgid "There was a problem continuing {}"
 msgstr "繼續 {} 時出現問題"
 
-#: src/utils/app.rs:359
+#: src/utils/app.rs:380
 msgid "System Processes"
 msgstr "系統處理程序"
 
