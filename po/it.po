@@ -48,11 +48,11 @@ msgstr "Stato finestra massimizzata"
 
 #: data/net.nokyan.Resources.gschema.xml.in:18
 msgid "Temperature unit"
-msgstr "Unità di temperatura"
+msgstr "Unità per le temperature"
 
 #: data/net.nokyan.Resources.gschema.xml.in:22
 msgid "Unit Prefix Base"
-msgstr "Unità prefisso di base"
+msgstr "Base per unità dei prefissi"
 
 #: data/net.nokyan.Resources.gschema.xml.in:26
 #: data/resources/ui/dialogs/settings_dialog.ui:48
@@ -264,7 +264,7 @@ msgstr "GPU {}"
 
 #: src/ui/window.rs:312
 msgid "{} Drive"
-msgstr "Disco {}"
+msgstr "Disco da {}"
 
 #: src/ui/window.rs:351
 msgid "Ethernet Connection"
@@ -757,7 +757,7 @@ msgstr "Unità"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:16
 msgid "Data Unit Prefix"
-msgstr "Unità del prefisso dei dati"
+msgstr "Prefisso unità per i dati"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:20
 msgid "Decimal"
@@ -769,7 +769,7 @@ msgstr "Binario"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:29
 msgid "Temperature Unit"
-msgstr "Unità di temperatura"
+msgstr "Unità per le temperature"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:33
 msgid "Celsius"
