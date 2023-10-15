@@ -1,5 +1,5 @@
 use std::{path::PathBuf, time::SystemTime};
-
+use async_std::sync::Arc;
 use anyhow::{anyhow, Context, Result};
 use once_cell::sync::Lazy;
 use regex::Regex;
@@ -81,17 +81,72 @@ impl ProcessData {
     }
 
     pub async fn try_from_path(proc_path: PathBuf) -> Result<Self> {
-        let stat: Vec<String> = async_std::fs::read_to_string(proc_path.join("stat"))
-            .await?
-            .split(' ')
-            .map(std::string::ToString::to_string)
-            .collect();
+        // Stat
+        let shared_proc_path = Arc::new(proc_path.clone());
+        let stat = async_std::task::spawn(async move {
+            async_std::fs::read_to_string(shared_proc_path.join("stat")).await
+        });
 
-        let statm: Vec<String> = async_std::fs::read_to_string(proc_path.join("statm"))
-            .await?
+        // Statm
+        let shared_proc_path = Arc::new(proc_path.clone());
+        let statm = async_std::task::spawn(async move {
+            async_std::fs::read_to_string(shared_proc_path.join("statm")).await
+        });
+
+        // Comm
+        let shared_proc_path = Arc::new(proc_path.clone());
+        let comm = async_std::task::spawn(async move {
+            async_std::fs::read_to_string(shared_proc_path.join("comm")).await
+        });
+
+        // Cmdline
+        let shared_proc_path = Arc::new(proc_path.clone());
+        let commandline = async_std::task::spawn(async move {
+            async_std::fs::read_to_string(shared_proc_path.join("cmdline")).await
+        });
+
+        // Cgroup
+        let shared_proc_path = Arc::new(proc_path.clone());
+        let cgroup = async_std::task::spawn(async move {
+            async_std::fs::read_to_string(shared_proc_path.join("cgroup")).await
+        });
+
+        let stat = stat.await?;
+        let statm = statm.await?;
+        let comm = comm.await?;
+        let commandline = commandline.await?;
+        let cgroup = cgroup.await?;
+        
+        let pid = proc_path
+                .file_name()
+                .ok_or_else(|| anyhow!(""))?
+                .to_str()
+                .ok_or_else(|| anyhow!(""))?
+                .parse()?;
+
+        let uid = Self::get_uid(&proc_path).await?;
+
+        let stat = stat
             .split(' ')
             .map(std::string::ToString::to_string)
-            .collect();
+            .collect::<Vec<_>>();
+
+        let statm = statm
+            .split(' ')
+            .map(std::string::ToString::to_string)
+            .collect::<Vec<_>>();
+
+        let comm = comm.replace('\n', "");
+
+        let cpu_time = stat[13].parse::<u64>()? + stat[14].parse::<u64>()?;
+
+        let cpu_time_timestamp =  SystemTime::now()
+                .duration_since(SystemTime::UNIX_EPOCH)?
+                .as_millis() as u64;
+
+        let memory_usage = (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?) * *PAGESIZE;
+
+        let cgroup = Self::sanitize_cgroup(cgroup);
 
         let containerization = match &proc_path.join("root").join(".flatpak-info").exists() {
             true => Containerization::Flatpak,
@@ -99,25 +154,14 @@ impl ProcessData {
         };
 
         Ok(Self {
-            pid: proc_path
-                .file_name()
-                .ok_or_else(|| anyhow!(""))?
-                .to_str()
-                .ok_or_else(|| anyhow!(""))?
-                .parse()?,
-            uid: Self::get_uid(&proc_path).await?,
-            comm: async_std::fs::read_to_string(proc_path.join("comm"))
-                .await
-                .map(|s| s.replace('\n', ""))?,
-            commandline: async_std::fs::read_to_string(proc_path.join("cmdline")).await?,
-            cpu_time: stat[13].parse::<u64>()? + stat[14].parse::<u64>()?,
-            cpu_time_timestamp: SystemTime::now()
-                .duration_since(SystemTime::UNIX_EPOCH)?
-                .as_millis() as u64,
-            memory_usage: (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?) * *PAGESIZE,
-            cgroup: Self::sanitize_cgroup(
-                async_std::fs::read_to_string(proc_path.join("cgroup")).await?,
-            ),
+            pid,
+            uid,
+            comm,
+            commandline,
+            cpu_time,
+            cpu_time_timestamp,
+            memory_usage,
+            cgroup,
             proc_path,
             containerization,
         })
