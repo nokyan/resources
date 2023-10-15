@@ -94,24 +94,6 @@ msgstr "網路介面"
 msgid "Storage Devices"
 msgstr "儲存裝置"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:53
-msgid ""
-"Fixed: Resources didn’t work if libadwaita was not installed natively on the "
-"host"
-msgstr ""
-
-#: data/net.nokyan.Resources.metainfo.xml.in.in:54
-msgid ""
-"Improvement: The process scanning routine is now parallelized making it "
-"faster"
-msgstr ""
-
-#: data/net.nokyan.Resources.metainfo.xml.in.in:55
-msgid ""
-"Languages: Added support for Italian, Polish, Russian and Chinese "
-"(Traditional)"
-msgstr ""
-
 #: src/application.rs:147
 msgid "The Nalux Team"
 msgstr "Nalux 團隊"
