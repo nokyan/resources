@@ -4,6 +4,9 @@ use glob::glob;
 use process_data::{Containerization, ProcessData};
 use std::process::Command;
 
+use async_std::sync::Arc;
+use async_std::sync::Mutex;
+use futures_util::future::join_all;
 use gtk::gio::{Icon, ThemedIcon};
 
 use crate::config;
@@ -68,19 +71,33 @@ impl Process {
                 rmp_serde::from_slice::<Vec<ProcessData>>(&output)?;
 
             for process_data in proxy_output {
-                return_vec.push(Ok(Self::from_process_data(process_data)));
+                return_vec.push(Self::from_process_data(process_data));
             }
         } else {
+            let vec: Arc<Mutex<Vec<ProcessData>>> = Arc::new(Mutex::new(Vec::new()));
+
+            let mut handles = vec![];
             for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-                return_vec.push(
-                    ProcessData::try_from_path(entry)
-                        .await
-                        .map(|process_data| Self::from_process_data(process_data)),
-                );
+                let vec = Arc::clone(&vec);
+
+                let handle = async_std::task::spawn(async move {
+                    if let Ok(process_data) = ProcessData::try_from_path(entry).await {
+                        vec.lock().await.push(process_data);
+                    }
+                });
+
+                handles.push(handle);
+            }
+            join_all(handles).await;
+
+            let vec = vec.lock().await;
+
+            for process_data in vec.iter() {
+                return_vec.push(Self::from_process_data(process_data.clone()));
             }
         }
 
-        Ok(return_vec.into_iter().flatten().collect())
+        Ok(return_vec)
     }
 
     fn from_process_data(process_data: ProcessData) -> Self {
