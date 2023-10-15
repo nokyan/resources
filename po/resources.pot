@@ -58,8 +58,8 @@ msgstr ""
 #: data/net.nokyan.Resources.metainfo.xml.in.in:14
 msgid ""
 "Resources allows you to check the utilization of your system resources and "
-"control your running processes and applications. It's designed to be user-"
-"friendly and feel right at home on a modern desktop by using GNOME's "
+"control your running processes and applications. It’s designed to be user-"
+"friendly and feel right at home on a modern desktop by using GNOME’s "
 "libadwaita."
 msgstr ""
 
