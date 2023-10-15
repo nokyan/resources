@@ -4,6 +4,9 @@ use glob::glob;
 use process_data::{Containerization, ProcessData};
 use std::process::Command;
 
+use async_std::sync::Arc;
+use async_std::sync::Mutex;
+use futures_util::future::join_all;
 use gtk::gio::{Icon, ThemedIcon};
 
 use crate::config;
@@ -71,9 +74,6 @@ impl Process {
                 return_vec.push(Self::from_process_data(process_data));
             }
         } else {
-            use async_std::sync::Arc;
-            use async_std::sync::Mutex;
-            use futures_util::future::join_all;
             let vec: Arc<Mutex<Vec<ProcessData>>> = Arc::new(Mutex::new(Vec::new()));
 
             let mut handles = vec![];
