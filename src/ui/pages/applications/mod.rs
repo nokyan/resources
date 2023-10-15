@@ -16,7 +16,7 @@ use crate::i18n::i18n;
 use crate::ui::dialogs::app_dialog::ResAppDialog;
 use crate::ui::window::{self, Action, MainWindow};
 use crate::utils::app::{AppItem, AppsContext};
-use crate::utils::processes::ProcessAction;
+use crate::utils::process::ProcessAction;
 use crate::utils::units::convert_storage;
 
 use self::application_entry::ApplicationEntry;

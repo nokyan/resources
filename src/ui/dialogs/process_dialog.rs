@@ -1,10 +1,11 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib;
+use process_data::Containerization;
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::ui::window::MainWindow;
-use crate::utils::processes::{Containerization, ProcessItem};
+use crate::utils::process::ProcessItem;
 use crate::utils::units::convert_storage;
 
 mod imp {

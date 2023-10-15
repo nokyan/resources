@@ -17,7 +17,7 @@ use crate::utils::cpu;
 use crate::utils::drive::{Drive, DriveType};
 use crate::utils::gpu::GPU;
 use crate::utils::network::{InterfaceType, NetworkInterface};
-use crate::utils::processes::ProcessAction;
+use crate::utils::process::ProcessAction;
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::convert_storage;
 
@@ -247,7 +247,7 @@ impl MainWindow {
             futures_util::join!(
             async {
                 loop {
-                    let _ = imp.apps_context.borrow_mut().refresh().await;
+                    imp.apps_context.borrow_mut().refresh().await;
                     imp.applications.refresh_apps_list(&imp.apps_context.borrow());
                     imp.processes.refresh_processes_list(&imp.apps_context.borrow());
                     timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().process_refresh_interval())).await;

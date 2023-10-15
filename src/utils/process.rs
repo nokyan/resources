@@ -1,8 +1,8 @@
-use anyhow::{anyhow, bail, Context, Result};
+use anyhow::{bail, Context, Result};
 use config::LIBEXECDIR;
 use glob::glob;
-use serde::{Deserialize, Serialize};
-use std::{path::PathBuf, process::Command, sync::OnceLock, time::SystemTime};
+use process_data::{Containerization, ProcessData};
+use std::process::Command;
 
 use gtk::gio::{Icon, ThemedIcon};
 
@@ -10,40 +10,16 @@ use crate::config;
 
 use super::{FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
 
-static PAGESIZE: OnceLock<usize> = OnceLock::new();
-
-#[derive(Debug, Clone, Default, Hash, PartialEq, Eq, Serialize, Deserialize)]
-pub enum Containerization {
-    #[default]
-    None,
-    Flatpak,
-}
-
 /// Represents a process that can be found within procfs.
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Process {
     pub data: ProcessData,
+    pub executable_path: String,
+    pub executable_name: String,
     pub icon: Icon,
     pub cpu_time_before: u64,
     pub cpu_time_before_timestamp: u64,
     pub alive: bool,
-}
-
-/// Data that could be transferred using `resources-processes`, separated from
-/// `Process` mainly due to `Icon` not being able to derive `Serialize` and
-/// `Deserialize`.
-#[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ProcessData {
-    pub pid: i32,
-    pub uid: u32,
-    proc_path: PathBuf,
-    pub comm: String,
-    pub commandline: String,
-    pub cpu_time: u64,
-    pub cpu_time_timestamp: u64,
-    pub memory_usage: usize,
-    pub cgroup: Option<String>,
-    pub containerization: Containerization,
 }
 
 // TODO: Better name?
@@ -90,29 +66,46 @@ impl Process {
             let output = command.stdout;
             let proxy_output: Vec<ProcessData> =
                 rmp_serde::from_slice::<Vec<ProcessData>>(&output)?;
+
             for process_data in proxy_output {
-                return_vec.push(Self {
-                    data: process_data,
-                    icon: ThemedIcon::new("generic-process").into(),
-                    cpu_time_before: 0,
-                    cpu_time_before_timestamp: 0,
-                    alive: true,
-                });
+                return_vec.push(Ok(Self::from_process_data(process_data)));
             }
         } else {
             for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-                if let Ok(process_data) = ProcessData::try_from_path(entry).await {
-                    return_vec.push(Self {
-                        data: process_data,
-                        icon: ThemedIcon::new("generic-process").into(),
-                        cpu_time_before: 0,
-                        cpu_time_before_timestamp: 0,
-                        alive: true,
-                    });
-                }
+                return_vec.push(
+                    ProcessData::try_from_path(entry)
+                        .await
+                        .map(|process_data| Self::from_process_data(process_data)),
+                );
             }
         }
-        Ok(return_vec)
+
+        Ok(return_vec.into_iter().flatten().collect())
+    }
+
+    fn from_process_data(process_data: ProcessData) -> Self {
+        let executable_path = process_data
+            .commandline
+            .split('\0')
+            .nth(0)
+            .unwrap_or_default()
+            .to_string();
+
+        let executable_name = executable_path
+            .split('/')
+            .nth_back(0)
+            .unwrap_or_default()
+            .to_string();
+
+        Self {
+            executable_path,
+            executable_name,
+            data: process_data,
+            icon: ThemedIcon::new("generic-process").into(),
+            cpu_time_before: 0,
+            cpu_time_before_timestamp: 0,
+            alive: true,
+        }
     }
 
     pub fn execute_process_action(&self, action: ProcessAction) -> Result<()> {
@@ -222,102 +215,15 @@ impl Process {
             0.0
         } else {
             (self.data.cpu_time.saturating_sub(self.cpu_time_before) as f32
-                / (self.data.cpu_time_timestamp - self.cpu_time_before_timestamp) as f32)
+                / (self
+                    .data
+                    .cpu_time_timestamp
+                    .saturating_sub(self.cpu_time_before_timestamp)) as f32)
                 .clamp(0.0, 1.0)
         }
     }
 
     pub fn sanitize_cmdline<S: AsRef<str>>(cmdline: S) -> String {
         cmdline.as_ref().replace('\0', " ")
-    }
-
-    pub async fn try_from_path(value: PathBuf) -> Result<Self> {
-        Ok(Process {
-            data: ProcessData::try_from_path(value.clone()).await?,
-            icon: ThemedIcon::new("generic-process").into(),
-            cpu_time_before: 0,
-            cpu_time_before_timestamp: 0,
-            alive: true,
-        })
-    }
-}
-
-impl ProcessData {
-    fn sanitize_cgroup<S: AsRef<str>>(cgroup: S) -> Option<String> {
-        let cgroups_v2_line = cgroup.as_ref().split('\n').find(|s| s.starts_with("0::"))?;
-        if cgroups_v2_line.ends_with(".scope") {
-            let cgroups_segments: Vec<&str> = cgroups_v2_line.split('-').collect();
-            if cgroups_segments.len() > 1 {
-                cgroups_segments
-                    .get(cgroups_segments.len() - 2)
-                    .map(|s| unescape::unescape(s).unwrap_or_else(|| (*s).to_string()))
-            } else {
-                None
-            }
-        } else if cgroups_v2_line.ends_with(".service") {
-            let cgroups_segments: Vec<&str> = cgroups_v2_line.split('/').collect();
-            if let Some(last) = cgroups_segments.last() {
-                last[0..last.len() - 8]
-                    .split('@')
-                    .next()
-                    .map(|s| unescape::unescape(s).unwrap_or_else(|| s.to_string()))
-                    .map(|s| {
-                        if s.contains("dbus-:") {
-                            s.split('-').last().unwrap_or(&s).to_string()
-                        } else {
-                            s
-                        }
-                    })
-            } else {
-                None
-            }
-        } else {
-            None
-        }
-    }
-
-    pub async fn try_from_path(value: PathBuf) -> Result<Self> {
-        let stat: Vec<String> = async_std::fs::read_to_string(value.join("stat"))
-            .await?
-            .split(' ')
-            .map(std::string::ToString::to_string)
-            .collect();
-        let statm: Vec<String> = async_std::fs::read_to_string(value.join("statm"))
-            .await?
-            .split(' ')
-            .map(std::string::ToString::to_string)
-            .collect();
-        let containerization = match &value.join("root").join(".flatpak-info").exists() {
-            true => Containerization::Flatpak,
-            false => Containerization::None,
-        };
-        Ok(Self {
-            pid: value
-                .file_name()
-                .ok_or_else(|| anyhow!(""))?
-                .to_str()
-                .ok_or_else(|| anyhow!(""))?
-                .parse()?,
-            uid: async_std::fs::read_to_string(value.join("loginuid"))
-                .await?
-                .parse()?,
-            comm: async_std::fs::read_to_string(value.join("comm"))
-                .await
-                .map(|s| s.replace('\n', ""))?,
-            commandline: async_std::fs::read_to_string(value.join("cmdline"))
-                .await
-                .map(|s| s.replace('\0', " "))?,
-            cpu_time: stat[13].parse::<u64>()? + stat[14].parse::<u64>()?,
-            cpu_time_timestamp: SystemTime::now()
-                .duration_since(SystemTime::UNIX_EPOCH)?
-                .as_millis() as u64,
-            memory_usage: (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?)
-                * PAGESIZE.get_or_init(sysconf::pagesize),
-            cgroup: Self::sanitize_cgroup(
-                async_std::fs::read_to_string(value.join("cgroup")).await?,
-            ),
-            proc_path: value,
-            containerization,
-        })
     }
 }

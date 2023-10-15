@@ -3,7 +3,7 @@ use gtk::{
     subclass::prelude::ObjectSubclassIsExt,
 };
 
-use crate::utils::processes::ProcessItem;
+use crate::utils::process::ProcessItem;
 
 mod imp {
     use std::cell::{Cell, RefCell};
