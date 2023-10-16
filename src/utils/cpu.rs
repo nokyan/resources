@@ -139,7 +139,7 @@ async fn get_proc_stat(core: Option<usize>) -> Result<String> {
     let mut proc_stat = proc_stat_raw.split('\n').collect::<Vec<&str>>();
     proc_stat.retain(|x| x.starts_with("cpu"));
     // return an `Error` if `core` is greater than the number of cores
-    if selected_line_number > proc_stat.len() {
+    if selected_line_number >= proc_stat.len() {
         bail!("`core` argument greater than amount of cores")
     }
     Ok(proc_stat[selected_line_number].to_string())
