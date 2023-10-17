@@ -48,6 +48,15 @@ flatpak-builder --user flatpak_app build-aux/net.nokyan.Resources.Devel.json
 
 If you use [GNOME Builder](https://apps.gnome.org/app/org.gnome.Builder/) or Visual Studio Code with the [Flatpak extension](https://marketplace.visualstudio.com/items?itemName=bilelmoussaoui.flatpak-vscode), Resources can be built and run automatically.
 
+### Fedora
+
+Packaged in [COPR](https://copr.fedorainfracloud.org/coprs/atim/resources/) for Fedora 39 and newer.
+
+```sh
+dnf copr enable atim/resources
+dnf install resources
+```
+
 ## Running
 
 Running Resources is as simple as typing `resources` into a terminal or running it from your application launcher. If you've built Resources using Flatpak, type `flatpak-builder --run flatpak_app build-aux/net.nokyan.Resources.Devel.json resources` into your terminal or use one of the afforementioned IDEs to do that automatically.
