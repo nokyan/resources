@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-10-17 22:10+0300\n"
+"PO-Revision-Date: 2023-10-17 22:12+0300\n"
 "Last-Translator: volkov <volkovissocool@gmail.com>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: uk\n"
@@ -87,7 +87,7 @@ msgstr "Процесору"
 #: data/resources/ui/dialogs/app_dialog.ui:83
 #: data/resources/ui/dialogs/process_dialog.ui:70
 msgid "Memory"
-msgstr "Оперативної пам'яті"
+msgstr "Оперативна пам'ять"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:23 src/ui/pages/gpu.rs:101
 #: src/ui/window.rs:230
