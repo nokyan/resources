@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-10-17 22:12+0300\n"
+"PO-Revision-Date: 2023-10-17 22:14+0300\n"
 "Last-Translator: volkov <volkovissocool@gmail.com>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: uk\n"
@@ -146,7 +146,7 @@ msgstr "Додатки"
 
 #: src/ui/pages/applications/mod.rs:228
 msgid "Application"
-msgstr "Додаток"
+msgstr "Назва додатку"
 
 #: src/ui/pages/applications/mod.rs:274 src/ui/pages/cpu.rs:102
 #: src/ui/pages/processes/mod.rs:319 src/ui/window.rs:219
