@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-10-17 22:04+0300\n"
+"PO-Revision-Date: 2023-10-17 22:09+0300\n"
 "Last-Translator: volkov <volkovissocool@gmail.com>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: uk\n"
@@ -357,7 +357,7 @@ msgstr "Успішно зупинено {}"
 
 #: src/ui/window.rs:533
 msgid "Successfully killed {}"
-msgstr "Успішно вбито {}"
+msgstr "Успішно знищено {}"
 
 #: src/ui/window.rs:534
 msgid "Successfully continued {}"
@@ -972,7 +972,7 @@ msgstr "Апаратна адреса"
 
 #: data/resources/ui/pages/processes.ui:6
 msgid "Kill Process"
-msgstr "Вбити процес"
+msgstr "Знищити процес"
 
 #: data/resources/ui/pages/processes.ui:10
 msgid "Halt Process"
