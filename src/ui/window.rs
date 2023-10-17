@@ -46,6 +46,7 @@ mod imp {
 
     use super::*;
 
+    use async_std::sync::Mutex;
     use gtk::{
         glib::{Receiver, Sender},
         CompositeTemplate,
@@ -85,7 +86,7 @@ mod imp {
 
         pub gpu_pages: RefCell<Vec<adw::ToolbarView>>,
 
-        pub apps_context: RefCell<AppsContext>,
+        pub apps_context: Mutex<AppsContext>,
 
         pub sender: Sender<Action>,
         pub receiver: RefCell<Option<Receiver<Action>>>,
@@ -110,7 +111,7 @@ mod imp {
                 cpu_page: TemplateChild::default(),
                 memory: TemplateChild::default(),
                 memory_page: TemplateChild::default(),
-                apps_context: RefCell::default(),
+                apps_context: Default::default(),
                 sender,
                 receiver,
                 processor_window_title: TemplateChild::default(),
@@ -206,7 +207,9 @@ impl MainWindow {
         main_context.spawn_local(clone!(@strong self as this => async move {
             let imp = this.imp();
 
-            *imp.apps_context.borrow_mut() = AppsContext::new().await;
+            {
+                *imp.apps_context.lock().await = AppsContext::new().await;
+            }
 
             let cpu_info = cpu::cpu_info()
                 .await
@@ -247,9 +250,12 @@ impl MainWindow {
             futures_util::join!(
             async {
                 loop {
-                    imp.apps_context.borrow_mut().refresh().await;
-                    imp.applications.refresh_apps_list(&imp.apps_context.borrow());
-                    imp.processes.refresh_processes_list(&imp.apps_context.borrow());
+                    {
+                        let mut apps_context = imp.apps_context.lock().await;
+                        apps_context.refresh().await;
+                        imp.applications.refresh_apps_list(&apps_context);
+                        imp.processes.refresh_processes_list(&apps_context);
+                    }
                     timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().process_refresh_interval())).await;
                 }
             },
@@ -383,47 +389,48 @@ impl MainWindow {
     }
 
     fn process_action(&self, action: Action) -> glib::ControlFlow {
-        let imp = self.imp();
-
-        match action {
-            Action::ManipulateProcess(action, pid, display_name, toast_overlay) => {
-                let apps_context = imp.apps_context.borrow();
-                if let Some(process) = apps_context.get_process(pid) {
-                    let toast_message = match process.execute_process_action(action) {
-                        Ok(()) => get_action_success(action, &[&display_name]),
-                        Err(e) => {
-                            log::error!("Unable to kill process {}: {}", pid, e);
-                            get_process_action_failure(action, &[&display_name])
-                        }
-                    };
-                    toast_overlay.add_toast(Toast::new(&toast_message));
-                }
-            }
-
-            Action::ManipulateApp(action, id, toast_overlay) => {
-                let apps = imp.apps_context.borrow();
-                let app = apps.get_app(&id).unwrap();
-                let res = app.execute_process_action(&apps, action);
-
-                for r in &res {
-                    if let Err(e) = r {
-                        log::error!("Unable to kill a process: {}", e);
+        let main_context = MainContext::default();
+        main_context.spawn_local(clone!(@strong self as this => async move {
+            let imp = this.imp();
+            let apps_context = imp.apps_context.lock().await;
+            match action {
+                Action::ManipulateProcess(action, pid, display_name, toast_overlay) => {
+                    if let Some(process) = apps_context.get_process(pid) {
+                        let toast_message = match process.execute_process_action(action) {
+                            Ok(()) => get_action_success(action, &[&display_name]),
+                            Err(e) => {
+                                log::error!("Unable to kill process {}: {}", pid, e);
+                                get_process_action_failure(action, &[&display_name])
+                            }
+                        };
+                        toast_overlay.add_toast(Toast::new(&toast_message));
                     }
                 }
 
-                let processes_tried = res.len();
-                let processes_successful = res.iter().flatten().count();
-                let processes_unsuccessful = processes_tried - processes_successful;
+                Action::ManipulateApp(action, id, toast_overlay) => {
+                    let app = apps_context.get_app(&id).unwrap();
+                    let res = app.execute_process_action(&apps_context, action);
 
-                let toast_message = if processes_unsuccessful > 0 {
-                    get_app_action_failure(action, processes_unsuccessful as u32)
-                } else {
-                    get_action_success(action, &[&app.display_name])
-                };
+                    for r in &res {
+                        if let Err(e) = r {
+                            log::error!("Unable to kill a process: {}", e);
+                        }
+                    }
 
-                toast_overlay.add_toast(Toast::new(&toast_message));
-            }
-        };
+                    let processes_tried = res.len();
+                    let processes_successful = res.iter().flatten().count();
+                    let processes_unsuccessful = processes_tried - processes_successful;
+
+                    let toast_message = if processes_unsuccessful > 0 {
+                        get_app_action_failure(action, processes_unsuccessful as u32)
+                    } else {
+                        get_action_success(action, &[&app.display_name])
+                    };
+
+                    toast_overlay.add_toast(Toast::new(&toast_message));
+                }
+            };
+        }));
 
         glib::ControlFlow::Continue
     }
