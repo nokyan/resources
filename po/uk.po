@@ -1,5 +1,5 @@
-#
-# nokyan <nokyan@tuta.io>, 2023.
+# Ukrainian translation for resources.
+# volkov <volkovissocool@gmail.com>, 2023.
 #
 msgid ""
 msgstr ""
