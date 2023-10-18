@@ -197,6 +197,12 @@ impl ResProcesses {
         glib::Object::new::<Self>()
     }
 
+    pub fn toggle_search(&self) {
+        let imp = self.imp();
+
+        imp.search_button.set_active(!imp.search_button.is_active());
+    }
+
     pub fn init(&self, sender: Sender<Action>) {
         let imp = self.imp();
         imp.sender.set(sender).unwrap();
@@ -385,8 +391,8 @@ impl ResProcesses {
             }));
 
         imp.information_button
-            .connect_clicked(clone!(@strong self as this => move |_| {
-                let imp = this.imp();
+        .connect_clicked(clone!(@strong self as this => move |_| {
+            let imp = this.imp();
                 let selection_option = imp.selection_model.borrow()
                 .selected_item()
                 .map(|object| {

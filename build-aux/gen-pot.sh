@@ -12,8 +12,6 @@ sed -i 's/charset=CHARSET/charset=UTF-8/g' po/*.tmp.pot
 
 xgettext po/*.tmp.pot -o po/resources.pot
 
-for file in po/*.po; do
-    msgmerge -N -U $file po/resources.pot
-done
+msgmerge -N -U po/$1 po/resources.pot
 
 rm po/*.tmp.pot

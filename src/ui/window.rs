@@ -11,7 +11,9 @@ use gtk::{gio, glib, Widget};
 use crate::application::Application;
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f, ni18n_f};
+use crate::ui::pages::applications::ResApplications;
 use crate::ui::pages::drive::ResDrive;
+use crate::ui::pages::processes::ResProcesses;
 use crate::utils::app::AppsContext;
 use crate::utils::cpu;
 use crate::utils::drive::{Drive, DriveType};
@@ -80,9 +82,9 @@ mod imp {
         #[template_child]
         pub memory_page: TemplateChild<gtk::StackPage>,
 
-        pub drive_pages: RefCell<HashMap<PathBuf, adw::ToolbarView>>,
+        pub drive_pages: RefCell<HashMap<PathBuf, (bool, adw::ToolbarView)>>,
 
-        pub network_pages: RefCell<HashMap<PathBuf, adw::ToolbarView>>,
+        pub network_pages: RefCell<HashMap<PathBuf, (bool, adw::ToolbarView)>>,
 
         pub gpu_pages: RefCell<Vec<adw::ToolbarView>>,
 
@@ -193,6 +195,23 @@ impl MainWindow {
         window
     }
 
+    pub fn toggle_search(&self) {
+        let imp = self.imp();
+
+        let selected_page = imp
+            .content_stack
+            .visible_child()
+            .and_downcast::<adw::ToolbarView>()
+            .and_then(|toolbar| toolbar.content())
+            .unwrap();
+
+        if selected_page.is::<ResApplications>() {
+            imp.applications.toggle_search();
+        } else if selected_page.is::<ResProcesses>() {
+            imp.processes.toggle_search();
+        }
+    }
+
     fn setup_widgets(&self) {
         let imp = self.imp();
 
@@ -202,6 +221,14 @@ impl MainWindow {
         imp.processes.init(imp.sender.clone());
         imp.cpu.init();
         imp.memory.init();
+
+        if SETTINGS.show_search_on_start() {
+            imp.processes.toggle_search()
+        }
+
+        if SETTINGS.show_search_on_start() {
+            imp.applications.toggle_search()
+        }
 
         let main_context = MainContext::default();
         main_context.spawn_local(clone!(@strong self as this => async move {
@@ -283,7 +310,7 @@ impl MainWindow {
                 loop {
                     this.refresh_drives().await;
                     for drive_page_toolbar in imp.drive_pages.borrow().values() {
-                        drive_page_toolbar.content().and_downcast::<ResDrive>().unwrap().refresh_page().await;
+                        drive_page_toolbar.1.content().and_downcast::<ResDrive>().unwrap().refresh_page().await;
                     }
                     timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
                 }
@@ -291,7 +318,7 @@ impl MainWindow {
                 loop {
                     this.refresh_network_interfaces().await;
                     for network_page_toolbar in imp.network_pages.borrow().values() {
-                        network_page_toolbar.content().and_downcast::<ResNetwork>().unwrap().refresh_page().await;
+                        network_page_toolbar.1.content().and_downcast::<ResNetwork>().unwrap().refresh_page().await;
                     }
                     timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
                 }
@@ -302,19 +329,29 @@ impl MainWindow {
     async fn refresh_drives(&self) {
         let imp = self.imp();
         let mut still_active_drives = Vec::with_capacity(imp.drive_pages.borrow().len());
-        for path in Drive::get_sysfs_paths(true).await.unwrap_or_default() {
+        for path in Drive::get_sysfs_paths().await.unwrap_or_default() {
             // ignore drive pages that are already listed
             if imp.drive_pages.borrow().contains_key(&path) {
                 still_active_drives.push(path);
                 continue;
             }
             if let Ok(drive) = Drive::from_sysfs(&path).await {
+                let is_virtual = drive.is_virtual().await;
+                if is_virtual && !SETTINGS.show_virtual_drives() {
+                    continue;
+                }
                 let capacity =
                     drive.capacity().await.unwrap_or(0) * drive.sector_size().await.unwrap_or(512);
                 let capacity_formatted = convert_storage(capacity as f64, true);
                 let sidebar_title = match drive.drive_type {
                     DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),
                     DriveType::Floppy => i18n("Floppy Drive"),
+                    DriveType::LoopDevice => i18n_f("{} Loop Device", &[&capacity_formatted]),
+                    DriveType::MappedDevice => i18n_f("{} Mapped Device", &[&capacity_formatted]),
+                    DriveType::Raid => i18n_f("{} RAID", &[&capacity_formatted]),
+                    DriveType::RamDisk => i18n_f("{} RAM Disk", &[&capacity_formatted]),
+                    DriveType::Zram => i18n_f("{} zram Device", &[&capacity_formatted]),
+                    DriveType::ZfsVolume => i18n_f("{} ZFS Volume", &[&capacity_formatted]),
                     _ => i18n_f("{} Drive", &[&capacity_formatted]),
                 };
 
@@ -326,7 +363,9 @@ impl MainWindow {
                 } else {
                     self.add_page(&page, &sidebar_title, &sidebar_title, "")
                 };
-                imp.drive_pages.borrow_mut().insert(path.clone(), toolbar);
+                imp.drive_pages
+                    .borrow_mut()
+                    .insert(path.clone(), (is_virtual, toolbar));
                 still_active_drives.push(path);
             }
         }
@@ -334,8 +373,13 @@ impl MainWindow {
         // during the last time this method was called and now
         imp.drive_pages
             .borrow_mut()
-            .extract_if(|k, _| !still_active_drives.iter().any(|x| *x == *k)) // remove entry from drives HashMap
-            .for_each(|(_, page)| {
+            .extract_if(|path, (is_virtual, _)| {
+                !still_active_drives
+                    .iter()
+                    .any(|other_path| *other_path == *path)
+                    || (!SETTINGS.show_virtual_drives() && *is_virtual)
+            })
+            .for_each(|(_, (_, page))| {
                 imp.content_stack.remove(&page);
             }); // remove page from the UI
     }
@@ -353,15 +397,22 @@ impl MainWindow {
                 continue;
             }
             if let Ok(interface) = NetworkInterface::from_sysfs(&path).await {
+                let is_virtual = interface.is_virtual();
+                if is_virtual && !SETTINGS.show_virtual_network_interfaces() {
+                    continue;
+                }
                 let sidebar_title = match interface.interface_type {
+                    InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
+                    InterfaceType::Bridge => i18n("Network Bridge"),
                     InterfaceType::Ethernet => i18n("Ethernet Connection"),
                     InterfaceType::InfiniBand => i18n("InfiniBand Connection"),
                     InterfaceType::Slip => i18n("Serial Line IP Connection"),
+                    InterfaceType::VirtualEthernet => i18n("Virtual Ethernet Device"),
+                    InterfaceType::VmBridge => i18n("VM Network Bridge"),
+                    InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
                     InterfaceType::Wlan => i18n("Wi-Fi Connection"),
                     InterfaceType::Wwan => i18n("WWAN Connection"),
-                    InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
-                    InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
-                    InterfaceType::Other => i18n("Network Interface"),
+                    InterfaceType::Unknown => i18n("Network Interface"),
                 };
                 let page = ResNetwork::new();
                 page.init(
@@ -376,7 +427,9 @@ impl MainWindow {
                     &interface.display_name(),
                     &sidebar_title,
                 );
-                imp.network_pages.borrow_mut().insert(path.clone(), toolbar);
+                imp.network_pages
+                    .borrow_mut()
+                    .insert(path.clone(), (is_virtual, toolbar));
                 still_active_interfaces.push(path);
             }
         }
@@ -384,8 +437,13 @@ impl MainWindow {
         // during the last time this method was called and now
         imp.network_pages
             .borrow_mut()
-            .extract_if(|k, _| !still_active_interfaces.iter().any(|x| *x == *k)) // remove entry from network_pages HashMap
-            .for_each(|(_, v)| imp.content_stack.remove(&v)); // remove page from the UI
+            .extract_if(|path, (is_virtual, _)| {
+                !still_active_interfaces
+                    .iter()
+                    .any(|other_path| *other_path == *path)
+                    || (!SETTINGS.show_virtual_network_interfaces() && *is_virtual)
+            }) // remove entry from network_pages HashMap
+            .for_each(|(_, (_, page))| imp.content_stack.remove(&page)); // remove page from the UI
     }
 
     fn process_action(&self, action: Action) -> glib::ControlFlow {
