@@ -35,7 +35,7 @@ uzers = "0.11.3"
 plotters = { version = "0.3.4", default_features = false, features = [
     "area_series",
 ] }
-plotters-cairo = { git = "https://github.com/plotters-rs/plotters-cairo", rev = "1ffd536" }
+plotters-cairo = "0.5.0"
 serde = { version = "1.0.180", features = ["serde_derive"] }
 rmp-serde = "1.1.2"
 async-process = "1.7.0"
