@@ -97,7 +97,14 @@ impl Application {
         }));
         self.add_action(&action_quit);
 
-        // About
+        // Toggle Search
+        let action_search = gio::SimpleAction::new("toggle-search", None);
+        action_search.connect_activate(clone!(@weak self as app => move |_, _| {
+            app.main_window().toggle_search();
+        }));
+        self.add_action(&action_search);
+
+        // Show Settings
         let action_settings = gio::SimpleAction::new("settings", None);
         action_settings.connect_activate(clone!(@weak self as app => move |_, _| {
             app.show_settings_dialog();
@@ -115,6 +122,7 @@ impl Application {
     // Sets up keyboard shortcuts
     fn setup_accels(&self) {
         self.set_accels_for_action("app.quit", &["<Control>q"]);
+        self.set_accels_for_action("app.toggle-search", &["<Control>f", "F3"]);
     }
 
     fn setup_css(&self) {

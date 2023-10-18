@@ -182,9 +182,15 @@ impl ResDrive {
                 crate::utils::drive::DriveType::Flash => i18n("Flash Storage"),
                 crate::utils::drive::DriveType::Floppy => i18n("Floppy Drive"),
                 crate::utils::drive::DriveType::Hdd => i18n("Hard Disk Drive"),
+                crate::utils::drive::DriveType::LoopDevice => i18n("Loop Device"),
+                crate::utils::drive::DriveType::MappedDevice => i18n("Mapped Device"),
                 crate::utils::drive::DriveType::Nvme => i18n("NVMe Drive"),
                 crate::utils::drive::DriveType::Unknown => i18n("N/A"),
+                crate::utils::drive::DriveType::Raid => i18n("Software Raid"),
+                crate::utils::drive::DriveType::RamDisk => i18n("RAM Disk"),
                 crate::utils::drive::DriveType::Ssd => i18n("Solid State Drive"),
+                crate::utils::drive::DriveType::ZfsVolume => i18n("ZFS Volume"),
+                crate::utils::drive::DriveType::Zram => i18n("Compressed RAM Disk (zram)"),
             }),
         );
         imp.device.set_subtitle(&drive.block_device);

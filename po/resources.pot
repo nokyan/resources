@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2022-08-15 17:47+0200\n"
+"PO-Revision-Date: 2023-10-18 17:47+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: \n"
@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:3
-#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:145
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:153
 msgid "Resources"
 msgstr ""
 
@@ -55,6 +55,18 @@ msgstr ""
 msgid "Refresh Speed"
 msgstr ""
 
+#: data/net.nokyan.Resources.gschema.xml.in:30
+msgid "Show search field for Processes and Applications on launch"
+msgstr ""
+
+#: data/net.nokyan.Resources.gschema.xml.in:34
+msgid "Show virtual block devices such as LVM containers"
+msgstr ""
+
+#: data/net.nokyan.Resources.gschema.xml.in:38
+msgid "Show virtual network interfaces such as Docker interfaces"
+msgstr ""
+
 #: data/net.nokyan.Resources.metainfo.xml.in.in:14
 msgid ""
 "Resources allows you to check the utilization of your system resources and "
@@ -72,8 +84,8 @@ msgid "CPU"
 msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:22
-#: src/ui/pages/applications/mod.rs:251 src/ui/pages/memory.rs:85
-#: src/ui/pages/memory.rs:151 src/ui/pages/processes/mod.rs:296
+#: src/ui/pages/applications/mod.rs:257 src/ui/pages/memory.rs:85
+#: src/ui/pages/memory.rs:151 src/ui/pages/processes/mod.rs:302
 #: data/resources/ui/window.ui:155 data/resources/ui/window.ui:162
 #: data/resources/ui/dialogs/app_dialog.ui:83
 #: data/resources/ui/dialogs/process_dialog.ui:70
@@ -81,11 +93,12 @@ msgid "Memory"
 msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:23 src/ui/pages/gpu.rs:101
-#: src/ui/window.rs:230
+#: src/ui/window.rs:260
 msgid "GPU"
 msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
+#: data/resources/ui/dialogs/settings_dialog.ui:87
 msgid "Network Interfaces"
 msgstr ""
 
@@ -93,20 +106,82 @@ msgstr ""
 msgid "Storage Devices"
 msgstr ""
 
-#: src/application.rs:147
-msgid "The Nalux Team"
+#: data/net.nokyan.Resources.metainfo.xml.in.in:31
+msgid "nokyan"
 msgstr ""
 
 #: src/application.rs:155
+msgid "The Nalux Team"
+msgstr ""
+
+#: src/application.rs:163
 msgid "Report Issues"
 msgstr ""
 
-#: src/application.rs:159
+#: src/application.rs:167
 msgid "Icon by"
 msgstr ""
 
+#: src/i18n.rs:134 src/i18n.rs:137 src/i18n.rs:139
+msgid "translate1"
+msgid_plural "translate multi"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/i18n.rs:145
+msgid "{} param"
+msgstr ""
+
+#: src/i18n.rs:148
+msgid "middle {} param"
+msgstr ""
+
+#: src/i18n.rs:151
+msgid "end {}"
+msgstr ""
+
+#: src/i18n.rs:154
+msgid "multiple {} and {}"
+msgstr ""
+
+#: src/i18n.rs:157 src/i18n.rs:159
+msgid "singular {} and {}"
+msgid_plural "plural {} and {}"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/i18n.rs:165
+msgid "{one} param"
+msgstr ""
+
+#: src/i18n.rs:168
+msgid "middle {one} param"
+msgstr ""
+
+#: src/i18n.rs:171
+msgid "end {one}"
+msgstr ""
+
+#: src/i18n.rs:174
+msgid "multiple {one} and {two}"
+msgstr ""
+
+#: src/i18n.rs:177
+msgid "multiple {two} and {one}"
+msgstr ""
+
+#: src/i18n.rs:180
+msgid "multiple {one} and {one}"
+msgstr ""
+
+#: src/i18n.rs:184 src/i18n.rs:191
+msgid "singular {one} and {two}"
+msgid_plural "plural {one} and {two}"
+msgstr[0] ""
+msgstr[1] ""
+
 #: src/ui/dialogs/app_dialog.rs:112 src/ui/dialogs/process_dialog.rs:108
-#: src/ui/pages/drive.rs:214 src/ui/pages/drive.rs:220
+#: src/ui/pages/drive.rs:220 src/ui/pages/drive.rs:226
 msgid "No"
 msgstr ""
 
@@ -118,7 +193,7 @@ msgstr ""
 #: src/ui/pages/cpu.rs:189 src/ui/pages/cpu.rs:201 src/ui/pages/cpu.rs:216
 #: src/ui/pages/cpu.rs:222 src/ui/pages/cpu.rs:228 src/ui/pages/cpu.rs:234
 #: src/ui/pages/cpu.rs:238 src/ui/pages/cpu.rs:241 src/ui/pages/cpu.rs:301
-#: src/ui/pages/drive.rs:186 src/ui/pages/gpu.rs:177 src/ui/pages/gpu.rs:192
+#: src/ui/pages/drive.rs:188 src/ui/pages/gpu.rs:177 src/ui/pages/gpu.rs:192
 #: src/ui/pages/gpu.rs:210 src/ui/pages/gpu.rs:218 src/ui/pages/gpu.rs:224
 #: src/ui/pages/gpu.rs:231 src/ui/pages/gpu.rs:238 src/ui/pages/gpu.rs:244
 #: src/ui/pages/gpu.rs:250 src/ui/pages/memory.rs:183
@@ -135,19 +210,19 @@ msgstr ""
 msgid "Applications"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:228
+#: src/ui/pages/applications/mod.rs:234
 msgid "Application"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:274 src/ui/pages/cpu.rs:102
-#: src/ui/pages/processes/mod.rs:319 src/ui/window.rs:219
+#: src/ui/pages/applications/mod.rs:280 src/ui/pages/cpu.rs:102
+#: src/ui/pages/processes/mod.rs:325 src/ui/window.rs:249
 #: data/resources/ui/window.ui:124 data/resources/ui/window.ui:131
 #: data/resources/ui/dialogs/app_dialog.ui:74
 #: data/resources/ui/dialogs/process_dialog.ui:61
 msgid "Processor"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:481 src/ui/pages/processes/mod.rs:506
+#: src/ui/pages/applications/mod.rs:491 src/ui/pages/processes/mod.rs:512
 msgid "Cancel"
 msgstr ""
 
@@ -163,7 +238,7 @@ msgstr ""
 msgid "Total Usage"
 msgstr ""
 
-#: src/ui/pages/drive.rs:180 src/ui/window.rs:310
+#: src/ui/pages/drive.rs:180 src/ui/window.rs:347
 msgid "CD/DVD/Blu-ray Drive"
 msgstr ""
 
@@ -175,7 +250,7 @@ msgstr ""
 msgid "Flash Storage"
 msgstr ""
 
-#: src/ui/pages/drive.rs:183 src/ui/window.rs:311
+#: src/ui/pages/drive.rs:183 src/ui/window.rs:348
 msgid "Floppy Drive"
 msgstr ""
 
@@ -184,14 +259,38 @@ msgid "Hard Disk Drive"
 msgstr ""
 
 #: src/ui/pages/drive.rs:185
-msgid "NVMe Drive"
+msgid "Loop Device"
+msgstr ""
+
+#: src/ui/pages/drive.rs:186
+msgid "Mapped Device"
 msgstr ""
 
 #: src/ui/pages/drive.rs:187
+msgid "NVMe Drive"
+msgstr ""
+
+#: src/ui/pages/drive.rs:189
+msgid "Software Raid"
+msgstr ""
+
+#: src/ui/pages/drive.rs:190
+msgid "RAM Disk"
+msgstr ""
+
+#: src/ui/pages/drive.rs:191
 msgid "Solid State Drive"
 msgstr ""
 
-#: src/ui/pages/drive.rs:212 src/ui/pages/drive.rs:218
+#: src/ui/pages/drive.rs:192
+msgid "ZFS Volume"
+msgstr ""
+
+#: src/ui/pages/drive.rs:193
+msgid "Compressed RAM Disk (zram)"
+msgstr ""
+
+#: src/ui/pages/drive.rs:218 src/ui/pages/drive.rs:224
 msgid "Yes"
 msgstr ""
 
@@ -211,7 +310,7 @@ msgstr ""
 msgid "{} of {}"
 msgstr ""
 
-#: src/ui/pages/network.rs:101 src/ui/window.rs:358
+#: src/ui/pages/network.rs:101 src/ui/window.rs:415
 msgid "Network Interface"
 msgstr ""
 
@@ -232,165 +331,201 @@ msgstr ""
 msgid "Processes"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:232
+#: src/ui/pages/processes/mod.rs:238
 msgid "Process"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:258
+#: src/ui/pages/processes/mod.rs:264
 #: data/resources/ui/dialogs/process_dialog.ui:84
 msgid "Process ID"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:277
+#: src/ui/pages/processes/mod.rs:283
 #: data/resources/ui/dialogs/process_dialog.ui:102
 msgid "User"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:542
+#: src/ui/pages/processes/mod.rs:548
 msgid "root"
 msgstr ""
 
-#: src/ui/window.rs:228
+#: src/ui/window.rs:258
 msgid "GPU {}"
 msgstr ""
 
-#: src/ui/window.rs:312
-msgid "{} Drive"
+#: src/ui/window.rs:349
+msgid "{} Loop Device"
+msgstr ""
+
+#: src/ui/window.rs:350
+msgid "{} Mapped Device"
 msgstr ""
 
 #: src/ui/window.rs:351
-msgid "Ethernet Connection"
+msgid "{} RAID"
 msgstr ""
 
 #: src/ui/window.rs:352
-msgid "InfiniBand Connection"
+msgid "{} RAM Disk"
 msgstr ""
 
 #: src/ui/window.rs:353
-msgid "Serial Line IP Connection"
+msgid "{} zram Device"
 msgstr ""
 
 #: src/ui/window.rs:354
-msgid "Wi-Fi Connection"
+msgid "{} ZFS Volume"
 msgstr ""
 
 #: src/ui/window.rs:355
-msgid "WWAN Connection"
+msgid "{} Drive"
 msgstr ""
 
-#: src/ui/window.rs:356
+#: src/ui/window.rs:405
 msgid "Bluetooth Tether"
 msgstr ""
 
-#: src/ui/window.rs:357
+#: src/ui/window.rs:406
+msgid "Network Bridge"
+msgstr ""
+
+#: src/ui/window.rs:407
+msgid "Ethernet Connection"
+msgstr ""
+
+#: src/ui/window.rs:408
+msgid "InfiniBand Connection"
+msgstr ""
+
+#: src/ui/window.rs:409
+msgid "Serial Line IP Connection"
+msgstr ""
+
+#: src/ui/window.rs:410
+msgid "Virtual Ethernet Device"
+msgstr ""
+
+#: src/ui/window.rs:411
+msgid "VM Network Bridge"
+msgstr ""
+
+#: src/ui/window.rs:412
 msgid "VPN Tunnel (WireGuard)"
 msgstr ""
 
-#: src/ui/window.rs:504
+#: src/ui/window.rs:413
+msgid "Wi-Fi Connection"
+msgstr ""
+
+#: src/ui/window.rs:414
+msgid "WWAN Connection"
+msgstr ""
+
+#: src/ui/window.rs:569
 msgid "End {}?"
 msgstr ""
 
-#: src/ui/window.rs:505
+#: src/ui/window.rs:570
 msgid "Halt {}?"
 msgstr ""
 
-#: src/ui/window.rs:506
+#: src/ui/window.rs:571
 msgid "Kill {}?"
 msgstr ""
 
-#: src/ui/window.rs:507
+#: src/ui/window.rs:572
 msgid "Continue {}?"
 msgstr ""
 
-#: src/ui/window.rs:513
+#: src/ui/window.rs:578
 msgid "Unsaved work might be lost."
 msgstr ""
 
-#: src/ui/window.rs:514
+#: src/ui/window.rs:579
 msgid ""
 "Halting an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
 
-#: src/ui/window.rs:515
+#: src/ui/window.rs:580
 msgid ""
 "Killing an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
 
-#: src/ui/window.rs:522
+#: src/ui/window.rs:587
 msgid "End application"
 msgstr ""
 
-#: src/ui/window.rs:523
+#: src/ui/window.rs:588
 msgid "Halt application"
 msgstr ""
 
-#: src/ui/window.rs:524
+#: src/ui/window.rs:589
 msgid "Kill application"
 msgstr ""
 
-#: src/ui/window.rs:525
+#: src/ui/window.rs:590
 msgid "Continue application"
 msgstr ""
 
-#: src/ui/window.rs:531
+#: src/ui/window.rs:596
 msgid "Successfully ended {}"
 msgstr ""
 
-#: src/ui/window.rs:532
+#: src/ui/window.rs:597
 msgid "Successfully halted {}"
 msgstr ""
 
-#: src/ui/window.rs:533
+#: src/ui/window.rs:598
 msgid "Successfully killed {}"
 msgstr ""
 
-#: src/ui/window.rs:534
+#: src/ui/window.rs:599
 msgid "Successfully continued {}"
 msgstr ""
 
-#: src/ui/window.rs:541
+#: src/ui/window.rs:606
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:547
+#: src/ui/window.rs:612
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:553
+#: src/ui/window.rs:618
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:559
+#: src/ui/window.rs:624
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:569
+#: src/ui/window.rs:634
 msgid "There was a problem ending {}"
 msgstr ""
 
-#: src/ui/window.rs:570
+#: src/ui/window.rs:635
 msgid "There was a problem halting {}"
 msgstr ""
 
-#: src/ui/window.rs:571
+#: src/ui/window.rs:636
 msgid "There was a problem killing {}"
 msgstr ""
 
-#: src/ui/window.rs:572
+#: src/ui/window.rs:637
 msgid "There was a problem continuing {}"
 msgstr ""
 
-#: src/utils/app.rs:380
+#: src/utils/app.rs:383
 msgid "System Processes"
 msgstr ""
 
@@ -678,6 +813,11 @@ msgctxt "shortcut window"
 msgid "Quit"
 msgstr ""
 
+#: data/resources/ui/shortcuts.ui:26
+msgctxt "shortcut window"
+msgid "Toggle Search Field"
+msgstr ""
+
 #: data/resources/ui/window.ui:6
 msgid "Preferences"
 msgstr ""
@@ -793,6 +933,26 @@ msgstr ""
 
 #: data/resources/ui/dialogs/settings_dialog.ui:56
 msgid "Very Fast"
+msgstr ""
+
+#: data/resources/ui/dialogs/settings_dialog.ui:64
+msgid "Show Search Fields on Launch"
+msgstr ""
+
+#: data/resources/ui/dialogs/settings_dialog.ui:74
+msgid "Devices"
+msgstr ""
+
+#: data/resources/ui/dialogs/settings_dialog.ui:77
+msgid "Drives"
+msgstr ""
+
+#: data/resources/ui/dialogs/settings_dialog.ui:80
+msgid "Show Virtual Drives"
+msgstr ""
+
+#: data/resources/ui/dialogs/settings_dialog.ui:90
+msgid "Show Virtual Network Interfaces"
 msgstr ""
 
 #: data/resources/ui/pages/applications.ui:6

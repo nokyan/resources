@@ -159,6 +159,61 @@ impl Settings {
             f(settings.boolean("is-maximized"))
         })
     }
+
+    pub fn show_search_on_start(&self) -> bool {
+        self.boolean("show-search-on-start")
+    }
+
+    pub fn set_show_search_on_start(&self, maximized: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("show-search-on-start", maximized)
+    }
+
+    pub fn connect_show_search_on_start<F: Fn(bool) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(Some("show-search-on-start"), move |settings, _key| {
+            f(settings.boolean("show-search-on-start"))
+        })
+    }
+
+    pub fn show_virtual_drives(&self) -> bool {
+        self.boolean("show-virtual-drives")
+    }
+
+    pub fn set_show_virtual_drives(&self, maximized: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("show-virtual-drives", maximized)
+    }
+
+    pub fn connect_show_virtual_drives<F: Fn(bool) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(Some("show-virtual-drives"), move |settings, _key| {
+            f(settings.boolean("show-virtual-drives"))
+        })
+    }
+
+    pub fn show_virtual_network_interfaces(&self) -> bool {
+        self.boolean("show-virtual-network-interfaces")
+    }
+
+    pub fn set_show_virtual_network_interfaces(
+        &self,
+        maximized: bool,
+    ) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("show-virtual-network-interfaces", maximized)
+    }
+
+    pub fn connect_show_virtual_network_interfaces<F: Fn(bool) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(
+            Some("show-virtual-network-interfaces"),
+            move |settings, _key| f(settings.boolean("show-virtual-network-interfaces")),
+        )
+    }
 }
 
 impl Deref for Settings {

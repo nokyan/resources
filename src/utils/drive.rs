@@ -1,28 +1,34 @@
 use anyhow::{Context, Result};
 use async_std::stream::StreamExt;
 use gtk::gio::{Icon, ThemedIcon};
+use once_cell::sync::Lazy;
 use regex::Regex;
 use std::{
     collections::HashMap,
     path::{Path, PathBuf},
-    sync::OnceLock,
 };
-
-static RE_DRIVE: OnceLock<Regex> = OnceLock::new();
 
 const SYS_STATS: &str = r" *(?P<read_ios>[0-9]*) *(?P<read_merges>[0-9]*) *(?P<read_sectors>[0-9]*) *(?P<read_ticks>[0-9]*) *(?P<write_ios>[0-9]*) *(?P<write_merges>[0-9]*) *(?P<write_sectors>[0-9]*) *(?P<write_ticks>[0-9]*) *(?P<in_flight>[0-9]*) *(?P<io_ticks>[0-9]*) *(?P<time_in_queue>[0-9]*) *(?P<discard_ios>[0-9]*) *(?P<discard_merges>[0-9]*) *(?P<discard_sectors>[0-9]*) *(?P<discard_ticks>[0-9]*) *(?P<flush_ios>[0-9]*) *(?P<flush_ticks>[0-9]*)";
 
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+static RE_DRIVE: Lazy<Regex> = Lazy::new(|| Regex::new(SYS_STATS).unwrap());
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub enum DriveType {
     CdDvdBluray,
     Emmc,
     Flash,
     Floppy,
     Hdd,
+    LoopDevice,
+    MappedDevice,
     Nvme,
+    Raid,
+    RamDisk,
+    Ssd,
+    ZfsVolume,
+    Zram,
     #[default]
     Unknown,
-    Ssd,
 }
 
 #[derive(Debug, Clone, Default, Eq)]
@@ -72,21 +78,13 @@ impl Drive {
     ///
     /// Will return `Err` if the are errors during
     /// reading or parsing
-    pub async fn get_sysfs_paths(skip_virtual_devices: bool) -> Result<Vec<PathBuf>> {
+    pub async fn get_sysfs_paths() -> Result<Vec<PathBuf>> {
         let mut list = Vec::new();
         let mut entries = async_std::fs::read_dir("/sys/block").await?;
         while let Some(entry) = entries.next().await {
             let entry = entry?;
             let block_device = entry.file_name().to_string_lossy().to_string();
-            if block_device.is_empty()
-                || (skip_virtual_devices
-                    && (block_device.starts_with("loop")
-                        || block_device.starts_with("ram")
-                        || block_device.starts_with("zram")
-                        || block_device.starts_with("md")
-                        || block_device.starts_with("dm")
-                        || block_device.starts_with("zd")))
-            {
+            if block_device.is_empty() {
                 continue;
             }
             list.push(entry.path().into());
@@ -105,13 +103,11 @@ impl Drive {
             .await
             .with_context(|| format!("unable to read /sys/block/{}/stat", self.block_device))?;
 
-        let re_drive = RE_DRIVE.get_or_init(|| Regex::new(SYS_STATS).unwrap());
-
-        let captures = re_drive
+        let captures = RE_DRIVE
             .captures(&stat)
             .with_context(|| format!("unable to parse /sys/block/{}/stat", self.block_device))?;
 
-        Ok(re_drive
+        Ok(RE_DRIVE
             .capture_names()
             .flatten()
             .filter_map(|named_capture| {
@@ -132,12 +128,25 @@ impl Drive {
             Ok(DriveType::Floppy)
         } else if self.block_device.starts_with("sr") {
             Ok(DriveType::CdDvdBluray)
-        } else if let Ok(rot) =
+        } else if self.block_device.starts_with("zram") {
+            Ok(DriveType::Zram)
+        } else if self.block_device.starts_with("md") {
+            Ok(DriveType::Raid)
+        } else if self.block_device.starts_with("dm") {
+            Ok(DriveType::MappedDevice)
+        } else if self.block_device.starts_with("ram") {
+            Ok(DriveType::RamDisk)
+        } else if self.block_device.starts_with("zd") {
+            Ok(DriveType::ZfsVolume)
+        } else if let Ok(rotational) =
             async_std::fs::read_to_string(self.sys_fs_path.join("queue/rotational")).await
         {
             // turn rot into a boolean
-            let rot = rot.replace('\n', "").parse::<u8>().map(|rot| rot != 0)?;
-            if rot {
+            let rotational = rotational
+                .replace('\n', "")
+                .parse::<u8>()
+                .map(|rot| rot != 0)?;
+            if rotational {
                 Ok(DriveType::Hdd)
             } else if self.removable().await? {
                 Ok(DriveType::Flash)
@@ -239,9 +248,27 @@ impl Drive {
             DriveType::Flash => ThemedIcon::new("flash-symbolic").into(),
             DriveType::Floppy => ThemedIcon::new("floppy-symbolic").into(),
             DriveType::Hdd => ThemedIcon::new("hdd-symbolic").into(),
+            DriveType::LoopDevice => ThemedIcon::new("loop-device-symbolic").into(),
+            DriveType::MappedDevice => ThemedIcon::new("mapped-device-symbolic").into(),
             DriveType::Nvme => ThemedIcon::new("nvme-symbolic").into(),
-            DriveType::Unknown => Self::default_icon(),
+            DriveType::Raid => ThemedIcon::new("raid-symbolic").into(),
+            DriveType::RamDisk => ThemedIcon::new("ram-disk-symbolic").into(),
             DriveType::Ssd => ThemedIcon::new("ssd-symbolic").into(),
+            DriveType::ZfsVolume => ThemedIcon::new("zfs-symbolic").into(),
+            DriveType::Zram => ThemedIcon::new("zram-symbolic").into(),
+            DriveType::Unknown => Self::default_icon(),
+        }
+    }
+
+    pub async fn is_virtual(&self) -> bool {
+        match self.drive_type {
+            DriveType::LoopDevice => true,
+            DriveType::MappedDevice => true,
+            DriveType::Raid => true,
+            DriveType::RamDisk => true,
+            DriveType::ZfsVolume => true,
+            DriveType::Zram => true,
+            _ => self.capacity().await.unwrap_or(0) == 0,
         }
     }
 

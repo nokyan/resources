@@ -11,15 +11,18 @@ use pci_ids::FromId;
 
 #[derive(Debug, Clone, Copy, Default)]
 pub enum InterfaceType {
+    Bluetooth,
+    Bridge,
     Ethernet,
     InfiniBand,
     Slip,
+    VirtualEthernet,
+    VmBridge,
+    Wireguard,
     Wlan,
     Wwan,
-    Bluetooth,
-    Wireguard,
     #[default]
-    Other,
+    Unknown,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -113,14 +116,16 @@ impl NetworkInterface {
             {
                 // this requires systemd's PredictableNetworkInterfaceNames to be active,
                 // otherwise it's (probably) just going to be `InterfaceType::Other`
+                "bn" => InterfaceType::Bluetooth,
+                "eth" => InterfaceType::Ethernet,
                 "en" => InterfaceType::Ethernet,
                 "ib" => InterfaceType::InfiniBand,
                 "sl" => InterfaceType::Slip,
+                "veth" => InterfaceType::VirtualEthernet,
+                "wg" => InterfaceType::Wireguard,
                 "wl" => InterfaceType::Wlan,
                 "ww" => InterfaceType::Wwan,
-                "bn" => InterfaceType::Bluetooth,
-                "wg" => InterfaceType::Wireguard,
-                _ => InterfaceType::Other,
+                _ => InterfaceType::Unknown,
             },
             speed: std::fs::read_to_string(sysfs_path.join("speed"))
                 .map(|x| x.parse().unwrap_or_default())
@@ -184,15 +189,28 @@ impl NetworkInterface {
     /// Returns the appropriate Icon for the type of drive
     pub fn icon(&self) -> Icon {
         match self.interface_type {
+            InterfaceType::Bluetooth => ThemedIcon::new("bluetooth-symbolic").into(),
+            InterfaceType::Bridge => ThemedIcon::new("bridge-symbolic").into(),
             InterfaceType::Ethernet => ThemedIcon::new("ethernet-symbolic").into(),
             InterfaceType::InfiniBand => ThemedIcon::new("infiniband-symbolic").into(),
             InterfaceType::Slip => ThemedIcon::new("slip-symbolic").into(),
+            InterfaceType::VirtualEthernet => ThemedIcon::new("virtual-ethernet").into(),
+            InterfaceType::VmBridge => ThemedIcon::new("vm-bridge-symbolic").into(),
+            InterfaceType::Wireguard => ThemedIcon::new("vpn-symbolic").into(),
             InterfaceType::Wlan => ThemedIcon::new("wlan-symbolic").into(),
             InterfaceType::Wwan => ThemedIcon::new("wwan-symbolic").into(),
-            InterfaceType::Bluetooth => ThemedIcon::new("bluetooth-symbolic").into(),
-            InterfaceType::Wireguard => ThemedIcon::new("vpn-symbolic").into(),
-            InterfaceType::Other => Self::default_icon(),
+            InterfaceType::Unknown => Self::default_icon(),
         }
+    }
+
+    pub fn is_virtual(&self) -> bool {
+        matches!(
+            self.interface_type,
+            InterfaceType::Bridge
+                | InterfaceType::VmBridge
+                | InterfaceType::VirtualEthernet
+                | InterfaceType::Wireguard
+        )
     }
 
     pub fn default_icon() -> Icon {

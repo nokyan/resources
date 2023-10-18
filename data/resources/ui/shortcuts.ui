@@ -21,6 +21,12 @@
                 <property name="action-name">app.quit</property>
               </object>
             </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes" context="shortcut window">Toggle Search Field</property>
+                <property name="action-name">app.toggle-search</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>

@@ -6,7 +6,7 @@
     <property name="can-navigate-back">True</property>
     <child>
       <object class="AdwPreferencesPage">
-        <property name="icon-name">applications-system-symbolic</property>
+        <property name="icon-name">generic-settings-symbolic</property>
         <property name="title" translatable="yes">General</property>
         <child>
           <object class="AdwPreferencesGroup">
@@ -57,6 +57,37 @@
                     </items>
                   </object>
                 </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="show_search_on_start_row">
+                <property name="title" translatable="yes">Show Search Fields on Launch</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="icon-name">device-settings-symbolic</property>
+        <property name="title" translatable="yes">Devices</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Drives</property>
+            <child>
+              <object class="AdwSwitchRow" id="show_virtual_drives_row">
+                <property name="title" translatable="yes">Show Virtual Drives</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Network Interfaces</property>
+            <child>
+              <object class="AdwSwitchRow" id="show_virtual_network_interfaces_row">
+                <property name="title" translatable="yes">Show Virtual Network Interfaces</property>
               </object>
             </child>
           </object>

@@ -2,18 +2,26 @@
 <gresources>
   <gresource prefix="/net/nokyan/Resources/icons/scalable/actions/">
     <file preprocess="xml-stripblanks" alias="app-symbolic.svg">icons/app-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="bluetooth-symbolic.svg">icons/bluetooth-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="bridge-symbolic.svg">icons/bridge-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="cd-dvd-bluray-symbolic.svg">icons/cd-dvd-bluray-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="device-settings-symbolic.svg">icons/device-settings-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="emmc-symbolic.svg">icons/emmc-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="ethernet-symbolic.svg">icons/ethernet-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="floppy-symbolic.svg">icons/floppy-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="generic-process-symbolic.svg">icons/generic-process-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="generic-settings-symbolic.svg">icons/generic-settings-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="gpu-symbolic.svg">icons/gpu-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="hdd-symbolic.svg">icons/hdd-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="infiniband-symbolic.svg">icons/infiniband-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="info-symbolic.svg">icons/info-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="loop-device-symbolic.svg">icons/loop-device-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="mapped-device-symbolic.svg">icons/mapped-device-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="memory-symbolic.svg">icons/memory-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="nvme-symbolic.svg">icons/nvme-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="processor-symbolic.svg">icons/processor-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="raid-symbolic.svg">icons/raid-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="ram-disk-symbolic.svg">icons/ram-disk-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="search-symbolic.svg">icons/search-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="shell-symbolic.svg">icons/shell-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="slip-symbolic.svg">icons/slip-symbolic.svg</file>
@@ -21,9 +29,13 @@
     <file preprocess="xml-stripblanks" alias="system-processes-symbolic.svg">icons/system-processes-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="unknown-drive-type-symbolic.svg">icons/unknown-drive-type-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="unknown-network-type-symbolic.svg">icons/unknown-network-type-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="virtual-ethernet-symbolic.svg">icons/virtual-ethernet-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="vm-bridge-symbolic.svg">icons/vm-bridge-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="vpn-symbolic.svg">icons/vpn-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="wlan-symbolic.svg">icons/wlan-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="wwan-symbolic.svg">icons/wwan-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="zfs-symbolic.svg">icons/zfs-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="zram-symbolic.svg">icons/zram-symbolic.svg</file>
   </gresource>
   <gresource prefix="/net/nokyan/Resources/"><!-- see https://gtk-rs.org/gtk4-rs/git/docs/gtk4/struct.Application.html#automatic-resources -->
     <file compressed="true">style.css</file>

@@ -25,5 +25,17 @@
       <default>&quot;Normal&quot;</default>
       <summary>Refresh Speed</summary>
     </key>
+    <key name="show-search-on-start" type="b">
+      <default>false</default>
+      <summary>Show search field for Processes and Applications on launch</summary>
+    </key>
+    <key name="show-virtual-drives" type="b">
+      <default>false</default>
+      <summary>Show virtual block devices such as LVM containers</summary>
+    </key>
+    <key name="show-virtual-network-interfaces" type="b">
+      <default>false</default>
+      <summary>Show virtual network interfaces such as Docker interfaces</summary>
+    </key>
   </schema>
 </schemalist>

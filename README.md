@@ -50,7 +50,7 @@ If you use [GNOME Builder](https://apps.gnome.org/app/org.gnome.Builder/) or Vis
 
 ### Fedora
 
-Packaged in [COPR](https://copr.fedorainfracloud.org/coprs/atim/resources/) for Fedora 39 and newer.
+**Unofficially** packaged in [COPR](https://copr.fedorainfracloud.org/coprs/atim/resources/) for Fedora 39 and newer.
 
 ```sh
 dnf copr enable atim/resources

@@ -1411,8 +1411,9 @@ checksum = "9e76628b4d3a7581389a35d5b6e2139607ad7c75b17aed325f210aa91f4a9609"
 
 [[package]]
 name = "plotters-cairo"
-version = "0.4.0"
-source = "git+https://github.com/plotters-rs/plotters-cairo?rev=1ffd536#1ffd53659012a0e109ddc844ede314c5bf624666"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1a73c5d841cec447bc191e932df2d58ef6bfa349e37027bf29a3e8d759d4c85b"
 dependencies = [
  "cairo-rs",
  "plotters-backend",

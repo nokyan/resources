@@ -193,6 +193,12 @@ impl ResApplications {
         glib::Object::new::<Self>()
     }
 
+    pub fn toggle_search(&self) {
+        let imp = self.imp();
+
+        imp.search_button.set_active(!imp.search_button.is_active());
+    }
+
     pub fn init(&self, sender: Sender<Action>) {
         let imp = self.imp();
         imp.sender.set(sender).unwrap();
@@ -311,8 +317,8 @@ impl ResApplications {
         let imp = self.imp();
 
         imp.selection_model.borrow().connect_selection_changed(
-            clone!(@strong self as this => move |model, _, _| {
-                let imp = this.imp();
+        clone!(@strong self as this => move |model, _, _| {
+            let imp = this.imp();
                 let is_system_processes = model.selected_item().map_or(false, |object| {
                     object
                     .downcast::<ApplicationEntry>()
@@ -339,7 +345,7 @@ impl ResApplications {
 
         imp.search_entry
             .connect_search_changed(clone!(@strong self as this => move |_| {
-                let imp = this.imp();
+            let imp = this.imp();
                 if let Some(filter) = imp.filter_model.borrow().filter() {
                     filter.changed(FilterChange::Different);
                 }
@@ -377,6 +383,10 @@ impl ResApplications {
         let search_string = imp.search_entry.text().to_string().to_lowercase();
         !imp.search_revealer.reveals_child()
             || item.name().to_lowercase().contains(&search_string)
+            || item
+                .id()
+                .map(|id| id.to_lowercase().contains(&search_string))
+                .unwrap_or_default()
             || item
                 .description()
                 .unwrap_or_default()

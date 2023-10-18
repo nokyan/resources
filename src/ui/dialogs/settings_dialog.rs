@@ -21,6 +21,12 @@ mod imp {
         pub temperature_combo_row: TemplateChild<adw::ComboRow>,
         #[template_child]
         pub refresh_speed_combo_row: TemplateChild<adw::ComboRow>,
+        #[template_child]
+        pub show_search_on_start_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub show_virtual_drives_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub show_virtual_network_interfaces_row: TemplateChild<adw::SwitchRow>,
     }
 
     #[glib::object_subclass]
@@ -83,6 +89,12 @@ impl ResSettingsDialog {
             .set_selected((SETTINGS.temperature_unit() as u8) as u32);
         imp.refresh_speed_combo_row
             .set_selected((SETTINGS.refresh_speed() as u8) as u32);
+        imp.show_search_on_start_row
+            .set_active(SETTINGS.show_search_on_start());
+        imp.show_virtual_drives_row
+            .set_active(SETTINGS.show_virtual_drives());
+        imp.show_virtual_network_interfaces_row
+            .set_active(SETTINGS.show_virtual_network_interfaces());
     }
 
     pub fn setup_signals(&self) {
@@ -108,6 +120,21 @@ impl ResSettingsDialog {
                 if let Some(refresh_speed) = RefreshSpeed::from_repr(combo_row.selected() as u8) {
                     let _ = SETTINGS.set_refresh_speed(refresh_speed);
                 }
+            });
+
+        imp.show_search_on_start_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_show_search_on_start(switch_row.is_active());
+            });
+
+        imp.show_virtual_drives_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_show_virtual_drives(switch_row.is_active());
+            });
+
+        imp.show_virtual_network_interfaces_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_show_virtual_network_interfaces(switch_row.is_active());
             });
     }
 }

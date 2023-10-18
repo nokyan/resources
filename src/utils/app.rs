@@ -240,31 +240,34 @@ impl AppsContext {
         } else if let Some(app) = self.apps.get(&process.executable_name) {
             // ↑ look for whether we can find an ID in the executable name of the process
             Some(app.id.clone())
-        } else if let Some(app) = self.apps.values().find(|a| {
-            // ↓ probably most expensive lookup, therefore only last resort: look for whether the process' commandline
-            //   can be found in the apps' commandline
-            a.commandline
-                .as_ref()
-                .map(|app_commandline| {
-                    let app_executable_name = app_commandline
-                        .split(' ') // filter any arguments (e. g. from "/usr/bin/firefox %u" to "/usr/bin/firefox")
-                        .nth(0)
-                        .unwrap_or_default()
-                        .split('/') // filter the executable path (e. g. from "/usr/bin/firefox" to "firefox")
-                        .nth_back(0)
-                        .unwrap_or_default();
-                    app_commandline == &process.executable_path
-                        || app_executable_name == process.executable_name
-                        || KNOWN_EXECUTABLE_NAME_EXCEPTIONS
-                            .get(&process.executable_name)
-                            .map(|sub_executable_name| sub_executable_name == app_executable_name)
-                            .unwrap_or(false)
-                })
-                .unwrap_or(false)
-        }) {
-            Some(app.id.clone())
         } else {
-            None
+            self.apps
+                .values()
+                .find(|a| {
+                    // ↓ probably most expensive lookup, therefore only last resort: look for whether the process' commandline
+                    //   can be found in the apps' commandline
+                    a.commandline
+                        .as_ref()
+                        .map(|app_commandline| {
+                            let app_executable_name = app_commandline
+                                .split(' ') // filter any arguments (e. g. from "/usr/bin/firefox %u" to "/usr/bin/firefox")
+                                .nth(0)
+                                .unwrap_or_default()
+                                .split('/') // filter the executable path (e. g. from "/usr/bin/firefox" to "firefox")
+                                .nth_back(0)
+                                .unwrap_or_default();
+                            app_commandline == &process.executable_path
+                                || app_executable_name == process.executable_name
+                                || KNOWN_EXECUTABLE_NAME_EXCEPTIONS
+                                    .get(&process.executable_name)
+                                    .map(|sub_executable_name| {
+                                        sub_executable_name == app_executable_name
+                                    })
+                                    .unwrap_or(false)
+                        })
+                        .unwrap_or(false)
+                })
+                .map(|app| app.id.clone())
         }
     }
 
