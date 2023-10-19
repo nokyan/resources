@@ -24,10 +24,14 @@ mod imp {
         #[template_child]
         pub label: TemplateChild<gtk::Label>,
         #[template_child]
+        pub subtitle_label: TemplateChild<gtk::Label>,
+        #[template_child]
         pub progress_bar: TemplateChild<gtk::ProgressBar>,
 
         #[property(get = Self::name, set = Self::set_name, type = glib::GString)]
         name: Cell<glib::GString>,
+        #[property(get = Self::subtitle, set = Self::set_subtitle, type = glib::GString)]
+        subtitle: Cell<glib::GString>,
         #[property(get = Self::icon, set = Self::set_icon, type = Icon)]
         icon: RefCell<Icon>,
         #[property(get, set = Self::set_usage)]
@@ -51,6 +55,24 @@ mod imp {
             }
             self.name.set(glib::GString::from(name));
             self.label.set_label(name);
+        }
+
+        pub fn subtitle(&self) -> glib::GString {
+            let subtitle = self.subtitle.take();
+            let result = subtitle.clone();
+            self.subtitle.set(subtitle);
+
+            result
+        }
+
+        pub fn set_subtitle(&self, subtitle: &str) {
+            let current_subtitle = self.subtitle.take();
+            if current_subtitle.as_str() == subtitle {
+                self.subtitle.set(current_subtitle);
+                return;
+            }
+            self.name.set(glib::GString::from(subtitle));
+            self.subtitle_label.set_label(subtitle);
         }
 
         pub fn icon(&self) -> Icon {
@@ -79,7 +101,9 @@ mod imp {
                 image: Default::default(),
                 label: Default::default(),
                 progress_bar: Default::default(),
+                subtitle_label: Default::default(),
                 name: Default::default(),
+                subtitle: Default::default(),
                 icon: RefCell::new(ThemedIcon::new("generic-process").into()),
                 usage: Default::default(),
             }
@@ -131,15 +155,20 @@ glib::wrapper! {
 }
 
 impl ResStackSidebarItem {
-    pub fn new(name: String, icon: Icon) -> Self {
+    pub fn new(name: String, icon: Icon, subtitle: String) -> Self {
         let this: Self = glib::Object::builder()
             .property("name", &name)
             .property("icon", icon)
+            .property("subtitle", subtitle)
             .build();
         this
     }
 
     pub fn set_progress_bar_visible(&self, visible: bool) {
         self.imp().progress_bar.set_visible(visible);
+    }
+
+    pub fn set_subtitle_visible(&self, visible: bool) {
+        self.imp().subtitle_label.set_visible(visible);
     }
 }

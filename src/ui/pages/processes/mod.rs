@@ -12,7 +12,7 @@ use gtk_macros::send;
 use log::error;
 
 use crate::config::PROFILE;
-use crate::i18n::i18n;
+use crate::i18n::{i18n, i18n_f};
 use crate::ui::dialogs::process_dialog::ResProcessDialog;
 use crate::ui::window::{self, Action, MainWindow};
 use crate::utils::app::AppsContext;
@@ -77,6 +77,9 @@ mod imp {
 
         #[property(get = Self::tab_name, type = glib::GString)]
         tab_name: Cell<glib::GString>,
+
+        #[property(get = Self::tab_subtitle, set = Self::set_tab_subtitle, type = glib::GString)]
+        tab_subtitle: Cell<glib::GString>,
     }
 
     impl ResProcesses {
@@ -85,6 +88,17 @@ mod imp {
             let result = tab_name.clone();
             self.tab_name.set(tab_name);
             result
+        }
+
+        pub fn tab_subtitle(&self) -> glib::GString {
+            let tab_subtitle = self.tab_subtitle.take();
+            let result = tab_subtitle.clone();
+            self.tab_subtitle.set(tab_subtitle);
+            result
+        }
+
+        pub fn set_tab_subtitle(&self, tab_subtitle: &str) {
+            self.tab_subtitle.set(glib::GString::from(tab_subtitle));
         }
     }
 
@@ -109,6 +123,7 @@ mod imp {
                 uses_progress_bar: Cell::new(false),
                 icon: RefCell::new(ThemedIcon::new("generic-process-symbolic").into()),
                 tab_name: Cell::new(glib::GString::from(i18n("Processes"))),
+                tab_subtitle: Cell::new(glib::GString::from("")),
             }
         }
     }
@@ -446,7 +461,7 @@ impl ResProcesses {
         store.iter::<ProcessEntry>().flatten().for_each(|object| {
             let item_pid = object.pid();
             // filter out processes that have existed before but don't anymore
-            if !apps.get_process(item_pid).unwrap().alive {
+            if apps.get_process(item_pid).is_none() {
                 if let Some((dialog_pid, dialog)) = dialog_opt {
                     if *dialog_pid == item_pid {
                         dialog.close();
@@ -479,6 +494,11 @@ impl ResProcesses {
         }
 
         store.items_changed(0, store.n_items(), store.n_items());
+
+        self.set_property(
+            "tab_subtitle",
+            i18n_f("Running Processes: {}", &[&(store.n_items()).to_string()]),
+        );
     }
 
     pub fn execute_process_action_dialog(&self, process: ProcessItem, action: ProcessAction) {

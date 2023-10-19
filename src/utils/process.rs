@@ -22,7 +22,6 @@ pub struct Process {
     pub icon: Icon,
     pub cpu_time_before: u64,
     pub cpu_time_before_timestamp: u64,
-    pub alive: bool,
 }
 
 // TODO: Better name?
@@ -121,7 +120,6 @@ impl Process {
             icon: ThemedIcon::new("generic-process").into(),
             cpu_time_before: 0,
             cpu_time_before_timestamp: 0,
-            alive: true,
         }
     }
 
@@ -240,7 +238,12 @@ impl Process {
         }
     }
 
-    pub fn sanitize_cmdline<S: AsRef<str>>(cmdline: S) -> String {
-        cmdline.as_ref().replace('\0', " ")
+    pub fn sanitize_cmdline<S: AsRef<str>>(cmdline: S) -> Option<String> {
+        let cmdline = cmdline.as_ref();
+        if cmdline.is_empty() {
+            None
+        } else {
+            Some(cmdline.replace('\0', " "))
+        }
     }
 }

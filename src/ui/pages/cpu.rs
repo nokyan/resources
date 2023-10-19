@@ -68,6 +68,9 @@ mod imp {
 
         #[property(get = Self::tab_name, type = glib::GString)]
         tab_name: Cell<glib::GString>,
+
+        #[property(get = Self::tab_subtitle, set = Self::set_tab_subtitle, type = glib::GString)]
+        tab_subtitle: Cell<glib::GString>,
     }
 
     impl ResCPU {
@@ -76,6 +79,17 @@ mod imp {
             let result = tab_name.clone();
             self.tab_name.set(tab_name);
             result
+        }
+
+        pub fn tab_subtitle(&self) -> glib::GString {
+            let tab_subtitle = self.tab_subtitle.take();
+            let result = tab_subtitle.clone();
+            self.tab_subtitle.set(tab_subtitle);
+            result
+        }
+
+        pub fn set_tab_subtitle(&self, tab_subtitle: &str) {
+            self.tab_subtitle.set(glib::GString::from(tab_subtitle));
         }
     }
 
@@ -100,6 +114,7 @@ mod imp {
                 icon: RefCell::new(ThemedIcon::new("processor-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("Processor"))),
+                tab_subtitle: Cell::new(glib::GString::from("")),
                 old_total_usage: Cell::default(),
                 old_thread_usages: RefCell::default(),
                 logical_cpus_amount: Cell::default(),
@@ -264,9 +279,11 @@ impl ResCPU {
         let sum_total_delta = new_total_usage.1 - imp.old_total_usage.get().1;
         let work_total_time = sum_total_delta - idle_total_delta;
         let total_fraction = ((work_total_time as f64) / (sum_total_delta as f64)).nan_default(0.0);
+
         imp.total_cpu.push_data_point(total_fraction);
-        imp.total_cpu
-            .set_subtitle(&format!("{} %", (total_fraction * 100.0).round()));
+
+        let percentage_string = &format!("{} %", (total_fraction * 100.0).round());
+        imp.total_cpu.set_subtitle(percentage_string);
         imp.old_total_usage.set(new_total_usage);
 
         if imp.logical_cpus_amount.get() > 1 {
@@ -302,5 +319,7 @@ impl ResCPU {
         }
 
         self.set_property("usage", total_fraction);
+
+        self.set_property("tab_subtitle", percentage_string);
     }
 }

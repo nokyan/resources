@@ -274,8 +274,29 @@ impl MainWindow {
             this.refresh_drives().await;
             this.refresh_network_interfaces().await;
 
-            futures_util::join!(
-            async {
+            futures_util::join!(async {
+                loop {
+                    imp.cpu.refresh_page().await;
+
+                    imp.memory.refresh_page().await;
+
+                    for gpu_page_toolbar in imp.gpu_pages.borrow().iter() {
+                        gpu_page_toolbar.content().and_downcast::<ResGPU>().unwrap().refresh_page().await;
+                    }
+
+                    this.refresh_drives().await;
+                        for drive_page_toolbar in imp.drive_pages.borrow().values() {
+                            drive_page_toolbar.1.content().and_downcast::<ResDrive>().unwrap().refresh_page().await;
+                    }
+
+                    this.refresh_network_interfaces().await;
+                    for network_page_toolbar in imp.network_pages.borrow().values() {
+                        network_page_toolbar.1.content().and_downcast::<ResNetwork>().unwrap().refresh_page().await;
+                    }
+
+                    timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
+                }
+            }, async {
                 loop {
                     {
                         let mut apps_context = imp.apps_context.lock().await;
@@ -283,46 +304,10 @@ impl MainWindow {
                         imp.applications.refresh_apps_list(&apps_context);
                         imp.processes.refresh_processes_list(&apps_context);
                     }
+
                     timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().process_refresh_interval())).await;
                 }
-            },
-            async {
-                loop {
-                    imp.cpu.refresh_page().await;
-                    timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
-                }
-            },
-            async {
-                loop {
-                    imp.memory.refresh_page().await;
-                    timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
-                }
-            },
-            async {
-                loop {
-                    for gpu_page_toolbar in imp.gpu_pages.borrow().iter() {
-                        gpu_page_toolbar.content().and_downcast::<ResGPU>().unwrap().refresh_page().await;
-                    }
-                    timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
-                }
-            },
-            async {
-                loop {
-                    this.refresh_drives().await;
-                    for drive_page_toolbar in imp.drive_pages.borrow().values() {
-                        drive_page_toolbar.1.content().and_downcast::<ResDrive>().unwrap().refresh_page().await;
-                    }
-                    timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
-                }
-            }, async {
-                loop {
-                    this.refresh_network_interfaces().await;
-                    for network_page_toolbar in imp.network_pages.borrow().values() {
-                        network_page_toolbar.1.content().and_downcast::<ResNetwork>().unwrap().refresh_page().await;
-                    }
-                    timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
-                }
-            });
+            })
         }));
     }
 
@@ -340,8 +325,7 @@ impl MainWindow {
                 if is_virtual && !SETTINGS.show_virtual_drives() {
                     continue;
                 }
-                let capacity =
-                    drive.capacity().await.unwrap_or(0) * drive.sector_size().await.unwrap_or(512);
+                let capacity = drive.capacity().await.unwrap_or(0);
                 let capacity_formatted = convert_storage(capacity as f64, true);
                 let sidebar_title = match drive.drive_type {
                     DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),

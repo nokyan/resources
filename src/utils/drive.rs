@@ -188,7 +188,7 @@ impl Drive {
             .with_context(|| "unable to parse ro sysfs file")
     }
 
-    /// Returns the capacity **in sectors** of the drive
+    /// Returns the capacity of the drive **in bytes**
     ///
     /// # Errors
     ///
@@ -198,7 +198,8 @@ impl Drive {
         async_std::fs::read_to_string(self.sys_fs_path.join("size"))
             .await?
             .replace('\n', "")
-            .parse()
+            .parse::<u64>()
+            .map(|sectors| sectors * 512)
             .with_context(|| "unable to parse size sysfs file")
     }
 
@@ -224,20 +225,6 @@ impl Drive {
         async_std::fs::read_to_string(self.sys_fs_path.join("device/wwid"))
             .await
             .with_context(|| "unable to parse wwid sysfs file")
-    }
-
-    /// Returns the sector size of the drive
-    ///
-    /// # Errors
-    ///
-    /// Will return `Err` if the are errors during
-    /// reading or parsing
-    pub async fn sector_size(&self) -> Result<u64> {
-        async_std::fs::read_to_string(self.sys_fs_path.join("queue/hw_sector_size"))
-            .await?
-            .replace('\n', "")
-            .parse()
-            .with_context(|| "unable to parse hw_sector_size")
     }
 
     /// Returns the appropriate Icon for the type of drive
