@@ -61,7 +61,7 @@ mod imp {
         }
 
         pub fn tooltip(&self) -> glib::GString {
-            let tooltip = self.name.take();
+            let tooltip = self.tooltip.take();
             let result = tooltip.clone();
             self.tooltip.set(tooltip);
 
@@ -69,12 +69,11 @@ mod imp {
         }
 
         pub fn set_tooltip(&self, tooltip: &str) {
-            let current_tooltip = self.name.take();
+            let current_tooltip = self.tooltip.take();
             if current_tooltip.as_str() == tooltip {
-                self.name.set(current_tooltip);
+                self.tooltip.set(current_tooltip);
                 return;
             }
-
             self.tooltip.set(glib::GString::from(tooltip));
             self.inscription.set_tooltip_text(Some(tooltip));
         }

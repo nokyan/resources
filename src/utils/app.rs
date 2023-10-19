@@ -293,7 +293,6 @@ impl AppsContext {
     /// `ProcessItem`.
     pub fn process_items(&self) -> HashMap<i32, ProcessItem> {
         self.all_processes()
-            .filter(|process| !process.data.commandline.is_empty()) // find a way to display procs without commandlines
             .map(|process| (process.data.pid, self.process_item(process.data.pid)))
             .filter_map(|(pid, process_opt)| process_opt.map(|process| (pid, process)))
             .collect()
@@ -308,11 +307,12 @@ impl AppsContext {
             };
             ProcessItem {
                 pid: process.data.pid,
-                display_name: full_comm,
+                display_name: full_comm.clone(),
                 icon: process.icon.clone(),
                 memory_usage: process.data.memory_usage,
                 cpu_time_ratio: process.cpu_time_ratio(),
-                commandline: Process::sanitize_cmdline(process.data.commandline.clone()),
+                commandline: Process::sanitize_cmdline(process.data.commandline.clone())
+                    .unwrap_or(full_comm),
                 containerization: process.data.containerization.clone(),
                 cgroup: process.data.cgroup.clone(),
                 uid: process.data.uid,
