@@ -22,6 +22,8 @@ mod imp {
         #[template_child]
         pub refresh_speed_combo_row: TemplateChild<adw::ComboRow>,
         #[template_child]
+        pub sidebar_details_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
         pub show_search_on_start_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub show_virtual_drives_row: TemplateChild<adw::SwitchRow>,
@@ -89,6 +91,8 @@ impl ResSettingsDialog {
             .set_selected((SETTINGS.temperature_unit() as u8) as u32);
         imp.refresh_speed_combo_row
             .set_selected((SETTINGS.refresh_speed() as u8) as u32);
+        imp.sidebar_details_row
+            .set_active(SETTINGS.sidebar_details());
         imp.show_search_on_start_row
             .set_active(SETTINGS.show_search_on_start());
         imp.show_virtual_drives_row
@@ -121,6 +125,10 @@ impl ResSettingsDialog {
                     let _ = SETTINGS.set_refresh_speed(refresh_speed);
                 }
             });
+
+        imp.sidebar_details_row.connect_active_notify(|switch_row| {
+            let _ = SETTINGS.set_sidebar_details(switch_row.is_active());
+        });
 
         imp.show_search_on_start_row
             .connect_active_notify(|switch_row| {

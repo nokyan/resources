@@ -37,5 +37,9 @@
       <default>false</default>
       <summary>Show virtual network interfaces such as Docker interfaces</summary>
     </key>
+    <key name="sidebar-details" type="b">
+      <default>false</default>
+      <summary>Show usage details in the sidebar</summary>
+    </key>
   </schema>
 </schemalist>

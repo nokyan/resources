@@ -12,7 +12,7 @@ use gtk_macros::send;
 use log::error;
 
 use crate::config::PROFILE;
-use crate::i18n::i18n;
+use crate::i18n::{i18n, i18n_f};
 use crate::ui::dialogs::app_dialog::ResAppDialog;
 use crate::ui::window::{self, Action, MainWindow};
 use crate::utils::app::{AppItem, AppsContext};
@@ -74,6 +74,9 @@ mod imp {
 
         #[property(get = Self::tab_name, type = glib::GString)]
         tab_name: Cell<glib::GString>,
+
+        #[property(get = Self::tab_subtitle, set = Self::set_tab_subtitle, type = glib::GString)]
+        tab_subtitle: Cell<glib::GString>,
     }
 
     impl ResApplications {
@@ -82,6 +85,17 @@ mod imp {
             let result = tab_name.clone();
             self.tab_name.set(tab_name);
             result
+        }
+
+        pub fn tab_subtitle(&self) -> glib::GString {
+            let tab_subtitle = self.tab_subtitle.take();
+            let result = tab_subtitle.clone();
+            self.tab_subtitle.set(tab_subtitle);
+            result
+        }
+
+        pub fn set_tab_subtitle(&self, tab_subtitle: &str) {
+            self.tab_subtitle.set(glib::GString::from(tab_subtitle));
         }
     }
 
@@ -105,6 +119,7 @@ mod imp {
                 uses_progress_bar: Cell::new(false),
                 icon: RefCell::new(ThemedIcon::new("app-symbolic").into()),
                 tab_name: Cell::from(glib::GString::from(i18n("Applications"))),
+                tab_subtitle: Cell::new(glib::GString::from("")),
             }
         }
     }
@@ -463,6 +478,15 @@ impl ResApplications {
             .for_each(|(_, new_item)| store.append(&ApplicationEntry::new(new_item)));
 
         store.items_changed(0, store.n_items(), store.n_items());
+
+        // -1 because we don't want to count System Processes
+        self.set_property(
+            "tab_subtitle",
+            i18n_f(
+                "Running Applications: {}",
+                &[&(store.n_items() - 1).to_string()],
+            ),
+        );
     }
 
     pub fn execute_process_action_dialog(&self, app: AppItem, action: ProcessAction) {

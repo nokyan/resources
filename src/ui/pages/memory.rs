@@ -54,8 +54,12 @@ mod imp {
 
         #[property(get, set)]
         usage: Cell<f64>,
+
         #[property(get = Self::tab_name, type = glib::GString)]
         tab_name: Cell<glib::GString>,
+
+        #[property(get = Self::tab_subtitle, set = Self::set_tab_subtitle, type = glib::GString)]
+        tab_subtitle: Cell<glib::GString>,
     }
 
     impl ResMemory {
@@ -64,6 +68,17 @@ mod imp {
             let result = tab_name.clone();
             self.tab_name.set(tab_name);
             result
+        }
+
+        pub fn tab_subtitle(&self) -> glib::GString {
+            let tab_subtitle = self.tab_subtitle.take();
+            let result = tab_subtitle.clone();
+            self.tab_subtitle.set(tab_subtitle);
+            result
+        }
+
+        pub fn set_tab_subtitle(&self, tab_subtitle: &str) {
+            self.tab_subtitle.set(glib::GString::from(tab_subtitle));
         }
     }
 
@@ -83,6 +98,7 @@ mod imp {
                 icon: RefCell::new(ThemedIcon::new("memory-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("Memory"))),
+                tab_subtitle: Cell::new(glib::GString::from("")),
             }
         }
     }
@@ -232,17 +248,24 @@ impl ResMemory {
         let memory_fraction = used_mem as f64 / total_mem as f64;
         let swap_fraction = (used_swap as f64 / total_swap as f64).nan_default(0.0);
 
+        let formatted_used_mem = convert_storage(used_mem as f64, false);
+        let formatted_total_mem = convert_storage(total_mem as f64, false);
+
         imp.memory.push_data_point(memory_fraction);
         imp.memory.set_subtitle(&format!(
             "{} / {} · {} %",
-            &convert_storage(used_mem as f64, false),
-            &convert_storage(total_mem as f64, false),
+            &formatted_used_mem,
+            &formatted_total_mem,
             (memory_fraction * 100.0).round()
         ));
         if total_swap == 0 {
             imp.swap.push_data_point(0.0);
             imp.swap.set_graph_visible(false);
             imp.swap.set_subtitle(&i18n("N/A"));
+            self.set_property(
+                "tab_subtitle",
+                &format!("{} / {}", &formatted_used_mem, &formatted_total_mem),
+            );
         } else {
             imp.swap.push_data_point(swap_fraction);
             imp.swap.set_graph_visible(true);
@@ -252,6 +275,17 @@ impl ResMemory {
                 &convert_storage(total_swap as f64, false),
                 (swap_fraction * 100.0).round()
             ));
+            self.set_property(
+                "tab_subtitle",
+                i18n_f(
+                    "{} / {} · Swap: {} %",
+                    &[
+                        &formatted_used_mem,
+                        &formatted_total_mem,
+                        &(swap_fraction * 100.0).round().to_string(),
+                    ],
+                ),
+            );
         }
 
         self.set_property("usage", memory_fraction);

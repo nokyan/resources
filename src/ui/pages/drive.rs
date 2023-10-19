@@ -4,7 +4,7 @@ use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib;
 
 use crate::config::PROFILE;
-use crate::i18n::i18n;
+use crate::i18n::{i18n, i18n_f};
 use crate::utils::drive::Drive;
 use crate::utils::units::{convert_speed, convert_storage};
 
@@ -59,6 +59,9 @@ mod imp {
 
         #[property(get = Self::tab_name, set = Self::set_tab_name, type = glib::GString)]
         tab_name: Cell<glib::GString>,
+
+        #[property(get = Self::tab_subtitle, set = Self::set_tab_subtitle, type = glib::GString)]
+        tab_subtitle: Cell<glib::GString>,
     }
 
     impl ResDrive {
@@ -82,6 +85,17 @@ mod imp {
 
         pub fn set_icon(&self, icon: &Icon) {
             self.icon.set(icon.clone());
+        }
+
+        pub fn tab_subtitle(&self) -> glib::GString {
+            let tab_subtitle = self.tab_subtitle.take();
+            let result = tab_subtitle.clone();
+            self.tab_subtitle.set(tab_subtitle);
+            result
+        }
+
+        pub fn set_tab_subtitle(&self, tab_subtitle: &str) {
+            self.tab_subtitle.set(glib::GString::from(tab_subtitle));
         }
     }
 
@@ -107,6 +121,7 @@ mod imp {
                         .checked_sub(Duration::from_secs(1))
                         .unwrap(),
                 ),
+                tab_subtitle: Cell::new(glib::GString::from("")),
             }
         }
     }
@@ -207,7 +222,6 @@ impl ResDrive {
     pub async fn refresh_page(&self) {
         let imp = self.imp();
 
-        let hw_sector_size = imp.drive.borrow().sector_size().await.unwrap_or(512) as usize;
         let disk_stats = imp.drive.borrow().sys_stats().await.unwrap_or_default();
 
         let time_passed = SystemTime::now()
@@ -226,7 +240,12 @@ impl ResDrive {
             imp.removable.set_subtitle(&i18n("No"));
         }
 
-        if let (Some(read_ticks), Some(write_ticks), Some(old_read_ticks), Some(old_write_ticks)) = (
+        let total_usage = if let (
+            Some(read_ticks),
+            Some(write_ticks),
+            Some(old_read_ticks),
+            Some(old_write_ticks),
+        ) = (
             disk_stats.get("read_ticks"),
             disk_stats.get("write_ticks"),
             imp.old_stats.borrow().get("read_ticks"),
@@ -236,14 +255,17 @@ impl ResDrive {
             let delta_write_ticks = write_ticks.saturating_sub(*old_write_ticks);
             let read_ratio = delta_read_ticks as f64 / (time_passed * 1000.0);
             let write_ratio = delta_write_ticks as f64 / (time_passed * 1000.0);
-            let fraction = f64::max(read_ratio, write_ratio).clamp(0.0, 1.0);
-            let percentage_string = format!("{} %", (fraction * 100.0).round());
-            imp.total_usage.push_data_point(fraction);
-            imp.total_usage.set_subtitle(&percentage_string);
-            self.set_property("usage", fraction);
-        }
+            Some(f64::max(read_ratio, write_ratio).clamp(0.0, 1.0))
+        } else {
+            None
+        };
 
-        if let (
+        let percentage_string = format!("{} %", (total_usage.unwrap_or(0.0) * 100.0).round());
+        imp.total_usage.push_data_point(total_usage.unwrap_or(0.0));
+        imp.total_usage.set_subtitle(&percentage_string);
+        self.set_property("usage", total_usage.unwrap_or(0.0));
+
+        let rw_bytes_per_second = if let (
             Some(read_sectors),
             Some(write_sectors),
             Some(old_read_sectors),
@@ -256,15 +278,29 @@ impl ResDrive {
         ) {
             let delta_read_sectors = read_sectors.saturating_sub(*old_read_sectors);
             let delta_write_sectors = write_sectors.saturating_sub(*old_write_sectors);
-            let read_bytes_per_second = (delta_read_sectors * hw_sector_size) as f64 / time_passed;
-            let write_bytes_per_second =
-                (delta_write_sectors * hw_sector_size) as f64 / time_passed;
-            imp.read.set_subtitle(&convert_speed(read_bytes_per_second));
-            imp.write
-                .set_subtitle(&convert_speed(write_bytes_per_second));
-        }
+            Some((
+                (delta_read_sectors * 512) as f64 / time_passed,
+                (delta_write_sectors * 512) as f64 / time_passed,
+            ))
+        } else {
+            None
+        };
 
-        let capacity = imp.drive.borrow().capacity().await.unwrap_or(0) * (hw_sector_size as u64);
+        let formatted_read_speed = convert_speed(rw_bytes_per_second.unwrap_or((0.0, 0.0)).0);
+        let formatted_write_speed = convert_speed(rw_bytes_per_second.unwrap_or((0.0, 0.0)).1);
+
+        imp.read.set_subtitle(&formatted_read_speed);
+        imp.write.set_subtitle(&formatted_write_speed);
+
+        self.set_property(
+            "tab_subtitle",
+            i18n_f(
+                "R: {} · W: {}",
+                &[&formatted_read_speed, &formatted_write_speed],
+            ),
+        );
+
+        let capacity = imp.drive.borrow().capacity().await.unwrap_or(0);
         imp.capacity
             .set_subtitle(&convert_storage(capacity as f64, false));
 

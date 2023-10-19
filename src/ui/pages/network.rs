@@ -4,7 +4,7 @@ use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib;
 
 use crate::config::PROFILE;
-use crate::i18n::i18n;
+use crate::i18n::{i18n, i18n_f};
 use crate::utils::network::NetworkInterface;
 use crate::utils::units::{convert_speed, convert_storage};
 use crate::utils::NaNDefault;
@@ -58,6 +58,9 @@ mod imp {
 
         #[property(get = Self::tab_name, set = Self::set_tab_name, type = glib::GString)]
         tab_name: Cell<glib::GString>,
+
+        #[property(get = Self::tab_subtitle, set = Self::set_tab_subtitle, type = glib::GString)]
+        tab_subtitle: Cell<glib::GString>,
     }
 
     impl ResNetwork {
@@ -81,6 +84,17 @@ mod imp {
 
         pub fn set_icon(&self, icon: &Icon) {
             self.icon.set(icon.clone());
+        }
+
+        pub fn tab_subtitle(&self) -> glib::GString {
+            let tab_subtitle = self.tab_subtitle.take();
+            let result = tab_subtitle.clone();
+            self.tab_subtitle.set(tab_subtitle);
+            result
+        }
+
+        pub fn set_tab_subtitle(&self, tab_subtitle: &str) {
+            self.tab_subtitle.set(glib::GString::from(tab_subtitle));
         }
     }
 
@@ -107,6 +121,7 @@ mod imp {
                         .unwrap(),
                 ),
                 network_interface: RefCell::default(),
+                tab_subtitle: Cell::new(glib::GString::from("")),
             }
         }
     }
@@ -281,6 +296,14 @@ impl ResNetwork {
         self.set_property(
             "usage",
             f64::max(received_delta / highest_received, sent_delta / highest_sent).nan_default(0.0),
+        );
+
+        self.set_property(
+            "tab_subtitle",
+            i18n_f(
+                "R: {} · S: {}",
+                &[&convert_speed(received_delta), &convert_speed(sent_delta)],
+            ),
         );
 
         imp.old_received_bytes.set(received_bytes);

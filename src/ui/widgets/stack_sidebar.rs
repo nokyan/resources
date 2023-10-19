@@ -3,6 +3,8 @@ use std::rc::Rc;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone};
 
+use crate::utils::settings::SETTINGS;
+
 use super::stack_sidebar_item::ResStackSidebarItem;
 
 mod imp {
@@ -113,8 +115,11 @@ impl ResStackSidebar {
                 .content()
                 .unwrap();
 
-            let sidebar_item =
-                ResStackSidebarItem::new(child.property("tab_name"), child.property("icon"));
+            let sidebar_item = ResStackSidebarItem::new(
+                child.property("tab_name"),
+                child.property("icon"),
+                child.property("tab_subtitle"),
+            );
 
             child
                 .bind_property("tab_name", &sidebar_item, "name")
@@ -125,6 +130,18 @@ impl ResStackSidebar {
                 .bind_property("icon", &sidebar_item, "icon")
                 .sync_create()
                 .build();
+
+            child
+                .bind_property("tab_subtitle", &sidebar_item, "subtitle")
+                .sync_create()
+                .build();
+
+            sidebar_item.set_subtitle_visible(SETTINGS.sidebar_details());
+            SETTINGS.connect_sidebar_details(
+                clone!(@strong sidebar_item as item => move |sidebar_details| {
+                    item.set_subtitle_visible(sidebar_details);
+                }),
+            );
 
             if !child.property::<bool>("uses_progress_bar") {
                 sidebar_item.set_progress_bar_visible(false);

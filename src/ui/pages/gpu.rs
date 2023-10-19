@@ -2,7 +2,7 @@ use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self};
 
 use crate::config::PROFILE;
-use crate::i18n::i18n;
+use crate::i18n::{i18n, i18n_f};
 use crate::utils::gpu::GPU;
 use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
 use crate::utils::NaNDefault;
@@ -64,6 +64,9 @@ mod imp {
 
         #[property(get = Self::tab_name, set = Self::set_tab_name, type = glib::GString)]
         tab_name: Cell<glib::GString>,
+
+        #[property(get = Self::tab_subtitle, set = Self::set_tab_subtitle, type = glib::GString)]
+        tab_subtitle: Cell<glib::GString>,
     }
 
     impl ResGPU {
@@ -76,6 +79,17 @@ mod imp {
 
         pub fn set_tab_name(&self, tab_name: &str) {
             self.tab_name.set(glib::GString::from(tab_name));
+        }
+
+        pub fn tab_subtitle(&self) -> glib::GString {
+            let tab_subtitle = self.tab_subtitle.take();
+            let result = tab_subtitle.clone();
+            self.tab_subtitle.set(tab_subtitle);
+            result
+        }
+
+        pub fn set_tab_subtitle(&self, tab_subtitle: &str) {
+            self.tab_subtitle.set(glib::GString::from(tab_subtitle));
         }
     }
 
@@ -99,6 +113,7 @@ mod imp {
                 icon: RefCell::new(ThemedIcon::new("gpu-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("GPU"))),
+                tab_subtitle: Cell::new(glib::GString::from("")),
             }
         }
     }
@@ -182,17 +197,52 @@ impl ResGPU {
     pub async fn refresh_page(&self) {
         let imp = self.imp();
         let gpu = imp.gpu.get().unwrap();
-        if let Ok(gpu_usage) = gpu.get_gpu_usage().await {
-            let gpu_usage_fraction = gpu_usage as f64 / 100.0;
-            imp.gpu_usage.set_subtitle(&format!("{gpu_usage} %"));
-            imp.gpu_usage.push_data_point(gpu_usage_fraction);
-            imp.gpu_usage.set_graph_visible(true);
-            self.set_property("usage", gpu_usage_fraction);
+
+        let gpu_usage_fraction = gpu
+            .get_gpu_usage()
+            .await
+            .map(|gpu_usage| (gpu_usage as f64) / 100.0);
+        let usage_percentage_string = gpu_usage_fraction
+            .as_ref()
+            .map(|fraction| format!("{} %", (fraction * 100.0).round()))
+            .unwrap_or(i18n("N/A"));
+
+        imp.gpu_usage.set_subtitle(&usage_percentage_string);
+        imp.gpu_usage
+            .push_data_point(*gpu_usage_fraction.as_ref().unwrap_or(&0.0));
+        imp.gpu_usage.set_graph_visible(true);
+
+        let total_vram = gpu.get_total_vram().await;
+        let used_vram = gpu.get_used_vram().await;
+
+        let used_vram_fraction = if let (Ok(total_vram), Ok(used_vram)) = (&total_vram, &used_vram)
+        {
+            Some((*used_vram as f64 / *total_vram as f64).nan_default(0.0))
         } else {
-            imp.gpu_usage.set_subtitle(&i18n("N/A"));
-            imp.gpu_usage.push_data_point(0.0);
-            imp.gpu_usage.set_graph_visible(false);
-        }
+            None
+        };
+
+        let vram_percentage_string = used_vram_fraction
+            .as_ref()
+            .map(|fraction| format!("{} %", (fraction * 100.0).round()))
+            .unwrap_or(i18n("N/A"));
+
+        let vram_subtitle = if let (Ok(total_vram), Ok(used_vram)) = (&total_vram, &used_vram) {
+            format!(
+                "{} / {} · {}",
+                convert_storage(*used_vram as f64, false),
+                convert_storage(*total_vram as f64, false),
+                vram_percentage_string
+            )
+        } else {
+            i18n("N/A")
+        };
+
+        imp.vram_usage.set_subtitle(&vram_subtitle);
+        imp.vram_usage
+            .push_data_point(used_vram_fraction.unwrap_or(0.0));
+        imp.vram_usage
+            .set_graph_visible(used_vram_fraction.is_some());
 
         if let (Ok(total_vram), Ok(used_vram)) =
             (gpu.get_total_vram().await, gpu.get_used_vram().await)
@@ -249,5 +299,19 @@ impl ResGPU {
                 .await
                 .map_or_else(|_| i18n("N/A"), convert_power),
         );
+
+        self.set_property("usage", *gpu_usage_fraction.as_ref().unwrap_or(&0.0));
+
+        if gpu_usage_fraction.is_err() && used_vram_fraction.is_none() {
+            self.set_property("tab_subtitle", &i18n("N/A"));
+        } else {
+            self.set_property(
+                "tab_subtitle",
+                &i18n_f(
+                    "{} · VRAM: {}",
+                    &[&usage_percentage_string, &vram_percentage_string],
+                ),
+            );
+        }
     }
 }

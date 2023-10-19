@@ -214,6 +214,20 @@ impl Settings {
             move |settings, _key| f(settings.boolean("show-virtual-network-interfaces")),
         )
     }
+
+    pub fn sidebar_details(&self) -> bool {
+        self.boolean("sidebar-details")
+    }
+
+    pub fn set_sidebar_details(&self, maximized: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("sidebar-details", maximized)
+    }
+
+    pub fn connect_sidebar_details<F: Fn(bool) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+        self.connect_changed(Some("sidebar-details"), move |settings, _key| {
+            f(settings.boolean("sidebar-details"))
+        })
+    }
 }
 
 impl Deref for Settings {
