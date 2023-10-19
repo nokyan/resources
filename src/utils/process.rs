@@ -22,7 +22,6 @@ pub struct Process {
     pub icon: Icon,
     pub cpu_time_before: u64,
     pub cpu_time_before_timestamp: u64,
-    pub alive: bool,
 }
 
 // TODO: Better name?
@@ -121,7 +120,6 @@ impl Process {
             icon: ThemedIcon::new("generic-process").into(),
             cpu_time_before: 0,
             cpu_time_before_timestamp: 0,
-            alive: true,
         }
     }
 

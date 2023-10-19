@@ -185,7 +185,7 @@ msgstr ""
 msgid "Total Usage"
 msgstr ""
 
-#: src/ui/pages/drive.rs:195 src/ui/window.rs:332
+#: src/ui/pages/drive.rs:195 src/ui/window.rs:331
 msgid "CD/DVD/Blu-ray Drive"
 msgstr ""
 
@@ -197,7 +197,7 @@ msgstr ""
 msgid "Flash Storage"
 msgstr ""
 
-#: src/ui/pages/drive.rs:198 src/ui/window.rs:333
+#: src/ui/pages/drive.rs:198 src/ui/window.rs:332
 msgid "Floppy Drive"
 msgstr ""
 
@@ -269,7 +269,7 @@ msgstr ""
 msgid "{} / {} · Swap: {} %"
 msgstr ""
 
-#: src/ui/pages/network.rs:115 src/ui/window.rs:400
+#: src/ui/pages/network.rs:115 src/ui/window.rs:399
 msgid "Network Interface"
 msgstr ""
 
@@ -320,179 +320,179 @@ msgstr ""
 msgid "GPU {}"
 msgstr ""
 
-#: src/ui/window.rs:334
+#: src/ui/window.rs:333
 msgid "{} Loop Device"
 msgstr ""
 
-#: src/ui/window.rs:335
+#: src/ui/window.rs:334
 msgid "{} Mapped Device"
 msgstr ""
 
-#: src/ui/window.rs:336
+#: src/ui/window.rs:335
 msgid "{} RAID"
 msgstr ""
 
-#: src/ui/window.rs:337
+#: src/ui/window.rs:336
 msgid "{} RAM Disk"
 msgstr ""
 
-#: src/ui/window.rs:338
+#: src/ui/window.rs:337
 msgid "{} zram Device"
 msgstr ""
 
-#: src/ui/window.rs:339
+#: src/ui/window.rs:338
 msgid "{} ZFS Volume"
 msgstr ""
 
-#: src/ui/window.rs:340
+#: src/ui/window.rs:339
 msgid "{} Drive"
 msgstr ""
 
-#: src/ui/window.rs:390
+#: src/ui/window.rs:389
 msgid "Bluetooth Tether"
 msgstr ""
 
-#: src/ui/window.rs:391
+#: src/ui/window.rs:390
 msgid "Network Bridge"
 msgstr ""
 
-#: src/ui/window.rs:392
+#: src/ui/window.rs:391
 msgid "Ethernet Connection"
 msgstr ""
 
-#: src/ui/window.rs:393
+#: src/ui/window.rs:392
 msgid "InfiniBand Connection"
 msgstr ""
 
-#: src/ui/window.rs:394
+#: src/ui/window.rs:393
 msgid "Serial Line IP Connection"
 msgstr ""
 
-#: src/ui/window.rs:395
+#: src/ui/window.rs:394
 msgid "Virtual Ethernet Device"
 msgstr ""
 
-#: src/ui/window.rs:396
+#: src/ui/window.rs:395
 msgid "VM Network Bridge"
 msgstr ""
 
-#: src/ui/window.rs:397
+#: src/ui/window.rs:396
 msgid "VPN Tunnel (WireGuard)"
 msgstr ""
 
-#: src/ui/window.rs:398
+#: src/ui/window.rs:397
 msgid "Wi-Fi Connection"
 msgstr ""
 
-#: src/ui/window.rs:399
+#: src/ui/window.rs:398
 msgid "WWAN Connection"
 msgstr ""
 
-#: src/ui/window.rs:554
+#: src/ui/window.rs:553
 msgid "End {}?"
 msgstr ""
 
-#: src/ui/window.rs:555
+#: src/ui/window.rs:554
 msgid "Halt {}?"
 msgstr ""
 
-#: src/ui/window.rs:556
+#: src/ui/window.rs:555
 msgid "Kill {}?"
 msgstr ""
 
-#: src/ui/window.rs:557
+#: src/ui/window.rs:556
 msgid "Continue {}?"
 msgstr ""
 
-#: src/ui/window.rs:563
+#: src/ui/window.rs:562
 msgid "Unsaved work might be lost."
 msgstr ""
 
-#: src/ui/window.rs:564
+#: src/ui/window.rs:563
 msgid ""
 "Halting an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
 
-#: src/ui/window.rs:565
+#: src/ui/window.rs:564
 msgid ""
 "Killing an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
 
-#: src/ui/window.rs:572
+#: src/ui/window.rs:571
 msgid "End application"
 msgstr ""
 
-#: src/ui/window.rs:573
+#: src/ui/window.rs:572
 msgid "Halt application"
 msgstr ""
 
-#: src/ui/window.rs:574
+#: src/ui/window.rs:573
 msgid "Kill application"
 msgstr ""
 
-#: src/ui/window.rs:575
+#: src/ui/window.rs:574
 msgid "Continue application"
 msgstr ""
 
-#: src/ui/window.rs:581
+#: src/ui/window.rs:580
 msgid "Successfully ended {}"
 msgstr ""
 
-#: src/ui/window.rs:582
+#: src/ui/window.rs:581
 msgid "Successfully halted {}"
 msgstr ""
 
-#: src/ui/window.rs:583
+#: src/ui/window.rs:582
 msgid "Successfully killed {}"
 msgstr ""
 
-#: src/ui/window.rs:584
+#: src/ui/window.rs:583
 msgid "Successfully continued {}"
 msgstr ""
 
-#: src/ui/window.rs:591
+#: src/ui/window.rs:590
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:597
+#: src/ui/window.rs:596
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:603
+#: src/ui/window.rs:602
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:609
+#: src/ui/window.rs:608
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:619
+#: src/ui/window.rs:618
 msgid "There was a problem ending {}"
 msgstr ""
 
-#: src/ui/window.rs:620
+#: src/ui/window.rs:619
 msgid "There was a problem halting {}"
 msgstr ""
 
-#: src/ui/window.rs:621
+#: src/ui/window.rs:620
 msgid "There was a problem killing {}"
 msgstr ""
 
-#: src/ui/window.rs:622
+#: src/ui/window.rs:621
 msgid "There was a problem continuing {}"
 msgstr ""
 
-#: src/utils/app.rs:383
+#: src/utils/app.rs:376
 msgid "System Processes"
 msgstr ""
 

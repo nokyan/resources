@@ -461,7 +461,7 @@ impl ResProcesses {
         store.iter::<ProcessEntry>().flatten().for_each(|object| {
             let item_pid = object.pid();
             // filter out processes that have existed before but don't anymore
-            if !apps.get_process(item_pid).unwrap().alive {
+            if apps.get_process(item_pid).is_none() {
                 if let Some((dialog_pid, dialog)) = dialog_opt {
                     if *dialog_pid == item_pid {
                         dialog.close();

@@ -303,11 +303,11 @@ impl ResGPU {
         self.set_property("usage", *gpu_usage_fraction.as_ref().unwrap_or(&0.0));
 
         if gpu_usage_fraction.is_err() && used_vram_fraction.is_none() {
-            self.set_property("tab_subtitle", &i18n("N/A"));
+            self.set_property("tab_subtitle", i18n("N/A"));
         } else {
             self.set_property(
                 "tab_subtitle",
-                &i18n_f(
+                i18n_f(
                     "{} · VRAM: {}",
                     &[&usage_percentage_string, &vram_percentage_string],
                 ),

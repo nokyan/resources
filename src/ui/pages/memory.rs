@@ -264,7 +264,7 @@ impl ResMemory {
             imp.swap.set_subtitle(&i18n("N/A"));
             self.set_property(
                 "tab_subtitle",
-                &format!("{} / {}", &formatted_used_mem, &formatted_total_mem),
+                format!("{} / {}", &formatted_used_mem, &formatted_total_mem),
             );
         } else {
             imp.swap.push_data_point(swap_fraction);

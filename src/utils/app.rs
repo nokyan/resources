@@ -114,13 +114,6 @@ impl App {
         })
     }
 
-    pub fn refresh(&mut self, apps: &mut AppsContext) {
-        self.processes = self
-            .processes_iter_mut(apps)
-            .filter_map(|p| if p.alive { Some(p.data.pid) } else { None })
-            .collect();
-    }
-
     /// Adds a process to the processes `HashMap` and also
     /// updates the `Process`' icon to the one of this
     /// `App`
@@ -140,7 +133,7 @@ impl App {
 
     pub fn processes_iter<'a>(&'a self, apps: &'a AppsContext) -> impl Iterator<Item = &Process> {
         apps.all_processes()
-            .filter(move |process| self.processes.contains(&process.data.pid) && process.alive)
+            .filter(move |process| self.processes.contains(&process.data.pid))
     }
 
     pub fn processes_iter_mut<'a>(
@@ -148,7 +141,7 @@ impl App {
         apps: &'a mut AppsContext,
     ) -> impl Iterator<Item = &mut Process> {
         apps.all_processes_mut()
-            .filter(move |process| self.processes.contains(&process.data.pid) && process.alive)
+            .filter(move |process| self.processes.contains(&process.data.pid))
     }
 
     #[must_use]
@@ -281,12 +274,12 @@ impl AppsContext {
 
     #[must_use]
     pub fn all_processes(&self) -> impl Iterator<Item = &Process> {
-        self.processes.values().filter(|p| p.alive)
+        self.processes.values()
     }
 
     #[must_use]
     pub fn all_processes_mut(&mut self) -> impl Iterator<Item = &mut Process> {
-        self.processes.values_mut().filter(|p| p.alive)
+        self.processes.values_mut()
     }
 
     /// Returns a `HashMap` of running processes. For more info, refer to
@@ -366,13 +359,13 @@ impl AppsContext {
 
         let system_cpu_ratio = self
             .all_processes()
-            .filter(|process| !app_pids.contains(&process.data.pid) && process.alive)
+            .filter(|process| !app_pids.contains(&process.data.pid))
             .map(Process::cpu_time_ratio)
             .sum();
 
         let system_memory_usage: usize = self
             .all_processes()
-            .filter(|process| !app_pids.contains(&process.data.pid) && process.alive)
+            .filter(|process| !app_pids.contains(&process.data.pid))
             .map(|process| process.data.memory_usage)
             .sum();
 
@@ -429,10 +422,7 @@ impl AppsContext {
         }
 
         // all the not-updated processes have unfortunately died, probably
-        for process in self.processes.values_mut() {
-            if !updated_processes.contains(&process.data.pid) {
-                process.alive = false;
-            }
-        }
+        self.processes
+            .retain(|pid, _| updated_processes.contains(pid));
     }
 }
