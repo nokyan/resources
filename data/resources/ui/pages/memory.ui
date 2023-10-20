@@ -6,8 +6,8 @@
         <property name="orientation">vertical</property>
         <child>
           <object class="AdwBanner" id="authentication_banner">
-            <property name="title" translatable="yes">You need to authenticate to see memory properties</property>
-            <property name="button-label" translatable="yes">Authenticate</property>
+            <property name="title" translatable="yes">You need to authorize Resources to see memory properties</property>
+            <property name="button-label" translatable="yes">Authorize</property>
           </object>
         </child>
         <child>
