@@ -8,6 +8,10 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use crate::i18n::{i18n, i18n_f};
+
+use super::units::convert_storage;
+
 const SYS_STATS: &str = r" *(?P<read_ios>[0-9]*) *(?P<read_merges>[0-9]*) *(?P<read_sectors>[0-9]*) *(?P<read_ticks>[0-9]*) *(?P<write_ios>[0-9]*) *(?P<write_merges>[0-9]*) *(?P<write_sectors>[0-9]*) *(?P<write_ticks>[0-9]*) *(?P<in_flight>[0-9]*) *(?P<io_ticks>[0-9]*) *(?P<time_in_queue>[0-9]*) *(?P<discard_ios>[0-9]*) *(?P<discard_merges>[0-9]*) *(?P<discard_sectors>[0-9]*) *(?P<discard_ticks>[0-9]*) *(?P<flush_ios>[0-9]*) *(?P<flush_ticks>[0-9]*)";
 
 static RE_DRIVE: Lazy<Regex> = Lazy::new(|| Regex::new(SYS_STATS).unwrap());
@@ -90,6 +94,21 @@ impl Drive {
             list.push(entry.path().into());
         }
         Ok(list)
+    }
+
+    pub async fn display_name(&self) -> String {
+        let capacity_formatted = convert_storage(self.capacity().await.unwrap_or(0) as f64, true);
+        match self.drive_type {
+            DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),
+            DriveType::Floppy => i18n("Floppy Drive"),
+            DriveType::LoopDevice => i18n_f("{} Loop Device", &[&capacity_formatted]),
+            DriveType::MappedDevice => i18n_f("{} Mapped Device", &[&capacity_formatted]),
+            DriveType::Raid => i18n_f("{} RAID", &[&capacity_formatted]),
+            DriveType::RamDisk => i18n_f("{} RAM Disk", &[&capacity_formatted]),
+            DriveType::Zram => i18n_f("{} zram Device", &[&capacity_formatted]),
+            DriveType::ZfsVolume => i18n_f("{} ZFS Volume", &[&capacity_formatted]),
+            _ => i18n_f("{} Drive", &[&capacity_formatted]),
+        }
     }
 
     /// Returns the current SysFS stats for the drive

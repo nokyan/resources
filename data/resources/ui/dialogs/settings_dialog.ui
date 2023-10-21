@@ -25,6 +25,11 @@
               </object>
             </child>
             <child>
+              <object class="AdwSwitchRow" id="network_bits_row">
+                <property name="title" translatable="yes">Show Network Speeds in Bits per Second</property>
+              </object>
+            </child>
+            <child>
               <object class="AdwComboRow" id="temperature_combo_row">
                 <property name="title" translatable="yes">Temperature Unit</property>
                 <property name="model">

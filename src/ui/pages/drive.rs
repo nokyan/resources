@@ -222,19 +222,24 @@ impl ResDrive {
     pub async fn refresh_page(&self) {
         let imp = self.imp();
 
-        let disk_stats = imp.drive.borrow().sys_stats().await.unwrap_or_default();
+        let drive = imp.drive.borrow();
+
+        let disk_stats = drive.sys_stats().await.unwrap_or_default();
+        let display_name = drive.display_name().await;
+
+        self.set_property("tab_name", display_name);
 
         let time_passed = SystemTime::now()
             .duration_since(imp.last_timestamp.get())
             .map_or(1.0f64, |timestamp| timestamp.as_secs_f64());
 
-        if imp.drive.borrow().writable().await.unwrap_or(false) {
+        if drive.writable().await.unwrap_or(false) {
             imp.writable.set_subtitle(&i18n("Yes"));
         } else {
             imp.writable.set_subtitle(&i18n("No"));
         }
 
-        if imp.drive.borrow().removable().await.unwrap_or(false) {
+        if drive.removable().await.unwrap_or(false) {
             imp.removable.set_subtitle(&i18n("Yes"));
         } else {
             imp.removable.set_subtitle(&i18n("No"));
@@ -286,8 +291,10 @@ impl ResDrive {
             None
         };
 
-        let formatted_read_speed = convert_speed(rw_bytes_per_second.unwrap_or((0.0, 0.0)).0);
-        let formatted_write_speed = convert_speed(rw_bytes_per_second.unwrap_or((0.0, 0.0)).1);
+        let formatted_read_speed =
+            convert_speed(rw_bytes_per_second.unwrap_or((0.0, 0.0)).0, false);
+        let formatted_write_speed =
+            convert_speed(rw_bytes_per_second.unwrap_or((0.0, 0.0)).1, false);
 
         imp.read.set_subtitle(&formatted_read_speed);
         imp.write.set_subtitle(&formatted_write_speed);
@@ -300,7 +307,7 @@ impl ResDrive {
             ),
         );
 
-        let capacity = imp.drive.borrow().capacity().await.unwrap_or(0);
+        let capacity = drive.capacity().await.unwrap_or(0);
         imp.capacity
             .set_subtitle(&convert_storage(capacity as f64, false));
 

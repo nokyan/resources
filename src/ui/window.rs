@@ -16,12 +16,11 @@ use crate::ui::pages::drive::ResDrive;
 use crate::ui::pages::processes::ResProcesses;
 use crate::utils::app::AppsContext;
 use crate::utils::cpu;
-use crate::utils::drive::{Drive, DriveType};
+use crate::utils::drive::Drive;
 use crate::utils::gpu::GPU;
 use crate::utils::network::{InterfaceType, NetworkInterface};
 use crate::utils::process::ProcessAction;
 use crate::utils::settings::SETTINGS;
-use crate::utils::units::convert_storage;
 
 use super::pages::gpu::ResGPU;
 use super::pages::network::ResNetwork;
@@ -325,31 +324,23 @@ impl MainWindow {
                 if is_virtual && !SETTINGS.show_virtual_drives() {
                     continue;
                 }
-                let capacity = drive.capacity().await.unwrap_or(0);
-                let capacity_formatted = convert_storage(capacity as f64, true);
-                let sidebar_title = match drive.drive_type {
-                    DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),
-                    DriveType::Floppy => i18n("Floppy Drive"),
-                    DriveType::LoopDevice => i18n_f("{} Loop Device", &[&capacity_formatted]),
-                    DriveType::MappedDevice => i18n_f("{} Mapped Device", &[&capacity_formatted]),
-                    DriveType::Raid => i18n_f("{} RAID", &[&capacity_formatted]),
-                    DriveType::RamDisk => i18n_f("{} RAM Disk", &[&capacity_formatted]),
-                    DriveType::Zram => i18n_f("{} zram Device", &[&capacity_formatted]),
-                    DriveType::ZfsVolume => i18n_f("{} ZFS Volume", &[&capacity_formatted]),
-                    _ => i18n_f("{} Drive", &[&capacity_formatted]),
-                };
+
+                let sidebar_title = drive.display_name().await;
 
                 let page = ResDrive::new();
                 page.init(drive.clone());
                 page.set_tab_name(&*sidebar_title);
+
                 let toolbar = if let Some(model) = drive.model {
                     self.add_page(&page, &sidebar_title, &model, &sidebar_title)
                 } else {
                     self.add_page(&page, &sidebar_title, &sidebar_title, "")
                 };
+
                 imp.drive_pages
                     .borrow_mut()
                     .insert(path.clone(), (is_virtual, toolbar));
+
                 still_active_drives.push(path);
             }
         }
@@ -385,6 +376,7 @@ impl MainWindow {
                 if is_virtual && !SETTINGS.show_virtual_network_interfaces() {
                     continue;
                 }
+
                 let sidebar_title = match interface.interface_type {
                     InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
                     InterfaceType::Bridge => i18n("Network Bridge"),
@@ -398,6 +390,7 @@ impl MainWindow {
                     InterfaceType::Wwan => i18n("WWAN Connection"),
                     InterfaceType::Unknown => i18n("Network Interface"),
                 };
+
                 let page = ResNetwork::new();
                 page.init(
                     interface.clone(),
@@ -405,12 +398,14 @@ impl MainWindow {
                     interface.sent_bytes().await.unwrap_or(0),
                 );
                 page.set_tab_name(&*sidebar_title);
+
                 let toolbar = self.add_page(
                     &page,
                     &sidebar_title,
                     &interface.display_name(),
                     &sidebar_title,
                 );
+
                 imp.network_pages
                     .borrow_mut()
                     .insert(path.clone(), (is_virtual, toolbar));
