@@ -424,5 +424,12 @@ impl AppsContext {
         // all the not-updated processes have unfortunately died, probably
         self.processes
             .retain(|pid, _| updated_processes.contains(pid));
+
+        self.processes_assigned_to_apps
+            .retain(|pid| updated_processes.contains(pid));
+
+        self.apps
+            .values_mut()
+            .for_each(|app| app.processes.retain(|pid| updated_processes.contains(pid)))
     }
 }
