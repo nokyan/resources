@@ -133,10 +133,22 @@ fn convert_storage_binary(bytes: f64, integer: bool) -> String {
     }
 }
 
-pub fn convert_speed(bytes_per_second: f64) -> String {
+pub fn convert_speed(bytes_per_second: f64, network: bool) -> String {
     match SETTINGS.base() {
-        Base::Decimal => convert_speed_decimal(bytes_per_second),
-        Base::Binary => convert_speed_binary(bytes_per_second),
+        Base::Decimal => {
+            if network && SETTINGS.network_bits() {
+                convert_speed_bits_decimal(bytes_per_second * 8.0)
+            } else {
+                convert_speed_decimal(bytes_per_second)
+            }
+        }
+        Base::Binary => {
+            if network && SETTINGS.network_bits() {
+                convert_speed_bits_binary(bytes_per_second * 8.0)
+            } else {
+                convert_speed_binary(bytes_per_second)
+            }
+        }
     }
 }
 
@@ -171,6 +183,40 @@ fn convert_speed_binary(bytes_per_second: f64) -> String {
         Prefix::Yotta => i18n_f("{} YiB/s", &[&format!("{:.2}", number)]),
         Prefix::Ronna => i18n_f("{} RiB/s", &[&format!("{:.2}", number)]),
         Prefix::Quetta => i18n_f("{} QiB/s", &[&format!("{:.2}", number)]),
+    }
+}
+
+fn convert_speed_bits_decimal(bits_per_second: f64) -> String {
+    let (number, prefix) = to_largest_prefix(bits_per_second, Base::Decimal);
+    match prefix {
+        Prefix::None => i18n_f("{} b/s", &[&format!("{}", number.round())]),
+        Prefix::Kilo => i18n_f("{} kb/s", &[&format!("{:.2}", number)]),
+        Prefix::Mega => i18n_f("{} Mb/s", &[&format!("{:.2}", number)]),
+        Prefix::Giga => i18n_f("{} Gb/s", &[&format!("{:.2}", number)]),
+        Prefix::Tera => i18n_f("{} Tb/s", &[&format!("{:.2}", number)]),
+        Prefix::Peta => i18n_f("{} Pb/s", &[&format!("{:.2}", number)]),
+        Prefix::Exa => i18n_f("{} Eb/s", &[&format!("{:.2}", number)]),
+        Prefix::Zetta => i18n_f("{} Zb/s", &[&format!("{:.2}", number)]),
+        Prefix::Yotta => i18n_f("{} Yb/s", &[&format!("{:.2}", number)]),
+        Prefix::Ronna => i18n_f("{} Rb/s", &[&format!("{:.2}", number)]),
+        Prefix::Quetta => i18n_f("{} Qb/s", &[&format!("{:.2}", number)]),
+    }
+}
+
+fn convert_speed_bits_binary(bits_per_second: f64) -> String {
+    let (number, prefix) = to_largest_prefix(bits_per_second, Base::Binary);
+    match prefix {
+        Prefix::None => i18n_f("{} b/s", &[&format!("{}", number.round())]),
+        Prefix::Kilo => i18n_f("{} Kib/s", &[&format!("{:.2}", number)]),
+        Prefix::Mega => i18n_f("{} Mib/s", &[&format!("{:.2}", number)]),
+        Prefix::Giga => i18n_f("{} Gib/s", &[&format!("{:.2}", number)]),
+        Prefix::Tera => i18n_f("{} Tib/s", &[&format!("{:.2}", number)]),
+        Prefix::Peta => i18n_f("{} Pib/s", &[&format!("{:.2}", number)]),
+        Prefix::Exa => i18n_f("{} Eib/s", &[&format!("{:.2}", number)]),
+        Prefix::Zetta => i18n_f("{} Zib/s", &[&format!("{:.2}", number)]),
+        Prefix::Yotta => i18n_f("{} Yib/s", &[&format!("{:.2}", number)]),
+        Prefix::Ronna => i18n_f("{} Rib/s", &[&format!("{:.2}", number)]),
+        Prefix::Quetta => i18n_f("{} Qib/s", &[&format!("{:.2}", number)]),
     }
 }
 

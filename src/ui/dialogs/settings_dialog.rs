@@ -18,6 +18,8 @@ mod imp {
         #[template_child]
         pub prefix_combo_row: TemplateChild<adw::ComboRow>,
         #[template_child]
+        pub network_bits_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
         pub temperature_combo_row: TemplateChild<adw::ComboRow>,
         #[template_child]
         pub refresh_speed_combo_row: TemplateChild<adw::ComboRow>,
@@ -87,6 +89,7 @@ impl ResSettingsDialog {
         let imp = self.imp();
         imp.prefix_combo_row
             .set_selected((SETTINGS.base() as u8) as u32);
+        imp.network_bits_row.set_active(SETTINGS.network_bits());
         imp.temperature_combo_row
             .set_selected((SETTINGS.temperature_unit() as u8) as u32);
         imp.refresh_speed_combo_row
@@ -109,6 +112,10 @@ impl ResSettingsDialog {
                     let _ = SETTINGS.set_base(base);
                 }
             });
+
+        imp.network_bits_row.connect_active_notify(|switch_row| {
+            let _ = SETTINGS.set_network_bits(switch_row.is_active());
+        });
 
         imp.temperature_combo_row
             .connect_selected_item_notify(|combo_row| {

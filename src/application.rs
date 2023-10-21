@@ -165,7 +165,7 @@ impl Application {
             "https://github.com/nokyan/resources/issues",
         );
 
-        // Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL. 
+        // Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
         // One name per line, please do not remove previous names.
         about.set_translator_credits(&i18n("translator-credits"));
         about.add_credit_section(Some(&i18n("Icon by")), &["Avhiren"]);

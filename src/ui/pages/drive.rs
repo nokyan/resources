@@ -286,8 +286,10 @@ impl ResDrive {
             None
         };
 
-        let formatted_read_speed = convert_speed(rw_bytes_per_second.unwrap_or((0.0, 0.0)).0);
-        let formatted_write_speed = convert_speed(rw_bytes_per_second.unwrap_or((0.0, 0.0)).1);
+        let formatted_read_speed =
+            convert_speed(rw_bytes_per_second.unwrap_or((0.0, 0.0)).0, false);
+        let formatted_write_speed =
+            convert_speed(rw_bytes_per_second.unwrap_or((0.0, 0.0)).1, false);
 
         imp.read.set_subtitle(&formatted_read_speed);
         imp.write.set_subtitle(&formatted_write_speed);

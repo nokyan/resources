@@ -279,18 +279,18 @@ impl ResNetwork {
         let highest_received = imp.receiving.get_highest_value();
         imp.receiving.set_subtitle(&format!(
             "{} · {} {}",
-            convert_speed(received_delta),
+            convert_speed(received_delta, true),
             i18n("Highest:"),
-            convert_speed(highest_received)
+            convert_speed(highest_received, true)
         ));
 
         imp.sending.push_data_point(sent_delta as f64);
         let highest_sent = imp.sending.get_highest_value();
         imp.sending.set_subtitle(&format!(
             "{} · {} {}",
-            convert_speed(sent_delta),
+            convert_speed(sent_delta, true),
             i18n("Highest:"),
-            convert_speed(highest_sent)
+            convert_speed(highest_sent, true)
         ));
 
         self.set_property(
@@ -302,7 +302,10 @@ impl ResNetwork {
             "tab_subtitle",
             i18n_f(
                 "R: {} · S: {}",
-                &[&convert_speed(received_delta), &convert_speed(sent_delta)],
+                &[
+                    &convert_speed(received_delta, true),
+                    &convert_speed(sent_delta, true),
+                ],
             ),
         );
 

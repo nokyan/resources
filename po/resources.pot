@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-10-19 13:58+0200\n"
+"PO-Revision-Date: 2023-10-21 11:30+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: \n"
@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:3
-#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:153
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:154
 msgid "Resources"
 msgstr ""
 
@@ -51,7 +51,7 @@ msgid "Unit Prefix Base"
 msgstr ""
 
 #: data/net.nokyan.Resources.gschema.xml.in:26
-#: data/resources/ui/dialogs/settings_dialog.ui:48
+#: data/resources/ui/dialogs/settings_dialog.ui:53
 msgid "Refresh Speed"
 msgstr ""
 
@@ -69,6 +69,10 @@ msgstr ""
 
 #: data/net.nokyan.Resources.gschema.xml.in:42
 msgid "Show usage details in the sidebar"
+msgstr ""
+
+#: data/net.nokyan.Resources.gschema.xml.in:46
+msgid "Display network speeds in bits per second"
 msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:14
@@ -102,7 +106,7 @@ msgid "GPU"
 msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
-#: data/resources/ui/dialogs/settings_dialog.ui:92
+#: data/resources/ui/dialogs/settings_dialog.ui:97
 msgid "Network Interfaces"
 msgstr ""
 
@@ -110,15 +114,21 @@ msgstr ""
 msgid "Storage Devices"
 msgstr ""
 
-#: src/application.rs:155
+#: src/application.rs:156
 msgid "The Nalux Team"
 msgstr ""
 
-#: src/application.rs:163
+#: src/application.rs:164
 msgid "Report Issues"
 msgstr ""
 
-#: src/application.rs:167
+#. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
+#. One name per line, please do not remove previous names.
+#: src/application.rs:170
+msgid "translator-credits"
+msgstr ""
+
+#: src/application.rs:171
 msgid "Icon by"
 msgstr ""
 
@@ -241,7 +251,7 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: src/ui/pages/drive.rs:298
+#: src/ui/pages/drive.rs:300
 msgid "R: {} · W: {}"
 msgstr ""
 
@@ -593,175 +603,259 @@ msgstr ""
 msgid "{} QiB"
 msgstr ""
 
-#: src/utils/units.rs:146 src/utils/units.rs:163
+#: src/utils/units.rs:158 src/utils/units.rs:175
 msgid "{} B/s"
 msgstr ""
 
-#: src/utils/units.rs:147
+#: src/utils/units.rs:159
 msgid "{} kB/s"
 msgstr ""
 
-#: src/utils/units.rs:148
+#: src/utils/units.rs:160
 msgid "{} MB/s"
 msgstr ""
 
-#: src/utils/units.rs:149
+#: src/utils/units.rs:161
 msgid "{} GB/s"
 msgstr ""
 
-#: src/utils/units.rs:150
+#: src/utils/units.rs:162
 msgid "{} TB/s"
 msgstr ""
 
-#: src/utils/units.rs:151
+#: src/utils/units.rs:163
 msgid "{} PB/s"
 msgstr ""
 
-#: src/utils/units.rs:152
+#: src/utils/units.rs:164
 msgid "{} EB/s"
 msgstr ""
 
-#: src/utils/units.rs:153
+#: src/utils/units.rs:165
 msgid "{} ZB/s"
 msgstr ""
 
-#: src/utils/units.rs:154
+#: src/utils/units.rs:166
 msgid "{} YB/s"
 msgstr ""
 
-#: src/utils/units.rs:155
+#: src/utils/units.rs:167
 msgid "{} RB/s"
 msgstr ""
 
-#: src/utils/units.rs:156
+#: src/utils/units.rs:168
 msgid "{} QB/s"
 msgstr ""
 
-#: src/utils/units.rs:164
+#: src/utils/units.rs:176
 msgid "{} KiB/s"
 msgstr ""
 
-#: src/utils/units.rs:165
+#: src/utils/units.rs:177
 msgid "{} MiB/s"
 msgstr ""
 
-#: src/utils/units.rs:166
+#: src/utils/units.rs:178
 msgid "{} GiB/s"
 msgstr ""
 
-#: src/utils/units.rs:167
+#: src/utils/units.rs:179
 msgid "{} TiB/s"
 msgstr ""
 
-#: src/utils/units.rs:168
+#: src/utils/units.rs:180
 msgid "{} PiB/s"
 msgstr ""
 
-#: src/utils/units.rs:169
+#: src/utils/units.rs:181
 msgid "{} EiB/s"
 msgstr ""
 
-#: src/utils/units.rs:170
+#: src/utils/units.rs:182
 msgid "{} ZiB/s"
 msgstr ""
 
-#: src/utils/units.rs:171
+#: src/utils/units.rs:183
 msgid "{} YiB/s"
 msgstr ""
 
-#: src/utils/units.rs:172
+#: src/utils/units.rs:184
 msgid "{} RiB/s"
 msgstr ""
 
-#: src/utils/units.rs:173
+#: src/utils/units.rs:185
 msgid "{} QiB/s"
 msgstr ""
 
-#: src/utils/units.rs:180
-msgid "{} Hz"
+#: src/utils/units.rs:192 src/utils/units.rs:209
+msgid "{} b/s"
 msgstr ""
 
-#: src/utils/units.rs:181
-msgid "{} kHz"
+#: src/utils/units.rs:193
+msgid "{} kb/s"
 msgstr ""
 
-#: src/utils/units.rs:182
-msgid "{} MHz"
+#: src/utils/units.rs:194
+msgid "{} Mb/s"
 msgstr ""
 
-#: src/utils/units.rs:183
-msgid "{} GHz"
+#: src/utils/units.rs:195
+msgid "{} Gb/s"
 msgstr ""
 
-#: src/utils/units.rs:184
-msgid "{} THz"
-msgstr ""
-
-#: src/utils/units.rs:185
-msgid "{} PHz"
-msgstr ""
-
-#: src/utils/units.rs:186
-msgid "{} EHz"
-msgstr ""
-
-#: src/utils/units.rs:187
-msgid "{} ZHz"
-msgstr ""
-
-#: src/utils/units.rs:188
-msgid "{} YHz"
-msgstr ""
-
-#: src/utils/units.rs:189
-msgid "{} RHz"
-msgstr ""
-
-#: src/utils/units.rs:190
-msgid "{} QHz"
+#: src/utils/units.rs:196
+msgid "{} Tb/s"
 msgstr ""
 
 #: src/utils/units.rs:197
-msgid "{} W"
+msgid "{} Pb/s"
 msgstr ""
 
 #: src/utils/units.rs:198
-msgid "{} kW"
+msgid "{} Eb/s"
 msgstr ""
 
 #: src/utils/units.rs:199
-msgid "{} MW"
+msgid "{} Zb/s"
 msgstr ""
 
 #: src/utils/units.rs:200
-msgid "{} GW"
+msgid "{} Yb/s"
 msgstr ""
 
 #: src/utils/units.rs:201
-msgid "{} TW"
+msgid "{} Rb/s"
 msgstr ""
 
 #: src/utils/units.rs:202
+msgid "{} Qb/s"
+msgstr ""
+
+#: src/utils/units.rs:210
+msgid "{} Kib/s"
+msgstr ""
+
+#: src/utils/units.rs:211
+msgid "{} Mib/s"
+msgstr ""
+
+#: src/utils/units.rs:212
+msgid "{} Gib/s"
+msgstr ""
+
+#: src/utils/units.rs:213
+msgid "{} Tib/s"
+msgstr ""
+
+#: src/utils/units.rs:214
+msgid "{} Pib/s"
+msgstr ""
+
+#: src/utils/units.rs:215
+msgid "{} Eib/s"
+msgstr ""
+
+#: src/utils/units.rs:216
+msgid "{} Zib/s"
+msgstr ""
+
+#: src/utils/units.rs:217
+msgid "{} Yib/s"
+msgstr ""
+
+#: src/utils/units.rs:218
+msgid "{} Rib/s"
+msgstr ""
+
+#: src/utils/units.rs:219
+msgid "{} Qib/s"
+msgstr ""
+
+#: src/utils/units.rs:226
+msgid "{} Hz"
+msgstr ""
+
+#: src/utils/units.rs:227
+msgid "{} kHz"
+msgstr ""
+
+#: src/utils/units.rs:228
+msgid "{} MHz"
+msgstr ""
+
+#: src/utils/units.rs:229
+msgid "{} GHz"
+msgstr ""
+
+#: src/utils/units.rs:230
+msgid "{} THz"
+msgstr ""
+
+#: src/utils/units.rs:231
+msgid "{} PHz"
+msgstr ""
+
+#: src/utils/units.rs:232
+msgid "{} EHz"
+msgstr ""
+
+#: src/utils/units.rs:233
+msgid "{} ZHz"
+msgstr ""
+
+#: src/utils/units.rs:234
+msgid "{} YHz"
+msgstr ""
+
+#: src/utils/units.rs:235
+msgid "{} RHz"
+msgstr ""
+
+#: src/utils/units.rs:236
+msgid "{} QHz"
+msgstr ""
+
+#: src/utils/units.rs:243
+msgid "{} W"
+msgstr ""
+
+#: src/utils/units.rs:244
+msgid "{} kW"
+msgstr ""
+
+#: src/utils/units.rs:245
+msgid "{} MW"
+msgstr ""
+
+#: src/utils/units.rs:246
+msgid "{} GW"
+msgstr ""
+
+#: src/utils/units.rs:247
+msgid "{} TW"
+msgstr ""
+
+#: src/utils/units.rs:248
 msgid "{} PW"
 msgstr ""
 
-#: src/utils/units.rs:203
+#: src/utils/units.rs:249
 msgid "{} EW"
 msgstr ""
 
-#: src/utils/units.rs:204
+#: src/utils/units.rs:250
 msgid "{} ZW"
 msgstr ""
 
-#: src/utils/units.rs:205
+#: src/utils/units.rs:251
 msgid "{} YW"
 msgstr ""
 
-#: src/utils/units.rs:206
+#: src/utils/units.rs:252
 msgid "{} RW"
 msgstr ""
 
-#: src/utils/units.rs:207
+#: src/utils/units.rs:253
 msgid "{} QW"
 msgstr ""
 
@@ -772,15 +866,20 @@ msgstr ""
 
 #: data/resources/ui/shortcuts.ui:14
 msgctxt "shortcut window"
-msgid "Show Shortcuts"
+msgid "Preferences"
 msgstr ""
 
 #: data/resources/ui/shortcuts.ui:20
 msgctxt "shortcut window"
-msgid "Quit"
+msgid "Show Shortcuts"
 msgstr ""
 
 #: data/resources/ui/shortcuts.ui:26
+msgctxt "shortcut window"
+msgid "Quit"
+msgstr ""
+
+#: data/resources/ui/shortcuts.ui:32
 msgctxt "shortcut window"
 msgid "Toggle Search Field"
 msgstr ""
@@ -863,66 +962,70 @@ msgid "Binary"
 msgstr ""
 
 #: data/resources/ui/dialogs/settings_dialog.ui:29
-msgid "Temperature Unit"
-msgstr ""
-
-#: data/resources/ui/dialogs/settings_dialog.ui:33
-msgid "Celsius"
+msgid "Show Network Speeds in Bits per Second"
 msgstr ""
 
 #: data/resources/ui/dialogs/settings_dialog.ui:34
+msgid "Temperature Unit"
+msgstr ""
+
+#: data/resources/ui/dialogs/settings_dialog.ui:38
+msgid "Celsius"
+msgstr ""
+
+#: data/resources/ui/dialogs/settings_dialog.ui:39
 msgid "Kelvin"
 msgstr ""
 
-#: data/resources/ui/dialogs/settings_dialog.ui:35
+#: data/resources/ui/dialogs/settings_dialog.ui:40
 msgid "Fahrenheit"
 msgstr ""
 
-#: data/resources/ui/dialogs/settings_dialog.ui:45
+#: data/resources/ui/dialogs/settings_dialog.ui:50
 msgid "User Interface"
 msgstr ""
 
-#: data/resources/ui/dialogs/settings_dialog.ui:52
+#: data/resources/ui/dialogs/settings_dialog.ui:57
 msgid "Very Slow"
 msgstr ""
 
-#: data/resources/ui/dialogs/settings_dialog.ui:53
+#: data/resources/ui/dialogs/settings_dialog.ui:58
 msgid "Slow"
 msgstr ""
 
-#: data/resources/ui/dialogs/settings_dialog.ui:54
+#: data/resources/ui/dialogs/settings_dialog.ui:59
 msgid "Normal"
 msgstr ""
 
-#: data/resources/ui/dialogs/settings_dialog.ui:55
+#: data/resources/ui/dialogs/settings_dialog.ui:60
 msgid "Fast"
 msgstr ""
 
-#: data/resources/ui/dialogs/settings_dialog.ui:56
+#: data/resources/ui/dialogs/settings_dialog.ui:61
 msgid "Very Fast"
 msgstr ""
 
-#: data/resources/ui/dialogs/settings_dialog.ui:64
+#: data/resources/ui/dialogs/settings_dialog.ui:69
 msgid "Show Search Fields on Launch"
 msgstr ""
 
-#: data/resources/ui/dialogs/settings_dialog.ui:69
+#: data/resources/ui/dialogs/settings_dialog.ui:74
 msgid "Show Usage Details in Sidebar"
 msgstr ""
 
-#: data/resources/ui/dialogs/settings_dialog.ui:79
+#: data/resources/ui/dialogs/settings_dialog.ui:84
 msgid "Devices"
 msgstr ""
 
-#: data/resources/ui/dialogs/settings_dialog.ui:82
+#: data/resources/ui/dialogs/settings_dialog.ui:87
 msgid "Drives"
 msgstr ""
 
-#: data/resources/ui/dialogs/settings_dialog.ui:85
+#: data/resources/ui/dialogs/settings_dialog.ui:90
 msgid "Show Virtual Drives"
 msgstr ""
 
-#: data/resources/ui/dialogs/settings_dialog.ui:95
+#: data/resources/ui/dialogs/settings_dialog.ui:100
 msgid "Show Virtual Network Interfaces"
 msgstr ""
 

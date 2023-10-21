@@ -228,6 +228,20 @@ impl Settings {
             f(settings.boolean("sidebar-details"))
         })
     }
+
+    pub fn network_bits(&self) -> bool {
+        self.boolean("network-bits")
+    }
+
+    pub fn set_network_bits(&self, maximized: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("network-bits", maximized)
+    }
+
+    pub fn connect_network_bits<F: Fn(bool) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+        self.connect_changed(Some("network-bits"), move |settings, _key| {
+            f(settings.boolean("network-bits"))
+        })
+    }
 }
 
 impl Deref for Settings {
