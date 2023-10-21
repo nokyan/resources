@@ -26,7 +26,7 @@
               <object class="GtkScrolledWindow" id="applications_scrolled_window">
                 <property name="hexpand">true</property>
                 <property name="vexpand">true</property>
-                <property name="hscrollbar_policy">never</property>
+                <property name="hscrollbar_policy">automatic</property>
               </object>
             </child>
             <child>
@@ -56,7 +56,7 @@
                 <property name="spacing">16</property>
                 <child>
                   <object class="GtkToggleButton" id="search_button">
-                  <property name="icon-name">search-symbolic</property>
+                    <property name="icon-name">search-symbolic</property>
                     <style>
                       <class name="circular"/>
                     </style>
@@ -69,8 +69,8 @@
                     <property name="halign">end</property>
                     <child>
                       <object class="GtkButton" id="information_button">
-                      <property name="icon-name">info-symbolic</property>
-                      <property name="sensitive">false</property>
+                        <property name="icon-name">info-symbolic</property>
+                        <property name="sensitive">false</property>
                         <style>
                           <class name="circular"/>
                         </style>
