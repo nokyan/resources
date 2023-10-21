@@ -122,6 +122,7 @@ impl Application {
     // Sets up keyboard shortcuts
     fn setup_accels(&self) {
         self.set_accels_for_action("app.quit", &["<Control>q"]);
+        self.set_accels_for_action("app.settings", &["<Control>comma"]);
         self.set_accels_for_action("app.toggle-search", &["<Control>f", "F3"]);
     }
 
