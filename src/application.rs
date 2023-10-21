@@ -122,6 +122,7 @@ impl Application {
     // Sets up keyboard shortcuts
     fn setup_accels(&self) {
         self.set_accels_for_action("app.quit", &["<Control>q"]);
+        self.set_accels_for_action("app.settings", &["<Control>comma"]);
         self.set_accels_for_action("app.toggle-search", &["<Control>f", "F3"]);
     }
 
@@ -164,6 +165,9 @@ impl Application {
             "https://github.com/nokyan/resources/issues",
         );
 
+        // Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL. 
+        // One name per line, please do not remove previous names.
+        about.set_translator_credits(&i18n("translator-credits"));
         about.add_credit_section(Some(&i18n("Icon by")), &["Avhiren"]);
 
         about.set_transient_for(Some(&self.main_window()));
