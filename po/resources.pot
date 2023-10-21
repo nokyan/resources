@@ -6,9 +6,9 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-10-21 11:30+0200\n"
+"PO-Revision-Date: 2023-10-21 12:08+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
-"Language-Team: German <nokyan@tuta.io>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -101,7 +101,7 @@ msgid "Memory"
 msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:23 src/ui/pages/gpu.rs:115
-#: src/ui/window.rs:260
+#: src/ui/window.rs:259
 msgid "GPU"
 msgstr ""
 
@@ -133,7 +133,7 @@ msgid "Icon by"
 msgstr ""
 
 #: src/ui/dialogs/app_dialog.rs:112 src/ui/dialogs/process_dialog.rs:108
-#: src/ui/pages/drive.rs:234 src/ui/pages/drive.rs:240
+#: src/ui/pages/drive.rs:239 src/ui/pages/drive.rs:245
 msgid "No"
 msgstr ""
 
@@ -168,7 +168,7 @@ msgid "Application"
 msgstr ""
 
 #: src/ui/pages/applications/mod.rs:295 src/ui/pages/cpu.rs:116
-#: src/ui/pages/processes/mod.rs:340 src/ui/window.rs:249
+#: src/ui/pages/processes/mod.rs:340 src/ui/window.rs:248
 #: data/resources/ui/window.ui:124 data/resources/ui/window.ui:131
 #: data/resources/ui/dialogs/app_dialog.ui:74
 #: data/resources/ui/dialogs/process_dialog.ui:61
@@ -195,7 +195,7 @@ msgstr ""
 msgid "Total Usage"
 msgstr ""
 
-#: src/ui/pages/drive.rs:195 src/ui/window.rs:331
+#: src/ui/pages/drive.rs:195 src/utils/drive.rs:102
 msgid "CD/DVD/Blu-ray Drive"
 msgstr ""
 
@@ -207,7 +207,7 @@ msgstr ""
 msgid "Flash Storage"
 msgstr ""
 
-#: src/ui/pages/drive.rs:198 src/ui/window.rs:332
+#: src/ui/pages/drive.rs:198 src/utils/drive.rs:103
 msgid "Floppy Drive"
 msgstr ""
 
@@ -247,11 +247,11 @@ msgstr ""
 msgid "Compressed RAM Disk (zram)"
 msgstr ""
 
-#: src/ui/pages/drive.rs:232 src/ui/pages/drive.rs:238
+#: src/ui/pages/drive.rs:237 src/ui/pages/drive.rs:243
 msgid "Yes"
 msgstr ""
 
-#: src/ui/pages/drive.rs:300
+#: src/ui/pages/drive.rs:305
 msgid "R: {} · W: {}"
 msgstr ""
 
@@ -279,7 +279,7 @@ msgstr ""
 msgid "{} / {} · Swap: {} %"
 msgstr ""
 
-#: src/ui/pages/network.rs:115 src/ui/window.rs:399
+#: src/ui/pages/network.rs:115 src/ui/window.rs:391
 msgid "Network Interface"
 msgstr ""
 
@@ -326,184 +326,184 @@ msgstr ""
 msgid "root"
 msgstr ""
 
-#: src/ui/window.rs:258
+#: src/ui/window.rs:257
 msgid "GPU {}"
 msgstr ""
 
-#: src/ui/window.rs:333
-msgid "{} Loop Device"
-msgstr ""
-
-#: src/ui/window.rs:334
-msgid "{} Mapped Device"
-msgstr ""
-
-#: src/ui/window.rs:335
-msgid "{} RAID"
-msgstr ""
-
-#: src/ui/window.rs:336
-msgid "{} RAM Disk"
-msgstr ""
-
-#: src/ui/window.rs:337
-msgid "{} zram Device"
-msgstr ""
-
-#: src/ui/window.rs:338
-msgid "{} ZFS Volume"
-msgstr ""
-
-#: src/ui/window.rs:339
-msgid "{} Drive"
-msgstr ""
-
-#: src/ui/window.rs:389
+#: src/ui/window.rs:381
 msgid "Bluetooth Tether"
 msgstr ""
 
-#: src/ui/window.rs:390
+#: src/ui/window.rs:382
 msgid "Network Bridge"
 msgstr ""
 
-#: src/ui/window.rs:391
+#: src/ui/window.rs:383
 msgid "Ethernet Connection"
 msgstr ""
 
-#: src/ui/window.rs:392
+#: src/ui/window.rs:384
 msgid "InfiniBand Connection"
 msgstr ""
 
-#: src/ui/window.rs:393
+#: src/ui/window.rs:385
 msgid "Serial Line IP Connection"
 msgstr ""
 
-#: src/ui/window.rs:394
+#: src/ui/window.rs:386
 msgid "Virtual Ethernet Device"
 msgstr ""
 
-#: src/ui/window.rs:395
+#: src/ui/window.rs:387
 msgid "VM Network Bridge"
 msgstr ""
 
-#: src/ui/window.rs:396
+#: src/ui/window.rs:388
 msgid "VPN Tunnel (WireGuard)"
 msgstr ""
 
-#: src/ui/window.rs:397
+#: src/ui/window.rs:389
 msgid "Wi-Fi Connection"
 msgstr ""
 
-#: src/ui/window.rs:398
+#: src/ui/window.rs:390
 msgid "WWAN Connection"
 msgstr ""
 
-#: src/ui/window.rs:553
+#: src/ui/window.rs:548
 msgid "End {}?"
 msgstr ""
 
-#: src/ui/window.rs:554
+#: src/ui/window.rs:549
 msgid "Halt {}?"
 msgstr ""
 
-#: src/ui/window.rs:555
+#: src/ui/window.rs:550
 msgid "Kill {}?"
 msgstr ""
 
-#: src/ui/window.rs:556
+#: src/ui/window.rs:551
 msgid "Continue {}?"
 msgstr ""
 
-#: src/ui/window.rs:562
+#: src/ui/window.rs:557
 msgid "Unsaved work might be lost."
 msgstr ""
 
-#: src/ui/window.rs:563
+#: src/ui/window.rs:558
 msgid ""
 "Halting an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
 
-#: src/ui/window.rs:564
+#: src/ui/window.rs:559
 msgid ""
 "Killing an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
 
-#: src/ui/window.rs:571
+#: src/ui/window.rs:566
 msgid "End application"
 msgstr ""
 
-#: src/ui/window.rs:572
+#: src/ui/window.rs:567
 msgid "Halt application"
 msgstr ""
 
-#: src/ui/window.rs:573
+#: src/ui/window.rs:568
 msgid "Kill application"
 msgstr ""
 
-#: src/ui/window.rs:574
+#: src/ui/window.rs:569
 msgid "Continue application"
 msgstr ""
 
-#: src/ui/window.rs:580
+#: src/ui/window.rs:575
 msgid "Successfully ended {}"
 msgstr ""
 
-#: src/ui/window.rs:581
+#: src/ui/window.rs:576
 msgid "Successfully halted {}"
 msgstr ""
 
-#: src/ui/window.rs:582
+#: src/ui/window.rs:577
 msgid "Successfully killed {}"
 msgstr ""
 
-#: src/ui/window.rs:583
+#: src/ui/window.rs:578
 msgid "Successfully continued {}"
 msgstr ""
 
-#: src/ui/window.rs:590
+#: src/ui/window.rs:585
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:596
+#: src/ui/window.rs:591
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:602
+#: src/ui/window.rs:597
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:608
+#: src/ui/window.rs:603
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:618
+#: src/ui/window.rs:613
 msgid "There was a problem ending {}"
 msgstr ""
 
-#: src/ui/window.rs:619
+#: src/ui/window.rs:614
 msgid "There was a problem halting {}"
 msgstr ""
 
-#: src/ui/window.rs:620
+#: src/ui/window.rs:615
 msgid "There was a problem killing {}"
 msgstr ""
 
-#: src/ui/window.rs:621
+#: src/ui/window.rs:616
 msgid "There was a problem continuing {}"
 msgstr ""
 
 #: src/utils/app.rs:376
 msgid "System Processes"
+msgstr ""
+
+#: src/utils/drive.rs:104
+msgid "{} Loop Device"
+msgstr ""
+
+#: src/utils/drive.rs:105
+msgid "{} Mapped Device"
+msgstr ""
+
+#: src/utils/drive.rs:106
+msgid "{} RAID"
+msgstr ""
+
+#: src/utils/drive.rs:107
+msgid "{} RAM Disk"
+msgstr ""
+
+#: src/utils/drive.rs:108
+msgid "{} zram Device"
+msgstr ""
+
+#: src/utils/drive.rs:109
+msgid "{} ZFS Volume"
+msgstr ""
+
+#: src/utils/drive.rs:110
+msgid "{} Drive"
 msgstr ""
 
 #: src/utils/units.rs:51
