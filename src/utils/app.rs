@@ -430,6 +430,6 @@ impl AppsContext {
 
         self.apps
             .values_mut()
-            .for_each(|app| app.processes.retain(|pid| updated_processes.contains(pid)))
+            .for_each(|app| app.processes.retain(|pid| updated_processes.contains(pid)));
     }
 }

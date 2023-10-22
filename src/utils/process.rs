@@ -54,8 +54,6 @@ impl Process {
     /// Will return `Err` if there are problems traversing and
     /// parsing procfs
     pub async fn all() -> Result<Vec<Self>> {
-        let mut return_vec = Vec::new();
-
         if *IS_FLATPAK {
             let proxy_path = format!(
                 "{}/libexec/resources/resources-processes",
@@ -66,12 +64,11 @@ impl Process {
                 .output()
                 .await?;
             let output = command.stdout;
-            let proxy_output: Vec<ProcessData> =
-                rmp_serde::from_slice::<Vec<ProcessData>>(&output)?;
 
-            for process_data in proxy_output {
-                return_vec.push(Self::from_process_data(process_data));
-            }
+            return Ok(rmp_serde::from_slice::<Vec<ProcessData>>(&output)?
+                .drain(..)
+                .map(Self::from_process_data)
+                .collect());
         } else {
             let vec: Arc<Mutex<Vec<ProcessData>>> = Arc::new(Mutex::new(Vec::new()));
 
@@ -89,14 +86,9 @@ impl Process {
             }
             join_all(handles).await;
 
-            let vec = vec.lock().await;
-
-            for process_data in vec.iter() {
-                return_vec.push(Self::from_process_data(process_data.clone()));
-            }
+            let mut vec = vec.lock().await;
+            return Ok(vec.drain(..).map(Self::from_process_data).collect());
         }
-
-        Ok(return_vec)
     }
 
     fn from_process_data(process_data: ProcessData) -> Self {
