@@ -1190,9 +1190,9 @@ dependencies = [
 
 [[package]]
 name = "nparse"
-version = "0.0.8"
+version = "0.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d85b97518f69a860b97a2da2b22c2fd01167ed7862672b1210a72be4abe77d4"
+checksum = "82a74fc6e63871766ea52a13d5e6292f62339cd951b5b3f820d64480253bdc82"
 dependencies = [
  "nom",
  "serde_json",
