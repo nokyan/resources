@@ -8,5 +8,6 @@ src/config.rs
 *.ui.in~
 *.ui~
 .flatpak/
+.flatpak-builder/
 .vscode/
 vendor
