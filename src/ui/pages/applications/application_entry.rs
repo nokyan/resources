@@ -22,17 +22,33 @@ mod imp {
     pub struct ApplicationEntry {
         #[property(get = Self::name, set = Self::set_name, type = glib::GString)]
         name: Cell<glib::GString>,
+
         #[property(get = Self::id, set = Self::set_id, type = Option<glib::GString>)]
         id: Cell<Option<glib::GString>>,
+
         #[property(get = Self::description, set = Self::set_description, type = Option<glib::GString>)]
         description: Cell<Option<glib::GString>>,
+
         #[property(get = Self::icon, set = Self::set_icon, type = Icon)]
         icon: RefCell<Icon>,
 
         #[property(get, set)]
         cpu_usage: Cell<f32>,
+
         #[property(get, set)]
         memory_usage: Cell<u64>,
+
+        #[property(get, set)]
+        read_speed: Cell<f64>,
+
+        #[property(get, set)]
+        read_total: Cell<u64>,
+
+        #[property(get, set)]
+        write_speed: Cell<f64>,
+
+        #[property(get, set)]
+        write_total: Cell<u64>,
 
         pub app_item: RefCell<Option<AppItem>>,
     }
@@ -44,10 +60,12 @@ mod imp {
                 id: Cell::new(None),
                 description: Cell::new(None),
                 icon: RefCell::new(ThemedIcon::new("generic-process").into()),
-
                 cpu_usage: Cell::new(0.0),
                 memory_usage: Cell::new(0),
-
+                read_speed: Cell::new(0.0),
+                read_total: Cell::new(0),
+                write_speed: Cell::new(0.0),
+                write_total: Cell::new(0),
                 app_item: RefCell::new(None),
             }
         }
@@ -139,6 +157,10 @@ impl ApplicationEntry {
             .build();
         this.set_cpu_usage(app_item.cpu_time_ratio);
         this.set_memory_usage(app_item.memory_usage as u64);
+        this.set_read_speed(app_item.read_speed);
+        this.set_read_total(app_item.read_total);
+        this.set_write_speed(app_item.write_speed);
+        this.set_write_total(app_item.write_total);
         this.imp().app_item.replace(Some(app_item));
         this
     }
@@ -146,6 +168,10 @@ impl ApplicationEntry {
     pub fn update(&self, app_item: AppItem) {
         self.set_cpu_usage(app_item.cpu_time_ratio);
         self.set_memory_usage(app_item.memory_usage as u64);
+        self.set_read_speed(app_item.read_speed);
+        self.set_read_total(app_item.read_total);
+        self.set_write_speed(app_item.write_speed);
+        self.set_write_total(app_item.write_total);
         self.imp().app_item.replace(Some(app_item));
     }
 

@@ -17,7 +17,8 @@ use crate::ui::dialogs::process_dialog::ResProcessDialog;
 use crate::ui::window::{self, Action, MainWindow};
 use crate::utils::app::AppsContext;
 use crate::utils::process::{ProcessAction, ProcessItem};
-use crate::utils::units::convert_storage;
+use crate::utils::settings::SETTINGS;
+use crate::utils::units::{convert_speed, convert_storage};
 
 use self::process_entry::ProcessEntry;
 use self::process_name_cell::ResProcessNameCell;
@@ -270,7 +271,11 @@ impl ResProcesses {
         let name_col_sorter = CustomSorter::new(move |a, b| {
             let item_a = a.downcast_ref::<ProcessEntry>().unwrap();
             let item_b = b.downcast_ref::<ProcessEntry>().unwrap();
-            item_a.name().cmp(&item_b.name()).into()
+            item_a
+                .name()
+                .to_lowercase()
+                .cmp(&item_b.name().to_lowercase())
+                .into()
         });
         name_col.set_sorter(Some(&name_col_sorter));
 
@@ -292,6 +297,7 @@ impl ResProcesses {
             item_a.pid().cmp(&item_b.pid()).into()
         });
         pid_col.set_sorter(Some(&pid_col_sorter));
+        pid_col.set_visible(SETTINGS.processes_show_id());
 
         let user_col_factory = gtk::SignalListItemFactory::new();
         let user_col =
@@ -311,6 +317,7 @@ impl ResProcesses {
             item_a.user().cmp(&item_b.user()).into()
         });
         user_col.set_sorter(Some(&user_col_sorter));
+        user_col.set_visible(SETTINGS.processes_show_user());
 
         let memory_col_factory = gtk::SignalListItemFactory::new();
         let memory_col =
@@ -334,6 +341,7 @@ impl ResProcesses {
             item_a.cmp(&item_b).into()
         });
         memory_col.set_sorter(Some(&memory_col_sorter));
+        memory_col.set_visible(SETTINGS.processes_show_memory());
 
         let cpu_col_factory = gtk::SignalListItemFactory::new();
         let cpu_col =
@@ -362,13 +370,149 @@ impl ResProcesses {
             }
         });
         cpu_col.set_sorter(Some(&cpu_col_sorter));
+        cpu_col.set_visible(SETTINGS.processes_show_cpu());
+
+        let read_speed_col_factory = gtk::SignalListItemFactory::new();
+        let read_speed_col = gtk::ColumnViewColumn::new(
+            Some(&i18n("Drive Read")),
+            Some(read_speed_col_factory.clone()),
+        );
+        read_speed_col.set_resizable(true);
+        read_speed_col_factory.connect_setup(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let row = gtk::Inscription::new(None);
+            item.set_child(Some(&row));
+            item.property_expression("item")
+                .chain_property::<ProcessEntry>("read_speed")
+                .chain_closure::<String>(closure!(|_: Option<Object>, read_speed: f64| {
+                    convert_speed(read_speed, false)
+                }))
+                .bind(&row, "text", Widget::NONE);
+        });
+        let read_speed_col_sorter = CustomSorter::new(move |a, b| {
+            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().read_speed();
+            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().read_speed();
+            if item_a > item_b {
+                Ordering::Larger
+            } else if item_a < item_b {
+                Ordering::Smaller
+            } else {
+                Ordering::Equal
+            }
+        });
+        read_speed_col.set_sorter(Some(&read_speed_col_sorter));
+        read_speed_col.set_visible(SETTINGS.processes_show_drive_read_speed());
+
+        let read_total_col_factory = gtk::SignalListItemFactory::new();
+        let read_total_col = gtk::ColumnViewColumn::new(
+            Some(&i18n("Drive Read Total")),
+            Some(read_total_col_factory.clone()),
+        );
+        read_total_col.set_resizable(true);
+        read_total_col_factory.connect_setup(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let row = gtk::Inscription::new(None);
+            item.set_child(Some(&row));
+            item.property_expression("item")
+                .chain_property::<ProcessEntry>("read_total")
+                .chain_closure::<String>(closure!(|_: Option<Object>, read_total: u64| {
+                    convert_storage(read_total as f64, false)
+                }))
+                .bind(&row, "text", Widget::NONE);
+        });
+        let read_total_col_sorter = CustomSorter::new(move |a, b| {
+            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().read_total();
+            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().read_total();
+            item_a.cmp(&item_b).into()
+        });
+        read_total_col.set_sorter(Some(&read_total_col_sorter));
+        read_total_col.set_visible(SETTINGS.processes_show_drive_read_total());
+
+        let write_speed_col_factory = gtk::SignalListItemFactory::new();
+        let write_speed_col = gtk::ColumnViewColumn::new(
+            Some(&i18n("Drive Write")),
+            Some(write_speed_col_factory.clone()),
+        );
+        write_speed_col.set_resizable(true);
+        write_speed_col_factory.connect_setup(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let row = gtk::Inscription::new(None);
+            item.set_child(Some(&row));
+            item.property_expression("item")
+                .chain_property::<ProcessEntry>("write_speed")
+                .chain_closure::<String>(closure!(|_: Option<Object>, write_speed: f64| {
+                    convert_speed(write_speed, false)
+                }))
+                .bind(&row, "text", Widget::NONE);
+        });
+        let write_speed_col_sorter = CustomSorter::new(move |a, b| {
+            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().write_speed();
+            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().write_speed();
+            if item_a > item_b {
+                Ordering::Larger
+            } else if item_a < item_b {
+                Ordering::Smaller
+            } else {
+                Ordering::Equal
+            }
+        });
+        write_speed_col.set_sorter(Some(&write_speed_col_sorter));
+        write_speed_col.set_visible(SETTINGS.processes_show_drive_write_speed());
+
+        let write_total_col_factory = gtk::SignalListItemFactory::new();
+        let write_total_col = gtk::ColumnViewColumn::new(
+            Some(&i18n("Drive Write Total")),
+            Some(write_total_col_factory.clone()),
+        );
+        write_total_col.set_resizable(true);
+        write_total_col_factory.connect_setup(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let row = gtk::Inscription::new(None);
+            item.set_child(Some(&row));
+            item.property_expression("item")
+                .chain_property::<ProcessEntry>("write_total")
+                .chain_closure::<String>(closure!(|_: Option<Object>, write_total: u64| {
+                    convert_storage(write_total as f64, false)
+                }))
+                .bind(&row, "text", Widget::NONE);
+        });
+        let write_total_col_sorter = CustomSorter::new(move |a, b| {
+            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().write_total();
+            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().write_total();
+            item_a.cmp(&item_b).into()
+        });
+        write_total_col.set_sorter(Some(&write_total_col_sorter));
+        write_total_col.set_visible(SETTINGS.processes_show_drive_write_total());
 
         column_view.append_column(&name_col);
         column_view.append_column(&pid_col);
         column_view.append_column(&user_col);
         column_view.append_column(&memory_col);
         column_view.append_column(&cpu_col);
+        column_view.append_column(&read_speed_col);
+        column_view.append_column(&read_total_col);
+        column_view.append_column(&write_speed_col);
+        column_view.append_column(&write_total_col);
+
         column_view.sort_by_column(Some(&memory_col), SortType::Descending);
+
+        SETTINGS.connect_processes_show_id(move |visible| pid_col.set_visible(visible));
+        SETTINGS.connect_processes_show_user(move |visible| user_col.set_visible(visible));
+        SETTINGS.connect_processes_show_memory(move |visible| memory_col.set_visible(visible));
+        SETTINGS.connect_processes_show_cpu(move |visible| cpu_col.set_visible(visible));
+        SETTINGS.connect_processes_show_drive_read_speed(move |visible| {
+            read_speed_col.set_visible(visible)
+        });
+        SETTINGS.connect_processes_show_drive_read_total(move |visible| {
+            read_total_col.set_visible(visible)
+        });
+        SETTINGS.connect_processes_show_drive_write_speed(move |visible| {
+            write_speed_col.set_visible(visible)
+        });
+        SETTINGS.connect_processes_show_drive_write_total(move |visible| {
+            write_total_col.set_visible(visible)
+        });
+
         column_view.set_enable_rubberband(true);
         imp.processes_scrolled_window.set_child(Some(&column_view));
         *imp.column_view.borrow_mut() = column_view;
@@ -473,12 +617,10 @@ impl ResProcesses {
             if let Some((_, new_item)) = new_items.remove_entry(&item_pid) {
                 if let Some((dialog_pid, dialog)) = dialog_opt {
                     if *dialog_pid == item_pid {
-                        dialog.set_cpu_usage(new_item.cpu_time_ratio);
-                        dialog.set_memory_usage(new_item.memory_usage);
+                        dialog.update(&new_item);
                     }
                 }
-                object.set_cpu_usage(new_item.cpu_time_ratio);
-                object.set_memory_usage(new_item.memory_usage as u64);
+                object.update(new_item);
             }
         });
 

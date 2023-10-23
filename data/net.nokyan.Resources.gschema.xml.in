@@ -45,5 +45,61 @@
       <default>false</default>
       <summary>Display network speeds in bits per second</summary>
     </key>
+    <key name="apps-show-memory" type="b">
+      <default>true</default>
+      <summary>Display memory usage in Applications view</summary>
+    </key>
+    <key name="apps-show-cpu" type="b">
+      <default>true</default>
+      <summary>Display CPU usage in Applications view</summary>
+    </key>
+    <key name="apps-show-drive-read-speed" type="b">
+      <default>false</default>
+      <summary>Display drive read speed in Applications view</summary>
+    </key>
+    <key name="apps-show-drive-read-total" type="b">
+      <default>false</default>
+      <summary>Display drive read total in Applications view</summary>
+    </key>
+    <key name="apps-show-drive-write-speed" type="b">
+      <default>false</default>
+      <summary>Display drive write speed in Applications view</summary>
+    </key>
+    <key name="apps-show-drive-write-total" type="b">
+      <default>false</default>
+      <summary>Display drive write total in Applications view</summary>
+    </key>
+    <key name="processes-show-id" type="b">
+      <default>true</default>
+      <summary>Display process ID in Processes view</summary>
+    </key>
+    <key name="processes-show-user" type="b">
+      <default>true</default>
+      <summary>Display user name in Processes view</summary>
+    </key>
+    <key name="processes-show-memory" type="b">
+      <default>true</default>
+      <summary>Display memory usage in Processes view</summary>
+    </key>
+    <key name="processes-show-cpu" type="b">
+      <default>true</default>
+      <summary>Display CPU usage in Processes view</summary>
+    </key>
+    <key name="processes-show-drive-read-speed" type="b">
+      <default>false</default>
+      <summary>Display drive read speed in Processes view</summary>
+    </key>
+    <key name="processes-show-drive-read-total" type="b">
+      <default>false</default>
+      <summary>Display drive read total in Processes view</summary>
+    </key>
+    <key name="processes-show-drive-write-speed" type="b">
+      <default>false</default>
+      <summary>Display drive write speed in Applications view</summary>
+    </key>
+    <key name="processes-show-drive-write-total" type="b">
+      <default>false</default>
+      <summary>Display drive write total in Applications view</summary>
+    </key>
   </schema>
 </schemalist>

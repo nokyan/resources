@@ -20,8 +20,12 @@ pub struct Process {
     pub executable_path: String,
     pub executable_name: String,
     pub icon: Icon,
-    pub cpu_time_before: u64,
-    pub cpu_time_before_timestamp: u64,
+    pub cpu_time_last: u64,
+    pub cpu_time_last_timestamp: u64,
+    pub read_bytes_last: u64,
+    pub read_bytes_last_timestamp: u64,
+    pub write_bytes_last: u64,
+    pub write_bytes_last_timestamp: u64,
 }
 
 // TODO: Better name?
@@ -44,6 +48,10 @@ pub struct ProcessItem {
     pub commandline: String,
     pub containerization: Containerization,
     pub cgroup: Option<String>,
+    pub read_speed: f64,
+    pub read_total: u64,
+    pub write_speed: f64,
+    pub write_total: u64,
 }
 
 impl Process {
@@ -110,8 +118,12 @@ impl Process {
             executable_name,
             data: process_data,
             icon: ThemedIcon::new("generic-process").into(),
-            cpu_time_before: 0,
-            cpu_time_before_timestamp: 0,
+            cpu_time_last: 0,
+            cpu_time_last_timestamp: 0,
+            read_bytes_last: 0,
+            read_bytes_last_timestamp: 0,
+            write_bytes_last: 0,
+            write_bytes_last_timestamp: 0,
         }
     }
 
@@ -218,15 +230,43 @@ impl Process {
 
     #[must_use]
     pub fn cpu_time_ratio(&self) -> f32 {
-        if self.cpu_time_before == 0 {
+        if self.cpu_time_last == 0 {
             0.0
         } else {
-            (self.data.cpu_time.saturating_sub(self.cpu_time_before) as f32
+            (self.data.cpu_time.saturating_sub(self.cpu_time_last) as f32
                 / (self
                     .data
                     .cpu_time_timestamp
-                    .saturating_sub(self.cpu_time_before_timestamp)) as f32)
+                    .saturating_sub(self.cpu_time_last_timestamp)) as f32)
                 .clamp(0.0, 1.0)
+        }
+    }
+
+    #[must_use]
+    pub fn read_speed(&self) -> f64 {
+        if self.read_bytes_last_timestamp == 0 {
+            0.0
+        } else {
+            let bytes_delta = self.data.read_bytes.saturating_sub(self.read_bytes_last) as f64;
+            let time_delta = self
+                .data
+                .read_bytes_timestamp
+                .saturating_sub(self.read_bytes_last_timestamp) as f64;
+            (bytes_delta / time_delta) * 1000.0
+        }
+    }
+
+    #[must_use]
+    pub fn write_speed(&self) -> f64 {
+        if self.write_bytes_last_timestamp == 0 {
+            0.0
+        } else {
+            let bytes_delta = self.data.write_bytes.saturating_sub(self.write_bytes_last) as f64;
+            let time_delta =
+                self.data
+                    .write_bytes_timestamp
+                    .saturating_sub(self.write_bytes_last_timestamp) as f64;
+            (bytes_delta / time_delta) * 1000.0
         }
     }
 

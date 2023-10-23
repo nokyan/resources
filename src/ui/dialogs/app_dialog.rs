@@ -6,7 +6,7 @@ use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::ui::window::MainWindow;
 use crate::utils::app::AppItem;
-use crate::utils::units::convert_storage;
+use crate::utils::units::{convert_speed, convert_storage};
 
 mod imp {
 
@@ -27,6 +27,14 @@ mod imp {
         pub cpu_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub memory_usage: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub drive_read_speed: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub drive_read_total: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub drive_write_speed: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub drive_write_total: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub id: TemplateChild<adw::ActionRow>,
         #[template_child]
@@ -84,15 +92,15 @@ impl ResAppDialog {
     }
 
     pub fn setup_widgets(&self, app: &AppItem) {
+        self.update(app);
+    }
+
+    pub fn update(&self, app: &AppItem) {
         let imp = self.imp();
 
         imp.icon.set_gicon(Some(&app.icon));
 
         imp.name.set_label(&app.display_name);
-
-        self.set_cpu_usage(app.cpu_time_ratio);
-
-        self.set_memory_usage(app.memory_usage);
 
         if let Some(description) = &app.description {
             imp.description.set_label(description);
@@ -106,29 +114,31 @@ impl ResAppDialog {
             imp.id.set_visible(false);
         }
 
-        self.set_processes_amount(app.processes_amount);
+        imp.cpu_usage
+            .set_subtitle(&format!("{:.1} %", app.cpu_time_ratio * 100.0));
+
+        imp.memory_usage
+            .set_subtitle(&convert_storage(app.memory_usage as f64, false));
+
+        imp.drive_read_speed
+            .set_subtitle(&convert_speed(app.read_speed, false));
+
+        imp.drive_read_total
+            .set_subtitle(&convert_storage(app.read_total as f64, false));
+
+        imp.drive_write_speed
+            .set_subtitle(&convert_speed(app.write_speed, false));
+
+        imp.drive_write_total
+            .set_subtitle(&convert_storage(app.write_total as f64, false));
+
+        imp.processes_amount
+            .set_subtitle(&app.processes_amount.to_string());
 
         let containerized = match app.containerization {
             Containerization::None => i18n("No"),
             Containerization::Flatpak => i18n("Yes (Flatpak)"),
         };
         imp.containerized.set_subtitle(&containerized);
-    }
-
-    pub fn set_cpu_usage(&self, usage: f32) {
-        let imp = self.imp();
-        imp.cpu_usage
-            .set_subtitle(&format!("{:.1} %", usage * 100.0));
-    }
-
-    pub fn set_memory_usage(&self, usage: usize) {
-        let imp = self.imp();
-        imp.memory_usage
-            .set_subtitle(&convert_storage(usage as f64, false));
-    }
-
-    pub fn set_processes_amount(&self, amount: usize) {
-        let imp = self.imp();
-        imp.processes_amount.set_subtitle(&amount.to_string());
     }
 }

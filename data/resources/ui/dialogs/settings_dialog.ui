@@ -80,6 +80,98 @@
     </child>
     <child>
       <object class="AdwPreferencesPage">
+        <property name="icon-name">app-symbolic</property>
+        <property name="title" translatable="yes">Applications</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Information Columns</property>
+            <child>
+              <object class="AdwSwitchRow" id="apps_show_memory_row">
+                <property name="title" translatable="yes">Memory</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="apps_show_cpu_row">
+                <property name="title" translatable="yes">Processor</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="apps_show_drive_read_speed_row">
+                <property name="title" translatable="yes">Drive Read</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="apps_show_drive_read_total_row">
+                <property name="title" translatable="yes">Drive Read Total</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="apps_show_drive_write_speed_row">
+                <property name="title" translatable="yes">Drive Write</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="apps_show_drive_write_total_row">
+                <property name="title" translatable="yes">Drive Write Total</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="icon-name">generic-process-symbolic</property>
+        <property name="title" translatable="yes">Processes</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Information Columns</property>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_id_row">
+                <property name="title" translatable="yes">Process ID</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_user_row">
+                <property name="title" translatable="yes">User</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_memory_row">
+                <property name="title" translatable="yes">Memory</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_cpu_row">
+                <property name="title" translatable="yes">Processor</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_drive_read_speed_row">
+                <property name="title" translatable="yes">Drive Read</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_drive_read_total_row">
+                <property name="title" translatable="yes">Drive Read Total</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_drive_write_speed_row">
+                <property name="title" translatable="yes">Drive Write</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_drive_write_total_row">
+                <property name="title" translatable="yes">Drive Write Total</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesPage">
         <property name="icon-name">device-settings-symbolic</property>
         <property name="title" translatable="yes">Devices</property>
         <child>
