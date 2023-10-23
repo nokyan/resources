@@ -5,6 +5,9 @@
   <summary>Monitor your system resources and processes</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
+  <recommends>
+    <display_length compare="ge">360</display_length>
+  </recommends>
   <supports>
     <control>pointing</control>
     <control>keyboard</control>

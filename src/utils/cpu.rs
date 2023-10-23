@@ -3,11 +3,14 @@ use async_process::Command;
 use async_std::path::PathBuf;
 use glob::glob;
 use nparse::KVStrToJson;
+use once_cell::sync::Lazy;
 use regex::bytes::Regex;
 use serde_json::Value;
 use std::sync::OnceLock;
 
-static PROC_STAT_REGEX: OnceLock<Regex> = OnceLock::new();
+static PROC_STAT_REGEX: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r"cpu[0-9]* *(?P<user>[0-9]*) *(?P<nice>[0-9]*) *(?P<system>[0-9]*) *(?P<idle>[0-9]*) *(?P<iowait>[0-9]*) *(?P<irq>[0-9]*) *(?P<softirq>[0-9]*) *(?P<steal>[0-9]*) *(?P<guest>[0-9]*) *(?P<guest_nice>[0-9]*)").unwrap()
+});
 
 static ZENPOWER: OnceLock<PathBuf> = OnceLock::new();
 static CORETEMP: OnceLock<PathBuf> = OnceLock::new();
@@ -107,7 +110,6 @@ pub fn get_cpu_freq(core: usize) -> Result<u64> {
 
 fn parse_proc_stat_line(line: &[u8]) -> Result<(u64, u64)> {
     let captures = PROC_STAT_REGEX
-        .get_or_init(|| Regex::new(r"cpu[0-9]* *(?P<user>[0-9]*) *(?P<nice>[0-9]*) *(?P<system>[0-9]*) *(?P<idle>[0-9]*) *(?P<iowait>[0-9]*) *(?P<irq>[0-9]*) *(?P<softirq>[0-9]*) *(?P<steal>[0-9]*) *(?P<guest>[0-9]*) *(?P<guest_nice>[0-9]*)").unwrap())
         .captures(line)
         .ok_or_else(|| anyhow!("using regex to parse /proc/stat failed"))?;
     let idle_time = captures

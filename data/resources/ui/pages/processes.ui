@@ -26,7 +26,7 @@
               <object class="GtkScrolledWindow" id="processes_scrolled_window">
                 <property name="hexpand">true</property>
                 <property name="vexpand">true</property>
-                <property name="hscrollbar_policy">never</property>
+                <property name="hscrollbar_policy">automatic</property>
               </object>
             </child>
             <child>
