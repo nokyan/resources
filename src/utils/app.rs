@@ -34,6 +34,8 @@ pub struct AppsContext {
     apps: HashMap<String, App>,
     processes: HashMap<i32, Process>,
     processes_assigned_to_apps: HashSet<i32>,
+    read_bytes_from_dead_processes: u64,
+    write_bytes_from_dead_processes: u64,
 }
 
 /// Convenience struct for displaying running applications and
@@ -48,6 +50,10 @@ pub struct AppItem {
     pub cpu_time_ratio: f32,
     pub processes_amount: usize,
     pub containerization: Containerization,
+    pub read_speed: f64,
+    pub read_total: u64,
+    pub write_speed: f64,
+    pub write_total: u64,
 }
 
 /// Represents an application installed on the system. It doesn't
@@ -60,6 +66,8 @@ pub struct App {
     pub description: Option<String>,
     pub icon: Icon,
     pub id: String,
+    pub read_bytes_from_dead_processes: u64,
+    pub write_bytes_from_dead_processes: u64,
 }
 
 impl App {
@@ -111,6 +119,8 @@ impl App {
             description: desktop_entry.get("Comment").map(str::to_string),
             icon: ThemedIcon::new(desktop_entry.get("Icon").unwrap_or("generic-process")).into(),
             id,
+            read_bytes_from_dead_processes: 0,
+            write_bytes_from_dead_processes: 0,
         })
     }
 
@@ -127,8 +137,8 @@ impl App {
     }
 
     #[must_use]
-    pub fn is_running(&self, apps: &AppsContext) -> bool {
-        self.processes_iter(apps).count() > 0
+    pub fn is_running(&self) -> bool {
+        self.processes.is_empty()
     }
 
     pub fn processes_iter<'a>(&'a self, apps: &'a AppsContext) -> impl Iterator<Item = &Process> {
@@ -152,43 +162,39 @@ impl App {
     }
 
     #[must_use]
-    pub fn cpu_time(&self, apps: &AppsContext) -> u64 {
-        self.processes_iter(apps)
-            .map(|process| process.data.cpu_time)
-            .sum()
-    }
-
-    #[must_use]
-    pub fn cpu_time_timestamp(&self, apps: &AppsContext) -> u64 {
-        self.processes_iter(apps)
-            .map(|process| process.data.cpu_time_timestamp)
-            .sum::<u64>()
-            .checked_div(self.processes.len() as u64) // the timestamps of the last cpu time check should be pretty much equal but to be sure, take the average of all of them
-            .unwrap_or(0)
-    }
-
-    #[must_use]
-    pub fn cpu_time_before(&self, apps: &AppsContext) -> u64 {
-        self.processes_iter(apps)
-            .map(|process| process.cpu_time_before)
-            .sum()
-    }
-
-    #[must_use]
-    pub fn cpu_time_before_timestamp(&self, apps: &AppsContext) -> u64 {
-        self.processes_iter(apps)
-            .map(|process| process.cpu_time_before_timestamp)
-            .sum::<u64>()
-            .checked_div(self.processes.len() as u64)
-            .unwrap_or(0)
-    }
-
-    #[must_use]
     pub fn cpu_time_ratio(&self, apps: &AppsContext) -> f32 {
         self.processes_iter(apps)
             .map(Process::cpu_time_ratio)
             .sum::<f32>()
             .clamp(0.0, 1.0)
+    }
+
+    #[must_use]
+    pub fn read_speed(&self, apps: &AppsContext) -> f64 {
+        self.processes_iter(apps).map(Process::read_speed).sum()
+    }
+
+    #[must_use]
+    pub fn read_total(&self, apps: &AppsContext) -> u64 {
+        self.read_bytes_from_dead_processes.saturating_add(
+            self.processes_iter(apps)
+                .map(|process| process.data.read_bytes)
+                .sum::<u64>(),
+        )
+    }
+
+    #[must_use]
+    pub fn write_speed(&self, apps: &AppsContext) -> f64 {
+        self.processes_iter(apps).map(Process::write_speed).sum()
+    }
+
+    #[must_use]
+    pub fn write_total(&self, apps: &AppsContext) -> u64 {
+        self.write_bytes_from_dead_processes.saturating_add(
+            self.processes_iter(apps)
+                .map(|process| process.data.write_bytes)
+                .sum::<u64>(),
+        )
     }
 
     pub fn execute_process_action(
@@ -216,6 +222,8 @@ impl AppsContext {
             apps,
             processes: HashMap::new(),
             processes_assigned_to_apps: HashSet::new(),
+            read_bytes_from_dead_processes: 0,
+            write_bytes_from_dead_processes: 0,
         }
     }
 
@@ -309,6 +317,10 @@ impl AppsContext {
                 containerization: process.data.containerization.clone(),
                 cgroup: process.data.cgroup.clone(),
                 uid: process.data.uid,
+                read_speed: process.read_speed(),
+                read_total: process.data.read_bytes,
+                write_speed: process.write_speed(),
+                write_total: process.data.write_bytes,
             }
         })
     }
@@ -322,7 +334,7 @@ impl AppsContext {
         let mut return_map = self
             .apps
             .iter()
-            .filter(|(_, app)| app.is_running(self) && !app.id.starts_with("xdg-desktop-portal"))
+            .filter(|(_, app)| app.is_running() && !app.id.starts_with("xdg-desktop-portal"))
             .map(|(_, app)| {
                 app.processes_iter(self).for_each(|process| {
                     app_pids.insert(process.data.pid);
@@ -352,22 +364,38 @@ impl AppsContext {
                         cpu_time_ratio: app.cpu_time_ratio(self),
                         processes_amount: app.processes_iter(self).count(),
                         containerization,
+                        read_speed: app.read_speed(self),
+                        read_total: app.read_total(self),
+                        write_speed: app.write_speed(self),
+                        write_total: app.write_total(self),
                     },
                 )
             })
             .collect::<HashMap<Option<String>, AppItem>>();
 
         let system_cpu_ratio = self
-            .all_processes()
-            .filter(|process| !app_pids.contains(&process.data.pid))
+            .system_processes_iter()
             .map(Process::cpu_time_ratio)
             .sum();
 
         let system_memory_usage: usize = self
-            .all_processes()
-            .filter(|process| !app_pids.contains(&process.data.pid))
+            .system_processes_iter()
             .map(|process| process.data.memory_usage)
             .sum();
+
+        let system_read_speed = self
+            .system_processes_iter()
+            .map(|process| process.read_speed())
+            .sum();
+
+        let system_read_total = self.read_bytes_from_dead_processes;
+
+        let system_write_speed = self
+            .system_processes_iter()
+            .map(|process| process.write_speed())
+            .sum();
+
+        let system_write_total = self.write_bytes_from_dead_processes;
 
         return_map.insert(
             None,
@@ -380,6 +408,10 @@ impl AppsContext {
                 cpu_time_ratio: system_cpu_ratio,
                 processes_amount: self.processes.len(),
                 containerization: Containerization::None,
+                read_speed: system_read_speed,
+                read_total: system_read_total,
+                write_speed: system_write_speed,
+                write_total: system_write_total,
             },
         );
         return_map
@@ -390,46 +422,85 @@ impl AppsContext {
         let newly_gathered_processes = Process::all().await.unwrap_or_default();
         let mut updated_processes = HashSet::new();
 
-        for mut refreshed_process in newly_gathered_processes {
-            updated_processes.insert(refreshed_process.data.pid);
+        for mut new_process in newly_gathered_processes {
+            updated_processes.insert(new_process.data.pid);
             // refresh our old processes
-            if let Some(old_process) = self.processes.get_mut(&refreshed_process.data.pid) {
-                old_process.cpu_time_before = old_process.data.cpu_time;
-                old_process.cpu_time_before_timestamp = old_process.data.cpu_time_timestamp;
-                old_process.data = refreshed_process.data.clone();
+            if let Some(old_process) = self.processes.get_mut(&new_process.data.pid) {
+                old_process.cpu_time_last = old_process.data.cpu_time;
+                old_process.cpu_time_last_timestamp = old_process.data.cpu_time_timestamp;
+                old_process.read_bytes_last = old_process.data.read_bytes;
+                old_process.read_bytes_last_timestamp = old_process.data.read_bytes_timestamp;
+                old_process.write_bytes_last = old_process.data.write_bytes;
+                old_process.write_bytes_last_timestamp = old_process.data.write_bytes_timestamp;
+                old_process.data = new_process.data.clone();
             } else {
                 // this is a new process, see if it belongs to a graphical app
 
                 if self
                     .processes_assigned_to_apps
-                    .contains(&refreshed_process.data.pid)
+                    .contains(&new_process.data.pid)
                 {
                     continue;
                 }
 
-                if let Some(app_id) = self.app_associated_with_process(&refreshed_process) {
-                    self.processes_assigned_to_apps
-                        .insert(refreshed_process.data.pid);
+                if let Some(app_id) = self.app_associated_with_process(&new_process) {
+                    self.processes_assigned_to_apps.insert(new_process.data.pid);
                     self.apps
                         .get_mut(&app_id)
                         .unwrap()
-                        .add_process(&mut refreshed_process);
+                        .add_process(&mut new_process);
                 }
 
-                self.processes
-                    .insert(refreshed_process.data.pid, refreshed_process);
+                self.processes.insert(new_process.data.pid, new_process);
             }
         }
 
         // all the not-updated processes have unfortunately died, probably
+
+        // collect the I/O stats for died app processes so an app doesn't suddenly have less total disk I/O
+        self.apps.values_mut().for_each(|app| {
+            let (read_dead, write_dead) = app
+                .processes
+                .iter()
+                .filter(|pid| !updated_processes.contains(*pid)) // only dead processes
+                .filter_map(|pid| self.processes.get(pid)) // ignore about non-existing processes
+                .map(|process| (process.data.read_bytes, process.data.write_bytes)) // get their read_bytes and write_bytes
+                .reduce(|sum, current| (sum.0 + current.0, sum.1 + current.1)) // sum them up
+                .unwrap_or((0, 0)); // if there were no processes, it's 0 for both
+
+            app.read_bytes_from_dead_processes += read_dead;
+            app.write_bytes_from_dead_processes += write_dead;
+
+            app.processes.retain(|pid| updated_processes.contains(pid));
+
+            if !app.is_running() {
+                app.read_bytes_from_dead_processes = 0;
+                app.write_bytes_from_dead_processes = 0;
+            }
+        });
+
+        // same as above but for system processes
+        let (read_dead, write_dead) = updated_processes
+            .iter()
+            .filter(|pid| !self.processes_assigned_to_apps.contains(*pid))
+            .filter_map(|pid| self.get_process(*pid))
+            .map(|process| (process.data.read_bytes, process.data.write_bytes))
+            .reduce(|sum, current| (sum.0 + current.0, sum.1 + current.1))
+            .unwrap_or((0, 0));
+        self.read_bytes_from_dead_processes += read_dead;
+        self.write_bytes_from_dead_processes += write_dead;
+
+        // remove the dead process from our process map
         self.processes
             .retain(|pid, _| updated_processes.contains(pid));
 
+        // remove the dead process from out list of app processes
         self.processes_assigned_to_apps
             .retain(|pid| updated_processes.contains(pid));
+    }
 
-        self.apps
-            .values_mut()
-            .for_each(|app| app.processes.retain(|pid| updated_processes.contains(pid)));
+    pub fn system_processes_iter(&self) -> impl Iterator<Item = &Process> {
+        self.all_processes()
+            .filter(|process| !self.processes_assigned_to_apps.contains(&process.data.pid))
     }
 }

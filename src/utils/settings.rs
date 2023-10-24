@@ -64,9 +64,9 @@ impl Settings {
 
     pub fn set_temperature_unit(
         &self,
-        temperature_unit: TemperatureUnit,
+        value: TemperatureUnit,
     ) -> Result<(), glib::error::BoolError> {
-        self.set_string("temperature-unit", &temperature_unit.to_string())
+        self.set_string("temperature-unit", &value.to_string())
     }
 
     pub fn connect_temperature_unit<F: Fn(TemperatureUnit) + 'static>(
@@ -85,8 +85,8 @@ impl Settings {
         Base::from_str(self.string("base").as_str()).unwrap_or_default()
     }
 
-    pub fn set_base(&self, base: Base) -> Result<(), glib::error::BoolError> {
-        self.set_string("base", &base.to_string())
+    pub fn set_base(&self, value: Base) -> Result<(), glib::error::BoolError> {
+        self.set_string("base", &value.to_string())
     }
 
     pub fn connect_base<F: Fn(Base) + 'static>(&self, f: F) -> glib::SignalHandlerId {
@@ -99,11 +99,8 @@ impl Settings {
         RefreshSpeed::from_str(self.string("refresh-speed").as_str()).unwrap_or_default()
     }
 
-    pub fn set_refresh_speed(
-        &self,
-        refresh_speed: RefreshSpeed,
-    ) -> Result<(), glib::error::BoolError> {
-        self.set_string("refresh-speed", &refresh_speed.to_string())
+    pub fn set_refresh_speed(&self, value: RefreshSpeed) -> Result<(), glib::error::BoolError> {
+        self.set_string("refresh-speed", &value.to_string())
     }
 
     pub fn connect_refresh_speed<F: Fn(RefreshSpeed) + 'static>(
@@ -122,8 +119,8 @@ impl Settings {
         self.int("window-width")
     }
 
-    pub fn set_window_width(&self, width: i32) -> Result<(), glib::error::BoolError> {
-        self.set_int("window-width", width)
+    pub fn set_window_width(&self, value: i32) -> Result<(), glib::error::BoolError> {
+        self.set_int("window-width", value)
     }
 
     pub fn connect_window_width<F: Fn(i32) + 'static>(&self, f: F) -> glib::SignalHandlerId {
@@ -136,8 +133,8 @@ impl Settings {
         self.int("window-height")
     }
 
-    pub fn set_window_height(&self, width: i32) -> Result<(), glib::error::BoolError> {
-        self.set_int("window-height", width)
+    pub fn set_window_height(&self, value: i32) -> Result<(), glib::error::BoolError> {
+        self.set_int("window-height", value)
     }
 
     pub fn connect_window_height<F: Fn(i32) + 'static>(&self, f: F) -> glib::SignalHandlerId {
@@ -150,8 +147,8 @@ impl Settings {
         self.boolean("is-maximized")
     }
 
-    pub fn set_maximized(&self, maximized: bool) -> Result<(), glib::error::BoolError> {
-        self.set_boolean("is-maximized", maximized)
+    pub fn set_maximized(&self, value: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("is-maximized", value)
     }
 
     pub fn connect_maximized<F: Fn(bool) + 'static>(&self, f: F) -> glib::SignalHandlerId {
@@ -164,8 +161,8 @@ impl Settings {
         self.boolean("show-search-on-start")
     }
 
-    pub fn set_show_search_on_start(&self, maximized: bool) -> Result<(), glib::error::BoolError> {
-        self.set_boolean("show-search-on-start", maximized)
+    pub fn set_show_search_on_start(&self, value: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("show-search-on-start", value)
     }
 
     pub fn connect_show_search_on_start<F: Fn(bool) + 'static>(
@@ -181,8 +178,8 @@ impl Settings {
         self.boolean("show-virtual-drives")
     }
 
-    pub fn set_show_virtual_drives(&self, maximized: bool) -> Result<(), glib::error::BoolError> {
-        self.set_boolean("show-virtual-drives", maximized)
+    pub fn set_show_virtual_drives(&self, value: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("show-virtual-drives", value)
     }
 
     pub fn connect_show_virtual_drives<F: Fn(bool) + 'static>(
@@ -200,9 +197,9 @@ impl Settings {
 
     pub fn set_show_virtual_network_interfaces(
         &self,
-        maximized: bool,
+        value: bool,
     ) -> Result<(), glib::error::BoolError> {
-        self.set_boolean("show-virtual-network-interfaces", maximized)
+        self.set_boolean("show-virtual-network-interfaces", value)
     }
 
     pub fn connect_show_virtual_network_interfaces<F: Fn(bool) + 'static>(
@@ -219,8 +216,8 @@ impl Settings {
         self.boolean("sidebar-details")
     }
 
-    pub fn set_sidebar_details(&self, maximized: bool) -> Result<(), glib::error::BoolError> {
-        self.set_boolean("sidebar-details", maximized)
+    pub fn set_sidebar_details(&self, value: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("sidebar-details", value)
     }
 
     pub fn connect_sidebar_details<F: Fn(bool) + 'static>(&self, f: F) -> glib::SignalHandlerId {
@@ -233,14 +230,270 @@ impl Settings {
         self.boolean("network-bits")
     }
 
-    pub fn set_network_bits(&self, maximized: bool) -> Result<(), glib::error::BoolError> {
-        self.set_boolean("network-bits", maximized)
+    pub fn set_network_bits(&self, value: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("network-bits", value)
     }
 
     pub fn connect_network_bits<F: Fn(bool) + 'static>(&self, f: F) -> glib::SignalHandlerId {
         self.connect_changed(Some("network-bits"), move |settings, _key| {
             f(settings.boolean("network-bits"))
         })
+    }
+
+    pub fn apps_show_memory(&self) -> bool {
+        self.boolean("apps-show-memory")
+    }
+
+    pub fn set_apps_show_memory(&self, value: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("apps-show-memory", value)
+    }
+
+    pub fn connect_apps_show_memory<F: Fn(bool) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+        self.connect_changed(Some("apps-show-memory"), move |settings, _key| {
+            f(settings.boolean("apps-show-memory"))
+        })
+    }
+
+    pub fn apps_show_cpu(&self) -> bool {
+        self.boolean("apps-show-cpu")
+    }
+
+    pub fn set_apps_show_cpu(&self, value: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("apps-show-cpu", value)
+    }
+
+    pub fn connect_apps_show_cpu<F: Fn(bool) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+        self.connect_changed(Some("apps-show-cpu"), move |settings, _key| {
+            f(settings.boolean("apps-show-cpu"))
+        })
+    }
+
+    pub fn apps_show_drive_read_speed(&self) -> bool {
+        self.boolean("apps-show-drive-read-speed")
+    }
+
+    pub fn set_apps_show_drive_read_speed(
+        &self,
+        value: bool,
+    ) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("apps-show-drive-read-speed", value)
+    }
+
+    pub fn connect_apps_show_drive_read_speed<F: Fn(bool) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(Some("apps-show-drive-read-speed"), move |settings, _key| {
+            f(settings.boolean("apps-show-drive-read-speed"))
+        })
+    }
+
+    pub fn apps_show_drive_read_total(&self) -> bool {
+        self.boolean("apps-show-drive-read-total")
+    }
+
+    pub fn set_apps_show_drive_read_total(
+        &self,
+        value: bool,
+    ) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("apps-show-drive-read-total", value)
+    }
+
+    pub fn connect_apps_show_drive_read_total<F: Fn(bool) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(Some("apps-show-drive-read-total"), move |settings, _key| {
+            f(settings.boolean("apps-show-drive-read-total"))
+        })
+    }
+
+    pub fn apps_show_drive_write_speed(&self) -> bool {
+        self.boolean("apps-show-drive-write-speed")
+    }
+
+    pub fn set_apps_show_drive_write_speed(
+        &self,
+        value: bool,
+    ) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("apps-show-drive-write-speed", value)
+    }
+
+    pub fn connect_apps_show_drive_write_speed<F: Fn(bool) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(
+            Some("apps-show-drive-write-speed"),
+            move |settings, _key| f(settings.boolean("apps-show-drive-write-speed")),
+        )
+    }
+
+    pub fn apps_show_drive_write_total(&self) -> bool {
+        self.boolean("apps-show-drive-write-total")
+    }
+
+    pub fn set_apps_show_drive_write_total(
+        &self,
+        value: bool,
+    ) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("apps-show-drive-write-total", value)
+    }
+
+    pub fn connect_apps_show_drive_write_total<F: Fn(bool) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(
+            Some("apps-show-drive-write-total"),
+            move |settings, _key| f(settings.boolean("apps-show-drive-write-total")),
+        )
+    }
+
+    pub fn processes_show_id(&self) -> bool {
+        self.boolean("processes-show-id")
+    }
+
+    pub fn set_processes_show_id(&self, value: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("processes-show-id", value)
+    }
+
+    pub fn connect_processes_show_id<F: Fn(bool) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+        self.connect_changed(Some("processes-show-id"), move |settings, _key| {
+            f(settings.boolean("processes-show-id"))
+        })
+    }
+
+    pub fn processes_show_user(&self) -> bool {
+        self.boolean("processes-show-user")
+    }
+
+    pub fn set_processes_show_user(&self, value: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("processes-show-user", value)
+    }
+
+    pub fn connect_processes_show_user<F: Fn(bool) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(Some("processes-show-user"), move |settings, _key| {
+            f(settings.boolean("processes-show-user"))
+        })
+    }
+
+    pub fn processes_show_memory(&self) -> bool {
+        self.boolean("processes-show-memory")
+    }
+
+    pub fn set_processes_show_memory(&self, value: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("processes-show-memory", value)
+    }
+
+    pub fn connect_processes_show_memory<F: Fn(bool) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(Some("processes-show-memory"), move |settings, _key| {
+            f(settings.boolean("processes-show-memory"))
+        })
+    }
+
+    pub fn processes_show_cpu(&self) -> bool {
+        self.boolean("processes-show-cpu")
+    }
+
+    pub fn set_processes_show_cpu(&self, value: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("processes-show-cpu", value)
+    }
+
+    pub fn connect_processes_show_cpu<F: Fn(bool) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+        self.connect_changed(Some("processes-show-cpu"), move |settings, _key| {
+            f(settings.boolean("processes-show-cpu"))
+        })
+    }
+
+    pub fn processes_show_drive_read_speed(&self) -> bool {
+        self.boolean("processes-show-drive-read-speed")
+    }
+
+    pub fn set_processes_show_drive_read_speed(
+        &self,
+        value: bool,
+    ) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("processes-show-drive-read-speed", value)
+    }
+
+    pub fn connect_processes_show_drive_read_speed<F: Fn(bool) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(
+            Some("processes-show-drive-read-speed"),
+            move |settings, _key| f(settings.boolean("processes-show-drive-read-speed")),
+        )
+    }
+
+    pub fn processes_show_drive_read_total(&self) -> bool {
+        self.boolean("processes-show-drive-read-total")
+    }
+
+    pub fn set_processes_show_drive_read_total(
+        &self,
+        value: bool,
+    ) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("processes-show-drive-read-total", value)
+    }
+
+    pub fn connect_processes_show_drive_read_total<F: Fn(bool) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(
+            Some("processes-show-drive-read-total"),
+            move |settings, _key| f(settings.boolean("processes-show-drive-read-total")),
+        )
+    }
+
+    pub fn processes_show_drive_write_speed(&self) -> bool {
+        self.boolean("processes-show-drive-write-speed")
+    }
+
+    pub fn set_processes_show_drive_write_speed(
+        &self,
+        value: bool,
+    ) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("processes-show-drive-write-speed", value)
+    }
+
+    pub fn connect_processes_show_drive_write_speed<F: Fn(bool) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(
+            Some("processes-show-drive-write-speed"),
+            move |settings, _key| f(settings.boolean("processes-show-drive-write-speed")),
+        )
+    }
+
+    pub fn processes_show_drive_write_total(&self) -> bool {
+        self.boolean("processes-show-drive-write-total")
+    }
+
+    pub fn set_processes_show_drive_write_total(
+        &self,
+        value: bool,
+    ) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("processes-show-drive-write-total", value)
+    }
+
+    pub fn connect_processes_show_drive_write_total<F: Fn(bool) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(
+            Some("processes-show-drive-write-total"),
+            move |settings, _key| f(settings.boolean("processes-show-drive-write-total")),
+        )
     }
 }
 

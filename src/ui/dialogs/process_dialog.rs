@@ -6,7 +6,7 @@ use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::ui::window::MainWindow;
 use crate::utils::process::ProcessItem;
-use crate::utils::units::convert_storage;
+use crate::utils::units::{convert_speed, convert_storage};
 
 mod imp {
 
@@ -23,6 +23,14 @@ mod imp {
         pub cpu_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub memory_usage: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub drive_read_speed: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub drive_read_total: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub drive_write_speed: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub drive_write_total: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub pid: TemplateChild<adw::ActionRow>,
         #[template_child]
@@ -86,18 +94,38 @@ impl ResProcessDialog {
     pub fn setup_widgets(&self, process: &ProcessItem, user: &str) {
         let imp = self.imp();
 
+        imp.user.set_subtitle(user);
+
+        self.update(process);
+    }
+
+    pub fn update(&self, process: &ProcessItem) {
+        let imp = self.imp();
+
         imp.name.set_label(&process.display_name);
 
-        self.set_cpu_usage(process.cpu_time_ratio);
+        imp.cpu_usage
+            .set_subtitle(&format!("{:.1} %", process.cpu_time_ratio * 100.0));
 
-        self.set_memory_usage(process.memory_usage);
+        imp.memory_usage
+            .set_subtitle(&convert_storage(process.memory_usage as f64, false));
+
+        imp.drive_read_speed
+            .set_subtitle(&convert_speed(process.read_speed, false));
+
+        imp.drive_read_total
+            .set_subtitle(&convert_storage(process.read_total as f64, false));
+
+        imp.drive_write_speed
+            .set_subtitle(&convert_speed(process.write_speed, false));
+
+        imp.drive_write_total
+            .set_subtitle(&convert_storage(process.write_total as f64, false));
 
         imp.pid.set_subtitle(&process.pid.to_string());
 
         imp.commandline.set_subtitle(&process.commandline);
         imp.commandline.set_tooltip_text(Some(&process.commandline));
-
-        imp.user.set_subtitle(user);
 
         imp.cgroup
             .set_subtitle(&process.cgroup.clone().unwrap_or_else(|| i18n("N/A")));
@@ -109,17 +137,5 @@ impl ResProcessDialog {
             Containerization::Flatpak => i18n("Yes (Flatpak)"),
         };
         imp.containerized.set_subtitle(&containerized);
-    }
-
-    pub fn set_cpu_usage(&self, usage: f32) {
-        let imp = self.imp();
-        imp.cpu_usage
-            .set_subtitle(&format!("{:.1} %", usage * 100.0));
-    }
-
-    pub fn set_memory_usage(&self, usage: usize) {
-        let imp = self.imp();
-        imp.memory_usage
-            .set_subtitle(&convert_storage(usage as f64, false));
     }
 }

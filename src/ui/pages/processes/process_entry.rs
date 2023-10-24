@@ -22,19 +22,36 @@ mod imp {
     pub struct ProcessEntry {
         #[property(get = Self::name, set = Self::set_name, type = glib::GString)]
         name: Cell<glib::GString>,
+
         #[property(get = Self::commandline, set = Self::set_commandline, type = glib::GString)]
         commandline: Cell<glib::GString>,
+
         #[property(get = Self::user, set = Self::set_user, type = glib::GString)]
         user: Cell<glib::GString>,
+
         #[property(get = Self::icon, set = Self::set_icon, type = Icon)]
         icon: RefCell<Icon>,
+
         #[property(get, set)]
         pid: Cell<i32>,
 
         #[property(get, set)]
         cpu_usage: Cell<f32>,
+
         #[property(get, set)]
         memory_usage: Cell<u64>,
+
+        #[property(get, set)]
+        read_speed: Cell<f64>,
+
+        #[property(get, set)]
+        read_total: Cell<u64>,
+
+        #[property(get, set)]
+        write_speed: Cell<f64>,
+
+        #[property(get, set)]
+        write_total: Cell<u64>,
 
         pub process_item: RefCell<Option<ProcessItem>>,
     }
@@ -47,11 +64,13 @@ mod imp {
                 user: Cell::new(glib::GString::default()),
                 icon: RefCell::new(ThemedIcon::new("generic-process").into()),
                 pid: Cell::new(0),
-
                 cpu_usage: Cell::new(0.0),
                 memory_usage: Cell::new(0),
-
                 process_item: RefCell::new(None),
+                read_speed: Cell::new(0.0),
+                read_total: Cell::new(0),
+                write_speed: Cell::new(0.0),
+                write_total: Cell::new(0),
             }
         }
     }
@@ -144,6 +163,10 @@ impl ProcessEntry {
             .build();
         this.set_cpu_usage(process_item.cpu_time_ratio);
         this.set_memory_usage(process_item.memory_usage as u64);
+        this.set_read_speed(process_item.read_speed);
+        this.set_read_total(process_item.read_total);
+        this.set_write_speed(process_item.write_speed);
+        this.set_write_total(process_item.write_total);
         this.imp().process_item.replace(Some(process_item));
         this
     }
@@ -151,6 +174,10 @@ impl ProcessEntry {
     pub fn update(&self, process_item: ProcessItem) {
         self.set_cpu_usage(process_item.cpu_time_ratio);
         self.set_memory_usage(process_item.memory_usage as u64);
+        self.set_read_speed(process_item.read_speed);
+        self.set_read_total(process_item.read_total);
+        self.set_write_speed(process_item.write_speed);
+        self.set_write_total(process_item.write_total);
         self.imp().process_item.replace(Some(process_item));
     }
 

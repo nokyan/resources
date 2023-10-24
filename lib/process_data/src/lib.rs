@@ -1,5 +1,6 @@
 use anyhow::{anyhow, Context, Result};
 use async_std::sync::Arc;
+use nparse::KVStrToJson;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
@@ -31,6 +32,10 @@ pub struct ProcessData {
     pub memory_usage: usize,
     pub cgroup: Option<String>,
     pub containerization: Containerization,
+    pub read_bytes: u64,
+    pub read_bytes_timestamp: u64,
+    pub write_bytes: u64,
+    pub write_bytes_timestamp: u64,
 }
 
 impl ProcessData {
@@ -111,6 +116,12 @@ impl ProcessData {
             async_std::fs::read_to_string(shared_proc_path.join("cgroup")).await
         });
 
+        // IO
+        let shared_proc_path = Arc::new(proc_path.clone());
+        let io = async_std::task::spawn(async move {
+            async_std::fs::read_to_string(shared_proc_path.join("io")).await
+        });
+
         let stat = stat.await?;
         let statm = statm.await?;
         let comm = comm.await?;
@@ -153,6 +164,35 @@ impl ProcessData {
             false => Containerization::None,
         };
 
+        let io = io.await?.kv_str_to_json().ok();
+
+        let read_bytes = io
+            .as_ref()
+            .and_then(|kv| {
+                kv.as_object().and_then(|obj| {
+                    obj.get("read_bytes")
+                        .and_then(|val| val.as_str().and_then(|s| s.parse().ok()))
+                })
+            })
+            .unwrap_or(0);
+
+        let read_bytes_timestamp = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)?
+            .as_millis() as u64;
+
+        let write_bytes = io
+            .and_then(|kv| {
+                kv.as_object().and_then(|obj| {
+                    obj.get("write_bytes")
+                        .and_then(|val| val.as_str().and_then(|s| s.parse().ok()))
+                })
+            })
+            .unwrap_or(0);
+
+        let write_bytes_timestamp = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)?
+            .as_millis() as u64;
+
         Ok(Self {
             pid,
             uid,
@@ -164,6 +204,10 @@ impl ProcessData {
             cgroup,
             proc_path,
             containerization,
+            read_bytes,
+            read_bytes_timestamp,
+            write_bytes,
+            write_bytes_timestamp,
         })
     }
 }
