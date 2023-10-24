@@ -95,11 +95,15 @@
     </key>
     <key name="processes-show-drive-write-speed" type="b">
       <default>false</default>
-      <summary>Display drive write speed in Applications view</summary>
+      <summary>Display drive write speed in Processes view</summary>
     </key>
     <key name="processes-show-drive-write-total" type="b">
       <default>false</default>
-      <summary>Display drive write total in Applications view</summary>
+      <summary>Display drive write total in Processes view</summary>
+    </key>
+    <key name="show-logical-cpus" type="b">
+      <default>false</default>
+      <summary>Display logical CPU graphs in Processor view</summary>
     </key>
   </schema>
 </schemalist>

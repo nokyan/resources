@@ -270,27 +270,33 @@ impl MainWindow {
                 imp.gpu_pages.borrow_mut().push(added_page);
             }
 
-            this.refresh_drives().await;
-            this.refresh_network_interfaces().await;
+            let _ = this.refresh_drives().await;
+            let _ = this.refresh_network_interfaces().await;
 
             futures_util::join!(async {
                 loop {
-                    imp.cpu.refresh_page().await;
+                    let _ = imp.cpu.refresh_page().await;
 
-                    imp.memory.refresh_page().await;
+                    let _ = imp.memory.refresh_page().await;
 
-                    for gpu_page_toolbar in imp.gpu_pages.borrow().iter() {
-                        gpu_page_toolbar.content().and_downcast::<ResGPU>().unwrap().refresh_page().await;
+                    if let Ok(gpu_pages) = imp.gpu_pages.try_borrow() {
+                        for gpu_page_toolbar in gpu_pages.iter() {
+                            let _ = gpu_page_toolbar.content().and_downcast::<ResGPU>().unwrap().refresh_page().await;
+                        }
                     }
 
-                    this.refresh_drives().await;
-                        for drive_page_toolbar in imp.drive_pages.borrow().values() {
-                            drive_page_toolbar.1.content().and_downcast::<ResDrive>().unwrap().refresh_page().await;
+                    let _ = this.refresh_drives().await;
+                    if let Ok(drive_pages) = imp.drive_pages.try_borrow() {
+                        for drive_page_toolbar in drive_pages.values() {
+                            let _ = drive_page_toolbar.1.content().and_downcast::<ResDrive>().unwrap().refresh_page().await;
+                        }
                     }
 
-                    this.refresh_network_interfaces().await;
-                    for network_page_toolbar in imp.network_pages.borrow().values() {
-                        network_page_toolbar.1.content().and_downcast::<ResNetwork>().unwrap().refresh_page().await;
+                    let _ = this.refresh_network_interfaces().await;
+                    if let Ok(network_pages) = imp.network_pages.try_borrow() {
+                        for network_page_toolbar in network_pages.values() {
+                            let _ = network_page_toolbar.1.content().and_downcast::<ResNetwork>().unwrap().refresh_page().await;
+                        }
                     }
 
                     timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
@@ -310,12 +316,12 @@ impl MainWindow {
         }));
     }
 
-    async fn refresh_drives(&self) {
+    async fn refresh_drives(&self) -> Result<()> {
         let imp = self.imp();
-        let mut still_active_drives = Vec::with_capacity(imp.drive_pages.borrow().len());
+        let mut still_active_drives = Vec::with_capacity(imp.drive_pages.try_borrow()?.len());
         for path in Drive::get_sysfs_paths().await.unwrap_or_default() {
             // ignore drive pages that are already listed
-            if imp.drive_pages.borrow().contains_key(&path) {
+            if imp.drive_pages.try_borrow()?.contains_key(&path) {
                 still_active_drives.push(path);
                 continue;
             }
@@ -338,7 +344,7 @@ impl MainWindow {
                 };
 
                 imp.drive_pages
-                    .borrow_mut()
+                    .try_borrow_mut()?
                     .insert(path.clone(), (is_virtual, toolbar));
 
                 still_active_drives.push(path);
@@ -347,7 +353,7 @@ impl MainWindow {
         // remove all the pages of drives that have been removed from the system
         // during the last time this method was called and now
         imp.drive_pages
-            .borrow_mut()
+            .try_borrow_mut()?
             .extract_if(|path, (is_virtual, _)| {
                 !still_active_drives
                     .iter()
@@ -357,17 +363,18 @@ impl MainWindow {
             .for_each(|(_, (_, page))| {
                 imp.content_stack.remove(&page);
             }); // remove page from the UI
+        Ok(())
     }
 
-    async fn refresh_network_interfaces(&self) {
+    async fn refresh_network_interfaces(&self) -> Result<()> {
         let imp = self.imp();
-        let mut still_active_interfaces = Vec::with_capacity(imp.network_pages.borrow().len());
+        let mut still_active_interfaces = Vec::with_capacity(imp.network_pages.try_borrow()?.len());
         for path in NetworkInterface::get_sysfs_paths()
             .await
             .unwrap_or_default()
         {
             // ignore network pages that are already listed
-            if imp.network_pages.borrow().contains_key(&path) {
+            if imp.network_pages.try_borrow()?.contains_key(&path) {
                 still_active_interfaces.push(path);
                 continue;
             }
@@ -407,7 +414,7 @@ impl MainWindow {
                 );
 
                 imp.network_pages
-                    .borrow_mut()
+                    .try_borrow_mut()?
                     .insert(path.clone(), (is_virtual, toolbar));
                 still_active_interfaces.push(path);
             }
@@ -415,7 +422,7 @@ impl MainWindow {
         // remove all the pages of network interfaces that have been removed from the system
         // during the last time this method was called and now
         imp.network_pages
-            .borrow_mut()
+            .try_borrow_mut()?
             .extract_if(|path, (is_virtual, _)| {
                 !still_active_interfaces
                     .iter()
@@ -423,6 +430,8 @@ impl MainWindow {
                     || (!SETTINGS.show_virtual_network_interfaces() && *is_virtual)
             }) // remove entry from network_pages HashMap
             .for_each(|(_, (_, page))| imp.content_stack.remove(&page)); // remove page from the UI
+
+        Ok(())
     }
 
     fn process_action(&self, action: Action) -> glib::ControlFlow {

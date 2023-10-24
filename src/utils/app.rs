@@ -138,7 +138,7 @@ impl App {
 
     #[must_use]
     pub fn is_running(&self) -> bool {
-        self.processes.is_empty()
+        !self.processes.is_empty()
     }
 
     pub fn processes_iter<'a>(&'a self, apps: &'a AppsContext) -> impl Iterator<Item = &Process> {

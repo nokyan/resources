@@ -1,5 +1,5 @@
 use adw::{prelude::*, subclass::prelude::*};
-use anyhow::Context;
+use anyhow::{Context, Result};
 use gtk::glib::{self, clone};
 
 use crate::config::PROFILE;
@@ -226,7 +226,7 @@ impl ResMemory {
             }));
     }
 
-    pub async fn refresh_page(&self) {
+    pub async fn refresh_page(&self) -> Result<()> {
         let imp = self.imp();
 
         let total_mem = get_total_memory()
@@ -289,5 +289,7 @@ impl ResMemory {
         }
 
         self.set_property("usage", memory_fraction);
+
+        Ok(())
     }
 }

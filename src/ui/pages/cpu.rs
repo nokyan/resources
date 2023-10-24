@@ -1,11 +1,12 @@
 use adw::{prelude::*, subclass::prelude::*};
-use anyhow::Context;
+use anyhow::{Context, Result};
 use gtk::glib::{self, clone, MainContext};
 use gtk::FlowBoxChild;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::ui::widgets::graph_box::ResGraphBox;
+use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_frequency, convert_temperature};
 use crate::utils::{cpu, NaNDefault};
 
@@ -191,7 +192,6 @@ impl ResCPU {
             let imp = this.imp();
 
             let logical_cpus = cpu_info.logical_cpus.unwrap_or(0);
-            imp.logical_cpus_amount.set(logical_cpus);
 
             imp.old_total_usage.set(cpu::get_cpu_usage(None).await.unwrap_or((0, 0)));
             *imp.old_thread_usages.borrow_mut() = Vec::with_capacity(logical_cpus);
@@ -199,6 +199,8 @@ impl ResCPU {
             for i in 0..logical_cpus {
                 imp.old_thread_usages.borrow_mut().push(cpu::get_cpu_usage(Some(i)).await.unwrap_or((0, 0)));
             }
+
+            imp.logical_cpus_amount.set(logical_cpus);
 
             imp.total_cpu.set_title_label(&i18n("CPU"));
             imp.total_cpu.set_subtitle(&i18n("N/A"));
@@ -268,10 +270,13 @@ impl ResCPU {
                 } else {
                     imp.stack.set_visible_child(&imp.total_page.get());
                 }
+                let _ = SETTINGS.set_show_logical_cpus(switch.is_active());
             }));
+
+        imp.logical_switch.set_active(SETTINGS.show_logical_cpus());
     }
 
-    pub async fn refresh_page(&self) {
+    pub async fn refresh_page(&self) -> Result<()> {
         let imp = self.imp();
 
         let new_total_usage = cpu::get_cpu_usage(None).await.unwrap_or((0, 0));
@@ -289,7 +294,7 @@ impl ResCPU {
         if imp.logical_cpus_amount.get() > 1 {
             for (i, old_thread_usage) in imp
                 .old_thread_usages
-                .borrow_mut()
+                .try_borrow_mut()?
                 .iter_mut()
                 .enumerate()
                 .take(imp.logical_cpus_amount.get())
@@ -298,7 +303,7 @@ impl ResCPU {
                 let idle_thread_delta = new_thread_usage.0 - old_thread_usage.0;
                 let sum_thread_delta = new_thread_usage.1 - old_thread_usage.1;
                 let work_thread_time = sum_thread_delta - idle_thread_delta;
-                let curr_threadbox = &imp.thread_graphs.borrow()[i];
+                let curr_threadbox = &imp.thread_graphs.try_borrow()?[i];
                 let thread_fraction =
                     ((work_thread_time as f64) / (sum_thread_delta as f64)).nan_default(0.0);
                 curr_threadbox.push_data_point(thread_fraction);
@@ -321,5 +326,7 @@ impl ResCPU {
         self.set_property("usage", total_fraction);
 
         self.set_property("tab_subtitle", percentage_string);
+
+        Ok(())
     }
 }
