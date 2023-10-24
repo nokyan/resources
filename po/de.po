@@ -201,16 +201,18 @@ msgstr "nokyan <nokyan@tuta.io>"
 msgid "Icon by"
 msgstr "Icon von"
 
-#: src/ui/dialogs/app_dialog.rs:139 src/ui/dialogs/process_dialog.rs:136
+#: src/ui/dialogs/app_dialog.rs:139 src/ui/dialogs/process_dialog.rs:152
 #: src/ui/pages/drive.rs:240 src/ui/pages/drive.rs:246
 msgid "No"
 msgstr "Nein"
 
-#: src/ui/dialogs/app_dialog.rs:140 src/ui/dialogs/process_dialog.rs:137
+#: src/ui/dialogs/app_dialog.rs:140 src/ui/dialogs/process_dialog.rs:153
 msgid "Yes (Flatpak)"
 msgstr "Ja (Flatpak)"
 
-#: src/ui/dialogs/process_dialog.rs:131 src/ui/dialogs/process_dialog.rs:133
+#: src/ui/dialogs/process_dialog.rs:117 src/ui/dialogs/process_dialog.rs:124
+#: src/ui/dialogs/process_dialog.rs:131 src/ui/dialogs/process_dialog.rs:138
+#: src/ui/dialogs/process_dialog.rs:147 src/ui/dialogs/process_dialog.rs:149
 #: src/ui/pages/cpu.rs:206 src/ui/pages/cpu.rs:218 src/ui/pages/cpu.rs:233
 #: src/ui/pages/cpu.rs:239 src/ui/pages/cpu.rs:245 src/ui/pages/cpu.rs:251
 #: src/ui/pages/cpu.rs:255 src/ui/pages/cpu.rs:258 src/ui/pages/cpu.rs:323
@@ -222,8 +224,10 @@ msgstr "Ja (Flatpak)"
 #: src/ui/pages/memory.rs:203 src/ui/pages/memory.rs:207
 #: src/ui/pages/memory.rs:264 src/ui/pages/network.rs:214
 #: src/ui/pages/network.rs:221 src/ui/pages/network.rs:227
-#: src/ui/pages/network.rs:233 src/ui/pages/network.rs:235 src/utils/gpu.rs:82
-#: src/utils/gpu.rs:85
+#: src/ui/pages/network.rs:233 src/ui/pages/network.rs:235
+#: src/ui/pages/processes/mod.rs:389 src/ui/pages/processes/mod.rs:424
+#: src/ui/pages/processes/mod.rs:453 src/ui/pages/processes/mod.rs:488
+#: src/utils/gpu.rs:82 src/utils/gpu.rs:85
 msgid "N/A"
 msgstr "n. v."
 
@@ -255,7 +259,7 @@ msgstr "Prozessor"
 msgid "Drive Read"
 msgstr "Lesevorgänge"
 
-#: src/ui/pages/applications/mod.rs:361 src/ui/pages/processes/mod.rs:408
+#: src/ui/pages/applications/mod.rs:361 src/ui/pages/processes/mod.rs:412
 #: data/resources/ui/dialogs/app_dialog.ui:101
 #: data/resources/ui/dialogs/process_dialog.ui:84
 #: data/resources/ui/dialogs/settings_dialog.ui:105
@@ -263,7 +267,7 @@ msgstr "Lesevorgänge"
 msgid "Drive Read Total"
 msgstr "Lesevorgänge insgesamt"
 
-#: src/ui/pages/applications/mod.rs:386 src/ui/pages/processes/mod.rs:433
+#: src/ui/pages/applications/mod.rs:386 src/ui/pages/processes/mod.rs:441
 #: data/resources/ui/dialogs/app_dialog.ui:110
 #: data/resources/ui/dialogs/process_dialog.ui:93
 #: data/resources/ui/dialogs/settings_dialog.ui:110
@@ -271,7 +275,7 @@ msgstr "Lesevorgänge insgesamt"
 msgid "Drive Write"
 msgstr "Schreibvorgänge"
 
-#: src/ui/pages/applications/mod.rs:417 src/ui/pages/processes/mod.rs:464
+#: src/ui/pages/applications/mod.rs:417 src/ui/pages/processes/mod.rs:476
 #: data/resources/ui/dialogs/app_dialog.ui:119
 #: data/resources/ui/dialogs/process_dialog.ui:102
 #: data/resources/ui/dialogs/settings_dialog.ui:115
@@ -283,7 +287,7 @@ msgstr "Schreibvorgänge insgesamt"
 msgid "Running Applications: {}"
 msgstr "Laufende Anwendungen: {}"
 
-#: src/ui/pages/applications/mod.rs:650 src/ui/pages/processes/mod.rs:674
+#: src/ui/pages/applications/mod.rs:650 src/ui/pages/processes/mod.rs:690
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -425,11 +429,11 @@ msgstr "Prozess-ID"
 msgid "User"
 msgstr "Benutzer"
 
-#: src/ui/pages/processes/mod.rs:642
+#: src/ui/pages/processes/mod.rs:658
 msgid "Running Processes: {}"
 msgstr "Laufende Prozesse: {}"
 
-#: src/ui/pages/processes/mod.rs:710
+#: src/ui/pages/processes/mod.rs:726
 msgid "root"
 msgstr "root"
 
@@ -585,7 +589,7 @@ msgstr "Es gab ein Problem beim Abwürgen von {}"
 msgid "There was a problem continuing {}"
 msgstr "Es gab ein Problem beim Fortsetzen von {}"
 
-#: src/utils/app.rs:404
+#: src/utils/app.rs:416
 msgid "System Processes"
 msgstr "Systemprozesse"
 
