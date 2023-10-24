@@ -32,10 +32,10 @@ pub struct ProcessData {
     pub memory_usage: usize,
     pub cgroup: Option<String>,
     pub containerization: Containerization,
-    pub read_bytes: u64,
-    pub read_bytes_timestamp: u64,
-    pub write_bytes: u64,
-    pub write_bytes_timestamp: u64,
+    pub read_bytes: Option<u64>,
+    pub read_bytes_timestamp: Option<u64>,
+    pub write_bytes: Option<u64>,
+    pub write_bytes_timestamp: Option<u64>,
 }
 
 impl ProcessData {
@@ -164,34 +164,46 @@ impl ProcessData {
             false => Containerization::None,
         };
 
-        let io = io.await?.kv_str_to_json().ok();
+        let (mut read_bytes, mut read_bytes_timestamp, mut write_bytes, mut write_bytes_timestamp) =
+            (None, None, None, None);
 
-        let read_bytes = io
-            .as_ref()
-            .and_then(|kv| {
+        if let Ok(io) = io.await {
+            let io = io.kv_str_to_json().ok();
+
+            read_bytes = io.as_ref().and_then(|kv| {
                 kv.as_object().and_then(|obj| {
                     obj.get("read_bytes")
                         .and_then(|val| val.as_str().and_then(|s| s.parse().ok()))
                 })
-            })
-            .unwrap_or(0);
+            });
 
-        let read_bytes_timestamp = SystemTime::now()
-            .duration_since(SystemTime::UNIX_EPOCH)?
-            .as_millis() as u64;
+            read_bytes_timestamp = if read_bytes.is_some() {
+                Some(
+                    SystemTime::now()
+                        .duration_since(SystemTime::UNIX_EPOCH)?
+                        .as_millis() as u64,
+                )
+            } else {
+                None
+            };
 
-        let write_bytes = io
-            .and_then(|kv| {
+            write_bytes = io.and_then(|kv| {
                 kv.as_object().and_then(|obj| {
                     obj.get("write_bytes")
                         .and_then(|val| val.as_str().and_then(|s| s.parse().ok()))
                 })
-            })
-            .unwrap_or(0);
+            });
 
-        let write_bytes_timestamp = SystemTime::now()
-            .duration_since(SystemTime::UNIX_EPOCH)?
-            .as_millis() as u64;
+            write_bytes_timestamp = if write_bytes.is_some() {
+                Some(
+                    SystemTime::now()
+                        .duration_since(SystemTime::UNIX_EPOCH)?
+                        .as_millis() as u64,
+                )
+            } else {
+                None
+            };
+        }
 
         Ok(Self {
             pid,

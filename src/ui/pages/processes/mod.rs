@@ -385,7 +385,11 @@ impl ResProcesses {
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("read_speed")
                 .chain_closure::<String>(closure!(|_: Option<Object>, read_speed: f64| {
-                    convert_speed(read_speed, false)
+                    if read_speed == -1.0 {
+                        i18n("N/A")
+                    } else {
+                        convert_speed(read_speed, false)
+                    }
                 }))
                 .bind(&row, "text", Widget::NONE);
         });
@@ -415,8 +419,12 @@ impl ResProcesses {
             item.set_child(Some(&row));
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("read_total")
-                .chain_closure::<String>(closure!(|_: Option<Object>, read_total: u64| {
-                    convert_storage(read_total as f64, false)
+                .chain_closure::<String>(closure!(|_: Option<Object>, read_total: i64| {
+                    if read_total == -1 {
+                        i18n("N/A")
+                    } else {
+                        convert_storage(read_total as f64, false)
+                    }
                 }))
                 .bind(&row, "text", Widget::NONE);
         });
@@ -441,7 +449,11 @@ impl ResProcesses {
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("write_speed")
                 .chain_closure::<String>(closure!(|_: Option<Object>, write_speed: f64| {
-                    convert_speed(write_speed, false)
+                    if write_speed == -1.0 {
+                        i18n("N/A")
+                    } else {
+                        convert_speed(write_speed, false)
+                    }
                 }))
                 .bind(&row, "text", Widget::NONE);
         });
@@ -471,8 +483,12 @@ impl ResProcesses {
             item.set_child(Some(&row));
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("write_total")
-                .chain_closure::<String>(closure!(|_: Option<Object>, write_total: u64| {
-                    convert_storage(write_total as f64, false)
+                .chain_closure::<String>(closure!(|_: Option<Object>, write_total: i64| {
+                    if write_total == -1 {
+                        i18n("N/A")
+                    } else {
+                        convert_storage(write_total as f64, false)
+                    }
                 }))
                 .bind(&row, "text", Widget::NONE);
         });

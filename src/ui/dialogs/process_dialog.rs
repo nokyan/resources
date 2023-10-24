@@ -110,17 +110,33 @@ impl ResProcessDialog {
         imp.memory_usage
             .set_subtitle(&convert_storage(process.memory_usage as f64, false));
 
-        imp.drive_read_speed
-            .set_subtitle(&convert_speed(process.read_speed, false));
+        if let Some(read_speed) = process.read_speed {
+            imp.drive_read_speed
+                .set_subtitle(&convert_speed(read_speed, false));
+        } else {
+            imp.drive_read_speed.set_subtitle(&i18n("N/A"));
+        }
 
-        imp.drive_read_total
-            .set_subtitle(&convert_storage(process.read_total as f64, false));
+        if let Some(read_total) = process.read_total {
+            imp.drive_read_total
+                .set_subtitle(&convert_storage(read_total as f64, false));
+        } else {
+            imp.drive_read_total.set_subtitle(&i18n("N/A"));
+        }
 
-        imp.drive_write_speed
-            .set_subtitle(&convert_speed(process.write_speed, false));
+        if let Some(write_speed) = process.write_speed {
+            imp.drive_write_speed
+                .set_subtitle(&convert_speed(write_speed, false));
+        } else {
+            imp.drive_write_speed.set_subtitle(&i18n("N/A"));
+        }
 
-        imp.drive_write_total
-            .set_subtitle(&convert_storage(process.write_total as f64, false));
+        if let Some(write_total) = process.write_total {
+            imp.drive_write_total
+                .set_subtitle(&convert_storage(write_total as f64, false));
+        } else {
+            imp.drive_write_total.set_subtitle(&i18n("N/A"));
+        }
 
         imp.pid.set_subtitle(&process.pid.to_string());
 
