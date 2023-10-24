@@ -1,4 +1,5 @@
 use adw::{prelude::*, subclass::prelude::*};
+use anyhow::{Context, Result};
 use gtk::glib::{self};
 
 use crate::config::PROFILE;
@@ -194,9 +195,9 @@ impl ResGPU {
         imp.driver_used.set_subtitle(&gpu.driver);
     }
 
-    pub async fn refresh_page(&self) {
+    pub async fn refresh_page(&self) -> Result<()> {
         let imp = self.imp();
-        let gpu = imp.gpu.get().unwrap();
+        let gpu = imp.gpu.get().with_context(|| "GPU not initialized")?;
 
         let gpu_usage_fraction = gpu
             .get_gpu_usage()
@@ -313,5 +314,7 @@ impl ResGPU {
                 ),
             );
         }
+
+        Ok(())
     }
 }

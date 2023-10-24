@@ -1,6 +1,7 @@
 use std::time::{Duration, SystemTime};
 
 use adw::{prelude::*, subclass::prelude::*};
+use anyhow::Result;
 use gtk::glib;
 
 use crate::config::PROFILE;
@@ -219,10 +220,10 @@ impl ResDrive {
         *imp.drive.borrow_mut() = drive;
     }
 
-    pub async fn refresh_page(&self) {
+    pub async fn refresh_page(&self) -> Result<()> {
         let imp = self.imp();
 
-        let drive = imp.drive.borrow();
+        let drive = imp.drive.try_borrow()?;
 
         let disk_stats = drive.sys_stats().await.unwrap_or_default();
         let display_name = drive.display_name().await;
@@ -253,8 +254,8 @@ impl ResDrive {
         ) = (
             disk_stats.get("read_ticks"),
             disk_stats.get("write_ticks"),
-            imp.old_stats.borrow().get("read_ticks"),
-            imp.old_stats.borrow().get("write_ticks"),
+            imp.old_stats.try_borrow()?.get("read_ticks"),
+            imp.old_stats.try_borrow()?.get("write_ticks"),
         ) {
             let delta_read_ticks = read_ticks.saturating_sub(*old_read_ticks);
             let delta_write_ticks = write_ticks.saturating_sub(*old_write_ticks);
@@ -278,8 +279,8 @@ impl ResDrive {
         ) = (
             disk_stats.get("read_sectors"),
             disk_stats.get("write_sectors"),
-            imp.old_stats.borrow().get("read_sectors"),
-            imp.old_stats.borrow().get("write_sectors"),
+            imp.old_stats.try_borrow()?.get("read_sectors"),
+            imp.old_stats.try_borrow()?.get("write_sectors"),
         ) {
             let delta_read_sectors = read_sectors.saturating_sub(*old_read_sectors);
             let delta_write_sectors = write_sectors.saturating_sub(*old_write_sectors);
@@ -311,7 +312,9 @@ impl ResDrive {
         imp.capacity
             .set_subtitle(&convert_storage(capacity as f64, false));
 
-        *imp.old_stats.borrow_mut() = disk_stats;
+        *imp.old_stats.try_borrow_mut()? = disk_stats;
         imp.last_timestamp.set(SystemTime::now());
+
+        Ok(())
     }
 }

@@ -495,6 +495,20 @@ impl Settings {
             move |settings, _key| f(settings.boolean("processes-show-drive-write-total")),
         )
     }
+
+    pub fn show_logical_cpus(&self) -> bool {
+        self.boolean("show-logical-cpus")
+    }
+
+    pub fn set_show_logical_cpus(&self, value: bool) -> Result<(), glib::error::BoolError> {
+        self.set_boolean("show-logical-cpus", value)
+    }
+
+    pub fn connect_show_logical_cpus<F: Fn(bool) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+        self.connect_changed(Some("show-logical-cpus"), move |settings, _key| {
+            f(settings.boolean("show-logical-cpus"))
+        })
+    }
 }
 
 impl Deref for Settings {

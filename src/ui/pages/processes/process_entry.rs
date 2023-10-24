@@ -42,16 +42,16 @@ mod imp {
         memory_usage: Cell<u64>,
 
         #[property(get, set)]
-        read_speed: Cell<f64>,
+        read_speed: Cell<f64>, // will be -1.0 if read data is not available
 
         #[property(get, set)]
-        read_total: Cell<u64>,
+        read_total: Cell<i64>, // will be -1 if read data is not available
 
         #[property(get, set)]
-        write_speed: Cell<f64>,
+        write_speed: Cell<f64>, // will be -1.0 if write data is not available
 
         #[property(get, set)]
-        write_total: Cell<u64>,
+        write_total: Cell<i64>, // will be -1 if write data is not available
 
         pub process_item: RefCell<Option<ProcessItem>>,
     }
@@ -161,23 +161,27 @@ impl ProcessEntry {
             .property("icon", &process_item.icon)
             .property("pid", process_item.pid)
             .build();
-        this.set_cpu_usage(process_item.cpu_time_ratio);
-        this.set_memory_usage(process_item.memory_usage as u64);
-        this.set_read_speed(process_item.read_speed);
-        this.set_read_total(process_item.read_total);
-        this.set_write_speed(process_item.write_speed);
-        this.set_write_total(process_item.write_total);
-        this.imp().process_item.replace(Some(process_item));
+        this.update(process_item);
         this
     }
 
     pub fn update(&self, process_item: ProcessItem) {
         self.set_cpu_usage(process_item.cpu_time_ratio);
         self.set_memory_usage(process_item.memory_usage as u64);
-        self.set_read_speed(process_item.read_speed);
-        self.set_read_total(process_item.read_total);
-        self.set_write_speed(process_item.write_speed);
-        self.set_write_total(process_item.write_total);
+        self.set_read_speed(process_item.read_speed.unwrap_or(-1.0));
+        self.set_read_total(
+            process_item
+                .read_total
+                .map(|read_total| read_total as i64)
+                .unwrap_or(-1),
+        );
+        self.set_write_speed(process_item.write_speed.unwrap_or(-1.0));
+        self.set_write_total(
+            process_item
+                .write_total
+                .map(|write_total| write_total as i64)
+                .unwrap_or(-1),
+        );
         self.imp().process_item.replace(Some(process_item));
     }
 

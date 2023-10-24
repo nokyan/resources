@@ -1,6 +1,7 @@
 use std::time::{Duration, SystemTime};
 
 use adw::{prelude::*, subclass::prelude::*};
+use anyhow::Result;
 use gtk::glib;
 
 use crate::config::PROFILE;
@@ -247,7 +248,7 @@ impl ResNetwork {
         *imp.network_interface.borrow_mut() = network_interface;
     }
 
-    pub async fn refresh_page(&self) {
+    pub async fn refresh_page(&self) -> Result<()> {
         let imp = self.imp();
         let time_passed = SystemTime::now()
             .duration_since(imp.last_timestamp.get())
@@ -255,13 +256,13 @@ impl ResNetwork {
 
         let received_bytes = imp
             .network_interface
-            .borrow()
+            .try_borrow()?
             .received_bytes()
             .await
             .unwrap_or(0);
         let sent_bytes = imp
             .network_interface
-            .borrow()
+            .try_borrow()?
             .sent_bytes()
             .await
             .unwrap_or(0);
@@ -312,5 +313,7 @@ impl ResNetwork {
         imp.old_received_bytes.set(received_bytes);
         imp.old_sent_bytes.set(sent_bytes);
         imp.last_timestamp.set(SystemTime::now());
+
+        Ok(())
     }
 }

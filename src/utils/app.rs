@@ -138,7 +138,7 @@ impl App {
 
     #[must_use]
     pub fn is_running(&self) -> bool {
-        self.processes.is_empty()
+        !self.processes.is_empty()
     }
 
     pub fn processes_iter<'a>(&'a self, apps: &'a AppsContext) -> impl Iterator<Item = &Process> {
@@ -171,28 +171,32 @@ impl App {
 
     #[must_use]
     pub fn read_speed(&self, apps: &AppsContext) -> f64 {
-        self.processes_iter(apps).map(Process::read_speed).sum()
+        self.processes_iter(apps)
+            .filter_map(Process::read_speed)
+            .sum()
     }
 
     #[must_use]
     pub fn read_total(&self, apps: &AppsContext) -> u64 {
         self.read_bytes_from_dead_processes.saturating_add(
             self.processes_iter(apps)
-                .map(|process| process.data.read_bytes)
+                .filter_map(|process| process.data.read_bytes)
                 .sum::<u64>(),
         )
     }
 
     #[must_use]
     pub fn write_speed(&self, apps: &AppsContext) -> f64 {
-        self.processes_iter(apps).map(Process::write_speed).sum()
+        self.processes_iter(apps)
+            .filter_map(Process::write_speed)
+            .sum()
     }
 
     #[must_use]
     pub fn write_total(&self, apps: &AppsContext) -> u64 {
         self.write_bytes_from_dead_processes.saturating_add(
             self.processes_iter(apps)
-                .map(|process| process.data.write_bytes)
+                .filter_map(|process| process.data.write_bytes)
                 .sum::<u64>(),
         )
     }
@@ -385,17 +389,25 @@ impl AppsContext {
 
         let system_read_speed = self
             .system_processes_iter()
-            .map(|process| process.read_speed())
+            .filter_map(|process| process.read_speed())
             .sum();
 
-        let system_read_total = self.read_bytes_from_dead_processes;
+        let system_read_total = self.read_bytes_from_dead_processes
+            + self
+                .system_processes_iter()
+                .filter_map(|process| process.data.read_bytes)
+                .sum::<u64>();
 
         let system_write_speed = self
             .system_processes_iter()
-            .map(|process| process.write_speed())
+            .filter_map(|process| process.write_speed())
             .sum();
 
-        let system_write_total = self.write_bytes_from_dead_processes;
+        let system_write_total = self.write_bytes_from_dead_processes
+            + self
+                .system_processes_iter()
+                .filter_map(|process| process.data.write_bytes)
+                .sum::<u64>();
 
         return_map.insert(
             None,
@@ -465,6 +477,13 @@ impl AppsContext {
                 .filter(|pid| !updated_processes.contains(*pid)) // only dead processes
                 .filter_map(|pid| self.processes.get(pid)) // ignore about non-existing processes
                 .map(|process| (process.data.read_bytes, process.data.write_bytes)) // get their read_bytes and write_bytes
+                .filter_map(
+                    // filter out any processes whose IO stats we were not allowed to see
+                    |(read_bytes, write_bytes)| match (read_bytes, write_bytes) {
+                        (Some(read), Some(write)) => Some((read, write)),
+                        _ => None,
+                    },
+                )
                 .reduce(|sum, current| (sum.0 + current.0, sum.1 + current.1)) // sum them up
                 .unwrap_or((0, 0)); // if there were no processes, it's 0 for both
 
@@ -480,11 +499,19 @@ impl AppsContext {
         });
 
         // same as above but for system processes
-        let (read_dead, write_dead) = updated_processes
+        let (read_dead, write_dead) = self
+            .processes
             .iter()
-            .filter(|pid| !self.processes_assigned_to_apps.contains(*pid))
-            .filter_map(|pid| self.get_process(*pid))
-            .map(|process| (process.data.read_bytes, process.data.write_bytes))
+            .filter(|(pid, _)| {
+                !self.processes_assigned_to_apps.contains(*pid) && !updated_processes.contains(*pid)
+            })
+            .map(|(_, process)| (process.data.read_bytes, process.data.write_bytes))
+            .filter_map(
+                |(read_bytes, write_bytes)| match (read_bytes, write_bytes) {
+                    (Some(read), Some(write)) => Some((read, write)),
+                    _ => None,
+                },
+            )
             .reduce(|sum, current| (sum.0 + current.0, sum.1 + current.1))
             .unwrap_or((0, 0));
         self.read_bytes_from_dead_processes += read_dead;

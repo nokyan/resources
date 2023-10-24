@@ -22,10 +22,10 @@ pub struct Process {
     pub icon: Icon,
     pub cpu_time_last: u64,
     pub cpu_time_last_timestamp: u64,
-    pub read_bytes_last: u64,
-    pub read_bytes_last_timestamp: u64,
-    pub write_bytes_last: u64,
-    pub write_bytes_last_timestamp: u64,
+    pub read_bytes_last: Option<u64>,
+    pub read_bytes_last_timestamp: Option<u64>,
+    pub write_bytes_last: Option<u64>,
+    pub write_bytes_last_timestamp: Option<u64>,
 }
 
 // TODO: Better name?
@@ -48,10 +48,10 @@ pub struct ProcessItem {
     pub commandline: String,
     pub containerization: Containerization,
     pub cgroup: Option<String>,
-    pub read_speed: f64,
-    pub read_total: u64,
-    pub write_speed: f64,
-    pub write_total: u64,
+    pub read_speed: Option<f64>,
+    pub read_total: Option<u64>,
+    pub write_speed: Option<f64>,
+    pub write_total: Option<u64>,
 }
 
 impl Process {
@@ -113,6 +113,18 @@ impl Process {
             .unwrap_or_default()
             .to_string();
 
+        let (read_bytes_last, read_bytes_last_timestamp) = if process_data.read_bytes.is_some() {
+            (Some(0), Some(0))
+        } else {
+            (None, None)
+        };
+
+        let (write_bytes_last, write_bytes_last_timestamp) = if process_data.write_bytes.is_some() {
+            (Some(0), Some(0))
+        } else {
+            (None, None)
+        };
+
         Self {
             executable_path,
             executable_name,
@@ -120,10 +132,10 @@ impl Process {
             icon: ThemedIcon::new("generic-process").into(),
             cpu_time_last: 0,
             cpu_time_last_timestamp: 0,
-            read_bytes_last: 0,
-            read_bytes_last_timestamp: 0,
-            write_bytes_last: 0,
-            write_bytes_last_timestamp: 0,
+            read_bytes_last,
+            read_bytes_last_timestamp,
+            write_bytes_last,
+            write_bytes_last_timestamp,
         }
     }
 
@@ -243,30 +255,54 @@ impl Process {
     }
 
     #[must_use]
-    pub fn read_speed(&self) -> f64 {
-        if self.read_bytes_last_timestamp == 0 {
-            0.0
+    pub fn read_speed(&self) -> Option<f64> {
+        if let (
+            Some(read_bytes),
+            Some(read_bytes_timestamp),
+            Some(read_bytes_last),
+            Some(read_bytes_last_timestamp),
+        ) = (
+            self.data.read_bytes,
+            self.data.read_bytes_timestamp,
+            self.read_bytes_last,
+            self.read_bytes_last_timestamp,
+        ) {
+            if read_bytes_last_timestamp == 0 {
+                Some(0.0)
+            } else {
+                let bytes_delta = read_bytes.saturating_sub(read_bytes_last) as f64;
+                let time_delta =
+                    read_bytes_timestamp.saturating_sub(read_bytes_last_timestamp) as f64;
+                Some((bytes_delta / time_delta) * 1000.0)
+            }
         } else {
-            let bytes_delta = self.data.read_bytes.saturating_sub(self.read_bytes_last) as f64;
-            let time_delta = self
-                .data
-                .read_bytes_timestamp
-                .saturating_sub(self.read_bytes_last_timestamp) as f64;
-            (bytes_delta / time_delta) * 1000.0
+            None
         }
     }
 
     #[must_use]
-    pub fn write_speed(&self) -> f64 {
-        if self.write_bytes_last_timestamp == 0 {
-            0.0
+    pub fn write_speed(&self) -> Option<f64> {
+        if let (
+            Some(write_bytes),
+            Some(write_bytes_timestamp),
+            Some(write_bytes_last),
+            Some(write_bytes_last_timestamp),
+        ) = (
+            self.data.write_bytes,
+            self.data.write_bytes_timestamp,
+            self.write_bytes_last,
+            self.write_bytes_last_timestamp,
+        ) {
+            if write_bytes_last_timestamp == 0 {
+                Some(0.0)
+            } else {
+                let bytes_delta = write_bytes.saturating_sub(write_bytes_last) as f64;
+                let time_delta =
+                    write_bytes_timestamp.saturating_sub(write_bytes_last_timestamp) as f64;
+                Some((bytes_delta / time_delta) * 1000.0)
+            }
         } else {
-            let bytes_delta = self.data.write_bytes.saturating_sub(self.write_bytes_last) as f64;
-            let time_delta =
-                self.data
-                    .write_bytes_timestamp
-                    .saturating_sub(self.write_bytes_last_timestamp) as f64;
-            (bytes_delta / time_delta) * 1000.0
+            None
         }
     }
 
