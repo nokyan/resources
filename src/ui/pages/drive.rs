@@ -302,6 +302,8 @@ impl ResDrive {
 
         self.set_property(
             "tab_subtitle",
+            // Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
+            // translation should preferably be quite short or an abbreviation
             i18n_f(
                 "R: {} · W: {}",
                 &[&formatted_read_speed, &formatted_write_speed],

@@ -278,6 +278,8 @@ impl ResMemory {
             self.set_property(
                 "tab_subtitle",
                 i18n_f(
+                    // Translators: This will be displayed in the sidebar, so your translation for "Swap" should
+                    // preferably be quite short or an abbreviation
                     "{} / {} · Swap: {} %",
                     &[
                         &formatted_used_mem,
