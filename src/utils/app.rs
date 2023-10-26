@@ -26,8 +26,13 @@ static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
 // The HashMap is used like this:
 //   Key: The name of the executable of the process
 //   Value: What it should be replaced with when finding out to which app it belongs
-static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: Lazy<HashMap<String, String>> =
-    Lazy::new(|| HashMap::from([("firefox-bin".into(), "firefox".into())]));
+static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: Lazy<HashMap<String, String>> = Lazy::new(|| {
+    HashMap::from([
+        ("firefox-bin".into(), "firefox".into()),
+        ("oosplash".into(), "libreoffice".into()),
+        ("soffice.bin".into(), "libreoffice".into()),
+    ])
+});
 
 #[derive(Debug, Clone, Default)]
 pub struct AppsContext {
