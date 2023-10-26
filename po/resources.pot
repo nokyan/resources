@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-10-25 00:06+0200\n"
+"PO-Revision-Date: 2023-10-26 23:45+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -352,7 +352,9 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: src/ui/pages/drive.rs:306
+#. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
+#. translation should preferably be quite short or an abbreviation
+#: src/ui/pages/drive.rs:308
 msgid "R: {} · W: {}"
 msgstr ""
 
@@ -376,7 +378,9 @@ msgstr ""
 msgid "{} of {}"
 msgstr ""
 
-#: src/ui/pages/memory.rs:281
+#. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
+#. preferably be quite short or an abbreviation
+#: src/ui/pages/memory.rs:283
 msgid "{} / {} · Swap: {} %"
 msgstr ""
 
@@ -396,7 +400,9 @@ msgstr ""
 msgid "Highest:"
 msgstr ""
 
-#: src/ui/pages/network.rs:305
+#. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
+#. your translation should preferably be quite short or an abbreviation
+#: src/ui/pages/network.rs:307
 msgid "R: {} · S: {}"
 msgstr ""
 
@@ -578,7 +584,7 @@ msgstr ""
 msgid "There was a problem continuing {}"
 msgstr ""
 
-#: src/utils/app.rs:416
+#: src/utils/app.rs:421
 msgid "System Processes"
 msgstr ""
 

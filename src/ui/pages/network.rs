@@ -302,6 +302,8 @@ impl ResNetwork {
         self.set_property(
             "tab_subtitle",
             i18n_f(
+                // Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
+                // your translation should preferably be quite short or an abbreviation
                 "R: {} · S: {}",
                 &[
                     &convert_speed(received_delta, true),
