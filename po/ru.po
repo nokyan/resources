@@ -1,4 +1,5 @@
-#
+#я тут был 
+# вот изменения
 # nokyan <nokyan@tuta.io>, 2023.
 #
 msgid ""
