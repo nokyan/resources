@@ -235,7 +235,7 @@ impl ResMemory {
         let available_mem = get_available_memory()
             .with_context(|| "unable to get available memory")
             .unwrap_or_default();
-        let used_mem = total_mem - available_mem;
+        let used_mem = total_mem.saturating_sub(available_mem);
 
         let total_swap = get_total_swap()
             .with_context(|| "unable to get total swap")
@@ -243,7 +243,7 @@ impl ResMemory {
         let free_swap = get_free_swap()
             .with_context(|| "unable to get free swap")
             .unwrap_or_default();
-        let used_swap = total_swap - free_swap;
+        let used_swap = total_swap.saturating_sub(free_swap);
 
         let memory_fraction = used_mem as f64 / total_mem as f64;
         let swap_fraction = (used_swap as f64 / total_swap as f64).nan_default(0.0);
