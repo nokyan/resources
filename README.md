@@ -1,5 +1,6 @@
 <!-- Внесины изменения -->
 <!-- Вот так!!! -->
+<!-- 3 комментария -->
 # Resources
 
 <a href='https://flathub.org/apps/net.nokyan.Resources'><img width='240' alt='Download on Flathub' src='https://dl.flathub.org/assets/badges/flathub-badge-en.png'/></a>
