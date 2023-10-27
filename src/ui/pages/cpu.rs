@@ -280,9 +280,13 @@ impl ResCPU {
         let imp = self.imp();
 
         let new_total_usage = cpu::get_cpu_usage(None).await.unwrap_or((0, 0));
-        let idle_total_delta = new_total_usage.0 - imp.old_total_usage.get().0;
-        let sum_total_delta = new_total_usage.1 - imp.old_total_usage.get().1;
-        let work_total_time = sum_total_delta - idle_total_delta;
+        let idle_total_delta = new_total_usage
+            .0
+            .saturating_sub(imp.old_total_usage.get().0);
+        let sum_total_delta = new_total_usage
+            .1
+            .saturating_sub(imp.old_total_usage.get().1);
+        let work_total_time = sum_total_delta.saturating_sub(idle_total_delta);
         let total_fraction = ((work_total_time as f64) / (sum_total_delta as f64)).nan_default(0.0);
 
         imp.total_cpu.push_data_point(total_fraction);
@@ -300,9 +304,9 @@ impl ResCPU {
                 .take(imp.logical_cpus_amount.get())
             {
                 let new_thread_usage = cpu::get_cpu_usage(Some(i)).await.unwrap_or((0, 0));
-                let idle_thread_delta = new_thread_usage.0 - old_thread_usage.0;
-                let sum_thread_delta = new_thread_usage.1 - old_thread_usage.1;
-                let work_thread_time = sum_thread_delta - idle_thread_delta;
+                let idle_thread_delta = new_thread_usage.0.saturating_sub(old_thread_usage.0);
+                let sum_thread_delta = new_thread_usage.1.saturating_sub(old_thread_usage.1);
+                let work_thread_time = sum_thread_delta.saturating_sub(idle_thread_delta);
                 let curr_threadbox = &imp.thread_graphs.try_borrow()?[i];
                 let thread_fraction =
                     ((work_thread_time as f64) / (sum_thread_delta as f64)).nan_default(0.0);
