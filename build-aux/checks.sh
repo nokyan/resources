@@ -9,9 +9,7 @@ export LC_ALL=C
 # Usage info
 show_help() {
 cat << EOF
-Run conformity checks on the current Rust project.
 
-If a dependency is not found, helps the user to install it.
 
 USAGE: ${0##*/} [OPTIONS]
 
@@ -33,7 +31,7 @@ pos="\e[32m"
 neg="\e[31m"
 res="\e[0m"
 
-# Common styled strings
+
 Installing="${act}Installing${res}"
 Checking="  ${act}Checking${res}"
 Failed="    ${err}Failed${res}"
