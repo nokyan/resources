@@ -904,7 +904,7 @@ msgstr "Uso de energia"
 
 #: data/resources/ui/pages/gpu.ui:81 data/resources/ui/pages/network.ui:58
 msgid "Manufacturer"
-  msgstr "Manufacturer"
+msgstr "Fabricante"
 
 #: data/resources/ui/pages/gpu.ui:90
 msgid "PCI Slot"
