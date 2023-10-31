@@ -5,6 +5,6 @@ option(
     'default',
     'development'
   ],
-  value: 'default',
+  value: 'development',
   description: 'The build profile for Resources. One of "default" or "development".'
 )
