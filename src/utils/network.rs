@@ -122,6 +122,7 @@ impl NetworkInterface {
                 "ib" => InterfaceType::InfiniBand,
                 "sl" => InterfaceType::Slip,
                 "veth" => InterfaceType::VirtualEthernet,
+                "virbr" => InterfaceType::VmBridge,
                 "wg" => InterfaceType::Wireguard,
                 "wl" => InterfaceType::Wlan,
                 "ww" => InterfaceType::Wwan,
