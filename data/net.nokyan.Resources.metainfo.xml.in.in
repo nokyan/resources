@@ -5,14 +5,14 @@
   <summary>Monitor your system resources and processes</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
-  <recommends>
+  <requires>
     <display_length compare="ge">360</display_length>
-  </recommends>
-  <supports>
-    <control>pointing</control>
+  </requires>
+  <recommends>
     <control>keyboard</control>
+    <control>pointing</control>
     <control>touch</control>
-  </supports>
+  </recommends>
   <description>
     <p>
       Resources allows you to check the utilization of your system resources and control your running processes and applications. It’s designed to be user-friendly and feel right at home on a modern desktop by using GNOME’s libadwaita.

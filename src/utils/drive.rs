@@ -151,6 +151,8 @@ impl Drive {
             Ok(DriveType::Zram)
         } else if self.block_device.starts_with("md") {
             Ok(DriveType::Raid)
+        } else if self.block_device.starts_with("loop") {
+            Ok(DriveType::LoopDevice)
         } else if self.block_device.starts_with("dm") {
             Ok(DriveType::MappedDevice)
         } else if self.block_device.starts_with("ram") {
