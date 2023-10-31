@@ -10,3 +10,4 @@ Keywords=System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GP
 # Translators: Do NOT translate or transliterate this text (this is an icon file name)!
 Icon=@icon@
 StartupNotify=true
+X-Purism-FormFactor=Workstation;Mobile;
