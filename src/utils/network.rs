@@ -25,6 +25,34 @@ pub enum InterfaceType {
     Unknown,
 }
 
+impl InterfaceType {
+    pub fn from_interface_name<S: AsRef<str>>(interface_name: S) -> Self {
+        let interface_name = interface_name.as_ref();
+
+        if interface_name.starts_with("bn") {
+            Self::Bluetooth
+        } else if interface_name.starts_with("eth") || interface_name.starts_with("en") {
+            Self::Ethernet
+        } else if interface_name.starts_with("ib") {
+            Self::InfiniBand
+        } else if interface_name.starts_with("sl") {
+            Self::Slip
+        } else if interface_name.starts_with("veth") {
+            Self::VirtualEthernet
+        } else if interface_name.starts_with("virbr") {
+            Self::VmBridge
+        } else if interface_name.starts_with("wg") {
+            Self::Wireguard
+        } else if interface_name.starts_with("wl") {
+            Self::Wlan
+        } else if interface_name.starts_with("ww") {
+            Self::Wwan
+        } else {
+            Self::Unknown
+        }
+    }
+}
+
 #[derive(Debug, Clone, Default)]
 /// Represents a network interface found in /sys/class/net
 pub struct NetworkInterface {
@@ -109,25 +137,7 @@ impl NetworkInterface {
         Ok(NetworkInterface {
             interface_name: interface_name.clone(),
             driver_name: dev_uevent.get("DRIVER").cloned(),
-            interface_type: match interface_name
-                .to_str()
-                .with_context(|| "unable to convert OsString to &str")?[..2]
-                .into()
-            {
-                // this requires systemd's PredictableNetworkInterfaceNames to be active,
-                // otherwise it's (probably) just going to be `InterfaceType::Other`
-                "bn" => InterfaceType::Bluetooth,
-                "eth" => InterfaceType::Ethernet,
-                "en" => InterfaceType::Ethernet,
-                "ib" => InterfaceType::InfiniBand,
-                "sl" => InterfaceType::Slip,
-                "veth" => InterfaceType::VirtualEthernet,
-                "virbr" => InterfaceType::VmBridge,
-                "wg" => InterfaceType::Wireguard,
-                "wl" => InterfaceType::Wlan,
-                "ww" => InterfaceType::Wwan,
-                _ => InterfaceType::Unknown,
-            },
+            interface_type: InterfaceType::from_interface_name(interface_name.to_string_lossy()),
             speed: std::fs::read_to_string(sysfs_path.join("speed"))
                 .map(|x| x.parse().unwrap_or_default())
                 .ok(),
