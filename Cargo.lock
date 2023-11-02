@@ -1484,7 +1484,7 @@ dependencies = [
 
 [[package]]
 name = "process-data"
-version = "1.2.0"
+version = "1.2.1"
 dependencies = [
  "anyhow",
  "async-std",
@@ -1580,7 +1580,7 @@ checksum = "c08c74e62047bb2de4ff487b251e4a92e24f48745648451635cec7d591162d9f"
 
 [[package]]
 name = "resources"
-version = "1.2.0"
+version = "1.2.1"
 dependencies = [
  "anyhow",
  "async-process",
