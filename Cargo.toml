@@ -1,6 +1,6 @@
 [package]
 name = "resources"
-version = "1.2.0"
+version = "1.2.1"
 authors = ["nokyan <nokyan@tuta.io>"]
 edition = "2021"
 
