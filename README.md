@@ -33,7 +33,7 @@ Other dependencies are handled by `cargo`.
 
 ## Installing
 
-The **offical** and **only supported** way of installing Resources is using Flatpak. Simply use your graphical software manager like GNOME Software or Discover to install Resources from Flathub or type ``flatpak install flathub net.nokyan.Resources`` in your terminal.
+The **official** and **only supported** way of installing Resources is using Flatpak. Simply use your graphical software manager like GNOME Software or Discover to install Resources from Flathub or type ``flatpak install flathub net.nokyan.Resources`` in your terminal.
 Please keep in mind that you need to have Flathub set up on your device. You can find out how to set up Flathub [here](https://flathub.org/setup).
 
 ### Fedora
