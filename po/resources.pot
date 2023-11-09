@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-10-26 23:45+0200\n"
+"PO-Revision-Date: 2023-11-09 15:32+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -208,14 +208,14 @@ msgstr ""
 #: src/ui/dialogs/process_dialog.rs:147 src/ui/dialogs/process_dialog.rs:149
 #: src/ui/pages/cpu.rs:206 src/ui/pages/cpu.rs:218 src/ui/pages/cpu.rs:233
 #: src/ui/pages/cpu.rs:239 src/ui/pages/cpu.rs:245 src/ui/pages/cpu.rs:251
-#: src/ui/pages/cpu.rs:255 src/ui/pages/cpu.rs:258 src/ui/pages/cpu.rs:323
+#: src/ui/pages/cpu.rs:255 src/ui/pages/cpu.rs:258 src/ui/pages/cpu.rs:327
 #: src/ui/pages/drive.rs:204 src/ui/pages/gpu.rs:193 src/ui/pages/gpu.rs:209
 #: src/ui/pages/gpu.rs:229 src/ui/pages/gpu.rs:239 src/ui/pages/gpu.rs:261
 #: src/ui/pages/gpu.rs:269 src/ui/pages/gpu.rs:275 src/ui/pages/gpu.rs:282
 #: src/ui/pages/gpu.rs:289 src/ui/pages/gpu.rs:295 src/ui/pages/gpu.rs:301
 #: src/ui/pages/gpu.rs:307 src/ui/pages/memory.rs:199
 #: src/ui/pages/memory.rs:203 src/ui/pages/memory.rs:207
-#: src/ui/pages/memory.rs:264 src/ui/pages/network.rs:214
+#: src/ui/pages/memory.rs:268 src/ui/pages/network.rs:214
 #: src/ui/pages/network.rs:221 src/ui/pages/network.rs:227
 #: src/ui/pages/network.rs:233 src/ui/pages/network.rs:235
 #: src/ui/pages/processes/mod.rs:389 src/ui/pages/processes/mod.rs:424
@@ -380,7 +380,7 @@ msgstr ""
 
 #. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
 #. preferably be quite short or an abbreviation
-#: src/ui/pages/memory.rs:283
+#: src/ui/pages/memory.rs:287
 msgid "{} / {} · Swap: {} %"
 msgstr ""
 

@@ -13,43 +13,44 @@ static RE_FORMFACTOR: Lazy<Regex> = Lazy::new(|| Regex::new(r"Form Factor: (.+)"
 static RE_TYPE: Lazy<Regex> = Lazy::new(|| Regex::new(r"Type: (.+)").unwrap());
 static RE_TYPE_DETAIL: Lazy<Regex> = Lazy::new(|| Regex::new(r"Type Detail: (.+)").unwrap());
 
-fn proc_meminfo() -> Result<Value, anyhow::Error> {
-    std::fs::read_to_string("/proc/meminfo")
+async fn proc_meminfo() -> Result<Value, anyhow::Error> {
+    async_std::fs::read_to_string("/proc/meminfo")
+        .await
         .with_context(|| "unable to read /proc/meminfo")?
         .kv_str_to_json()
         .map_err(anyhow::Error::msg)
 }
 
-pub fn get_total_memory() -> Option<usize> {
-    proc_meminfo().ok()?["MemTotal"]
+pub async fn get_total_memory() -> Option<usize> {
+    proc_meminfo().await.ok()?["MemTotal"]
         .as_str()
         .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
         .map(|y| y * 1000)
 }
 
-pub fn get_available_memory() -> Option<usize> {
-    proc_meminfo().ok()?["MemAvailable"]
+pub async fn get_available_memory() -> Option<usize> {
+    proc_meminfo().await.ok()?["MemAvailable"]
         .as_str()
         .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
         .map(|y| y * 1000)
 }
 
-pub fn get_free_memory() -> Option<usize> {
-    proc_meminfo().ok()?["MemFree"]
+pub async fn get_free_memory() -> Option<usize> {
+    proc_meminfo().await.ok()?["MemFree"]
         .as_str()
         .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
         .map(|y| y * 1000)
 }
 
-pub fn get_total_swap() -> Option<usize> {
-    proc_meminfo().ok()?["SwapTotal"]
+pub async fn get_total_swap() -> Option<usize> {
+    proc_meminfo().await.ok()?["SwapTotal"]
         .as_str()
         .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
         .map(|y| y * 1000)
 }
 
-pub fn get_free_swap() -> Option<usize> {
-    proc_meminfo().ok()?["SwapFree"]
+pub async fn get_free_swap() -> Option<usize> {
+    proc_meminfo().await.ok()?["SwapFree"]
         .as_str()
         .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
         .map(|y| y * 1000)
