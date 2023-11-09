@@ -230,17 +230,21 @@ impl ResMemory {
         let imp = self.imp();
 
         let total_mem = get_total_memory()
+            .await
             .with_context(|| "unable to get total memory")
             .unwrap_or_default();
         let available_mem = get_available_memory()
+            .await
             .with_context(|| "unable to get available memory")
             .unwrap_or_default();
         let used_mem = total_mem.saturating_sub(available_mem);
 
         let total_swap = get_total_swap()
+            .await
             .with_context(|| "unable to get total swap")
             .unwrap_or_default();
         let free_swap = get_free_swap()
+            .await
             .with_context(|| "unable to get free swap")
             .unwrap_or_default();
         let used_swap = total_swap.saturating_sub(free_swap);
