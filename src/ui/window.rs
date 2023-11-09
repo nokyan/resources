@@ -495,7 +495,7 @@ impl MainWindow {
     fn load_window_size(&self) {
         let width = SETTINGS.window_width();
         let height = SETTINGS.window_height();
-        let is_maximized = SETTINGS.is_maximized();
+        let is_maximized = SETTINGS.maximized();
 
         self.set_default_size(width, height);
 
