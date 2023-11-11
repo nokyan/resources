@@ -1,20 +1,21 @@
 #
 # nokyan <nokyan@tuta.io>, 2023.
+# Victor L. Pavan <victorpavan001@gmail.com>, 2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-20 19:16-0500\n"
-"PO-Revision-Date: 2023-10-20 19:16-0500\n"
-"Last-Translator: rudahximenes <rudah.ximenes@gmail.com>\n"
-"Language-Team: Unofficial Brazilian Portuguese translators\n"
-"Language: pt_br\n"
+"PO-Revision-Date: 2023-11-11 13:46-0300\n"
+"Last-Translator: Victor L. Pavan <victorpavan001@gmail.com>\n"
+"Language-Team: Brazilian Portuguese <victorpavan001@gmail.com>\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"X-Generator: Gtranslator 45.3\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:3
@@ -65,14 +66,14 @@ msgid ""
 "friendly and feel right at home on a modern desktop by using GNOME’s "
 "libadwaita."
 msgstr ""
-"Recursos permite que você verifique a utilização dos recursos e controlar "
-"os processos e aplicaçãos em atividade em seu sistema. É desenhado para ser"
-"user-friendly e parecer adequado aos designs modernos usados pelo libadwaita "
-"do GNOME."
+"Recursos permite que você verifique a utilização dos recursos do sistema e "
+"controle os processos e aplicativos em execução. É projetado para ter uma "
+"interface amigável e se encaixar em um desktop moderno, usando libadwaita do "
+"GNOME."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid "Resources supports monitoring the following components:"
-msgstr "Recursos suporta monitoramento dos seguintes componentes:"
+msgstr "Recursos suporta o monitoramento dos seguintes componentes:"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:21 src/ui/pages/cpu.rs:188
 msgid "CPU"
@@ -98,7 +99,7 @@ msgstr "Interfaces de rede"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:25
 msgid "Storage Devices"
-msgstr "Dispositivos de armazenamento"
+msgstr "Dispositivos de Armazenamento"
 
 #: src/application.rs:147
 msgid "The Nalux Team"
@@ -106,7 +107,7 @@ msgstr "Equipe Nalux"
 
 #: src/application.rs:155
 msgid "Report Issues"
-msgstr "Reportar problemas"
+msgstr "Reportar Problemas"
 
 #: src/application.rs:159
 msgid "Icon by"
@@ -135,16 +136,16 @@ msgstr "Sim (Flatpak)"
 #: src/ui/pages/network.rs:217 src/ui/pages/network.rs:219 src/utils/gpu.rs:82
 #: src/utils/gpu.rs:85
 msgid "N/A"
-msgstr "N/A"
+msgstr "N/D"
 
 #: src/ui/pages/applications/mod.rs:107 data/resources/ui/window.ui:62
 #: data/resources/ui/window.ui:69
 msgid "Applications"
-msgstr "aplicaçãos"
+msgstr "Aplicativos"
 
 #: src/ui/pages/applications/mod.rs:228
 msgid "Application"
-msgstr "aplicação"
+msgstr "Aplicativo"
 
 #: src/ui/pages/applications/mod.rs:274 src/ui/pages/cpu.rs:102
 #: src/ui/pages/processes/mod.rs:319 src/ui/window.rs:219
@@ -168,7 +169,7 @@ msgstr "Unidade"
 
 #: src/ui/pages/drive.rs:175
 msgid "Total Usage"
-msgstr "Uso total"
+msgstr "Uso Total"
 
 #: src/ui/pages/drive.rs:180 src/ui/window.rs:310
 msgid "CD/DVD/Blu-ray Drive"
@@ -176,27 +177,27 @@ msgstr "Unidade CD/DVD/Blu-ray"
 
 #: src/ui/pages/drive.rs:181
 msgid "eMMC Storage"
-msgstr "Memória eMMC"
+msgstr "Armazenamento eMMC"
 
 #: src/ui/pages/drive.rs:182
 msgid "Flash Storage"
-msgstr "Memória Flash"
+msgstr "Armazenamento Flash"
 
 #: src/ui/pages/drive.rs:183 src/ui/window.rs:311
 msgid "Floppy Drive"
-msgstr "Disco floppy"
+msgstr "Disquete"
 
 #: src/ui/pages/drive.rs:184
 msgid "Hard Disk Drive"
-msgstr "Disco rígido"
+msgstr "Disco Rígido"
 
 #: src/ui/pages/drive.rs:185
 msgid "NVMe Drive"
-msgstr "Disco NVMe"
+msgstr "Unidade NVMe"
 
 #: src/ui/pages/drive.rs:187
 msgid "Solid State Drive"
-msgstr "Disco de estado sólido"
+msgstr "Unidade de Estado Sólido"
 
 #: src/ui/pages/drive.rs:212 src/ui/pages/drive.rs:218
 msgid "Yes"
@@ -208,7 +209,7 @@ msgstr "Uso de GPU"
 
 #: src/ui/pages/gpu.rs:173
 msgid "Video Memory Usage"
-msgstr "Uso de memória de vídeo"
+msgstr "Uso de Memória de Vídeo"
 
 #: src/ui/pages/memory.rs:154
 msgid "Swap"
@@ -220,7 +221,7 @@ msgstr "{} de {}"
 
 #: src/ui/pages/network.rs:101 src/ui/window.rs:358
 msgid "Network Interface"
-msgstr "Interface de rede"
+msgstr "Interface de Rede"
 
 #: src/ui/pages/network.rs:185
 msgid "Receiving"
@@ -267,7 +268,7 @@ msgstr "Unidade {}"
 
 #: src/ui/window.rs:351
 msgid "Ethernet Connection"
-msgstr "Conexão Ethernet"
+msgstr "Conexão Cabeada"
 
 #: src/ui/window.rs:352
 msgid "InfiniBand Connection"
@@ -319,35 +320,35 @@ msgid ""
 "security implications. Use with caution."
 msgstr ""
 "Interromper um aplicação pode ter sérios riscos como perda de dados e "
-"implicações de segurança. Use esta opção com precaução."
+"implicações de segurança. Use com cuidado."
 
 #: src/ui/window.rs:515
 msgid ""
 "Killing an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
-"Matar um aplicação pode ter sérios riscos como perda de dados e "
-"implicações de segurança. Use esta opção com precaução."
+"Matar um aplicativo pode ter sérios riscos como perda de dados e implicações "
+"de segurança. Use esta opção com precaução."
 
 #: src/ui/window.rs:522
 msgid "End application"
-msgstr "Finalizar aplicação"
+msgstr "Finalizar Aplicativo"
 
 #: src/ui/window.rs:523
 msgid "Halt application"
-msgstr "Interromper aplicação"
+msgstr "Interromper Aplicativo"
 
 #: src/ui/window.rs:524
 msgid "Kill application"
-msgstr "Matar aplicação"
+msgstr "Matar Aplicativo"
 
 #: src/ui/window.rs:525
 msgid "Continue application"
-msgstr "Continuar aplicação"
+msgstr "Continuar Aplicativo"
 
 #: src/ui/window.rs:531
 msgid "Successfully ended {}"
-msgstr "{} concluído com sucesso"
+msgstr "{} finalizado com sucesso"
 
 #: src/ui/window.rs:532
 msgid "Successfully halted {}"
@@ -355,7 +356,7 @@ msgstr "{} interrompido com sucesso"
 
 #: src/ui/window.rs:533
 msgid "Successfully killed {}"
-msgstr "{} matado com sucesso"
+msgstr "{} morto com sucesso"
 
 #: src/ui/window.rs:534
 msgid "Successfully continued {}"
@@ -364,8 +365,8 @@ msgstr "{} continuado com sucesso"
 #: src/ui/window.rs:541
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
-msgstr[0] "Houve um problema ao interromper um processo"
-msgstr[1] "Houveram problemas ao interromper {} processos"
+msgstr[0] "Houve um problema ao finalizar um processo"
+msgstr[1] "Houveram problemas ao finalizar {} processos"
 
 #: src/ui/window.rs:547
 msgid "There was a problem halting a process"
@@ -387,7 +388,7 @@ msgstr[1] "Houveram problemas ao continuar {} processos"
 
 #: src/ui/window.rs:569
 msgid "There was a problem ending {}"
-msgstr "Houve um problema ao interromper {}"
+msgstr "Houve um problema ao finalizar {}"
 
 #: src/ui/window.rs:570
 msgid "There was a problem halting {}"
@@ -403,7 +404,7 @@ msgstr "Houve um problema ao continuar {}"
 
 #: src/utils/app.rs:380
 msgid "System Processes"
-msgstr "Processos do sistema"
+msgstr "Processos do Sistema"
 
 #: src/utils/units.rs:51
 msgid "{} K"
@@ -682,7 +683,7 @@ msgstr "Geral"
 #: data/resources/ui/shortcuts.ui:14
 msgctxt "shortcut window"
 msgid "Show Shortcuts"
-msgstr "Mostrar alhos"
+msgstr "Mostrar Atalhos"
 
 #: data/resources/ui/shortcuts.ui:20
 msgctxt "shortcut window"
@@ -695,15 +696,15 @@ msgstr "Preferências"
 
 #: data/resources/ui/window.ui:10
 msgid "Keyboard Shortcuts"
-msgstr "Atalhos de teclado"
+msgstr "Atalhos de Teclado"
 
 #: data/resources/ui/window.ui:14
 msgid "About Resources"
-msgstr "Sobre de Recursos"
+msgstr "Sobre o Recursos"
 
 #: data/resources/ui/dialogs/app_dialog.ui:9
 msgid "Application Information"
-msgstr "Informação da aplicação"
+msgstr "Informações do Aplicativo"
 
 #: data/resources/ui/dialogs/app_dialog.ui:71
 #: data/resources/ui/dialogs/process_dialog.ui:54
@@ -727,16 +728,16 @@ msgstr "ID"
 
 #: data/resources/ui/dialogs/app_dialog.ui:109
 msgid "Running Processes"
-msgstr "Processos em execução"
+msgstr "Processos em Execução"
 
 #: data/resources/ui/dialogs/app_dialog.ui:118
 #: data/resources/ui/dialogs/process_dialog.ui:120
 msgid "Containerized"
-msgstr "Em container"
+msgstr "Em Container"
 
 #: data/resources/ui/dialogs/process_dialog.ui:9
 msgid "Process Information"
-msgstr "Informação do processo"
+msgstr "Informação do Processo"
 
 #: data/resources/ui/dialogs/process_dialog.ui:93
 msgid "Commandline"
@@ -744,7 +745,7 @@ msgstr "Linha de comando"
 
 #: data/resources/ui/dialogs/process_dialog.ui:111
 msgid "Control Group"
-msgstr "Grupo de controle"
+msgstr "Grupo de Controle"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:10
 msgid "General"
@@ -756,7 +757,7 @@ msgstr "Unidades"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:16
 msgid "Data Unit Prefix"
-msgstr "Prefixo de unidade dos dados"
+msgstr "Prefixo da Unidade dos Dados"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:20
 msgid "Decimal"
@@ -768,7 +769,7 @@ msgstr "Binário"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:29
 msgid "Temperature Unit"
-msgstr "Unidade para temperatura"
+msgstr "Unidade de Temperatura"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:33
 msgid "Celsius"
@@ -784,11 +785,11 @@ msgstr "Fahrenheit"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:45
 msgid "User Interface"
-msgstr "Interface do usuário"
+msgstr "Interface do Usuário"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:52
 msgid "Very Slow"
-msgstr "Muito lento"
+msgstr "Muito Lento"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:53
 msgid "Slow"
@@ -804,23 +805,23 @@ msgstr "Rápido"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:56
 msgid "Very Fast"
-msgstr "Muito rápido"
+msgstr "Muito Rápido"
 
 #: data/resources/ui/pages/applications.ui:6
 msgid "Kill Application"
-msgstr "Matar aplicação"
+msgstr "Matar Aplicativo"
 
 #: data/resources/ui/pages/applications.ui:10
 msgid "Halt Application"
-msgstr "Interromper aplicação"
+msgstr "Interromper Aplicativo"
 
 #: data/resources/ui/pages/applications.ui:14
 msgid "Continue Application"
-msgstr "Continuar aplicação"
+msgstr "Continuar Aplicativo"
 
 #: data/resources/ui/pages/applications.ui:81
 msgid "End Application"
-msgstr "Finalizar aplicação"
+msgstr "Finalizar Aplicativo"
 
 #: data/resources/ui/pages/cpu.ui:22
 msgid "Options"
@@ -828,7 +829,7 @@ msgstr "Opções"
 
 #: data/resources/ui/pages/cpu.ui:26
 msgid "Show Usages of Logical CPUs"
-msgstr "Mostrar usos das CPU lógicas"
+msgstr "Mostrar uso das CPU lógicas"
 
 #: data/resources/ui/pages/cpu.ui:77 data/resources/ui/pages/gpu.ui:60
 msgid "Sensors"
@@ -840,19 +841,19 @@ msgstr "Temperatura"
 
 #: data/resources/ui/pages/cpu.ui:98
 msgid "Max Frequency"
-msgstr "Frequência máxima"
+msgstr "Frequência Máxima"
 
 #: data/resources/ui/pages/cpu.ui:107
 msgid "Logical Cores"
-msgstr "Núcleos lógicos"
+msgstr "Núcleos Lógicos"
 
 #: data/resources/ui/pages/cpu.ui:116
 msgid "Physical Cores"
-msgstr "Núcleos físicos"
+msgstr "Núcleos Físicos"
 
 #: data/resources/ui/pages/cpu.ui:125
 msgid "Sockets"
-msgstr "Sockets"
+msgstr "Soquetes"
 
 #: data/resources/ui/pages/cpu.ui:134
 msgid "Virtualization"
@@ -864,11 +865,11 @@ msgstr "Arquitetura"
 
 #: data/resources/ui/pages/drive.ui:28
 msgid "Read Speed"
-msgstr "Velocidade de leitura"
+msgstr "Velocidade de Leitura"
 
 #: data/resources/ui/pages/drive.ui:37
 msgid "Write Speed"
-msgstr "Velocidade de escrita"
+msgstr "Velocidade de Escrita"
 
 #: data/resources/ui/pages/drive.ui:51 data/resources/ui/pages/memory.ui:72
 msgid "Type"
@@ -884,7 +885,7 @@ msgstr "Capacidade"
 
 #: data/resources/ui/pages/drive.ui:78
 msgid "Writable"
-msgstr "Escrevível"
+msgstr "Gravável"
 
 #: data/resources/ui/pages/drive.ui:87
 msgid "Removable"
@@ -896,11 +897,11 @@ msgstr "Frequência da GPU"
 
 #: data/resources/ui/pages/gpu.ui:44
 msgid "Video Memory Frequency"
-msgstr "Frequência da memória de vídeo"
+msgstr "Frequência da Memória de Vídeo"
 
 #: data/resources/ui/pages/gpu.ui:49
 msgid "Power Usage"
-msgstr "Uso de energia"
+msgstr "Consumo de Energia"
 
 #: data/resources/ui/pages/gpu.ui:81 data/resources/ui/pages/network.ui:58
 msgid "Manufacturer"
@@ -908,19 +909,19 @@ msgstr "Fabricante"
 
 #: data/resources/ui/pages/gpu.ui:90
 msgid "PCI Slot"
-msgstr "Slot PCI"
+msgstr "Slot "
 
 #: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
 msgid "Driver Used"
-msgstr "Controlador usado"
+msgstr "Controlador Usado"
 
 #: data/resources/ui/pages/gpu.ui:108
 msgid "Current Power Cap"
-msgstr "Limite atual de energia"
+msgstr "Limite Atual de Energia"
 
 #: data/resources/ui/pages/gpu.ui:117
 msgid "Max Power Cap"
-msgstr "Limite máximo de energia"
+msgstr "Limite Máximo de Energia"
 
 #: data/resources/ui/pages/memory.ui:9
 msgid "You need to authenticate to see memory properties"
@@ -940,19 +941,19 @@ msgstr "Velocidade"
 
 #: data/resources/ui/pages/memory.ui:63
 msgid "Form Factor"
-msgstr "Fator de forma"
+msgstr "Fator de Forma"
 
 #: data/resources/ui/pages/memory.ui:81
 msgid "Type Detail"
-msgstr "Detalhe do tipo"
+msgstr "Detalhe do Tipo"
 
 #: data/resources/ui/pages/network.ui:35
 msgid "Total Received"
-msgstr "Total recebido"
+msgstr "Total Recebido"
 
 #: data/resources/ui/pages/network.ui:44
 msgid "Total Sent"
-msgstr "Total enviado"
+msgstr "Total Enviado"
 
 #: data/resources/ui/pages/network.ui:76
 msgid "Interface"
@@ -960,20 +961,20 @@ msgstr "Interface"
 
 #: data/resources/ui/pages/network.ui:85
 msgid "Hardware Address"
-msgstr "Endereço físico"
+msgstr "Endereço Físico"
 
 #: data/resources/ui/pages/processes.ui:6
 msgid "Kill Process"
-msgstr "Matar processo"
+msgstr "Matar Processo"
 
 #: data/resources/ui/pages/processes.ui:10
 msgid "Halt Process"
-msgstr "Interromper processo"
+msgstr "Interromper Processo"
 
 #: data/resources/ui/pages/processes.ui:14
 msgid "Continue Process"
-msgstr "Continuar processo"
+msgstr "Continuar Processo"
 
 #: data/resources/ui/pages/processes.ui:81
 msgid "End Process"
-msgstr "Finalizar proceso"
+msgstr "Finalizar Proceso"
