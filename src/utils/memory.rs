@@ -14,7 +14,7 @@ static RE_TYPE: Lazy<Regex> = Lazy::new(|| Regex::new(r"Type: (.+)").unwrap());
 static RE_TYPE_DETAIL: Lazy<Regex> = Lazy::new(|| Regex::new(r"Type Detail: (.+)").unwrap());
 
 async fn proc_meminfo() -> Result<Value, anyhow::Error> {
-    async_std::fs::read_to_string("/proc/meminfo")
+    tokio::fs::read_to_string("/proc/meminfo")
         .await
         .with_context(|| "unable to read /proc/meminfo")?
         .kv_str_to_json()

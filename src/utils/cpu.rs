@@ -1,11 +1,11 @@
 use anyhow::{anyhow, bail, Context, Result};
 use async_process::Command;
-use async_std::path::PathBuf;
 use glob::glob;
 use nparse::KVStrToJson;
 use once_cell::sync::Lazy;
 use regex::bytes::Regex;
 use serde_json::Value;
+use std::path::PathBuf;
 use std::sync::OnceLock;
 
 static PROC_STAT_REGEX: Lazy<Regex> = Lazy::new(|| {
@@ -135,7 +135,7 @@ async fn get_proc_stat(core: Option<usize>) -> Result<String> {
     // the combined stats are in line 0, the other cores are in the following lines,
     // since our `core` argument starts with 0, we must add 1 to it if it's not `None`.
     let selected_line_number = core.map_or(0, |x| x + 1);
-    let proc_stat_raw = async_std::fs::read_to_string("/proc/stat")
+    let proc_stat_raw = tokio::fs::read_to_string("/proc/stat")
         .await
         .with_context(|| "unable to read /proc/stat")?;
     let mut proc_stat = proc_stat_raw.split('\n').collect::<Vec<&str>>();
@@ -173,7 +173,7 @@ pub async fn get_temperature() -> Result<f32> {
     {
         // collect all the known hwmons
         for path in (glob("/sys/class/hwmon/hwmon*")?).flatten() {
-            match async_std::fs::read_to_string(path.join("name"))
+            match tokio::fs::read_to_string(path.join("name"))
                 .await
                 .as_deref()
             {
@@ -188,7 +188,7 @@ pub async fn get_temperature() -> Result<f32> {
 
         // collect all the known thermal zones
         for path in (glob("/sys/class/thermal/thermal_zone*")?).flatten() {
-            match async_std::fs::read_to_string(path.join("type"))
+            match tokio::fs::read_to_string(path.join("type"))
                 .await
                 .as_deref()
             {
@@ -221,7 +221,7 @@ pub async fn get_temperature() -> Result<f32> {
 }
 
 async fn read_sysfs_thermal(path: &PathBuf) -> Result<f32> {
-    let temp_string = async_std::fs::read_to_string(path)
+    let temp_string = tokio::fs::read_to_string(path)
         .await
         .with_context(|| format!("unable to read {}", path.display()))?;
     temp_string

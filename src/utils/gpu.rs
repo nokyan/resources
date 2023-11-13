@@ -44,8 +44,7 @@ impl GPU {
         for entry in glob("/sys/class/drm/card?")?.flatten() {
             let sysfs_device_path = entry.join("device");
             let mut uevent_contents: HashMap<String, String> = HashMap::new();
-            let uevent_raw =
-                async_std::fs::read_to_string(sysfs_device_path.join("uevent")).await?;
+            let uevent_raw = tokio::fs::read_to_string(sysfs_device_path.join("uevent")).await?;
 
             for line in uevent_raw.trim().split('\n') {
                 let (k, v) = line
@@ -106,7 +105,7 @@ impl GPU {
 
     async fn read_sysfs_int<P: AsRef<Path>>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path.join(file);
-        async_std::fs::read_to_string(&path)
+        tokio::fs::read_to_string(&path)
             .await?
             .replace('\n', "")
             .parse::<isize>()
@@ -120,7 +119,7 @@ impl GPU {
 
     async fn read_device_int<P: AsRef<Path>>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path.join("device").join(file);
-        async_std::fs::read_to_string(&path)
+        tokio::fs::read_to_string(&path)
             .await?
             .replace('\n', "")
             .parse::<isize>()
@@ -134,7 +133,7 @@ impl GPU {
 
     async fn read_hwmon_int<P: AsRef<Path>>(&self, hwmon: usize, file: P) -> Result<isize> {
         let path = self.hwmon_paths[hwmon].join(file);
-        async_std::fs::read_to_string(&path)
+        tokio::fs::read_to_string(&path)
             .await?
             .replace('\n', "")
             .parse::<isize>()

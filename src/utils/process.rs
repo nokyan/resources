@@ -4,10 +4,8 @@ use glob::glob;
 use process_data::{Containerization, ProcessData};
 use std::process::Command;
 
-use async_std::sync::Arc;
-use async_std::sync::Mutex;
-use futures_util::future::join_all;
 use gtk::gio::{Icon, ThemedIcon};
+use tokio::task::JoinSet;
 
 use crate::config;
 
@@ -78,24 +76,25 @@ impl Process {
                 .map(Self::from_process_data)
                 .collect());
         } else {
-            let vec: Arc<Mutex<Vec<ProcessData>>> = Arc::new(Mutex::new(Vec::new()));
+            let mut tasks = JoinSet::new();
 
-            let mut handles = vec![];
             for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-                let vec = Arc::clone(&vec);
-
-                let handle = async_std::task::spawn(async move {
-                    if let Ok(process_data) = ProcessData::try_from_path(entry).await {
-                        vec.lock().await.push(process_data);
-                    }
-                });
-
-                handles.push(handle);
+                tasks.spawn(async move { ProcessData::try_from_path(entry).await });
             }
-            join_all(handles).await;
 
-            let mut vec = vec.lock().await;
-            return Ok(vec.drain(..).map(Self::from_process_data).collect());
+            let mut process_data = vec![];
+            while let Some(task) = tasks.join_next().await {
+                if let Ok(data) = task.unwrap() {
+                    process_data.push(data);
+                }
+            }
+
+            let process_data = process_data
+                .into_iter()
+                .map(Self::from_process_data)
+                .collect();
+
+            Ok(process_data)
         }
     }
 

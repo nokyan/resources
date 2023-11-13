@@ -47,11 +47,11 @@ mod imp {
 
     use super::*;
 
-    use async_std::sync::Mutex;
     use gtk::{
         glib::{Receiver, Sender},
         CompositeTemplate,
     };
+    use std::sync::Mutex;
 
     #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/net/nokyan/Resources/ui/window.ui")]
@@ -231,10 +231,12 @@ impl MainWindow {
 
         let main_context = MainContext::default();
         main_context.spawn_local(clone!(@strong self as this => async move {
+            let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().unwrap();
+            let _rt_guard = rt.enter();
             let imp = this.imp();
 
             {
-                *imp.apps_context.lock().await = AppsContext::new().await;
+                *imp.apps_context.lock().unwrap() = AppsContext::new().await;
             }
 
             let cpu_info = cpu::cpu_info()
@@ -273,7 +275,7 @@ impl MainWindow {
             let _ = this.refresh_drives().await;
             let _ = this.refresh_network_interfaces().await;
 
-            futures_util::join!(async {
+            tokio::join!(async {
                 loop {
                     let _ = imp.cpu.refresh_page().await;
 
@@ -304,7 +306,7 @@ impl MainWindow {
             }, async {
                 loop {
                     {
-                        let mut apps_context = imp.apps_context.lock().await;
+                        let mut apps_context = imp.apps_context.lock().unwrap();
                         apps_context.refresh().await;
                         imp.applications.refresh_apps_list(&apps_context);
                         imp.processes.refresh_processes_list(&apps_context);
@@ -438,7 +440,7 @@ impl MainWindow {
         let main_context = MainContext::default();
         main_context.spawn_local(clone!(@strong self as this => async move {
             let imp = this.imp();
-            let apps_context = imp.apps_context.lock().await;
+            let apps_context = imp.apps_context.lock().unwrap();
             match action {
                 Action::ManipulateProcess(action, pid, display_name, toast_overlay) => {
                     if let Some(process) = apps_context.get_process(pid) {
