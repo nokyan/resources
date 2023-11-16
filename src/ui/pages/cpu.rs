@@ -1,11 +1,12 @@
 use adw::{prelude::*, subclass::prelude::*};
-use anyhow::{Context, Result};
-use gtk::glib::{self, clone, MainContext};
+use anyhow::Context;
+use gtk::glib::{self, clone};
 use gtk::FlowBoxChild;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::ui::widgets::graph_box::ResGraphBox;
+use crate::utils::cpu::CpuData;
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_frequency, convert_temperature};
 use crate::utils::{cpu, NaNDefault};
@@ -177,87 +178,84 @@ impl ResCPU {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self) {
-        self.setup_widgets();
+    pub async fn init(&self) {
+        self.setup_widgets().await;
         self.setup_signals();
     }
 
-    pub fn setup_widgets(&self) {
-        let main_context = MainContext::default();
-        let widget_setup = clone!(@strong self as this => async move {
-            let cpu_info = cpu::cpu_info()
-                .await
-                .with_context(|| "unable to get CPUInfo")
-                .unwrap_or_default();
-            let imp = this.imp();
+    pub async fn setup_widgets(&self) {
+        let imp = self.imp();
 
-            let logical_cpus = cpu_info.logical_cpus.unwrap_or(0);
+        let cpu_info = cpu::cpu_info()
+            .await
+            .with_context(|| "unable to get CPUInfo")
+            .unwrap();
 
-            imp.old_total_usage.set(cpu::get_cpu_usage(None).await.unwrap_or((0, 0)));
-            *imp.old_thread_usages.borrow_mut() = Vec::with_capacity(logical_cpus);
+        let old_total_usage = cpu::get_cpu_usage(None).await.unwrap_or((0, 0));
+        imp.old_total_usage.set(old_total_usage);
 
-            for i in 0..logical_cpus {
-                imp.old_thread_usages.borrow_mut().push(cpu::get_cpu_usage(Some(i)).await.unwrap_or((0, 0)));
-            }
+        let logical_cpus = cpu_info.logical_cpus.unwrap_or(0);
+        for i in 0..logical_cpus {
+            let old_thread_usage = cpu::get_cpu_usage(Some(i)).await.unwrap_or((0, 0));
+            imp.old_thread_usages.borrow_mut().push(old_thread_usage);
+        }
 
-            imp.logical_cpus_amount.set(logical_cpus);
+        imp.logical_cpus_amount.set(logical_cpus);
 
-            imp.total_cpu.set_title_label(&i18n("CPU"));
-            imp.total_cpu.set_subtitle(&i18n("N/A"));
-            imp.total_cpu.set_data_points_max_amount(60);
-            imp.total_cpu.set_graph_color(28, 113, 216);
+        imp.total_cpu.set_title_label(&i18n("CPU"));
+        imp.total_cpu.set_subtitle(&i18n("N/A"));
+        imp.total_cpu.set_data_points_max_amount(60);
+        imp.total_cpu.set_graph_color(28, 113, 216);
 
-            // if our CPU happens to only have one thread, showing a single thread box with the exact
-            // same fraction as the progress bar for total CPU usage would be silly, so only do
-            // thread boxes if we have more than one thread
+        // if our CPU happens to only have one thread, showing a single thread box with the exact
+        // same fraction as the progress bar for total CPU usage would be silly, so only do
+        // thread boxes if we have more than one thread
 
-            imp.logical_switch.set_sensitive(logical_cpus > 0);
-            for i in 0..logical_cpus {
-                let thread_box = ResGraphBox::new();
-                thread_box.set_subtitle(&i18n_f("CPU {}", &[&(i + 1).to_string()]));
-                thread_box.set_title_label(&i18n("N/A"));
-                thread_box.set_graph_height_request(72);
-                thread_box.set_data_points_max_amount(60);
-                thread_box.set_graph_color(28, 113, 216);
-                let flow_box_chld = FlowBoxChild::builder()
-                    .child(&thread_box)
-                    .css_classes(vec!["tile", "card"])
-                    .build();
-                imp.thread_box.append(&flow_box_chld);
-                imp.thread_graphs.borrow_mut().push(thread_box);
-            }
+        imp.logical_switch.set_sensitive(logical_cpus > 0);
+        for i in 0..logical_cpus {
+            let thread_box = ResGraphBox::new();
+            thread_box.set_subtitle(&i18n_f("CPU {}", &[&(i + 1).to_string()]));
+            thread_box.set_title_label(&i18n("N/A"));
+            thread_box.set_graph_height_request(72);
+            thread_box.set_data_points_max_amount(60);
+            thread_box.set_graph_color(28, 113, 216);
+            let flow_box_chld = FlowBoxChild::builder()
+                .child(&thread_box)
+                .css_classes(vec!["tile", "card"])
+                .build();
+            imp.thread_box.append(&flow_box_chld);
+            imp.thread_graphs.borrow_mut().push(thread_box);
+        }
 
-            imp.max_speed.set_subtitle(
-                &cpu_info
-                    .max_speed
-                    .map_or_else(|| i18n("N/A"), |x| convert_frequency(x as f64)),
-            );
+        imp.max_speed.set_subtitle(
+            &cpu_info
+                .max_speed
+                .map_or_else(|| i18n("N/A"), |x| convert_frequency(x as f64)),
+        );
 
-            imp.logical_cpus.set_subtitle(
-                &cpu_info
-                    .logical_cpus
-                    .map_or_else(|| i18n("N/A"), |x| x.to_string()),
-            );
+        imp.logical_cpus.set_subtitle(
+            &cpu_info
+                .logical_cpus
+                .map_or_else(|| i18n("N/A"), |x| x.to_string()),
+        );
 
-            imp.physical_cpus.set_subtitle(
-                &cpu_info
-                    .physical_cpus
-                    .map_or_else(|| i18n("N/A"), |x| x.to_string()),
-            );
+        imp.physical_cpus.set_subtitle(
+            &cpu_info
+                .physical_cpus
+                .map_or_else(|| i18n("N/A"), |x| x.to_string()),
+        );
 
-            imp.sockets.set_subtitle(
-                &cpu_info
-                    .sockets
-                    .map_or_else(|| i18n("N/A"), |x| x.to_string()),
-            );
+        imp.sockets.set_subtitle(
+            &cpu_info
+                .sockets
+                .map_or_else(|| i18n("N/A"), |x| x.to_string()),
+        );
 
-            imp.virtualization
-                .set_subtitle(&cpu_info.virtualization.unwrap_or_else(|| i18n("N/A")));
+        imp.virtualization
+            .set_subtitle(&cpu_info.virtualization.unwrap_or_else(|| i18n("N/A")));
 
-            imp.architecture
-                .set_subtitle(&cpu_info.architecture.unwrap_or_else(|| i18n("N/A")));
-        });
-        main_context.spawn_local(widget_setup);
+        imp.architecture
+            .set_subtitle(&cpu_info.architecture.unwrap_or_else(|| i18n("N/A")));
     }
 
     pub fn setup_signals(&self) {
@@ -276,10 +274,16 @@ impl ResCPU {
         imp.logical_switch.set_active(SETTINGS.show_logical_cpus());
     }
 
-    pub async fn refresh_page(&self) -> Result<()> {
+    pub fn refresh_page(&self, cpu_data: &CpuData) {
+        let CpuData {
+            new_total_usage,
+            new_thread_usages,
+            temperature,
+            frequencies,
+        } = cpu_data;
+
         let imp = self.imp();
 
-        let new_total_usage = cpu::get_cpu_usage(None).await.unwrap_or((0, 0));
         let idle_total_delta = new_total_usage
             .0
             .saturating_sub(imp.old_total_usage.get().0);
@@ -287,42 +291,42 @@ impl ResCPU {
             .1
             .saturating_sub(imp.old_total_usage.get().1);
         let work_total_time = sum_total_delta.saturating_sub(idle_total_delta);
+
         let total_fraction = ((work_total_time as f64) / (sum_total_delta as f64)).nan_default(0.0);
 
         imp.total_cpu.push_data_point(total_fraction);
 
         let percentage_string = &format!("{} %", (total_fraction * 100.0).round());
         imp.total_cpu.set_subtitle(percentage_string);
-        imp.old_total_usage.set(new_total_usage);
+        imp.old_total_usage.set(*new_total_usage);
 
         if imp.logical_cpus_amount.get() > 1 {
             for (i, old_thread_usage) in imp
                 .old_thread_usages
-                .try_borrow_mut()?
+                .borrow_mut()
                 .iter_mut()
                 .enumerate()
                 .take(imp.logical_cpus_amount.get())
             {
-                let new_thread_usage = cpu::get_cpu_usage(Some(i)).await.unwrap_or((0, 0));
+                let new_thread_usage = new_thread_usages[i];
                 let idle_thread_delta = new_thread_usage.0.saturating_sub(old_thread_usage.0);
                 let sum_thread_delta = new_thread_usage.1.saturating_sub(old_thread_usage.1);
                 let work_thread_time = sum_thread_delta.saturating_sub(idle_thread_delta);
-                let curr_threadbox = &imp.thread_graphs.try_borrow()?[i];
+                let curr_threadbox = &imp.thread_graphs.borrow()[i];
                 let thread_fraction =
                     ((work_thread_time as f64) / (sum_thread_delta as f64)).nan_default(0.0);
+
                 curr_threadbox.push_data_point(thread_fraction);
                 curr_threadbox.set_title_label(&format!("{} %", (thread_fraction * 100.0).round()));
-                if let Ok(freq) = cpu::get_cpu_freq(i) {
-                    curr_threadbox.set_subtitle(&convert_frequency(freq as f64));
-                }
+
+                curr_threadbox.set_subtitle(&convert_frequency(frequencies[i] as f64));
                 *old_thread_usage = new_thread_usage;
             }
         }
 
-        let temperature = cpu::get_temperature().await;
         if let Ok(temp) = temperature {
             imp.temperature
-                .set_subtitle(&convert_temperature(temp as f64));
+                .set_subtitle(&convert_temperature(*temp as f64));
         } else {
             imp.temperature.set_subtitle(&i18n("N/A"));
         }
@@ -330,7 +334,5 @@ impl ResCPU {
         self.set_property("usage", total_fraction);
 
         self.set_property("tab_subtitle", percentage_string);
-
-        Ok(())
     }
 }

@@ -1,12 +1,11 @@
 use std::time::{Duration, SystemTime};
 
 use adw::{prelude::*, subclass::prelude::*};
-use anyhow::Result;
 use gtk::glib;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
-use crate::utils::network::NetworkInterface;
+use crate::utils::network::{InterfaceType, NetworkData, NetworkInterface};
 use crate::utils::units::{convert_speed, convert_storage};
 use crate::utils::NaNDefault;
 
@@ -181,23 +180,32 @@ impl ResNetwork {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(
-        &self,
-        network_interface: NetworkInterface,
-        received_bytes: usize,
-        sent_bytes: usize,
-    ) {
-        self.imp().set_icon(&network_interface.icon());
-        self.setup_widgets(network_interface, received_bytes, sent_bytes);
+    pub fn init(&self, network_data: &NetworkData) {
+        self.setup_widgets(network_data);
     }
 
-    pub fn setup_widgets(
-        &self,
-        network_interface: NetworkInterface,
-        received_bytes: usize,
-        sent_bytes: usize,
-    ) {
+    pub fn setup_widgets(&self, network_data: &NetworkData) {
         let imp = self.imp();
+        let network_interface = &network_data.inner;
+
+        self.imp().set_icon(&network_interface.icon());
+
+        let sidebar_title = match network_interface.interface_type {
+            InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
+            InterfaceType::Bridge => i18n("Network Bridge"),
+            InterfaceType::Ethernet => i18n("Ethernet Connection"),
+            InterfaceType::InfiniBand => i18n("InfiniBand Connection"),
+            InterfaceType::Slip => i18n("Serial Line IP Connection"),
+            InterfaceType::VirtualEthernet => i18n("Virtual Ethernet Device"),
+            InterfaceType::VmBridge => i18n("VM Network Bridge"),
+            InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
+            InterfaceType::Wlan => i18n("Wi-Fi Connection"),
+            InterfaceType::Wwan => i18n("WWAN Connection"),
+            InterfaceType::Unknown => i18n("Network Interface"),
+        };
+
+        imp.set_tab_name(&sidebar_title);
+
         imp.receiving.set_title_label(&i18n("Receiving"));
         imp.receiving.set_graph_color(52, 170, 175);
         imp.receiving.set_data_points_max_amount(60);
@@ -243,29 +251,24 @@ impl ResNetwork {
                 .unwrap(),
         );
 
-        imp.old_received_bytes.set(received_bytes);
-        imp.old_sent_bytes.set(sent_bytes);
-        *imp.network_interface.borrow_mut() = network_interface;
+        imp.old_received_bytes.set(network_data.received_bytes);
+        imp.old_sent_bytes.set(network_data.sent_bytes);
     }
 
-    pub async fn refresh_page(&self) -> Result<()> {
+    pub fn refresh_page(&self, network_data: NetworkData) {
+        let NetworkData {
+            received_bytes,
+            sent_bytes,
+
+            inner: _,
+            is_virtual: _,
+            display_name: _,
+        } = network_data;
+
         let imp = self.imp();
         let time_passed = SystemTime::now()
             .duration_since(imp.last_timestamp.get())
             .map_or(1.0f64, |timestamp| timestamp.as_secs_f64());
-
-        let received_bytes = imp
-            .network_interface
-            .try_borrow()?
-            .received_bytes()
-            .await
-            .unwrap_or(0);
-        let sent_bytes = imp
-            .network_interface
-            .try_borrow()?
-            .sent_bytes()
-            .await
-            .unwrap_or(0);
 
         let received_delta =
             (received_bytes.saturating_sub(imp.old_received_bytes.get())) as f64 / time_passed;
@@ -276,7 +279,7 @@ impl ResNetwork {
         imp.total_sent
             .set_subtitle(&convert_storage(sent_bytes as f64, false));
 
-        imp.receiving.push_data_point(received_delta as f64);
+        imp.receiving.push_data_point(received_delta);
         let highest_received = imp.receiving.get_highest_value();
         imp.receiving.set_subtitle(&format!(
             "{} · {} {}",
@@ -285,7 +288,7 @@ impl ResNetwork {
             convert_speed(highest_received, true)
         ));
 
-        imp.sending.push_data_point(sent_delta as f64);
+        imp.sending.push_data_point(sent_delta);
         let highest_sent = imp.sending.get_highest_value();
         imp.sending.set_subtitle(&format!(
             "{} · {} {}",
@@ -315,7 +318,5 @@ impl ResNetwork {
         imp.old_received_bytes.set(received_bytes);
         imp.old_sent_bytes.set(sent_bytes);
         imp.last_timestamp.set(SystemTime::now());
-
-        Ok(())
     }
 }

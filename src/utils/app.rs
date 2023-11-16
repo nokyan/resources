@@ -4,7 +4,7 @@ use anyhow::{Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
 use hashbrown::{HashMap, HashSet};
 use once_cell::sync::Lazy;
-use process_data::Containerization;
+use process_data::{Containerization, ProcessData};
 
 use crate::i18n::i18n;
 
@@ -435,8 +435,12 @@ impl AppsContext {
     }
 
     /// Refreshes the statistics about the running applications and processes.
-    pub async fn refresh(&mut self) {
-        let newly_gathered_processes = Process::all().await.unwrap_or_default();
+    pub fn refresh(&mut self, process_data: Vec<ProcessData>) {
+        let newly_gathered_processes = process_data
+            .into_iter()
+            .map(Process::from_process_data)
+            .collect::<Vec<_>>();
+
         let mut updated_processes = HashSet::new();
 
         for mut new_process in newly_gathered_processes {

@@ -8,6 +8,35 @@ use anyhow::{Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
 use pci_ids::FromId;
 
+use crate::i18n::i18n;
+
+#[derive(Debug)]
+pub struct NetworkData {
+    pub inner: NetworkInterface,
+    pub is_virtual: bool,
+    pub received_bytes: usize,
+    pub sent_bytes: usize,
+    pub display_name: String,
+}
+
+impl NetworkData {
+    pub async fn new(path: &Path) -> Self {
+        let inner = NetworkInterface::from_sysfs(path).await.unwrap();
+        let is_virtual = inner.is_virtual();
+        let received_bytes = inner.received_bytes().await.unwrap();
+        let sent_bytes = inner.sent_bytes().await.unwrap();
+        let display_name = inner.display_name();
+
+        Self {
+            inner,
+            is_virtual,
+            received_bytes,
+            sent_bytes,
+            display_name,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, Default)]
 pub enum InterfaceType {
     Bluetooth,
@@ -66,6 +95,24 @@ pub struct NetworkInterface {
     pub sysfs_path: PathBuf,
     received_bytes_path: PathBuf,
     sent_bytes_path: PathBuf,
+}
+
+impl InterfaceType {
+    pub fn to_string(&self) -> String {
+        match self {
+            InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
+            InterfaceType::Bridge => i18n("Network Bridge"),
+            InterfaceType::Ethernet => i18n("Ethernet Connection"),
+            InterfaceType::InfiniBand => i18n("InfiniBand Connection"),
+            InterfaceType::Slip => i18n("Serial Line IP Connection"),
+            InterfaceType::VirtualEthernet => i18n("Virtual Ethernet Device"),
+            InterfaceType::VmBridge => i18n("VM Network Bridge"),
+            InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
+            InterfaceType::Wlan => i18n("Wi-Fi Connection"),
+            InterfaceType::Wwan => i18n("WWAN Connection"),
+            InterfaceType::Unknown => i18n("Network Interface"),
+        }
+    }
 }
 
 impl PartialEq for NetworkInterface {
@@ -132,22 +179,45 @@ impl NetworkInterface {
                 );
             }
         }
+
+        let sysfs_path_clone = sysfs_path.to_owned();
+        let speed = tokio::task::spawn(async move {
+            tokio::fs::read_to_string(sysfs_path_clone.join("speed"))
+                .await
+                .map(|x| x.parse().unwrap_or_default())
+                .ok()
+        });
+
+        let sysfs_path_clone = sysfs_path.to_owned();
+        let device_name = tokio::task::spawn(async move {
+            tokio::fs::read_to_string(sysfs_path_clone.join("device/label"))
+                .await
+                .map(|x| x.replace('\n', ""))
+                .ok()
+        });
+
+        let sysfs_path_clone = sysfs_path.to_owned();
+        let hw_address = tokio::task::spawn(async move {
+            tokio::fs::read_to_string(sysfs_path_clone.join("address"))
+                .await
+                .map(|x| x.replace('\n', ""))
+                .ok()
+        });
+
+        let speed = speed.await?;
+        let device_name = device_name.await?;
+        let hw_address = hw_address.await?;
+
         Ok(NetworkInterface {
             interface_name: interface_name.clone(),
             driver_name: dev_uevent.get("DRIVER").cloned(),
             interface_type: InterfaceType::from_interface_name(interface_name.to_string_lossy()),
-            speed: std::fs::read_to_string(sysfs_path.join("speed"))
-                .map(|x| x.parse().unwrap_or_default())
-                .ok(),
+            speed,
             vendor: pci_ids::Vendor::from_id(vid_pid.0).map(|x| x.name().to_string()),
             pid_name: pci_ids::Device::from_vid_pid(vid_pid.0, vid_pid.1)
                 .map(|x| x.name().to_string()),
-            device_name: std::fs::read_to_string(sysfs_path.join("device/label"))
-                .map(|x| x.replace('\n', ""))
-                .ok(),
-            hw_address: std::fs::read_to_string(sysfs_path.join("address"))
-                .map(|x| x.replace('\n', ""))
-                .ok(),
+            device_name,
+            hw_address,
             sysfs_path: sysfs_path.to_path_buf(),
             received_bytes_path: sysfs_path.join(PathBuf::from("statistics/rx_bytes")),
             sent_bytes_path: sysfs_path.join(PathBuf::from("statistics/tx_bytes")),

@@ -23,6 +23,57 @@ const VID_NVIDIA: u16 = 4318;
 
 static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(Nvml::init);
 
+#[derive(Debug)]
+pub struct GpuData {
+    pub usage_fraction: Option<f64>,
+
+    pub total_vram: Option<isize>,
+    pub used_vram: Option<isize>,
+
+    pub clock_speed: Option<f64>,
+    pub vram_speed: Option<f64>,
+
+    pub temp: Option<f64>,
+
+    pub power_usage: Option<f64>,
+    pub power_cap: Option<f64>,
+    pub power_cap_max: Option<f64>,
+}
+
+impl GpuData {
+    pub async fn new(gpu: &GPU) -> Self {
+        let usage_fraction = gpu
+            .get_gpu_usage()
+            .await
+            .map(|usage| (usage as f64) / 100.0)
+            .ok();
+
+        let total_vram = gpu.get_total_vram().await.ok();
+        let used_vram = gpu.get_used_vram().await.ok();
+
+        let clock_speed = gpu.get_gpu_speed().await.ok();
+        let vram_speed = gpu.get_vram_speed().await.ok();
+
+        let temp = gpu.get_gpu_temp().await.ok();
+
+        let power_usage = gpu.get_power_usage().await.ok();
+        let power_cap = gpu.get_power_cap().await.ok();
+        let power_cap_max = gpu.get_power_cap_max().await.ok();
+
+        Self {
+            usage_fraction,
+            total_vram,
+            used_vram,
+            clock_speed,
+            vram_speed,
+            temp,
+            power_usage,
+            power_cap,
+            power_cap_max,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct GPU {
     pub device: Option<&'static Device>,

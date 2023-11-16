@@ -1,12 +1,9 @@
 use adw::{prelude::*, subclass::prelude::*};
-use anyhow::{Context, Result};
 use gtk::glib::{self, clone};
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
-use crate::utils::memory::{
-    self, get_available_memory, get_free_swap, get_total_memory, get_total_swap, MemoryDevice,
-};
+use crate::utils::memory::{self, MemoryData, MemoryDevice};
 use crate::utils::units::convert_storage;
 use crate::utils::NaNDefault;
 
@@ -226,27 +223,18 @@ impl ResMemory {
             }));
     }
 
-    pub async fn refresh_page(&self) -> Result<()> {
+    pub fn refresh_page(&self, memdata: MemoryData) {
         let imp = self.imp();
 
-        let total_mem = get_total_memory()
-            .await
-            .with_context(|| "unable to get total memory")
-            .unwrap_or_default();
-        let available_mem = get_available_memory()
-            .await
-            .with_context(|| "unable to get available memory")
-            .unwrap_or_default();
-        let used_mem = total_mem.saturating_sub(available_mem);
+        let MemoryData {
+            total_mem,
+            available_mem,
+            free_mem: _,
+            total_swap,
+            free_swap,
+        } = memdata;
 
-        let total_swap = get_total_swap()
-            .await
-            .with_context(|| "unable to get total swap")
-            .unwrap_or_default();
-        let free_swap = get_free_swap()
-            .await
-            .with_context(|| "unable to get free swap")
-            .unwrap_or_default();
+        let used_mem = total_mem.saturating_sub(available_mem);
         let used_swap = total_swap.saturating_sub(free_swap);
 
         let memory_fraction = used_mem as f64 / total_mem as f64;
@@ -295,7 +283,5 @@ impl ResMemory {
         }
 
         self.set_property("usage", memory_fraction);
-
-        Ok(())
     }
 }

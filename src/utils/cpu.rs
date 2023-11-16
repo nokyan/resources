@@ -18,6 +18,55 @@ static K10TEMP: OnceLock<PathBuf> = OnceLock::new();
 static X86_PKG_TEMP: OnceLock<PathBuf> = OnceLock::new();
 static ACPI: OnceLock<PathBuf> = OnceLock::new();
 
+pub struct CpuData {
+    pub new_total_usage: (u64, u64),
+    pub new_thread_usages: Vec<(u64, u64)>,
+    pub temperature: Result<f32, anyhow::Error>,
+    pub frequencies: Vec<u64>,
+}
+
+impl CpuData {
+    pub async fn new(logical_cpus: usize) -> Self {
+        let new_total_usage =
+            tokio::spawn(async move { get_cpu_usage(None).await.unwrap_or((0, 0)) });
+
+        let temperature = tokio::spawn(async move { get_temperature().await });
+
+        let mut freq_tasks = vec![];
+        let mut new_thread_usages_tasks = vec![];
+        for i in 0..logical_cpus {
+            let handle =
+                tokio::spawn(async move { get_cpu_usage(Some(i)).await.unwrap_or((0, 0)) });
+            new_thread_usages_tasks.push(handle);
+
+            let handle = tokio::spawn(async move { get_cpu_freq(i).await.unwrap_or(0) });
+            freq_tasks.push(handle);
+        }
+
+        let mut frequencies = vec![];
+        for task in freq_tasks {
+            let freq = task.await.unwrap();
+            frequencies.push(freq);
+        }
+
+        let mut new_thread_usages = vec![];
+        for task in new_thread_usages_tasks {
+            let new_thread_usage = task.await.unwrap();
+            new_thread_usages.push(new_thread_usage);
+        }
+
+        let new_total_usage = new_total_usage.await.unwrap();
+        let temperature = temperature.await.unwrap();
+
+        Self {
+            new_total_usage,
+            new_thread_usages,
+            temperature,
+            frequencies,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct CPUInfo {
     pub vendor_id: Option<String>,
@@ -97,10 +146,11 @@ pub async fn cpu_info() -> Result<CPUInfo> {
 ///
 /// Will return `Err` if the are problems during reading or parsing
 /// of the corresponding file in sysfs
-pub fn get_cpu_freq(core: usize) -> Result<u64> {
-    std::fs::read_to_string(format!(
+pub async fn get_cpu_freq(core: usize) -> Result<u64> {
+    tokio::fs::read_to_string(format!(
         "/sys/devices/system/cpu/cpu{core}/cpufreq/scaling_cur_freq"
     ))
+    .await
     .with_context(|| format!("unable to read scaling_cur_freq for core {core}"))?
     .replace('\n', "")
     .parse::<u64>()
