@@ -1,12 +1,11 @@
 use std::time::{Duration, SystemTime};
 
 use adw::{prelude::*, subclass::prelude::*};
-use anyhow::Result;
 use gtk::glib;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
-use crate::utils::drive::Drive;
+use crate::utils::drive::{Drive, DriveData};
 use crate::utils::units::{convert_speed, convert_storage};
 
 mod imp {
@@ -181,13 +180,17 @@ impl ResDrive {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self, drive: Drive) {
-        self.imp().set_icon(&drive.icon());
-        self.setup_widgets(drive);
+    pub fn init(&self, drive_data: &DriveData) {
+        self.setup_widgets(drive_data);
     }
 
-    pub fn setup_widgets(&self, drive: Drive) {
+    pub fn setup_widgets(&self, drive_data: &DriveData) {
         let imp = self.imp();
+        let drive = &drive_data.inner;
+
+        imp.set_icon(&drive.icon());
+        imp.set_tab_name(&drive.display_name(drive_data.capacity as f64));
+
         imp.total_usage.set_title_label(&i18n("Total Usage"));
         imp.total_usage.set_data_points_max_amount(60);
         imp.total_usage.set_graph_color(229, 165, 10);
@@ -209,6 +212,7 @@ impl ResDrive {
                 crate::utils::drive::DriveType::Zram => i18n("Compressed RAM Disk (zram)"),
             }),
         );
+
         imp.device.set_subtitle(&drive.block_device);
 
         imp.last_timestamp.set(
@@ -216,31 +220,31 @@ impl ResDrive {
                 .checked_sub(Duration::from_secs(1))
                 .unwrap(),
         );
-
-        *imp.drive.borrow_mut() = drive;
     }
 
-    pub async fn refresh_page(&self) -> Result<()> {
+    pub fn refresh_page(&self, drive_data: DriveData) {
         let imp = self.imp();
 
-        let drive = imp.drive.try_borrow()?;
-
-        let disk_stats = drive.sys_stats().await.unwrap_or_default();
-        let display_name = drive.display_name().await;
-
-        self.set_property("tab_name", display_name);
+        let DriveData {
+            inner: _,
+            is_virtual: _,
+            writable,
+            removable,
+            disk_stats,
+            capacity,
+        } = drive_data;
 
         let time_passed = SystemTime::now()
             .duration_since(imp.last_timestamp.get())
             .map_or(1.0f64, |timestamp| timestamp.as_secs_f64());
 
-        if drive.writable().await.unwrap_or(false) {
+        if writable {
             imp.writable.set_subtitle(&i18n("Yes"));
         } else {
             imp.writable.set_subtitle(&i18n("No"));
         }
 
-        if drive.removable().await.unwrap_or(false) {
+        if removable {
             imp.removable.set_subtitle(&i18n("Yes"));
         } else {
             imp.removable.set_subtitle(&i18n("No"));
@@ -254,13 +258,14 @@ impl ResDrive {
         ) = (
             disk_stats.get("read_ticks"),
             disk_stats.get("write_ticks"),
-            imp.old_stats.try_borrow()?.get("read_ticks"),
-            imp.old_stats.try_borrow()?.get("write_ticks"),
+            imp.old_stats.borrow().get("read_ticks"),
+            imp.old_stats.borrow().get("write_ticks"),
         ) {
             let delta_read_ticks = read_ticks.saturating_sub(*old_read_ticks);
             let delta_write_ticks = write_ticks.saturating_sub(*old_write_ticks);
             let read_ratio = delta_read_ticks as f64 / (time_passed * 1000.0);
             let write_ratio = delta_write_ticks as f64 / (time_passed * 1000.0);
+
             Some(f64::max(read_ratio, write_ratio).clamp(0.0, 1.0))
         } else {
             None
@@ -279,8 +284,8 @@ impl ResDrive {
         ) = (
             disk_stats.get("read_sectors"),
             disk_stats.get("write_sectors"),
-            imp.old_stats.try_borrow()?.get("read_sectors"),
-            imp.old_stats.try_borrow()?.get("write_sectors"),
+            imp.old_stats.borrow().get("read_sectors"),
+            imp.old_stats.borrow().get("write_sectors"),
         ) {
             let delta_read_sectors = read_sectors.saturating_sub(*old_read_sectors);
             let delta_write_sectors = write_sectors.saturating_sub(*old_write_sectors);
@@ -310,13 +315,10 @@ impl ResDrive {
             ),
         );
 
-        let capacity = drive.capacity().await.unwrap_or(0);
         imp.capacity
             .set_subtitle(&convert_storage(capacity as f64, false));
 
-        *imp.old_stats.try_borrow_mut()? = disk_stats;
+        *imp.old_stats.borrow_mut() = disk_stats;
         imp.last_timestamp.set(SystemTime::now());
-
-        Ok(())
     }
 }

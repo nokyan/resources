@@ -1,33 +1,27 @@
 use anyhow::{Context, Result};
-use async_std::sync::Arc;
-use async_std::sync::Mutex;
-use futures_util::future::join_all;
 use glob::glob;
 use process_data::ProcessData;
+use tokio::task::JoinSet;
 
-#[async_std::main]
+#[tokio::main]
 async fn main() -> Result<()> {
-    let return_vec = Arc::new(Mutex::new(Vec::new()));
+    let mut tasks = JoinSet::new();
 
-    let mut handles = vec![];
     for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-        let return_vec = Arc::clone(&return_vec);
-
-        let handle = async_std::task::spawn(async move {
-            if let Ok(process_data) = ProcessData::try_from_path(entry).await {
-                return_vec.lock().await.push(process_data);
-            }
-        });
-
-        handles.push(handle);
+        tasks.spawn(async move { ProcessData::try_from_path(entry).await });
     }
-    join_all(handles).await;
+
+    let mut process_data = vec![];
+    while let Some(task) = tasks.join_next().await {
+        if let Ok(data) = task.unwrap() {
+            process_data.push(data);
+        }
+    }
 
     let stdout = std::io::stdout();
     let mut handle = stdout.lock();
 
-    let return_vec = return_vec.lock().await;
-    rmp_serde::encode::write(&mut handle, &*return_vec).unwrap();
+    rmp_serde::encode::write(&mut handle, &*process_data).unwrap();
 
     Ok(())
 }

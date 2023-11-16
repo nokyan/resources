@@ -4,10 +4,8 @@ use glob::glob;
 use process_data::{Containerization, ProcessData};
 use std::process::Command;
 
-use async_std::sync::Arc;
-use async_std::sync::Mutex;
-use futures_util::future::join_all;
 use gtk::gio::{Icon, ThemedIcon};
+use tokio::task::JoinSet;
 
 use crate::config;
 
@@ -61,7 +59,7 @@ impl Process {
     ///
     /// Will return `Err` if there are problems traversing and
     /// parsing procfs
-    pub async fn all() -> Result<Vec<Self>> {
+    pub async fn all_data() -> Result<Vec<ProcessData>> {
         if *IS_FLATPAK {
             let proxy_path = format!(
                 "{}/libexec/resources/resources-processes",
@@ -72,34 +70,30 @@ impl Process {
                 .output()
                 .await?;
             let output = command.stdout;
+            let proxy_output: Vec<ProcessData> =
+                rmp_serde::from_slice::<Vec<ProcessData>>(&output)?;
 
-            return Ok(rmp_serde::from_slice::<Vec<ProcessData>>(&output)?
-                .drain(..)
-                .map(Self::from_process_data)
-                .collect());
-        } else {
-            let vec: Arc<Mutex<Vec<ProcessData>>> = Arc::new(Mutex::new(Vec::new()));
-
-            let mut handles = vec![];
-            for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-                let vec = Arc::clone(&vec);
-
-                let handle = async_std::task::spawn(async move {
-                    if let Ok(process_data) = ProcessData::try_from_path(entry).await {
-                        vec.lock().await.push(process_data);
-                    }
-                });
-
-                handles.push(handle);
-            }
-            join_all(handles).await;
-
-            let mut vec = vec.lock().await;
-            return Ok(vec.drain(..).map(Self::from_process_data).collect());
+            return Ok(proxy_output);
         }
+
+        let mut tasks = JoinSet::new();
+        for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
+            tasks.spawn(ProcessData::try_from_path(entry));
+        }
+
+        let mut process_data = Vec::with_capacity(tasks.len());
+        while let Some(task) = tasks.join_next().await {
+            // Unwrap is fine because the runtime stays alive
+            // Nothing should be able to panic here
+            if let Ok(data) = task.unwrap() {
+                process_data.push(data);
+            }
+        }
+
+        Ok(process_data)
     }
 
-    fn from_process_data(process_data: ProcessData) -> Self {
+    pub fn from_process_data(process_data: ProcessData) -> Self {
         let executable_path = process_data
             .commandline
             .split('\0')

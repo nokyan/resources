@@ -1,10 +1,11 @@
 use hashbrown::HashMap;
+use process_data::ProcessData;
 use std::path::PathBuf;
 use std::time::Duration;
 
 use adw::{prelude::*, subclass::prelude::*};
 use adw::{Toast, ToastOverlay};
-use anyhow::{Context, Result};
+use anyhow::Result;
 use gtk::glib::{clone, timeout_future, MainContext};
 use gtk::{gio, glib, Widget};
 
@@ -15,11 +16,12 @@ use crate::ui::pages::applications::ResApplications;
 use crate::ui::pages::drive::ResDrive;
 use crate::ui::pages::processes::ResProcesses;
 use crate::utils::app::AppsContext;
-use crate::utils::cpu;
-use crate::utils::drive::Drive;
-use crate::utils::gpu::GPU;
-use crate::utils::network::{InterfaceType, NetworkInterface};
-use crate::utils::process::ProcessAction;
+use crate::utils::cpu::CpuData;
+use crate::utils::drive::{Drive, DriveData};
+use crate::utils::gpu::{GpuData, GPU};
+use crate::utils::memory::MemoryData;
+use crate::utils::network::{NetworkData, NetworkInterface};
+use crate::utils::process::{Process, ProcessAction};
 use crate::utils::settings::SETTINGS;
 
 use super::pages::gpu::ResGPU;
@@ -47,7 +49,6 @@ mod imp {
 
     use super::*;
 
-    use async_std::sync::Mutex;
     use gtk::{
         glib::{Receiver, Sender},
         CompositeTemplate,
@@ -81,13 +82,13 @@ mod imp {
         #[template_child]
         pub memory_page: TemplateChild<gtk::StackPage>,
 
-        pub drive_pages: RefCell<HashMap<PathBuf, (bool, adw::ToolbarView)>>,
+        pub drive_pages: RefCell<HashMap<PathBuf, adw::ToolbarView>>,
 
-        pub network_pages: RefCell<HashMap<PathBuf, (bool, adw::ToolbarView)>>,
+        pub network_pages: RefCell<HashMap<PathBuf, adw::ToolbarView>>,
 
         pub gpu_pages: RefCell<Vec<adw::ToolbarView>>,
 
-        pub apps_context: Mutex<AppsContext>,
+        pub apps_context: RefCell<AppsContext>,
 
         pub sender: Sender<Action>,
         pub receiver: RefCell<Option<Receiver<Action>>>,
@@ -177,6 +178,17 @@ glib::wrapper! {
         @implements gio::ActionMap, gio::ActionGroup, gtk::Root;
 }
 
+struct RefreshData {
+    cpu_data: CpuData,
+    mem_data: MemoryData,
+    gpu_data: Vec<GpuData>,
+    drive_paths: Vec<PathBuf>,
+    drive_data: Vec<DriveData>,
+    network_paths: Vec<PathBuf>,
+    network_data: Vec<NetworkData>,
+    process_data: Vec<ProcessData>,
+}
+
 impl MainWindow {
     pub fn new(app: &Application) -> Self {
         let window = glib::Object::builder::<Self>()
@@ -211,6 +223,32 @@ impl MainWindow {
         }
     }
 
+    async fn init_gpu_pages(self: &MainWindow) -> Vec<GPU> {
+        let gpus = GPU::get_gpus().await.unwrap_or_default();
+
+        for (i, gpu) in gpus.iter().enumerate() {
+            let page = ResGPU::new();
+            page.init(gpu.clone(), i);
+
+            let title = if gpus.len() > 1 {
+                i18n_f("GPU {}", &[&i.to_string()])
+            } else {
+                i18n("GPU")
+            };
+
+            page.set_tab_name(&*title);
+
+            let added_page = if let Ok(gpu_name) = gpu.get_name() {
+                self.add_page(&page, &gpu_name, &title)
+            } else {
+                self.add_page(&page, &title, "")
+            };
+
+            self.imp().gpu_pages.borrow_mut().push(added_page);
+        }
+        gpus
+    }
+
     fn setup_widgets(&self) {
         let imp = self.imp();
 
@@ -218,227 +256,334 @@ impl MainWindow {
 
         imp.applications.init(imp.sender.clone());
         imp.processes.init(imp.sender.clone());
-        imp.cpu.init();
         imp.memory.init();
 
         if SETTINGS.show_search_on_start() {
-            imp.processes.toggle_search()
-        }
-
-        if SETTINGS.show_search_on_start() {
-            imp.applications.toggle_search()
+            imp.processes.toggle_search();
+            imp.applications.toggle_search();
         }
 
         let main_context = MainContext::default();
         main_context.spawn_local(clone!(@strong self as this => async move {
-            let imp = this.imp();
+            let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().unwrap();
+            let _rt_guard = rt.enter();
 
             {
-                *imp.apps_context.lock().await = AppsContext::new().await;
+                *this.imp().apps_context.borrow_mut() = AppsContext::new().await;
             }
 
-            let cpu_info = cpu::cpu_info()
-                .await
-                .with_context(|| "unable to get CPUInfo")
-                .unwrap_or_default();
-            let imp = this.imp();
+            this.imp().cpu.init().await;
 
-            if let Some(cpu_name) = cpu_info.model_name {
-                imp.processor_window_title.set_title(&cpu_name);
-                imp.processor_window_title.set_subtitle(&i18n("Processor"));
-            }
+            let gpus = this.init_gpu_pages().await;
 
-            let gpus = GPU::get_gpus().await.unwrap_or_default();
-            for (i, gpu) in gpus.iter().enumerate() {
-                let page = ResGPU::new();
-                page.init(gpu.clone(), i);
-
-                let title = if gpus.len() > 1 {
-                    i18n_f("GPU {}", &[&i.to_string()])
-                } else {
-                    i18n("GPU")
-                };
-
-                page.set_tab_name(&*title);
-
-                let added_page = if let Ok(gpu_name) = gpu.get_name() {
-                    this.add_page(&page, &title, &gpu_name, &title)
-                } else {
-                    this.add_page(&page, &title, &title, "")
-                };
-
-                imp.gpu_pages.borrow_mut().push(added_page);
-            }
-
-            let _ = this.refresh_drives().await;
-            let _ = this.refresh_network_interfaces().await;
-
-            futures_util::join!(async {
-                loop {
-                    let _ = imp.cpu.refresh_page().await;
-
-                    let _ = imp.memory.refresh_page().await;
-
-                    if let Ok(gpu_pages) = imp.gpu_pages.try_borrow() {
-                        for gpu_page_toolbar in gpu_pages.iter() {
-                            let _ = gpu_page_toolbar.content().and_downcast::<ResGPU>().unwrap().refresh_page().await;
-                        }
-                    }
-
-                    let _ = this.refresh_drives().await;
-                    if let Ok(drive_pages) = imp.drive_pages.try_borrow() {
-                        for drive_page_toolbar in drive_pages.values() {
-                            let _ = drive_page_toolbar.1.content().and_downcast::<ResDrive>().unwrap().refresh_page().await;
-                        }
-                    }
-
-                    let _ = this.refresh_network_interfaces().await;
-                    if let Ok(network_pages) = imp.network_pages.try_borrow() {
-                        for network_page_toolbar in network_pages.values() {
-                            let _ = network_page_toolbar.1.content().and_downcast::<ResNetwork>().unwrap().refresh_page().await;
-                        }
-                    }
-
-                    timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().ui_refresh_interval())).await;
-                }
-            }, async {
-                loop {
-                    {
-                        let mut apps_context = imp.apps_context.lock().await;
-                        apps_context.refresh().await;
-                        imp.applications.refresh_apps_list(&apps_context);
-                        imp.processes.refresh_processes_list(&apps_context);
-                    }
-
-                    timeout_future(Duration::from_secs_f32(SETTINGS.refresh_speed().process_refresh_interval())).await;
-                }
-            })
+            this.periodic_refresh_all(gpus).await;
         }));
     }
 
-    async fn refresh_drives(&self) -> Result<()> {
-        let imp = self.imp();
-        let mut still_active_drives = Vec::with_capacity(imp.drive_pages.try_borrow()?.len());
-        for path in Drive::get_sysfs_paths().await.unwrap_or_default() {
-            // ignore drive pages that are already listed
-            if imp.drive_pages.try_borrow()?.contains_key(&path) {
-                still_active_drives.push(path);
-                continue;
+    async fn gather_refresh_data(logical_cpus: usize, gpus: Vec<GPU>) -> RefreshData {
+        let cpu_data = tokio::task::spawn(async move { CpuData::new(logical_cpus).await });
+
+        let mem_data = tokio::task::spawn(async move { MemoryData::new().await });
+
+        let gpu_data = tokio::task::spawn(async move {
+            let mut gpu_data_vec = vec![];
+            for path in &gpus {
+                let gpu_data = GpuData::new(path).await;
+
+                gpu_data_vec.push(gpu_data);
             }
-            if let Ok(drive) = Drive::from_sysfs(&path).await {
-                let is_virtual = drive.is_virtual().await;
-                if is_virtual && !SETTINGS.show_virtual_drives() {
-                    continue;
-                }
 
-                let sidebar_title = drive.display_name().await;
+            gpu_data_vec
+        });
 
-                let page = ResDrive::new();
-                page.init(drive.clone());
-                page.set_tab_name(&*sidebar_title);
+        let drive_data = tokio::task::spawn(async move {
+            let drive_paths = Drive::get_sysfs_paths().await.unwrap();
 
-                let toolbar = if let Some(model) = drive.model {
-                    self.add_page(&page, &sidebar_title, &model, &sidebar_title)
-                } else {
-                    self.add_page(&page, &sidebar_title, &sidebar_title, "")
-                };
+            let mut drive_data_vec = vec![];
+            for path in &drive_paths {
+                let drive_data = DriveData::new(path).await;
 
-                imp.drive_pages
-                    .try_borrow_mut()?
-                    .insert(path.clone(), (is_virtual, toolbar));
-
-                still_active_drives.push(path);
+                drive_data_vec.push(drive_data);
             }
+
+            (drive_paths, drive_data_vec)
+        });
+
+        let network_data = tokio::task::spawn(async move {
+            let network_paths = NetworkInterface::get_sysfs_paths().await.unwrap();
+
+            let mut network_data_vec = vec![];
+            for path in &network_paths {
+                let network_data = NetworkData::new(path).await;
+
+                network_data_vec.push(network_data);
+            }
+
+            (network_paths, network_data_vec)
+        });
+
+        let process_data = tokio::task::spawn(async move { Process::all_data().await.unwrap() });
+
+        let cpu_data = cpu_data.await.unwrap();
+        let mem_data = mem_data.await.unwrap();
+        let gpu_data = gpu_data.await.unwrap();
+        let (drive_paths, drive_data) = drive_data.await.unwrap();
+        let (network_paths, network_data) = network_data.await.unwrap();
+        let process_data = process_data.await.unwrap();
+
+        RefreshData {
+            cpu_data,
+            mem_data,
+            gpu_data,
+            drive_paths,
+            drive_data,
+            network_paths,
+            network_data,
+            process_data,
         }
-        // remove all the pages of drives that have been removed from the system
-        // during the last time this method was called and now
-        imp.drive_pages
-            .try_borrow_mut()?
-            .extract_if(|path, (is_virtual, _)| {
-                !still_active_drives
-                    .iter()
-                    .any(|other_path| *other_path == *path)
-                    || (!SETTINGS.show_virtual_drives() && *is_virtual)
-            })
-            .for_each(|(_, (_, page))| {
-                imp.content_stack.remove(&page);
-            }); // remove page from the UI
-        Ok(())
     }
 
-    async fn refresh_network_interfaces(&self) -> Result<()> {
+    fn refresh_ui(&self, refresh_data: RefreshData) {
         let imp = self.imp();
-        let mut still_active_interfaces = Vec::with_capacity(imp.network_pages.try_borrow()?.len());
-        for path in NetworkInterface::get_sysfs_paths()
-            .await
-            .unwrap_or_default()
-        {
-            // ignore network pages that are already listed
-            if imp.network_pages.try_borrow()?.contains_key(&path) {
-                still_active_interfaces.push(path);
+
+        let RefreshData {
+            cpu_data,
+            mem_data,
+            gpu_data,
+            drive_paths,
+            drive_data,
+            network_paths,
+            network_data,
+            process_data,
+        } = refresh_data;
+
+        /*
+         * Cpu
+         */
+        imp.cpu.refresh_page(&cpu_data);
+
+        /*
+         * Memory
+         */
+        imp.memory.refresh_page(mem_data);
+
+        /*
+         *  Gpu
+         */
+        let gpu_pages = imp.gpu_pages.borrow();
+        for (page, gpu_data) in gpu_pages.iter().zip(gpu_data) {
+            let page = page.content().and_downcast::<ResGPU>().unwrap();
+
+            page.refresh_page(gpu_data);
+        }
+
+        /*
+         *  Drives
+         */
+        // Make sure there is a page for every drive that is shown
+        self.refresh_drive_pages(drive_paths, &drive_data);
+
+        // Update drive pages
+        for drive_data in drive_data.into_iter() {
+            if drive_data.is_virtual && !SETTINGS.show_virtual_drives() {
                 continue;
             }
-            if let Ok(interface) = NetworkInterface::from_sysfs(&path).await {
-                let is_virtual = interface.is_virtual();
-                if is_virtual && !SETTINGS.show_virtual_network_interfaces() {
-                    continue;
-                }
 
-                let sidebar_title = match interface.interface_type {
-                    InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
-                    InterfaceType::Bridge => i18n("Network Bridge"),
-                    InterfaceType::Ethernet => i18n("Ethernet Connection"),
-                    InterfaceType::InfiniBand => i18n("InfiniBand Connection"),
-                    InterfaceType::Slip => i18n("Serial Line IP Connection"),
-                    InterfaceType::VirtualEthernet => i18n("Virtual Ethernet Device"),
-                    InterfaceType::VmBridge => i18n("VM Network Bridge"),
-                    InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
-                    InterfaceType::Wlan => i18n("Wi-Fi Connection"),
-                    InterfaceType::Wwan => i18n("WWAN Connection"),
-                    InterfaceType::Unknown => i18n("Network Interface"),
+            let drive_pages = imp.drive_pages.borrow();
+            let page = drive_pages.get(&drive_data.inner.sysfs_path).unwrap();
+            let page = page.content().and_downcast::<ResDrive>().unwrap();
+
+            page.refresh_page(drive_data);
+        }
+
+        /*
+         *  Network
+         */
+        // Make sure there is a page for every network interface that is shown
+        self.refresh_network_pages(network_paths, &network_data);
+
+        // Update network pages
+        for network_data in network_data.into_iter() {
+            if network_data.is_virtual && !SETTINGS.show_virtual_network_interfaces() {
+                continue;
+            }
+
+            let network_pages = imp.network_pages.borrow();
+            let page = network_pages.get(&network_data.inner.sysfs_path).unwrap();
+            let page = page.content().and_downcast::<ResNetwork>().unwrap();
+
+            page.refresh_page(network_data);
+        }
+
+        /*
+         * Apps and processes
+         */
+
+        let mut apps_context = imp.apps_context.borrow_mut();
+        apps_context.refresh(process_data);
+
+        imp.applications.refresh_apps_list(&apps_context);
+        imp.processes.refresh_processes_list(&apps_context);
+    }
+
+    async fn periodic_refresh_all(&self, gpus: Vec<GPU>) {
+        let imp = self.imp();
+        let logical_cpus = imp.cpu.imp().logical_cpus_amount.get();
+
+        let (tx_data, rx_data) = std::sync::mpsc::sync_channel(1);
+        let (tx_wait, rx_wait) = std::sync::mpsc::sync_channel(1);
+
+        tokio::task::spawn(async move {
+            loop {
+                let data = Self::gather_refresh_data(logical_cpus, gpus.clone()).await;
+                tx_data.send(data).unwrap();
+
+                // Wait on delay so we don't gather data multiple times in a short time span
+                // Which usually just yields the same data and makes changes appear delayed by (up to) multiple refreshes
+                let _wait = rx_wait.recv().unwrap();
+            }
+        });
+
+        loop {
+            // gather_refresh_data()
+            let refresh_data = rx_data.recv().unwrap();
+            self.refresh_ui(refresh_data);
+
+            // Total time before next ui refresh
+            let total_delay = SETTINGS.refresh_speed().ui_refresh_interval();
+
+            // Reasonable timespan before total_delay ends to gather all data
+            let gather_time = 0.2;
+
+            timeout_future(Duration::from_secs_f32(total_delay - gather_time)).await;
+
+            // Tell other threads to start gethering data
+            tx_wait.send(()).unwrap();
+
+            timeout_future(Duration::from_secs_f32(gather_time)).await;
+        }
+    }
+
+    /// Create page for every drive that is shown
+    fn refresh_drive_pages(&self, mut paths: Vec<PathBuf>, drive_data: &[DriveData]) {
+        let imp = self.imp();
+
+        let mut drive_pages = imp.drive_pages.borrow_mut();
+
+        let old_page_paths: Vec<PathBuf> = drive_pages
+            .iter()
+            .map(|(path, _)| path.to_owned())
+            .collect();
+
+        // Filter hidden drives
+        for data in drive_data {
+            if data.is_virtual && !SETTINGS.show_virtual_drives() {
+                let idx = paths
+                    .iter()
+                    .position(|p| **p == data.inner.sysfs_path)
+                    .unwrap();
+                paths.remove(idx);
+            }
+        } // paths now contains all the (paths to) drives we want to show
+
+        // Delete hidden old drive pages
+        for page_path in &old_page_paths {
+            if !paths.contains(page_path) {
+                // A drive has been removed
+
+                let page = drive_pages.remove(page_path).unwrap();
+                imp.content_stack.remove(&page);
+            }
+        }
+
+        // Add new drive pages
+        for path in paths {
+            if !drive_pages.contains_key(&path) {
+                // A drive has been added
+
+                let drive = drive_data
+                    .iter()
+                    .find(|d| d.inner.sysfs_path == path)
+                    .unwrap();
+
+                let display_name = drive.inner.display_name(drive.capacity as f64);
+
+                let page = ResDrive::new();
+                page.init(drive);
+
+                let toolbar = if let Some(model) = &drive.inner.model {
+                    self.add_page(&page, model, &display_name)
+                } else {
+                    self.add_page(&page, &display_name, "")
                 };
 
+                drive_pages.insert(path, toolbar);
+            }
+        }
+    }
+
+    /// Create page for every network interface that is shown
+    fn refresh_network_pages(&self, mut paths: Vec<PathBuf>, network_data: &[NetworkData]) {
+        let imp = self.imp();
+
+        let mut network_pages = imp.network_pages.borrow_mut();
+
+        let old_page_paths: Vec<PathBuf> = network_pages
+            .iter()
+            .map(|(path, _)| path.to_owned())
+            .collect();
+
+        // Filter hidden networks
+        for data in network_data {
+            if data.is_virtual && !SETTINGS.show_virtual_network_interfaces() {
+                let idx = paths
+                    .iter()
+                    .position(|p| **p == data.inner.sysfs_path)
+                    .unwrap();
+                paths.remove(idx);
+            }
+        } // paths now contains all the (paths to) network interfaces we want to show
+
+        // Delete hidden old network pages
+        for page_path in &old_page_paths {
+            if !paths.contains(page_path) {
+                // A network interface has been removed
+
+                let page = network_pages.remove(page_path).unwrap();
+                imp.content_stack.remove(&page);
+            }
+        }
+
+        // Add new network pages
+        for path in paths {
+            if !network_pages.contains_key(&path) {
+                // A network interface has been added
+
+                let network_interface = network_data
+                    .iter()
+                    .find(|d| d.inner.sysfs_path == path)
+                    .unwrap();
+
+                // Insert stub page, values will be updated in refresh_page()
                 let page = ResNetwork::new();
-                page.init(
-                    interface.clone(),
-                    interface.received_bytes().await.unwrap_or(0),
-                    interface.sent_bytes().await.unwrap_or(0),
-                );
-                page.set_tab_name(&*sidebar_title);
+                page.init(network_interface);
 
                 let toolbar = self.add_page(
                     &page,
-                    &sidebar_title,
-                    &interface.display_name(),
-                    &sidebar_title,
+                    &network_interface.inner.display_name(),
+                    &network_interface.inner.interface_type.to_string(),
                 );
 
-                imp.network_pages
-                    .try_borrow_mut()?
-                    .insert(path.clone(), (is_virtual, toolbar));
-                still_active_interfaces.push(path);
+                network_pages.insert(path.clone(), toolbar);
             }
         }
-        // remove all the pages of network interfaces that have been removed from the system
-        // during the last time this method was called and now
-        imp.network_pages
-            .try_borrow_mut()?
-            .extract_if(|path, (is_virtual, _)| {
-                !still_active_interfaces
-                    .iter()
-                    .any(|other_path| *other_path == *path)
-                    || (!SETTINGS.show_virtual_network_interfaces() && *is_virtual)
-            }) // remove entry from network_pages HashMap
-            .for_each(|(_, (_, page))| imp.content_stack.remove(&page)); // remove page from the UI
-
-        Ok(())
     }
 
     fn process_action(&self, action: Action) -> glib::ControlFlow {
         let main_context = MainContext::default();
         main_context.spawn_local(clone!(@strong self as this => async move {
             let imp = this.imp();
-            let apps_context = imp.apps_context.lock().await;
+            let apps_context = imp.apps_context.borrow();
             match action {
                 Action::ManipulateProcess(action, pid, display_name, toast_overlay) => {
                     if let Some(process) = apps_context.get_process(pid) {
@@ -507,7 +652,6 @@ impl MainWindow {
     fn add_page(
         &self,
         widget: &impl IsA<Widget>,
-        sidebar_title: &str,
         window_title: &str,
         window_subtitle: &str,
     ) -> adw::ToolbarView {
@@ -536,7 +680,7 @@ impl MainWindow {
         toolbar.add_top_bar(&header_bar);
         toolbar.set_content(Some(widget));
 
-        imp.content_stack.add_titled(&toolbar, None, sidebar_title);
+        imp.content_stack.add_child(&toolbar);
 
         toolbar
     }

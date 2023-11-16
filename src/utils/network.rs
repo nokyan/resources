@@ -5,9 +5,37 @@ use std::{
 };
 
 use anyhow::{Context, Result};
-use futures_util::StreamExt;
 use gtk::gio::{Icon, ThemedIcon};
 use pci_ids::FromId;
+
+use crate::i18n::i18n;
+
+#[derive(Debug)]
+pub struct NetworkData {
+    pub inner: NetworkInterface,
+    pub is_virtual: bool,
+    pub received_bytes: usize,
+    pub sent_bytes: usize,
+    pub display_name: String,
+}
+
+impl NetworkData {
+    pub async fn new(path: &Path) -> Self {
+        let inner = NetworkInterface::from_sysfs(path).await.unwrap();
+        let is_virtual = inner.is_virtual();
+        let received_bytes = inner.received_bytes().await.unwrap();
+        let sent_bytes = inner.sent_bytes().await.unwrap();
+        let display_name = inner.display_name();
+
+        Self {
+            inner,
+            is_virtual,
+            received_bytes,
+            sent_bytes,
+            display_name,
+        }
+    }
+}
 
 #[derive(Debug, Clone, Copy, Default)]
 pub enum InterfaceType {
@@ -69,6 +97,24 @@ pub struct NetworkInterface {
     sent_bytes_path: PathBuf,
 }
 
+impl InterfaceType {
+    pub fn to_string(&self) -> String {
+        match self {
+            InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
+            InterfaceType::Bridge => i18n("Network Bridge"),
+            InterfaceType::Ethernet => i18n("Ethernet Connection"),
+            InterfaceType::InfiniBand => i18n("InfiniBand Connection"),
+            InterfaceType::Slip => i18n("Serial Line IP Connection"),
+            InterfaceType::VirtualEthernet => i18n("Virtual Ethernet Device"),
+            InterfaceType::VmBridge => i18n("VM Network Bridge"),
+            InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
+            InterfaceType::Wlan => i18n("Wi-Fi Connection"),
+            InterfaceType::Wwan => i18n("WWAN Connection"),
+            InterfaceType::Unknown => i18n("Network Interface"),
+        }
+    }
+}
+
 impl PartialEq for NetworkInterface {
     fn eq(&self, other: &Self) -> bool {
         self.interface_name == other.interface_name
@@ -81,9 +127,8 @@ impl PartialEq for NetworkInterface {
 impl NetworkInterface {
     pub async fn get_sysfs_paths() -> Result<Vec<PathBuf>> {
         let mut list = Vec::new();
-        let mut entries = async_std::fs::read_dir("/sys/class/net").await?;
-        while let Some(entry) = entries.next().await {
-            let entry = entry?;
+        let mut entries = tokio::fs::read_dir("/sys/class/net").await?;
+        while let Some(entry) = entries.next_entry().await? {
             let block_device = entry.file_name().to_string_lossy().to_string();
             if block_device.starts_with("lo") {
                 continue;
@@ -94,7 +139,7 @@ impl NetworkInterface {
     }
 
     async fn read_uevent(uevent_path: PathBuf) -> Result<HashMap<String, String>> {
-        let entries: Vec<Vec<String>> = async_std::fs::read_to_string(uevent_path)
+        let entries: Vec<Vec<String>> = tokio::fs::read_to_string(uevent_path)
             .await?
             .split('\n')
             .map(|x| x.split('=').map(str::to_string).collect())
@@ -134,22 +179,45 @@ impl NetworkInterface {
                 );
             }
         }
+
+        let sysfs_path_clone = sysfs_path.to_owned();
+        let speed = tokio::task::spawn(async move {
+            tokio::fs::read_to_string(sysfs_path_clone.join("speed"))
+                .await
+                .map(|x| x.parse().unwrap_or_default())
+                .ok()
+        });
+
+        let sysfs_path_clone = sysfs_path.to_owned();
+        let device_name = tokio::task::spawn(async move {
+            tokio::fs::read_to_string(sysfs_path_clone.join("device/label"))
+                .await
+                .map(|x| x.replace('\n', ""))
+                .ok()
+        });
+
+        let sysfs_path_clone = sysfs_path.to_owned();
+        let hw_address = tokio::task::spawn(async move {
+            tokio::fs::read_to_string(sysfs_path_clone.join("address"))
+                .await
+                .map(|x| x.replace('\n', ""))
+                .ok()
+        });
+
+        let speed = speed.await?;
+        let device_name = device_name.await?;
+        let hw_address = hw_address.await?;
+
         Ok(NetworkInterface {
             interface_name: interface_name.clone(),
             driver_name: dev_uevent.get("DRIVER").cloned(),
             interface_type: InterfaceType::from_interface_name(interface_name.to_string_lossy()),
-            speed: std::fs::read_to_string(sysfs_path.join("speed"))
-                .map(|x| x.parse().unwrap_or_default())
-                .ok(),
+            speed,
             vendor: pci_ids::Vendor::from_id(vid_pid.0).map(|x| x.name().to_string()),
             pid_name: pci_ids::Device::from_vid_pid(vid_pid.0, vid_pid.1)
                 .map(|x| x.name().to_string()),
-            device_name: std::fs::read_to_string(sysfs_path.join("device/label"))
-                .map(|x| x.replace('\n', ""))
-                .ok(),
-            hw_address: std::fs::read_to_string(sysfs_path.join("address"))
-                .map(|x| x.replace('\n', ""))
-                .ok(),
+            device_name,
+            hw_address,
             sysfs_path: sysfs_path.to_path_buf(),
             received_bytes_path: sysfs_path.join(PathBuf::from("statistics/rx_bytes")),
             sent_bytes_path: sysfs_path.join(PathBuf::from("statistics/tx_bytes")),
@@ -173,7 +241,7 @@ impl NetworkInterface {
     /// Will return `Err` if the `tx_bytes` file in sysfs
     /// is unreadable or not parsable to a `usize`
     pub async fn received_bytes(&self) -> Result<usize> {
-        async_std::fs::read_to_string(&self.received_bytes_path)
+        tokio::fs::read_to_string(&self.received_bytes_path)
             .await
             .with_context(|| "read failure")?
             .replace('\n', "")
@@ -189,7 +257,7 @@ impl NetworkInterface {
     /// Will return `Err` if the `tx_bytes` file in sysfs
     /// is unreadable or not parsable to a `usize`
     pub async fn sent_bytes(&self) -> Result<usize> {
-        async_std::fs::read_to_string(&self.sent_bytes_path)
+        tokio::fs::read_to_string(&self.sent_bytes_path)
             .await
             .with_context(|| "read failure")?
             .replace('\n', "")

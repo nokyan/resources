@@ -1,11 +1,11 @@
 use anyhow::{anyhow, bail, Context, Result};
 use async_process::Command;
-use async_std::path::PathBuf;
 use glob::glob;
 use nparse::KVStrToJson;
 use once_cell::sync::Lazy;
 use regex::bytes::Regex;
 use serde_json::Value;
+use std::path::PathBuf;
 use std::sync::OnceLock;
 
 static PROC_STAT_REGEX: Lazy<Regex> = Lazy::new(|| {
@@ -17,6 +17,55 @@ static CORETEMP: OnceLock<PathBuf> = OnceLock::new();
 static K10TEMP: OnceLock<PathBuf> = OnceLock::new();
 static X86_PKG_TEMP: OnceLock<PathBuf> = OnceLock::new();
 static ACPI: OnceLock<PathBuf> = OnceLock::new();
+
+pub struct CpuData {
+    pub new_total_usage: (u64, u64),
+    pub new_thread_usages: Vec<(u64, u64)>,
+    pub temperature: Result<f32, anyhow::Error>,
+    pub frequencies: Vec<u64>,
+}
+
+impl CpuData {
+    pub async fn new(logical_cpus: usize) -> Self {
+        let new_total_usage =
+            tokio::spawn(async move { get_cpu_usage(None).await.unwrap_or((0, 0)) });
+
+        let temperature = tokio::spawn(async move { get_temperature().await });
+
+        let mut freq_tasks = vec![];
+        let mut new_thread_usages_tasks = vec![];
+        for i in 0..logical_cpus {
+            let handle =
+                tokio::spawn(async move { get_cpu_usage(Some(i)).await.unwrap_or((0, 0)) });
+            new_thread_usages_tasks.push(handle);
+
+            let handle = tokio::spawn(async move { get_cpu_freq(i).await.unwrap_or(0) });
+            freq_tasks.push(handle);
+        }
+
+        let mut frequencies = vec![];
+        for task in freq_tasks {
+            let freq = task.await.unwrap();
+            frequencies.push(freq);
+        }
+
+        let mut new_thread_usages = vec![];
+        for task in new_thread_usages_tasks {
+            let new_thread_usage = task.await.unwrap();
+            new_thread_usages.push(new_thread_usage);
+        }
+
+        let new_total_usage = new_total_usage.await.unwrap();
+        let temperature = temperature.await.unwrap();
+
+        Self {
+            new_total_usage,
+            new_thread_usages,
+            temperature,
+            frequencies,
+        }
+    }
+}
 
 #[derive(Debug, Clone, Default)]
 pub struct CPUInfo {
@@ -97,10 +146,11 @@ pub async fn cpu_info() -> Result<CPUInfo> {
 ///
 /// Will return `Err` if the are problems during reading or parsing
 /// of the corresponding file in sysfs
-pub fn get_cpu_freq(core: usize) -> Result<u64> {
-    std::fs::read_to_string(format!(
+pub async fn get_cpu_freq(core: usize) -> Result<u64> {
+    tokio::fs::read_to_string(format!(
         "/sys/devices/system/cpu/cpu{core}/cpufreq/scaling_cur_freq"
     ))
+    .await
     .with_context(|| format!("unable to read scaling_cur_freq for core {core}"))?
     .replace('\n', "")
     .parse::<u64>()
@@ -135,7 +185,7 @@ async fn get_proc_stat(core: Option<usize>) -> Result<String> {
     // the combined stats are in line 0, the other cores are in the following lines,
     // since our `core` argument starts with 0, we must add 1 to it if it's not `None`.
     let selected_line_number = core.map_or(0, |x| x + 1);
-    let proc_stat_raw = async_std::fs::read_to_string("/proc/stat")
+    let proc_stat_raw = tokio::fs::read_to_string("/proc/stat")
         .await
         .with_context(|| "unable to read /proc/stat")?;
     let mut proc_stat = proc_stat_raw.split('\n').collect::<Vec<&str>>();
@@ -173,7 +223,7 @@ pub async fn get_temperature() -> Result<f32> {
     {
         // collect all the known hwmons
         for path in (glob("/sys/class/hwmon/hwmon*")?).flatten() {
-            match async_std::fs::read_to_string(path.join("name"))
+            match tokio::fs::read_to_string(path.join("name"))
                 .await
                 .as_deref()
             {
@@ -188,7 +238,7 @@ pub async fn get_temperature() -> Result<f32> {
 
         // collect all the known thermal zones
         for path in (glob("/sys/class/thermal/thermal_zone*")?).flatten() {
-            match async_std::fs::read_to_string(path.join("type"))
+            match tokio::fs::read_to_string(path.join("type"))
                 .await
                 .as_deref()
             {
@@ -221,7 +271,7 @@ pub async fn get_temperature() -> Result<f32> {
 }
 
 async fn read_sysfs_thermal(path: &PathBuf) -> Result<f32> {
-    let temp_string = async_std::fs::read_to_string(path)
+    let temp_string = tokio::fs::read_to_string(path)
         .await
         .with_context(|| format!("unable to read {}", path.display()))?;
     temp_string

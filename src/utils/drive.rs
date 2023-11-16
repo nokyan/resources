@@ -1,5 +1,4 @@
 use anyhow::{Context, Result};
-use async_std::stream::StreamExt;
 use gtk::gio::{Icon, ThemedIcon};
 use once_cell::sync::Lazy;
 use regex::Regex;
@@ -15,6 +14,36 @@ use super::units::convert_storage;
 const SYS_STATS: &str = r" *(?P<read_ios>[0-9]*) *(?P<read_merges>[0-9]*) *(?P<read_sectors>[0-9]*) *(?P<read_ticks>[0-9]*) *(?P<write_ios>[0-9]*) *(?P<write_merges>[0-9]*) *(?P<write_sectors>[0-9]*) *(?P<write_ticks>[0-9]*) *(?P<in_flight>[0-9]*) *(?P<io_ticks>[0-9]*) *(?P<time_in_queue>[0-9]*) *(?P<discard_ios>[0-9]*) *(?P<discard_merges>[0-9]*) *(?P<discard_sectors>[0-9]*) *(?P<discard_ticks>[0-9]*) *(?P<flush_ios>[0-9]*) *(?P<flush_ticks>[0-9]*)";
 
 static RE_DRIVE: Lazy<Regex> = Lazy::new(|| Regex::new(SYS_STATS).unwrap());
+
+#[derive(Debug)]
+pub struct DriveData {
+    pub inner: Drive,
+    pub is_virtual: bool,
+    pub writable: bool,
+    pub removable: bool,
+    pub disk_stats: HashMap<String, usize>,
+    pub capacity: u64,
+}
+
+impl DriveData {
+    pub async fn new(path: &Path) -> Self {
+        let inner = Drive::from_sysfs(&path).await.unwrap_or_default();
+        let is_virtual = inner.is_virtual().await;
+        let writable = inner.writable().await.unwrap_or_default();
+        let removable = inner.removable().await.unwrap_or_default();
+        let disk_stats = inner.sys_stats().await.unwrap_or_default();
+        let capacity = inner.capacity().await.unwrap_or_default();
+
+        Self {
+            inner,
+            is_virtual,
+            writable,
+            removable,
+            disk_stats,
+            capacity,
+        }
+    }
+}
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub enum DriveType {
@@ -40,7 +69,7 @@ pub struct Drive {
     pub model: Option<String>,
     pub drive_type: DriveType,
     pub block_device: String,
-    pub sys_fs_path: PathBuf,
+    pub sysfs_path: PathBuf,
 }
 
 impl PartialEq for Drive {
@@ -65,7 +94,7 @@ impl Drive {
             .to_string();
 
         let mut drive = Self::default();
-        drive.sys_fs_path = path;
+        drive.sysfs_path = path;
         drive.block_device = block_device;
         drive.model = drive
             .model()
@@ -84,9 +113,8 @@ impl Drive {
     /// reading or parsing
     pub async fn get_sysfs_paths() -> Result<Vec<PathBuf>> {
         let mut list = Vec::new();
-        let mut entries = async_std::fs::read_dir("/sys/block").await?;
-        while let Some(entry) = entries.next().await {
-            let entry = entry?;
+        let mut entries = tokio::fs::read_dir("/sys/block").await?;
+        while let Some(entry) = entries.next_entry().await? {
             let block_device = entry.file_name().to_string_lossy().to_string();
             if block_device.is_empty() {
                 continue;
@@ -96,8 +124,8 @@ impl Drive {
         Ok(list)
     }
 
-    pub async fn display_name(&self) -> String {
-        let capacity_formatted = convert_storage(self.capacity().await.unwrap_or(0) as f64, true);
+    pub fn display_name(&self, capacity: f64) -> String {
+        let capacity_formatted = convert_storage(capacity as f64, true);
         match self.drive_type {
             DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),
             DriveType::Floppy => i18n("Floppy Drive"),
@@ -118,7 +146,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub async fn sys_stats(&self) -> Result<HashMap<String, usize>> {
-        let stat = async_std::fs::read_to_string(self.sys_fs_path.join("stat"))
+        let stat = tokio::fs::read_to_string(self.sysfs_path.join("stat"))
             .await
             .with_context(|| format!("unable to read /sys/block/{}/stat", self.block_device))?;
 
@@ -160,7 +188,7 @@ impl Drive {
         } else if self.block_device.starts_with("zd") {
             Ok(DriveType::ZfsVolume)
         } else if let Ok(rotational) =
-            async_std::fs::read_to_string(self.sys_fs_path.join("queue/rotational")).await
+            tokio::fs::read_to_string(self.sysfs_path.join("queue/rotational")).await
         {
             // turn rot into a boolean
             let rotational = rotational
@@ -186,7 +214,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub async fn removable(&self) -> Result<bool> {
-        async_std::fs::read_to_string(self.sys_fs_path.join("removable"))
+        tokio::fs::read_to_string(self.sysfs_path.join("removable"))
             .await?
             .replace('\n', "")
             .parse::<u8>()
@@ -201,7 +229,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub async fn writable(&self) -> Result<bool> {
-        async_std::fs::read_to_string(self.sys_fs_path.join("ro"))
+        tokio::fs::read_to_string(self.sysfs_path.join("ro"))
             .await?
             .replace('\n', "")
             .parse::<u8>()
@@ -216,7 +244,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub async fn capacity(&self) -> Result<u64> {
-        async_std::fs::read_to_string(self.sys_fs_path.join("size"))
+        tokio::fs::read_to_string(self.sysfs_path.join("size"))
             .await?
             .replace('\n', "")
             .parse::<u64>()
@@ -231,7 +259,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub async fn model(&self) -> Result<String> {
-        async_std::fs::read_to_string(self.sys_fs_path.join("device/model"))
+        tokio::fs::read_to_string(self.sysfs_path.join("device/model"))
             .await
             .with_context(|| "unable to parse model sysfs file")
     }
@@ -243,7 +271,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub async fn wwid(&self) -> Result<String> {
-        async_std::fs::read_to_string(self.sys_fs_path.join("device/wwid"))
+        tokio::fs::read_to_string(self.sysfs_path.join("device/wwid"))
             .await
             .with_context(|| "unable to parse wwid sysfs file")
     }

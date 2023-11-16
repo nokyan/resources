@@ -13,8 +13,71 @@ static RE_FORMFACTOR: Lazy<Regex> = Lazy::new(|| Regex::new(r"Form Factor: (.+)"
 static RE_TYPE: Lazy<Regex> = Lazy::new(|| Regex::new(r"Type: (.+)").unwrap());
 static RE_TYPE_DETAIL: Lazy<Regex> = Lazy::new(|| Regex::new(r"Type Detail: (.+)").unwrap());
 
+#[derive(Debug)]
+pub struct MemoryData {
+    pub total_mem: usize,
+    pub available_mem: usize,
+    pub free_mem: usize,
+    pub total_swap: usize,
+    pub free_swap: usize,
+}
+
+impl MemoryData {
+    pub async fn new() -> Self {
+        let values = tokio::fs::read_to_string("/proc/meminfo")
+            .await
+            .with_context(|| "unable to read /proc/meminfo")
+            .unwrap()
+            .kv_str_to_json()
+            .map_err(anyhow::Error::msg)
+            .unwrap();
+
+        let total_mem = values["MemTotal"]
+            .as_str()
+            .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
+            .map(|y| y * 1000)
+            .unwrap();
+
+        let available_mem = values["MemAvailable"]
+            .as_str()
+            .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
+            .map(|y| y * 1000)
+            .unwrap();
+
+        let free_mem = values["MemFree"]
+            .as_str()
+            .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
+            .map(|y| y * 1000)
+            .unwrap();
+
+        let total_swap = values["SwapTotal"]
+            .as_str()
+            .and_then(|x| x.split(' ').collect::<Vec<&str>>()[0].parse::<usize>().ok())
+            .map(|y| y * 1000)
+            .unwrap();
+
+        let free_swap = values["SwapFree"]
+            .as_str()
+            .unwrap()
+            .split(" ")
+            .nth(0)
+            .unwrap()
+            .parse::<usize>()
+            .unwrap()
+            * 1000;
+
+        Self {
+            total_mem,
+            available_mem,
+            free_mem,
+            total_swap,
+            free_swap,
+        }
+    }
+}
+
 async fn proc_meminfo() -> Result<Value, anyhow::Error> {
-    async_std::fs::read_to_string("/proc/meminfo")
+    tokio::fs::read_to_string("/proc/meminfo")
         .await
         .with_context(|| "unable to read /proc/meminfo")?
         .kv_str_to_json()
