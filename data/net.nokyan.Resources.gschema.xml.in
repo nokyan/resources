@@ -69,6 +69,22 @@
       <default>false</default>
       <summary>Display drive write total in Applications view</summary>
     </key>
+    <key name="apps-show-gpu" type="b">
+      <default>true</default>
+      <summary>Display GPU usage in Applications view</summary>
+    </key>
+    <key name="apps-show-encoder" type="b">
+      <default>false</default>
+      <summary>Display video encoder usage in Applications view</summary>
+    </key>
+    <key name="apps-show-decoder" type="b">
+      <default>false</default>
+      <summary>Display video decoder usage in Applications view</summary>
+    </key>
+    <key name="apps-show-gpu-memory" type="b">
+      <default>false</default>
+      <summary>Display GPU memory usage in Applications view</summary>
+    </key>
     <key name="processes-show-id" type="b">
       <default>true</default>
       <summary>Display process ID in Processes view</summary>
@@ -100,6 +116,22 @@
     <key name="processes-show-drive-write-total" type="b">
       <default>false</default>
       <summary>Display drive write total in Processes view</summary>
+    </key>
+    <key name="processes-show-gpu" type="b">
+      <default>true</default>
+      <summary>Display GPU usage in Applications view</summary>
+    </key>
+    <key name="processes-show-encoder" type="b">
+      <default>false</default>
+      <summary>Display video encoder usage in Applications view</summary>
+    </key>
+    <key name="processes-show-decoder" type="b">
+      <default>false</default>
+      <summary>Display video decoder usage in Applications view</summary>
+    </key>
+    <key name="processes-show-gpu-memory" type="b">
+      <default>false</default>
+      <summary>Display GPU memory usage in Applications view</summary>
     </key>
     <key name="show-logical-cpus" type="b">
       <default>false</default>

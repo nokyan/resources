@@ -1,10 +1,9 @@
 use adw::{prelude::*, subclass::prelude::*};
-use anyhow::Context;
 use gtk::glib::{self};
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
-use crate::utils::gpu::{GpuData, GPU};
+use crate::utils::gpu::{Gpu, GpuData};
 use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
 use crate::utils::NaNDefault;
 
@@ -14,7 +13,7 @@ mod imp {
         sync::OnceLock,
     };
 
-    use crate::{ui::widgets::graph_box::ResGraphBox, utils::gpu::GPU};
+    use crate::ui::widgets::{double_graph_box::ResDoubleGraphBox, graph_box::ResGraphBox};
 
     use super::*;
 
@@ -30,6 +29,8 @@ mod imp {
     pub struct ResGPU {
         #[template_child]
         pub gpu_usage: TemplateChild<ResGraphBox>,
+        #[template_child]
+        pub encode_decode_usage: TemplateChild<ResDoubleGraphBox>,
         #[template_child]
         pub vram_usage: TemplateChild<ResGraphBox>,
         #[template_child]
@@ -51,7 +52,6 @@ mod imp {
         #[template_child]
         pub max_power_cap: TemplateChild<adw::ActionRow>,
 
-        pub gpu: OnceLock<GPU>,
         pub number: OnceLock<usize>,
 
         #[property(get)]
@@ -98,6 +98,7 @@ mod imp {
         fn default() -> Self {
             Self {
                 gpu_usage: Default::default(),
+                encode_decode_usage: Default::default(),
                 vram_usage: Default::default(),
                 temperature: Default::default(),
                 power_usage: Default::default(),
@@ -108,7 +109,6 @@ mod imp {
                 driver_used: Default::default(),
                 current_power_cap: Default::default(),
                 max_power_cap: Default::default(),
-                gpu: Default::default(),
                 number: Default::default(),
                 uses_progress_bar: Cell::new(true),
                 icon: RefCell::new(ThemedIcon::new("gpu-symbolic").into()),
@@ -173,31 +173,41 @@ impl ResGPU {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self, gpu: GPU, number: usize) {
+    pub fn init(&self, gpu: &Gpu, number: usize) {
         let imp = self.imp();
-        imp.gpu.set(gpu).unwrap_or_default();
         imp.number.set(number).unwrap_or_default();
-        self.setup_widgets();
+        self.setup_widgets(gpu);
     }
 
-    pub fn setup_widgets(&self) {
+    pub fn setup_widgets(&self, gpu: &Gpu) {
         let imp = self.imp();
 
-        let gpu = imp
-            .gpu
-            .get()
-            .with_context(|| "GPU not initialized")
-            .unwrap();
         imp.gpu_usage.set_title_label(&i18n("GPU Usage"));
-        imp.gpu_usage.set_data_points_max_amount(60);
-        imp.gpu_usage.set_graph_color(230, 97, 0);
+        imp.gpu_usage.graph().set_data_points_max_amount(60);
+        imp.gpu_usage.graph().set_graph_color(230, 97, 0);
+        imp.encode_decode_usage
+            .set_start_title_label(&i18n("Video Encoder Usage"));
+        imp.encode_decode_usage
+            .start_graph()
+            .set_data_points_max_amount(60);
+        imp.encode_decode_usage
+            .start_graph()
+            .set_graph_color(230, 97, 0);
+        imp.encode_decode_usage
+            .set_end_title_label(&i18n("Video Decoder Usage"));
+        imp.encode_decode_usage
+            .end_graph()
+            .set_data_points_max_amount(60);
+        imp.encode_decode_usage
+            .end_graph()
+            .set_graph_color(230, 97, 0);
         imp.vram_usage.set_title_label(&i18n("Video Memory Usage"));
-        imp.vram_usage.set_data_points_max_amount(60);
-        imp.vram_usage.set_graph_color(192, 28, 40);
+        imp.vram_usage.graph().set_data_points_max_amount(60);
+        imp.vram_usage.graph().set_graph_color(192, 28, 40);
         imp.manufacturer
             .set_subtitle(&gpu.get_vendor().unwrap_or_else(|_| i18n("N/A")));
-        imp.pci_slot.set_subtitle(&gpu.pci_slot);
-        imp.driver_used.set_subtitle(&gpu.driver);
+        imp.pci_slot.set_subtitle(&gpu.pci_slot());
+        imp.driver_used.set_subtitle(&gpu.driver());
     }
 
     pub fn refresh_page(&self, gpu_data: GpuData) {
@@ -205,6 +215,8 @@ impl ResGPU {
 
         let GpuData {
             usage_fraction,
+            encode_fraction,
+            decode_fraction,
             total_vram,
             used_vram,
             clock_speed,
@@ -220,8 +232,30 @@ impl ResGPU {
             .unwrap_or(i18n("N/A"));
 
         imp.gpu_usage.set_subtitle(&usage_percentage_string);
-        imp.gpu_usage.push_data_point(usage_fraction.unwrap_or(0.0));
-        imp.gpu_usage.set_graph_visible(true);
+        imp.gpu_usage
+            .graph()
+            .push_data_point(usage_fraction.unwrap_or(0.0));
+        imp.gpu_usage.graph().set_visible(true);
+
+        if let (Some(encode_fraction), Some(decode_fraction)) = (encode_fraction, decode_fraction) {
+            imp.encode_decode_usage.set_visible(true);
+            imp.encode_decode_usage
+                .start_graph()
+                .push_data_point(encode_fraction.into());
+            imp.encode_decode_usage
+                .set_start_subtitle(&format!("{} %", (encode_fraction * 100.0).round()));
+            imp.encode_decode_usage
+                .end_graph()
+                .push_data_point(decode_fraction.into());
+            imp.encode_decode_usage
+                .set_end_subtitle(&format!("{} %", (decode_fraction * 100.0).round()));
+        } else {
+            imp.encode_decode_usage.start_graph().push_data_point(0.0);
+            imp.encode_decode_usage.set_start_subtitle(&i18n("N/A"));
+            imp.encode_decode_usage.end_graph().push_data_point(0.0);
+            imp.encode_decode_usage.set_end_subtitle(&i18n("N/A"));
+            imp.encode_decode_usage.set_visible(false);
+        }
 
         let used_vram_fraction =
             if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
@@ -248,9 +282,9 @@ impl ResGPU {
 
         imp.vram_usage.set_subtitle(&vram_subtitle);
         imp.vram_usage
+            .graph()
             .push_data_point(used_vram_fraction.unwrap_or(0.0));
-        imp.vram_usage
-            .set_graph_visible(used_vram_fraction.is_some());
+        imp.vram_usage.set_visible(used_vram_fraction.is_some());
 
         if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
             let used_vram_fraction = (used_vram as f64 / total_vram as f64).nan_default(0.0);
@@ -260,12 +294,12 @@ impl ResGPU {
                 &convert_storage(total_vram as f64, false),
                 (used_vram_fraction * 100.0).round()
             ));
-            imp.vram_usage.push_data_point(used_vram_fraction);
-            imp.vram_usage.set_graph_visible(true);
+            imp.vram_usage.graph().push_data_point(used_vram_fraction);
+            imp.vram_usage.set_visible(true);
         } else {
             imp.vram_usage.set_subtitle(&i18n("N/A"));
-            imp.vram_usage.push_data_point(0.0);
-            imp.vram_usage.set_graph_visible(false);
+            imp.vram_usage.graph().push_data_point(0.0);
+            imp.vram_usage.set_visible(false);
         }
 
         imp.temperature

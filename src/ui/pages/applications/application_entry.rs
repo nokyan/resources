@@ -50,6 +50,18 @@ mod imp {
         #[property(get, set)]
         write_total: Cell<u64>,
 
+        #[property(get, set)]
+        gpu_usage: Cell<f32>,
+
+        #[property(get, set)]
+        enc_usage: Cell<f32>,
+
+        #[property(get, set)]
+        dec_usage: Cell<f32>,
+
+        #[property(get, set)]
+        gpu_mem_usage: Cell<u64>,
+
         pub app_item: RefCell<Option<AppItem>>,
     }
 
@@ -67,6 +79,10 @@ mod imp {
                 write_speed: Cell::new(0.0),
                 write_total: Cell::new(0),
                 app_item: RefCell::new(None),
+                gpu_usage: Cell::new(0.0),
+                enc_usage: Cell::new(0.0),
+                dec_usage: Cell::new(0.0),
+                gpu_mem_usage: Cell::new(0),
             }
         }
     }
@@ -155,13 +171,7 @@ impl ApplicationEntry {
             .property("icon", &app_item.icon)
             .property("id", &app_item.id)
             .build();
-        this.set_cpu_usage(app_item.cpu_time_ratio);
-        this.set_memory_usage(app_item.memory_usage as u64);
-        this.set_read_speed(app_item.read_speed);
-        this.set_read_total(app_item.read_total);
-        this.set_write_speed(app_item.write_speed);
-        this.set_write_total(app_item.write_total);
-        this.imp().app_item.replace(Some(app_item));
+        this.update(app_item);
         this
     }
 
@@ -172,6 +182,11 @@ impl ApplicationEntry {
         self.set_read_total(app_item.read_total);
         self.set_write_speed(app_item.write_speed);
         self.set_write_total(app_item.write_total);
+        self.set_gpu_usage(app_item.gpu_usage);
+        self.set_enc_usage(app_item.enc_usage);
+        self.set_dec_usage(app_item.dec_usage);
+        self.set_gpu_mem_usage(app_item.gpu_mem_usage);
+
         self.imp().app_item.replace(Some(app_item));
     }
 

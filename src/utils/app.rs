@@ -8,7 +8,10 @@ use process_data::{Containerization, ProcessData};
 
 use crate::i18n::i18n;
 
-use super::process::{Process, ProcessAction, ProcessItem};
+use super::{
+    process::{Process, ProcessAction, ProcessItem},
+    NaNDefault,
+};
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
@@ -31,6 +34,7 @@ static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: Lazy<HashMap<String, String>> = Lazy::n
         ("firefox-bin".into(), "firefox".into()),
         ("oosplash".into(), "libreoffice".into()),
         ("soffice.bin".into(), "libreoffice".into()),
+        ("resources-processes".into(), "resources".into()),
     ])
 });
 
@@ -59,6 +63,10 @@ pub struct AppItem {
     pub read_total: u64,
     pub write_speed: f64,
     pub write_total: u64,
+    pub gpu_usage: f32,
+    pub enc_usage: f32,
+    pub dec_usage: f32,
+    pub gpu_mem_usage: u64,
 }
 
 /// Represents an application installed on the system. It doesn't
@@ -206,6 +214,26 @@ impl App {
         )
     }
 
+    #[must_use]
+    pub fn gpu_usage(&self, apps: &AppsContext) -> f32 {
+        self.processes_iter(apps).map(Process::gpu_usage).sum()
+    }
+
+    #[must_use]
+    pub fn enc_usage(&self, apps: &AppsContext) -> f32 {
+        self.processes_iter(apps).map(Process::enc_usage).sum()
+    }
+
+    #[must_use]
+    pub fn dec_usage(&self, apps: &AppsContext) -> f32 {
+        self.processes_iter(apps).map(Process::dec_usage).sum()
+    }
+
+    #[must_use]
+    pub fn gpu_mem_usage(&self, apps: &AppsContext) -> u64 {
+        self.processes_iter(apps).map(Process::gpu_mem_usage).sum()
+    }
+
     pub fn execute_process_action(
         &self,
         apps: &AppsContext,
@@ -234,6 +262,48 @@ impl AppsContext {
             read_bytes_from_dead_processes: 0,
             write_bytes_from_dead_processes: 0,
         }
+    }
+
+    pub fn encoder_fraction<S: AsRef<str>>(&self, pci_id: S) -> f32 {
+        self.all_processes()
+            .map(|process| (&process.data.gpu_usage_stats, &process.gpu_usage_stats_last))
+            .map(|(new, old)| (new.get(pci_id.as_ref()), old.get(pci_id.as_ref())))
+            .filter_map(|(a, b)| match (a, b) {
+                (Some(val1), Some(val2)) => Some((val1, val2)),
+                _ => None,
+            })
+            .map(|(new, old)| {
+                if new.nvidia {
+                    new.enc as f32 / 100.0
+                } else {
+                    ((new.enc.saturating_sub(old.enc) as f32)
+                        / (new.enc_timestamp.saturating_sub(old.enc_timestamp) as f32))
+                        .nan_default(0.0)
+                        / 1_000_000.0
+                }
+            })
+            .sum()
+    }
+
+    pub fn decoder_fraction<S: AsRef<str>>(&self, pci_id: S) -> f32 {
+        self.all_processes()
+            .map(|process| (&process.data.gpu_usage_stats, &process.gpu_usage_stats_last))
+            .map(|(new, old)| (new.get(pci_id.as_ref()), old.get(pci_id.as_ref())))
+            .filter_map(|(a, b)| match (a, b) {
+                (Some(val1), Some(val2)) => Some((val1, val2)),
+                _ => None,
+            })
+            .map(|(new, old)| {
+                if new.nvidia {
+                    new.dec as f32 / 100.0
+                } else {
+                    ((new.dec.saturating_sub(old.dec) as f32)
+                        / (new.dec_timestamp.saturating_sub(old.dec_timestamp) as f32))
+                        .nan_default(0.0)
+                        / 1_000_000.0
+                }
+            })
+            .sum()
     }
 
     fn app_associated_with_process(&mut self, process: &Process) -> Option<String> {
@@ -330,6 +400,10 @@ impl AppsContext {
                 read_total: process.data.read_bytes,
                 write_speed: process.write_speed(),
                 write_total: process.data.write_bytes,
+                gpu_usage: process.gpu_usage(),
+                enc_usage: process.enc_usage(),
+                dec_usage: process.dec_usage(),
+                gpu_mem_usage: process.gpu_mem_usage(),
             }
         })
     }
@@ -377,6 +451,10 @@ impl AppsContext {
                         read_total: app.read_total(self),
                         write_speed: app.write_speed(self),
                         write_total: app.write_total(self),
+                        gpu_usage: app.gpu_usage(self),
+                        enc_usage: app.enc_usage(self),
+                        dec_usage: app.dec_usage(self),
+                        gpu_mem_usage: app.gpu_mem_usage(self),
                     },
                 )
             })
@@ -414,6 +492,17 @@ impl AppsContext {
                 .filter_map(|process| process.data.write_bytes)
                 .sum::<u64>();
 
+        let system_gpu_usage = self.system_processes_iter().map(Process::gpu_usage).sum();
+
+        let system_enc_usage = self.system_processes_iter().map(Process::enc_usage).sum();
+
+        let system_dec_usage = self.system_processes_iter().map(Process::dec_usage).sum();
+
+        let system_gpu_mem_usage = self
+            .system_processes_iter()
+            .map(Process::gpu_mem_usage)
+            .sum();
+
         return_map.insert(
             None,
             AppItem {
@@ -429,8 +518,13 @@ impl AppsContext {
                 read_total: system_read_total,
                 write_speed: system_write_speed,
                 write_total: system_write_total,
+                gpu_usage: system_gpu_usage,
+                enc_usage: system_enc_usage,
+                dec_usage: system_dec_usage,
+                gpu_mem_usage: system_gpu_mem_usage,
             },
         );
+
         return_map
     }
 
@@ -453,6 +547,7 @@ impl AppsContext {
                 old_process.read_bytes_last_timestamp = old_process.data.read_bytes_timestamp;
                 old_process.write_bytes_last = old_process.data.write_bytes;
                 old_process.write_bytes_last_timestamp = old_process.data.write_bytes_timestamp;
+                old_process.gpu_usage_stats_last = old_process.data.gpu_usage_stats.clone();
                 old_process.data = new_process.data.clone();
             } else {
                 // this is a new process, see if it belongs to a graphical app

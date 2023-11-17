@@ -1,20 +1,88 @@
-use anyhow::{anyhow, Context, Result};
+use anyhow::{anyhow, bail, Context, Result};
+use futures_util::future::join_all;
 use nparse::KVStrToJson;
+use nvml_wrapper::enums::device::UsedGpuMemory;
+use nvml_wrapper::error::NvmlError;
+use nvml_wrapper::struct_wrappers::device::{ProcessInfo, ProcessUtilizationSample};
+use nvml_wrapper::{Device, Nvml};
 use once_cell::sync::Lazy;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
+use std::collections::{BTreeMap, HashMap, HashSet};
+use std::os::linux::fs::MetadataExt;
+use std::path::Path;
 use std::sync::Arc;
 use std::{path::PathBuf, time::SystemTime};
+use tokio::sync::{Mutex, RwLock};
 
 static PAGESIZE: Lazy<usize> = Lazy::new(sysconf::pagesize);
 
 static UID_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"Uid:\s*(\d+)").unwrap());
+
+static DRM_PDEV_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"drm-pdev:\s*(\d{4}:\d{2}:\d{2}.\d)").unwrap());
+
+static DRM_CLIENT_ID_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"drm-client-id:\s*(\d+)").unwrap());
+
+static DRM_ENGINE_GFX_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"drm-engine-gfx:\s*(\d+) ns").unwrap());
+
+static DRM_ENGINE_ENC_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"drm-engine-enc:\s*(\d+) ns").unwrap());
+
+static DRM_ENGINE_DEC_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"drm-engine-dec:\s*(\d+) ns").unwrap());
+
+static DRM_MEMORY_VRAM_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"drm-memory-vram:\s*(\d+) KiB").unwrap());
+
+static DRM_MEMORY_GTT_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"drm-memory-gtt:\s*(\d+) KiB").unwrap());
+
+static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(Nvml::init);
+
+static NVML_DEVICES: Lazy<Vec<(String, Device)>> = Lazy::new(|| {
+    if let Ok(nvml) = NVML.as_ref() {
+        let device_count = nvml.device_count().unwrap_or(0);
+        let mut return_vec = Vec::new();
+        for i in 0..device_count {
+            if let Ok(gpu) = nvml.device_by_index(i) {
+                if let Ok(pci_slot) = gpu.pci_info().map(|pci_info| pci_info.bus_id) {
+                    let pci_slot = pci_slot.to_lowercase()[4..pci_slot.len()].to_owned();
+                    return_vec.push((pci_slot, gpu));
+                }
+            }
+        }
+        return_vec
+    } else {
+        Vec::new()
+    }
+});
+
+static NVIDIA_PROCESSES_STATS: Lazy<RwLock<HashMap<String, Vec<ProcessUtilizationSample>>>> =
+    Lazy::new(|| RwLock::new(HashMap::new()));
+
+static NVIDIA_PROCESS_INFOS: Lazy<RwLock<HashMap<String, Vec<ProcessInfo>>>> =
+    Lazy::new(|| RwLock::new(HashMap::new()));
 
 #[derive(Debug, Clone, Default, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Containerization {
     #[default]
     None,
     Flatpak,
+}
+
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, Copy)]
+pub struct GpuUsageStats {
+    pub gfx: u64,
+    pub gfx_timestamp: u64,
+    pub mem: u64,
+    pub enc: u64,
+    pub enc_timestamp: u64,
+    pub dec: u64,
+    pub dec_timestamp: u64,
+    pub nvidia: bool,
 }
 
 /// Data that could be transferred using `resources-processes`, separated from
@@ -36,9 +104,18 @@ pub struct ProcessData {
     pub read_bytes_timestamp: Option<u64>,
     pub write_bytes: Option<u64>,
     pub write_bytes_timestamp: Option<u64>,
+    /// Key: PCI Slot ID of the GPU
+    pub gpu_usage_stats: BTreeMap<String, GpuUsageStats>,
 }
 
 impl ProcessData {
+    pub fn unix_as_millis() -> u64 {
+        SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap()
+            .as_millis() as u64
+    }
+
     fn sanitize_cgroup<S: AsRef<str>>(cgroup: S) -> Option<String> {
         let cgroups_v2_line = cgroup.as_ref().split('\n').find(|s| s.starts_with("0::"))?;
         if cgroups_v2_line.ends_with(".scope") {
@@ -82,6 +159,19 @@ impl ProcessData {
                 .context("couldn't parse uid in /status")
         } else {
             Ok(0)
+        }
+    }
+
+    pub async fn update_nvidia_stats() {
+        {
+            let mut stats = NVIDIA_PROCESSES_STATS.write().await;
+            stats.clear();
+            stats.extend(Self::nvidia_process_stats());
+        }
+        {
+            let mut infos = NVIDIA_PROCESS_INFOS.write().await;
+            infos.clear();
+            infos.extend(Self::nvidia_process_infos());
         }
     }
 
@@ -205,6 +295,8 @@ impl ProcessData {
             };
         }
 
+        let gpu_usage_stats = Self::gpu_usage_stats(&proc_path, pid).await;
+
         Ok(Self {
             pid,
             uid,
@@ -220,6 +312,252 @@ impl ProcessData {
             read_bytes_timestamp,
             write_bytes,
             write_bytes_timestamp,
+            gpu_usage_stats,
         })
+    }
+
+    async fn gpu_usage_stats(proc_path: &PathBuf, pid: i32) -> BTreeMap<String, GpuUsageStats> {
+        let nvidia_stats = Self::nvidia_gpu_usage_stats(pid).await.unwrap_or_default();
+        let mut other_stats = Self::other_gpu_usage_stats(proc_path, pid)
+            .await
+            .unwrap_or_default();
+        other_stats.extend(nvidia_stats.into_iter());
+        other_stats
+    }
+
+    async fn other_gpu_usage_stats(
+        proc_path: &PathBuf,
+        pid: i32,
+    ) -> Result<BTreeMap<String, GpuUsageStats>> {
+        let fdinfo_path = proc_path.join("fdinfo");
+        let mut dir = tokio::fs::read_dir(fdinfo_path).await?;
+
+        let return_map = Arc::new(Mutex::new(BTreeMap::new()));
+
+        let seen_fds = Arc::new(Mutex::new(HashSet::new()));
+
+        let mut handles = Vec::new();
+
+        while let Ok(Some(entry)) = dir.next_entry().await {
+            let fd_path = entry.path();
+
+            let return_map = Arc::clone(&return_map);
+
+            let seen_fds = Arc::clone(&seen_fds);
+
+            let handle = tokio::task::spawn(async move {
+                let metadata = tokio::fs::metadata(&fd_path).await?;
+
+                // if our fd is 0, 1 or 2 it's probably just a std stream so skip it
+                let fd_num = fd_path
+                    .file_name()
+                    .and_then(|osstr| osstr.to_str())
+                    .context("this fd has no filename?")?
+                    .parse::<usize>()?;
+                if fd_num <= 2 {
+                    bail!("stdin/stdout/stderr")
+                }
+
+                if !metadata.is_file() {
+                    bail!("not a file");
+                }
+
+                // Adapted from nvtop's `is_drm_fd()`
+                // https://github.com/Syllo/nvtop/blob/master/src/extract_processinfo_fdinfo.c
+                let major = unsafe { libc::major(metadata.st_rdev()) };
+                if (metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR || major != 226 {
+                    bail!("not a DRM file")
+                }
+
+                // Adapted from nvtop's `processinfo_sweep_fdinfos()`
+                // https://github.com/Syllo/nvtop/blob/master/src/extract_processinfo_fdinfo.c
+                // if we've already seen the file this fd refers to, skip
+                let not_unique = seen_fds.lock().await.iter().any(|seen_fd| unsafe {
+                    syscalls::syscall!(syscalls::Sysno::kcmp, pid, pid, 0, fd_num, *seen_fd)
+                        .unwrap_or(0)
+                        == 0
+                });
+                if not_unique {
+                    bail!("not unique fd")
+                }
+
+                seen_fds.lock().await.insert(fd_num);
+
+                let stats = Self::read_fdinfo(&fd_path).await;
+
+                if let Ok(stats) = stats {
+                    return_map
+                        .lock()
+                        .await
+                        .entry(stats.0)
+                        .and_modify(|existing_value: &mut GpuUsageStats| {
+                            if stats.1.gfx > existing_value.gfx {
+                                existing_value.gfx = stats.1.gfx;
+                                existing_value.gfx_timestamp = stats.1.gfx_timestamp;
+                            }
+                            if stats.1.dec > existing_value.dec {
+                                existing_value.dec = stats.1.dec;
+                                existing_value.dec_timestamp = stats.1.dec_timestamp;
+                            }
+                            if stats.1.enc > existing_value.enc {
+                                existing_value.enc = stats.1.enc;
+                                existing_value.enc_timestamp = stats.1.enc_timestamp;
+                            }
+                            if stats.1.mem > existing_value.mem {
+                                existing_value.mem = stats.1.mem;
+                            }
+                        })
+                        .or_insert(stats.1);
+                }
+                Ok(())
+            });
+
+            handles.push(handle);
+        }
+
+        join_all(handles).await;
+
+        let return_map = Arc::into_inner(return_map).unwrap().into_inner();
+
+        Ok(return_map)
+    }
+
+    async fn read_fdinfo<P: AsRef<Path>>(fdinfo_path: P) -> Result<(String, GpuUsageStats, i64)> {
+        let content = tokio::fs::read_to_string(fdinfo_path.as_ref()).await?;
+
+        let pci_slot = DRM_PDEV_REGEX
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .map(|capture| capture.as_str().to_owned());
+
+        let client_id = DRM_CLIENT_ID_REGEX
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse::<i64>().ok());
+
+        if let (Some(pci_slot), Some(client_id)) = (pci_slot, client_id) {
+            let gfx = DRM_ENGINE_GFX_REGEX
+                .captures(&content)
+                .and_then(|captures| captures.get(1))
+                .and_then(|capture| capture.as_str().parse::<u64>().ok())
+                .unwrap_or_default();
+
+            let enc = DRM_ENGINE_ENC_REGEX
+                .captures(&content)
+                .and_then(|captures| captures.get(1))
+                .and_then(|capture| capture.as_str().parse::<u64>().ok())
+                .unwrap_or_default();
+
+            let dec = DRM_ENGINE_DEC_REGEX
+                .captures(&content)
+                .and_then(|captures| captures.get(1))
+                .and_then(|capture| capture.as_str().parse::<u64>().ok())
+                .unwrap_or_default();
+
+            let vram = DRM_MEMORY_VRAM_REGEX
+                .captures(&content)
+                .and_then(|captures| captures.get(1))
+                .and_then(|capture| capture.as_str().parse::<u64>().ok())
+                .unwrap_or_default();
+
+            let gtt = DRM_MEMORY_GTT_REGEX
+                .captures(&content)
+                .and_then(|captures| captures.get(1))
+                .and_then(|capture| capture.as_str().parse::<u64>().ok())
+                .unwrap_or_default();
+
+            let stats = GpuUsageStats {
+                gfx,
+                gfx_timestamp: Self::unix_as_millis(),
+                mem: vram.saturating_add(gtt),
+                enc,
+                enc_timestamp: Self::unix_as_millis(),
+                dec,
+                dec_timestamp: Self::unix_as_millis(),
+                nvidia: false,
+            };
+
+            return Ok((pci_slot.to_string(), stats, client_id));
+        }
+
+        bail!("unable to find gpu information in this fdinfo");
+    }
+
+    async fn nvidia_gpu_usage_stats(pid: i32) -> Result<BTreeMap<String, GpuUsageStats>> {
+        let mut return_map = BTreeMap::new();
+
+        for (pci_slot, _) in NVML_DEVICES.iter() {
+            return_map.insert(
+                pci_slot.to_owned(),
+                Self::read_nvidia_gpu_stats(pid, &pci_slot).await?,
+            );
+        }
+
+        Ok(return_map)
+    }
+
+    async fn read_nvidia_gpu_stats<S: AsRef<str>>(pid: i32, pci_slot: S) -> Result<GpuUsageStats> {
+        // layout: (gfx_usage, enc_usage, dec_usage)
+        let this_process_stats = NVIDIA_PROCESSES_STATS
+            .read()
+            .await
+            .get(pci_slot.as_ref())
+            .context("couldn't find GPU with this PCI slot")?
+            .iter()
+            .filter(|process| process.pid == pid as u32)
+            .map(|stats| (stats.sm_util, stats.enc_util, stats.dec_util))
+            .reduce(|acc, curr| (acc.0 + curr.0, acc.1 + curr.1, acc.2 + curr.2));
+
+        let this_process_mem_stats: u64 = NVIDIA_PROCESS_INFOS
+            .read()
+            .await
+            .get(pci_slot.as_ref())
+            .context("couldn't find GPU with this PCI slot")?
+            .iter()
+            .filter(|process| process.pid == pid as u32)
+            .map(|stats| match stats.used_gpu_memory {
+                UsedGpuMemory::Unavailable => 0,
+                UsedGpuMemory::Used(bytes) => bytes,
+            })
+            .sum();
+
+        let gpu_stats = GpuUsageStats {
+            gfx: this_process_stats.unwrap_or_default().0 as u64,
+            gfx_timestamp: Self::unix_as_millis(),
+            mem: this_process_mem_stats,
+            enc: this_process_stats.unwrap_or_default().1 as u64,
+            enc_timestamp: Self::unix_as_millis(),
+            dec: this_process_stats.unwrap_or_default().2 as u64,
+            dec_timestamp: Self::unix_as_millis(),
+            nvidia: true,
+        };
+        Ok(gpu_stats)
+    }
+
+    fn nvidia_process_infos() -> HashMap<String, Vec<ProcessInfo>> {
+        let mut return_map = HashMap::new();
+
+        for (pci_slot, gpu) in NVML_DEVICES.iter() {
+            let mut comp_gfx_stats = gpu.running_graphics_processes().unwrap_or_default();
+            comp_gfx_stats.extend(gpu.running_compute_processes().unwrap_or_default());
+
+            return_map.insert(pci_slot.to_owned(), comp_gfx_stats);
+        }
+
+        return_map
+    }
+
+    fn nvidia_process_stats() -> HashMap<String, Vec<ProcessUtilizationSample>> {
+        let mut return_map = HashMap::new();
+
+        for (pci_slot, gpu) in NVML_DEVICES.iter() {
+            return_map.insert(
+                pci_slot.to_owned(),
+                gpu.process_utilization_stats(ProcessData::unix_as_millis() * 1000 - 5_000_000)
+                    .unwrap_or_default(),
+            );
+        }
+
+        return_map
     }
 }

@@ -24,6 +24,9 @@
                       <object class="ResGraphBox" id="gpu_usage"/>
                     </child>
                     <child>
+                      <object class="ResDoubleGraphBox" id="encode_decode_usage"/>
+                    </child>
+                    <child>
                       <object class="ResGraphBox" id="vram_usage"/>
                     </child>
                     <child>

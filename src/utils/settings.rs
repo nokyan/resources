@@ -100,10 +100,6 @@ impl RefreshSpeed {
             RefreshSpeed::VeryFast => 0.25,
         }
     }
-
-    pub fn process_refresh_interval(&self) -> f32 {
-        self.ui_refresh_interval() * 2.0
-    }
 }
 
 #[derive(Clone, Debug, Hash)]
@@ -197,6 +193,10 @@ impl Settings {
         apps_show_drive_read_total,
         apps_show_drive_write_speed,
         apps_show_drive_write_total,
+        apps_show_gpu,
+        apps_show_gpu_memory,
+        apps_show_encoder,
+        apps_show_decoder,
         processes_show_id,
         processes_show_user,
         processes_show_memory,
@@ -205,6 +205,10 @@ impl Settings {
         processes_show_drive_read_total,
         processes_show_drive_write_speed,
         processes_show_drive_write_total,
+        processes_show_gpu,
+        processes_show_gpu_memory,
+        processes_show_encoder,
+        processes_show_decoder,
         show_logical_cpus
     );
 }

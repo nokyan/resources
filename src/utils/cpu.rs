@@ -1,5 +1,4 @@
 use anyhow::{anyhow, bail, Context, Result};
-use async_process::Command;
 use glob::glob;
 use nparse::KVStrToJson;
 use once_cell::sync::Lazy;
@@ -81,7 +80,7 @@ pub struct CPUInfo {
 
 async fn lscpu() -> Result<Value> {
     String::from_utf8(
-        Command::new("lscpu")
+        tokio::process::Command::new("lscpu")
             .env("LC_ALL", "C")
             .output()
             .await

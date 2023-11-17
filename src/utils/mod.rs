@@ -1,5 +1,6 @@
 use anyhow::{Context, Result};
 use ini::Ini;
+use nvml_wrapper::{error::NvmlError, Nvml};
 use once_cell::sync::Lazy;
 
 pub mod app;
@@ -11,6 +12,8 @@ pub mod network;
 pub mod process;
 pub mod settings;
 pub mod units;
+
+static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(Nvml::init);
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 static IS_FLATPAK: Lazy<bool> = Lazy::new(|| std::path::Path::new("/.flatpak-info").exists());

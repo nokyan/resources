@@ -18,7 +18,7 @@ use crate::ui::pages::processes::ResProcesses;
 use crate::utils::app::AppsContext;
 use crate::utils::cpu::CpuData;
 use crate::utils::drive::{Drive, DriveData};
-use crate::utils::gpu::{GpuData, GPU};
+use crate::utils::gpu::{Gpu, GpuData};
 use crate::utils::memory::MemoryData;
 use crate::utils::network::{NetworkData, NetworkInterface};
 use crate::utils::process::{Process, ProcessAction};
@@ -86,7 +86,7 @@ mod imp {
 
         pub network_pages: RefCell<HashMap<PathBuf, adw::ToolbarView>>,
 
-        pub gpu_pages: RefCell<Vec<adw::ToolbarView>>,
+        pub gpu_pages: RefCell<HashMap<String, (Gpu, adw::ToolbarView)>>,
 
         pub apps_context: RefCell<AppsContext>,
 
@@ -223,14 +223,14 @@ impl MainWindow {
         }
     }
 
-    async fn init_gpu_pages(self: &MainWindow) -> Vec<GPU> {
-        let gpus = GPU::get_gpus().await.unwrap_or_default();
-
+    async fn init_gpu_pages(&self) -> Vec<Gpu> {
+        let gpus = Gpu::get_gpus().await.unwrap_or_default();
+        let imp = self.imp();
+        let gpus_len = gpus.len();
         for (i, gpu) in gpus.iter().enumerate() {
             let page = ResGPU::new();
-            page.init(gpu.clone(), i);
 
-            let title = if gpus.len() > 1 {
+            let title = if gpus_len > 1 {
                 i18n_f("GPU {}", &[&i.to_string()])
             } else {
                 i18n("GPU")
@@ -238,13 +238,17 @@ impl MainWindow {
 
             page.set_tab_name(&*title);
 
-            let added_page = if let Ok(gpu_name) = gpu.get_name() {
-                self.add_page(&page, &gpu_name, &title)
+            let added_page = if let Ok(gpu_name) = gpu.name() {
+                self.add_page(&page, &title, &gpu_name)
             } else {
-                self.add_page(&page, &title, "")
+                self.add_page(&page, &title, &title)
             };
 
-            self.imp().gpu_pages.borrow_mut().push(added_page);
+            page.init(&gpu, i);
+
+            imp.gpu_pages
+                .borrow_mut()
+                .insert(gpu.pci_slot().clone(), (gpu.clone(), added_page));
         }
         gpus
     }
@@ -280,7 +284,7 @@ impl MainWindow {
         }));
     }
 
-    async fn gather_refresh_data(logical_cpus: usize, gpus: Vec<GPU>) -> RefreshData {
+    async fn gather_refresh_data(logical_cpus: usize, gpus: Vec<Gpu>) -> RefreshData {
         let cpu_data = tokio::task::spawn(async move { CpuData::new(logical_cpus).await });
 
         let mem_data = tokio::task::spawn(async move { MemoryData::new().await });
@@ -371,7 +375,7 @@ impl MainWindow {
          *  Gpu
          */
         let gpu_pages = imp.gpu_pages.borrow();
-        for (page, gpu_data) in gpu_pages.iter().zip(gpu_data) {
+        for ((_, page), gpu_data) in gpu_pages.values().zip(gpu_data) {
             let page = page.content().and_downcast::<ResGPU>().unwrap();
 
             page.refresh_page(gpu_data);
@@ -426,7 +430,7 @@ impl MainWindow {
         imp.processes.refresh_processes_list(&apps_context);
     }
 
-    async fn periodic_refresh_all(&self, gpus: Vec<GPU>) {
+    async fn periodic_refresh_all(&self, gpus: Vec<Gpu>) {
         let imp = self.imp();
         let logical_cpus = imp.cpu.imp().logical_cpus_amount.get();
 

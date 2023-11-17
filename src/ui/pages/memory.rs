@@ -162,11 +162,11 @@ impl ResMemory {
     pub fn setup_widgets(&self) {
         let imp = self.imp();
         imp.memory.set_title_label(&i18n("Memory"));
-        imp.memory.set_graph_color(129, 61, 156);
-        imp.memory.set_data_points_max_amount(60);
+        imp.memory.graph().set_graph_color(129, 61, 156);
+        imp.memory.graph().set_data_points_max_amount(60);
         imp.swap.set_title_label(&i18n("Swap"));
-        imp.swap.set_graph_color(46, 194, 126);
-        imp.swap.set_data_points_max_amount(60);
+        imp.swap.graph().set_graph_color(46, 194, 126);
+        imp.swap.graph().set_data_points_max_amount(60);
 
         if let Ok(memory_devices) = memory::get_memory_devices() {
             self.setup_properties(&memory_devices);
@@ -243,7 +243,7 @@ impl ResMemory {
         let formatted_used_mem = convert_storage(used_mem as f64, false);
         let formatted_total_mem = convert_storage(total_mem as f64, false);
 
-        imp.memory.push_data_point(memory_fraction);
+        imp.memory.graph().push_data_point(memory_fraction);
         imp.memory.set_subtitle(&format!(
             "{} / {} · {} %",
             &formatted_used_mem,
@@ -251,16 +251,16 @@ impl ResMemory {
             (memory_fraction * 100.0).round()
         ));
         if total_swap == 0 {
-            imp.swap.push_data_point(0.0);
-            imp.swap.set_graph_visible(false);
+            imp.swap.graph().push_data_point(0.0);
+            imp.swap.graph().set_visible(false);
             imp.swap.set_subtitle(&i18n("N/A"));
             self.set_property(
                 "tab_subtitle",
                 format!("{} / {}", &formatted_used_mem, &formatted_total_mem),
             );
         } else {
-            imp.swap.push_data_point(swap_fraction);
-            imp.swap.set_graph_visible(true);
+            imp.swap.graph().push_data_point(swap_fraction);
+            imp.swap.graph().set_visible(false);
             imp.swap.set_subtitle(&format!(
                 "{} / {} · {} %",
                 &convert_storage(used_swap as f64, false),

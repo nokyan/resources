@@ -41,6 +41,14 @@ mod imp {
         pub apps_show_drive_write_speed_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub apps_show_drive_write_total_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub apps_show_gpu_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub apps_show_gpu_mem_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub apps_show_encoder_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub apps_show_decoder_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub processes_show_id_row: TemplateChild<adw::SwitchRow>,
@@ -58,6 +66,14 @@ mod imp {
         pub processes_show_drive_write_speed_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub processes_show_drive_write_total_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub processes_show_gpu_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub processes_show_gpu_mem_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub processes_show_encoder_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub processes_show_decoder_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub show_virtual_drives_row: TemplateChild<adw::SwitchRow>,
@@ -143,6 +159,13 @@ impl ResSettingsDialog {
             .set_active(SETTINGS.apps_show_drive_write_speed());
         imp.apps_show_drive_write_total_row
             .set_active(SETTINGS.apps_show_drive_write_total());
+        imp.apps_show_gpu_row.set_active(SETTINGS.apps_show_gpu());
+        imp.apps_show_gpu_mem_row
+            .set_active(SETTINGS.apps_show_gpu_memory());
+        imp.apps_show_encoder_row
+            .set_active(SETTINGS.apps_show_encoder());
+        imp.apps_show_decoder_row
+            .set_active(SETTINGS.apps_show_decoder());
 
         imp.processes_show_id_row
             .set_active(SETTINGS.processes_show_id());
@@ -160,6 +183,14 @@ impl ResSettingsDialog {
             .set_active(SETTINGS.processes_show_drive_write_speed());
         imp.processes_show_drive_write_total_row
             .set_active(SETTINGS.processes_show_drive_write_total());
+        imp.processes_show_gpu_row
+            .set_active(SETTINGS.processes_show_gpu());
+        imp.processes_show_gpu_mem_row
+            .set_active(SETTINGS.processes_show_gpu_memory());
+        imp.processes_show_encoder_row
+            .set_active(SETTINGS.processes_show_encoder());
+        imp.processes_show_decoder_row
+            .set_active(SETTINGS.processes_show_decoder());
 
         imp.show_virtual_drives_row
             .set_active(SETTINGS.show_virtual_drives());
@@ -224,6 +255,25 @@ impl ResSettingsDialog {
                 let _ = SETTINGS.set_apps_show_drive_read_total(switch_row.is_active());
             });
 
+        imp.apps_show_gpu_row.connect_active_notify(|switch_row| {
+            let _ = SETTINGS.set_apps_show_gpu(switch_row.is_active());
+        });
+
+        imp.apps_show_gpu_mem_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_apps_show_gpu_memory(switch_row.is_active());
+            });
+
+        imp.apps_show_encoder_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_apps_show_encoder(switch_row.is_active());
+            });
+
+        imp.apps_show_decoder_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_apps_show_decoder(switch_row.is_active());
+            });
+
         imp.apps_show_drive_write_speed_row
             .connect_active_notify(|switch_row| {
                 let _ = SETTINGS.set_apps_show_drive_write_speed(switch_row.is_active());
@@ -272,6 +322,26 @@ impl ResSettingsDialog {
         imp.processes_show_drive_write_total_row
             .connect_active_notify(|switch_row| {
                 let _ = SETTINGS.set_processes_show_drive_write_total(switch_row.is_active());
+            });
+
+        imp.processes_show_gpu_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_processes_show_gpu(switch_row.is_active());
+            });
+
+        imp.processes_show_gpu_mem_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_processes_show_gpu_memory(switch_row.is_active());
+            });
+
+        imp.processes_show_encoder_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_processes_show_encoder(switch_row.is_active());
+            });
+
+        imp.processes_show_decoder_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_processes_show_decoder(switch_row.is_active());
             });
 
         imp.show_virtual_drives_row

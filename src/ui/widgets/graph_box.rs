@@ -3,6 +3,8 @@ use gtk::glib;
 
 use crate::config::PROFILE;
 
+use super::graph::ResGraph;
+
 mod imp {
     use crate::ui::widgets::graph::ResGraph;
 
@@ -66,24 +68,8 @@ impl ResGraphBox {
         glib::Object::new::<Self>()
     }
 
-    pub fn set_data_points_max_amount(&self, max_amount: usize) {
-        let imp = self.imp();
-        imp.graph.set_data_points_max_amount(max_amount);
-    }
-
-    pub fn set_graph_color(&self, r: u8, g: u8, b: u8) {
-        let imp = self.imp();
-        imp.graph.set_graph_color(r, g, b);
-    }
-
-    pub fn set_graph_visible(&self, visible: bool) {
-        let imp = self.imp();
-        imp.graph.set_visible(visible);
-    }
-
-    pub fn push_data_point(&self, data: f64) {
-        let imp = self.imp();
-        imp.graph.push_data_point(data);
+    pub fn graph(&self) -> ResGraph {
+        self.imp().graph.get()
     }
 
     pub fn set_title_label(&self, str: &str) {
@@ -99,20 +85,5 @@ impl ResGraphBox {
     pub fn set_tooltip(&self, str: Option<&str>) {
         let imp = self.imp();
         imp.info_label.set_tooltip_text(str);
-    }
-
-    pub fn set_graph_height_request(&self, height_request: i32) {
-        let imp = self.imp();
-        imp.graph.set_height_request(height_request);
-    }
-
-    pub fn set_locked_max_y(&self, y_max: Option<f64>) {
-        let imp = self.imp();
-        imp.graph.set_locked_max_y(y_max);
-    }
-
-    pub fn get_highest_value(&self) -> f64 {
-        let imp = self.imp();
-        imp.graph.get_highest_value()
     }
 }

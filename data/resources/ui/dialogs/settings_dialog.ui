@@ -115,6 +115,26 @@
                 <property name="title" translatable="yes">Drive Write Total</property>
               </object>
             </child>
+            <child>
+              <object class="AdwSwitchRow" id="apps_show_gpu_row">
+                <property name="title" translatable="yes">GPU</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="apps_show_gpu_mem_row">
+                <property name="title" translatable="yes">Video Memory</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="apps_show_encoder_row">
+                <property name="title" translatable="yes">Video Encoder</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="apps_show_decoder_row">
+                <property name="title" translatable="yes">Video Decoder</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
@@ -164,6 +184,26 @@
             <child>
               <object class="AdwSwitchRow" id="processes_show_drive_write_total_row">
                 <property name="title" translatable="yes">Drive Write Total</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_gpu_row">
+                <property name="title" translatable="yes">GPU</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_gpu_mem_row">
+                <property name="title" translatable="yes">Video Memory</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_encoder_row">
+                <property name="title" translatable="yes">Video Encoder</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_decoder_row">
+                <property name="title" translatable="yes">Video Decoder</property>
               </object>
             </child>
           </object>
