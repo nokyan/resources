@@ -338,7 +338,7 @@ impl ProcessData {
     }
 
     async fn gpu_usage_stats(proc_path: &PathBuf, pid: i32) -> BTreeMap<String, GpuUsageStats> {
-        let nvidia_stats = Self::nvidia_gpu_usage_stats(pid).await.unwrap_or_default();
+        let nvidia_stats = Self::nvidia_gpu_stats_all(pid).await.unwrap_or_default();
         let mut other_stats = Self::other_gpu_usage_stats(proc_path, pid)
             .await
             .unwrap_or_default();
@@ -495,20 +495,19 @@ impl ProcessData {
         bail!("unable to find gpu information in this fdinfo");
     }
 
-    async fn nvidia_gpu_usage_stats(pid: i32) -> Result<BTreeMap<String, GpuUsageStats>> {
+    async fn nvidia_gpu_stats_all(pid: i32) -> Result<BTreeMap<String, GpuUsageStats>> {
         let mut return_map = BTreeMap::new();
 
         for (pci_slot, _) in NVML_DEVICES.iter() {
-            return_map.insert(
-                pci_slot.to_owned(),
-                Self::read_nvidia_gpu_stats(pid, &pci_slot).await?,
-            );
+            if let Ok(stats) = Self::nvidia_gpu_stats(pid, &pci_slot).await {
+                return_map.insert(pci_slot.to_owned(), stats);
+            }
         }
 
         Ok(return_map)
     }
 
-    async fn read_nvidia_gpu_stats<S: AsRef<str>>(pid: i32, pci_slot: S) -> Result<GpuUsageStats> {
+    async fn nvidia_gpu_stats<S: AsRef<str>>(pid: i32, pci_slot: S) -> Result<GpuUsageStats> {
         // layout: (gfx_usage, enc_usage, dec_usage)
         let this_process_stats = NVIDIA_PROCESSES_STATS
             .read()
