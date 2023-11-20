@@ -103,6 +103,8 @@ impl Process {
 
                 process.1.read_exact(&mut len_bytes).await?;
 
+                let len = usize::from_le_bytes(len_bytes);
+
                 let mut output_bytes = vec![0; len];
                 process.1.read_exact(&mut output_bytes).await?;
 
