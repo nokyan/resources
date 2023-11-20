@@ -96,14 +96,12 @@ impl Process {
         if *IS_FLATPAK {
             let output = {
                 let mut process = OTHER_PROCESS.lock().await;
-                let _ = process.0.write_all(&['\n' as u8]).await;
+                let _ = process.0.write_all(&[b'\n']).await;
                 let _ = process.0.flush().await;
 
-                let mut len_bytes = [0 as u8; (usize::BITS / 8) as usize];
+                let mut len_bytes = [0_u8; (usize::BITS / 8) as usize];
 
                 process.1.read_exact(&mut len_bytes).await?;
-
-                let len = usize::from_le_bytes(len_bytes);
 
                 let mut output_bytes = vec![0; len];
                 process.1.read_exact(&mut output_bytes).await?;
@@ -111,7 +109,8 @@ impl Process {
                 output_bytes
             };
 
-            return Ok(rmp_serde::from_slice::<Vec<ProcessData>>(&output)?);
+            return rmp_serde::from_slice::<Vec<ProcessData>>(&output)
+                .context("error decoding resources-processes' output");
         }
 
         let mut tasks = JoinSet::new();

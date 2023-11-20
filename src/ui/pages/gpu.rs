@@ -241,12 +241,12 @@ impl ResGPU {
             imp.encode_decode_usage.set_visible(true);
             imp.encode_decode_usage
                 .start_graph()
-                .push_data_point(encode_fraction.into());
+                .push_data_point(encode_fraction);
             imp.encode_decode_usage
                 .set_start_subtitle(&format!("{} %", (encode_fraction * 100.0).round()));
             imp.encode_decode_usage
                 .end_graph()
-                .push_data_point(decode_fraction.into());
+                .push_data_point(decode_fraction);
             imp.encode_decode_usage
                 .set_end_subtitle(&format!("{} %", (decode_fraction * 100.0).round()));
         } else {

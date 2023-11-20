@@ -1,5 +1,5 @@
 use anyhow::{anyhow, bail, Context, Result};
-use futures_util::future::join_all;
+use glob::glob;
 use nparse::KVStrToJson;
 use nvml_wrapper::enums::device::UsedGpuMemory;
 use nvml_wrapper::error::NvmlError;
@@ -14,6 +14,7 @@ use std::path::Path;
 use std::sync::Arc;
 use std::{path::PathBuf, time::SystemTime};
 use tokio::sync::{Mutex, RwLock};
+use tokio::task::JoinSet;
 
 static PAGESIZE: Lazy<usize> = Lazy::new(sysconf::pagesize);
 
@@ -66,7 +67,7 @@ static NVIDIA_PROCESSES_STATS: Lazy<RwLock<HashMap<String, Vec<ProcessUtilizatio
 static NVIDIA_PROCESS_INFOS: Lazy<RwLock<HashMap<String, Vec<ProcessInfo>>>> =
     Lazy::new(|| RwLock::new(HashMap::new()));
 
-#[derive(Debug, Clone, Default, Hash, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Hash, PartialEq, Eq, Serialize, Deserialize, Copy)]
 pub enum Containerization {
     #[default]
     None,
@@ -173,6 +174,26 @@ impl ProcessData {
             infos.clear();
             infos.extend(Self::nvidia_process_infos());
         }
+    }
+
+    pub async fn all_process_data() -> Result<Vec<Self>> {
+        Self::update_nvidia_stats().await;
+
+        let mut tasks = JoinSet::new();
+
+        for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
+            tasks.spawn(async move { ProcessData::try_from_path(entry).await });
+        }
+
+        let mut process_data = Vec::with_capacity(tasks.len());
+
+        while let Some(task) = tasks.join_next().await {
+            if let Ok(data) = task.unwrap() {
+                process_data.push(data);
+            }
+        }
+
+        Ok(process_data)
     }
 
     pub async fn try_from_path(proc_path: PathBuf) -> Result<Self> {
@@ -332,20 +353,16 @@ impl ProcessData {
         let fdinfo_path = proc_path.join("fdinfo");
         let mut dir = tokio::fs::read_dir(fdinfo_path).await?;
 
-        let return_map = Arc::new(Mutex::new(BTreeMap::new()));
-
         let seen_fds = Arc::new(Mutex::new(HashSet::new()));
 
-        let mut handles = Vec::new();
+        let mut tasks = JoinSet::new();
 
         while let Ok(Some(entry)) = dir.next_entry().await {
             let fd_path = entry.path();
 
-            let return_map = Arc::clone(&return_map);
-
             let seen_fds = Arc::clone(&seen_fds);
 
-            let handle = tokio::task::spawn(async move {
+            tasks.spawn(async move {
                 let metadata = tokio::fs::metadata(&fd_path).await?;
 
                 // if our fd is 0, 1 or 2 it's probably just a std stream so skip it
@@ -383,41 +400,36 @@ impl ProcessData {
 
                 seen_fds.lock().await.insert(fd_num);
 
-                let stats = Self::read_fdinfo(&fd_path).await;
-
-                if let Ok(stats) = stats {
-                    return_map
-                        .lock()
-                        .await
-                        .entry(stats.0)
-                        .and_modify(|existing_value: &mut GpuUsageStats| {
-                            if stats.1.gfx > existing_value.gfx {
-                                existing_value.gfx = stats.1.gfx;
-                                existing_value.gfx_timestamp = stats.1.gfx_timestamp;
-                            }
-                            if stats.1.dec > existing_value.dec {
-                                existing_value.dec = stats.1.dec;
-                                existing_value.dec_timestamp = stats.1.dec_timestamp;
-                            }
-                            if stats.1.enc > existing_value.enc {
-                                existing_value.enc = stats.1.enc;
-                                existing_value.enc_timestamp = stats.1.enc_timestamp;
-                            }
-                            if stats.1.mem > existing_value.mem {
-                                existing_value.mem = stats.1.mem;
-                            }
-                        })
-                        .or_insert(stats.1);
-                }
-                Ok(())
+                Self::read_fdinfo(&fd_path).await
             });
-
-            handles.push(handle);
         }
 
-        join_all(handles).await;
+        let mut return_map = BTreeMap::new();
 
-        let return_map = Arc::into_inner(return_map).unwrap().into_inner();
+        while let Some(stats) = tasks.join_next().await {
+            if let Ok(stats) = stats.unwrap() {
+                return_map
+                    .entry(stats.0)
+                    .and_modify(|existing_value: &mut GpuUsageStats| {
+                        if stats.1.gfx > existing_value.gfx {
+                            existing_value.gfx = stats.1.gfx;
+                            existing_value.gfx_timestamp = stats.1.gfx_timestamp;
+                        }
+                        if stats.1.dec > existing_value.dec {
+                            existing_value.dec = stats.1.dec;
+                            existing_value.dec_timestamp = stats.1.dec_timestamp;
+                        }
+                        if stats.1.enc > existing_value.enc {
+                            existing_value.enc = stats.1.enc;
+                            existing_value.enc_timestamp = stats.1.enc_timestamp;
+                        }
+                        if stats.1.mem > existing_value.mem {
+                            existing_value.mem = stats.1.mem;
+                        }
+                    })
+                    .or_insert(stats.1);
+            }
+        }
 
         Ok(return_map)
     }
@@ -477,7 +489,7 @@ impl ProcessData {
                 nvidia: false,
             };
 
-            return Ok((pci_slot.to_string(), stats, client_id));
+            return Ok((pci_slot, stats, client_id));
         }
 
         bail!("unable to find gpu information in this fdinfo");

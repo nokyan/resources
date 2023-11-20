@@ -119,13 +119,13 @@ impl Drive {
             if block_device.is_empty() {
                 continue;
             }
-            list.push(entry.path().into());
+            list.push(entry.path());
         }
         Ok(list)
     }
 
     pub fn display_name(&self, capacity: f64) -> String {
-        let capacity_formatted = convert_storage(capacity as f64, true);
+        let capacity_formatted = convert_storage(capacity, true);
         match self.drive_type {
             DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),
             DriveType::Floppy => i18n("Floppy Drive"),

@@ -393,7 +393,7 @@ impl AppsContext {
                 cpu_time_ratio: process.cpu_time_ratio(),
                 commandline: Process::sanitize_cmdline(process.data.commandline.clone())
                     .unwrap_or(full_comm),
-                containerization: process.data.containerization.clone(),
+                containerization: process.data.containerization,
                 cgroup: process.data.cgroup.clone(),
                 uid: process.data.uid,
                 read_speed: process.read_speed(),

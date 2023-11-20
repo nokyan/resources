@@ -244,7 +244,7 @@ impl MainWindow {
                 self.add_page(&page, &title, &title)
             };
 
-            page.init(&gpu, i);
+            page.init(gpu, i);
 
             imp.gpu_pages
                 .borrow_mut()

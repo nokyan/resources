@@ -226,9 +226,9 @@ pub async fn get_temperature() -> Result<f32> {
                 .await
                 .as_deref()
             {
-                Ok("zenpower\n") => std::mem::drop(ZENPOWER.set(path.join("temp1_input").into())),
-                Ok("coretemp\n") => std::mem::drop(CORETEMP.set(path.join("temp1_input").into())),
-                Ok("k10temp\n") => std::mem::drop(K10TEMP.set(path.join("temp1_input").into())),
+                Ok("zenpower\n") => std::mem::drop(ZENPOWER.set(path.join("temp1_input"))),
+                Ok("coretemp\n") => std::mem::drop(CORETEMP.set(path.join("temp1_input"))),
+                Ok("k10temp\n") => std::mem::drop(K10TEMP.set(path.join("temp1_input"))),
                 Ok(_) | Err(_) => {
                     continue;
                 }
@@ -241,8 +241,8 @@ pub async fn get_temperature() -> Result<f32> {
                 .await
                 .as_deref()
             {
-                Ok("x86_pkg_temp\n") => std::mem::drop(X86_PKG_TEMP.set(path.join("temp").into())),
-                Ok("acpitz\n") => std::mem::drop(ACPI.set(path.join("temp").into())),
+                Ok("x86_pkg_temp\n") => std::mem::drop(X86_PKG_TEMP.set(path.join("temp"))),
+                Ok("acpitz\n") => std::mem::drop(ACPI.set(path.join("temp"))),
                 Ok(_) | Err(_) => {
                     continue;
                 }

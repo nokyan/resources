@@ -1,6 +1,7 @@
 use std::{
     collections::HashMap,
     ffi::OsString,
+    fmt::Display,
     path::{Path, PathBuf},
 };
 
@@ -97,8 +98,27 @@ pub struct NetworkInterface {
     sent_bytes_path: PathBuf,
 }
 
-impl InterfaceType {
-    pub fn to_string(&self) -> String {
+impl Display for InterfaceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
+                InterfaceType::Bridge => i18n("Network Bridge"),
+                InterfaceType::Ethernet => i18n("Ethernet Connection"),
+                InterfaceType::InfiniBand => i18n("InfiniBand Connection"),
+                InterfaceType::Slip => i18n("Serial Line IP Connection"),
+                InterfaceType::VirtualEthernet => i18n("Virtual Ethernet Device"),
+                InterfaceType::VmBridge => i18n("VM Network Bridge"),
+                InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
+                InterfaceType::Wlan => i18n("Wi-Fi Connection"),
+                InterfaceType::Wwan => i18n("WWAN Connection"),
+                InterfaceType::Unknown => i18n("Network Interface"),
+            }
+        )
+    }
+    /*pub fn to_string(&self) -> String {
         match self {
             InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
             InterfaceType::Bridge => i18n("Network Bridge"),
@@ -112,7 +132,7 @@ impl InterfaceType {
             InterfaceType::Wwan => i18n("WWAN Connection"),
             InterfaceType::Unknown => i18n("Network Interface"),
         }
-    }
+    }*/
 }
 
 impl PartialEq for NetworkInterface {
@@ -133,7 +153,7 @@ impl NetworkInterface {
             if block_device.starts_with("lo") {
                 continue;
             }
-            list.push(entry.path().into());
+            list.push(entry.path());
         }
         Ok(list)
     }

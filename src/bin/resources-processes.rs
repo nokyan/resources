@@ -1,12 +1,8 @@
-use anyhow::{Context, Result};
-use futures::future::join_all;
-use glob::glob;
+use anyhow::Result;
 use process_data::ProcessData;
 use std::io::Write;
-use std::sync::Arc;
 use std::time::Duration;
 use tokio::io::AsyncReadExt;
-use tokio::sync::Mutex;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -21,16 +17,17 @@ async fn main() -> Result<()> {
 
         match result {
             Ok(_) => {
-                let data = process_data_as_bytes().await.unwrap_or_default();
+                let data = ProcessData::all_process_data().await?;
+                let encoded = rmp_serde::encode::to_vec(&*data)?;
 
-                let len_byte_array = data.len().to_le_bytes();
+                let len_byte_array = encoded.len().to_le_bytes();
 
                 let stdout = std::io::stdout();
                 let mut handle = stdout.lock();
 
                 let _ = handle.write_all(&len_byte_array);
 
-                let _ = handle.write_all(&data);
+                let _ = handle.write_all(&encoded);
 
                 if let Err(_) = handle.flush() {
                     break;
@@ -44,34 +41,10 @@ async fn main() -> Result<()> {
     }
 
     /*for _ in 0..15 {
-        std::hint::black_box(process_data_as_bytes().await.unwrap_or_default());
+        let data = ProcessData::all_process_data().await?;
+        let encoded = rmp_serde::encode::to_vec(&*data)?;
+        std::hint::black_box(encoded);
     }*/
 
     Ok(())
-}
-
-async fn process_data_as_bytes() -> Result<Vec<u8>> {
-    let return_vec = Arc::new(Mutex::new(Vec::new()));
-
-    ProcessData::update_nvidia_stats().await;
-
-    let mut handles = vec![];
-    for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-        let return_vec = Arc::clone(&return_vec);
-
-        let handle = tokio::task::spawn(async move {
-            if let Ok(process_data) = ProcessData::try_from_path(entry).await {
-                return_vec.lock().await.push(process_data);
-            }
-        });
-
-        handles.push(handle);
-    }
-    join_all(handles).await;
-
-    let return_vec = return_vec.lock().await;
-
-    let encoded = rmp_serde::encode::to_vec(&*return_vec)?;
-
-    Ok(encoded)
 }
