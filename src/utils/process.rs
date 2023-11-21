@@ -1,6 +1,5 @@
 use anyhow::{bail, Context, Result};
 use config::LIBEXECDIR;
-use glob::glob;
 use once_cell::sync::Lazy;
 use process_data::{pci_slot::PciSlot, Containerization, GpuUsageStats, ProcessData};
 use std::{
@@ -13,7 +12,6 @@ use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     process::{ChildStdin, ChildStdout},
     sync::Mutex,
-    task::JoinSet,
 };
 
 use crate::config;
@@ -115,21 +113,7 @@ impl Process {
                 .context("error decoding resources-processes' output");
         }
 
-        let mut tasks = JoinSet::new();
-        for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-            tasks.spawn(ProcessData::try_from_path(entry));
-        }
-
-        let mut process_data = Vec::with_capacity(tasks.len());
-        while let Some(task) = tasks.join_next().await {
-            // Unwrap is fine because the runtime stays alive
-            // Nothing should be able to panic here
-            if let Ok(data) = task.unwrap() {
-                process_data.push(data);
-            }
-        }
-
-        Ok(process_data)
+        ProcessData::all_process_data().await
     }
 
     pub fn from_process_data(process_data: ProcessData) -> Self {
