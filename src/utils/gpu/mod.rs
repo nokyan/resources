@@ -5,10 +5,12 @@ mod other;
 
 use anyhow::{anyhow, Context, Result};
 use async_trait::async_trait;
+use process_data::pci_slot::PciSlot;
 
 use std::{
     collections::HashMap,
     path::{Path, PathBuf},
+    str::FromStr,
 };
 
 use glob::glob;
@@ -24,6 +26,8 @@ const VID_NVIDIA: u16 = 4318;
 
 #[derive(Debug)]
 pub struct GpuData {
+    pub pci_slot: PciSlot,
+
     pub usage_fraction: Option<f64>,
 
     pub encode_fraction: Option<f64>,
@@ -44,6 +48,8 @@ pub struct GpuData {
 
 impl GpuData {
     pub async fn new(gpu: &Gpu) -> Self {
+        let pci_slot = gpu.pci_slot();
+
         let usage_fraction = gpu.usage().await.map(|usage| (usage as f64) / 100.0).ok();
 
         let encode_fraction = gpu
@@ -71,6 +77,7 @@ impl GpuData {
         let power_cap_max = gpu.power_cap_max().await.ok();
 
         Self {
+            pci_slot,
             usage_fraction,
             encode_fraction,
             decode_fraction,
@@ -103,7 +110,7 @@ impl Default for Gpu {
 #[async_trait]
 pub trait GpuImpl {
     fn device(&self) -> Option<&'static Device>;
-    fn pci_slot(&self) -> String;
+    fn pci_slot(&self) -> PciSlot;
     fn driver(&self) -> String;
     fn sysfs_path(&self) -> PathBuf;
     fn first_hwmon(&self) -> Option<PathBuf>;
@@ -242,7 +249,7 @@ impl Gpu {
                 "{}/hwmon/hwmon?",
                 sysfs_device_path
                     .to_str()
-                    .with_context(|| anyhow!("error transforming PathBuf to str"))?
+                    .context("error transforming PathBuf to str")?
             ))?
             .flatten()
             {
@@ -251,9 +258,12 @@ impl Gpu {
 
             let device = Device::from_vid_pid(vid, pid);
 
-            let pci_slot = uevent_contents
-                .get("PCI_SLOT_NAME")
-                .map_or_else(|| i18n("N/A"), std::string::ToString::to_string);
+            let pci_slot = PciSlot::from_str(
+                &uevent_contents
+                    .get("PCI_SLOT_NAME")
+                    .map_or_else(|| i18n("N/A"), std::string::ToString::to_string),
+            )
+            .context("can't turn PCI string to struct")?;
 
             let driver = uevent_contents
                 .get("DRIVER")
@@ -308,7 +318,7 @@ impl Gpu {
         .to_owned())
     }
 
-    pub fn pci_slot(&self) -> String {
+    pub fn pci_slot(&self) -> PciSlot {
         match self {
             Gpu::Amd(gpu) => gpu.pci_slot(),
             Gpu::Nvidia(gpu) => gpu.pci_slot(),

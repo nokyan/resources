@@ -1,11 +1,17 @@
 use anyhow::Result;
 use process_data::ProcessData;
+use rlimit::Resource;
 use std::io::Write;
 use std::time::Duration;
 use tokio::io::AsyncReadExt;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    // when there are a couple hundred processes running, we might run into the file descriptor limit
+    if let Ok(hard) = Resource::NOFILE.get_hard() {
+        let _ = Resource::NOFILE.set(hard, hard);
+    }
+
     loop {
         let mut buffer = [0; 1];
 

@@ -53,6 +53,7 @@ mod imp {
         glib::{Receiver, Sender},
         CompositeTemplate,
     };
+    use process_data::pci_slot::PciSlot;
 
     #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/net/nokyan/Resources/ui/window.ui")]
@@ -86,7 +87,7 @@ mod imp {
 
         pub network_pages: RefCell<HashMap<PathBuf, adw::ToolbarView>>,
 
-        pub gpu_pages: RefCell<HashMap<String, (Gpu, adw::ToolbarView)>>,
+        pub gpu_pages: RefCell<HashMap<PciSlot, (Gpu, adw::ToolbarView)>>,
 
         pub apps_context: RefCell<AppsContext>,
 
@@ -291,8 +292,8 @@ impl MainWindow {
 
         let gpu_data = tokio::task::spawn(async move {
             let mut gpu_data_vec = vec![];
-            for path in &gpus {
-                let gpu_data = GpuData::new(path).await;
+            for gpu in &gpus {
+                let gpu_data = GpuData::new(gpu).await;
 
                 gpu_data_vec.push(gpu_data);
             }
@@ -362,6 +363,47 @@ impl MainWindow {
         } = refresh_data;
 
         /*
+         * Apps and processes
+         */
+
+        let mut apps_context = imp.apps_context.borrow_mut();
+        apps_context.refresh(process_data);
+
+        imp.applications.refresh_apps_list(&apps_context);
+        imp.processes.refresh_processes_list(&apps_context);
+
+        /*
+         *  Gpu
+         */
+        let gpu_pages = imp.gpu_pages.borrow();
+        for ((_, page), mut gpu_data) in gpu_pages.values().zip(gpu_data) {
+            let page = page.content().and_downcast::<ResGPU>().unwrap();
+
+            // non-NVIDIA GPUs unfortunately don't expose encoder/decoder stats centrally but
+            // rather expose them only per-process. since we've just refreshed our
+            // processes, we take the opportunity and collect the encoder/decoder for the
+            // current GPU and slip it into GpuData just in time
+
+            if gpu_data.usage_fraction.is_none() {
+                gpu_data.usage_fraction = Some(apps_context.gpu_fraction(gpu_data.pci_slot) as f64);
+            }
+
+            if gpu_data.encode_fraction.is_none() {
+                gpu_data.encode_fraction =
+                    Some(apps_context.encoder_fraction(gpu_data.pci_slot) as f64);
+            }
+
+            if gpu_data.decode_fraction.is_none() {
+                gpu_data.decode_fraction =
+                    Some(apps_context.decoder_fraction(gpu_data.pci_slot) as f64);
+            }
+
+            page.refresh_page(gpu_data);
+        }
+
+        std::mem::drop(apps_context);
+
+        /*
          * Cpu
          */
         imp.cpu.refresh_page(&cpu_data);
@@ -370,16 +412,6 @@ impl MainWindow {
          * Memory
          */
         imp.memory.refresh_page(mem_data);
-
-        /*
-         *  Gpu
-         */
-        let gpu_pages = imp.gpu_pages.borrow();
-        for ((_, page), gpu_data) in gpu_pages.values().zip(gpu_data) {
-            let page = page.content().and_downcast::<ResGPU>().unwrap();
-
-            page.refresh_page(gpu_data);
-        }
 
         /*
          *  Drives
@@ -418,16 +450,6 @@ impl MainWindow {
 
             page.refresh_page(network_data);
         }
-
-        /*
-         * Apps and processes
-         */
-
-        let mut apps_context = imp.apps_context.borrow_mut();
-        apps_context.refresh(process_data);
-
-        imp.applications.refresh_apps_list(&apps_context);
-        imp.processes.refresh_processes_list(&apps_context);
     }
 
     async fn periodic_refresh_all(&self, gpus: Vec<Gpu>) {

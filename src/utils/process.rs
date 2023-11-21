@@ -2,7 +2,7 @@ use anyhow::{bail, Context, Result};
 use config::LIBEXECDIR;
 use glob::glob;
 use once_cell::sync::Lazy;
-use process_data::{Containerization, GpuUsageStats, ProcessData};
+use process_data::{pci_slot::PciSlot, Containerization, GpuUsageStats, ProcessData};
 use std::{
     collections::BTreeMap,
     process::{Command, Stdio},
@@ -52,7 +52,7 @@ pub struct Process {
     pub read_bytes_last_timestamp: Option<u64>,
     pub write_bytes_last: Option<u64>,
     pub write_bytes_last_timestamp: Option<u64>,
-    pub gpu_usage_stats_last: BTreeMap<String, GpuUsageStats>,
+    pub gpu_usage_stats_last: BTreeMap<PciSlot, GpuUsageStats>,
 }
 
 // TODO: Better name?
@@ -342,80 +342,77 @@ impl Process {
 
     #[must_use]
     pub fn gpu_usage(&self) -> f32 {
-        if self.gpu_usage_stats_last.is_empty() {
-            0.0
-        } else {
-            let gpus = self.data.gpu_usage_stats.len() as f32;
-            let usage_delta: f32 = self
-                .data
-                .gpu_usage_stats
-                .values()
-                .zip(self.gpu_usage_stats_last.values())
-                .map(|(new, old)| {
-                    if new.nvidia {
-                        new.gfx as f32 / 100.0
-                    } else {
-                        ((new.gfx.saturating_sub(old.gfx) as f32)
-                            / (new.gfx_timestamp.saturating_sub(old.gfx_timestamp) as f32))
-                            .nan_default(0.0)
-                            / 1_000_000.0
-                    }
-                })
-                .sum();
-            (usage_delta / gpus).nan_default(0.0)
+        let mut returned_gpu_usage = 0.0;
+        for (gpu, usage) in self.data.gpu_usage_stats.iter() {
+            if let Some(old_usage) = self.gpu_usage_stats_last.get(gpu) {
+                let this_gpu_usage = if usage.nvidia {
+                    usage.gfx as f32 / 100.0
+                } else if old_usage.gfx == 0 {
+                    0.0
+                } else {
+                    ((usage.gfx.saturating_sub(old_usage.gfx) as f32)
+                        / (usage.gfx_timestamp.saturating_sub(old_usage.gfx_timestamp) as f32)
+                            .nan_default(0.0))
+                        / 1_000_000.0
+                };
+
+                if this_gpu_usage > returned_gpu_usage {
+                    returned_gpu_usage = this_gpu_usage;
+                }
+            }
         }
+
+        returned_gpu_usage
     }
 
     #[must_use]
     pub fn enc_usage(&self) -> f32 {
-        if self.gpu_usage_stats_last.is_empty() {
-            0.0
-        } else {
-            let gpus = self.data.gpu_usage_stats.len() as f32;
-            let usage_delta: f32 = self
-                .data
-                .gpu_usage_stats
-                .values()
-                .zip(self.gpu_usage_stats_last.values())
-                .map(|(new, old)| {
-                    if new.nvidia {
-                        new.enc as f32 / 100.0
-                    } else {
-                        ((new.enc.saturating_sub(old.enc) as f32)
-                            / (new.enc_timestamp.saturating_sub(old.enc_timestamp) as f32))
-                            .nan_default(0.0)
-                            / 1_000_000.0
-                    }
-                })
-                .sum();
-            (usage_delta / gpus).nan_default(0.0)
+        let mut returned_gpu_usage = 0.0;
+        for (gpu, usage) in self.data.gpu_usage_stats.iter() {
+            if let Some(old_usage) = self.gpu_usage_stats_last.get(gpu) {
+                let this_gpu_usage = if usage.nvidia {
+                    usage.enc as f32 / 100.0
+                } else if old_usage.enc == 0 {
+                    0.0
+                } else {
+                    ((usage.enc.saturating_sub(old_usage.enc) as f32)
+                        / (usage.enc_timestamp.saturating_sub(old_usage.enc_timestamp) as f32)
+                            .nan_default(0.0))
+                        / 1_000_000.0
+                };
+
+                if this_gpu_usage > returned_gpu_usage {
+                    returned_gpu_usage = this_gpu_usage;
+                }
+            }
         }
+
+        returned_gpu_usage
     }
 
     #[must_use]
     pub fn dec_usage(&self) -> f32 {
-        if self.gpu_usage_stats_last.is_empty() {
-            0.0
-        } else {
-            let gpus = self.data.gpu_usage_stats.len() as f32;
-            let usage_delta: f32 = self
-                .data
-                .gpu_usage_stats
-                .values()
-                .zip(self.gpu_usage_stats_last.values())
-                .map(|(new, old)| {
-                    if new.nvidia {
-                        new.dec as f32 / 100.0
-                    } else {
-                        ((new.dec.saturating_sub(old.dec) as f32)
-                            / (new.dec_timestamp.saturating_sub(old.dec_timestamp) as f32))
-                            .nan_default(0.0)
-                            / 1_000_000.0
-                    }
-                })
-                .sum();
-            (usage_delta / gpus).nan_default(0.0)
+        let mut returned_gpu_usage = 0.0;
+        for (gpu, usage) in self.data.gpu_usage_stats.iter() {
+            if let Some(old_usage) = self.gpu_usage_stats_last.get(gpu) {
+                let this_gpu_usage = if usage.nvidia {
+                    usage.dec as f32 / 100.0
+                } else if old_usage.dec == 0 {
+                    0.0
+                } else {
+                    ((usage.dec.saturating_sub(old_usage.dec) as f32)
+                        / (usage.dec_timestamp.saturating_sub(old_usage.dec_timestamp) as f32)
+                            .nan_default(0.0))
+                        / 1_000_000.0
+                };
+
+                if this_gpu_usage > returned_gpu_usage {
+                    returned_gpu_usage = this_gpu_usage;
+                }
+            }
         }
+
+        returned_gpu_usage
     }
 
     #[must_use]

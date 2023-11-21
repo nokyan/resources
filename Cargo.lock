@@ -1306,8 +1306,6 @@ dependencies = [
  "anyhow",
  "glob",
  "libc",
- "nix",
- "nparse",
  "nvml-wrapper",
  "once_cell",
  "regex",
@@ -1433,6 +1431,7 @@ dependencies = [
  "pretty_env_logger",
  "process-data",
  "regex",
+ "rlimit",
  "rmp-serde",
  "rust-ini",
  "serde",
@@ -1443,6 +1442,15 @@ dependencies = [
  "tokio",
  "unescape",
  "uzers",
+]
+
+[[package]]
+name = "rlimit"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3560f70f30a0f16d11d01ed078a07740fe6b489667abc7c7b029155d9f21c3d8"
+dependencies = [
+ "libc",
 ]
 
 [[package]]

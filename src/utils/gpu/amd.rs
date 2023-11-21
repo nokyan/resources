@@ -1,5 +1,6 @@
 use anyhow::{bail, Result};
 use async_trait::async_trait;
+use process_data::pci_slot::PciSlot;
 
 use std::path::PathBuf;
 
@@ -11,7 +12,7 @@ use super::GpuImpl;
 
 pub struct AmdGpu {
     pub device: Option<&'static Device>,
-    pub pci_slot: String,
+    pub pci_slot: PciSlot,
     pub driver: String,
     sysfs_path: PathBuf,
     first_hwmon_path: Option<PathBuf>,
@@ -20,7 +21,7 @@ pub struct AmdGpu {
 impl AmdGpu {
     pub fn new(
         device: Option<&'static Device>,
-        pci_slot: String,
+        pci_slot: PciSlot,
         driver: String,
         sysfs_path: PathBuf,
         first_hwmon_path: Option<PathBuf>,
@@ -41,7 +42,7 @@ impl GpuImpl for AmdGpu {
         self.device
     }
 
-    fn pci_slot(&self) -> String {
+    fn pci_slot(&self) -> PciSlot {
         self.pci_slot.clone()
     }
 

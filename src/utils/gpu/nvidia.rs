@@ -1,6 +1,7 @@
 use anyhow::{bail, Context, Result};
 use async_trait::async_trait;
 use nvml_wrapper::enum_wrappers::device::{Clock, TemperatureSensor};
+use process_data::pci_slot::PciSlot;
 
 use std::path::PathBuf;
 
@@ -14,8 +15,9 @@ use super::GpuImpl;
 
 pub struct NvidiaGpu {
     pub device: Option<&'static Device>,
-    pub pci_slot: String,
+    pub pci_slot: PciSlot,
     pub driver: String,
+    pci_slot_string: String,
     sysfs_path: PathBuf,
     first_hwmon_path: Option<PathBuf>,
 }
@@ -23,7 +25,7 @@ pub struct NvidiaGpu {
 impl NvidiaGpu {
     pub fn new(
         device: Option<&'static Device>,
-        pci_slot: String,
+        pci_slot: PciSlot,
         driver: String,
         sysfs_path: PathBuf,
         first_hwmon_path: Option<PathBuf>,
@@ -32,6 +34,7 @@ impl NvidiaGpu {
             device,
             pci_slot,
             driver,
+            pci_slot_string: pci_slot.to_string(),
             sysfs_path,
             first_hwmon_path,
         }
@@ -53,7 +56,7 @@ impl GpuImpl for NvidiaGpu {
         self.device
     }
 
-    fn pci_slot(&self) -> String {
+    fn pci_slot(&self) -> PciSlot {
         self.pci_slot.clone()
     }
 
@@ -70,7 +73,7 @@ impl GpuImpl for NvidiaGpu {
     }
 
     fn name(&self) -> Result<String> {
-        let nvml_answer = Self::nvml_device(self.pci_slot())
+        let nvml_answer = Self::nvml_device(&self.pci_slot_string)
             .and_then(|dev| dev.name().context("unable to get name through NVML"));
 
         if let Ok(name) = nvml_answer {
@@ -81,7 +84,7 @@ impl GpuImpl for NvidiaGpu {
     }
 
     async fn usage(&self) -> Result<isize> {
-        let nvml_answer = Self::nvml_device(self.pci_slot()).and_then(|dev| {
+        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
             dev.utilization_rates()
                 .context("unable to get utilization rates through NVML")
         });
@@ -94,7 +97,7 @@ impl GpuImpl for NvidiaGpu {
     }
 
     async fn encode_usage(&self) -> Result<isize> {
-        let nvml_answer = Self::nvml_device(self.pci_slot()).and_then(|dev| {
+        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
             dev.encoder_utilization()
                 .context("unable to get utilization rates through NVML")
         });
@@ -107,7 +110,7 @@ impl GpuImpl for NvidiaGpu {
     }
 
     async fn decode_usage(&self) -> Result<isize> {
-        let nvml_answer = Self::nvml_device(self.pci_slot()).and_then(|dev| {
+        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
             dev.decoder_utilization()
                 .context("unable to get utilization rates through NVML")
         });
@@ -120,7 +123,7 @@ impl GpuImpl for NvidiaGpu {
     }
 
     async fn used_vram(&self) -> Result<isize> {
-        let nvml_answer = Self::nvml_device(self.pci_slot()).and_then(|dev| {
+        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
             dev.memory_info()
                 .context("unable to get memory info through NVML")
         });
@@ -133,7 +136,7 @@ impl GpuImpl for NvidiaGpu {
     }
 
     async fn total_vram(&self) -> Result<isize> {
-        let nvml_answer = Self::nvml_device(self.pci_slot()).and_then(|dev| {
+        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
             dev.memory_info()
                 .context("unable to get memory info through NVML")
         });
@@ -146,7 +149,7 @@ impl GpuImpl for NvidiaGpu {
     }
 
     async fn temperature(&self) -> Result<f64> {
-        let nvml_answer = Self::nvml_device(self.pci_slot()).and_then(|dev| {
+        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
             dev.temperature(TemperatureSensor::Gpu)
                 .context("unable to get temperatures through NVML")
         });
@@ -159,7 +162,7 @@ impl GpuImpl for NvidiaGpu {
     }
 
     async fn power_usage(&self) -> Result<f64> {
-        let nvml_answer = Self::nvml_device(self.pci_slot()).and_then(|dev| {
+        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
             dev.power_usage()
                 .context("unable to get temperatures through NVML")
         });
@@ -172,7 +175,7 @@ impl GpuImpl for NvidiaGpu {
     }
 
     async fn core_frequency(&self) -> Result<f64> {
-        let nvml_answer = Self::nvml_device(self.pci_slot()).and_then(|dev| {
+        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
             dev.clock_info(Clock::Graphics)
                 .context("unable to get temperatures through NVML")
         });
@@ -185,7 +188,7 @@ impl GpuImpl for NvidiaGpu {
     }
 
     async fn vram_frequency(&self) -> Result<f64> {
-        let nvml_answer = Self::nvml_device(self.pci_slot()).and_then(|dev| {
+        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
             dev.clock_info(Clock::Memory)
                 .context("unable to get temperatures through NVML")
         });
@@ -198,7 +201,7 @@ impl GpuImpl for NvidiaGpu {
     }
 
     async fn power_cap(&self) -> Result<f64> {
-        let nvml_answer = Self::nvml_device(self.pci_slot()).and_then(|dev| {
+        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
             dev.power_management_limit()
                 .context("unable to get temperatures through NVML")
         });
@@ -211,7 +214,7 @@ impl GpuImpl for NvidiaGpu {
     }
 
     async fn power_cap_max(&self) -> Result<f64> {
-        let nvml_answer = Self::nvml_device(self.pci_slot()).and_then(|dev| {
+        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
             dev.power_management_limit_constraints()
                 .context("unable to get temperatures through NVML")
         });

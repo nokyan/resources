@@ -1,24 +1,32 @@
+pub mod pci_slot;
+
 use anyhow::{anyhow, bail, Context, Result};
 use glob::glob;
-use nparse::KVStrToJson;
 use nvml_wrapper::enums::device::UsedGpuMemory;
 use nvml_wrapper::error::NvmlError;
 use nvml_wrapper::struct_wrappers::device::{ProcessInfo, ProcessUtilizationSample};
 use nvml_wrapper::{Device, Nvml};
 use once_cell::sync::Lazy;
+use pci_slot::PciSlot;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::os::linux::fs::MetadataExt;
-use std::path::Path;
+use std::str::FromStr;
 use std::sync::Arc;
 use std::{path::PathBuf, time::SystemTime};
+use tokio::fs::File;
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::sync::{Mutex, RwLock};
 use tokio::task::JoinSet;
 
 static PAGESIZE: Lazy<usize> = Lazy::new(sysconf::pagesize);
 
 static UID_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"Uid:\s*(\d+)").unwrap());
+
+static IO_READ_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"read_bytes:\s*(\d+)").unwrap());
+
+static IO_WRITE_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"write_bytes:\s*(\d+)").unwrap());
 
 static DRM_PDEV_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-pdev:\s*(\d{4}:\d{2}:\d{2}.\d)").unwrap());
@@ -43,14 +51,15 @@ static DRM_MEMORY_GTT_REGEX: Lazy<Regex> =
 
 static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(Nvml::init);
 
-static NVML_DEVICES: Lazy<Vec<(String, Device)>> = Lazy::new(|| {
+static NVML_DEVICES: Lazy<Vec<(PciSlot, Device)>> = Lazy::new(|| {
     if let Ok(nvml) = NVML.as_ref() {
         let device_count = nvml.device_count().unwrap_or(0);
-        let mut return_vec = Vec::new();
+        let mut return_vec = Vec::with_capacity(device_count as usize);
         for i in 0..device_count {
             if let Ok(gpu) = nvml.device_by_index(i) {
                 if let Ok(pci_slot) = gpu.pci_info().map(|pci_info| pci_info.bus_id) {
-                    let pci_slot = pci_slot.to_lowercase()[4..pci_slot.len()].to_owned();
+                    // the PCI Slot ID given by NVML has 4 additional leading zeroes, remove those for consistency
+                    let pci_slot = PciSlot::from_str(&pci_slot[4..pci_slot.len()]).unwrap();
                     return_vec.push((pci_slot, gpu));
                 }
             }
@@ -61,10 +70,10 @@ static NVML_DEVICES: Lazy<Vec<(String, Device)>> = Lazy::new(|| {
     }
 });
 
-static NVIDIA_PROCESSES_STATS: Lazy<RwLock<HashMap<String, Vec<ProcessUtilizationSample>>>> =
+static NVIDIA_PROCESSES_STATS: Lazy<RwLock<HashMap<PciSlot, Vec<ProcessUtilizationSample>>>> =
     Lazy::new(|| RwLock::new(HashMap::new()));
 
-static NVIDIA_PROCESS_INFOS: Lazy<RwLock<HashMap<String, Vec<ProcessInfo>>>> =
+static NVIDIA_PROCESS_INFOS: Lazy<RwLock<HashMap<PciSlot, Vec<ProcessInfo>>>> =
     Lazy::new(|| RwLock::new(HashMap::new()));
 
 #[derive(Debug, Clone, Default, Hash, PartialEq, Eq, Serialize, Deserialize, Copy)]
@@ -106,7 +115,7 @@ pub struct ProcessData {
     pub write_bytes: Option<u64>,
     pub write_bytes_timestamp: Option<u64>,
     /// Key: PCI Slot ID of the GPU
-    pub gpu_usage_stats: BTreeMap<String, GpuUsageStats>,
+    pub gpu_usage_stats: BTreeMap<PciSlot, GpuUsageStats>,
 }
 
 impl ProcessData {
@@ -279,14 +288,10 @@ impl ProcessData {
             (None, None, None, None);
 
         if let Ok(io) = io.await? {
-            let io = io.kv_str_to_json().ok();
-
-            read_bytes = io.as_ref().and_then(|kv| {
-                kv.as_object().and_then(|obj| {
-                    obj.get("read_bytes")
-                        .and_then(|val| val.as_str().and_then(|s| s.parse().ok()))
-                })
-            });
+            read_bytes = IO_READ_REGEX
+                .captures(&io)
+                .and_then(|captures| captures.get(1))
+                .and_then(|capture| capture.as_str().parse::<u64>().ok());
 
             read_bytes_timestamp = if read_bytes.is_some() {
                 Some(
@@ -298,12 +303,10 @@ impl ProcessData {
                 None
             };
 
-            write_bytes = io.and_then(|kv| {
-                kv.as_object().and_then(|obj| {
-                    obj.get("write_bytes")
-                        .and_then(|val| val.as_str().and_then(|s| s.parse().ok()))
-                })
-            });
+            write_bytes = IO_WRITE_REGEX
+                .captures(&io)
+                .and_then(|captures| captures.get(1))
+                .and_then(|capture| capture.as_str().parse::<u64>().ok());
 
             write_bytes_timestamp = if write_bytes.is_some() {
                 Some(
@@ -337,7 +340,7 @@ impl ProcessData {
         })
     }
 
-    async fn gpu_usage_stats(proc_path: &PathBuf, pid: i32) -> BTreeMap<String, GpuUsageStats> {
+    async fn gpu_usage_stats(proc_path: &PathBuf, pid: i32) -> BTreeMap<PciSlot, GpuUsageStats> {
         let nvidia_stats = Self::nvidia_gpu_stats_all(pid).await.unwrap_or_default();
         let mut other_stats = Self::other_gpu_usage_stats(proc_path, pid)
             .await
@@ -349,7 +352,7 @@ impl ProcessData {
     async fn other_gpu_usage_stats(
         proc_path: &PathBuf,
         pid: i32,
-    ) -> Result<BTreeMap<String, GpuUsageStats>> {
+    ) -> Result<BTreeMap<PciSlot, GpuUsageStats>> {
         let fdinfo_path = proc_path.join("fdinfo");
         let mut dir = tokio::fs::read_dir(fdinfo_path).await?;
 
@@ -363,7 +366,8 @@ impl ProcessData {
             let seen_fds = Arc::clone(&seen_fds);
 
             tasks.spawn(async move {
-                let metadata = tokio::fs::metadata(&fd_path).await?;
+                let mut file = File::open(&fd_path).await?;
+                let metadata = file.metadata().await?;
 
                 // if our fd is 0, 1 or 2 it's probably just a std stream so skip it
                 let fd_num = fd_path
@@ -372,17 +376,21 @@ impl ProcessData {
                     .context("this fd has no filename?")?
                     .parse::<usize>()?;
                 if fd_num <= 2 {
+                    std::mem::drop(file);
                     bail!("stdin/stdout/stderr")
                 }
 
                 if !metadata.is_file() {
+                    std::mem::drop(file);
                     bail!("not a file");
                 }
 
                 // Adapted from nvtop's `is_drm_fd()`
                 // https://github.com/Syllo/nvtop/blob/master/src/extract_processinfo_fdinfo.c
+                // FIXME: Recognizes every fd as non-DRM
                 let major = unsafe { libc::major(metadata.st_rdev()) };
                 if (metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR || major != 226 {
+                    std::mem::drop(file);
                     bail!("not a DRM file")
                 }
 
@@ -395,12 +403,13 @@ impl ProcessData {
                         == 0
                 });
                 if not_unique {
+                    std::mem::drop(file);
                     bail!("not unique fd")
                 }
 
                 seen_fds.lock().await.insert(fd_num);
 
-                Self::read_fdinfo(&fd_path).await
+                Self::read_fdinfo(&mut file, metadata.len() as usize).await
             });
         }
 
@@ -434,20 +443,25 @@ impl ProcessData {
         Ok(return_map)
     }
 
-    async fn read_fdinfo<P: AsRef<Path>>(fdinfo_path: P) -> Result<(String, GpuUsageStats, i64)> {
-        let content = tokio::fs::read_to_string(fdinfo_path.as_ref()).await?;
+    async fn read_fdinfo(
+        fdinfo_file: &mut File,
+        file_size: usize,
+    ) -> Result<(PciSlot, GpuUsageStats, i64)> {
+        let mut content = String::with_capacity(file_size);
+        fdinfo_file.read_to_string(&mut content).await?;
+        fdinfo_file.flush().await?;
 
         let pci_slot = DRM_PDEV_REGEX
             .captures(&content)
             .and_then(|captures| captures.get(1))
-            .map(|capture| capture.as_str().to_owned());
+            .map(|capture| PciSlot::from_str(capture.as_str()));
 
         let client_id = DRM_CLIENT_ID_REGEX
             .captures(&content)
             .and_then(|captures| captures.get(1))
             .and_then(|capture| capture.as_str().parse::<i64>().ok());
 
-        if let (Some(pci_slot), Some(client_id)) = (pci_slot, client_id) {
+        if let (Some(Ok(pci_slot)), Some(client_id)) = (pci_slot, client_id) {
             let gfx = DRM_ENGINE_GFX_REGEX
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
@@ -470,13 +484,15 @@ impl ProcessData {
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
-                .unwrap_or_default();
+                .unwrap_or_default()
+                * 1000;
 
             let gtt = DRM_MEMORY_GTT_REGEX
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
-                .unwrap_or_default();
+                .unwrap_or_default()
+                * 1000;
 
             let stats = GpuUsageStats {
                 gfx,
@@ -495,11 +511,11 @@ impl ProcessData {
         bail!("unable to find gpu information in this fdinfo");
     }
 
-    async fn nvidia_gpu_stats_all(pid: i32) -> Result<BTreeMap<String, GpuUsageStats>> {
+    async fn nvidia_gpu_stats_all(pid: i32) -> Result<BTreeMap<PciSlot, GpuUsageStats>> {
         let mut return_map = BTreeMap::new();
 
         for (pci_slot, _) in NVML_DEVICES.iter() {
-            if let Ok(stats) = Self::nvidia_gpu_stats(pid, &pci_slot).await {
+            if let Ok(stats) = Self::nvidia_gpu_stats(pid, *pci_slot).await {
                 return_map.insert(pci_slot.to_owned(), stats);
             }
         }
@@ -507,12 +523,11 @@ impl ProcessData {
         Ok(return_map)
     }
 
-    async fn nvidia_gpu_stats<S: AsRef<str>>(pid: i32, pci_slot: S) -> Result<GpuUsageStats> {
-        // layout: (gfx_usage, enc_usage, dec_usage)
+    async fn nvidia_gpu_stats(pid: i32, pci_slot: PciSlot) -> Result<GpuUsageStats> {
         let this_process_stats = NVIDIA_PROCESSES_STATS
             .read()
             .await
-            .get(pci_slot.as_ref())
+            .get(&pci_slot)
             .context("couldn't find GPU with this PCI slot")?
             .iter()
             .filter(|process| process.pid == pid as u32)
@@ -522,7 +537,7 @@ impl ProcessData {
         let this_process_mem_stats: u64 = NVIDIA_PROCESS_INFOS
             .read()
             .await
-            .get(pci_slot.as_ref())
+            .get(&pci_slot)
             .context("couldn't find GPU with this PCI slot")?
             .iter()
             .filter(|process| process.pid == pid as u32)
@@ -545,7 +560,7 @@ impl ProcessData {
         Ok(gpu_stats)
     }
 
-    fn nvidia_process_infos() -> HashMap<String, Vec<ProcessInfo>> {
+    fn nvidia_process_infos() -> HashMap<PciSlot, Vec<ProcessInfo>> {
         let mut return_map = HashMap::new();
 
         for (pci_slot, gpu) in NVML_DEVICES.iter() {
@@ -558,7 +573,7 @@ impl ProcessData {
         return_map
     }
 
-    fn nvidia_process_stats() -> HashMap<String, Vec<ProcessUtilizationSample>> {
+    fn nvidia_process_stats() -> HashMap<PciSlot, Vec<ProcessUtilizationSample>> {
         let mut return_map = HashMap::new();
 
         for (pci_slot, gpu) in NVML_DEVICES.iter() {

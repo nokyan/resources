@@ -206,7 +206,7 @@ impl ResGPU {
         imp.vram_usage.graph().set_graph_color(192, 28, 40);
         imp.manufacturer
             .set_subtitle(&gpu.get_vendor().unwrap_or_else(|_| i18n("N/A")));
-        imp.pci_slot.set_subtitle(&gpu.pci_slot());
+        imp.pci_slot.set_subtitle(&gpu.pci_slot().to_string());
         imp.driver_used.set_subtitle(&gpu.driver());
     }
 
@@ -214,6 +214,7 @@ impl ResGPU {
         let imp = self.imp();
 
         let GpuData {
+            pci_slot: _,
             usage_fraction,
             encode_fraction,
             decode_fraction,
