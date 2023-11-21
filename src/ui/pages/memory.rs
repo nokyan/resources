@@ -251,6 +251,7 @@ impl ResMemory {
             (memory_fraction * 100.0).round()
         ));
         if total_swap == 0 {
+            // no swap detected
             imp.swap.graph().push_data_point(0.0);
             imp.swap.graph().set_visible(false);
             imp.swap.set_subtitle(&i18n("N/A"));
@@ -260,7 +261,7 @@ impl ResMemory {
             );
         } else {
             imp.swap.graph().push_data_point(swap_fraction);
-            imp.swap.graph().set_visible(false);
+            imp.swap.graph().set_visible(true);
             imp.swap.set_subtitle(&format!(
                 "{} / {} · {} %",
                 &convert_storage(used_swap as f64, false),
