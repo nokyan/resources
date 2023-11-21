@@ -485,14 +485,14 @@ impl ProcessData {
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 .unwrap_or_default()
-                * 1000;
+                * 1024;
 
             let gtt = DRM_MEMORY_GTT_REGEX
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 .unwrap_or_default()
-                * 1000;
+                * 1024;
 
             let stats = GpuUsageStats {
                 gfx,
