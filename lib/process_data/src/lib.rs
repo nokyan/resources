@@ -13,6 +13,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs::File;
 use std::io::{Read, Write};
+use std::os::linux::fs::MetadataExt;
 use std::str::FromStr;
 use std::sync::RwLock;
 use std::{path::PathBuf, time::SystemTime};
@@ -308,63 +309,69 @@ impl ProcessData {
         proc_path: &PathBuf,
         pid: i32,
     ) -> Result<BTreeMap<PciSlot, GpuUsageStats>> {
-        let fdinfo_path = proc_path.join("fdinfo");
-        let mut dir = std::fs::read_dir(fdinfo_path)?;
+        let fdinfo_dir = proc_path.join("fdinfo");
 
         let mut seen_fds = HashSet::new();
 
         let mut return_map = BTreeMap::new();
-        while let Some(Ok(entry)) = dir.next() {
-            let fd_path = entry.path();
+        for entry in std::fs::read_dir(fdinfo_dir)? {
+            let entry = entry?;
+            let fdinfo_path = entry.path();
 
-            let stats = {
-                let mut file = std::fs::File::open(&fd_path)?;
-                let metadata = file.metadata()?;
+            let _file = std::fs::File::open(&fdinfo_path);
+            if _file.is_err() {
+                continue;
+            }
+            let mut file = _file.unwrap();
 
-                // if our fd is 0, 1 or 2 it's probably just a std stream so skip it
-                let fd_num = fd_path
-                    .file_name()
-                    .and_then(|osstr| osstr.to_str())
-                    .context("this fd has no filename?")?
-                    .parse::<usize>()?;
-                if fd_num <= 2 {
-                    std::mem::drop(file);
-                    bail!("stdin/stdout/stderr")
+            let _metadata = file.metadata();
+            if _metadata.is_err() {
+                continue;
+            }
+            let metadata = _metadata.unwrap();
+
+            // if our fd is 0, 1 or 2 it's probably just a std stream so skip it
+            let fd_num = fdinfo_path
+                .file_name()
+                .and_then(|osstr| osstr.to_str())
+                .unwrap_or("0")
+                .parse::<usize>()
+                .unwrap_or(0);
+            if fd_num <= 2 {
+                continue;
+            }
+
+            if !metadata.is_file() {
+                continue;
+            }
+
+            // Adapted from nvtop's `is_drm_fd()`
+            // https://github.com/Syllo/nvtop/blob/master/src/extract_processinfo_fdinfo.c
+            let fd_path = fdinfo_path.to_str().map(|s| s.replace("fdinfo", "fd"));
+            if let Some(fd_path) = fd_path {
+                if let Ok(fd_metadata) = std::fs::metadata(fd_path) {
+                    let major = unsafe { libc::major(fd_metadata.st_rdev()) };
+                    if (fd_metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR || major != 226 {
+                        continue;
+                    }
                 }
+            }
 
-                if !metadata.is_file() {
-                    std::mem::drop(file);
-                    bail!("not a file");
-                }
+            // Adapted from nvtop's `processinfo_sweep_fdinfos()`
+            // https://github.com/Syllo/nvtop/blob/master/src/extract_processinfo_fdinfo.c
+            // if we've already seen the file this fd refers to, skip
+            let not_unique = seen_fds.iter().any(|seen_fd| unsafe {
+                syscalls::syscall!(syscalls::Sysno::kcmp, pid, pid, 0, fd_num, *seen_fd)
+                    .unwrap_or(0)
+                    == 0
+            });
+            if not_unique {
+                continue;
+            }
 
-                // Adapted from nvtop's `is_drm_fd()`
-                // https://github.com/Syllo/nvtop/blob/master/src/extract_processinfo_fdinfo.c
-                // FIXME: Recognizes every fd as non-DRM
-                /*let major = unsafe { libc::major(metadata.st_rdev()) };
-                if (metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR || major != 226 {
-                    std::mem::drop(file);
-                    bail!("not a DRM file")
-                }*/
+            seen_fds.insert(fd_num);
 
-                // Adapted from nvtop's `processinfo_sweep_fdinfos()`
-                // https://github.com/Syllo/nvtop/blob/master/src/extract_processinfo_fdinfo.c
-                // if we've already seen the file this fd refers to, skip
-                let not_unique = seen_fds.iter().any(|seen_fd| unsafe {
-                    syscalls::syscall!(syscalls::Sysno::kcmp, pid, pid, 0, fd_num, *seen_fd)
-                        .unwrap_or(0)
-                        == 0
-                });
-                if not_unique {
-                    std::mem::drop(file);
-                    bail!("not unique fd")
-                }
-
-                seen_fds.insert(fd_num);
-
-                Self::read_fdinfo(&mut file, metadata.len() as usize)
-            };
-
-            if let Ok(stats) = stats {
+            if let Ok(stats) = Self::read_fdinfo(&mut file, metadata.len() as usize) {
                 return_map
                     .entry(stats.0)
                     .and_modify(|existing_value: &mut GpuUsageStats| {

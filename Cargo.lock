@@ -1189,6 +1189,7 @@ version = "1.2.1"
 dependencies = [
  "anyhow",
  "glob",
+ "libc",
  "nvml-wrapper",
  "once_cell",
  "regex",
