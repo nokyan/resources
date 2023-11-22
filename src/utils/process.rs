@@ -5,7 +5,6 @@ use process_data::{Containerization, ProcessData};
 use std::process::Command;
 
 use gtk::gio::{Icon, ThemedIcon};
-use tokio::task::JoinSet;
 
 use crate::config;
 
@@ -59,16 +58,15 @@ impl Process {
     ///
     /// Will return `Err` if there are problems traversing and
     /// parsing procfs
-    pub async fn all_data() -> Result<Vec<ProcessData>> {
+    pub fn all_data() -> Result<Vec<ProcessData>> {
         if *IS_FLATPAK {
             let proxy_path = format!(
                 "{}/libexec/resources/resources-processes",
                 FLATPAK_APP_PATH.as_str()
             );
-            let command = async_process::Command::new(FLATPAK_SPAWN)
+            let command = Command::new(FLATPAK_SPAWN)
                 .args(["--host", proxy_path.as_str()])
-                .output()
-                .await?;
+                .output()?;
             let output = command.stdout;
             let proxy_output: Vec<ProcessData> =
                 rmp_serde::from_slice::<Vec<ProcessData>>(&output)?;
@@ -76,17 +74,11 @@ impl Process {
             return Ok(proxy_output);
         }
 
-        let mut tasks = JoinSet::new();
-        for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-            tasks.spawn(ProcessData::try_from_path(entry));
-        }
+        let mut process_data = vec![];
 
-        let mut process_data = Vec::with_capacity(tasks.len());
-        while let Some(task) = tasks.join_next().await {
-            // Unwrap is fine because the runtime stays alive
-            // Nothing should be able to panic here
-            if let Ok(data) = task.unwrap() {
-                process_data.push(data);
+        for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
+            if let Ok(entry) = ProcessData::try_from_path(entry) {
+                process_data.push(entry);
             }
         }
 

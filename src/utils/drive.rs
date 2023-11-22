@@ -26,13 +26,13 @@ pub struct DriveData {
 }
 
 impl DriveData {
-    pub async fn new(path: &Path) -> Self {
-        let inner = Drive::from_sysfs(&path).await.unwrap_or_default();
-        let is_virtual = inner.is_virtual().await;
-        let writable = inner.writable().await.unwrap_or_default();
-        let removable = inner.removable().await.unwrap_or_default();
-        let disk_stats = inner.sys_stats().await.unwrap_or_default();
-        let capacity = inner.capacity().await.unwrap_or_default();
+    pub fn new(path: &Path) -> Self {
+        let inner = Drive::from_sysfs(&path).unwrap_or_default();
+        let is_virtual = inner.is_virtual();
+        let writable = inner.writable().unwrap_or_default();
+        let removable = inner.removable().unwrap_or_default();
+        let disk_stats = inner.sys_stats().unwrap_or_default();
+        let capacity = inner.capacity().unwrap_or_default();
 
         Self {
             inner,
@@ -85,7 +85,7 @@ impl Drive {
     ///
     /// Will return `Err` if the are errors during
     /// reading or parsing
-    pub async fn from_sysfs<P: AsRef<Path>>(sysfs_path: P) -> Result<Drive> {
+    pub fn from_sysfs<P: AsRef<Path>>(sysfs_path: P) -> Result<Drive> {
         let path = sysfs_path.as_ref().to_path_buf();
         let block_device = path
             .file_name()
@@ -96,12 +96,8 @@ impl Drive {
         let mut drive = Self::default();
         drive.sysfs_path = path;
         drive.block_device = block_device;
-        drive.model = drive
-            .model()
-            .await
-            .ok()
-            .map(|model| model.trim().to_string());
-        drive.drive_type = drive.drive_type().await.unwrap_or_default();
+        drive.model = drive.model().ok().map(|model| model.trim().to_string());
+        drive.drive_type = drive.drive_type().unwrap_or_default();
         Ok(drive)
     }
 
@@ -111,10 +107,11 @@ impl Drive {
     ///
     /// Will return `Err` if the are errors during
     /// reading or parsing
-    pub async fn get_sysfs_paths() -> Result<Vec<PathBuf>> {
+    pub fn get_sysfs_paths() -> Result<Vec<PathBuf>> {
         let mut list = Vec::new();
-        let mut entries = tokio::fs::read_dir("/sys/block").await?;
-        while let Some(entry) = entries.next_entry().await? {
+        let mut entries = std::fs::read_dir("/sys/block")?;
+        while let Some(entry) = entries.next() {
+            let entry = entry?;
             let block_device = entry.file_name().to_string_lossy().to_string();
             if block_device.is_empty() {
                 continue;
@@ -145,9 +142,8 @@ impl Drive {
     ///
     /// Will return `Err` if the are errors during
     /// reading or parsing
-    pub async fn sys_stats(&self) -> Result<HashMap<String, usize>> {
-        let stat = tokio::fs::read_to_string(self.sysfs_path.join("stat"))
-            .await
+    pub fn sys_stats(&self) -> Result<HashMap<String, usize>> {
+        let stat = std::fs::read_to_string(self.sysfs_path.join("stat"))
             .with_context(|| format!("unable to read /sys/block/{}/stat", self.block_device))?;
 
         let captures = RE_DRIVE
@@ -166,7 +162,7 @@ impl Drive {
             .collect())
     }
 
-    async fn drive_type(&self) -> Result<DriveType> {
+    fn drive_type(&self) -> Result<DriveType> {
         if self.block_device.starts_with("nvme") {
             Ok(DriveType::Nvme)
         } else if self.block_device.starts_with("mmc") {
@@ -188,7 +184,7 @@ impl Drive {
         } else if self.block_device.starts_with("zd") {
             Ok(DriveType::ZfsVolume)
         } else if let Ok(rotational) =
-            tokio::fs::read_to_string(self.sysfs_path.join("queue/rotational")).await
+            std::fs::read_to_string(self.sysfs_path.join("queue/rotational"))
         {
             // turn rot into a boolean
             let rotational = rotational
@@ -197,7 +193,7 @@ impl Drive {
                 .map(|rot| rot != 0)?;
             if rotational {
                 Ok(DriveType::Hdd)
-            } else if self.removable().await? {
+            } else if self.removable()? {
                 Ok(DriveType::Flash)
             } else {
                 Ok(DriveType::Ssd)
@@ -213,9 +209,8 @@ impl Drive {
     ///
     /// Will return `Err` if the are errors during
     /// reading or parsing
-    pub async fn removable(&self) -> Result<bool> {
-        tokio::fs::read_to_string(self.sysfs_path.join("removable"))
-            .await?
+    pub fn removable(&self) -> Result<bool> {
+        std::fs::read_to_string(self.sysfs_path.join("removable"))?
             .replace('\n', "")
             .parse::<u8>()
             .map(|rem| rem != 0)
@@ -228,9 +223,8 @@ impl Drive {
     ///
     /// Will return `Err` if the are errors during
     /// reading or parsing
-    pub async fn writable(&self) -> Result<bool> {
-        tokio::fs::read_to_string(self.sysfs_path.join("ro"))
-            .await?
+    pub fn writable(&self) -> Result<bool> {
+        std::fs::read_to_string(self.sysfs_path.join("ro"))?
             .replace('\n', "")
             .parse::<u8>()
             .map(|ro| ro == 0)
@@ -243,9 +237,8 @@ impl Drive {
     ///
     /// Will return `Err` if the are errors during
     /// reading or parsing
-    pub async fn capacity(&self) -> Result<u64> {
-        tokio::fs::read_to_string(self.sysfs_path.join("size"))
-            .await?
+    pub fn capacity(&self) -> Result<u64> {
+        std::fs::read_to_string(self.sysfs_path.join("size"))?
             .replace('\n', "")
             .parse::<u64>()
             .map(|sectors| sectors * 512)
@@ -258,9 +251,8 @@ impl Drive {
     ///
     /// Will return `Err` if the are errors during
     /// reading or parsing
-    pub async fn model(&self) -> Result<String> {
-        tokio::fs::read_to_string(self.sysfs_path.join("device/model"))
-            .await
+    pub fn model(&self) -> Result<String> {
+        std::fs::read_to_string(self.sysfs_path.join("device/model"))
             .with_context(|| "unable to parse model sysfs file")
     }
 
@@ -270,9 +262,8 @@ impl Drive {
     ///
     /// Will return `Err` if the are errors during
     /// reading or parsing
-    pub async fn wwid(&self) -> Result<String> {
-        tokio::fs::read_to_string(self.sysfs_path.join("device/wwid"))
-            .await
+    pub fn wwid(&self) -> Result<String> {
+        std::fs::read_to_string(self.sysfs_path.join("device/wwid"))
             .with_context(|| "unable to parse wwid sysfs file")
     }
 
@@ -296,7 +287,7 @@ impl Drive {
         }
     }
 
-    pub async fn is_virtual(&self) -> bool {
+    pub fn is_virtual(&self) -> bool {
         match self.drive_type {
             DriveType::LoopDevice => true,
             DriveType::MappedDevice => true,
@@ -304,7 +295,7 @@ impl Drive {
             DriveType::RamDisk => true,
             DriveType::ZfsVolume => true,
             DriveType::Zram => true,
-            _ => self.capacity().await.unwrap_or(0) == 0,
+            _ => self.capacity().unwrap_or(0) == 0,
         }
     }
 
