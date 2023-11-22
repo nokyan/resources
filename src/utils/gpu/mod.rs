@@ -4,7 +4,6 @@ mod nvidia;
 mod other;
 
 use anyhow::{anyhow, Context, Result};
-use async_trait::async_trait;
 use process_data::pci_slot::PciSlot;
 
 use std::{
@@ -47,34 +46,26 @@ pub struct GpuData {
 }
 
 impl GpuData {
-    pub async fn new(gpu: &Gpu) -> Self {
+    pub fn new(gpu: &Gpu) -> Self {
         let pci_slot = gpu.pci_slot();
 
-        let usage_fraction = gpu.usage().await.map(|usage| (usage as f64) / 100.0).ok();
+        let usage_fraction = gpu.usage().map(|usage| (usage as f64) / 100.0).ok();
 
-        let encode_fraction = gpu
-            .encode_usage()
-            .await
-            .map(|usage| (usage as f64) / 100.0)
-            .ok();
+        let encode_fraction = gpu.encode_usage().map(|usage| (usage as f64) / 100.0).ok();
 
-        let decode_fraction = gpu
-            .decode_usage()
-            .await
-            .map(|usage| (usage as f64) / 100.0)
-            .ok();
+        let decode_fraction = gpu.decode_usage().map(|usage| (usage as f64) / 100.0).ok();
 
-        let total_vram = gpu.total_vram().await.ok();
-        let used_vram = gpu.used_vram().await.ok();
+        let total_vram = gpu.total_vram().ok();
+        let used_vram = gpu.used_vram().ok();
 
-        let clock_speed = gpu.core_frequency().await.ok();
-        let vram_speed = gpu.vram_frequency().await.ok();
+        let clock_speed = gpu.core_frequency().ok();
+        let vram_speed = gpu.vram_frequency().ok();
 
-        let temp = gpu.temperature().await.ok();
+        let temp = gpu.temperature().ok();
 
-        let power_usage = gpu.power_usage().await.ok();
-        let power_cap = gpu.power_cap().await.ok();
-        let power_cap_max = gpu.power_cap_max().await.ok();
+        let power_usage = gpu.power_usage().ok();
+        let power_cap = gpu.power_cap().ok();
+        let power_cap_max = gpu.power_cap_max().ok();
 
         Self {
             pci_slot,
@@ -107,7 +98,6 @@ impl Default for Gpu {
     }
 }
 
-#[async_trait]
 pub trait GpuImpl {
     fn device(&self) -> Option<&'static Device>;
     fn pci_slot(&self) -> PciSlot;
@@ -116,22 +106,21 @@ pub trait GpuImpl {
     fn first_hwmon(&self) -> Option<PathBuf>;
 
     fn name(&self) -> Result<String>;
-    async fn usage(&self) -> Result<isize>;
-    async fn encode_usage(&self) -> Result<isize>;
-    async fn decode_usage(&self) -> Result<isize>;
-    async fn used_vram(&self) -> Result<isize>;
-    async fn total_vram(&self) -> Result<isize>;
-    async fn temperature(&self) -> Result<f64>;
-    async fn power_usage(&self) -> Result<f64>;
-    async fn core_frequency(&self) -> Result<f64>;
-    async fn vram_frequency(&self) -> Result<f64>;
-    async fn power_cap(&self) -> Result<f64>;
-    async fn power_cap_max(&self) -> Result<f64>;
+    fn usage(&self) -> Result<isize>;
+    fn encode_usage(&self) -> Result<isize>;
+    fn decode_usage(&self) -> Result<isize>;
+    fn used_vram(&self) -> Result<isize>;
+    fn total_vram(&self) -> Result<isize>;
+    fn temperature(&self) -> Result<f64>;
+    fn power_usage(&self) -> Result<f64>;
+    fn core_frequency(&self) -> Result<f64>;
+    fn vram_frequency(&self) -> Result<f64>;
+    fn power_cap(&self) -> Result<f64>;
+    fn power_cap_max(&self) -> Result<f64>;
 
-    async fn read_sysfs_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
+    fn read_sysfs_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path().join(file);
-        tokio::fs::read_to_string(&path)
-            .await?
+        std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
             .context(format!(
@@ -142,10 +131,9 @@ pub trait GpuImpl {
             ))
     }
 
-    async fn read_device_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
+    fn read_device_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path().join("device").join(file);
-        tokio::fs::read_to_string(&path)
-            .await?
+        std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
             .context(format!(
@@ -156,10 +144,9 @@ pub trait GpuImpl {
             ))
     }
 
-    async fn read_hwmon_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
+    fn read_hwmon_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.first_hwmon().context("no hwmon found")?.join(file);
-        tokio::fs::read_to_string(&path)
-            .await?
+        std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
             .context(format!(
@@ -177,40 +164,40 @@ pub trait GpuImpl {
         Ok(self.device().context("no device")?.name().to_owned())
     }
 
-    async fn drm_usage(&self) -> Result<isize> {
-        self.read_device_int("gpu_busy_percent").await
+    fn drm_usage(&self) -> Result<isize> {
+        self.read_device_int("gpu_busy_percent")
     }
 
-    async fn drm_used_vram(&self) -> Result<isize> {
-        self.read_device_int("mem_info_vram_used").await
+    fn drm_used_vram(&self) -> Result<isize> {
+        self.read_device_int("mem_info_vram_used")
     }
 
-    async fn drm_total_vram(&self) -> Result<isize> {
-        self.read_device_int("mem_info_vram_total").await
+    fn drm_total_vram(&self) -> Result<isize> {
+        self.read_device_int("mem_info_vram_total")
     }
 
-    async fn hwmon_temperature(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("temp1_input").await? as f64 / 1000.0)
+    fn hwmon_temperature(&self) -> Result<f64> {
+        Ok(self.read_hwmon_int("temp1_input")? as f64 / 1000.0)
     }
 
-    async fn hwmon_power_usage(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("power1_average").await? as f64 / 1_000_000.0)
+    fn hwmon_power_usage(&self) -> Result<f64> {
+        Ok(self.read_hwmon_int("power1_average")? as f64 / 1_000_000.0)
     }
 
-    async fn hwmon_core_frequency(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("freq1_input").await? as f64)
+    fn hwmon_core_frequency(&self) -> Result<f64> {
+        Ok(self.read_hwmon_int("freq1_input")? as f64)
     }
 
-    async fn hwmon_vram_frequency(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("freq2_input").await? as f64)
+    fn hwmon_vram_frequency(&self) -> Result<f64> {
+        Ok(self.read_hwmon_int("freq2_input")? as f64)
     }
 
-    async fn hwmon_power_cap(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("power1_cap").await? as f64 / 1_000_000.0)
+    fn hwmon_power_cap(&self) -> Result<f64> {
+        Ok(self.read_hwmon_int("power1_cap")? as f64 / 1_000_000.0)
     }
 
-    async fn hwmon_power_cap_max(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("power1_cap_max").await? as f64 / 1_000_000.0)
+    fn hwmon_power_cap_max(&self) -> Result<f64> {
+        Ok(self.read_hwmon_int("power1_cap_max")? as f64 / 1_000_000.0)
     }
 }
 
@@ -221,12 +208,12 @@ impl Gpu {
     ///
     /// Will return `Err` if there are problems detecting
     /// the GPUs in the system
-    pub async fn get_gpus() -> Result<Vec<Gpu>> {
+    pub fn get_gpus() -> Result<Vec<Gpu>> {
         let mut gpu_vec: Vec<Gpu> = Vec::new();
         for entry in glob("/sys/class/drm/card?")?.flatten() {
             let sysfs_device_path = entry.join("device");
             let mut uevent_contents: HashMap<String, String> = HashMap::new();
-            let uevent_raw = tokio::fs::read_to_string(sysfs_device_path.join("uevent")).await?;
+            let uevent_raw = std::fs::read_to_string(sysfs_device_path.join("uevent"))?;
 
             for line in uevent_raw.trim().split('\n') {
                 let (k, v) = line
@@ -345,113 +332,102 @@ impl Gpu {
         }
     }
 
-    pub async fn usage(&self) -> Result<isize> {
+    pub fn usage(&self) -> Result<isize> {
         match self {
             Gpu::Amd(gpu) => gpu.usage(),
             Gpu::Nvidia(gpu) => gpu.usage(),
             Gpu::Intel(gpu) => gpu.usage(),
             Gpu::Other(gpu) => gpu.usage(),
         }
-        .await
     }
 
-    pub async fn encode_usage(&self) -> Result<isize> {
+    pub fn encode_usage(&self) -> Result<isize> {
         match self {
             Gpu::Amd(gpu) => gpu.encode_usage(),
             Gpu::Nvidia(gpu) => gpu.encode_usage(),
             Gpu::Intel(gpu) => gpu.encode_usage(),
             Gpu::Other(gpu) => gpu.encode_usage(),
         }
-        .await
     }
 
-    pub async fn decode_usage(&self) -> Result<isize> {
+    pub fn decode_usage(&self) -> Result<isize> {
         match self {
             Gpu::Amd(gpu) => gpu.decode_usage(),
             Gpu::Nvidia(gpu) => gpu.decode_usage(),
             Gpu::Intel(gpu) => gpu.decode_usage(),
             Gpu::Other(gpu) => gpu.decode_usage(),
         }
-        .await
     }
 
-    pub async fn used_vram(&self) -> Result<isize> {
+    pub fn used_vram(&self) -> Result<isize> {
         match self {
             Gpu::Amd(gpu) => gpu.used_vram(),
             Gpu::Nvidia(gpu) => gpu.used_vram(),
             Gpu::Intel(gpu) => gpu.used_vram(),
             Gpu::Other(gpu) => gpu.used_vram(),
         }
-        .await
     }
 
-    pub async fn total_vram(&self) -> Result<isize> {
+    pub fn total_vram(&self) -> Result<isize> {
         match self {
             Gpu::Amd(gpu) => gpu.total_vram(),
             Gpu::Nvidia(gpu) => gpu.total_vram(),
             Gpu::Intel(gpu) => gpu.total_vram(),
             Gpu::Other(gpu) => gpu.total_vram(),
         }
-        .await
     }
 
-    pub async fn temperature(&self) -> Result<f64> {
+    pub fn temperature(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.temperature(),
             Gpu::Nvidia(gpu) => gpu.temperature(),
             Gpu::Intel(gpu) => gpu.temperature(),
             Gpu::Other(gpu) => gpu.temperature(),
         }
-        .await
     }
 
-    pub async fn power_usage(&self) -> Result<f64> {
+    pub fn power_usage(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.power_usage(),
             Gpu::Nvidia(gpu) => gpu.power_usage(),
             Gpu::Intel(gpu) => gpu.power_usage(),
             Gpu::Other(gpu) => gpu.power_usage(),
         }
-        .await
     }
 
-    pub async fn core_frequency(&self) -> Result<f64> {
+    pub fn core_frequency(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.core_frequency(),
             Gpu::Nvidia(gpu) => gpu.core_frequency(),
             Gpu::Intel(gpu) => gpu.core_frequency(),
             Gpu::Other(gpu) => gpu.core_frequency(),
         }
-        .await
     }
 
-    pub async fn vram_frequency(&self) -> Result<f64> {
+    pub fn vram_frequency(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.vram_frequency(),
             Gpu::Nvidia(gpu) => gpu.vram_frequency(),
             Gpu::Intel(gpu) => gpu.vram_frequency(),
             Gpu::Other(gpu) => gpu.vram_frequency(),
         }
-        .await
     }
 
-    pub async fn power_cap(&self) -> Result<f64> {
+    pub fn power_cap(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.power_cap(),
             Gpu::Nvidia(gpu) => gpu.power_cap(),
             Gpu::Intel(gpu) => gpu.power_cap(),
             Gpu::Other(gpu) => gpu.power_cap(),
         }
-        .await
     }
 
-    pub async fn power_cap_max(&self) -> Result<f64> {
+    pub fn power_cap_max(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.power_cap_max(),
             Gpu::Nvidia(gpu) => gpu.power_cap_max(),
             Gpu::Intel(gpu) => gpu.power_cap_max(),
             Gpu::Other(gpu) => gpu.power_cap_max(),
         }
-        .await
     }
 }

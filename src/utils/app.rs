@@ -249,7 +249,7 @@ impl AppsContext {
     /// Creates a new `AppsContext` object, this operation is quite expensive
     /// so try to do it only one time during the lifetime of the program.
     /// Please call refresh() immediately after this function.
-    pub async fn new() -> AppsContext {
+    pub fn new() -> AppsContext {
         let apps: HashMap<String, App> = App::all()
             .into_iter()
             .map(|app| (app.id.clone(), app))

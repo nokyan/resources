@@ -1,5 +1,4 @@
 use anyhow::{bail, Result};
-use async_trait::async_trait;
 use process_data::pci_slot::PciSlot;
 
 use std::path::PathBuf;
@@ -36,14 +35,13 @@ impl IntelGpu {
     }
 }
 
-#[async_trait]
 impl GpuImpl for IntelGpu {
     fn device(&self) -> Option<&'static Device> {
         self.device
     }
 
     fn pci_slot(&self) -> PciSlot {
-        self.pci_slot.clone()
+        self.pci_slot
     }
 
     fn driver(&self) -> String {
@@ -62,47 +60,47 @@ impl GpuImpl for IntelGpu {
         self.drm_name()
     }
 
-    async fn usage(&self) -> Result<isize> {
-        self.drm_usage().await
+    fn usage(&self) -> Result<isize> {
+        self.drm_usage()
     }
 
-    async fn encode_usage(&self) -> Result<isize> {
+    fn encode_usage(&self) -> Result<isize> {
         bail!("encode usage not implemented for Intel")
     }
 
-    async fn decode_usage(&self) -> Result<isize> {
+    fn decode_usage(&self) -> Result<isize> {
         bail!("decode usage not implemented for Intel")
     }
 
-    async fn used_vram(&self) -> Result<isize> {
-        self.drm_used_vram().await
+    fn used_vram(&self) -> Result<isize> {
+        self.drm_used_vram()
     }
 
-    async fn total_vram(&self) -> Result<isize> {
-        self.drm_total_vram().await
+    fn total_vram(&self) -> Result<isize> {
+        self.drm_total_vram()
     }
 
-    async fn temperature(&self) -> Result<f64> {
-        self.hwmon_temperature().await
+    fn temperature(&self) -> Result<f64> {
+        self.hwmon_temperature()
     }
 
-    async fn power_usage(&self) -> Result<f64> {
-        self.hwmon_power_usage().await
+    fn power_usage(&self) -> Result<f64> {
+        self.hwmon_power_usage()
     }
 
-    async fn core_frequency(&self) -> Result<f64> {
-        Ok(self.read_sysfs_int("gt_cur_freq_mhz").await? as f64 * 1_000_000.0)
+    fn core_frequency(&self) -> Result<f64> {
+        Ok(self.read_sysfs_int("gt_cur_freq_mhz")? as f64 * 1_000_000.0)
     }
 
-    async fn vram_frequency(&self) -> Result<f64> {
-        self.hwmon_vram_frequency().await
+    fn vram_frequency(&self) -> Result<f64> {
+        self.hwmon_vram_frequency()
     }
 
-    async fn power_cap(&self) -> Result<f64> {
-        self.hwmon_power_cap().await
+    fn power_cap(&self) -> Result<f64> {
+        self.hwmon_power_cap()
     }
 
-    async fn power_cap_max(&self) -> Result<f64> {
-        self.hwmon_power_cap_max().await
+    fn power_cap_max(&self) -> Result<f64> {
+        self.hwmon_power_cap_max()
     }
 }

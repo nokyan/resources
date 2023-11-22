@@ -1,5 +1,4 @@
-use anyhow::{bail, Context, Result};
-use async_trait::async_trait;
+use anyhow::{Context, Result};
 use nvml_wrapper::enum_wrappers::device::{Clock, TemperatureSensor};
 use process_data::pci_slot::PciSlot;
 
@@ -50,14 +49,13 @@ impl NvidiaGpu {
     }
 }
 
-#[async_trait]
 impl GpuImpl for NvidiaGpu {
     fn device(&self) -> Option<&'static Device> {
         self.device
     }
 
     fn pci_slot(&self) -> PciSlot {
-        self.pci_slot.clone()
+        self.pci_slot
     }
 
     fn driver(&self) -> String {
@@ -73,156 +71,118 @@ impl GpuImpl for NvidiaGpu {
     }
 
     fn name(&self) -> Result<String> {
-        let nvml_answer = Self::nvml_device(&self.pci_slot_string)
-            .and_then(|dev| dev.name().context("unable to get name through NVML"));
-
-        if let Ok(name) = nvml_answer {
-            Ok(name)
-        } else {
-            self.drm_name()
-        }
+        Self::nvml_device(&self.pci_slot_string)
+            .and_then(|dev| dev.name().context("unable to get name through NVML"))
+            .or_else(|_| self.drm_name())
     }
 
-    async fn usage(&self) -> Result<isize> {
-        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
-            dev.utilization_rates()
-                .context("unable to get utilization rates through NVML")
-        });
-
-        if let Ok(rates) = nvml_answer {
-            Ok(rates.gpu as isize)
-        } else {
-            self.drm_usage().await
-        }
+    fn usage(&self) -> Result<isize> {
+        Self::nvml_device(&self.pci_slot_string)
+            .and_then(|dev| {
+                dev.utilization_rates()
+                    .context("unable to get utilization rates through NVML")
+            })
+            .map(|usage| usage.gpu as isize)
+            .or_else(|_| self.drm_usage())
     }
 
-    async fn encode_usage(&self) -> Result<isize> {
-        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
-            dev.encoder_utilization()
-                .context("unable to get utilization rates through NVML")
-        });
-
-        if let Ok(rates) = nvml_answer {
-            Ok(rates.utilization as isize)
-        } else {
-            bail!("encode usage not implemented for NVIDIA not using the nvidia driver")
-        }
+    fn encode_usage(&self) -> Result<isize> {
+        Self::nvml_device(&self.pci_slot_string)
+            .and_then(|dev| {
+                dev.encoder_utilization()
+                    .context("unable to get utilization rates through NVML")
+            })
+            .map(|usage| usage.utilization as isize)
+            .context("encode usage not implemented for NVIDIA not using the nvidia driver")
     }
 
-    async fn decode_usage(&self) -> Result<isize> {
-        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
-            dev.decoder_utilization()
-                .context("unable to get utilization rates through NVML")
-        });
-
-        if let Ok(rates) = nvml_answer {
-            Ok(rates.utilization as isize)
-        } else {
-            bail!("decode usage not implemented for NVIDIA not using the nvidia driver")
-        }
+    fn decode_usage(&self) -> Result<isize> {
+        Self::nvml_device(&self.pci_slot_string)
+            .and_then(|dev| {
+                dev.decoder_utilization()
+                    .context("unable to get utilization rates through NVML")
+            })
+            .map(|usage| usage.utilization as isize)
+            .context("decode usage not implemented for NVIDIA not using the nvidia driver")
     }
 
-    async fn used_vram(&self) -> Result<isize> {
-        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
-            dev.memory_info()
-                .context("unable to get memory info through NVML")
-        });
-
-        if let Ok(memory) = nvml_answer {
-            Ok(memory.used as isize)
-        } else {
-            self.drm_used_vram().await
-        }
+    fn used_vram(&self) -> Result<isize> {
+        Self::nvml_device(&self.pci_slot_string)
+            .and_then(|dev| {
+                dev.memory_info()
+                    .context("unable to get memory info through NVML")
+            })
+            .map(|memory_info| memory_info.used as isize)
+            .or_else(|_| self.drm_used_vram())
     }
 
-    async fn total_vram(&self) -> Result<isize> {
-        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
-            dev.memory_info()
-                .context("unable to get memory info through NVML")
-        });
-
-        if let Ok(rates) = nvml_answer {
-            Ok(rates.total as isize)
-        } else {
-            self.drm_total_vram().await
-        }
+    fn total_vram(&self) -> Result<isize> {
+        Self::nvml_device(&self.pci_slot_string)
+            .and_then(|dev| {
+                dev.memory_info()
+                    .context("unable to get memory info through NVML")
+            })
+            .map(|memory_info| memory_info.total as isize)
+            .or_else(|_| self.drm_total_vram())
     }
 
-    async fn temperature(&self) -> Result<f64> {
-        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
-            dev.temperature(TemperatureSensor::Gpu)
-                .context("unable to get temperatures through NVML")
-        });
-
-        if let Ok(temp) = nvml_answer {
-            Ok(temp as f64)
-        } else {
-            self.hwmon_temperature().await
-        }
+    fn temperature(&self) -> Result<f64> {
+        Self::nvml_device(&self.pci_slot_string)
+            .and_then(|dev| {
+                dev.temperature(TemperatureSensor::Gpu)
+                    .context("unable to get temperatures through NVML")
+            })
+            .map(|temp| temp as f64)
+            .or_else(|_| self.hwmon_temperature())
     }
 
-    async fn power_usage(&self) -> Result<f64> {
-        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
-            dev.power_usage()
-                .context("unable to get temperatures through NVML")
-        });
-
-        if let Ok(power_usage) = nvml_answer {
-            Ok((power_usage as f64) / 1000.0)
-        } else {
-            self.hwmon_power_usage().await
-        }
+    fn power_usage(&self) -> Result<f64> {
+        Self::nvml_device(&self.pci_slot_string)
+            .and_then(|dev| {
+                dev.power_usage()
+                    .context("unable to get power usage through NVML")
+            })
+            .map(|power_usage| (power_usage as f64) / 1000.0)
+            .or_else(|_| self.hwmon_power_usage())
     }
 
-    async fn core_frequency(&self) -> Result<f64> {
-        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
-            dev.clock_info(Clock::Graphics)
-                .context("unable to get temperatures through NVML")
-        });
-
-        if let Ok(frequency) = nvml_answer {
-            Ok((frequency as f64) * 1_000_000.0)
-        } else {
-            self.hwmon_core_frequency().await
-        }
+    fn core_frequency(&self) -> Result<f64> {
+        Self::nvml_device(&self.pci_slot_string)
+            .and_then(|dev| {
+                dev.clock_info(Clock::Graphics)
+                    .context("unable to get core frequency through NVML")
+            })
+            .map(|frequency| (frequency as f64) * 1_000_000.0)
+            .or_else(|_| self.hwmon_core_frequency())
     }
 
-    async fn vram_frequency(&self) -> Result<f64> {
-        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
-            dev.clock_info(Clock::Memory)
-                .context("unable to get temperatures through NVML")
-        });
-
-        if let Ok(frequency) = nvml_answer {
-            Ok((frequency as f64) * 1_000_000.0)
-        } else {
-            self.hwmon_vram_frequency().await
-        }
+    fn vram_frequency(&self) -> Result<f64> {
+        Self::nvml_device(&self.pci_slot_string)
+            .and_then(|dev| {
+                dev.clock_info(Clock::Memory)
+                    .context("unable to get vram frequency through NVML")
+            })
+            .map(|frequency| (frequency as f64) * 1_000_000.0)
+            .or_else(|_| self.hwmon_vram_frequency())
     }
 
-    async fn power_cap(&self) -> Result<f64> {
-        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
-            dev.power_management_limit()
-                .context("unable to get temperatures through NVML")
-        });
-
-        if let Ok(cap) = nvml_answer {
-            Ok((cap as f64) / 1000.0)
-        } else {
-            self.hwmon_power_usage().await
-        }
+    fn power_cap(&self) -> Result<f64> {
+        Self::nvml_device(&self.pci_slot_string)
+            .and_then(|dev| {
+                dev.power_management_limit()
+                    .context("unable to get power cap through NVML")
+            })
+            .map(|cap| (cap as f64) / 1000.0)
+            .or_else(|_| self.hwmon_power_usage())
     }
 
-    async fn power_cap_max(&self) -> Result<f64> {
-        let nvml_answer = Self::nvml_device(&self.pci_slot_string).and_then(|dev| {
-            dev.power_management_limit_constraints()
-                .context("unable to get temperatures through NVML")
-        });
-
-        if let Ok(constraints) = nvml_answer {
-            Ok((constraints.max_limit as f64) / 1000.0)
-        } else {
-            self.hwmon_power_cap_max().await
-        }
+    fn power_cap_max(&self) -> Result<f64> {
+        Self::nvml_device(&self.pci_slot_string)
+            .and_then(|dev| {
+                dev.power_management_limit_constraints()
+                    .context("unable to get temperatures through NVML")
+            })
+            .map(|constraints| (constraints.max_limit as f64) / 1000.0)
+            .or_else(|_| self.hwmon_power_cap_max())
     }
 }

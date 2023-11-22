@@ -4,32 +4,43 @@ use once_cell::sync::Lazy;
 use process_data::{pci_slot::PciSlot, Containerization, GpuUsageStats, ProcessData};
 use std::{
     collections::BTreeMap,
-    process::{Command, Stdio},
+    io::{Read, Write},
+    process::{ChildStdin, ChildStdout, Command, Stdio},
+    sync::Mutex,
 };
 
 use gtk::gio::{Icon, ThemedIcon};
-use tokio::{
-    io::{AsyncReadExt, AsyncWriteExt},
-    process::{ChildStdin, ChildStdout},
-    sync::Mutex,
-};
 
 use crate::config;
 
 use super::{NaNDefault, FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
 
 static OTHER_PROCESS: Lazy<Mutex<(ChildStdin, ChildStdout)>> = Lazy::new(|| {
-    let proxy_path = format!(
-        "{}/libexec/resources/resources-processes",
-        FLATPAK_APP_PATH.as_str()
-    );
+    let proxy_path = if *IS_FLATPAK {
+        format!(
+            "{}/libexec/resources/resources-processes",
+            FLATPAK_APP_PATH.as_str()
+        )
+    } else {
+        format!("{LIBEXECDIR}/resources-processes")
+    };
 
-    let child = tokio::process::Command::new(FLATPAK_SPAWN)
-        .args(["--host", proxy_path.as_str()])
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .spawn()
-        .unwrap();
+    let child = if *IS_FLATPAK {
+        Command::new(FLATPAK_SPAWN)
+            .args(["--host", proxy_path.as_str()])
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+            .unwrap()
+    } else {
+        Command::new(proxy_path)
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+            .unwrap()
+    };
 
     let stdin = child.stdin.unwrap();
     let stdout = child.stdout.unwrap();
@@ -90,30 +101,26 @@ impl Process {
     ///
     /// Will return `Err` if there are problems traversing and
     /// parsing procfs
-    pub async fn all_data() -> Result<Vec<ProcessData>> {
-        if *IS_FLATPAK {
-            let output = {
-                let mut process = OTHER_PROCESS.lock().await;
-                let _ = process.0.write_all(&[b'\n']).await;
-                let _ = process.0.flush().await;
+    pub fn all_data() -> Result<Vec<ProcessData>> {
+        let output = {
+            let mut process = OTHER_PROCESS.lock().unwrap();
+            let _ = process.0.write_all(&[b'\n']);
+            let _ = process.0.flush();
 
-                let mut len_bytes = [0_u8; (usize::BITS / 8) as usize];
+            let mut len_bytes = [0_u8; (usize::BITS / 8) as usize];
 
-                process.1.read_exact(&mut len_bytes).await?;
+            process.1.read_exact(&mut len_bytes)?;
 
-                let len = usize::from_le_bytes(len_bytes);
+            let len = usize::from_le_bytes(len_bytes);
 
-                let mut output_bytes = vec![0; len];
-                process.1.read_exact(&mut output_bytes).await?;
+            let mut output_bytes = vec![0; len];
+            process.1.read_exact(&mut output_bytes)?;
 
-                output_bytes
-            };
+            output_bytes
+        };
 
-            return rmp_serde::from_slice::<Vec<ProcessData>>(&output)
-                .context("error decoding resources-processes' output");
-        }
-
-        ProcessData::all_process_data().await
+        rmp_serde::from_slice::<Vec<ProcessData>>(&output)
+            .context("error decoding resources-processes' output")
     }
 
     pub fn from_process_data(process_data: ProcessData) -> Self {

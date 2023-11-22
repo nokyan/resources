@@ -21,11 +21,11 @@ pub struct NetworkData {
 }
 
 impl NetworkData {
-    pub async fn new(path: &Path) -> Self {
-        let inner = NetworkInterface::from_sysfs(path).await.unwrap();
+    pub fn new(path: &Path) -> Self {
+        let inner = NetworkInterface::from_sysfs(path).unwrap();
         let is_virtual = inner.is_virtual();
-        let received_bytes = inner.received_bytes().await.unwrap();
-        let sent_bytes = inner.sent_bytes().await.unwrap();
+        let received_bytes = inner.received_bytes().unwrap();
+        let sent_bytes = inner.sent_bytes().unwrap();
         let display_name = inner.display_name();
 
         Self {
@@ -145,10 +145,11 @@ impl PartialEq for NetworkInterface {
 }
 
 impl NetworkInterface {
-    pub async fn get_sysfs_paths() -> Result<Vec<PathBuf>> {
+    pub fn get_sysfs_paths() -> Result<Vec<PathBuf>> {
         let mut list = Vec::new();
-        let mut entries = tokio::fs::read_dir("/sys/class/net").await?;
-        while let Some(entry) = entries.next_entry().await? {
+        let mut entries = std::fs::read_dir("/sys/class/net")?;
+        while let Some(entry) = entries.next() {
+            let entry = entry?;
             let block_device = entry.file_name().to_string_lossy().to_string();
             if block_device.starts_with("lo") {
                 continue;
@@ -158,9 +159,8 @@ impl NetworkInterface {
         Ok(list)
     }
 
-    async fn read_uevent(uevent_path: PathBuf) -> Result<HashMap<String, String>> {
-        let entries: Vec<Vec<String>> = tokio::fs::read_to_string(uevent_path)
-            .await?
+    fn read_uevent(uevent_path: PathBuf) -> Result<HashMap<String, String>> {
+        let entries: Vec<Vec<String>> = std::fs::read_to_string(uevent_path)?
             .split('\n')
             .map(|x| x.split('=').map(str::to_string).collect())
             .collect();
@@ -181,10 +181,8 @@ impl NetworkInterface {
     /// Will return `Err` if an invalid sysfs Path has
     /// been passed or if there has been problems parsing
     /// information
-    pub async fn from_sysfs(sysfs_path: &Path) -> Result<NetworkInterface> {
-        let dev_uevent = Self::read_uevent(sysfs_path.join("device/uevent"))
-            .await
-            .unwrap_or_default();
+    pub fn from_sysfs(sysfs_path: &Path) -> Result<NetworkInterface> {
+        let dev_uevent = Self::read_uevent(sysfs_path.join("device/uevent")).unwrap_or_default();
         let interface_name = sysfs_path
             .file_name()
             .with_context(|| "invalid sysfs path")?
@@ -201,32 +199,19 @@ impl NetworkInterface {
         }
 
         let sysfs_path_clone = sysfs_path.to_owned();
-        let speed = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(sysfs_path_clone.join("speed"))
-                .await
-                .map(|x| x.parse().unwrap_or_default())
-                .ok()
-        });
+        let speed = std::fs::read_to_string(sysfs_path_clone.join("speed"))
+            .map(|x| x.parse().unwrap_or_default())
+            .ok();
 
         let sysfs_path_clone = sysfs_path.to_owned();
-        let device_name = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(sysfs_path_clone.join("device/label"))
-                .await
-                .map(|x| x.replace('\n', ""))
-                .ok()
-        });
+        let device_name = std::fs::read_to_string(sysfs_path_clone.join("device/label"))
+            .map(|x| x.replace('\n', ""))
+            .ok();
 
         let sysfs_path_clone = sysfs_path.to_owned();
-        let hw_address = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(sysfs_path_clone.join("address"))
-                .await
-                .map(|x| x.replace('\n', ""))
-                .ok()
-        });
-
-        let speed = speed.await?;
-        let device_name = device_name.await?;
-        let hw_address = hw_address.await?;
+        let hw_address = std::fs::read_to_string(sysfs_path_clone.join("address"))
+            .map(|x| x.replace('\n', ""))
+            .ok();
 
         Ok(NetworkInterface {
             interface_name: interface_name.clone(),
@@ -260,9 +245,8 @@ impl NetworkInterface {
     ///
     /// Will return `Err` if the `tx_bytes` file in sysfs
     /// is unreadable or not parsable to a `usize`
-    pub async fn received_bytes(&self) -> Result<usize> {
-        tokio::fs::read_to_string(&self.received_bytes_path)
-            .await
+    pub fn received_bytes(&self) -> Result<usize> {
+        std::fs::read_to_string(&self.received_bytes_path)
             .with_context(|| "read failure")?
             .replace('\n', "")
             .parse()
@@ -276,9 +260,8 @@ impl NetworkInterface {
     ///
     /// Will return `Err` if the `tx_bytes` file in sysfs
     /// is unreadable or not parsable to a `usize`
-    pub async fn sent_bytes(&self) -> Result<usize> {
-        tokio::fs::read_to_string(&self.sent_bytes_path)
-            .await
+    pub fn sent_bytes(&self) -> Result<usize> {
+        std::fs::read_to_string(&self.sent_bytes_path)
             .with_context(|| "read failure")?
             .replace('\n', "")
             .parse()

@@ -25,37 +25,20 @@ pub struct CpuData {
 }
 
 impl CpuData {
-    pub async fn new(logical_cpus: usize) -> Self {
-        let new_total_usage =
-            tokio::spawn(async move { get_cpu_usage(None).await.unwrap_or((0, 0)) });
+    pub fn new(logical_cpus: usize) -> Self {
+        let new_total_usage = get_cpu_usage(None).unwrap_or((0, 0));
 
-        let temperature = tokio::spawn(async move { get_temperature().await });
-
-        let mut freq_tasks = vec![];
-        let mut new_thread_usages_tasks = vec![];
-        for i in 0..logical_cpus {
-            let handle =
-                tokio::spawn(async move { get_cpu_usage(Some(i)).await.unwrap_or((0, 0)) });
-            new_thread_usages_tasks.push(handle);
-
-            let handle = tokio::spawn(async move { get_cpu_freq(i).await.unwrap_or(0) });
-            freq_tasks.push(handle);
-        }
+        let temperature = get_temperature();
 
         let mut frequencies = vec![];
-        for task in freq_tasks {
-            let freq = task.await.unwrap();
+        let mut new_thread_usages = vec![];
+        for i in 0..logical_cpus {
+            let smth = get_cpu_usage(Some(i)).unwrap_or((0, 0));
+            new_thread_usages.push(smth);
+
+            let freq = get_cpu_freq(i).unwrap_or(0);
             frequencies.push(freq);
         }
-
-        let mut new_thread_usages = vec![];
-        for task in new_thread_usages_tasks {
-            let new_thread_usage = task.await.unwrap();
-            new_thread_usages.push(new_thread_usage);
-        }
-
-        let new_total_usage = new_total_usage.await.unwrap();
-        let temperature = temperature.await.unwrap();
 
         Self {
             new_total_usage,
@@ -78,12 +61,11 @@ pub struct CPUInfo {
     pub max_speed: Option<f32>,
 }
 
-async fn lscpu() -> Result<Value> {
+fn lscpu() -> Result<Value> {
     String::from_utf8(
-        tokio::process::Command::new("lscpu")
+        std::process::Command::new("lscpu")
             .env("LC_ALL", "C")
             .output()
-            .await
             .with_context(|| "unable to run lscpu, is util-linux installed?")?
             .stdout,
     )
@@ -98,8 +80,8 @@ async fn lscpu() -> Result<Value> {
 ///
 /// Will return `Err` if the are problems during reading or parsing
 /// of the `lscpu` command
-pub async fn cpu_info() -> Result<CPUInfo> {
-    let lscpu_output = lscpu().await?;
+pub fn cpu_info() -> Result<CPUInfo> {
+    let lscpu_output = lscpu()?;
 
     let vendor_id = lscpu_output["Vendor ID"]
         .as_str()
@@ -145,11 +127,10 @@ pub async fn cpu_info() -> Result<CPUInfo> {
 ///
 /// Will return `Err` if the are problems during reading or parsing
 /// of the corresponding file in sysfs
-pub async fn get_cpu_freq(core: usize) -> Result<u64> {
-    tokio::fs::read_to_string(format!(
+pub fn get_cpu_freq(core: usize) -> Result<u64> {
+    std::fs::read_to_string(format!(
         "/sys/devices/system/cpu/cpu{core}/cpufreq/scaling_cur_freq"
     ))
-    .await
     .with_context(|| format!("unable to read scaling_cur_freq for core {core}"))?
     .replace('\n', "")
     .parse::<u64>()
@@ -180,13 +161,12 @@ fn parse_proc_stat_line(line: &[u8]) -> Result<(u64, u64)> {
     Ok((idle_time, sum))
 }
 
-async fn get_proc_stat(core: Option<usize>) -> Result<String> {
+fn get_proc_stat(core: Option<usize>) -> Result<String> {
     // the combined stats are in line 0, the other cores are in the following lines,
     // since our `core` argument starts with 0, we must add 1 to it if it's not `None`.
     let selected_line_number = core.map_or(0, |x| x + 1);
-    let proc_stat_raw = tokio::fs::read_to_string("/proc/stat")
-        .await
-        .with_context(|| "unable to read /proc/stat")?;
+    let proc_stat_raw =
+        std::fs::read_to_string("/proc/stat").with_context(|| "unable to read /proc/stat")?;
     let mut proc_stat = proc_stat_raw.split('\n').collect::<Vec<&str>>();
     proc_stat.retain(|x| x.starts_with("cpu"));
     // return an `Error` if `core` is greater than the number of cores
@@ -205,8 +185,8 @@ async fn get_proc_stat(core: Option<usize>) -> Result<String> {
 ///
 /// Will return `Err` if the are problems during reading or parsing
 /// of /proc/stat
-pub async fn get_cpu_usage(core: Option<usize>) -> Result<(u64, u64)> {
-    parse_proc_stat_line(get_proc_stat(core).await?.as_bytes())
+pub fn get_cpu_usage(core: Option<usize>) -> Result<(u64, u64)> {
+    parse_proc_stat_line(get_proc_stat(core)?.as_bytes())
 }
 
 /// Returns the CPU temperature.
@@ -214,7 +194,7 @@ pub async fn get_cpu_usage(core: Option<usize>) -> Result<(u64, u64)> {
 /// # Errors
 ///
 /// Will return `Err` if there was no way to read the CPU temperature.
-pub async fn get_temperature() -> Result<f32> {
+pub fn get_temperature() -> Result<f32> {
     if ZENPOWER.get().is_none()
         && CORETEMP.get().is_none()
         && ACPI.get().is_none()
@@ -222,10 +202,7 @@ pub async fn get_temperature() -> Result<f32> {
     {
         // collect all the known hwmons
         for path in (glob("/sys/class/hwmon/hwmon*")?).flatten() {
-            match tokio::fs::read_to_string(path.join("name"))
-                .await
-                .as_deref()
-            {
+            match std::fs::read_to_string(path.join("name")).as_deref() {
                 Ok("zenpower\n") => std::mem::drop(ZENPOWER.set(path.join("temp1_input"))),
                 Ok("coretemp\n") => std::mem::drop(CORETEMP.set(path.join("temp1_input"))),
                 Ok("k10temp\n") => std::mem::drop(K10TEMP.set(path.join("temp1_input"))),
@@ -237,10 +214,7 @@ pub async fn get_temperature() -> Result<f32> {
 
         // collect all the known thermal zones
         for path in (glob("/sys/class/thermal/thermal_zone*")?).flatten() {
-            match tokio::fs::read_to_string(path.join("type"))
-                .await
-                .as_deref()
-            {
+            match std::fs::read_to_string(path.join("type")).as_deref() {
                 Ok("x86_pkg_temp\n") => std::mem::drop(X86_PKG_TEMP.set(path.join("temp"))),
                 Ok("acpitz\n") => std::mem::drop(ACPI.set(path.join("temp"))),
                 Ok(_) | Err(_) => {
@@ -251,27 +225,26 @@ pub async fn get_temperature() -> Result<f32> {
     }
 
     if let Some(path) = ZENPOWER.get() {
-        return read_sysfs_thermal(path).await;
+        return read_sysfs_thermal(path);
     }
     if let Some(path) = K10TEMP.get() {
-        return read_sysfs_thermal(path).await;
+        return read_sysfs_thermal(path);
     }
     if let Some(path) = CORETEMP.get() {
-        return read_sysfs_thermal(path).await;
+        return read_sysfs_thermal(path);
     }
     if let Some(path) = X86_PKG_TEMP.get() {
-        return read_sysfs_thermal(path).await;
+        return read_sysfs_thermal(path);
     }
     if let Some(path) = ACPI.get() {
-        return read_sysfs_thermal(path).await;
+        return read_sysfs_thermal(path);
     }
 
     bail!("no CPU temperature sensor found")
 }
 
-async fn read_sysfs_thermal(path: &PathBuf) -> Result<f32> {
-    let temp_string = tokio::fs::read_to_string(path)
-        .await
+fn read_sysfs_thermal(path: &PathBuf) -> Result<f32> {
+    let temp_string = std::fs::read_to_string(path)
         .with_context(|| format!("unable to read {}", path.display()))?;
     temp_string
         .replace('\n', "")

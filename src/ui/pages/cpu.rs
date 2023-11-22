@@ -178,25 +178,24 @@ impl ResCPU {
         glib::Object::new::<Self>()
     }
 
-    pub async fn init(&self) {
-        self.setup_widgets().await;
+    pub fn init(&self) {
+        self.setup_widgets();
         self.setup_signals();
     }
 
-    pub async fn setup_widgets(&self) {
+    pub fn setup_widgets(&self) {
         let imp = self.imp();
 
         let cpu_info = cpu::cpu_info()
-            .await
             .with_context(|| "unable to get CPUInfo")
             .unwrap();
 
-        let old_total_usage = cpu::get_cpu_usage(None).await.unwrap_or((0, 0));
+        let old_total_usage = cpu::get_cpu_usage(None).unwrap_or((0, 0));
         imp.old_total_usage.set(old_total_usage);
 
         let logical_cpus = cpu_info.logical_cpus.unwrap_or(0);
         for i in 0..logical_cpus {
-            let old_thread_usage = cpu::get_cpu_usage(Some(i)).await.unwrap_or((0, 0));
+            let old_thread_usage = cpu::get_cpu_usage(Some(i)).unwrap_or((0, 0));
             imp.old_thread_usages.borrow_mut().push(old_thread_usage);
         }
 

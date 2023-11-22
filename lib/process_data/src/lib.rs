@@ -11,14 +11,11 @@ use pci_slot::PciSlot;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap, HashSet};
-use std::os::linux::fs::MetadataExt;
+use std::fs::File;
+use std::io::{Read, Write};
 use std::str::FromStr;
-use std::sync::Arc;
+use std::sync::RwLock;
 use std::{path::PathBuf, time::SystemTime};
-use tokio::fs::File;
-use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tokio::sync::{Mutex, RwLock};
-use tokio::task::JoinSet;
 
 static PAGESIZE: Lazy<usize> = Lazy::new(sysconf::pagesize);
 
@@ -159,8 +156,8 @@ impl ProcessData {
         }
     }
 
-    async fn get_uid(proc_path: &PathBuf) -> Result<u32> {
-        let status = tokio::fs::read_to_string(proc_path.join("status")).await?;
+    fn get_uid(proc_path: &PathBuf) -> Result<u32> {
+        let status = std::fs::read_to_string(proc_path.join("status"))?;
         if let Some(captures) = UID_REGEX.captures(&status) {
             let first_num_str = captures.get(1).context("no uid found")?;
             first_num_str
@@ -172,81 +169,41 @@ impl ProcessData {
         }
     }
 
-    pub async fn update_nvidia_stats() {
+    pub fn update_nvidia_stats() {
         {
-            let mut stats = NVIDIA_PROCESSES_STATS.write().await;
+            let mut stats = NVIDIA_PROCESSES_STATS.write().unwrap();
             stats.clear();
             stats.extend(Self::nvidia_process_stats());
         }
         {
-            let mut infos = NVIDIA_PROCESS_INFOS.write().await;
+            let mut infos = NVIDIA_PROCESS_INFOS.write().unwrap();
             infos.clear();
             infos.extend(Self::nvidia_process_infos());
         }
     }
 
-    pub async fn all_process_data() -> Result<Vec<Self>> {
-        Self::update_nvidia_stats().await;
+    pub fn all_process_data() -> Result<Vec<Self>> {
+        Self::update_nvidia_stats();
 
-        let mut tasks = JoinSet::new();
-
+        let mut process_data = vec![];
         for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-            tasks.spawn(async move { ProcessData::try_from_path(entry).await });
-        }
+            let data = ProcessData::try_from_path(entry);
 
-        let mut process_data = Vec::with_capacity(tasks.len());
-
-        while let Some(task) = tasks.join_next().await {
-            if let Ok(data) = task.unwrap() {
-                process_data.push(data);
+            if let Ok(data) = data {
+                process_data.push(data)
             }
         }
 
         Ok(process_data)
     }
 
-    pub async fn try_from_path(proc_path: PathBuf) -> Result<Self> {
-        // Stat
-        let shared_proc_path = Arc::new(proc_path.clone());
-        let stat = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(shared_proc_path.join("stat")).await
-        });
-
-        // Statm
-        let shared_proc_path = Arc::new(proc_path.clone());
-        let statm = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(shared_proc_path.join("statm")).await
-        });
-
-        // Comm
-        let shared_proc_path = Arc::new(proc_path.clone());
-        let comm = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(shared_proc_path.join("comm")).await
-        });
-
-        // Cmdline
-        let shared_proc_path = Arc::new(proc_path.clone());
-        let commandline = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(shared_proc_path.join("cmdline")).await
-        });
-
-        // Cgroup
-        let shared_proc_path = Arc::new(proc_path.clone());
-        let cgroup = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(shared_proc_path.join("cgroup")).await
-        });
-
-        // IO
-        let shared_proc_path = Arc::new(proc_path.clone());
-        let io = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(shared_proc_path.join("io")).await
-        });
-
-        let stat = stat.await??;
-        let statm = statm.await??;
-        let comm = comm.await??;
-        let commandline = commandline.await??;
-        let cgroup = cgroup.await??;
+    pub fn try_from_path(proc_path: PathBuf) -> Result<Self> {
+        let stat = std::fs::read_to_string(&proc_path.join("stat"))?;
+        let statm = std::fs::read_to_string(&proc_path.join("statm"))?;
+        let comm = std::fs::read_to_string(&proc_path.join("comm"))?;
+        let commandline = std::fs::read_to_string(&proc_path.join("cmdline"))?;
+        let cgroup = std::fs::read_to_string(&proc_path.join("cgroup"))?;
+        let io = std::fs::read_to_string(&proc_path.join("io"));
 
         let pid = proc_path
             .file_name()
@@ -255,7 +212,7 @@ impl ProcessData {
             .ok_or_else(|| anyhow!(""))?
             .parse()?;
 
-        let uid = Self::get_uid(&proc_path).await?;
+        let uid = Self::get_uid(&proc_path)?;
 
         let stat = stat
             .split(' ')
@@ -287,7 +244,7 @@ impl ProcessData {
         let (mut read_bytes, mut read_bytes_timestamp, mut write_bytes, mut write_bytes_timestamp) =
             (None, None, None, None);
 
-        if let Ok(io) = io.await? {
+        if let Ok(io) = io {
             read_bytes = IO_READ_REGEX
                 .captures(&io)
                 .and_then(|captures| captures.get(1))
@@ -319,7 +276,7 @@ impl ProcessData {
             };
         }
 
-        let gpu_usage_stats = Self::gpu_usage_stats(&proc_path, pid).await;
+        let gpu_usage_stats = Self::gpu_usage_stats(&proc_path, pid);
 
         Ok(Self {
             pid,
@@ -340,34 +297,29 @@ impl ProcessData {
         })
     }
 
-    async fn gpu_usage_stats(proc_path: &PathBuf, pid: i32) -> BTreeMap<PciSlot, GpuUsageStats> {
-        let nvidia_stats = Self::nvidia_gpu_stats_all(pid).await.unwrap_or_default();
-        let mut other_stats = Self::other_gpu_usage_stats(proc_path, pid)
-            .await
-            .unwrap_or_default();
+    fn gpu_usage_stats(proc_path: &PathBuf, pid: i32) -> BTreeMap<PciSlot, GpuUsageStats> {
+        let nvidia_stats = Self::nvidia_gpu_stats_all(pid).unwrap_or_default();
+        let mut other_stats = Self::other_gpu_usage_stats(proc_path, pid).unwrap_or_default();
         other_stats.extend(nvidia_stats.into_iter());
         other_stats
     }
 
-    async fn other_gpu_usage_stats(
+    fn other_gpu_usage_stats(
         proc_path: &PathBuf,
         pid: i32,
     ) -> Result<BTreeMap<PciSlot, GpuUsageStats>> {
         let fdinfo_path = proc_path.join("fdinfo");
-        let mut dir = tokio::fs::read_dir(fdinfo_path).await?;
+        let mut dir = std::fs::read_dir(fdinfo_path)?;
 
-        let seen_fds = Arc::new(Mutex::new(HashSet::new()));
+        let mut seen_fds = HashSet::new();
 
-        let mut tasks = JoinSet::new();
-
-        while let Ok(Some(entry)) = dir.next_entry().await {
+        let mut return_map = BTreeMap::new();
+        while let Some(Ok(entry)) = dir.next() {
             let fd_path = entry.path();
 
-            let seen_fds = Arc::clone(&seen_fds);
-
-            tasks.spawn(async move {
-                let mut file = File::open(&fd_path).await?;
-                let metadata = file.metadata().await?;
+            let stats = {
+                let mut file = std::fs::File::open(&fd_path)?;
+                let metadata = file.metadata()?;
 
                 // if our fd is 0, 1 or 2 it's probably just a std stream so skip it
                 let fd_num = fd_path
@@ -388,16 +340,16 @@ impl ProcessData {
                 // Adapted from nvtop's `is_drm_fd()`
                 // https://github.com/Syllo/nvtop/blob/master/src/extract_processinfo_fdinfo.c
                 // FIXME: Recognizes every fd as non-DRM
-                let major = unsafe { libc::major(metadata.st_rdev()) };
+                /*let major = unsafe { libc::major(metadata.st_rdev()) };
                 if (metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR || major != 226 {
                     std::mem::drop(file);
                     bail!("not a DRM file")
-                }
+                }*/
 
                 // Adapted from nvtop's `processinfo_sweep_fdinfos()`
                 // https://github.com/Syllo/nvtop/blob/master/src/extract_processinfo_fdinfo.c
                 // if we've already seen the file this fd refers to, skip
-                let not_unique = seen_fds.lock().await.iter().any(|seen_fd| unsafe {
+                let not_unique = seen_fds.iter().any(|seen_fd| unsafe {
                     syscalls::syscall!(syscalls::Sysno::kcmp, pid, pid, 0, fd_num, *seen_fd)
                         .unwrap_or(0)
                         == 0
@@ -407,16 +359,12 @@ impl ProcessData {
                     bail!("not unique fd")
                 }
 
-                seen_fds.lock().await.insert(fd_num);
+                seen_fds.insert(fd_num);
 
-                Self::read_fdinfo(&mut file, metadata.len() as usize).await
-            });
-        }
+                Self::read_fdinfo(&mut file, metadata.len() as usize)
+            };
 
-        let mut return_map = BTreeMap::new();
-
-        while let Some(stats) = tasks.join_next().await {
-            if let Ok(stats) = stats.unwrap() {
+            if let Ok(stats) = stats {
                 return_map
                     .entry(stats.0)
                     .and_modify(|existing_value: &mut GpuUsageStats| {
@@ -443,13 +391,13 @@ impl ProcessData {
         Ok(return_map)
     }
 
-    async fn read_fdinfo(
+    fn read_fdinfo(
         fdinfo_file: &mut File,
         file_size: usize,
     ) -> Result<(PciSlot, GpuUsageStats, i64)> {
         let mut content = String::with_capacity(file_size);
-        fdinfo_file.read_to_string(&mut content).await?;
-        fdinfo_file.flush().await?;
+        fdinfo_file.read_to_string(&mut content)?;
+        fdinfo_file.flush()?;
 
         let pci_slot = DRM_PDEV_REGEX
             .captures(&content)
@@ -511,11 +459,11 @@ impl ProcessData {
         bail!("unable to find gpu information in this fdinfo");
     }
 
-    async fn nvidia_gpu_stats_all(pid: i32) -> Result<BTreeMap<PciSlot, GpuUsageStats>> {
+    fn nvidia_gpu_stats_all(pid: i32) -> Result<BTreeMap<PciSlot, GpuUsageStats>> {
         let mut return_map = BTreeMap::new();
 
         for (pci_slot, _) in NVML_DEVICES.iter() {
-            if let Ok(stats) = Self::nvidia_gpu_stats(pid, *pci_slot).await {
+            if let Ok(stats) = Self::nvidia_gpu_stats(pid, *pci_slot) {
                 return_map.insert(pci_slot.to_owned(), stats);
             }
         }
@@ -523,10 +471,10 @@ impl ProcessData {
         Ok(return_map)
     }
 
-    async fn nvidia_gpu_stats(pid: i32, pci_slot: PciSlot) -> Result<GpuUsageStats> {
+    fn nvidia_gpu_stats(pid: i32, pci_slot: PciSlot) -> Result<GpuUsageStats> {
         let this_process_stats = NVIDIA_PROCESSES_STATS
             .read()
-            .await
+            .unwrap()
             .get(&pci_slot)
             .context("couldn't find GPU with this PCI slot")?
             .iter()
@@ -536,7 +484,7 @@ impl ProcessData {
 
         let this_process_mem_stats: u64 = NVIDIA_PROCESS_INFOS
             .read()
-            .await
+            .unwrap()
             .get(&pci_slot)
             .context("couldn't find GPU with this PCI slot")?
             .iter()
