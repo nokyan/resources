@@ -3,7 +3,6 @@ use nparse::KVStrToJson;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
 use std::{path::PathBuf, time::SystemTime};
 
 static PAGESIZE: Lazy<usize> = Lazy::new(sysconf::pagesize);
@@ -72,8 +71,8 @@ impl ProcessData {
         }
     }
 
-    async fn get_uid(proc_path: &PathBuf) -> Result<u32> {
-        let status = tokio::fs::read_to_string(proc_path.join("status")).await?;
+    fn get_uid(proc_path: &PathBuf) -> Result<u32> {
+        let status = std::fs::read_to_string(proc_path.join("status"))?;
         if let Some(captures) = UID_REGEX.captures(&status) {
             let first_num_str = captures.get(1).context("no uid found")?;
             first_num_str
@@ -85,48 +84,13 @@ impl ProcessData {
         }
     }
 
-    pub async fn try_from_path(proc_path: PathBuf) -> Result<Self> {
-        // Stat
-        let shared_proc_path = Arc::new(proc_path.clone());
-        let stat = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(shared_proc_path.join("stat")).await
-        });
-
-        // Statm
-        let shared_proc_path = Arc::new(proc_path.clone());
-        let statm = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(shared_proc_path.join("statm")).await
-        });
-
-        // Comm
-        let shared_proc_path = Arc::new(proc_path.clone());
-        let comm = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(shared_proc_path.join("comm")).await
-        });
-
-        // Cmdline
-        let shared_proc_path = Arc::new(proc_path.clone());
-        let commandline = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(shared_proc_path.join("cmdline")).await
-        });
-
-        // Cgroup
-        let shared_proc_path = Arc::new(proc_path.clone());
-        let cgroup = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(shared_proc_path.join("cgroup")).await
-        });
-
-        // IO
-        let shared_proc_path = Arc::new(proc_path.clone());
-        let io = tokio::task::spawn(async move {
-            tokio::fs::read_to_string(shared_proc_path.join("io")).await
-        });
-
-        let stat = stat.await??;
-        let statm = statm.await??;
-        let comm = comm.await??;
-        let commandline = commandline.await??;
-        let cgroup = cgroup.await??;
+    pub fn try_from_path(proc_path: PathBuf) -> Result<Self> {
+        let stat = std::fs::read_to_string(&proc_path.join("stat"))?;
+        let statm = std::fs::read_to_string(&proc_path.join("statm"))?;
+        let comm = std::fs::read_to_string(&proc_path.join("comm"))?;
+        let commandline = std::fs::read_to_string(&proc_path.join("cmdline"))?;
+        let cgroup = std::fs::read_to_string(&proc_path.join("cgroup"))?;
+        let io = std::fs::read_to_string(&proc_path.join("io"));
 
         let pid = proc_path
             .file_name()
@@ -135,7 +99,7 @@ impl ProcessData {
             .ok_or_else(|| anyhow!(""))?
             .parse()?;
 
-        let uid = Self::get_uid(&proc_path).await?;
+        let uid = Self::get_uid(&proc_path)?;
 
         let stat = stat
             .split(' ')
@@ -167,7 +131,7 @@ impl ProcessData {
         let (mut read_bytes, mut read_bytes_timestamp, mut write_bytes, mut write_bytes_timestamp) =
             (None, None, None, None);
 
-        if let Ok(io) = io.await? {
+        if let Ok(io) = io {
             let io = io.kv_str_to_json().ok();
 
             read_bytes = io.as_ref().and_then(|kv| {

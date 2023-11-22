@@ -1,19 +1,11 @@
 use anyhow::{Context, Result};
 use glob::glob;
 use process_data::ProcessData;
-use tokio::task::JoinSet;
 
-#[tokio::main]
-async fn main() -> Result<()> {
-    let mut tasks = JoinSet::new();
-
-    for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-        tasks.spawn(async move { ProcessData::try_from_path(entry).await });
-    }
-
+fn main() -> Result<()> {
     let mut process_data = vec![];
-    while let Some(task) = tasks.join_next().await {
-        if let Ok(data) = task.unwrap() {
+    for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
+        if let Ok(data) = ProcessData::try_from_path(entry) {
             process_data.push(data);
         }
     }

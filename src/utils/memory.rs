@@ -23,9 +23,8 @@ pub struct MemoryData {
 }
 
 impl MemoryData {
-    pub async fn new() -> Self {
-        let values = tokio::fs::read_to_string("/proc/meminfo")
-            .await
+    pub fn new() -> Self {
+        let values = std::fs::read_to_string("/proc/meminfo")
             .with_context(|| "unable to read /proc/meminfo")
             .unwrap()
             .kv_str_to_json()
@@ -77,8 +76,7 @@ impl MemoryData {
 }
 
 async fn proc_meminfo() -> Result<Value, anyhow::Error> {
-    tokio::fs::read_to_string("/proc/meminfo")
-        .await
+    std::fs::read_to_string("/proc/meminfo")
         .with_context(|| "unable to read /proc/meminfo")?
         .kv_str_to_json()
         .map_err(anyhow::Error::msg)

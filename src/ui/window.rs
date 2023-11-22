@@ -223,8 +223,8 @@ impl MainWindow {
         }
     }
 
-    async fn init_gpu_pages(self: &MainWindow) -> Vec<GPU> {
-        let gpus = GPU::get_gpus().await.unwrap_or_default();
+    fn init_gpu_pages(self: &MainWindow) -> Vec<GPU> {
+        let gpus = GPU::get_gpus().unwrap_or_default();
 
         for (i, gpu) in gpus.iter().enumerate() {
             let page = ResGPU::new();
@@ -263,73 +263,47 @@ impl MainWindow {
             imp.applications.toggle_search();
         }
 
+        *self.imp().apps_context.borrow_mut() = AppsContext::new();
+
+        self.imp().cpu.init();
+
+        self.init_gpu_pages();
+
         let main_context = MainContext::default();
         main_context.spawn_local(clone!(@strong self as this => async move {
-            let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().unwrap();
-            let _rt_guard = rt.enter();
-
-            {
-                *this.imp().apps_context.borrow_mut() = AppsContext::new().await;
-            }
-
-            this.imp().cpu.init().await;
-
-            let gpus = this.init_gpu_pages().await;
-
-            this.periodic_refresh_all(gpus).await;
+            this.periodic_refresh_all().await;
         }));
     }
 
-    async fn gather_refresh_data(logical_cpus: usize, gpus: Vec<GPU>) -> RefreshData {
-        let cpu_data = tokio::task::spawn(async move { CpuData::new(logical_cpus).await });
+    fn gather_refresh_data(logical_cpus: usize, gpus: &[GPU]) -> RefreshData {
+        let cpu_data = CpuData::new(logical_cpus);
 
-        let mem_data = tokio::task::spawn(async move { MemoryData::new().await });
+        let mem_data = MemoryData::new();
 
-        let gpu_data = tokio::task::spawn(async move {
-            let mut gpu_data_vec = vec![];
-            for path in &gpus {
-                let gpu_data = GpuData::new(path).await;
+        let mut gpu_data = vec![];
+        for gpu in gpus {
+            let data = GpuData::new(&gpu);
 
-                gpu_data_vec.push(gpu_data);
-            }
+            gpu_data.push(data);
+        }
 
-            gpu_data_vec
-        });
+        let mut drive_data = vec![];
+        let drive_paths = Drive::get_sysfs_paths().unwrap();
+        for path in &drive_paths {
+            let data = DriveData::new(path);
 
-        let drive_data = tokio::task::spawn(async move {
-            let drive_paths = Drive::get_sysfs_paths().await.unwrap();
+            drive_data.push(data);
+        }
 
-            let mut drive_data_vec = vec![];
-            for path in &drive_paths {
-                let drive_data = DriveData::new(path).await;
+        let mut network_data = vec![];
+        let network_paths = NetworkInterface::get_sysfs_paths().unwrap();
+        for path in &network_paths {
+            let data = NetworkData::new(path);
 
-                drive_data_vec.push(drive_data);
-            }
+            network_data.push(data);
+        }
 
-            (drive_paths, drive_data_vec)
-        });
-
-        let network_data = tokio::task::spawn(async move {
-            let network_paths = NetworkInterface::get_sysfs_paths().await.unwrap();
-
-            let mut network_data_vec = vec![];
-            for path in &network_paths {
-                let network_data = NetworkData::new(path).await;
-
-                network_data_vec.push(network_data);
-            }
-
-            (network_paths, network_data_vec)
-        });
-
-        let process_data = tokio::task::spawn(async move { Process::all_data().await.unwrap() });
-
-        let cpu_data = cpu_data.await.unwrap();
-        let mem_data = mem_data.await.unwrap();
-        let gpu_data = gpu_data.await.unwrap();
-        let (drive_paths, drive_data) = drive_data.await.unwrap();
-        let (network_paths, network_data) = network_data.await.unwrap();
-        let process_data = process_data.await.unwrap();
+        let process_data = Process::all_data().unwrap();
 
         RefreshData {
             cpu_data,
@@ -423,19 +397,21 @@ impl MainWindow {
         apps_context.refresh(process_data);
 
         imp.applications.refresh_apps_list(&apps_context);
+
         imp.processes.refresh_processes_list(&apps_context);
     }
 
-    async fn periodic_refresh_all(&self, gpus: Vec<GPU>) {
+    pub async fn periodic_refresh_all(&self) {
         let imp = self.imp();
+        let gpus = GPU::get_gpus().unwrap_or_default();
         let logical_cpus = imp.cpu.imp().logical_cpus_amount.get();
 
         let (tx_data, rx_data) = std::sync::mpsc::sync_channel(1);
         let (tx_wait, rx_wait) = std::sync::mpsc::sync_channel(1);
 
-        tokio::task::spawn(async move {
+        std::thread::spawn(move || {
             loop {
-                let data = Self::gather_refresh_data(logical_cpus, gpus.clone()).await;
+                let data = Self::gather_refresh_data(logical_cpus, &gpus);
                 tx_data.send(data).unwrap();
 
                 // Wait on delay so we don't gather data multiple times in a short time span
@@ -447,6 +423,7 @@ impl MainWindow {
         loop {
             // gather_refresh_data()
             let refresh_data = rx_data.recv().unwrap();
+
             self.refresh_ui(refresh_data);
 
             // Total time before next ui refresh
