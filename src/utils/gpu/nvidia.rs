@@ -1,12 +1,17 @@
 use anyhow::{Context, Result};
-use nvml_wrapper::enum_wrappers::device::{Clock, TemperatureSensor};
+use nvml_wrapper::{
+    enum_wrappers::device::{Clock, TemperatureSensor},
+    error::NvmlError,
+    Nvml,
+};
+use once_cell::sync::Lazy;
 use process_data::pci_slot::PciSlot;
 
 use std::path::PathBuf;
 
 use pci_ids::Device;
 
-use crate::utils::NVML;
+static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(Nvml::init);
 
 use super::GpuImpl;
 
