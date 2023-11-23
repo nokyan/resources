@@ -1,11 +1,22 @@
 use anyhow::{bail, Result};
+use hashbrown::HashMap;
+use once_cell::sync::Lazy;
 use process_data::pci_slot::PciSlot;
+use regex::Regex;
 
 use std::path::PathBuf;
 
 use pci_ids::Device;
 
+use crate::utils::IS_FLATPAK;
+
 use super::GpuImpl;
+
+static AMDGPU_IDS_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"([0-9A-F]{4}),\s*([0-9A-F]{2}),\s*(.*)").unwrap());
+
+static AMDGPU_IDS: Lazy<HashMap<(u16, u8), String>> =
+    Lazy::new(|| AmdGpu::read_libdrm_ids().unwrap_or_default());
 
 #[derive(Debug, Clone, Default)]
 
@@ -33,6 +44,31 @@ impl AmdGpu {
             first_hwmon_path,
         }
     }
+
+    pub fn read_libdrm_ids() -> Result<HashMap<(u16, u8), String>> {
+        let path = if *IS_FLATPAK {
+            PathBuf::from("/run/host/usr/share/libdrm/amdgpu.ids")
+        } else {
+            PathBuf::from("/usr/share/libdrm/amdgpu.ids")
+        };
+
+        let mut map = HashMap::new();
+
+        let amdgpu_ids_raw = std::fs::read_to_string(path)?;
+
+        for capture in AMDGPU_IDS_REGEX.captures_iter(&amdgpu_ids_raw) {
+            if let (Some(device_id), Some(revision), Some(name)) =
+                (capture.get(1), capture.get(2), capture.get(3))
+            {
+                let device_id = u16::from_str_radix(device_id.as_str().trim(), 16).unwrap();
+                let revision = u8::from_str_radix(revision.as_str().trim(), 16).unwrap();
+                let name = name.as_str().into();
+                map.insert((device_id, revision), name);
+            }
+        }
+
+        Ok(map)
+    }
 }
 
 impl GpuImpl for AmdGpu {
@@ -57,7 +93,21 @@ impl GpuImpl for AmdGpu {
     }
 
     fn name(&self) -> Result<String> {
-        self.drm_name()
+        let revision =
+            u8::from_str_radix(&self.read_device_file("revision")?.replace("0x", ""), 16)?;
+        Ok(AMDGPU_IDS
+            .get(&(
+                self.device().map(|device| device.id()).unwrap_or(0),
+                revision,
+            ))
+            .cloned()
+            .unwrap_or_else(|| {
+                if let Ok(drm_name) = self.drm_name() {
+                    format!("AMD Radeon Graphics ({})", drm_name)
+                } else {
+                    "AMD Radeon Graphics".into()
+                }
+            }))
     }
 
     fn usage(&self) -> Result<isize> {
