@@ -8,6 +8,7 @@ use adw::{Toast, ToastOverlay};
 use anyhow::Result;
 use gtk::glib::{clone, timeout_future, MainContext};
 use gtk::{gio, glib, Widget};
+use log::{debug, error, warn};
 
 use crate::application::Application;
 use crate::config::PROFILE;
@@ -181,7 +182,7 @@ glib::wrapper! {
 
 struct RefreshData {
     cpu_data: CpuData,
-    mem_data: MemoryData,
+    mem_data: Result<MemoryData>,
     gpu_data: Vec<GpuData>,
     drive_paths: Vec<PathBuf>,
     drive_data: Vec<DriveData>,
@@ -299,7 +300,14 @@ impl MainWindow {
         for path in &drive_paths {
             let data = DriveData::new(path);
 
-            drive_data.push(data);
+            if let Ok(data) = data {
+                drive_data.push(data);
+            } else if let Err(error) = data {
+                warn!(
+                    "Unable to update drive at {}, reason: {error}",
+                    path.display()
+                )
+            }
         }
 
         let mut network_data = vec![];
@@ -307,10 +315,21 @@ impl MainWindow {
         for path in &network_paths {
             let data = NetworkData::new(path);
 
-            network_data.push(data);
+            if let Ok(data) = data {
+                network_data.push(data);
+            } else if let Err(error) = data {
+                warn!(
+                    "Unable to update network interface at {}, reason: {error}",
+                    path.display()
+                )
+            }
         }
 
-        let process_data = Process::all_data().unwrap();
+        let _process_data = Process::all_data();
+        if let Err(error) = &_process_data {
+            warn!("Unable to update process and application data, reason: {error}");
+        }
+        let process_data = _process_data.unwrap_or_default();
 
         RefreshData {
             cpu_data,
@@ -387,7 +406,11 @@ impl MainWindow {
         /*
          * Memory
          */
-        imp.memory.refresh_page(mem_data);
+        if let Ok(mem_data) = mem_data {
+            imp.memory.refresh_page(mem_data);
+        } else if let Err(error) = mem_data {
+            warn!("Unable to update memory data, reason: {error}")
+        }
 
         /*
          *  Drives
@@ -430,7 +453,15 @@ impl MainWindow {
 
     pub async fn periodic_refresh_all(&self) {
         let imp = self.imp();
-        let gpus = Gpu::get_gpus().unwrap_or_default();
+
+        let gpus = imp
+            .gpu_pages
+            .borrow()
+            .values()
+            .map(|(gpu, _)| gpu)
+            .cloned()
+            .collect::<Vec<Gpu>>();
+
         let logical_cpus = imp.cpu.imp().logical_cpus_amount.get();
 
         let (tx_data, rx_data) = std::sync::mpsc::sync_channel(1);
@@ -494,6 +525,10 @@ impl MainWindow {
         for page_path in &old_page_paths {
             if !paths.contains(page_path) {
                 // A drive has been removed
+                debug!(
+                    "A drive has been removed (or turned invisible): {}",
+                    page_path.display()
+                );
 
                 let page = drive_pages.remove(page_path).unwrap();
                 imp.content_stack.remove(&page);
@@ -504,6 +539,10 @@ impl MainWindow {
         for path in paths {
             if !drive_pages.contains_key(&path) {
                 // A drive has been added
+                debug!(
+                    "A drive has been added (or turned visible): {}",
+                    path.display()
+                );
 
                 let drive = drive_data
                     .iter()
@@ -552,6 +591,10 @@ impl MainWindow {
         for page_path in &old_page_paths {
             if !paths.contains(page_path) {
                 // A network interface has been removed
+                debug!(
+                    "A network interface has been removed (or turned invisible): {}",
+                    page_path.display()
+                );
 
                 let page = network_pages.remove(page_path).unwrap();
                 imp.content_stack.remove(&page);
@@ -562,6 +605,10 @@ impl MainWindow {
         for path in paths {
             if !network_pages.contains_key(&path) {
                 // A network interface has been added
+                debug!(
+                    "A network interface has been added (or turned visible): {}",
+                    path.display()
+                );
 
                 let network_interface = network_data
                     .iter()
@@ -594,7 +641,7 @@ impl MainWindow {
                         let toast_message = match process.execute_process_action(action) {
                             Ok(()) => get_action_success(action, &[&display_name]),
                             Err(e) => {
-                                log::error!("Unable to kill process {}: {}", pid, e);
+                                error!("Unable to kill process {pid}: {e}");
                                 get_process_action_failure(action, &[&display_name])
                             }
                         };
@@ -608,7 +655,7 @@ impl MainWindow {
 
                     for r in &res {
                         if let Err(e) = r {
-                            log::error!("Unable to kill a process: {}", e);
+                            error!("Unable to kill a process of app {id}: {e}");
                         }
                     }
 

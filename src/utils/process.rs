@@ -1,5 +1,6 @@
 use anyhow::{bail, Context, Result};
 use config::LIBEXECDIR;
+use log::debug;
 use once_cell::sync::Lazy;
 use process_data::{pci_slot::PciSlot, Containerization, GpuUsageStats, ProcessData};
 use std::{
@@ -8,6 +9,7 @@ use std::{
     process::{ChildStdin, ChildStdout, Command, Stdio},
     sync::Mutex,
 };
+use strum_macros::Display;
 
 use gtk::gio::{Icon, ThemedIcon};
 
@@ -65,7 +67,7 @@ pub struct Process {
 }
 
 // TODO: Better name?
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Display)]
 pub enum ProcessAction {
     TERM,
     STOP,
@@ -209,13 +211,18 @@ impl Process {
             // about because that might happen because we killed the
             // process' parent first, killing the child before we explicitly
             // did
+            debug!("Successfully {action}ed {}", self.data.pid);
             Ok(())
         } else if status_code == 1 {
             // 1 := no permissions
+            debug!(
+                "No permissions to {action} {}, attempting pkexec",
+                self.data.pid
+            );
             self.pkexec_execute_process_action(action_str, &kill_path)
         } else {
             bail!(
-                "couldn't kill {} due to unknown reasons, status code: {}",
+                "couldn't {action} {} due to unknown reasons, status code: {}",
                 self.data.pid,
                 status_code
             )
@@ -255,6 +262,10 @@ impl Process {
             // 0 := successful; 3 := process not found which we don't care
             // about because that might happen because we killed the
             // process' parent first, killing the child before we explicitly do
+            debug!(
+                "Successfully {action}ed {} with elevated privileges",
+                self.data.pid
+            );
             Ok(())
         } else {
             bail!(

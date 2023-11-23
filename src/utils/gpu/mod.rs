@@ -4,6 +4,7 @@ mod nvidia;
 mod other;
 
 use anyhow::{anyhow, Context, Result};
+use log::debug;
 use process_data::pci_slot::PciSlot;
 
 use std::{
@@ -286,6 +287,12 @@ impl Gpu {
                     hwmon_vec.get(0).cloned(),
                 )),
             };
+
+            debug!(
+                "Found GPU \"{}\" at PCI slot {}",
+                gpu.name().unwrap_or("<unknown name>".into()),
+                gpu.pci_slot()
+            );
 
             gpu_vec.push(gpu);
         }
