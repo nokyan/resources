@@ -293,9 +293,9 @@ impl Gpu {
             };
 
             debug!(
-                "Found GPU \"{}\" at PCI slot {}",
+                "Found GPU \"{}\" at PCI slot {} with PCI ID {vid:x}:{pid:x}",
                 gpu.name().unwrap_or("<unknown name>".into()),
-                gpu.pci_slot()
+                gpu.pci_slot(),
             );
 
             gpu_vec.push(gpu);
