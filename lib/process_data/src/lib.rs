@@ -32,20 +32,33 @@ static DRM_PDEV_REGEX: Lazy<Regex> =
 static DRM_CLIENT_ID_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-client-id:\s*(\d+)").unwrap());
 
+// AMD only
 static DRM_ENGINE_GFX_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-engine-gfx:\s*(\d+) ns").unwrap());
 
+// AMD only
 static DRM_ENGINE_ENC_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-engine-enc:\s*(\d+) ns").unwrap());
 
+// AMD only
 static DRM_ENGINE_DEC_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-engine-dec:\s*(\d+) ns").unwrap());
 
+// AMD only
 static DRM_MEMORY_VRAM_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-memory-vram:\s*(\d+) KiB").unwrap());
 
+// AMD only
 static DRM_MEMORY_GTT_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-memory-gtt:\s*(\d+) KiB").unwrap());
+
+// Intel only
+static DRM_ENGINE_RENDER_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"drm-engine-render:\s*(\d+) ns").unwrap());
+
+// Intel only
+static DRM_ENGINE_VIDEO: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"drm-engine-video:\s*(\d+) ns").unwrap());
 
 static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(Nvml::init);
 
@@ -81,6 +94,15 @@ pub enum Containerization {
     Flatpak,
 }
 
+/// Represents GPU usage statistics per-process. Depending on the GPU manufacturer (which should be determined in
+/// Resources itself), these numbers need to interpreted differently
+///
+/// AMD (default): gfx, enc and dec are nanoseconds spent for that process
+///
+/// Nvidia: Process info is gathered through NVML, thus gfx, enc and dec are percentages from 0-100 (timestamps
+/// are irrelevant, nvidia bool is set to true)
+///
+/// Intel: enc and dec are not separated, both are accumulated in enc, also mem is always going to be 0
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, Copy)]
 pub struct GpuUsageStats {
     pub gfx: u64,
@@ -417,16 +439,30 @@ impl ProcessData {
             .and_then(|capture| capture.as_str().parse::<i64>().ok());
 
         if let (Some(Ok(pci_slot)), Some(client_id)) = (pci_slot, client_id) {
-            let gfx = DRM_ENGINE_GFX_REGEX
+            let gfx = DRM_ENGINE_GFX_REGEX // amd
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
+                .or_else(|| {
+                    // intel
+                    DRM_ENGINE_RENDER_REGEX
+                        .captures(&content)
+                        .and_then(|captures| captures.get(1))
+                        .and_then(|capture| capture.as_str().parse::<u64>().ok())
+                })
                 .unwrap_or_default();
 
-            let enc = DRM_ENGINE_ENC_REGEX
+            let enc = DRM_ENGINE_ENC_REGEX // amd
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
+                .or_else(|| {
+                    // intel
+                    DRM_ENGINE_VIDEO
+                        .captures(&content)
+                        .and_then(|captures| captures.get(1))
+                        .and_then(|capture| capture.as_str().parse::<u64>().ok())
+                })
                 .unwrap_or_default();
 
             let dec = DRM_ENGINE_DEC_REGEX

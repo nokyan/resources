@@ -32,6 +32,8 @@ mod imp {
         #[template_child]
         pub encode_decode_usage: TemplateChild<ResDoubleGraphBox>,
         #[template_child]
+        pub encode_decode_combined_usage: TemplateChild<ResGraphBox>,
+        #[template_child]
         pub vram_usage: TemplateChild<ResGraphBox>,
         #[template_child]
         pub temperature: TemplateChild<adw::ActionRow>,
@@ -99,6 +101,7 @@ mod imp {
             Self {
                 gpu_usage: Default::default(),
                 encode_decode_usage: Default::default(),
+                encode_decode_combined_usage: Default::default(),
                 vram_usage: Default::default(),
                 temperature: Default::default(),
                 power_usage: Default::default(),
@@ -185,6 +188,16 @@ impl ResGPU {
         imp.gpu_usage.set_title_label(&i18n("GPU Usage"));
         imp.gpu_usage.graph().set_data_points_max_amount(60);
         imp.gpu_usage.graph().set_graph_color(230, 97, 0);
+
+        imp.encode_decode_combined_usage
+            .set_title_label(&i18n("Video Encoder/Decoder Usage"));
+        imp.encode_decode_combined_usage
+            .graph()
+            .set_data_points_max_amount(60);
+        imp.encode_decode_combined_usage
+            .graph()
+            .set_graph_color(230, 97, 0);
+
         imp.encode_decode_usage
             .set_start_title_label(&i18n("Video Encoder Usage"));
         imp.encode_decode_usage
@@ -201,13 +214,33 @@ impl ResGPU {
         imp.encode_decode_usage
             .end_graph()
             .set_graph_color(230, 97, 0);
+
         imp.vram_usage.set_title_label(&i18n("Video Memory Usage"));
         imp.vram_usage.graph().set_data_points_max_amount(60);
         imp.vram_usage.graph().set_graph_color(192, 28, 40);
-        imp.manufacturer
-            .set_subtitle(&gpu.get_vendor().unwrap_or_else(|_| i18n("N/A")));
+
+        imp.manufacturer.set_subtitle(
+            &gpu.get_vendor()
+                .map(|vendor| vendor.name().to_string())
+                .unwrap_or_else(|_| i18n("N/A")),
+        );
+
         imp.pci_slot.set_subtitle(&gpu.pci_slot().to_string());
+
         imp.driver_used.set_subtitle(&gpu.driver());
+
+        if gpu
+            .get_vendor()
+            .map(|vendor| vendor.id())
+            .unwrap_or_default()
+            == crate::utils::gpu::VID_INTEL
+        {
+            imp.encode_decode_combined_usage.set_visible(true);
+            imp.encode_decode_usage.set_visible(false);
+        } else {
+            imp.encode_decode_combined_usage.set_visible(false);
+            imp.encode_decode_usage.set_visible(true);
+        }
     }
 
     pub fn refresh_page(&self, gpu_data: GpuData) {
@@ -238,24 +271,36 @@ impl ResGPU {
             .push_data_point(usage_fraction.unwrap_or(0.0));
         imp.gpu_usage.graph().set_visible(true);
 
-        if let (Some(encode_fraction), Some(decode_fraction)) = (encode_fraction, decode_fraction) {
-            imp.encode_decode_usage.set_visible(true);
+        // encode_fraction could be the combined usage of encoder and decoder for intel GPUs
+        if let Some(encode_fraction) = encode_fraction {
             imp.encode_decode_usage
                 .start_graph()
                 .push_data_point(encode_fraction);
             imp.encode_decode_usage
                 .set_start_subtitle(&format!("{} %", (encode_fraction * 100.0).round()));
+
+            imp.encode_decode_combined_usage
+                .graph()
+                .push_data_point(encode_fraction);
+            imp.encode_decode_combined_usage
+                .set_subtitle(&format!("{} %", (encode_fraction * 100.0).round()));
+        } else {
+            imp.encode_decode_usage.start_graph().push_data_point(0.0);
+            imp.encode_decode_usage.set_start_subtitle(&i18n("N/A"));
+
+            imp.encode_decode_combined_usage.graph().set_visible(false);
+            imp.encode_decode_combined_usage.set_subtitle(&i18n("N/A"));
+        }
+
+        if let Some(decode_fraction) = decode_fraction {
             imp.encode_decode_usage
                 .end_graph()
                 .push_data_point(decode_fraction);
             imp.encode_decode_usage
                 .set_end_subtitle(&format!("{} %", (decode_fraction * 100.0).round()));
         } else {
-            imp.encode_decode_usage.start_graph().push_data_point(0.0);
-            imp.encode_decode_usage.set_start_subtitle(&i18n("N/A"));
             imp.encode_decode_usage.end_graph().push_data_point(0.0);
             imp.encode_decode_usage.set_end_subtitle(&i18n("N/A"));
-            imp.encode_decode_usage.set_visible(false);
         }
 
         let used_vram_fraction =

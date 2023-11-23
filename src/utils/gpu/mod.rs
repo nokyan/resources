@@ -14,15 +14,15 @@ use std::{
 };
 
 use glob::glob;
-use pci_ids::Device;
+use pci_ids::{Device, Vendor};
 
 use crate::i18n::i18n;
 
 use self::{amd::AmdGpu, intel::IntelGpu, nvidia::NvidiaGpu, other::OtherGpu};
 
-const VID_AMD: u16 = 4098;
-const VID_INTEL: u16 = 32902;
-const VID_NVIDIA: u16 = 4318;
+pub const VID_AMD: u16 = 4098;
+pub const VID_INTEL: u16 = 32902;
+pub const VID_NVIDIA: u16 = 4318;
 
 #[derive(Debug)]
 pub struct GpuData {
@@ -299,7 +299,7 @@ impl Gpu {
         Ok(gpu_vec)
     }
 
-    pub fn get_vendor(&self) -> Result<String> {
+    pub fn get_vendor(&self) -> Result<&'static Vendor> {
         Ok(match self {
             Gpu::Amd(gpu) => gpu.device(),
             Gpu::Nvidia(gpu) => gpu.device(),
@@ -307,9 +307,7 @@ impl Gpu {
             Gpu::Other(gpu) => gpu.device(),
         }
         .context("no device")?
-        .vendor()
-        .name()
-        .to_owned())
+        .vendor())
     }
 
     pub fn pci_slot(&self) -> PciSlot {
