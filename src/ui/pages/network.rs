@@ -210,10 +210,12 @@ impl ResNetwork {
         imp.receiving.graph().set_graph_color(52, 170, 175);
         imp.receiving.graph().set_data_points_max_amount(60);
         imp.receiving.graph().set_locked_max_y(None);
+
         imp.sending.set_title_label(&i18n("Sending"));
         imp.sending.graph().set_graph_color(222, 77, 119);
         imp.sending.graph().set_data_points_max_amount(60);
         imp.sending.graph().set_locked_max_y(None);
+
         imp.manufacturer.set_subtitle(
             &network_interface
                 .vendor
@@ -221,6 +223,7 @@ impl ResNetwork {
                 .cloned()
                 .unwrap_or_else(|| i18n("N/A")),
         );
+
         imp.driver.set_subtitle(
             &network_interface
                 .driver_name
@@ -228,17 +231,20 @@ impl ResNetwork {
                 .cloned()
                 .unwrap_or_else(|| i18n("N/A")),
         );
+
         imp.interface.set_subtitle(
             network_interface
                 .interface_name
                 .to_str()
                 .unwrap_or(&i18n("N/A")),
         );
+
         let hw_address = network_interface
             .hw_address
             .as_ref()
             .cloned()
             .unwrap_or_else(|| i18n("N/A"));
+
         if hw_address.is_empty() {
             imp.hw_address.set_subtitle(&i18n("N/A"));
         } else {

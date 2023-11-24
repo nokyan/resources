@@ -161,9 +161,11 @@ impl ResMemory {
 
     pub fn setup_widgets(&self) {
         let imp = self.imp();
+
         imp.memory.set_title_label(&i18n("Memory"));
         imp.memory.graph().set_graph_color(129, 61, 156);
         imp.memory.graph().set_data_points_max_amount(60);
+
         imp.swap.set_title_label(&i18n("Swap"));
         imp.swap.graph().set_graph_color(46, 194, 126);
         imp.swap.graph().set_data_points_max_amount(60);
@@ -183,35 +185,46 @@ impl ResMemory {
             .filter(|md| md.installed)
             .count()
             .to_string();
+
         let slots = memory_devices.len().to_string();
+
         let speed = memory_devices
             .iter()
             .filter(|md| md.installed)
             .map(|md| md.speed.unwrap_or(0))
             .max()
             .unwrap_or(0);
+
         let form_factor = memory_devices
             .iter()
             .find(|md| md.installed)
             .map_or_else(|| i18n("N/A"), |md| md.form_factor.clone());
+
         let r#type = memory_devices
             .iter()
             .find(|md| md.installed)
             .map_or_else(|| i18n("N/A"), |md| md.r#type.clone());
+
         let type_detail = memory_devices
             .iter()
             .find(|md| md.installed)
             .map_or_else(|| i18n("N/A"), |md| md.type_detail.clone());
+
         imp.slots_used
             .set_subtitle(&i18n_f("{} of {}", &[slots_used.as_str(), slots.as_str()]));
+
         imp.speed.set_subtitle(&format!("{speed} MT/s"));
+
         imp.form_factor.set_subtitle(&form_factor);
+
         imp.memory_type.set_subtitle(&r#type);
+
         imp.type_detail.set_subtitle(&type_detail);
     }
 
     pub fn setup_signals(&self) {
         let imp = self.imp();
+
         imp.authentication_banner
             .connect_button_clicked(clone!(@strong self as this => move |_| {
                 let imp = this.imp();
