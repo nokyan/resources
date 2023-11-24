@@ -1,4 +1,5 @@
 use anyhow::{Context, Result};
+use log::{debug, warn};
 use nvml_wrapper::{
     enum_wrappers::device::{Clock, TemperatureSensor},
     error::NvmlError,
@@ -11,7 +12,17 @@ use std::path::PathBuf;
 
 use pci_ids::Device;
 
-static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(Nvml::init);
+static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(|| {
+    let nvml = Nvml::init();
+
+    if let Err(error) = nvml.as_ref() {
+        warn!("Connection to NVML failed, reason: {error}");
+    } else {
+        debug!("Successfully connected to NVML");
+    }
+
+    nvml
+});
 
 use super::GpuImpl;
 
