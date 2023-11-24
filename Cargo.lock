@@ -1193,7 +1193,6 @@ dependencies = [
  "nvml-wrapper",
  "once_cell",
  "regex",
- "rmp-serde",
  "serde",
  "syscalls",
  "sysconf",
