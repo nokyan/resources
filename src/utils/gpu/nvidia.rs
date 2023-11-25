@@ -10,8 +10,6 @@ use process_data::pci_slot::PciSlot;
 
 use std::path::PathBuf;
 
-use pci_ids::Device;
-
 static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(|| {
     let nvml = Nvml::init();
 
@@ -23,6 +21,8 @@ static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(|| {
 
     nvml
 });
+
+use crate::utils::pci::Device;
 
 use super::GpuImpl;
 

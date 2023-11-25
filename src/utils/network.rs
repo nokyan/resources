@@ -7,9 +7,10 @@ use std::{
 
 use anyhow::{Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
-use pci_ids::FromId;
 
 use crate::i18n::i18n;
+
+use super::pci::{Device, Vendor};
 
 #[derive(Debug)]
 pub struct NetworkData {
@@ -203,9 +204,8 @@ impl NetworkInterface {
             driver_name: dev_uevent.get("DRIVER").cloned(),
             interface_type: InterfaceType::from_interface_name(interface_name.to_string_lossy()),
             speed,
-            vendor: pci_ids::Vendor::from_id(vid_pid.0).map(|x| x.name().to_string()),
-            pid_name: pci_ids::Device::from_vid_pid(vid_pid.0, vid_pid.1)
-                .map(|x| x.name().to_string()),
+            vendor: Vendor::from_vid(vid_pid.0).map(|x| x.name().to_string()),
+            pid_name: Device::from_vid_pid(vid_pid.0, vid_pid.1).map(|x| x.name().to_string()),
             device_name,
             hw_address,
             sysfs_path: sysfs_path.to_path_buf(),

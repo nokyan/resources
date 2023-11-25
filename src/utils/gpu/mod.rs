@@ -14,11 +14,12 @@ use std::{
 };
 
 use glob::glob;
-use pci_ids::{Device, Vendor};
 
-use crate::i18n::i18n;
+use crate::{i18n::i18n, utils::pci::Device};
 
 use self::{amd::AmdGpu, intel::IntelGpu, nvidia::NvidiaGpu, other::OtherGpu};
+
+use super::pci::Vendor;
 
 pub const VID_AMD: u16 = 4098;
 pub const VID_INTEL: u16 = 32902;

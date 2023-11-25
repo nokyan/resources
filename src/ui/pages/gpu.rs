@@ -231,7 +231,7 @@ impl ResGPU {
 
         if gpu
             .get_vendor()
-            .map(|vendor| vendor.id())
+            .map(|vendor| vendor.vid())
             .unwrap_or_default()
             == crate::utils::gpu::VID_INTEL
         {
