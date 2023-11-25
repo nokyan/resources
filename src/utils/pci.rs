@@ -1,6 +1,6 @@
 use std::{collections::BTreeMap, io::BufRead};
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use log::{debug, warn};
 use once_cell::sync::Lazy;
 
@@ -113,23 +113,21 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
             let sub_vid = u16::from_str_radix(
                 split
                     .next()
-                    .expect(&format!("this subdevice has no vid (line: {line})")),
+                    .context(format!("this subdevice has no vid (line: {line})"))?,
                 16,
-            )
-            .expect(&format!("unable to parse sub_vid from line {line}"));
+            )?;
 
             let sub_pid = u16::from_str_radix(
                 split
                     .next()
-                    .expect(&format!("this subdevice has no üid (line: {line})")),
+                    .context(format!("this subdevice has no üid (line: {line})"))?,
                 16,
-            )
-            .expect(&format!("unable to parse sub_pid from line {line}"));
+            )?;
 
             let name = split
                 .last()
                 .map(str::to_string)
-                .expect(&format!("this vendor has no name (line: {line})"));
+                .context(format!("this vendor has no name (line: {line})"))?;
 
             let subdevice = Subdevice {
                 id: sub_pid,
@@ -139,14 +137,8 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
 
             seen.values_mut()
                 .last()
-                .map(|vendor| {
-                    vendor
-                        .devices
-                        .values_mut()
-                        .last()
-                        .expect(&format!("no preceeding vendor (line: {line})"))
-                })
-                .expect(&format!("no preceeding vendor (line: {line})"))
+                .and_then(|vendor| vendor.devices.values_mut().last())
+                .context(format!("no preceeding vendor (line: {line})"))?
                 .sub_devices
                 .push(subdevice);
         } else if line.starts_with('\t') {
@@ -156,20 +148,19 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
             let vid = *seen
                 .keys()
                 .last()
-                .expect(&format!("no preceeding device (line: {line})"));
+                .context(format!("no preceeding device (line: {line})"))?;
 
             let pid = u16::from_str_radix(
                 split
                     .next()
-                    .expect(&format!("this device has no pid (line: {line})")),
+                    .context(format!("this device has no pid (line: {line})"))?,
                 16,
-            )
-            .expect(&format!("unable to parse pid from line {line}"));
+            )?;
 
             let name = split
                 .next()
                 .map(str::to_string)
-                .expect(&format!("this vendor has no name (line: {line})"));
+                .context(format!("this vendor has no name (line: {line})"))?;
 
             let device = Device {
                 id: pid,
@@ -180,7 +171,7 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
 
             seen.values_mut()
                 .last()
-                .expect(&format!("no preceeding device (line: {line})"))
+                .context(format!("no preceeding device (line: {line})"))?
                 .devices
                 .insert(pid, device);
         } else {
@@ -190,15 +181,14 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
             let vid = u16::from_str_radix(
                 split
                     .next()
-                    .expect(&format!("this vendor has no vid (line: {line})")),
+                    .context(format!("this vendor has no vid (line: {line})"))?,
                 16,
-            )
-            .expect(&format!("unable to parse vid from line {line}"));
+            )?;
 
             let name = split
                 .next()
                 .map(str::to_string)
-                .expect(&format!("this vendor has no name (line: {line})"));
+                .context(format!("this vendor has no name (line: {line})"))?;
 
             let vendor = Vendor {
                 id: vid,
