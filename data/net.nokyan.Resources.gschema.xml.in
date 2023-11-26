@@ -119,19 +119,19 @@
     </key>
     <key name="processes-show-gpu" type="b">
       <default>true</default>
-      <summary>Display GPU usage in Applications view</summary>
+      <summary>Display GPU usage in Processes view</summary>
     </key>
     <key name="processes-show-encoder" type="b">
       <default>false</default>
-      <summary>Display video encoder usage in Applications view</summary>
+      <summary>Display video encoder usage in Processes view</summary>
     </key>
     <key name="processes-show-decoder" type="b">
       <default>false</default>
-      <summary>Display video decoder usage in Applications view</summary>
+      <summary>Display video decoder usage in Processes view</summary>
     </key>
     <key name="processes-show-gpu-memory" type="b">
       <default>false</default>
-      <summary>Display GPU memory usage in Applications view</summary>
+      <summary>Display GPU memory usage in Processes view</summary>
     </key>
     <key name="show-logical-cpus" type="b">
       <default>false</default>
