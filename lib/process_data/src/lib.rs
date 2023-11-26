@@ -37,6 +37,10 @@ static DRM_ENGINE_GFX_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-engine-gfx:\s*(\d+) ns").unwrap());
 
 // AMD only
+static DRM_ENGINE_COMPUTE_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"drm-engine-compute:\s*(\d+) ns").unwrap());
+
+// AMD only
 static DRM_ENGINE_ENC_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-engine-enc:\s*(\d+) ns").unwrap());
 
@@ -444,6 +448,12 @@ impl ProcessData {
                 })
                 .unwrap_or_default();
 
+            let compute = DRM_ENGINE_COMPUTE_REGEX
+                .captures(&content)
+                .and_then(|captures| captures.get(1))
+                .and_then(|capture| capture.as_str().parse::<u64>().ok())
+                .unwrap_or_default();
+
             let enc = DRM_ENGINE_ENC_REGEX // amd
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
@@ -478,7 +488,7 @@ impl ProcessData {
                 * 1024;
 
             let stats = GpuUsageStats {
-                gfx,
+                gfx: gfx + compute,
                 gfx_timestamp: unix_as_millis(),
                 mem: vram.saturating_add(gtt),
                 enc,
