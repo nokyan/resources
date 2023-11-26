@@ -73,8 +73,7 @@ static NVML_DEVICES: Lazy<Vec<(PciSlot, Device)>> = Lazy::new(|| {
         for i in 0..device_count {
             if let Ok(gpu) = nvml.device_by_index(i) {
                 if let Ok(pci_slot) = gpu.pci_info().map(|pci_info| pci_info.bus_id) {
-                    // the PCI Slot ID given by NVML has 4 additional leading zeroes, remove those for consistency
-                    let pci_slot = PciSlot::from_str(&pci_slot[4..pci_slot.len()]).unwrap();
+                    let pci_slot = PciSlot::from_str(&pci_slot).unwrap();
                     return_vec.push((pci_slot, gpu));
                 }
             }
