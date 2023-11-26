@@ -269,7 +269,7 @@ impl ResGPU {
         imp.gpu_usage
             .graph()
             .push_data_point(usage_fraction.unwrap_or(0.0));
-        imp.gpu_usage.graph().set_visible(true);
+        imp.gpu_usage.graph().set_visible(usage_fraction.is_some());
 
         // encode_fraction could be the combined usage of encoder and decoder for intel GPUs
         if let Some(encode_fraction) = encode_fraction {
@@ -303,6 +303,15 @@ impl ResGPU {
             imp.encode_decode_usage.set_end_subtitle(&i18n("N/A"));
         }
 
+        // only turn enc and dec graphs invisible if both of them are None, otherwise only one of them might show a
+        // graph and that'd look odd
+        imp.encode_decode_usage
+            .start_graph()
+            .set_visible(encode_fraction.is_some() || decode_fraction.is_some());
+        imp.encode_decode_usage
+            .end_graph()
+            .set_visible(encode_fraction.is_some() || decode_fraction.is_some());
+
         let used_vram_fraction =
             if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
                 Some((used_vram as f64 / total_vram as f64).nan_default(0.0))
@@ -330,23 +339,9 @@ impl ResGPU {
         imp.vram_usage
             .graph()
             .push_data_point(used_vram_fraction.unwrap_or(0.0));
-        imp.vram_usage.set_visible(used_vram_fraction.is_some());
-
-        if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
-            let used_vram_fraction = (used_vram as f64 / total_vram as f64).nan_default(0.0);
-            imp.vram_usage.set_subtitle(&format!(
-                "{} / {} · {} %",
-                &convert_storage(used_vram as f64, false),
-                &convert_storage(total_vram as f64, false),
-                (used_vram_fraction * 100.0).round()
-            ));
-            imp.vram_usage.graph().push_data_point(used_vram_fraction);
-            imp.vram_usage.set_visible(true);
-        } else {
-            imp.vram_usage.set_subtitle(&i18n("N/A"));
-            imp.vram_usage.graph().push_data_point(0.0);
-            imp.vram_usage.set_visible(false);
-        }
+        imp.vram_usage
+            .graph()
+            .set_visible(used_vram_fraction.is_some());
 
         imp.temperature
             .set_subtitle(&temp.map_or_else(|| i18n("N/A"), convert_temperature));
@@ -376,9 +371,7 @@ impl ResGPU {
 
         self.set_property("usage", usage_fraction.unwrap_or(0.0));
 
-        if usage_fraction.is_none() && used_vram_fraction.is_none() {
-            self.set_property("tab_subtitle", i18n("N/A"));
-        } else {
+        if used_vram_fraction.is_some() {
             self.set_property(
                 "tab_subtitle",
                 i18n_f(
@@ -386,6 +379,8 @@ impl ResGPU {
                     &[&usage_percentage_string, &vram_percentage_string],
                 ),
             );
+        } else {
+            self.set_property("tab_subtitle", &usage_percentage_string);
         }
     }
 }
