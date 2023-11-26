@@ -447,15 +447,26 @@ impl AppsContext {
                     app_pids.insert(process.data.pid);
                 });
 
-                let containerization = if app
+                let is_flatpak = app
                     .processes_iter(self)
                     .filter(|process| {
                         !process.data.commandline.starts_with("bwrap")
                             && !process.data.commandline.is_empty()
                     })
-                    .any(|process| process.data.containerization == Containerization::Flatpak)
-                {
+                    .any(|process| process.data.containerization == Containerization::Flatpak);
+
+                let is_snap = app
+                    .processes_iter(self)
+                    .filter(|process| {
+                        !process.data.commandline.starts_with("bwrap")
+                            && !process.data.commandline.is_empty()
+                    })
+                    .any(|process| process.data.containerization == Containerization::Snap);
+
+                let containerization = if is_flatpak {
                     Containerization::Flatpak
+                } else if is_snap {
+                    Containerization::Snap
                 } else {
                     Containerization::None
                 };

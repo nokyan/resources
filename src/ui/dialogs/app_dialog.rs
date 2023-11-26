@@ -138,6 +138,7 @@ impl ResAppDialog {
         let containerized = match app.containerization {
             Containerization::None => i18n("No"),
             Containerization::Flatpak => i18n("Yes (Flatpak)"),
+            Containerization::Snap => i18n("Yes (Snap)"),
         };
         imp.containerized.set_subtitle(&containerized);
     }
