@@ -139,13 +139,6 @@ pub struct ProcessData {
 }
 
 impl ProcessData {
-    pub fn unix_as_millis() -> u64 {
-        SystemTime::now()
-            .duration_since(SystemTime::UNIX_EPOCH)
-            .unwrap()
-            .as_millis() as u64
-    }
-
     fn sanitize_cgroup<S: AsRef<str>>(cgroup: S) -> Option<String> {
         let cgroups_v2_line = cgroup.as_ref().split('\n').find(|s| s.starts_with("0::"))?;
         if cgroups_v2_line.ends_with(".scope") {
@@ -252,7 +245,7 @@ impl ProcessData {
         // -2 to accommodate for only collecting after the second item (which is the executable name as mentioned above)
         let cpu_time = stat[13 - 2].parse::<u64>()? + stat[14 - 2].parse::<u64>()?;
 
-        let cpu_time_timestamp = Self::unix_as_millis();
+        let cpu_time_timestamp = unix_as_millis();
 
         let memory_usage = (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?) * *PAGESIZE;
 
@@ -486,12 +479,12 @@ impl ProcessData {
 
             let stats = GpuUsageStats {
                 gfx,
-                gfx_timestamp: Self::unix_as_millis(),
+                gfx_timestamp: unix_as_millis(),
                 mem: vram.saturating_add(gtt),
                 enc,
-                enc_timestamp: Self::unix_as_millis(),
+                enc_timestamp: unix_as_millis(),
                 dec,
-                dec_timestamp: Self::unix_as_millis(),
+                dec_timestamp: unix_as_millis(),
                 nvidia: false,
             };
 
@@ -539,12 +532,12 @@ impl ProcessData {
 
         let gpu_stats = GpuUsageStats {
             gfx: this_process_stats.unwrap_or_default().0 as u64,
-            gfx_timestamp: Self::unix_as_millis(),
+            gfx_timestamp: unix_as_millis(),
             mem: this_process_mem_stats,
             enc: this_process_stats.unwrap_or_default().1 as u64,
-            enc_timestamp: Self::unix_as_millis(),
+            enc_timestamp: unix_as_millis(),
             dec: this_process_stats.unwrap_or_default().2 as u64,
-            dec_timestamp: Self::unix_as_millis(),
+            dec_timestamp: unix_as_millis(),
             nvidia: true,
         };
         Ok(gpu_stats)
@@ -569,11 +562,18 @@ impl ProcessData {
         for (pci_slot, gpu) in NVML_DEVICES.iter() {
             return_map.insert(
                 pci_slot.to_owned(),
-                gpu.process_utilization_stats(ProcessData::unix_as_millis() * 1000 - 5_000_000)
+                gpu.process_utilization_stats(unix_as_millis() * 1000 - 5_000_000)
                     .unwrap_or_default(),
             );
         }
 
         return_map
     }
+}
+
+pub fn unix_as_millis() -> u64 {
+    SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap()
+        .as_millis() as u64
 }
