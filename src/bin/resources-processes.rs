@@ -1,19 +1,25 @@
-use anyhow::{Context, Result};
-use glob::glob;
+use anyhow::Result;
 use process_data::ProcessData;
+use std::io::{Read, Write};
 
 fn main() -> Result<()> {
-    let mut process_data = vec![];
-    for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-        if let Ok(data) = ProcessData::try_from_path(entry) {
-            process_data.push(data);
-        }
+    loop {
+        let mut buffer = [0; 1];
+
+        std::io::stdin().read_exact(&mut buffer)?;
+
+        let data = ProcessData::all_process_data()?;
+        let encoded = rmp_serde::encode::to_vec(&*data)?;
+
+        let len_byte_array = encoded.len().to_le_bytes();
+
+        let stdout = std::io::stdout();
+        let mut handle = stdout.lock();
+
+        handle.write_all(&len_byte_array)?;
+
+        handle.write_all(&encoded)?;
+
+        handle.flush()?
     }
-
-    let stdout = std::io::stdout();
-    let mut handle = stdout.lock();
-
-    rmp_serde::encode::write(&mut handle, &*process_data).unwrap();
-
-    Ok(())
 }

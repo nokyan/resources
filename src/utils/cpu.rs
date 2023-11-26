@@ -50,7 +50,7 @@ impl CpuData {
 }
 
 #[derive(Debug, Clone, Default)]
-pub struct CPUInfo {
+pub struct CpuInfo {
     pub vendor_id: Option<String>,
     pub model_name: Option<String>,
     pub architecture: Option<String>,
@@ -80,7 +80,7 @@ fn lscpu() -> Result<Value> {
 ///
 /// Will return `Err` if the are problems during reading or parsing
 /// of the `lscpu` command
-pub fn cpu_info() -> Result<CPUInfo> {
+pub fn cpu_info() -> Result<CpuInfo> {
     let lscpu_output = lscpu()?;
 
     let vendor_id = lscpu_output["Vendor ID"]
@@ -109,7 +109,7 @@ pub fn cpu_info() -> Result<CPUInfo> {
         .and_then(|x| x.parse::<f32>().ok())
         .map(|y| y * 1_000_000.0);
 
-    Ok(CPUInfo {
+    Ok(CpuInfo {
         vendor_id,
         model_name,
         architecture,
@@ -203,9 +203,9 @@ pub fn get_temperature() -> Result<f32> {
         // collect all the known hwmons
         for path in (glob("/sys/class/hwmon/hwmon*")?).flatten() {
             match std::fs::read_to_string(path.join("name")).as_deref() {
-                Ok("zenpower\n") => std::mem::drop(ZENPOWER.set(path.join("temp1_input").into())),
-                Ok("coretemp\n") => std::mem::drop(CORETEMP.set(path.join("temp1_input").into())),
-                Ok("k10temp\n") => std::mem::drop(K10TEMP.set(path.join("temp1_input").into())),
+                Ok("zenpower\n") => std::mem::drop(ZENPOWER.set(path.join("temp1_input"))),
+                Ok("coretemp\n") => std::mem::drop(CORETEMP.set(path.join("temp1_input"))),
+                Ok("k10temp\n") => std::mem::drop(K10TEMP.set(path.join("temp1_input"))),
                 Ok(_) | Err(_) => {
                     continue;
                 }
@@ -215,8 +215,8 @@ pub fn get_temperature() -> Result<f32> {
         // collect all the known thermal zones
         for path in (glob("/sys/class/thermal/thermal_zone*")?).flatten() {
             match std::fs::read_to_string(path.join("type")).as_deref() {
-                Ok("x86_pkg_temp\n") => std::mem::drop(X86_PKG_TEMP.set(path.join("temp").into())),
-                Ok("acpitz\n") => std::mem::drop(ACPI.set(path.join("temp").into())),
+                Ok("x86_pkg_temp\n") => std::mem::drop(X86_PKG_TEMP.set(path.join("temp"))),
+                Ok("acpitz\n") => std::mem::drop(ACPI.set(path.join("temp"))),
                 Ok(_) | Err(_) => {
                     continue;
                 }

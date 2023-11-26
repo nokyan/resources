@@ -1,17 +1,63 @@
 use anyhow::{bail, Context, Result};
 use config::LIBEXECDIR;
-use glob::glob;
-use process_data::{Containerization, ProcessData};
-use std::process::Command;
+use log::debug;
+use once_cell::sync::Lazy;
+use process_data::{pci_slot::PciSlot, Containerization, GpuUsageStats, ProcessData};
+use std::{
+    collections::BTreeMap,
+    io::{Read, Write},
+    process::{ChildStdin, ChildStdout, Command, Stdio},
+    sync::Mutex,
+};
+use strum_macros::Display;
 
 use gtk::gio::{Icon, ThemedIcon};
 
 use crate::config;
 
-use super::{FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
+use super::{NaNDefault, FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
+
+// convert to f64 since we only need it for floating point calculations anyway
+static NUM_CPUS: Lazy<f32> = Lazy::new(|| num_cpus::get() as f32);
+
+static TICK_RATE: Lazy<f32> =
+    Lazy::new(|| sysconf::sysconf(sysconf::SysconfVariable::ScClkTck).unwrap_or(100) as f32);
+
+static OTHER_PROCESS: Lazy<Mutex<(ChildStdin, ChildStdout)>> = Lazy::new(|| {
+    let proxy_path = if *IS_FLATPAK {
+        format!(
+            "{}/libexec/resources/resources-processes",
+            FLATPAK_APP_PATH.as_str()
+        )
+    } else {
+        format!("{LIBEXECDIR}/resources-processes")
+    };
+
+    let child = if *IS_FLATPAK {
+        Command::new(FLATPAK_SPAWN)
+            .args(["--host", proxy_path.as_str()])
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+            .unwrap()
+    } else {
+        Command::new(proxy_path)
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+            .unwrap()
+    };
+
+    let stdin = child.stdin.unwrap();
+    let stdout = child.stdout.unwrap();
+
+    Mutex::new((stdin, stdout))
+});
 
 /// Represents a process that can be found within procfs.
-#[derive(Debug, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Process {
     pub data: ProcessData,
     pub executable_path: String,
@@ -23,10 +69,11 @@ pub struct Process {
     pub read_bytes_last_timestamp: Option<u64>,
     pub write_bytes_last: Option<u64>,
     pub write_bytes_last_timestamp: Option<u64>,
+    pub gpu_usage_stats_last: BTreeMap<PciSlot, GpuUsageStats>,
 }
 
 // TODO: Better name?
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Display)]
 pub enum ProcessAction {
     TERM,
     STOP,
@@ -49,6 +96,10 @@ pub struct ProcessItem {
     pub read_total: Option<u64>,
     pub write_speed: Option<f64>,
     pub write_total: Option<u64>,
+    pub gpu_usage: f32,
+    pub enc_usage: f32,
+    pub dec_usage: f32,
+    pub gpu_mem_usage: u64,
 }
 
 impl Process {
@@ -59,30 +110,25 @@ impl Process {
     /// Will return `Err` if there are problems traversing and
     /// parsing procfs
     pub fn all_data() -> Result<Vec<ProcessData>> {
-        if *IS_FLATPAK {
-            let proxy_path = format!(
-                "{}/libexec/resources/resources-processes",
-                FLATPAK_APP_PATH.as_str()
-            );
-            let command = Command::new(FLATPAK_SPAWN)
-                .args(["--host", proxy_path.as_str()])
-                .output()?;
-            let output = command.stdout;
-            let proxy_output: Vec<ProcessData> =
-                rmp_serde::from_slice::<Vec<ProcessData>>(&output)?;
+        let output = {
+            let mut process = OTHER_PROCESS.lock().unwrap();
+            let _ = process.0.write_all(&[b'\n']);
+            let _ = process.0.flush();
 
-            return Ok(proxy_output);
-        }
+            let mut len_bytes = [0_u8; (usize::BITS / 8) as usize];
 
-        let mut process_data = vec![];
+            process.1.read_exact(&mut len_bytes)?;
 
-        for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-            if let Ok(entry) = ProcessData::try_from_path(entry) {
-                process_data.push(entry);
-            }
-        }
+            let len = usize::from_le_bytes(len_bytes);
 
-        Ok(process_data)
+            let mut output_bytes = vec![0; len];
+            process.1.read_exact(&mut output_bytes)?;
+
+            output_bytes
+        };
+
+        rmp_serde::from_slice::<Vec<ProcessData>>(&output)
+            .context("error decoding resources-processes' output")
     }
 
     pub fn from_process_data(process_data: ProcessData) -> Self {
@@ -122,6 +168,7 @@ impl Process {
             read_bytes_last_timestamp,
             write_bytes_last,
             write_bytes_last_timestamp,
+            gpu_usage_stats_last: Default::default(),
         }
     }
 
@@ -170,13 +217,18 @@ impl Process {
             // about because that might happen because we killed the
             // process' parent first, killing the child before we explicitly
             // did
+            debug!("Successfully {action}ed {}", self.data.pid);
             Ok(())
         } else if status_code == 1 {
             // 1 := no permissions
+            debug!(
+                "No permissions to {action} {}, attempting pkexec",
+                self.data.pid
+            );
             self.pkexec_execute_process_action(action_str, &kill_path)
         } else {
             bail!(
-                "couldn't kill {} due to unknown reasons, status code: {}",
+                "couldn't {action} {} due to unknown reasons, status code: {}",
                 self.data.pid,
                 status_code
             )
@@ -216,6 +268,10 @@ impl Process {
             // 0 := successful; 3 := process not found which we don't care
             // about because that might happen because we killed the
             // process' parent first, killing the child before we explicitly do
+            debug!(
+                "Successfully {action}ed {} with elevated privileges",
+                self.data.pid
+            );
             Ok(())
         } else {
             bail!(
@@ -231,12 +287,14 @@ impl Process {
         if self.cpu_time_last == 0 {
             0.0
         } else {
-            (self.data.cpu_time.saturating_sub(self.cpu_time_last) as f32
-                / (self
-                    .data
-                    .cpu_time_timestamp
-                    .saturating_sub(self.cpu_time_last_timestamp)) as f32)
-                .clamp(0.0, 1.0)
+            let delta_cpu_time =
+                self.data.cpu_time.saturating_sub(self.cpu_time_last) as f32 * 1000.0;
+            let delta_time = self
+                .data
+                .cpu_time_timestamp
+                .saturating_sub(self.cpu_time_last_timestamp) as f32;
+
+            delta_cpu_time / (delta_time * *TICK_RATE * *NUM_CPUS)
         }
     }
 
@@ -290,6 +348,90 @@ impl Process {
         } else {
             None
         }
+    }
+
+    #[must_use]
+    pub fn gpu_usage(&self) -> f32 {
+        let mut returned_gpu_usage = 0.0;
+        for (gpu, usage) in self.data.gpu_usage_stats.iter() {
+            if let Some(old_usage) = self.gpu_usage_stats_last.get(gpu) {
+                let this_gpu_usage = if usage.nvidia {
+                    usage.gfx as f32 / 100.0
+                } else if old_usage.gfx == 0 {
+                    0.0
+                } else {
+                    ((usage.gfx.saturating_sub(old_usage.gfx) as f32)
+                        / (usage.gfx_timestamp.saturating_sub(old_usage.gfx_timestamp) as f32)
+                            .nan_default(0.0))
+                        / 1_000_000.0
+                };
+
+                if this_gpu_usage > returned_gpu_usage {
+                    returned_gpu_usage = this_gpu_usage;
+                }
+            }
+        }
+
+        returned_gpu_usage
+    }
+
+    #[must_use]
+    pub fn enc_usage(&self) -> f32 {
+        let mut returned_gpu_usage = 0.0;
+        for (gpu, usage) in self.data.gpu_usage_stats.iter() {
+            if let Some(old_usage) = self.gpu_usage_stats_last.get(gpu) {
+                let this_gpu_usage = if usage.nvidia {
+                    usage.enc as f32 / 100.0
+                } else if old_usage.enc == 0 {
+                    0.0
+                } else {
+                    ((usage.enc.saturating_sub(old_usage.enc) as f32)
+                        / (usage.enc_timestamp.saturating_sub(old_usage.enc_timestamp) as f32)
+                            .nan_default(0.0))
+                        / 1_000_000.0
+                };
+
+                if this_gpu_usage > returned_gpu_usage {
+                    returned_gpu_usage = this_gpu_usage;
+                }
+            }
+        }
+
+        returned_gpu_usage
+    }
+
+    #[must_use]
+    pub fn dec_usage(&self) -> f32 {
+        let mut returned_gpu_usage = 0.0;
+        for (gpu, usage) in self.data.gpu_usage_stats.iter() {
+            if let Some(old_usage) = self.gpu_usage_stats_last.get(gpu) {
+                let this_gpu_usage = if usage.nvidia {
+                    usage.dec as f32 / 100.0
+                } else if old_usage.dec == 0 {
+                    0.0
+                } else {
+                    ((usage.dec.saturating_sub(old_usage.dec) as f32)
+                        / (usage.dec_timestamp.saturating_sub(old_usage.dec_timestamp) as f32)
+                            .nan_default(0.0))
+                        / 1_000_000.0
+                };
+
+                if this_gpu_usage > returned_gpu_usage {
+                    returned_gpu_usage = this_gpu_usage;
+                }
+            }
+        }
+
+        returned_gpu_usage
+    }
+
+    #[must_use]
+    pub fn gpu_mem_usage(&self) -> u64 {
+        self.data
+            .gpu_usage_stats
+            .values()
+            .map(|stats| stats.mem)
+            .sum()
     }
 
     pub fn sanitize_cmdline<S: AsRef<str>>(cmdline: S) -> Option<String> {

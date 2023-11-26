@@ -207,13 +207,15 @@ impl ResNetwork {
         imp.set_tab_name(&sidebar_title);
 
         imp.receiving.set_title_label(&i18n("Receiving"));
-        imp.receiving.set_graph_color(52, 170, 175);
-        imp.receiving.set_data_points_max_amount(60);
-        imp.receiving.set_locked_max_y(None);
+        imp.receiving.graph().set_graph_color(52, 170, 175);
+        imp.receiving.graph().set_data_points_max_amount(60);
+        imp.receiving.graph().set_locked_max_y(None);
+
         imp.sending.set_title_label(&i18n("Sending"));
-        imp.sending.set_graph_color(222, 77, 119);
-        imp.sending.set_data_points_max_amount(60);
-        imp.sending.set_locked_max_y(None);
+        imp.sending.graph().set_graph_color(222, 77, 119);
+        imp.sending.graph().set_data_points_max_amount(60);
+        imp.sending.graph().set_locked_max_y(None);
+
         imp.manufacturer.set_subtitle(
             &network_interface
                 .vendor
@@ -221,6 +223,7 @@ impl ResNetwork {
                 .cloned()
                 .unwrap_or_else(|| i18n("N/A")),
         );
+
         imp.driver.set_subtitle(
             &network_interface
                 .driver_name
@@ -228,17 +231,20 @@ impl ResNetwork {
                 .cloned()
                 .unwrap_or_else(|| i18n("N/A")),
         );
+
         imp.interface.set_subtitle(
             network_interface
                 .interface_name
                 .to_str()
                 .unwrap_or(&i18n("N/A")),
         );
+
         let hw_address = network_interface
             .hw_address
             .as_ref()
             .cloned()
             .unwrap_or_else(|| i18n("N/A"));
+
         if hw_address.is_empty() {
             imp.hw_address.set_subtitle(&i18n("N/A"));
         } else {
@@ -279,8 +285,8 @@ impl ResNetwork {
         imp.total_sent
             .set_subtitle(&convert_storage(sent_bytes as f64, false));
 
-        imp.receiving.push_data_point(received_delta);
-        let highest_received = imp.receiving.get_highest_value();
+        imp.receiving.graph().push_data_point(received_delta);
+        let highest_received = imp.receiving.graph().get_highest_value();
         imp.receiving.set_subtitle(&format!(
             "{} · {} {}",
             convert_speed(received_delta, true),
@@ -288,8 +294,8 @@ impl ResNetwork {
             convert_speed(highest_received, true)
         ));
 
-        imp.sending.push_data_point(sent_delta);
-        let highest_sent = imp.sending.get_highest_value();
+        imp.sending.graph().push_data_point(sent_delta);
+        let highest_sent = imp.sending.graph().get_highest_value();
         imp.sending.set_subtitle(&format!(
             "{} · {} {}",
             convert_speed(sent_delta, true),

@@ -26,22 +26,22 @@ pub struct DriveData {
 }
 
 impl DriveData {
-    pub fn new(path: &Path) -> Self {
-        let inner = Drive::from_sysfs(&path).unwrap_or_default();
+    pub fn new(path: &Path) -> Result<Self> {
+        let inner = Drive::from_sysfs(path)?;
         let is_virtual = inner.is_virtual();
-        let writable = inner.writable().unwrap_or_default();
-        let removable = inner.removable().unwrap_or_default();
-        let disk_stats = inner.sys_stats().unwrap_or_default();
-        let capacity = inner.capacity().unwrap_or_default();
+        let writable = inner.writable()?;
+        let removable = inner.removable()?;
+        let disk_stats = inner.sys_stats()?;
+        let capacity = inner.capacity()?;
 
-        Self {
+        Ok(Self {
             inner,
             is_virtual,
             writable,
             removable,
             disk_stats,
             capacity,
-        }
+        })
     }
 }
 
@@ -116,13 +116,13 @@ impl Drive {
             if block_device.is_empty() {
                 continue;
             }
-            list.push(entry.path().into());
+            list.push(entry.path());
         }
         Ok(list)
     }
 
     pub fn display_name(&self, capacity: f64) -> String {
-        let capacity_formatted = convert_storage(capacity as f64, true);
+        let capacity_formatted = convert_storage(capacity, true);
         match self.drive_type {
             DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),
             DriveType::Floppy => i18n("Floppy Drive"),

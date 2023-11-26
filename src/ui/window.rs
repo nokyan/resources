@@ -8,6 +8,7 @@ use adw::{Toast, ToastOverlay};
 use anyhow::Result;
 use gtk::glib::{clone, timeout_future, MainContext};
 use gtk::{gio, glib, Widget};
+use log::{debug, error, warn};
 
 use crate::application::Application;
 use crate::config::PROFILE;
@@ -18,7 +19,7 @@ use crate::ui::pages::processes::ResProcesses;
 use crate::utils::app::AppsContext;
 use crate::utils::cpu::CpuData;
 use crate::utils::drive::{Drive, DriveData};
-use crate::utils::gpu::{GpuData, GPU};
+use crate::utils::gpu::{Gpu, GpuData};
 use crate::utils::memory::MemoryData;
 use crate::utils::network::{NetworkData, NetworkInterface};
 use crate::utils::process::{Process, ProcessAction};
@@ -53,6 +54,7 @@ mod imp {
         glib::{Receiver, Sender},
         CompositeTemplate,
     };
+    use process_data::pci_slot::PciSlot;
 
     #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/net/nokyan/Resources/ui/window.ui")]
@@ -86,7 +88,7 @@ mod imp {
 
         pub network_pages: RefCell<HashMap<PathBuf, adw::ToolbarView>>,
 
-        pub gpu_pages: RefCell<Vec<adw::ToolbarView>>,
+        pub gpu_pages: RefCell<HashMap<PciSlot, (Gpu, adw::ToolbarView)>>,
 
         pub apps_context: RefCell<AppsContext>,
 
@@ -180,7 +182,7 @@ glib::wrapper! {
 
 struct RefreshData {
     cpu_data: CpuData,
-    mem_data: MemoryData,
+    mem_data: Result<MemoryData>,
     gpu_data: Vec<GpuData>,
     drive_paths: Vec<PathBuf>,
     drive_data: Vec<DriveData>,
@@ -223,14 +225,16 @@ impl MainWindow {
         }
     }
 
-    fn init_gpu_pages(self: &MainWindow) -> Vec<GPU> {
-        let gpus = GPU::get_gpus().unwrap_or_default();
+    fn init_gpu_pages(self: &MainWindow) -> Vec<Gpu> {
+        let imp = self.imp();
+
+        let gpus = Gpu::get_gpus().unwrap_or_default();
+        let gpus_len = gpus.len();
 
         for (i, gpu) in gpus.iter().enumerate() {
             let page = ResGPU::new();
-            page.init(gpu.clone(), i);
 
-            let title = if gpus.len() > 1 {
+            let title = if gpus_len > 1 {
                 i18n_f("GPU {}", &[&i.to_string()])
             } else {
                 i18n("GPU")
@@ -238,13 +242,17 @@ impl MainWindow {
 
             page.set_tab_name(&*title);
 
-            let added_page = if let Ok(gpu_name) = gpu.get_name() {
-                self.add_page(&page, &gpu_name, &title)
+            let added_page = if let Ok(gpu_name) = gpu.name() {
+                self.add_page(&page, &title, &gpu_name)
             } else {
-                self.add_page(&page, &title, "")
+                self.add_page(&page, &title, &title)
             };
 
-            self.imp().gpu_pages.borrow_mut().push(added_page);
+            page.init(gpu, i);
+
+            imp.gpu_pages
+                .borrow_mut()
+                .insert(gpu.pci_slot(), (gpu.clone(), added_page));
         }
         gpus
     }
@@ -275,14 +283,14 @@ impl MainWindow {
         }));
     }
 
-    fn gather_refresh_data(logical_cpus: usize, gpus: &[GPU]) -> RefreshData {
+    fn gather_refresh_data(logical_cpus: usize, gpus: &[Gpu]) -> RefreshData {
         let cpu_data = CpuData::new(logical_cpus);
 
         let mem_data = MemoryData::new();
 
         let mut gpu_data = vec![];
         for gpu in gpus {
-            let data = GpuData::new(&gpu);
+            let data = GpuData::new(gpu);
 
             gpu_data.push(data);
         }
@@ -292,7 +300,14 @@ impl MainWindow {
         for path in &drive_paths {
             let data = DriveData::new(path);
 
-            drive_data.push(data);
+            if let Ok(data) = data {
+                drive_data.push(data);
+            } else if let Err(error) = data {
+                warn!(
+                    "Unable to update drive at {}, reason: {error}",
+                    path.display()
+                )
+            }
         }
 
         let mut network_data = vec![];
@@ -300,10 +315,21 @@ impl MainWindow {
         for path in &network_paths {
             let data = NetworkData::new(path);
 
-            network_data.push(data);
+            if let Ok(data) = data {
+                network_data.push(data);
+            } else if let Err(error) = data {
+                warn!(
+                    "Unable to update network interface at {}, reason: {error}",
+                    path.display()
+                )
+            }
         }
 
-        let process_data = Process::all_data().unwrap();
+        let _process_data = Process::all_data();
+        if let Err(error) = &_process_data {
+            warn!("Unable to update process and application data, reason: {error}");
+        }
+        let process_data = _process_data.unwrap_or_default();
 
         RefreshData {
             cpu_data,
@@ -332,6 +358,47 @@ impl MainWindow {
         } = refresh_data;
 
         /*
+         * Apps and processes
+         */
+
+        let mut apps_context = imp.apps_context.borrow_mut();
+        apps_context.refresh(process_data);
+
+        imp.applications.refresh_apps_list(&apps_context);
+        imp.processes.refresh_processes_list(&apps_context);
+
+        /*
+         *  Gpu
+         */
+        let gpu_pages = imp.gpu_pages.borrow();
+        for ((_, page), mut gpu_data) in gpu_pages.values().zip(gpu_data) {
+            let page = page.content().and_downcast::<ResGPU>().unwrap();
+
+            // non-NVIDIA GPUs unfortunately don't expose encoder/decoder stats centrally but
+            // rather expose them only per-process. since we've just refreshed our
+            // processes, we take the opportunity and collect the encoder/decoder for the
+            // current GPU and slip it into GpuData just in time
+
+            if gpu_data.usage_fraction.is_none() {
+                gpu_data.usage_fraction = Some(apps_context.gpu_fraction(gpu_data.pci_slot) as f64);
+            }
+
+            if gpu_data.encode_fraction.is_none() {
+                gpu_data.encode_fraction =
+                    Some(apps_context.encoder_fraction(gpu_data.pci_slot) as f64);
+            }
+
+            if gpu_data.decode_fraction.is_none() {
+                gpu_data.decode_fraction =
+                    Some(apps_context.decoder_fraction(gpu_data.pci_slot) as f64);
+            }
+
+            page.refresh_page(gpu_data);
+        }
+
+        std::mem::drop(apps_context);
+
+        /*
          * Cpu
          */
         imp.cpu.refresh_page(&cpu_data);
@@ -339,16 +406,10 @@ impl MainWindow {
         /*
          * Memory
          */
-        imp.memory.refresh_page(mem_data);
-
-        /*
-         *  Gpu
-         */
-        let gpu_pages = imp.gpu_pages.borrow();
-        for (page, gpu_data) in gpu_pages.iter().zip(gpu_data) {
-            let page = page.content().and_downcast::<ResGPU>().unwrap();
-
-            page.refresh_page(gpu_data);
+        if let Ok(mem_data) = mem_data {
+            imp.memory.refresh_page(mem_data);
+        } else if let Err(error) = mem_data {
+            warn!("Unable to update memory data, reason: {error}")
         }
 
         /*
@@ -388,22 +449,19 @@ impl MainWindow {
 
             page.refresh_page(network_data);
         }
-
-        /*
-         * Apps and processes
-         */
-
-        let mut apps_context = imp.apps_context.borrow_mut();
-        apps_context.refresh(process_data);
-
-        imp.applications.refresh_apps_list(&apps_context);
-
-        imp.processes.refresh_processes_list(&apps_context);
     }
 
     pub async fn periodic_refresh_all(&self) {
         let imp = self.imp();
-        let gpus = GPU::get_gpus().unwrap_or_default();
+
+        let gpus = imp
+            .gpu_pages
+            .borrow()
+            .values()
+            .map(|(gpu, _)| gpu)
+            .cloned()
+            .collect::<Vec<Gpu>>();
+
         let logical_cpus = imp.cpu.imp().logical_cpus_amount.get();
 
         let (tx_data, rx_data) = std::sync::mpsc::sync_channel(1);
@@ -467,6 +525,10 @@ impl MainWindow {
         for page_path in &old_page_paths {
             if !paths.contains(page_path) {
                 // A drive has been removed
+                debug!(
+                    "A drive has been removed (or turned invisible): {}",
+                    page_path.display()
+                );
 
                 let page = drive_pages.remove(page_path).unwrap();
                 imp.content_stack.remove(&page);
@@ -477,6 +539,10 @@ impl MainWindow {
         for path in paths {
             if !drive_pages.contains_key(&path) {
                 // A drive has been added
+                debug!(
+                    "A drive has been added (or turned visible): {}",
+                    path.display()
+                );
 
                 let drive = drive_data
                     .iter()
@@ -525,6 +591,10 @@ impl MainWindow {
         for page_path in &old_page_paths {
             if !paths.contains(page_path) {
                 // A network interface has been removed
+                debug!(
+                    "A network interface has been removed (or turned invisible): {}",
+                    page_path.display()
+                );
 
                 let page = network_pages.remove(page_path).unwrap();
                 imp.content_stack.remove(&page);
@@ -535,6 +605,10 @@ impl MainWindow {
         for path in paths {
             if !network_pages.contains_key(&path) {
                 // A network interface has been added
+                debug!(
+                    "A network interface has been added (or turned visible): {}",
+                    path.display()
+                );
 
                 let network_interface = network_data
                     .iter()
@@ -567,7 +641,7 @@ impl MainWindow {
                         let toast_message = match process.execute_process_action(action) {
                             Ok(()) => get_action_success(action, &[&display_name]),
                             Err(e) => {
-                                log::error!("Unable to kill process {}: {}", pid, e);
+                                error!("Unable to kill process {pid}: {e}");
                                 get_process_action_failure(action, &[&display_name])
                             }
                         };
@@ -581,7 +655,7 @@ impl MainWindow {
 
                     for r in &res {
                         if let Err(e) = r {
-                            log::error!("Unable to kill a process: {}", e);
+                            error!("Unable to kill a process of app {id}: {e}");
                         }
                     }
 

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ResDoubleGraphBox" parent="AdwPreferencesRow">
+    <property name="hexpand">true</property>
+    <property name="overflow">hidden</property>
+    <property name="activatable">false</property>
+    <property name="width-request">160</property>
+    <child type="suffix">
+      <object class="GtkBox">
+        <property name="orientation">horizontal</property>
+        <property name="margin-start">12</property>
+        <property name="margin-end">12</property>
+        <property name="margin-top">12</property>
+        <property name="margin-bottom">12</property>
+        <property name="spacing">12</property>
+        <property name="hexpand">true</property>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="hexpand">true</property>
+            <property name="spacing">12</property>
+            <child>
+              <object class="ResGraph" id="start_graph">
+                <property name="hexpand">true</property>
+                <property name="height-request">120</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="hexpand">true</property>
+                <child>
+                  <object class="GtkLabel" id="start_title_label">
+                    <property name="hexpand">true</property>
+                    <property name="justify">right</property>
+                    <property name="halign">start</property>
+                    <property name="selectable">true</property>
+                    <property name="ellipsize">2</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="start_info_label">
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                    <property name="justify">right</property>
+                    <property name="halign">start</property>
+                    <property name="selectable">true</property>
+                    <property name="ellipsize">2</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="hexpand">true</property>
+            <property name="spacing">12</property>
+            <child>
+              <object class="ResGraph" id="end_graph">
+                <property name="hexpand">true</property>
+                <property name="height-request">120</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="hexpand">true</property>
+                <child>
+                  <object class="GtkLabel" id="end_title_label">
+                    <property name="hexpand">true</property>
+                    <property name="justify">right</property>
+                    <property name="halign">start</property>
+                    <property name="selectable">true</property>
+                    <property name="ellipsize">2</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="end_info_label">
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                    <property name="justify">right</property>
+                    <property name="halign">start</property>
+                    <property name="selectable">true</property>
+                    <property name="ellipsize">2</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

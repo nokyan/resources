@@ -8,6 +8,7 @@ pub mod drive;
 pub mod gpu;
 pub mod memory;
 pub mod network;
+pub mod pci;
 pub mod process;
 pub mod settings;
 pub mod units;

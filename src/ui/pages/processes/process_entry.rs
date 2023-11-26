@@ -53,6 +53,18 @@ mod imp {
         #[property(get, set)]
         write_total: Cell<i64>, // will be -1 if write data is not available
 
+        #[property(get, set)]
+        gpu_usage: Cell<f32>,
+
+        #[property(get, set)]
+        enc_usage: Cell<f32>,
+
+        #[property(get, set)]
+        dec_usage: Cell<f32>,
+
+        #[property(get, set)]
+        gpu_mem_usage: Cell<u64>,
+
         pub process_item: RefCell<Option<ProcessItem>>,
     }
 
@@ -71,6 +83,10 @@ mod imp {
                 read_total: Cell::new(0),
                 write_speed: Cell::new(0.0),
                 write_total: Cell::new(0),
+                gpu_usage: Cell::new(0.0),
+                enc_usage: Cell::new(0.0),
+                dec_usage: Cell::new(0.0),
+                gpu_mem_usage: Cell::new(0),
             }
         }
     }
@@ -172,16 +188,19 @@ impl ProcessEntry {
         self.set_read_total(
             process_item
                 .read_total
-                .map(|read_total| read_total as i64)
-                .unwrap_or(-1),
+                .map_or(-1, |read_total| read_total as i64),
         );
         self.set_write_speed(process_item.write_speed.unwrap_or(-1.0));
         self.set_write_total(
             process_item
                 .write_total
-                .map(|write_total| write_total as i64)
-                .unwrap_or(-1),
+                .map_or(-1, |write_total| write_total as i64),
         );
+        self.set_gpu_usage(process_item.gpu_usage);
+        self.set_enc_usage(process_item.enc_usage);
+        self.set_dec_usage(process_item.dec_usage);
+        self.set_gpu_mem_usage(process_item.gpu_mem_usage);
+
         self.imp().process_item.replace(Some(process_item));
     }
 

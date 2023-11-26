@@ -4,11 +4,14 @@ use anyhow::{Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
 use hashbrown::{HashMap, HashSet};
 use once_cell::sync::Lazy;
-use process_data::{Containerization, ProcessData};
+use process_data::{pci_slot::PciSlot, Containerization, ProcessData};
 
 use crate::i18n::i18n;
 
-use super::process::{Process, ProcessAction, ProcessItem};
+use super::{
+    process::{Process, ProcessAction, ProcessItem},
+    NaNDefault,
+};
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
@@ -31,6 +34,7 @@ static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: Lazy<HashMap<String, String>> = Lazy::n
         ("firefox-bin".into(), "firefox".into()),
         ("oosplash".into(), "libreoffice".into()),
         ("soffice.bin".into(), "libreoffice".into()),
+        ("resources-processes".into(), "resources".into()),
     ])
 });
 
@@ -59,6 +63,10 @@ pub struct AppItem {
     pub read_total: u64,
     pub write_speed: f64,
     pub write_total: u64,
+    pub gpu_usage: f32,
+    pub enc_usage: f32,
+    pub dec_usage: f32,
+    pub gpu_mem_usage: u64,
 }
 
 /// Represents an application installed on the system. It doesn't
@@ -168,10 +176,7 @@ impl App {
 
     #[must_use]
     pub fn cpu_time_ratio(&self, apps: &AppsContext) -> f32 {
-        self.processes_iter(apps)
-            .map(Process::cpu_time_ratio)
-            .sum::<f32>()
-            .clamp(0.0, 1.0)
+        self.processes_iter(apps).map(Process::cpu_time_ratio).sum()
     }
 
     #[must_use]
@@ -206,6 +211,26 @@ impl App {
         )
     }
 
+    #[must_use]
+    pub fn gpu_usage(&self, apps: &AppsContext) -> f32 {
+        self.processes_iter(apps).map(Process::gpu_usage).sum()
+    }
+
+    #[must_use]
+    pub fn enc_usage(&self, apps: &AppsContext) -> f32 {
+        self.processes_iter(apps).map(Process::enc_usage).sum()
+    }
+
+    #[must_use]
+    pub fn dec_usage(&self, apps: &AppsContext) -> f32 {
+        self.processes_iter(apps).map(Process::dec_usage).sum()
+    }
+
+    #[must_use]
+    pub fn gpu_mem_usage(&self, apps: &AppsContext) -> u64 {
+        self.processes_iter(apps).map(Process::gpu_mem_usage).sum()
+    }
+
     pub fn execute_process_action(
         &self,
         apps: &AppsContext,
@@ -234,6 +259,75 @@ impl AppsContext {
             read_bytes_from_dead_processes: 0,
             write_bytes_from_dead_processes: 0,
         }
+    }
+
+    pub fn gpu_fraction(&self, pci_slot: PciSlot) -> f32 {
+        self.all_processes()
+            .map(|process| (&process.data.gpu_usage_stats, &process.gpu_usage_stats_last))
+            .map(|(new, old)| (new.get(&pci_slot), old.get(&pci_slot)))
+            .filter_map(|(a, b)| match (a, b) {
+                (Some(val1), Some(val2)) => Some((val1, val2)),
+                _ => None,
+            })
+            .map(|(new, old)| {
+                if new.nvidia {
+                    new.gfx as f32 / 100.0
+                } else if old.gfx == 0 {
+                    0.0
+                } else {
+                    ((new.gfx.saturating_sub(old.gfx) as f32)
+                        / (new.gfx_timestamp.saturating_sub(old.gfx_timestamp) as f32))
+                        .nan_default(0.0)
+                        / 1_000_000.0
+                }
+            })
+            .sum()
+    }
+
+    pub fn encoder_fraction(&self, pci_slot: PciSlot) -> f32 {
+        self.all_processes()
+            .map(|process| (&process.data.gpu_usage_stats, &process.gpu_usage_stats_last))
+            .map(|(new, old)| (new.get(&pci_slot), old.get(&pci_slot)))
+            .filter_map(|(a, b)| match (a, b) {
+                (Some(val1), Some(val2)) => Some((val1, val2)),
+                _ => None,
+            })
+            .map(|(new, old)| {
+                if new.nvidia {
+                    new.enc as f32 / 100.0
+                } else if old.enc == 0 {
+                    0.0
+                } else {
+                    ((new.enc.saturating_sub(old.enc) as f32)
+                        / (new.enc_timestamp.saturating_sub(old.enc_timestamp) as f32))
+                        .nan_default(0.0)
+                        / 1_000_000.0
+                }
+            })
+            .sum()
+    }
+
+    pub fn decoder_fraction(&self, pci_slot: PciSlot) -> f32 {
+        self.all_processes()
+            .map(|process| (&process.data.gpu_usage_stats, &process.gpu_usage_stats_last))
+            .map(|(new, old)| (new.get(&pci_slot), old.get(&pci_slot)))
+            .filter_map(|(a, b)| match (a, b) {
+                (Some(val1), Some(val2)) => Some((val1, val2)),
+                _ => None,
+            })
+            .map(|(new, old)| {
+                if new.nvidia {
+                    new.dec as f32 / 100.0
+                } else if old.dec == 0 {
+                    0.0
+                } else {
+                    ((new.dec.saturating_sub(old.dec) as f32)
+                        / (new.dec_timestamp.saturating_sub(old.dec_timestamp) as f32))
+                        .nan_default(0.0)
+                        / 1_000_000.0
+                }
+            })
+            .sum()
     }
 
     fn app_associated_with_process(&mut self, process: &Process) -> Option<String> {
@@ -323,13 +417,17 @@ impl AppsContext {
                 cpu_time_ratio: process.cpu_time_ratio(),
                 commandline: Process::sanitize_cmdline(process.data.commandline.clone())
                     .unwrap_or(full_comm),
-                containerization: process.data.containerization.clone(),
+                containerization: process.data.containerization,
                 cgroup: process.data.cgroup.clone(),
                 uid: process.data.uid,
                 read_speed: process.read_speed(),
                 read_total: process.data.read_bytes,
                 write_speed: process.write_speed(),
                 write_total: process.data.write_bytes,
+                gpu_usage: process.gpu_usage(),
+                enc_usage: process.enc_usage(),
+                dec_usage: process.dec_usage(),
+                gpu_mem_usage: process.gpu_mem_usage(),
             }
         })
     }
@@ -377,6 +475,10 @@ impl AppsContext {
                         read_total: app.read_total(self),
                         write_speed: app.write_speed(self),
                         write_total: app.write_total(self),
+                        gpu_usage: app.gpu_usage(self),
+                        enc_usage: app.enc_usage(self),
+                        dec_usage: app.dec_usage(self),
+                        gpu_mem_usage: app.gpu_mem_usage(self),
                     },
                 )
             })
@@ -414,6 +516,17 @@ impl AppsContext {
                 .filter_map(|process| process.data.write_bytes)
                 .sum::<u64>();
 
+        let system_gpu_usage = self.system_processes_iter().map(Process::gpu_usage).sum();
+
+        let system_enc_usage = self.system_processes_iter().map(Process::enc_usage).sum();
+
+        let system_dec_usage = self.system_processes_iter().map(Process::dec_usage).sum();
+
+        let system_gpu_mem_usage = self
+            .system_processes_iter()
+            .map(Process::gpu_mem_usage)
+            .sum();
+
         return_map.insert(
             None,
             AppItem {
@@ -429,40 +542,37 @@ impl AppsContext {
                 read_total: system_read_total,
                 write_speed: system_write_speed,
                 write_total: system_write_total,
+                gpu_usage: system_gpu_usage,
+                enc_usage: system_enc_usage,
+                dec_usage: system_dec_usage,
+                gpu_mem_usage: system_gpu_mem_usage,
             },
         );
+
         return_map
     }
 
     /// Refreshes the statistics about the running applications and processes.
-    pub fn refresh(&mut self, process_data: Vec<ProcessData>) {
-        let newly_gathered_processes = process_data
-            .into_iter()
-            .map(Process::from_process_data)
-            .collect::<Vec<_>>();
-
+    pub fn refresh(&mut self, new_process_data: Vec<ProcessData>) {
         let mut updated_processes = HashSet::new();
 
-        for mut new_process in newly_gathered_processes {
-            updated_processes.insert(new_process.data.pid);
+        for process_data in new_process_data {
+            updated_processes.insert(process_data.pid);
             // refresh our old processes
-            if let Some(old_process) = self.processes.get_mut(&new_process.data.pid) {
+            if let Some(old_process) = self.processes.get_mut(&process_data.pid) {
                 old_process.cpu_time_last = old_process.data.cpu_time;
                 old_process.cpu_time_last_timestamp = old_process.data.cpu_time_timestamp;
                 old_process.read_bytes_last = old_process.data.read_bytes;
                 old_process.read_bytes_last_timestamp = old_process.data.read_bytes_timestamp;
                 old_process.write_bytes_last = old_process.data.write_bytes;
                 old_process.write_bytes_last_timestamp = old_process.data.write_bytes_timestamp;
-                old_process.data = new_process.data.clone();
+                old_process.gpu_usage_stats_last = old_process.data.gpu_usage_stats.clone();
+
+                old_process.data = process_data.clone();
             } else {
                 // this is a new process, see if it belongs to a graphical app
 
-                if self
-                    .processes_assigned_to_apps
-                    .contains(&new_process.data.pid)
-                {
-                    continue;
-                }
+                let mut new_process = Process::from_process_data(process_data);
 
                 if let Some(app_id) = self.app_associated_with_process(&new_process) {
                     self.processes_assigned_to_apps.insert(new_process.data.pid);

@@ -203,8 +203,8 @@ impl ResCPU {
 
         imp.total_cpu.set_title_label(&i18n("CPU"));
         imp.total_cpu.set_subtitle(&i18n("N/A"));
-        imp.total_cpu.set_data_points_max_amount(60);
-        imp.total_cpu.set_graph_color(28, 113, 216);
+        imp.total_cpu.graph().set_data_points_max_amount(60);
+        imp.total_cpu.graph().set_graph_color(28, 113, 216);
 
         // if our CPU happens to only have one thread, showing a single thread box with the exact
         // same fraction as the progress bar for total CPU usage would be silly, so only do
@@ -215,9 +215,9 @@ impl ResCPU {
             let thread_box = ResGraphBox::new();
             thread_box.set_subtitle(&i18n_f("CPU {}", &[&(i + 1).to_string()]));
             thread_box.set_title_label(&i18n("N/A"));
-            thread_box.set_graph_height_request(72);
-            thread_box.set_data_points_max_amount(60);
-            thread_box.set_graph_color(28, 113, 216);
+            thread_box.graph().set_height_request(72);
+            thread_box.graph().set_data_points_max_amount(60);
+            thread_box.graph().set_graph_color(28, 113, 216);
             let flow_box_chld = FlowBoxChild::builder()
                 .child(&thread_box)
                 .css_classes(vec!["tile", "card"])
@@ -293,7 +293,7 @@ impl ResCPU {
 
         let total_fraction = ((work_total_time as f64) / (sum_total_delta as f64)).nan_default(0.0);
 
-        imp.total_cpu.push_data_point(total_fraction);
+        imp.total_cpu.graph().push_data_point(total_fraction);
 
         let percentage_string = &format!("{} %", (total_fraction * 100.0).round());
         imp.total_cpu.set_subtitle(percentage_string);
@@ -315,7 +315,7 @@ impl ResCPU {
                 let thread_fraction =
                     ((work_thread_time as f64) / (sum_thread_delta as f64)).nan_default(0.0);
 
-                curr_threadbox.push_data_point(thread_fraction);
+                curr_threadbox.graph().push_data_point(thread_fraction);
                 curr_threadbox.set_title_label(&format!("{} %", (thread_fraction * 100.0).round()));
 
                 curr_threadbox.set_subtitle(&convert_frequency(frequencies[i] as f64));

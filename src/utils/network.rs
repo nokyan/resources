@@ -1,14 +1,16 @@
 use std::{
     collections::HashMap,
     ffi::OsString,
+    fmt::Display,
     path::{Path, PathBuf},
 };
 
 use anyhow::{Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
-use pci_ids::FromId;
 
 use crate::i18n::i18n;
+
+use super::pci::{Device, Vendor};
 
 #[derive(Debug)]
 pub struct NetworkData {
@@ -20,20 +22,20 @@ pub struct NetworkData {
 }
 
 impl NetworkData {
-    pub fn new(path: &Path) -> Self {
-        let inner = NetworkInterface::from_sysfs(path).unwrap();
+    pub fn new(path: &Path) -> Result<Self> {
+        let inner = NetworkInterface::from_sysfs(path)?;
         let is_virtual = inner.is_virtual();
-        let received_bytes = inner.received_bytes().unwrap();
-        let sent_bytes = inner.sent_bytes().unwrap();
+        let received_bytes = inner.received_bytes()?;
+        let sent_bytes = inner.sent_bytes()?;
         let display_name = inner.display_name();
 
-        Self {
+        Ok(Self {
             inner,
             is_virtual,
             received_bytes,
             sent_bytes,
             display_name,
-        }
+        })
     }
 }
 
@@ -97,21 +99,25 @@ pub struct NetworkInterface {
     sent_bytes_path: PathBuf,
 }
 
-impl InterfaceType {
-    pub fn to_string(&self) -> String {
-        match self {
-            InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
-            InterfaceType::Bridge => i18n("Network Bridge"),
-            InterfaceType::Ethernet => i18n("Ethernet Connection"),
-            InterfaceType::InfiniBand => i18n("InfiniBand Connection"),
-            InterfaceType::Slip => i18n("Serial Line IP Connection"),
-            InterfaceType::VirtualEthernet => i18n("Virtual Ethernet Device"),
-            InterfaceType::VmBridge => i18n("VM Network Bridge"),
-            InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
-            InterfaceType::Wlan => i18n("Wi-Fi Connection"),
-            InterfaceType::Wwan => i18n("WWAN Connection"),
-            InterfaceType::Unknown => i18n("Network Interface"),
-        }
+impl Display for InterfaceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
+                InterfaceType::Bridge => i18n("Network Bridge"),
+                InterfaceType::Ethernet => i18n("Ethernet Connection"),
+                InterfaceType::InfiniBand => i18n("InfiniBand Connection"),
+                InterfaceType::Slip => i18n("Serial Line IP Connection"),
+                InterfaceType::VirtualEthernet => i18n("Virtual Ethernet Device"),
+                InterfaceType::VmBridge => i18n("VM Network Bridge"),
+                InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
+                InterfaceType::Wlan => i18n("Wi-Fi Connection"),
+                InterfaceType::Wwan => i18n("WWAN Connection"),
+                InterfaceType::Unknown => i18n("Network Interface"),
+            }
+        )
     }
 }
 
@@ -134,7 +140,7 @@ impl NetworkInterface {
             if block_device.starts_with("lo") {
                 continue;
             }
-            list.push(entry.path().into());
+            list.push(entry.path());
         }
         Ok(list)
     }
@@ -198,9 +204,8 @@ impl NetworkInterface {
             driver_name: dev_uevent.get("DRIVER").cloned(),
             interface_type: InterfaceType::from_interface_name(interface_name.to_string_lossy()),
             speed,
-            vendor: pci_ids::Vendor::from_id(vid_pid.0).map(|x| x.name().to_string()),
-            pid_name: pci_ids::Device::from_vid_pid(vid_pid.0, vid_pid.1)
-                .map(|x| x.name().to_string()),
+            vendor: Vendor::from_vid(vid_pid.0).map(|x| x.name().to_string()),
+            pid_name: Device::from_vid_pid(vid_pid.0, vid_pid.1).map(|x| x.name().to_string()),
             device_name,
             hw_address,
             sysfs_path: sysfs_path.to_path_buf(),
