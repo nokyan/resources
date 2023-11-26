@@ -252,7 +252,7 @@ impl MainWindow {
 
             imp.gpu_pages
                 .borrow_mut()
-                .insert(gpu.pci_slot().clone(), (gpu.clone(), added_page));
+                .insert(gpu.pci_slot(), (gpu.clone(), added_page));
         }
         gpus
     }

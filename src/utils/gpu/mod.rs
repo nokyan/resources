@@ -135,7 +135,7 @@ pub trait GpuImpl {
 
     fn read_device_file<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<String> {
         let path = self.sysfs_path().join("device").join(file);
-        Ok(std::fs::read_to_string(&path)?.replace('\n', ""))
+        Ok(std::fs::read_to_string(path)?.replace('\n', ""))
     }
 
     fn read_device_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
