@@ -1,6 +1,6 @@
 pub mod pci_slot;
 
-use anyhow::{anyhow, bail, Context, Result};
+use anyhow::{bail, Context, Result};
 use glob::glob;
 use nvml_wrapper::enums::device::UsedGpuMemory;
 use nvml_wrapper::error::NvmlError;
@@ -230,30 +230,29 @@ impl ProcessData {
 
         let pid = proc_path
             .file_name()
-            .ok_or_else(|| anyhow!(""))?
+            .context("proc_path terminates in ..")?
             .to_str()
-            .ok_or_else(|| anyhow!(""))?
+            .context("can't turn OsStr to str")?
             .parse()?;
 
         let uid = Self::get_uid(&proc_path)?;
 
         let stat = stat
+            .split(')') // since we don't care about the pid or the executable name, split after the executable name to make our life easier
+            .last()
+            .context("stat doesn't have '('")?
             .split(' ')
-            .map(std::string::ToString::to_string)
+            .skip(1) // the first element would be a space, let's ignore that
             .collect::<Vec<_>>();
 
-        let statm = statm
-            .split(' ')
-            .map(std::string::ToString::to_string)
-            .collect::<Vec<_>>();
+        let statm = statm.split(' ').collect::<Vec<_>>();
 
         let comm = comm.replace('\n', "");
 
-        let cpu_time = stat[13].parse::<u64>()? + stat[14].parse::<u64>()?;
+        // -2 to accommodate for only collecting after the second item (which is the executable name as mentioned above)
+        let cpu_time = stat[13 - 2].parse::<u64>()? + stat[14 - 2].parse::<u64>()?;
 
-        let cpu_time_timestamp = SystemTime::now()
-            .duration_since(SystemTime::UNIX_EPOCH)?
-            .as_millis() as u64;
+        let cpu_time_timestamp = Self::unix_as_millis();
 
         let memory_usage = (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?) * *PAGESIZE;
 

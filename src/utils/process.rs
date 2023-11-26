@@ -17,6 +17,12 @@ use crate::config;
 
 use super::{NaNDefault, FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
 
+// convert to f64 since we only need it for floating point calculations anyway
+static NUM_CPUS: Lazy<f32> = Lazy::new(|| num_cpus::get() as f32);
+
+static TICK_RATE: Lazy<f32> =
+    Lazy::new(|| sysconf::sysconf(sysconf::SysconfVariable::ScClkTck).unwrap_or(100) as f32);
+
 static OTHER_PROCESS: Lazy<Mutex<(ChildStdin, ChildStdout)>> = Lazy::new(|| {
     let proxy_path = if *IS_FLATPAK {
         format!(
@@ -51,7 +57,7 @@ static OTHER_PROCESS: Lazy<Mutex<(ChildStdin, ChildStdout)>> = Lazy::new(|| {
 });
 
 /// Represents a process that can be found within procfs.
-#[derive(Debug, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Process {
     pub data: ProcessData,
     pub executable_path: String,
@@ -281,12 +287,14 @@ impl Process {
         if self.cpu_time_last == 0 {
             0.0
         } else {
-            (self.data.cpu_time.saturating_sub(self.cpu_time_last) as f32
-                / (self
-                    .data
-                    .cpu_time_timestamp
-                    .saturating_sub(self.cpu_time_last_timestamp)) as f32)
-                .clamp(0.0, 1.0)
+            let delta_cpu_time =
+                self.data.cpu_time.saturating_sub(self.cpu_time_last) as f32 * 1000.0;
+            let delta_time = self
+                .data
+                .cpu_time_timestamp
+                .saturating_sub(self.cpu_time_last_timestamp) as f32;
+
+            delta_cpu_time / (delta_time * *TICK_RATE * *NUM_CPUS)
         }
     }
 

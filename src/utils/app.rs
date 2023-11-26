@@ -176,10 +176,7 @@ impl App {
 
     #[must_use]
     pub fn cpu_time_ratio(&self, apps: &AppsContext) -> f32 {
-        self.processes_iter(apps)
-            .map(Process::cpu_time_ratio)
-            .sum::<f32>()
-            .clamp(0.0, 1.0)
+        self.processes_iter(apps).map(Process::cpu_time_ratio).sum()
     }
 
     #[must_use]
