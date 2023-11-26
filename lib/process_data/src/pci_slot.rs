@@ -64,10 +64,13 @@ impl FromStr for PciSlot {
 
         let domain = u16::from_str_radix(colon_split[0], 16)
             .or(Err(ParseError("unable to parse domain".into())))?;
+
         let bus = u8::from_str_radix(colon_split[1], 16)
             .or(Err(ParseError("unable to parse bus".into())))?;
+
         let number = u8::from_str_radix(colon_split[2], 16)
             .or(Err(ParseError("unable to parse number".into())))?;
+
         let function = u8::from_str_radix(dot_split[1], 16)
             .or(Err(ParseError("unable to parse function".into())))?;
 
