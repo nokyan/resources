@@ -50,7 +50,7 @@ impl CpuData {
 }
 
 #[derive(Debug, Clone, Default)]
-pub struct CPUInfo {
+pub struct CpuInfo {
     pub vendor_id: Option<String>,
     pub model_name: Option<String>,
     pub architecture: Option<String>,
@@ -80,7 +80,7 @@ fn lscpu() -> Result<Value> {
 ///
 /// Will return `Err` if the are problems during reading or parsing
 /// of the `lscpu` command
-pub fn cpu_info() -> Result<CPUInfo> {
+pub fn cpu_info() -> Result<CpuInfo> {
     let lscpu_output = lscpu()?;
 
     let vendor_id = lscpu_output["Vendor ID"]
@@ -109,7 +109,7 @@ pub fn cpu_info() -> Result<CPUInfo> {
         .and_then(|x| x.parse::<f32>().ok())
         .map(|y| y * 1_000_000.0);
 
-    Ok(CPUInfo {
+    Ok(CpuInfo {
         vendor_id,
         model_name,
         architecture,
