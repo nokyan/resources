@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-11-27 12:16+0100\n"
+"PO-Revision-Date: 2023-11-27 12:44+0100\n"
 "Last-Translator: awumii <awumii@protonmail.com>\n"
 "Language-Team: Polish - Poland <awumii@protonmail.com>\n"
 "Language: pl_PL\n"
@@ -231,7 +231,7 @@ msgstr "Zgłoś problemy"
 #. One name per line, please do not remove previous names.
 #: src/application.rs:170
 msgid "translator-credits"
-msgstr "awumii (https://github.com/awumii)"
+msgstr "awumii https://github.com/awumii"
 
 #: src/application.rs:171
 msgid "Icon by"
