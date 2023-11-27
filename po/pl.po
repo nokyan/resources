@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-10-13 21:23+0200\n"
+"PO-Revision-Date: 2023-11-27 12:44+0100\n"
 "Last-Translator: awumii <awumii@protonmail.com>\n"
 "Language-Team: Polish - Poland <awumii@protonmail.com>\n"
 "Language: pl_PL\n"
@@ -15,10 +15,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 "
 "|| n%100>14) ? 1 : 2);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:3
-#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:145
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:154
 msgid "Resources"
 msgstr "Zasoby"
 
@@ -55,11 +55,123 @@ msgid "Unit Prefix Base"
 msgstr "Przedrostek jednostek SI"
 
 #: data/net.nokyan.Resources.gschema.xml.in:26
-#: data/resources/ui/dialogs/settings_dialog.ui:48
+#: data/resources/ui/dialogs/settings_dialog.ui:53
 msgid "Refresh Speed"
 msgstr "Szybkość odświeżania"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:14
+#: data/net.nokyan.Resources.gschema.xml.in:30
+msgid "Show search field for Processes and Applications on launch"
+msgstr "Pokaż pole wyszukiwania dla procesów i programów po uruchomieniu"
+
+#: data/net.nokyan.Resources.gschema.xml.in:34
+msgid "Show virtual block devices such as LVM containers"
+msgstr "Pokaż wirtualne urządzenia blokowe, na przykład kontenery LVM"
+
+#: data/net.nokyan.Resources.gschema.xml.in:38
+msgid "Show virtual network interfaces such as Docker interfaces"
+msgstr "Pokaż wirtualne interfejsy sieciowe, na przykład interfejsy Dockera"
+
+#: data/net.nokyan.Resources.gschema.xml.in:42
+msgid "Show usage details in the sidebar"
+msgstr "Pokaż szczegóły użycia na pasku bocznym"
+
+#: data/net.nokyan.Resources.gschema.xml.in:46
+msgid "Display network speeds in bits per second"
+msgstr "Wyświetlaj prędkość sieci w bitach na sekundę"
+
+#: data/net.nokyan.Resources.gschema.xml.in:50
+msgid "Display memory usage in Applications view"
+msgstr "Wyświetlaj użycie pamięci w widoku programów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:54
+msgid "Display CPU usage in Applications view"
+msgstr "Wyświetlaj wykorzystanie CPU w widoku programów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:58
+msgid "Display drive read speed in Applications view"
+msgstr "Wyświetlaj prędkość odczytu dysku w widoku programów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:62
+msgid "Display drive read total in Applications view"
+msgstr "Wyświetlaj łączny odczyt dysku w widoku programów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:66
+msgid "Display drive write speed in Applications view"
+msgstr "Wyświetlaj prędkość zapisu dysku w widoku programów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:70
+msgid "Display drive write total in Applications view"
+msgstr "Wyświetlaj łączny zapis dysku w widoku programów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:74
+msgid "Display GPU usage in Applications view"
+msgstr "Wyświetlaj użycie GPU w widoku programów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:78
+msgid "Display video encoder usage in Applications view"
+msgstr "Wyświetlaj użycie enkodera wideo w widoku programów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:82
+msgid "Display video decoder usage in Applications view"
+msgstr "Wyświetlaj użycie dekodera wideo w widoku programów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:86
+msgid "Display GPU memory usage in Applications view"
+msgstr "Wyświetlaj użycie pamięci GPU w widoku programów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:90
+msgid "Display process ID in Processes view"
+msgstr "Wyświetlaj ID procesu w widoku procesów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:94
+msgid "Display user name in Processes view"
+msgstr "Wyświetlaj użytkownika w widoku procesów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:98
+msgid "Display memory usage in Processes view"
+msgstr "Wyświetlaj wykorzystanie pamięci w widoku procesów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:102
+msgid "Display CPU usage in Processes view"
+msgstr "Wyświetlaj wykorzystanie CPU w widoku procesów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:106
+msgid "Display drive read speed in Processes view"
+msgstr "Wyświetlaj prędkość odczytu dysku w widoku procesów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:110
+msgid "Display drive read total in Processes view"
+msgstr "Wyświetlaj łączny odczyt dysku w widoku procesów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:114
+msgid "Display drive write speed in Processes view"
+msgstr "Wyświetlaj prędkość zapisu dysku w widoku procesów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:118
+msgid "Display drive write total in Processes view"
+msgstr "Wyświetlaj łączny zapis dysku w widoku procesów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:122
+msgid "Display GPU usage in Processes view"
+msgstr "Wyświetlaj użycie GPU w widoku procesów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:126
+msgid "Display video encoder usage in Processes view"
+msgstr "Wyświetlaj użycie enkodera wideo w widoku procesów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:130
+msgid "Display video decoder usage in Processes view"
+msgstr "Wyświetlaj użycie dekodera wideo w widoku procesów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:134
+msgid "Display GPU memory usage in Processes view"
+msgstr "Wyświetlaj użycie pamięci GPU w widoku procesów"
+
+#: data/net.nokyan.Resources.gschema.xml.in:138
+msgid "Display logical CPU graphs in Processor view"
+msgstr "Wyświetlanie wykresów procesorów logicznych w widoku procesora"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
 "Resources allows you to check the utilization of your system resources and "
 "control your running processes and applications. It’s designed to be user-"
@@ -71,250 +183,398 @@ msgstr ""
 "przyjazny dla użytkownika i pasował do nowoczesnego pulpitu dzięki "
 "wykorzystaniu biblioteki libadwaita od GNOME."
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:17
+#: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
 msgstr "Zasoby pozwalają monitorować:"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:21 src/ui/pages/cpu.rs:188
+#: data/net.nokyan.Resources.metainfo.xml.in.in:24 src/ui/pages/cpu.rs:204
 msgid "CPU"
 msgstr "CPU"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:22
-#: src/ui/pages/applications/mod.rs:251 src/ui/pages/memory.rs:85
-#: src/ui/pages/memory.rs:151 src/ui/pages/processes/mod.rs:296
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+#: src/ui/pages/applications/mod.rs:516 src/ui/pages/memory.rs:97
+#: src/ui/pages/memory.rs:165 src/ui/pages/processes/mod.rs:580
 #: data/resources/ui/window.ui:155 data/resources/ui/window.ui:162
 #: data/resources/ui/dialogs/app_dialog.ui:83
 #: data/resources/ui/dialogs/process_dialog.ui:70
+#: data/resources/ui/dialogs/settings_dialog.ui:90
+#: data/resources/ui/dialogs/settings_dialog.ui:161
 msgid "Memory"
 msgstr "Pamięć"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:23 src/ui/pages/gpu.rs:101
-#: src/ui/window.rs:230
+#: data/net.nokyan.Resources.metainfo.xml.in.in:26
+#: src/ui/pages/applications/mod.rs:771 src/ui/pages/gpu.rs:119
+#: src/ui/pages/processes/mod.rs:849 src/ui/window.rs:240
+#: data/resources/ui/dialogs/settings_dialog.ui:120
+#: data/resources/ui/dialogs/settings_dialog.ui:191
 msgid "GPU"
 msgstr "GPU"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:24
+#: data/net.nokyan.Resources.metainfo.xml.in.in:27
+#: data/resources/ui/dialogs/settings_dialog.ui:229
 msgid "Network Interfaces"
 msgstr "Interfejsy sieciowe"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+#: data/net.nokyan.Resources.metainfo.xml.in.in:28
 msgid "Storage Devices"
 msgstr "Urządzenia do przechowywania danych"
 
-#: src/application.rs:147
+#: src/application.rs:156
 msgid "The Nalux Team"
 msgstr "Zespół Nalux"
 
-#: src/application.rs:155
+#: src/application.rs:164
 msgid "Report Issues"
 msgstr "Zgłoś problemy"
 
-#: src/application.rs:159
+#. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
+#. One name per line, please do not remove previous names.
+#: src/application.rs:170
+msgid "translator-credits"
+msgstr "awumii https://github.com/awumii"
+
+#: src/application.rs:171
 msgid "Icon by"
 msgstr "Ikona stworzona przez"
 
-#: src/ui/dialogs/app_dialog.rs:112 src/ui/dialogs/process_dialog.rs:108
-#: src/ui/pages/drive.rs:214 src/ui/pages/drive.rs:220
+#: src/ui/dialogs/app_dialog.rs:139 src/ui/dialogs/process_dialog.rs:152
+#: src/ui/pages/drive.rs:245 src/ui/pages/drive.rs:251
 msgid "No"
 msgstr "Nie"
 
-#: src/ui/dialogs/app_dialog.rs:113 src/ui/dialogs/process_dialog.rs:109
+#: src/ui/dialogs/app_dialog.rs:140 src/ui/dialogs/process_dialog.rs:153
 msgid "Yes (Flatpak)"
 msgstr "Tak (Flatpak)"
 
-#: src/ui/dialogs/process_dialog.rs:103 src/ui/dialogs/process_dialog.rs:105
-#: src/ui/pages/cpu.rs:189 src/ui/pages/cpu.rs:201 src/ui/pages/cpu.rs:216
-#: src/ui/pages/cpu.rs:222 src/ui/pages/cpu.rs:228 src/ui/pages/cpu.rs:234
-#: src/ui/pages/cpu.rs:238 src/ui/pages/cpu.rs:241 src/ui/pages/cpu.rs:301
-#: src/ui/pages/drive.rs:186 src/ui/pages/gpu.rs:177 src/ui/pages/gpu.rs:192
-#: src/ui/pages/gpu.rs:210 src/ui/pages/gpu.rs:218 src/ui/pages/gpu.rs:224
-#: src/ui/pages/gpu.rs:231 src/ui/pages/gpu.rs:238 src/ui/pages/gpu.rs:244
-#: src/ui/pages/gpu.rs:250 src/ui/pages/memory.rs:183
-#: src/ui/pages/memory.rs:187 src/ui/pages/memory.rs:191
-#: src/ui/pages/memory.rs:245 src/ui/pages/network.rs:198
-#: src/ui/pages/network.rs:205 src/ui/pages/network.rs:211
-#: src/ui/pages/network.rs:217 src/ui/pages/network.rs:219 src/utils/gpu.rs:82
-#: src/utils/gpu.rs:85
+#: src/ui/dialogs/process_dialog.rs:117 src/ui/dialogs/process_dialog.rs:124
+#: src/ui/dialogs/process_dialog.rs:131 src/ui/dialogs/process_dialog.rs:138
+#: src/ui/dialogs/process_dialog.rs:147 src/ui/dialogs/process_dialog.rs:149
+#: src/ui/pages/applications/mod.rs:608 src/ui/pages/applications/mod.rs:696
+#: src/ui/pages/cpu.rs:205 src/ui/pages/cpu.rs:217 src/ui/pages/cpu.rs:232
+#: src/ui/pages/cpu.rs:238 src/ui/pages/cpu.rs:244 src/ui/pages/cpu.rs:250
+#: src/ui/pages/cpu.rs:254 src/ui/pages/cpu.rs:257 src/ui/pages/cpu.rs:330
+#: src/ui/pages/drive.rs:208 src/ui/pages/gpu.rs:225 src/ui/pages/gpu.rs:266
+#: src/ui/pages/gpu.rs:289 src/ui/pages/gpu.rs:292 src/ui/pages/gpu.rs:303
+#: src/ui/pages/gpu.rs:325 src/ui/pages/gpu.rs:335 src/ui/pages/gpu.rs:347
+#: src/ui/pages/gpu.rs:350 src/ui/pages/gpu.rs:356 src/ui/pages/gpu.rs:363
+#: src/ui/pages/gpu.rs:367 src/ui/pages/gpu.rs:370 src/ui/pages/memory.rs:201
+#: src/ui/pages/memory.rs:206 src/ui/pages/memory.rs:211
+#: src/ui/pages/memory.rs:270 src/ui/pages/network.rs:224
+#: src/ui/pages/network.rs:232 src/ui/pages/network.rs:239
+#: src/ui/pages/network.rs:246 src/ui/pages/network.rs:249
+#: src/ui/pages/processes/mod.rs:676 src/ui/pages/processes/mod.rs:726
+#: src/ui/pages/processes/mod.rs:770 src/ui/pages/processes/mod.rs:820
+#: src/utils/gpu/mod.rs:257 src/utils/gpu/mod.rs:263
 msgid "N/A"
 msgstr "N/A"
 
-#: src/ui/pages/applications/mod.rs:107 data/resources/ui/window.ui:62
+#: src/ui/pages/applications/mod.rs:122 data/resources/ui/window.ui:62
 #: data/resources/ui/window.ui:69
+#: data/resources/ui/dialogs/settings_dialog.ui:84
 msgid "Applications"
 msgstr "Programy"
 
-#: src/ui/pages/applications/mod.rs:228
-msgid "Application"
-msgstr "Program"
+#: src/ui/pages/applications/mod.rs:418
+msgid "Running Applications: {}"
+msgstr "Uruchomione programy: {}"
 
-#: src/ui/pages/applications/mod.rs:274 src/ui/pages/cpu.rs:102
-#: src/ui/pages/processes/mod.rs:319 src/ui/window.rs:219
-#: data/resources/ui/window.ui:124 data/resources/ui/window.ui:131
-#: data/resources/ui/dialogs/app_dialog.ui:74
-#: data/resources/ui/dialogs/process_dialog.ui:61
-msgid "Processor"
-msgstr "Procesor"
-
-#: src/ui/pages/applications/mod.rs:481 src/ui/pages/processes/mod.rs:506
+#: src/ui/pages/applications/mod.rs:447 src/ui/pages/processes/mod.rs:424
 msgid "Cancel"
 msgstr "Anuluj"
 
-#: src/ui/pages/cpu.rs:200
-msgid "CPU {}"
-msgstr "CPU {}"
-
-#: src/ui/pages/drive.rs:102
-msgid "Drive"
-msgstr "Dysk"
-
-#: src/ui/pages/drive.rs:175
-msgid "Total Usage"
-msgstr "Łącznie użycie"
-
-#: src/ui/pages/drive.rs:180 src/ui/window.rs:310
-msgid "CD/DVD/Blu-ray Drive"
-msgstr "Dysk CD/DVD/Blu-ray"
-
-#: src/ui/pages/drive.rs:181
-msgid "eMMC Storage"
-msgstr "Dysk eMMC"
-
-#: src/ui/pages/drive.rs:182
-msgid "Flash Storage"
-msgstr "Dysk Flash"
-
-#: src/ui/pages/drive.rs:183 src/ui/window.rs:311
-msgid "Floppy Drive"
-msgstr "Dyskietka"
-
-#: src/ui/pages/drive.rs:184
-msgid "Hard Disk Drive"
-msgstr "Dysk Twardy"
-
-#: src/ui/pages/drive.rs:185
-msgid "NVMe Drive"
-msgstr "Dysk NVMe"
-
-#: src/ui/pages/drive.rs:187
-msgid "Solid State Drive"
-msgstr "Dysk SSD"
-
-#: src/ui/pages/drive.rs:212 src/ui/pages/drive.rs:218
-msgid "Yes"
-msgstr "Tak"
-
-#: src/ui/pages/gpu.rs:170
-msgid "GPU Usage"
-msgstr "Wykorzystanie GPU"
-
-#: src/ui/pages/gpu.rs:173
-msgid "Video Memory Usage"
-msgstr "Wykorzystanie pamięci wideo"
-
-#: src/ui/pages/memory.rs:154
-msgid "Swap"
-msgstr "Pamięć wymiany"
-
-#: src/ui/pages/memory.rs:193
-msgid "{} of {}"
-msgstr "{} z {}"
-
-#: src/ui/pages/network.rs:101 src/ui/window.rs:358
-msgid "Network Interface"
-msgstr "Interfejs sieciowy"
-
-#: src/ui/pages/network.rs:185
-msgid "Receiving"
-msgstr "Odbieranie"
-
-#: src/ui/pages/network.rs:189
-msgid "Sending"
-msgstr "Wysyłanie"
-
-#: src/ui/pages/network.rs:268 src/ui/pages/network.rs:277
-msgid "Highest:"
-msgstr "Najwięcej:"
-
-#: src/ui/pages/processes/mod.rs:111 data/resources/ui/window.ui:93
-#: data/resources/ui/window.ui:100
-msgid "Processes"
-msgstr "Procesy"
-
-#: src/ui/pages/processes/mod.rs:232
+#: src/ui/pages/applications/mod.rs:474 src/ui/pages/processes/mod.rs:473
 msgid "Process"
 msgstr "Proces"
 
-#: src/ui/pages/processes/mod.rs:258
+#: src/ui/pages/applications/mod.rs:552 src/ui/pages/cpu.rs:118
+#: src/ui/pages/processes/mod.rs:620 data/resources/ui/window.ui:124
+#: data/resources/ui/window.ui:131 data/resources/ui/dialogs/app_dialog.ui:74
+#: data/resources/ui/dialogs/process_dialog.ui:61
+#: data/resources/ui/dialogs/settings_dialog.ui:95
+#: data/resources/ui/dialogs/settings_dialog.ui:166
+msgid "Processor"
+msgstr "Procesor"
+
+#: src/ui/pages/applications/mod.rs:594 src/ui/pages/processes/mod.rs:662
+#: data/resources/ui/dialogs/app_dialog.ui:92
+#: data/resources/ui/dialogs/process_dialog.ui:75
+#: data/resources/ui/dialogs/settings_dialog.ui:100
+#: data/resources/ui/dialogs/settings_dialog.ui:171
+msgid "Drive Read"
+msgstr "Odczyt dysku"
+
+#: src/ui/pages/applications/mod.rs:643 src/ui/pages/processes/mod.rs:712
+#: data/resources/ui/dialogs/app_dialog.ui:101
 #: data/resources/ui/dialogs/process_dialog.ui:84
-msgid "Process ID"
-msgstr "Identyfikator"
+#: data/resources/ui/dialogs/settings_dialog.ui:105
+#: data/resources/ui/dialogs/settings_dialog.ui:176
+msgid "Drive Read Total"
+msgstr "Łączny odczyt dysku"
 
-#: src/ui/pages/processes/mod.rs:277
+#: src/ui/pages/applications/mod.rs:682 src/ui/pages/processes/mod.rs:756
+#: data/resources/ui/dialogs/app_dialog.ui:110
+#: data/resources/ui/dialogs/process_dialog.ui:93
+#: data/resources/ui/dialogs/settings_dialog.ui:110
+#: data/resources/ui/dialogs/settings_dialog.ui:181
+msgid "Drive Write"
+msgstr "Zapis dysku"
+
+#: src/ui/pages/applications/mod.rs:732 src/ui/pages/processes/mod.rs:806
+#: data/resources/ui/dialogs/app_dialog.ui:119
 #: data/resources/ui/dialogs/process_dialog.ui:102
-msgid "User"
-msgstr "Użytkownik"
+#: data/resources/ui/dialogs/settings_dialog.ui:115
+#: data/resources/ui/dialogs/settings_dialog.ui:186
+msgid "Drive Write Total"
+msgstr "Łączny zapis dysku"
 
-#: src/ui/pages/processes/mod.rs:542
-msgid "root"
-msgstr "root"
+#: src/ui/pages/applications/mod.rs:814 src/ui/pages/processes/mod.rs:892
+#: data/resources/ui/dialogs/settings_dialog.ui:130
+#: data/resources/ui/dialogs/settings_dialog.ui:201
+msgid "Video Encoder"
+msgstr "Enkodowanie wideo"
 
-#: src/ui/window.rs:228
-msgid "GPU {}"
-msgstr "GPU {}"
+#: src/ui/pages/applications/mod.rs:858 src/ui/pages/processes/mod.rs:936
+#: data/resources/ui/dialogs/settings_dialog.ui:135
+#: data/resources/ui/dialogs/settings_dialog.ui:206
+msgid "Video Decoder"
+msgstr "Dekodowanie wideo"
 
-#: src/ui/window.rs:312
-msgid "{} Drive"
-msgstr "Dysk {}"
+#: src/ui/pages/applications/mod.rs:901 src/ui/pages/processes/mod.rs:979
+#: data/resources/ui/dialogs/settings_dialog.ui:125
+#: data/resources/ui/dialogs/settings_dialog.ui:196
+msgid "Video Memory"
+msgstr "Pamięć wideo"
 
-#: src/ui/window.rs:351
-msgid "Ethernet Connection"
-msgstr "Połączenie Ethernet"
+#: src/ui/pages/cpu.rs:216
+msgid "CPU {}"
+msgstr "CPU {}"
 
-#: src/ui/window.rs:352
-msgid "InfiniBand Connection"
-msgstr "Połączenie InfiniBand"
+#: src/ui/pages/drive.rs:116
+msgid "Drive"
+msgstr "Dysk"
 
-#: src/ui/window.rs:353
-msgid "Serial Line IP Connection"
-msgstr "Połączenie Serial Line IP"
+#: src/ui/pages/drive.rs:194
+msgid "Total Usage"
+msgstr "Łącznie użycie"
 
-#: src/ui/window.rs:354
-msgid "Wi-Fi Connection"
-msgstr "Połączenie Wi-Fi"
+#: src/ui/pages/drive.rs:200 src/utils/drive.rs:127
+msgid "CD/DVD/Blu-ray Drive"
+msgstr "Dysk CD/DVD/Blu-ray"
 
-#: src/ui/window.rs:355
-msgid "WWAN Connection"
-msgstr "Połączenie WWAN"
+#: src/ui/pages/drive.rs:201
+msgid "eMMC Storage"
+msgstr "Dysk eMMC"
 
-#: src/ui/window.rs:356
+#: src/ui/pages/drive.rs:202
+msgid "Flash Storage"
+msgstr "Dysk Flash"
+
+#: src/ui/pages/drive.rs:203 src/utils/drive.rs:128
+msgid "Floppy Drive"
+msgstr "Dyskietka"
+
+#: src/ui/pages/drive.rs:204
+msgid "Hard Disk Drive"
+msgstr "Dysk Twardy"
+
+#: src/ui/pages/drive.rs:205
+msgid "Loop Device"
+msgstr "Urządzenie pętli"
+
+#: src/ui/pages/drive.rs:206
+msgid "Mapped Device"
+msgstr "Zmapowane urządzenie"
+
+#: src/ui/pages/drive.rs:207
+msgid "NVMe Drive"
+msgstr "Dysk NVMe"
+
+#: src/ui/pages/drive.rs:209
+#, fuzzy
+msgid "Software Raid"
+msgstr "Software Raid"
+
+#: src/ui/pages/drive.rs:210
+msgid "RAM Disk"
+msgstr "Dysk RAM"
+
+#: src/ui/pages/drive.rs:211
+msgid "Solid State Drive"
+msgstr "Dysk SSD"
+
+#: src/ui/pages/drive.rs:212
+msgid "ZFS Volume"
+msgstr "Wolumin ZFS"
+
+#: src/ui/pages/drive.rs:213
+msgid "Compressed RAM Disk (zram)"
+msgstr "Skompresowany dysk RAM (zram)"
+
+#: src/ui/pages/drive.rs:243 src/ui/pages/drive.rs:249
+msgid "Yes"
+msgstr "Tak"
+
+#. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
+#. translation should preferably be quite short or an abbreviation
+#: src/ui/pages/drive.rs:316
+#, fuzzy
+msgid "R: {} · W: {}"
+msgstr "R: {} · W: {}"
+
+#: src/ui/pages/gpu.rs:188
+msgid "GPU Usage"
+msgstr "Wykorzystanie GPU"
+
+#: src/ui/pages/gpu.rs:193
+msgid "Video Encoder/Decoder Usage"
+msgstr "Wykorzystanie enkodera/dekodera wideo"
+
+#: src/ui/pages/gpu.rs:202
+msgid "Video Encoder Usage"
+msgstr "Enkodowanie wideo"
+
+#: src/ui/pages/gpu.rs:210
+msgid "Video Decoder Usage"
+msgstr "Dekodowanie wideo"
+
+#: src/ui/pages/gpu.rs:218
+msgid "Video Memory Usage"
+msgstr "Wykorzystanie pamięci wideo"
+
+#: src/ui/pages/gpu.rs:378
+msgid "{} · VRAM: {}"
+msgstr "{} · VRAM: {}"
+
+#: src/ui/pages/memory.rs:169
+msgid "Swap"
+msgstr "Pamięć wymiany"
+
+#: src/ui/pages/memory.rs:214
+msgid "{} of {}"
+msgstr "{} z {}"
+
+#. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
+#. preferably be quite short or an abbreviation
+#: src/ui/pages/memory.rs:289
+#, fuzzy
+msgid "{} / {} · Swap: {} %"
+msgstr "{} / {} · Pamięć wymiany: {} %"
+
+#: src/ui/pages/network.rs:115 src/ui/pages/network.rs:204
+#: src/utils/network.rs:118
+msgid "Network Interface"
+msgstr "Interfejs sieciowy"
+
+#: src/ui/pages/network.rs:194 src/utils/network.rs:108
 msgid "Bluetooth Tether"
 msgstr "Tethering przez Bluetooth"
 
-#: src/ui/window.rs:357
+#: src/ui/pages/network.rs:195 src/utils/network.rs:109
+msgid "Network Bridge"
+msgstr "Mostek sieciowy"
+
+#: src/ui/pages/network.rs:196 src/utils/network.rs:110
+msgid "Ethernet Connection"
+msgstr "Połączenie Ethernet"
+
+#: src/ui/pages/network.rs:197 src/utils/network.rs:111
+msgid "InfiniBand Connection"
+msgstr "Połączenie InfiniBand"
+
+#: src/ui/pages/network.rs:198 src/utils/network.rs:112
+msgid "Serial Line IP Connection"
+msgstr "Połączenie Serial Line IP"
+
+#: src/ui/pages/network.rs:199 src/utils/network.rs:113
+msgid "Virtual Ethernet Device"
+msgstr "Wirtualne urządzenie Ethernet"
+
+#: src/ui/pages/network.rs:200 src/utils/network.rs:114
+msgid "VM Network Bridge"
+msgstr "Mostek sieci VM"
+
+#: src/ui/pages/network.rs:201 src/utils/network.rs:115
 msgid "VPN Tunnel (WireGuard)"
 msgstr "Tunel VPN (WireGuard)"
 
-#: src/ui/window.rs:504
+#: src/ui/pages/network.rs:202 src/utils/network.rs:116
+msgid "Wi-Fi Connection"
+msgstr "Połączenie Wi-Fi"
+
+#: src/ui/pages/network.rs:203 src/utils/network.rs:117
+msgid "WWAN Connection"
+msgstr "Połączenie WWAN"
+
+#: src/ui/pages/network.rs:209
+msgid "Receiving"
+msgstr "Odbieranie"
+
+#: src/ui/pages/network.rs:214
+msgid "Sending"
+msgstr "Wysyłanie"
+
+#: src/ui/pages/network.rs:293 src/ui/pages/network.rs:302
+msgid "Highest:"
+msgstr "Najwięcej:"
+
+#. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
+#. your translation should preferably be quite short or an abbreviation
+#: src/ui/pages/network.rs:316
+#, fuzzy
+msgid "R: {} · S: {}"
+msgstr "R: {} · S: {}"
+
+#: src/ui/pages/processes/mod.rs:126 data/resources/ui/window.ui:93
+#: data/resources/ui/window.ui:100
+#: data/resources/ui/dialogs/settings_dialog.ui:145
+msgid "Processes"
+msgstr "Procesy"
+
+#: src/ui/pages/processes/mod.rs:392
+msgid "Running Processes: {}"
+msgstr "Uruchomione procesy: {}"
+
+#: src/ui/pages/processes/mod.rs:460
+msgid "root"
+msgstr "root"
+
+#: src/ui/pages/processes/mod.rs:515
+#: data/resources/ui/dialogs/process_dialog.ui:120
+#: data/resources/ui/dialogs/settings_dialog.ui:151
+msgid "Process ID"
+msgstr "Identyfikator"
+
+#: src/ui/pages/processes/mod.rs:548
+#: data/resources/ui/dialogs/process_dialog.ui:138
+#: data/resources/ui/dialogs/settings_dialog.ui:156
+msgid "User"
+msgstr "Użytkownik"
+
+#: src/ui/window.rs:238
+msgid "GPU {}"
+msgstr "GPU {}"
+
+#: src/ui/window.rs:752
 msgid "End {}?"
 msgstr "Zakończyć {}?"
 
-#: src/ui/window.rs:505
+#: src/ui/window.rs:753
 msgid "Halt {}?"
 msgstr "Wstrzymać {}?"
 
-#: src/ui/window.rs:506
+#: src/ui/window.rs:754
 msgid "Kill {}?"
 msgstr "Zabić {}?"
 
-#: src/ui/window.rs:507
+#: src/ui/window.rs:755
 msgid "Continue {}?"
 msgstr "Wznowić {}?"
 
-#: src/ui/window.rs:513
+#: src/ui/window.rs:761
 msgid "Unsaved work might be lost."
 msgstr "Niezapisana praca zostanie utracona."
 
-#: src/ui/window.rs:514
+#: src/ui/window.rs:762
 msgid ""
 "Halting an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
@@ -322,7 +582,7 @@ msgstr ""
 "Wstrzymanie programu może nieść ze sobą ryzyko utraty danych lub naruszenie "
 "bezpieczeństwa. Używaj z rozwagą."
 
-#: src/ui/window.rs:515
+#: src/ui/window.rs:763
 msgid ""
 "Killing an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
@@ -330,85 +590,113 @@ msgstr ""
 "Zabicie programu może nieść ze sobą ryzyko utraty danych lub naruszenie "
 "bezpieczeństwa. Używaj z rozwagą."
 
-#: src/ui/window.rs:522
+#: src/ui/window.rs:770
 msgid "End application"
 msgstr "Zakończ program"
 
-#: src/ui/window.rs:523
+#: src/ui/window.rs:771
 msgid "Halt application"
 msgstr "Wstrzymaj program"
 
-#: src/ui/window.rs:524
+#: src/ui/window.rs:772
 msgid "Kill application"
 msgstr "Zabij program"
 
-#: src/ui/window.rs:525
+#: src/ui/window.rs:773
 msgid "Continue application"
 msgstr "Wznów program"
 
-#: src/ui/window.rs:531
+#: src/ui/window.rs:779
 msgid "Successfully ended {}"
 msgstr "Zakończono {}"
 
-#: src/ui/window.rs:532
+#: src/ui/window.rs:780
 msgid "Successfully halted {}"
 msgstr "Wstrzymano {}"
 
-#: src/ui/window.rs:533
+#: src/ui/window.rs:781
 msgid "Successfully killed {}"
 msgstr "Zabito {}"
 
-#: src/ui/window.rs:534
+#: src/ui/window.rs:782
 msgid "Successfully continued {}"
 msgstr "Wznowiono {}"
 
-#: src/ui/window.rs:541
+#: src/ui/window.rs:789
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] "Wystąpił problem podczas kończenia procesu"
 msgstr[1] "Wystąpił problem podczas kończenia {} procesów"
 msgstr[2] "Wystąpił problem podczas kończenia {} procesów"
 
-#: src/ui/window.rs:547
+#: src/ui/window.rs:795
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "Wystąpił problem podczas kończenia procesu"
 msgstr[1] "Wystąpił problem podczas kończenia {} procesów"
 msgstr[2] "Wystąpił problem podczas kończenia {} procesów"
 
-#: src/ui/window.rs:553
+#: src/ui/window.rs:801
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "Wystąpił problem podczas zabijania procesu"
 msgstr[1] "Wystąpił problem podczas zabijania {} procesów"
 msgstr[2] "Wystąpił problem podczas zabijania {} procesów"
 
-#: src/ui/window.rs:559
+#: src/ui/window.rs:807
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "Wystąpił problem podczas wznawiania procesu"
 msgstr[1] "Wystąpił problem podczas wznawiania {} procesów"
 msgstr[2] "Wystąpił problem podczas wznawiania {} procesów"
 
-#: src/ui/window.rs:569
+#: src/ui/window.rs:817
 msgid "There was a problem ending {}"
 msgstr "Wystąpił problem podczas kończenia {}"
 
-#: src/ui/window.rs:570
+#: src/ui/window.rs:818
 msgid "There was a problem halting {}"
 msgstr "Wystąpił problem podczas wznawiania {}"
 
-#: src/ui/window.rs:571
+#: src/ui/window.rs:819
 msgid "There was a problem killing {}"
 msgstr "Wystąpił problem podczas zabijania {}"
 
-#: src/ui/window.rs:572
+#: src/ui/window.rs:820
 msgid "There was a problem continuing {}"
 msgstr "Wystąpił problem podczas wznawiania {}"
 
-#: src/utils/app.rs:380
+#: src/utils/app.rs:534
 msgid "System Processes"
 msgstr "Procesy systemowe"
+
+#: src/utils/drive.rs:129
+msgid "{} Loop Device"
+msgstr "Urządzenie pętli {}"
+
+#: src/utils/drive.rs:130
+msgid "{} Mapped Device"
+msgstr "Zmapowane urządzenie {}"
+
+#: src/utils/drive.rs:131
+msgid "{} RAID"
+msgstr "RAID {}"
+
+#: src/utils/drive.rs:132
+msgid "{} RAM Disk"
+msgstr "Dysk RAM {}"
+
+#: src/utils/drive.rs:133
+msgid "{} zram Device"
+msgstr "Urządzenie zram {}"
+
+#: src/utils/drive.rs:134
+msgid "{} ZFS Volume"
+msgstr "Wolumin ZFS {}"
+
+#: src/utils/drive.rs:135
+msgid "{} Drive"
+msgstr "Dysk {}"
 
 #: src/utils/units.rs:51
 msgid "{} K"
@@ -507,175 +795,279 @@ msgstr "{} RiB"
 msgid "{} QiB"
 msgstr "{} QiB"
 
-#: src/utils/units.rs:146 src/utils/units.rs:163
+#: src/utils/units.rs:158 src/utils/units.rs:175
 msgid "{} B/s"
 msgstr "{} B/s"
 
-#: src/utils/units.rs:147
+#: src/utils/units.rs:159
 msgid "{} kB/s"
 msgstr "{} kB/s"
 
-#: src/utils/units.rs:148
+#: src/utils/units.rs:160
 msgid "{} MB/s"
 msgstr "{} MB/s"
 
-#: src/utils/units.rs:149
+#: src/utils/units.rs:161
 msgid "{} GB/s"
 msgstr "{} GB/s"
 
-#: src/utils/units.rs:150
+#: src/utils/units.rs:162
 msgid "{} TB/s"
 msgstr "{} TB/s"
 
-#: src/utils/units.rs:151
+#: src/utils/units.rs:163
 msgid "{} PB/s"
 msgstr "{} PB/s"
 
-#: src/utils/units.rs:152
+#: src/utils/units.rs:164
 msgid "{} EB/s"
 msgstr "{} EB/s"
 
-#: src/utils/units.rs:153
+#: src/utils/units.rs:165
 msgid "{} ZB/s"
 msgstr "{} ZB/s"
 
-#: src/utils/units.rs:154
+#: src/utils/units.rs:166
 msgid "{} YB/s"
 msgstr "{} YB/s"
 
-#: src/utils/units.rs:155
+#: src/utils/units.rs:167
 msgid "{} RB/s"
 msgstr "{} RB/s"
 
-#: src/utils/units.rs:156
+#: src/utils/units.rs:168
 msgid "{} QB/s"
 msgstr "{} QB/s"
 
-#: src/utils/units.rs:164
+#: src/utils/units.rs:176
 msgid "{} KiB/s"
 msgstr "{} KiB/s"
 
-#: src/utils/units.rs:165
+#: src/utils/units.rs:177
 msgid "{} MiB/s"
 msgstr "{} MiB/s"
 
-#: src/utils/units.rs:166
+#: src/utils/units.rs:178
 msgid "{} GiB/s"
 msgstr "{} GiB/s"
 
-#: src/utils/units.rs:167
+#: src/utils/units.rs:179
 msgid "{} TiB/s"
 msgstr "{} TiB/s"
 
-#: src/utils/units.rs:168
+#: src/utils/units.rs:180
 msgid "{} PiB/s"
 msgstr "{} PiB/s"
 
-#: src/utils/units.rs:169
+#: src/utils/units.rs:181
 msgid "{} EiB/s"
 msgstr "{} EiB/s"
 
-#: src/utils/units.rs:170
+#: src/utils/units.rs:182
 msgid "{} ZiB/s"
 msgstr "{} ZiB/s"
 
-#: src/utils/units.rs:171
+#: src/utils/units.rs:183
 msgid "{} YiB/s"
 msgstr "{} YiB/s"
 
-#: src/utils/units.rs:172
+#: src/utils/units.rs:184
 msgid "{} RiB/s"
 msgstr "{} RiB/s"
 
-#: src/utils/units.rs:173
+#: src/utils/units.rs:185
 msgid "{} QiB/s"
 msgstr "{} QiB/s"
 
-#: src/utils/units.rs:180
+#: src/utils/units.rs:192 src/utils/units.rs:209
+msgid "{} b/s"
+msgstr "{} b/s"
+
+#: src/utils/units.rs:193
+#| msgid "{} kB/s"
+msgid "{} kb/s"
+msgstr "{} kb/s"
+
+#: src/utils/units.rs:194
+#| msgid "{} MB/s"
+msgid "{} Mb/s"
+msgstr "{} Mb/s"
+
+#: src/utils/units.rs:195
+#| msgid "{} GB/s"
+msgid "{} Gb/s"
+msgstr "{} Gb/s"
+
+#: src/utils/units.rs:196
+#| msgid "{} TB/s"
+msgid "{} Tb/s"
+msgstr "{} Tb/s"
+
+#: src/utils/units.rs:197
+#| msgid "{} PB/s"
+msgid "{} Pb/s"
+msgstr "{} Pb/s"
+
+#: src/utils/units.rs:198
+#| msgid "{} EB/s"
+msgid "{} Eb/s"
+msgstr "{} Eb/s"
+
+#: src/utils/units.rs:199
+#| msgid "{} ZB/s"
+msgid "{} Zb/s"
+msgstr "{} Zb/s"
+
+#: src/utils/units.rs:200
+#| msgid "{} YB/s"
+msgid "{} Yb/s"
+msgstr "{} Yb/s"
+
+#: src/utils/units.rs:201
+#| msgid "{} RB/s"
+msgid "{} Rb/s"
+msgstr "{} Rb/s"
+
+#: src/utils/units.rs:202
+#| msgid "{} QB/s"
+msgid "{} Qb/s"
+msgstr "{} Qb/s"
+
+#: src/utils/units.rs:210
+#| msgid "{} KiB/s"
+msgid "{} Kib/s"
+msgstr "{} Kib/s"
+
+#: src/utils/units.rs:211
+#| msgid "{} MiB/s"
+msgid "{} Mib/s"
+msgstr "{} Mib/s"
+
+#: src/utils/units.rs:212
+#| msgid "{} GiB/s"
+msgid "{} Gib/s"
+msgstr "{} Gib/s"
+
+#: src/utils/units.rs:213
+#| msgid "{} TiB/s"
+msgid "{} Tib/s"
+msgstr "{} Tib/s"
+
+#: src/utils/units.rs:214
+#| msgid "{} PiB/s"
+msgid "{} Pib/s"
+msgstr "{} Pib/s"
+
+#: src/utils/units.rs:215
+#| msgid "{} EiB/s"
+msgid "{} Eib/s"
+msgstr "{} Eib/s"
+
+#: src/utils/units.rs:216
+#| msgid "{} ZiB/s"
+msgid "{} Zib/s"
+msgstr "{} Zib/s"
+
+#: src/utils/units.rs:217
+#| msgid "{} YiB/s"
+msgid "{} Yib/s"
+msgstr "{} Yib/s"
+
+#: src/utils/units.rs:218
+#| msgid "{} RiB/s"
+msgid "{} Rib/s"
+msgstr "{} Rib/s"
+
+#: src/utils/units.rs:219
+#| msgid "{} QiB/s"
+msgid "{} Qib/s"
+msgstr "{} Qib/s"
+
+#: src/utils/units.rs:226
 msgid "{} Hz"
 msgstr "{} Hz"
 
-#: src/utils/units.rs:181
+#: src/utils/units.rs:227
 msgid "{} kHz"
 msgstr "{} kHz"
 
-#: src/utils/units.rs:182
+#: src/utils/units.rs:228
 msgid "{} MHz"
 msgstr "{} MHz"
 
-#: src/utils/units.rs:183
+#: src/utils/units.rs:229
 msgid "{} GHz"
 msgstr "{} GHz"
 
-#: src/utils/units.rs:184
+#: src/utils/units.rs:230
 msgid "{} THz"
 msgstr "{} THz"
 
-#: src/utils/units.rs:185
+#: src/utils/units.rs:231
 msgid "{} PHz"
 msgstr "{} PHz"
 
-#: src/utils/units.rs:186
+#: src/utils/units.rs:232
 msgid "{} EHz"
 msgstr "{} EHz"
 
-#: src/utils/units.rs:187
+#: src/utils/units.rs:233
 msgid "{} ZHz"
 msgstr "{} ZHz"
 
-#: src/utils/units.rs:188
+#: src/utils/units.rs:234
 msgid "{} YHz"
 msgstr "{} YHz"
 
-#: src/utils/units.rs:189
+#: src/utils/units.rs:235
 msgid "{} RHz"
 msgstr "{} RHz"
 
-#: src/utils/units.rs:190
+#: src/utils/units.rs:236
 msgid "{} QHz"
 msgstr "{} QHz"
 
-#: src/utils/units.rs:197
+#: src/utils/units.rs:243
 msgid "{} W"
 msgstr "{} W"
 
-#: src/utils/units.rs:198
+#: src/utils/units.rs:244
 msgid "{} kW"
 msgstr "{} kW"
 
-#: src/utils/units.rs:199
+#: src/utils/units.rs:245
 msgid "{} MW"
 msgstr "{} MW"
 
-#: src/utils/units.rs:200
+#: src/utils/units.rs:246
 msgid "{} GW"
 msgstr "{} GW"
 
-#: src/utils/units.rs:201
+#: src/utils/units.rs:247
 msgid "{} TW"
 msgstr "{} TW"
 
-#: src/utils/units.rs:202
+#: src/utils/units.rs:248
 msgid "{} PW"
 msgstr "{} PW"
 
-#: src/utils/units.rs:203
+#: src/utils/units.rs:249
 msgid "{} EW"
 msgstr "{} EW"
 
-#: src/utils/units.rs:204
+#: src/utils/units.rs:250
 msgid "{} ZW"
 msgstr "{} ZW"
 
-#: src/utils/units.rs:205
+#: src/utils/units.rs:251
 msgid "{} YW"
 msgstr "{} YW"
 
-#: src/utils/units.rs:206
+#: src/utils/units.rs:252
 msgid "{} RW"
 msgstr "{} RW"
 
-#: src/utils/units.rs:207
+#: src/utils/units.rs:253
 msgid "{} QW"
 msgstr "{} QW"
 
@@ -686,13 +1078,23 @@ msgstr "Ogólne"
 
 #: data/resources/ui/shortcuts.ui:14
 msgctxt "shortcut window"
-msgid "Show Shortcuts"
-msgstr "Wyświetl skróty"
+msgid "Preferences"
+msgstr "Ustawienia"
 
 #: data/resources/ui/shortcuts.ui:20
 msgctxt "shortcut window"
+msgid "Show Shortcuts"
+msgstr "Wyświetl skróty"
+
+#: data/resources/ui/shortcuts.ui:26
+msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Zakończ"
+
+#: data/resources/ui/shortcuts.ui:32
+msgctxt "shortcut window"
+msgid "Toggle Search Field"
+msgstr "Przełącz pole wyszukiwania"
 
 #: data/resources/ui/window.ui:6
 msgid "Preferences"
@@ -718,24 +1120,24 @@ msgstr "Informacje o programie"
 msgid "Usage"
 msgstr "Wykorzystanie"
 
-#: data/resources/ui/dialogs/app_dialog.ui:94
-#: data/resources/ui/dialogs/process_dialog.ui:77
+#: data/resources/ui/dialogs/app_dialog.ui:130
+#: data/resources/ui/dialogs/process_dialog.ui:113
 #: data/resources/ui/pages/cpu.ui:91 data/resources/ui/pages/drive.ui:48
-#: data/resources/ui/pages/gpu.ui:74 data/resources/ui/pages/memory.ui:42
+#: data/resources/ui/pages/gpu.ui:80 data/resources/ui/pages/memory.ui:42
 #: data/resources/ui/pages/network.ui:51
 msgid "Properties"
 msgstr "Właściwości"
 
-#: data/resources/ui/dialogs/app_dialog.ui:100
+#: data/resources/ui/dialogs/app_dialog.ui:136
 msgid "ID"
 msgstr "ID"
 
-#: data/resources/ui/dialogs/app_dialog.ui:109
+#: data/resources/ui/dialogs/app_dialog.ui:145
 msgid "Running Processes"
 msgstr "Działające procesy"
 
-#: data/resources/ui/dialogs/app_dialog.ui:118
-#: data/resources/ui/dialogs/process_dialog.ui:120
+#: data/resources/ui/dialogs/app_dialog.ui:154
+#: data/resources/ui/dialogs/process_dialog.ui:156
 msgid "Containerized"
 msgstr "W kontenerze"
 
@@ -743,11 +1145,11 @@ msgstr "W kontenerze"
 msgid "Process Information"
 msgstr "Informacje o procesie"
 
-#: data/resources/ui/dialogs/process_dialog.ui:93
+#: data/resources/ui/dialogs/process_dialog.ui:129
 msgid "Commandline"
 msgstr "Polecenie"
 
-#: data/resources/ui/dialogs/process_dialog.ui:111
+#: data/resources/ui/dialogs/process_dialog.ui:147
 msgid "Control Group"
 msgstr "Grupa kontrolna"
 
@@ -772,44 +1174,77 @@ msgid "Binary"
 msgstr "Binarny"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:29
+msgid "Show Network Speeds in Bits per Second"
+msgstr "Pokaż prędkość sieci w bitach na sekundę"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:34
 msgid "Temperature Unit"
 msgstr "Jednostka temperatury"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:33
+#: data/resources/ui/dialogs/settings_dialog.ui:38
 msgid "Celsius"
 msgstr "Celsjusz"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:34
+#: data/resources/ui/dialogs/settings_dialog.ui:39
 msgid "Kelvin"
 msgstr "Kelwin"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:35
+#: data/resources/ui/dialogs/settings_dialog.ui:40
 msgid "Fahrenheit"
 msgstr "Fahrenheit"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:45
+#: data/resources/ui/dialogs/settings_dialog.ui:50
 msgid "User Interface"
 msgstr "Interfejs"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:52
+#: data/resources/ui/dialogs/settings_dialog.ui:57
 msgid "Very Slow"
 msgstr "Bardzo wolny"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:53
+#: data/resources/ui/dialogs/settings_dialog.ui:58
 msgid "Slow"
 msgstr "Wolny"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:54
+#: data/resources/ui/dialogs/settings_dialog.ui:59
 msgid "Normal"
 msgstr "Normalny"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:55
+#: data/resources/ui/dialogs/settings_dialog.ui:60
 msgid "Fast"
 msgstr "Szybki"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:56
+#: data/resources/ui/dialogs/settings_dialog.ui:61
 msgid "Very Fast"
 msgstr "Bardzo szybki"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:69
+msgid "Show Search Fields on Launch"
+msgstr "Pokaż pola wyszukiwania po uruchomieniu"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:74
+msgid "Show Usage Details in Sidebar"
+msgstr "Pokaż szczegóły użycia na pasku bocznym"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:148
+msgid "Information Columns"
+msgstr "Kolumny informacyjne"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:216
+msgid "Devices"
+msgstr "Urządzenia"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:219
+msgid "Drives"
+msgstr "Dyski"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:222
+msgid "Show Virtual Drives"
+msgstr "Pokaż wirtualne dyski"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:232
+msgid "Show Virtual Network Interfaces"
+msgstr "Pokaż wirtualne interfejsy sieciowe"
 
 #: data/resources/ui/pages/applications.ui:6
 msgid "Kill Application"
@@ -835,11 +1270,11 @@ msgstr "Opcje"
 msgid "Show Usages of Logical CPUs"
 msgstr "Pokaż wykorzystanie logicznych procesorów"
 
-#: data/resources/ui/pages/cpu.ui:77 data/resources/ui/pages/gpu.ui:60
+#: data/resources/ui/pages/cpu.ui:77 data/resources/ui/pages/gpu.ui:66
 msgid "Sensors"
 msgstr "Czujniki"
 
-#: data/resources/ui/pages/cpu.ui:84 data/resources/ui/pages/gpu.ui:63
+#: data/resources/ui/pages/cpu.ui:84 data/resources/ui/pages/gpu.ui:69
 msgid "Temperature"
 msgstr "Temperatura"
 
@@ -895,35 +1330,35 @@ msgstr "Zapisywalny"
 msgid "Removable"
 msgstr "Usuwalny"
 
-#: data/resources/ui/pages/gpu.ui:31
+#: data/resources/ui/pages/gpu.ui:37
 msgid "GPU Frequency"
 msgstr "Częstotliwość GPU"
 
-#: data/resources/ui/pages/gpu.ui:44
+#: data/resources/ui/pages/gpu.ui:50
 msgid "Video Memory Frequency"
 msgstr "Częstotliwość pamięci wideo"
 
-#: data/resources/ui/pages/gpu.ui:49
+#: data/resources/ui/pages/gpu.ui:55
 msgid "Power Usage"
 msgstr "Wykorzystanie energii"
 
-#: data/resources/ui/pages/gpu.ui:81 data/resources/ui/pages/network.ui:58
+#: data/resources/ui/pages/gpu.ui:87 data/resources/ui/pages/network.ui:58
 msgid "Manufacturer"
 msgstr "Producent"
 
-#: data/resources/ui/pages/gpu.ui:90
+#: data/resources/ui/pages/gpu.ui:96
 msgid "PCI Slot"
 msgstr "Slot PCI"
 
-#: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
+#: data/resources/ui/pages/gpu.ui:105 data/resources/ui/pages/network.ui:67
 msgid "Driver Used"
 msgstr "Sterownik"
 
-#: data/resources/ui/pages/gpu.ui:108
+#: data/resources/ui/pages/gpu.ui:114
 msgid "Current Power Cap"
 msgstr "Ustawiony limit energii"
 
-#: data/resources/ui/pages/gpu.ui:117
+#: data/resources/ui/pages/gpu.ui:123
 msgid "Max Power Cap"
 msgstr "Maksymalny limit energii"
 
@@ -982,3 +1417,6 @@ msgstr "Wznów proces"
 #: data/resources/ui/pages/processes.ui:81
 msgid "End Process"
 msgstr "Zakończ proces"
+
+#~ msgid "Application"
+#~ msgstr "Program"
