@@ -5,6 +5,7 @@ use gtk::gio::{Icon, ThemedIcon};
 use hashbrown::{HashMap, HashSet};
 use once_cell::sync::Lazy;
 use process_data::{pci_slot::PciSlot, Containerization, ProcessData};
+use regex::Regex;
 
 use crate::i18n::i18n;
 
@@ -12,6 +13,8 @@ use super::{
     process::{Process, ProcessAction, ProcessItem},
     NaNDefault,
 };
+
+static ENV_FILTER_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"env\s*\S*=\S*\s*(.*)").unwrap());
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
@@ -112,6 +115,7 @@ impl App {
 
         let id = desktop_entry
             .get("X-Flatpak") // is there a X-Flatpak section?
+            .or_else(|| desktop_entry.get("X-SnapInstanceName")) // if not, maybe there is a X-SnapInstanceName
             .map(str::to_string)
             .or_else(|| {
                 // if not, presume that the ID is in the file name
@@ -125,8 +129,19 @@ impl App {
             })
             .context("unable to get ID of desktop file")?;
 
+        let exec = desktop_entry.get("Exec");
+        let commandline = exec
+            .and_then(|exec| {
+                ENV_FILTER_REGEX
+                    .captures(exec)
+                    .and_then(|captures| captures.get(1))
+                    .map(|capture| capture.as_str())
+                    .or(Some(exec))
+            })
+            .map(str::to_string);
+
         Ok(App {
-            commandline: desktop_entry.get("Exec").map(str::to_string),
+            commandline,
             processes: Vec::new(),
             display_name: desktop_entry.get("Name").unwrap_or(&id).to_string(),
             description: desktop_entry.get("Comment").map(str::to_string),
@@ -330,7 +345,7 @@ impl AppsContext {
             .sum()
     }
 
-    fn app_associated_with_process(&mut self, process: &Process) -> Option<String> {
+    fn app_associated_with_process(&self, process: &Process) -> Option<String> {
         // TODO: tidy this up
         // ↓ look for whether we can find an ID in the cgroup
         if let Some(app) = self
