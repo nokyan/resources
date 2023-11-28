@@ -26,8 +26,9 @@ static IO_READ_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"read_bytes:\s*(\d+
 
 static IO_WRITE_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"write_bytes:\s*(\d+)").unwrap());
 
-static DRM_PDEV_REGEX: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"drm-pdev:\s*(\d{4}:\d{2}:\d{2}.\d)").unwrap());
+static DRM_PDEV_REGEX: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r"drm-pdev:\s*([0-9A-Fa-f]{4}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}\.[0-9A-Fa-f])").unwrap()
+});
 
 static DRM_CLIENT_ID_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-client-id:\s*(\d+)").unwrap());
