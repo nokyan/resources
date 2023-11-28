@@ -427,14 +427,14 @@ impl ProcessData {
         let pci_slot = DRM_PDEV_REGEX
             .captures(&content)
             .and_then(|captures| captures.get(1))
-            .map(|capture| PciSlot::from_str(capture.as_str()));
+            .and_then(|capture| PciSlot::from_str(capture.as_str()).ok());
 
         let client_id = DRM_CLIENT_ID_REGEX
             .captures(&content)
             .and_then(|captures| captures.get(1))
             .and_then(|capture| capture.as_str().parse::<i64>().ok());
 
-        if let (Some(Ok(pci_slot)), Some(client_id)) = (pci_slot, client_id) {
+        if let (Some(pci_slot), Some(client_id)) = (pci_slot, client_id) {
             let gfx = DRM_ENGINE_GFX_REGEX // amd
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
