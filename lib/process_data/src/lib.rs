@@ -236,7 +236,7 @@ impl ProcessData {
         let stat = stat
             .split(')') // since we don't care about the pid or the executable name, split after the executable name to make our life easier
             .last()
-            .context("stat doesn't have '('")?
+            .context("stat doesn't have ')'")?
             .split(' ')
             .skip(1) // the first element would be a space, let's ignore that
             .collect::<Vec<_>>();
