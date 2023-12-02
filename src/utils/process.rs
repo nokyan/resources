@@ -136,13 +136,14 @@ impl Process {
             .commandline
             .split('\0')
             .nth(0)
-            .unwrap_or_default()
+            .and_then(|nul_split| nul_split.split(" --").nth(0)) // chromium (and thus everything based on it) doesn't use \0 as delimiter
+            .unwrap_or(&process_data.commandline)
             .to_string();
 
         let executable_name = executable_path
             .split('/')
             .nth_back(0)
-            .unwrap_or_default()
+            .unwrap_or(&process_data.commandline)
             .to_string();
 
         let (read_bytes_last, read_bytes_last_timestamp) = if process_data.read_bytes.is_some() {
