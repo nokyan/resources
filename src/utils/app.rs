@@ -1,10 +1,11 @@
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result};
-use gtk::gio::{Icon, ThemedIcon};
+use gtk::gio::{File, FileIcon, Icon, ThemedIcon};
 use hashbrown::{HashMap, HashSet};
 use once_cell::sync::Lazy;
 use process_data::{pci_slot::PciSlot, Containerization, ProcessData};
+use regex::Regex;
 
 use crate::i18n::i18n;
 
@@ -12,6 +13,8 @@ use super::{
     process::{Process, ProcessAction, ProcessItem},
     NaNDefault,
 };
+
+static ENV_FILTER_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"env\s*\S*=\S*\s*(.*)").unwrap());
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
@@ -110,8 +113,11 @@ impl App {
             .section(Some("Desktop Entry"))
             .context("no desktop entry section")?;
 
+        let is_snap = desktop_entry.get("X-SnapInstanceName").is_some();
+
         let id = desktop_entry
             .get("X-Flatpak") // is there a X-Flatpak section?
+            .or_else(|| desktop_entry.get("X-SnapInstanceName")) // if not, maybe there is a X-SnapInstanceName
             .map(str::to_string)
             .or_else(|| {
                 // if not, presume that the ID is in the file name
@@ -125,12 +131,33 @@ impl App {
             })
             .context("unable to get ID of desktop file")?;
 
+        let exec = desktop_entry.get("Exec");
+        let commandline = exec
+            .and_then(|exec| {
+                ENV_FILTER_REGEX
+                    .captures(exec)
+                    .and_then(|captures| captures.get(1))
+                    .map(|capture| capture.as_str())
+                    .or(Some(exec))
+            })
+            .map(str::to_string);
+
+        let icon = if let Some(desktop_icon) = desktop_entry.get("Icon") {
+            if is_snap {
+                FileIcon::new(&File::for_path(desktop_icon)).into()
+            } else {
+                ThemedIcon::new(desktop_icon).into()
+            }
+        } else {
+            ThemedIcon::new("generic-process").into()
+        };
+
         Ok(App {
-            commandline: desktop_entry.get("Exec").map(str::to_string),
+            commandline,
             processes: Vec::new(),
             display_name: desktop_entry.get("Name").unwrap_or(&id).to_string(),
             description: desktop_entry.get("Comment").map(str::to_string),
-            icon: ThemedIcon::new(desktop_entry.get("Icon").unwrap_or("generic-process")).into(),
+            icon,
             id,
             read_bytes_from_dead_processes: 0,
             write_bytes_from_dead_processes: 0,
@@ -330,7 +357,7 @@ impl AppsContext {
             .sum()
     }
 
-    fn app_associated_with_process(&mut self, process: &Process) -> Option<String> {
+    fn app_associated_with_process(&self, process: &Process) -> Option<String> {
         // TODO: tidy this up
         // ↓ look for whether we can find an ID in the cgroup
         if let Some(app) = self
@@ -447,15 +474,26 @@ impl AppsContext {
                     app_pids.insert(process.data.pid);
                 });
 
-                let containerization = if app
+                let is_flatpak = app
                     .processes_iter(self)
                     .filter(|process| {
                         !process.data.commandline.starts_with("bwrap")
                             && !process.data.commandline.is_empty()
                     })
-                    .any(|process| process.data.containerization == Containerization::Flatpak)
-                {
+                    .any(|process| process.data.containerization == Containerization::Flatpak);
+
+                let is_snap = app
+                    .processes_iter(self)
+                    .filter(|process| {
+                        !process.data.commandline.starts_with("bwrap")
+                            && !process.data.commandline.is_empty()
+                    })
+                    .any(|process| process.data.containerization == Containerization::Snap);
+
+                let containerization = if is_flatpak {
                     Containerization::Flatpak
+                } else if is_snap {
+                    Containerization::Snap
                 } else {
                     Containerization::None
                 };

@@ -5,7 +5,7 @@ use std::time::Duration;
 
 use adw::{prelude::*, subclass::prelude::*};
 use adw::{Toast, ToastOverlay};
-use anyhow::Result;
+use anyhow::{Context, Result};
 use gtk::glib::{clone, timeout_future, MainContext};
 use gtk::{gio, glib, Widget};
 use log::{debug, error, warn};
@@ -17,7 +17,7 @@ use crate::ui::pages::applications::ResApplications;
 use crate::ui::pages::drive::ResDrive;
 use crate::ui::pages::processes::ResProcesses;
 use crate::utils::app::AppsContext;
-use crate::utils::cpu::CpuData;
+use crate::utils::cpu::{self, CpuData};
 use crate::utils::drive::{Drive, DriveData};
 use crate::utils::gpu::{Gpu, GpuData};
 use crate::utils::memory::MemoryData;
@@ -273,7 +273,12 @@ impl MainWindow {
 
         *self.imp().apps_context.borrow_mut() = AppsContext::new();
 
-        self.imp().cpu.init();
+        let cpu_info = cpu::cpu_info().context("unable to get CPUInfo").unwrap();
+        if let Some(model_name) = cpu_info.model_name.as_deref() {
+            imp.processor_window_title.set_title(model_name);
+            imp.processor_window_title.set_subtitle(&i18n("Processor"));
+        }
+        self.imp().cpu.init(cpu_info);
 
         self.init_gpu_pages();
 

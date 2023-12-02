@@ -96,6 +96,7 @@ pub enum Containerization {
     #[default]
     None,
     Flatpak,
+    Snap,
 }
 
 /// Represents GPU usage statistics per-process. Depending on the GPU manufacturer (which should be determined in
@@ -257,7 +258,10 @@ impl ProcessData {
 
         let containerization = match &proc_path.join("root").join(".flatpak-info").exists() {
             true => Containerization::Flatpak,
-            false => Containerization::None,
+            false => match commandline.starts_with("/snap/") {
+                true => Containerization::Snap,
+                false => Containerization::None,
+            },
         };
 
         let (mut read_bytes, mut read_bytes_timestamp, mut write_bytes, mut write_bytes_timestamp) =
