@@ -74,6 +74,13 @@ fn lscpu() -> Result<Value> {
     .map_err(|x| anyhow!("{}", x))
 }
 
+fn trade_mark_symbols<S: AsRef<str>>(s: S) -> String {
+    s.as_ref()
+        .replace("(R)", "®")
+        .replace("(tm)", "™")
+        .replace("(TM)", "™")
+}
+
 /// Returns a `CPUInfo` struct populated with values gathered from `lscpu`.
 ///
 /// # Errors
@@ -83,12 +90,8 @@ fn lscpu() -> Result<Value> {
 pub fn cpu_info() -> Result<CpuInfo> {
     let lscpu_output = lscpu()?;
 
-    let vendor_id = lscpu_output["Vendor ID"]
-        .as_str()
-        .map(std::string::ToString::to_string);
-    let model_name = lscpu_output["Model name"]
-        .as_str()
-        .map(std::string::ToString::to_string);
+    let vendor_id = lscpu_output["Vendor ID"].as_str().map(trade_mark_symbols);
+    let model_name = lscpu_output["Model name"].as_str().map(trade_mark_symbols);
     let architecture = lscpu_output["Architecture"]
         .as_str()
         .map(std::string::ToString::to_string);

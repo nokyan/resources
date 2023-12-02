@@ -1,12 +1,11 @@
 use adw::{prelude::*, subclass::prelude::*};
-use anyhow::Context;
 use gtk::glib::{self, clone};
 use gtk::FlowBoxChild;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::ui::widgets::graph_box::ResGraphBox;
-use crate::utils::cpu::CpuData;
+use crate::utils::cpu::{CpuData, CpuInfo};
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_frequency, convert_temperature};
 use crate::utils::{cpu, NaNDefault};
@@ -178,17 +177,13 @@ impl ResCPU {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self) {
-        self.setup_widgets();
+    pub fn init(&self, cpu_info: CpuInfo) {
+        self.setup_widgets(cpu_info);
         self.setup_signals();
     }
 
-    pub fn setup_widgets(&self) {
+    pub fn setup_widgets(&self, cpu_info: CpuInfo) {
         let imp = self.imp();
-
-        let cpu_info = cpu::cpu_info()
-            .with_context(|| "unable to get CPUInfo")
-            .unwrap();
 
         let old_total_usage = cpu::get_cpu_usage(None).unwrap_or((0, 0));
         imp.old_total_usage.set(old_total_usage);
