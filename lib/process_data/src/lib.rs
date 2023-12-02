@@ -26,8 +26,9 @@ static IO_READ_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"read_bytes:\s*(\d+
 
 static IO_WRITE_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"write_bytes:\s*(\d+)").unwrap());
 
-static DRM_PDEV_REGEX: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"drm-pdev:\s*(\d{4}:\d{2}:\d{2}.\d)").unwrap());
+static DRM_PDEV_REGEX: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r"drm-pdev:\s*([0-9A-Fa-f]{4}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}\.[0-9A-Fa-f])").unwrap()
+});
 
 static DRM_CLIENT_ID_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-client-id:\s*(\d+)").unwrap());
@@ -35,6 +36,10 @@ static DRM_CLIENT_ID_REGEX: Lazy<Regex> =
 // AMD only
 static DRM_ENGINE_GFX_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-engine-gfx:\s*(\d+) ns").unwrap());
+
+// AMD only
+static DRM_ENGINE_COMPUTE_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"drm-engine-compute:\s*(\d+) ns").unwrap());
 
 // AMD only
 static DRM_ENGINE_ENC_REGEX: Lazy<Regex> =
@@ -69,8 +74,7 @@ static NVML_DEVICES: Lazy<Vec<(PciSlot, Device)>> = Lazy::new(|| {
         for i in 0..device_count {
             if let Ok(gpu) = nvml.device_by_index(i) {
                 if let Ok(pci_slot) = gpu.pci_info().map(|pci_info| pci_info.bus_id) {
-                    // the PCI Slot ID given by NVML has 4 additional leading zeroes, remove those for consistency
-                    let pci_slot = PciSlot::from_str(&pci_slot[4..pci_slot.len()]).unwrap();
+                    let pci_slot = PciSlot::from_str(&pci_slot).unwrap();
                     return_vec.push((pci_slot, gpu));
                 }
             }
@@ -233,7 +237,7 @@ impl ProcessData {
         let stat = stat
             .split(')') // since we don't care about the pid or the executable name, split after the executable name to make our life easier
             .last()
-            .context("stat doesn't have '('")?
+            .context("stat doesn't have ')'")?
             .split(' ')
             .skip(1) // the first element would be a space, let's ignore that
             .collect::<Vec<_>>();
@@ -423,14 +427,14 @@ impl ProcessData {
         let pci_slot = DRM_PDEV_REGEX
             .captures(&content)
             .and_then(|captures| captures.get(1))
-            .map(|capture| PciSlot::from_str(capture.as_str()));
+            .and_then(|capture| PciSlot::from_str(capture.as_str()).ok());
 
         let client_id = DRM_CLIENT_ID_REGEX
             .captures(&content)
             .and_then(|captures| captures.get(1))
             .and_then(|capture| capture.as_str().parse::<i64>().ok());
 
-        if let (Some(Ok(pci_slot)), Some(client_id)) = (pci_slot, client_id) {
+        if let (Some(pci_slot), Some(client_id)) = (pci_slot, client_id) {
             let gfx = DRM_ENGINE_GFX_REGEX // amd
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
@@ -442,6 +446,12 @@ impl ProcessData {
                         .and_then(|captures| captures.get(1))
                         .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 })
+                .unwrap_or_default();
+
+            let compute = DRM_ENGINE_COMPUTE_REGEX
+                .captures(&content)
+                .and_then(|captures| captures.get(1))
+                .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 .unwrap_or_default();
 
             let enc = DRM_ENGINE_ENC_REGEX // amd
@@ -478,7 +488,7 @@ impl ProcessData {
                 * 1024;
 
             let stats = GpuUsageStats {
-                gfx,
+                gfx: gfx + compute,
                 gfx_timestamp: unix_as_millis(),
                 mem: vram.saturating_add(gtt),
                 enc,
