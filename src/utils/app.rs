@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result};
-use gtk::gio::{Icon, ThemedIcon};
+use gtk::gio::{File, FileIcon, Icon, ThemedIcon};
 use hashbrown::{HashMap, HashSet};
 use once_cell::sync::Lazy;
 use process_data::{pci_slot::PciSlot, Containerization, ProcessData};
@@ -113,6 +113,8 @@ impl App {
             .section(Some("Desktop Entry"))
             .context("no desktop entry section")?;
 
+        let is_snap = desktop_entry.get("X-SnapInstanceName").is_some();
+
         let id = desktop_entry
             .get("X-Flatpak") // is there a X-Flatpak section?
             .or_else(|| desktop_entry.get("X-SnapInstanceName")) // if not, maybe there is a X-SnapInstanceName
@@ -140,12 +142,22 @@ impl App {
             })
             .map(str::to_string);
 
+        let icon = if let Some(desktop_icon) = desktop_entry.get("Icon") {
+            if is_snap {
+                FileIcon::new(&File::for_path(desktop_icon)).into()
+            } else {
+                ThemedIcon::new(desktop_icon).into()
+            }
+        } else {
+            ThemedIcon::new("generic-process").into()
+        };
+
         Ok(App {
             commandline,
             processes: Vec::new(),
             display_name: desktop_entry.get("Name").unwrap_or(&id).to_string(),
             description: desktop_entry.get("Comment").map(str::to_string),
-            icon: ThemedIcon::new(desktop_entry.get("Icon").unwrap_or("generic-process")).into(),
+            icon,
             id,
             read_bytes_from_dead_processes: 0,
             write_bytes_from_dead_processes: 0,
