@@ -11,17 +11,14 @@ use std::{
 };
 use strum_macros::Display;
 
-use gtk::gio::{Icon, ThemedIcon};
+use gtk::{
+    gio::{Icon, ThemedIcon},
+    glib::GString,
+};
 
 use crate::config;
 
-use super::{NaNDefault, FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
-
-// convert to f64 since we only need it for floating point calculations anyway
-static NUM_CPUS: Lazy<f32> = Lazy::new(|| num_cpus::get() as f32);
-
-static TICK_RATE: Lazy<f32> =
-    Lazy::new(|| sysconf::sysconf(sysconf::SysconfVariable::ScClkTck).unwrap_or(100) as f32);
+use super::{NaNDefault, FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK, NUM_CPUS, TICK_RATE};
 
 static OTHER_PROCESS: Lazy<Mutex<(ChildStdin, ChildStdout)>> = Lazy::new(|| {
     let proxy_path = if *IS_FLATPAK {
@@ -91,6 +88,7 @@ pub struct ProcessItem {
     pub cpu_time_ratio: f32,
     pub commandline: String,
     pub containerization: Containerization,
+    pub running_since: GString,
     pub cgroup: Option<String>,
     pub read_speed: Option<f64>,
     pub read_total: Option<u64>,
@@ -293,9 +291,9 @@ impl Process {
             let delta_time = self
                 .data
                 .cpu_time_timestamp
-                .saturating_sub(self.cpu_time_last_timestamp) as f32;
+                .saturating_sub(self.cpu_time_last_timestamp);
 
-            delta_cpu_time / (delta_time * *TICK_RATE * *NUM_CPUS)
+            delta_cpu_time / (delta_time * *TICK_RATE as u64 * *NUM_CPUS as u64) as f32
         }
     }
 
@@ -433,6 +431,11 @@ impl Process {
             .values()
             .map(|stats| stats.mem)
             .sum()
+    }
+
+    #[must_use]
+    pub fn starttime(&self) -> u64 {
+        self.data.starttime / *TICK_RATE as u64
     }
 
     pub fn sanitize_cmdline<S: AsRef<str>>(cmdline: S) -> Option<String> {

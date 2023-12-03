@@ -121,6 +121,15 @@
                           </object>
                         </child>
                         <child>
+                          <object class="AdwActionRow" id="running_since">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
+                            <property name="title" translatable="yes">Running Since</property>
+                          </object>
+                        </child>
+                        <child>
                           <object class="AdwActionRow" id="commandline">
                             <style>
                               <class name="property"/>

@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-12-02 20:29+0100\n"
+"PO-Revision-Date: 2023-12-03 10:04+0100\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: de\n"
@@ -236,22 +236,22 @@ msgstr "nokyan <nokyan@tuta.io>"
 msgid "Icon by"
 msgstr "Icon von"
 
-#: src/ui/dialogs/app_dialog.rs:139 src/ui/dialogs/process_dialog.rs:152
+#: src/ui/dialogs/app_dialog.rs:143 src/ui/dialogs/process_dialog.rs:156
 #: src/ui/pages/drive.rs:245 src/ui/pages/drive.rs:251
 msgid "No"
 msgstr "Nein"
 
-#: src/ui/dialogs/app_dialog.rs:140 src/ui/dialogs/process_dialog.rs:153
+#: src/ui/dialogs/app_dialog.rs:144 src/ui/dialogs/process_dialog.rs:157
 msgid "Yes (Flatpak)"
 msgstr "Ja (Flatpak)"
 
-#: src/ui/dialogs/app_dialog.rs:141 src/ui/dialogs/process_dialog.rs:154
+#: src/ui/dialogs/app_dialog.rs:145 src/ui/dialogs/process_dialog.rs:158
 msgid "Yes (Snap)"
 msgstr "Ja (Snap)"
 
-#: src/ui/dialogs/process_dialog.rs:117 src/ui/dialogs/process_dialog.rs:124
-#: src/ui/dialogs/process_dialog.rs:131 src/ui/dialogs/process_dialog.rs:138
-#: src/ui/dialogs/process_dialog.rs:147 src/ui/dialogs/process_dialog.rs:149
+#: src/ui/dialogs/process_dialog.rs:119 src/ui/dialogs/process_dialog.rs:126
+#: src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:140
+#: src/ui/dialogs/process_dialog.rs:151 src/ui/dialogs/process_dialog.rs:153
 #: src/ui/pages/applications/mod.rs:608 src/ui/pages/applications/mod.rs:696
 #: src/ui/pages/cpu.rs:200 src/ui/pages/cpu.rs:212 src/ui/pages/cpu.rs:227
 #: src/ui/pages/cpu.rs:233 src/ui/pages/cpu.rs:239 src/ui/pages/cpu.rs:245
@@ -267,6 +267,7 @@ msgstr "Ja (Snap)"
 #: src/ui/pages/network.rs:246 src/ui/pages/network.rs:249
 #: src/ui/pages/processes/mod.rs:676 src/ui/pages/processes/mod.rs:726
 #: src/ui/pages/processes/mod.rs:770 src/ui/pages/processes/mod.rs:820
+#: src/utils/app.rs:460 src/utils/app.rs:532 src/utils/app.rs:608
 #: src/utils/gpu/mod.rs:257 src/utils/gpu/mod.rs:263
 msgid "N/A"
 msgstr "n. v."
@@ -545,7 +546,7 @@ msgid "Process ID"
 msgstr "Prozess-ID"
 
 #: src/ui/pages/processes/mod.rs:548
-#: data/resources/ui/dialogs/process_dialog.ui:138
+#: data/resources/ui/dialogs/process_dialog.ui:147
 #: data/resources/ui/dialogs/settings_dialog.ui:156
 msgid "User"
 msgstr "Benutzer"
@@ -662,7 +663,7 @@ msgstr "Es gab ein Problem beim Abwürgen von {}"
 msgid "There was a problem continuing {}"
 msgstr "Es gab ein Problem beim Fortsetzen von {}"
 
-#: src/utils/app.rs:572
+#: src/utils/app.rs:614
 msgid "System Processes"
 msgstr "Systemprozesse"
 
@@ -1108,12 +1109,17 @@ msgstr "Eigenschaften"
 msgid "ID"
 msgstr "ID"
 
-#: data/resources/ui/dialogs/app_dialog.ui:145
+#: data/resources/ui/dialogs/app_dialog.ui:146
+#: data/resources/ui/dialogs/process_dialog.ui:129
+msgid "Running Since"
+msgstr "Läuft seit"
+
+#: data/resources/ui/dialogs/app_dialog.ui:154
 msgid "Running Processes"
 msgstr "Laufende Prozesse"
 
-#: data/resources/ui/dialogs/app_dialog.ui:154
-#: data/resources/ui/dialogs/process_dialog.ui:156
+#: data/resources/ui/dialogs/app_dialog.ui:163
+#: data/resources/ui/dialogs/process_dialog.ui:165
 msgid "Containerized"
 msgstr "Benutzt Container"
 
@@ -1121,11 +1127,11 @@ msgstr "Benutzt Container"
 msgid "Process Information"
 msgstr "Prozessinformationen"
 
-#: data/resources/ui/dialogs/process_dialog.ui:129
+#: data/resources/ui/dialogs/process_dialog.ui:138
 msgid "Commandline"
 msgstr "Befehlszeile"
 
-#: data/resources/ui/dialogs/process_dialog.ui:147
+#: data/resources/ui/dialogs/process_dialog.ui:156
 msgid "Control Group"
 msgstr "Kontrollgruppe"
 

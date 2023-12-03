@@ -34,6 +34,8 @@ mod imp {
         #[template_child]
         pub pid: TemplateChild<adw::ActionRow>,
         #[template_child]
+        pub running_since: TemplateChild<adw::ActionRow>,
+        #[template_child]
         pub commandline: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub user: TemplateChild<adw::ActionRow>,
@@ -139,6 +141,8 @@ impl ResProcessDialog {
         }
 
         imp.pid.set_subtitle(&process.pid.to_string());
+
+        imp.running_since.set_subtitle(&process.running_since);
 
         imp.commandline.set_subtitle(&process.commandline);
         imp.commandline.set_tooltip_text(Some(&process.commandline));
