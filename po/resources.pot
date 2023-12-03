@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-12-03 10:02+0200\n"
+"PO-Revision-Date: 2023-12-03 15:51+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -197,6 +197,8 @@ msgstr ""
 #: data/net.nokyan.Resources.metainfo.xml.in.in:26
 #: src/ui/pages/applications/mod.rs:771 src/ui/pages/gpu.rs:119
 #: src/ui/pages/processes/mod.rs:849 src/ui/window.rs:240
+#: data/resources/ui/dialogs/app_dialog.ui:132
+#: data/resources/ui/dialogs/process_dialog.ui:115
 #: data/resources/ui/dialogs/settings_dialog.ui:120
 #: data/resources/ui/dialogs/settings_dialog.ui:191
 msgid "GPU"
@@ -229,22 +231,22 @@ msgstr ""
 msgid "Icon by"
 msgstr ""
 
-#: src/ui/dialogs/app_dialog.rs:143 src/ui/dialogs/process_dialog.rs:156
+#: src/ui/dialogs/app_dialog.rs:163 src/ui/dialogs/process_dialog.rs:176
 #: src/ui/pages/drive.rs:245 src/ui/pages/drive.rs:251
 msgid "No"
 msgstr ""
 
-#: src/ui/dialogs/app_dialog.rs:144 src/ui/dialogs/process_dialog.rs:157
+#: src/ui/dialogs/app_dialog.rs:164 src/ui/dialogs/process_dialog.rs:177
 msgid "Yes (Flatpak)"
 msgstr ""
 
-#: src/ui/dialogs/app_dialog.rs:145 src/ui/dialogs/process_dialog.rs:158
+#: src/ui/dialogs/app_dialog.rs:165 src/ui/dialogs/process_dialog.rs:178
 msgid "Yes (Snap)"
 msgstr ""
 
-#: src/ui/dialogs/process_dialog.rs:119 src/ui/dialogs/process_dialog.rs:126
-#: src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:140
-#: src/ui/dialogs/process_dialog.rs:151 src/ui/dialogs/process_dialog.rs:153
+#: src/ui/dialogs/process_dialog.rs:127 src/ui/dialogs/process_dialog.rs:134
+#: src/ui/dialogs/process_dialog.rs:141 src/ui/dialogs/process_dialog.rs:148
+#: src/ui/dialogs/process_dialog.rs:171 src/ui/dialogs/process_dialog.rs:173
 #: src/ui/pages/applications/mod.rs:608 src/ui/pages/applications/mod.rs:696
 #: src/ui/pages/cpu.rs:200 src/ui/pages/cpu.rs:212 src/ui/pages/cpu.rs:227
 #: src/ui/pages/cpu.rs:233 src/ui/pages/cpu.rs:239 src/ui/pages/cpu.rs:245
@@ -326,18 +328,24 @@ msgid "Drive Write Total"
 msgstr ""
 
 #: src/ui/pages/applications/mod.rs:814 src/ui/pages/processes/mod.rs:892
+#: data/resources/ui/dialogs/app_dialog.ui:150
+#: data/resources/ui/dialogs/process_dialog.ui:133
 #: data/resources/ui/dialogs/settings_dialog.ui:130
 #: data/resources/ui/dialogs/settings_dialog.ui:201
 msgid "Video Encoder"
 msgstr ""
 
 #: src/ui/pages/applications/mod.rs:858 src/ui/pages/processes/mod.rs:936
+#: data/resources/ui/dialogs/app_dialog.ui:159
+#: data/resources/ui/dialogs/process_dialog.ui:142
 #: data/resources/ui/dialogs/settings_dialog.ui:135
 #: data/resources/ui/dialogs/settings_dialog.ui:206
 msgid "Video Decoder"
 msgstr ""
 
 #: src/ui/pages/applications/mod.rs:901 src/ui/pages/processes/mod.rs:979
+#: data/resources/ui/dialogs/app_dialog.ui:141
+#: data/resources/ui/dialogs/process_dialog.ui:124
 #: data/resources/ui/dialogs/settings_dialog.ui:125
 #: data/resources/ui/dialogs/settings_dialog.ui:196
 msgid "Video Memory"
@@ -533,13 +541,13 @@ msgid "root"
 msgstr ""
 
 #: src/ui/pages/processes/mod.rs:515
-#: data/resources/ui/dialogs/process_dialog.ui:120
+#: data/resources/ui/dialogs/process_dialog.ui:156
 #: data/resources/ui/dialogs/settings_dialog.ui:151
 msgid "Process ID"
 msgstr ""
 
 #: src/ui/pages/processes/mod.rs:548
-#: data/resources/ui/dialogs/process_dialog.ui:147
+#: data/resources/ui/dialogs/process_dialog.ui:183
 #: data/resources/ui/dialogs/settings_dialog.ui:156
 msgid "User"
 msgstr ""
@@ -1086,29 +1094,29 @@ msgstr ""
 msgid "Usage"
 msgstr ""
 
-#: data/resources/ui/dialogs/app_dialog.ui:130
-#: data/resources/ui/dialogs/process_dialog.ui:113
+#: data/resources/ui/dialogs/app_dialog.ui:166
+#: data/resources/ui/dialogs/process_dialog.ui:149
 #: data/resources/ui/pages/cpu.ui:91 data/resources/ui/pages/drive.ui:48
 #: data/resources/ui/pages/gpu.ui:80 data/resources/ui/pages/memory.ui:42
 #: data/resources/ui/pages/network.ui:51
 msgid "Properties"
 msgstr ""
 
-#: data/resources/ui/dialogs/app_dialog.ui:136
+#: data/resources/ui/dialogs/app_dialog.ui:172
 msgid "ID"
 msgstr ""
 
-#: data/resources/ui/dialogs/app_dialog.ui:146
-#: data/resources/ui/dialogs/process_dialog.ui:129
+#: data/resources/ui/dialogs/app_dialog.ui:182
+#: data/resources/ui/dialogs/process_dialog.ui:165
 msgid "Running Since"
 msgstr ""
 
-#: data/resources/ui/dialogs/app_dialog.ui:154
+#: data/resources/ui/dialogs/app_dialog.ui:190
 msgid "Running Processes"
 msgstr ""
 
-#: data/resources/ui/dialogs/app_dialog.ui:163
-#: data/resources/ui/dialogs/process_dialog.ui:165
+#: data/resources/ui/dialogs/app_dialog.ui:199
+#: data/resources/ui/dialogs/process_dialog.ui:201
 msgid "Containerized"
 msgstr ""
 
@@ -1116,11 +1124,11 @@ msgstr ""
 msgid "Process Information"
 msgstr ""
 
-#: data/resources/ui/dialogs/process_dialog.ui:138
+#: data/resources/ui/dialogs/process_dialog.ui:174
 msgid "Commandline"
 msgstr ""
 
-#: data/resources/ui/dialogs/process_dialog.ui:156
+#: data/resources/ui/dialogs/process_dialog.ui:192
 msgid "Control Group"
 msgstr ""
 

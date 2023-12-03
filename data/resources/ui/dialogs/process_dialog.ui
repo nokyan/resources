@@ -106,6 +106,42 @@
                             <property name="subtitle-selectable">true</property>
                           </object>
                         </child>
+                        <child>
+                          <object class="AdwActionRow" id="gpu_usage">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
+                            <property name="title" translatable="yes">GPU</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="vram_usage">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
+                            <property name="title" translatable="yes">Video Memory</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="encoder_usage">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
+                            <property name="title" translatable="yes">Video Encoder</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="decoder_usage">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
+                            <property name="title" translatable="yes">Video Decoder</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child>
