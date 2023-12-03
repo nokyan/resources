@@ -1,6 +1,8 @@
 use anyhow::{Context, Result};
+use gtk::glib::DateTime;
 use ini::Ini;
 use once_cell::sync::Lazy;
+use process_data::unix_as_millis;
 
 pub mod app;
 pub mod cpu;
@@ -12,6 +14,31 @@ pub mod pci;
 pub mod process;
 pub mod settings;
 pub mod units;
+
+static BOOT_TIMESTAMP: Lazy<Option<i64>> = Lazy::new(|| {
+    let unix_timestamp = (unix_as_millis() / 1000) as i64;
+    std::fs::read_to_string("/proc/uptime")
+        .context("unable to read /proc/uptime")
+        .and_then(|procfs| {
+            procfs
+                .split(' ')
+                .next()
+                .map(str::to_string)
+                .context("unable to split /proc/uptime")
+        })
+        .and_then(|uptime_str| {
+            uptime_str
+                .parse::<f64>()
+                .context("unable to parse /proc/uptime")
+        })
+        .map(|uptime_secs| unix_timestamp - uptime_secs as i64)
+        .ok()
+});
+
+static NUM_CPUS: Lazy<usize> = Lazy::new(num_cpus::get);
+
+static TICK_RATE: Lazy<usize> =
+    Lazy::new(|| sysconf::sysconf(sysconf::SysconfVariable::ScClkTck).unwrap_or(100) as usize);
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 static IS_FLATPAK: Lazy<bool> = Lazy::new(|| std::path::Path::new("/.flatpak-info").exists());
@@ -34,6 +61,14 @@ pub fn flatpak_app_path() -> Result<String> {
         .get("app-path")
         .with_context(|| "unable to find app-path in ./flatpak-info")?
         .to_string())
+}
+
+pub fn boot_time() -> Result<DateTime> {
+    BOOT_TIMESTAMP
+        .context("couldn't get boot timestamp")
+        .and_then(|timestamp| {
+            DateTime::from_unix_local(timestamp).context("unable to get glib::DateTime")
+        })
 }
 
 pub trait NaNDefault {

@@ -133,6 +133,7 @@ pub struct ProcessData {
     pub cpu_time: u64,
     pub cpu_time_timestamp: u64,
     pub memory_usage: usize,
+    pub starttime: u64, // in clock ticks, see man proc(5)!
     pub cgroup: Option<String>,
     pub containerization: Containerization,
     pub read_bytes: Option<u64>,
@@ -254,6 +255,8 @@ impl ProcessData {
 
         let memory_usage = (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?) * *PAGESIZE;
 
+        let starttime = stat[21 - 2].parse()?;
+
         let cgroup = Self::sanitize_cgroup(cgroup);
 
         let containerization = match &proc_path.join("root").join(".flatpak-info").exists() {
@@ -309,6 +312,7 @@ impl ProcessData {
             cpu_time,
             cpu_time_timestamp,
             memory_usage,
+            starttime,
             cgroup,
             proc_path,
             containerization,

@@ -1,7 +1,10 @@
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result};
-use gtk::gio::{File, FileIcon, Icon, ThemedIcon};
+use gtk::{
+    gio::{File, FileIcon, Icon, ThemedIcon},
+    glib::GString,
+};
 use hashbrown::{HashMap, HashSet};
 use once_cell::sync::Lazy;
 use process_data::{pci_slot::PciSlot, Containerization, ProcessData};
@@ -10,6 +13,7 @@ use regex::Regex;
 use crate::i18n::i18n;
 
 use super::{
+    boot_time,
     process::{Process, ProcessAction, ProcessItem},
     NaNDefault,
 };
@@ -62,6 +66,7 @@ pub struct AppItem {
     pub cpu_time_ratio: f32,
     pub processes_amount: usize,
     pub containerization: Containerization,
+    pub running_since: GString,
     pub read_speed: f64,
     pub read_total: u64,
     pub write_speed: f64,
@@ -258,6 +263,14 @@ impl App {
         self.processes_iter(apps).map(Process::gpu_mem_usage).sum()
     }
 
+    #[must_use]
+    pub fn starttime(&self, apps: &AppsContext) -> u64 {
+        self.processes_iter(apps)
+            .map(Process::starttime)
+            .min()
+            .unwrap_or_default()
+    }
+
     pub fn execute_process_action(
         &self,
         apps: &AppsContext,
@@ -436,6 +449,16 @@ impl AppsContext {
             } else {
                 process.data.comm.clone()
             };
+
+            let running_since = boot_time()
+                .and_then(|boot_time| {
+                    boot_time
+                        .add_seconds(process.starttime() as f64)
+                        .context("unable to add seconds to boot time")
+                })
+                .and_then(|time| time.format("%c").context("unable to format running_since"))
+                .unwrap_or_else(|_| GString::from(i18n("N/A")));
+
             ProcessItem {
                 pid: process.data.pid,
                 display_name: full_comm.clone(),
@@ -445,6 +468,7 @@ impl AppsContext {
                 commandline: Process::sanitize_cmdline(process.data.commandline.clone())
                     .unwrap_or(full_comm),
                 containerization: process.data.containerization,
+                running_since,
                 cgroup: process.data.cgroup.clone(),
                 uid: process.data.uid,
                 read_speed: process.read_speed(),
@@ -498,6 +522,15 @@ impl AppsContext {
                     Containerization::None
                 };
 
+                let running_since = boot_time()
+                    .and_then(|boot_time| {
+                        boot_time
+                            .add_seconds(app.starttime(self) as f64)
+                            .context("unable to add seconds to boot time")
+                    })
+                    .and_then(|time| time.format("%c").context("unable to format running_since"))
+                    .unwrap_or_else(|_| GString::from(i18n("N/A")));
+
                 (
                     Some(app.id.clone()),
                     AppItem {
@@ -509,6 +542,7 @@ impl AppsContext {
                         cpu_time_ratio: app.cpu_time_ratio(self),
                         processes_amount: app.processes_iter(self).count(),
                         containerization,
+                        running_since,
                         read_speed: app.read_speed(self),
                         read_total: app.read_total(self),
                         write_speed: app.write_speed(self),
@@ -565,6 +599,14 @@ impl AppsContext {
             .map(Process::gpu_mem_usage)
             .sum();
 
+        let system_running_since = boot_time()
+            .and_then(|boot_time| {
+                boot_time
+                    .format("%c")
+                    .context("unable to format running_time")
+            })
+            .unwrap_or_else(|_| GString::from(i18n("N/A")));
+
         return_map.insert(
             None,
             AppItem {
@@ -576,6 +618,7 @@ impl AppsContext {
                 cpu_time_ratio: system_cpu_ratio,
                 processes_amount: self.processes.len(),
                 containerization: Containerization::None,
+                running_since: system_running_since,
                 read_speed: system_read_speed,
                 read_total: system_read_total,
                 write_speed: system_write_speed,

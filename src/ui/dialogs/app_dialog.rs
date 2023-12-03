@@ -38,6 +38,8 @@ mod imp {
         #[template_child]
         pub id: TemplateChild<adw::ActionRow>,
         #[template_child]
+        pub running_since: TemplateChild<adw::ActionRow>,
+        #[template_child]
         pub processes_amount: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub containerized: TemplateChild<adw::ActionRow>,
@@ -113,6 +115,8 @@ impl ResAppDialog {
         } else {
             imp.id.set_visible(false);
         }
+
+        imp.running_since.set_subtitle(&app.running_since);
 
         imp.cpu_usage
             .set_subtitle(&format!("{:.1} %", app.cpu_time_ratio * 100.0));
