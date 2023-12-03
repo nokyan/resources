@@ -32,6 +32,14 @@ mod imp {
         #[template_child]
         pub drive_write_total: TemplateChild<adw::ActionRow>,
         #[template_child]
+        pub gpu_usage: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub vram_usage: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub encoder_usage: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub decoder_usage: TemplateChild<adw::ActionRow>,
+        #[template_child]
         pub pid: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub running_since: TemplateChild<adw::ActionRow>,
@@ -139,6 +147,18 @@ impl ResProcessDialog {
         } else {
             imp.drive_write_total.set_subtitle(&i18n("N/A"));
         }
+
+        imp.gpu_usage
+            .set_subtitle(&format!("{:.1} %", process.gpu_usage * 100.0));
+
+        imp.vram_usage
+            .set_subtitle(&convert_storage(process.gpu_mem_usage as f64, false));
+
+        imp.encoder_usage
+            .set_subtitle(&format!("{:.1} %", process.enc_usage * 100.0));
+
+        imp.decoder_usage
+            .set_subtitle(&format!("{:.1} %", process.dec_usage * 100.0));
 
         imp.pid.set_subtitle(&process.pid.to_string());
 

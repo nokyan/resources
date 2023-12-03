@@ -36,6 +36,14 @@ mod imp {
         #[template_child]
         pub drive_write_total: TemplateChild<adw::ActionRow>,
         #[template_child]
+        pub gpu_usage: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub vram_usage: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub encoder_usage: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub decoder_usage: TemplateChild<adw::ActionRow>,
+        #[template_child]
         pub id: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub running_since: TemplateChild<adw::ActionRow>,
@@ -135,6 +143,18 @@ impl ResAppDialog {
 
         imp.drive_write_total
             .set_subtitle(&convert_storage(app.write_total as f64, false));
+
+        imp.gpu_usage
+            .set_subtitle(&format!("{:.1} %", app.gpu_usage * 100.0));
+
+        imp.vram_usage
+            .set_subtitle(&convert_storage(app.gpu_mem_usage as f64, false));
+
+        imp.encoder_usage
+            .set_subtitle(&format!("{:.1} %", app.enc_usage * 100.0));
+
+        imp.decoder_usage
+            .set_subtitle(&format!("{:.1} %", app.dec_usage * 100.0));
 
         imp.processes_amount
             .set_subtitle(&app.processes_amount.to_string());
