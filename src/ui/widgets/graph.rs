@@ -1,9 +1,11 @@
-use gtk::glib;
+use gtk::glib::{self};
 use gtk::subclass::prelude::*;
 use gtk::traits::WidgetExt;
 use plotters::style::RGBColor;
 
 use std::f64;
+
+static MAX_DATA_POINTS: u32 = 300;
 
 mod imp {
     use std::{
@@ -27,19 +29,26 @@ mod imp {
     };
     use plotters_cairo::CairoBackend;
 
+    use crate::utils::settings::SETTINGS;
+
+    use super::MAX_DATA_POINTS;
+
     #[derive(Debug)]
     pub struct ResGraph {
         pub data_points: RefCell<VecDeque<f64>>,
-        pub data_points_max_amount: Cell<usize>,
         pub max_y: Cell<Option<f64>>,
         pub graph_color: Cell<RGBColor>,
     }
 
     impl Default for ResGraph {
         fn default() -> Self {
+            let mut empty_deque = VecDeque::with_capacity(MAX_DATA_POINTS as usize);
+            for _ in 0..MAX_DATA_POINTS {
+                empty_deque.push_back(0.0);
+            }
+
             Self {
-                data_points: RefCell::default(),
-                data_points_max_amount: Cell::default(),
+                data_points: RefCell::new(empty_deque),
                 max_y: Cell::new(Some(1.0)),
                 graph_color: Cell::default(),
             }
@@ -76,24 +85,40 @@ mod imp {
             DB: DrawingBackend + 'a,
         {
             let data_points = self.data_points.borrow();
-            let data_points_max_amount = self.data_points_max_amount.get();
             let color = self.graph_color.get();
+
+            let start_point = (MAX_DATA_POINTS - SETTINGS.graph_data_points()) as usize;
 
             let root = backend.into_drawing_area();
 
             root.fill(&self.graph_color.get().mix(0.1))?;
 
-            let y_max = self
-                .max_y
-                .get()
-                .unwrap_or_else(|| *data_points.iter().max_by(|x, y| x.total_cmp(y)).unwrap());
+            let y_max = self.max_y.get().unwrap_or_else(|| {
+                *data_points
+                    .range(start_point..(MAX_DATA_POINTS as usize))
+                    .max_by(|x, y| x.total_cmp(y))
+                    .unwrap()
+            });
 
-            let mut chart = ChartBuilder::on(&root)
-                .build_cartesian_2d(0f64..(data_points_max_amount as f64 - 1.0), 0f64..y_max)?;
+            let mut chart = ChartBuilder::on(&root).build_cartesian_2d(
+                0f64..(SETTINGS.graph_data_points() as f64 - 1.0),
+                0f64..y_max,
+            )?;
+
+            if SETTINGS.show_graph_grids() {
+                chart
+                    .configure_mesh()
+                    .disable_axes()
+                    .max_light_lines(0)
+                    .bold_line_style(color.mix(0.4))
+                    .draw()?;
+            }
 
             chart.draw_series(
                 AreaSeries::new(
-                    (0..).zip(data_points.iter()).map(|(x, y)| (x as f64, *y)),
+                    (0..)
+                        .zip(data_points.range(start_point..(MAX_DATA_POINTS as usize)))
+                        .map(|(x, y)| (x as f64, *y)),
                     0.0,
                     color.mix(0.4),
                 )
@@ -113,22 +138,6 @@ glib::wrapper! {
 impl ResGraph {
     pub fn new() -> Self {
         glib::Object::new::<Self>()
-    }
-
-    pub fn set_data_points_max_amount(&self, max_amount: usize) {
-        let imp = self.imp();
-        let old_amount = imp.data_points_max_amount.get();
-        imp.data_points_max_amount.set(max_amount);
-        if old_amount > max_amount {
-            for _ in 0..(old_amount - max_amount) {
-                imp.data_points.borrow_mut().pop_front();
-            }
-        } else if old_amount < max_amount {
-            for _ in 0..(max_amount - old_amount) {
-                imp.data_points.borrow_mut().push_front(0.0);
-            }
-        }
-        imp.obj().queue_draw();
     }
 
     pub fn set_graph_color(&self, r: u8, g: u8, b: u8) {
@@ -155,7 +164,7 @@ impl ResGraph {
     pub fn push_data_point(&self, data: f64) {
         let imp = self.imp();
         let mut data_points = imp.data_points.borrow_mut();
-        if data_points.len() >= imp.data_points_max_amount.get() {
+        if data_points.len() >= MAX_DATA_POINTS as usize {
             data_points.pop_front();
         }
         data_points.push_back(data);

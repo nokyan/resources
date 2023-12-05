@@ -208,12 +208,10 @@ impl ResNetwork {
 
         imp.receiving.set_title_label(&i18n("Receiving"));
         imp.receiving.graph().set_graph_color(52, 170, 175);
-        imp.receiving.graph().set_data_points_max_amount(60);
         imp.receiving.graph().set_locked_max_y(None);
 
         imp.sending.set_title_label(&i18n("Sending"));
         imp.sending.graph().set_graph_color(222, 77, 119);
-        imp.sending.graph().set_data_points_max_amount(60);
         imp.sending.graph().set_locked_max_y(None);
 
         imp.manufacturer.set_subtitle(

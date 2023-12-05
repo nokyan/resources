@@ -65,6 +65,25 @@
               </object>
             </child>
             <child>
+              <object class="AdwSwitchRow" id="show_graph_grids_row">
+                <property name="title" translatable="yes">Show Graph Grids</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSpinRow" id="graph_data_points_row">
+                <property name="title" translatable="yes">Graph Data Points</property>
+                <property name="snap-to-ticks">true</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="upper">300</property>
+                    <property name="lower">10</property>
+                    <property name="step-increment">1</property>
+                    <property name="page-increment">10</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
               <object class="AdwSwitchRow" id="show_search_on_start_row">
                 <property name="title" translatable="yes">Show Search Fields on Launch</property>
               </object>

@@ -25,6 +25,10 @@ mod imp {
         #[template_child]
         pub refresh_speed_combo_row: TemplateChild<adw::ComboRow>,
         #[template_child]
+        pub show_graph_grids_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub graph_data_points_row: TemplateChild<adw::SpinRow>,
+        #[template_child]
         pub show_search_on_start_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub sidebar_details_row: TemplateChild<adw::SwitchRow>,
@@ -143,6 +147,10 @@ impl ResSettingsDialog {
 
         imp.refresh_speed_combo_row
             .set_selected((SETTINGS.refresh_speed() as u8) as u32);
+        imp.show_graph_grids_row
+            .set_active(SETTINGS.show_graph_grids());
+        imp.graph_data_points_row
+            .set_value(SETTINGS.graph_data_points() as f64);
         imp.sidebar_details_row
             .set_active(SETTINGS.sidebar_details());
         imp.show_search_on_start_row
@@ -226,6 +234,16 @@ impl ResSettingsDialog {
                     let _ = SETTINGS.set_refresh_speed(refresh_speed);
                 }
             });
+
+        imp.show_graph_grids_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_show_graph_grids(switch_row.is_active());
+            });
+
+        imp.graph_data_points_row.connect_output(|spin_row| {
+            let _ = SETTINGS.set_graph_data_points(spin_row.value() as u32);
+            false
+        });
 
         imp.sidebar_details_row.connect_active_notify(|switch_row| {
             let _ = SETTINGS.set_sidebar_details(switch_row.is_active());

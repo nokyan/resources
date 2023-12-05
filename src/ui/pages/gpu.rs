@@ -186,14 +186,10 @@ impl ResGPU {
         let imp = self.imp();
 
         imp.gpu_usage.set_title_label(&i18n("GPU Usage"));
-        imp.gpu_usage.graph().set_data_points_max_amount(60);
         imp.gpu_usage.graph().set_graph_color(230, 97, 0);
 
         imp.encode_decode_combined_usage
             .set_title_label(&i18n("Video Encoder/Decoder Usage"));
-        imp.encode_decode_combined_usage
-            .graph()
-            .set_data_points_max_amount(60);
         imp.encode_decode_combined_usage
             .graph()
             .set_graph_color(230, 97, 0);
@@ -202,21 +198,14 @@ impl ResGPU {
             .set_start_title_label(&i18n("Video Encoder Usage"));
         imp.encode_decode_usage
             .start_graph()
-            .set_data_points_max_amount(60);
-        imp.encode_decode_usage
-            .start_graph()
             .set_graph_color(230, 97, 0);
         imp.encode_decode_usage
             .set_end_title_label(&i18n("Video Decoder Usage"));
         imp.encode_decode_usage
             .end_graph()
-            .set_data_points_max_amount(60);
-        imp.encode_decode_usage
-            .end_graph()
             .set_graph_color(230, 97, 0);
 
         imp.vram_usage.set_title_label(&i18n("Video Memory Usage"));
-        imp.vram_usage.graph().set_data_points_max_amount(60);
         imp.vram_usage.graph().set_graph_color(192, 28, 40);
 
         imp.manufacturer.set_subtitle(

@@ -62,6 +62,31 @@ macro_rules! int_settings {
     };
 }
 
+macro_rules! uint_settings {
+    ($($setting_name:ident),*) => {
+        $(
+            pub fn $setting_name(&self) -> u32 {
+                self.uint(&stringify!($setting_name).replace("_", "-"))
+            }
+
+            paste! {
+                pub fn [<set_ $setting_name>](&self, value: u32) -> Result<(), glib::error::BoolError> {
+                    self.set_uint(&stringify!($setting_name).replace("_", "-"), value)
+                }
+
+                pub fn [<connect_ $setting_name>]<F: Fn(u32) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+                    self.connect_changed(
+                        Some(&stringify!($setting_name).replace("_", "-")),
+                        move |settings, _key| {
+                            f(settings.uint(&stringify!($setting_name).replace("_", "-")))
+                        },
+                    )
+                }
+            }
+        )*
+    };
+}
+
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, Default, EnumString, Display, Hash, FromRepr)]
 pub enum Base {
@@ -181,6 +206,8 @@ impl Settings {
 
     int_settings!(window_width, window_height);
 
+    uint_settings!(graph_data_points);
+
     bool_settings!(
         show_search_on_start,
         show_virtual_drives,
@@ -209,7 +236,8 @@ impl Settings {
         processes_show_gpu_memory,
         processes_show_encoder,
         processes_show_decoder,
-        show_logical_cpus
+        show_logical_cpus,
+        show_graph_grids
     );
 }
 
