@@ -164,11 +164,9 @@ impl ResMemory {
 
         imp.memory.set_title_label(&i18n("Memory"));
         imp.memory.graph().set_graph_color(129, 61, 156);
-        imp.memory.graph().set_data_points_max_amount(60);
 
         imp.swap.set_title_label(&i18n("Swap"));
         imp.swap.graph().set_graph_color(46, 194, 126);
-        imp.swap.graph().set_data_points_max_amount(60);
 
         if let Ok(memory_devices) = memory::get_memory_devices() {
             self.setup_properties(&memory_devices);

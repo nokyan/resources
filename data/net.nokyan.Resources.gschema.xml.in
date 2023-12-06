@@ -137,5 +137,13 @@
       <default>false</default>
       <summary>Display logical CPU graphs in Processor view</summary>
     </key>
+    <key name="show-graph-grids" type="b">
+      <default>false</default>
+      <summary>Show grids in graphs</summary>
+    </key>
+    <key name="graph-data-points" type="u">
+      <default>60</default>
+      <summary>Amount of data points that should be shown in a graph</summary>
+    </key>
   </schema>
 </schemalist>
