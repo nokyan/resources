@@ -1,11 +1,12 @@
 use std::path::{Path, PathBuf};
 
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use gtk::{
     gio::{File, FileIcon, Icon, ThemedIcon},
     glib::GString,
 };
 use hashbrown::{HashMap, HashSet};
+use log::debug;
 use once_cell::sync::Lazy;
 use process_data::{pci_slot::PciSlot, Containerization, ProcessData};
 use regex::Regex;
@@ -45,6 +46,9 @@ static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: Lazy<HashMap<String, String>> = Lazy::n
     ])
 });
 
+// This contains executable names that are blacklisted from being recognized as applications
+static APPLICATION_EXEC_BLACKLIST: &[&str] = &["bash", "zsh", "fish", "sh", "ksh"];
+
 #[derive(Debug, Clone, Default)]
 pub struct AppsContext {
     apps: HashMap<String, App>,
@@ -83,6 +87,7 @@ pub struct AppItem {
 pub struct App {
     processes: Vec<i32>,
     pub commandline: Option<String>,
+    pub executable_name: Option<String>,
     pub display_name: String,
     pub description: Option<String>,
     pub icon: Icon,
@@ -93,7 +98,9 @@ pub struct App {
 
 impl App {
     pub fn all() -> Vec<App> {
-        DATA_DIRS
+        debug!("Detecting installed applications…");
+
+        let apps: Vec<App> = DATA_DIRS
             .iter()
             .flat_map(|path| {
                 let applications_path = path.join("applications");
@@ -108,7 +115,10 @@ impl App {
                 })
             })
             .flatten()
-            .collect()
+            .collect();
+        debug!("Detected {} applications", apps.len());
+
+        apps
     }
 
     pub fn from_desktop_file<P: AsRef<Path>>(file_path: P) -> Result<App> {
@@ -147,6 +157,27 @@ impl App {
             })
             .map(str::to_string);
 
+        let executable_name = commandline.clone().map(|cmdline| {
+            cmdline
+                .split(' ') // filter any arguments (e. g. from "/usr/bin/firefox %u" to "/usr/bin/firefox")
+                .nth(0)
+                .unwrap_or_default()
+                .split('/') // filter the executable path (e. g. from "/usr/bin/firefox" to "firefox")
+                .nth_back(0)
+                .unwrap_or_default()
+                .to_string()
+        });
+
+        if let Some(executable) = &executable_name {
+            if APPLICATION_EXEC_BLACKLIST.contains(&executable.as_str()) {
+                bail!(
+                    "skipping {} because its executable {} is blacklisted",
+                    id,
+                    executable
+                )
+            }
+        }
+
         let icon = if let Some(desktop_icon) = desktop_entry.get("Icon") {
             if is_snap {
                 FileIcon::new(&File::for_path(desktop_icon)).into()
@@ -158,8 +189,9 @@ impl App {
         };
 
         Ok(App {
-            commandline,
             processes: Vec::new(),
+            commandline,
+            executable_name,
             display_name: desktop_entry.get("Name").unwrap_or(&id).to_string(),
             description: desktop_entry.get("Comment").map(str::to_string),
             icon,
@@ -387,29 +419,32 @@ impl AppsContext {
         } else {
             self.apps
                 .values()
-                .find(|a| {
-                    // ↓ probably most expensive lookup, therefore only last resort: look for whether the process' commandline
-                    //   can be found in the apps' commandline
-                    a.commandline
+                .find(|app| {
+                    // ↓ probably most expensive lookup, therefore only last resort: look if the process' commandline
+                    //   can be found in the app's commandline
+                    let commandline_match = app
+                        .commandline
                         .as_ref()
-                        .map(|app_commandline| {
-                            let app_executable_name = app_commandline
-                                .split(' ') // filter any arguments (e. g. from "/usr/bin/firefox %u" to "/usr/bin/firefox")
-                                .nth(0)
-                                .unwrap_or_default()
-                                .split('/') // filter the executable path (e. g. from "/usr/bin/firefox" to "firefox")
-                                .nth_back(0)
-                                .unwrap_or_default();
-                            app_commandline == &process.executable_path
-                                || app_executable_name == process.executable_name
-                                || KNOWN_EXECUTABLE_NAME_EXCEPTIONS
-                                    .get(&process.executable_name)
-                                    .map(|sub_executable_name| {
-                                        sub_executable_name == app_executable_name
-                                    })
-                                    .unwrap_or(false)
+                        .map(|commandline| commandline == &process.executable_path)
+                        .unwrap_or(false);
+
+                    let executable_name_match = app
+                        .executable_name
+                        .as_ref()
+                        .map(|executable_name| executable_name == &process.executable_name)
+                        .unwrap_or(false);
+
+                    let known_exception_match = app
+                        .executable_name
+                        .as_ref()
+                        .and_then(|executable_name| {
+                            KNOWN_EXECUTABLE_NAME_EXCEPTIONS
+                                .get(&process.executable_name)
+                                .map(|sub_executable_name| sub_executable_name == executable_name)
                         })
-                        .unwrap_or(false)
+                        .unwrap_or(false);
+
+                    commandline_match || executable_name_match || known_exception_match
                 })
                 .map(|app| app.id.clone())
         }
