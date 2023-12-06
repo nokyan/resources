@@ -3,7 +3,7 @@ mod intel;
 mod nvidia;
 mod other;
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{anyhow, bail, Context, Result};
 use log::debug;
 use process_data::pci_slot::PciSlot;
 
@@ -217,91 +217,104 @@ impl Gpu {
     pub fn get_gpus() -> Result<Vec<Gpu>> {
         let mut gpu_vec: Vec<Gpu> = Vec::new();
         for entry in glob("/sys/class/drm/card?")?.flatten() {
-            let sysfs_device_path = entry.join("device");
-            let mut uevent_contents: HashMap<String, String> = HashMap::new();
-            let uevent_raw = std::fs::read_to_string(sysfs_device_path.join("uevent"))?;
-
-            for line in uevent_raw.trim().split('\n') {
-                let (k, v) = line
-                    .split_once('=')
-                    .context("unable to correctly read uevent file")?;
-                uevent_contents.insert(k.to_owned(), v.to_owned());
+            if let Ok(gpu) = Self::from_sysfs_path(entry) {
+                gpu_vec.push(gpu);
             }
-
-            let mut vid: u16 = 0;
-            let mut pid: u16 = 0;
-
-            if let Some(pci_line) = uevent_contents.get("PCI_ID") {
-                let split = pci_line.split(':').collect::<Vec<&str>>();
-                vid = u16::from_str_radix(split[0], 16)?;
-                pid = u16::from_str_radix(split[1], 16)?;
-            }
-
-            let mut hwmon_vec: Vec<PathBuf> = Vec::new();
-            for hwmon in glob(&format!(
-                "{}/hwmon/hwmon?",
-                sysfs_device_path
-                    .to_str()
-                    .context("error transforming PathBuf to str")?
-            ))?
-            .flatten()
-            {
-                hwmon_vec.push(hwmon);
-            }
-
-            let device = Device::from_vid_pid(vid, pid);
-
-            let pci_slot = PciSlot::from_str(
-                &uevent_contents
-                    .get("PCI_SLOT_NAME")
-                    .map_or_else(|| i18n("N/A"), std::string::ToString::to_string),
-            )
-            .context("can't turn PCI string to struct")?;
-
-            let driver = uevent_contents
-                .get("DRIVER")
-                .map_or_else(|| i18n("N/A"), std::string::ToString::to_string);
-
-            let gpu = match vid {
-                VID_AMD => Gpu::Amd(AmdGpu::new(
-                    device,
-                    pci_slot,
-                    driver,
-                    entry,
-                    hwmon_vec.get(0).cloned(),
-                )),
-                VID_INTEL => Gpu::Intel(IntelGpu::new(
-                    device,
-                    pci_slot,
-                    driver,
-                    entry,
-                    hwmon_vec.get(0).cloned(),
-                )),
-                VID_NVIDIA => Gpu::Nvidia(NvidiaGpu::new(
-                    device,
-                    pci_slot,
-                    driver,
-                    entry,
-                    hwmon_vec.get(0).cloned(),
-                )),
-                _ => Gpu::Other(OtherGpu::new(
-                    device,
-                    pci_slot,
-                    driver,
-                    entry,
-                    hwmon_vec.get(0).cloned(),
-                )),
-            };
-
-            debug!(
-                "Found GPU \"{}\" at PCI slot {} with PCI ID {vid:x}:{pid:x}",
-                gpu.name().unwrap_or("<unknown name>".into()),
-                gpu.pci_slot(),
-            );
-
-            gpu_vec.push(gpu);
         }
         Ok(gpu_vec)
+    }
+
+    fn from_sysfs_path<P: AsRef<Path>>(path: P) -> Result<Gpu> {
+        let sysfs_device_path = path.as_ref().join("device");
+        let mut uevent_contents: HashMap<String, String> = HashMap::new();
+        let uevent_raw = std::fs::read_to_string(sysfs_device_path.join("uevent"))?;
+
+        for line in uevent_raw.trim().split('\n') {
+            let (k, v) = line
+                .split_once('=')
+                .context("unable to correctly read uevent file")?;
+            uevent_contents.insert(k.to_owned(), v.to_owned());
+        }
+
+        let mut vid: u16 = 0;
+        let mut pid: u16 = 0;
+
+        if let Some(pci_line) = uevent_contents.get("PCI_ID") {
+            let split = pci_line.split(':').collect::<Vec<&str>>();
+            vid = u16::from_str_radix(split[0], 16)?;
+            pid = u16::from_str_radix(split[1], 16)?;
+        }
+
+        let mut hwmon_vec: Vec<PathBuf> = Vec::new();
+        for hwmon in glob(&format!(
+            "{}/hwmon/hwmon?",
+            sysfs_device_path
+                .to_str()
+                .context("error transforming PathBuf to str")?
+        ))?
+        .flatten()
+        {
+            hwmon_vec.push(hwmon);
+        }
+
+        let device = Device::from_vid_pid(vid, pid);
+
+        let pci_slot = PciSlot::from_str(
+            &uevent_contents
+                .get("PCI_SLOT_NAME")
+                .map_or_else(|| i18n("N/A"), std::string::ToString::to_string),
+        )
+        .context("can't turn PCI string to struct")?;
+
+        let driver = uevent_contents
+            .get("DRIVER")
+            .map_or_else(|| i18n("N/A"), std::string::ToString::to_string);
+
+        // if the driver is simple-framebuffer, it's likely not a GPU
+        if driver == "simple-framebuffer" {
+            bail!("this is a simple framebuffer");
+        }
+
+        let path = path.as_ref().to_path_buf();
+
+        let gpu = match vid {
+            VID_AMD => Gpu::Amd(AmdGpu::new(
+                device,
+                pci_slot,
+                driver,
+                path,
+                hwmon_vec.get(0).cloned(),
+            )),
+            VID_INTEL => Gpu::Intel(IntelGpu::new(
+                device,
+                pci_slot,
+                driver,
+                path,
+                hwmon_vec.get(0).cloned(),
+            )),
+            VID_NVIDIA => Gpu::Nvidia(NvidiaGpu::new(
+                device,
+                pci_slot,
+                driver,
+                path,
+                hwmon_vec.get(0).cloned(),
+            )),
+            _ => Gpu::Other(OtherGpu::new(
+                device,
+                pci_slot,
+                driver,
+                path,
+                hwmon_vec.get(0).cloned(),
+            )),
+        };
+
+        debug!(
+            "Found GPU \"{}\" at PCI slot {} with PCI ID {vid:x}:{pid:x}",
+            gpu.name().unwrap_or("<unknown name>".into()),
+            gpu.pci_slot(),
+        );
+
+        Ok(gpu)
     }
 
     pub fn get_vendor(&self) -> Result<&'static Vendor> {
