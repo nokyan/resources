@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-12-03 10:45+0200\n"
+"PO-Revision-Date: 2023-12-06 16:11+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -270,8 +270,8 @@ msgstr ""
 #: src/ui/pages/network.rs:244 src/ui/pages/network.rs:247
 #: src/ui/pages/processes/mod.rs:676 src/ui/pages/processes/mod.rs:726
 #: src/ui/pages/processes/mod.rs:770 src/ui/pages/processes/mod.rs:820
-#: src/utils/app.rs:460 src/utils/app.rs:532 src/utils/app.rs:608
-#: src/utils/gpu/mod.rs:257 src/utils/gpu/mod.rs:263
+#: src/utils/app.rs:495 src/utils/app.rs:567 src/utils/app.rs:643
+#: src/utils/gpu/mod.rs:265 src/utils/gpu/mod.rs:271
 msgid "N/A"
 msgstr ""
 
@@ -668,7 +668,7 @@ msgstr ""
 msgid "There was a problem continuing {}"
 msgstr ""
 
-#: src/utils/app.rs:614
+#: src/utils/app.rs:649
 msgid "System Processes"
 msgstr ""
 

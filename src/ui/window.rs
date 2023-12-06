@@ -235,7 +235,7 @@ impl MainWindow {
             let page = ResGPU::new();
 
             let title = if gpus_len > 1 {
-                i18n_f("GPU {}", &[&i.to_string()])
+                i18n_f("GPU {}", &[&(i + 1).to_string()])
             } else {
                 i18n("GPU")
             };
