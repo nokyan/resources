@@ -198,7 +198,6 @@ impl ResCPU {
 
         imp.total_cpu.set_title_label(&i18n("CPU"));
         imp.total_cpu.set_subtitle(&i18n("N/A"));
-        imp.total_cpu.graph().set_data_points_max_amount(60);
         imp.total_cpu.graph().set_graph_color(28, 113, 216);
 
         // if our CPU happens to only have one thread, showing a single thread box with the exact
@@ -211,7 +210,6 @@ impl ResCPU {
             thread_box.set_subtitle(&i18n_f("CPU {}", &[&(i + 1).to_string()]));
             thread_box.set_title_label(&i18n("N/A"));
             thread_box.graph().set_height_request(72);
-            thread_box.graph().set_data_points_max_amount(60);
             thread_box.graph().set_graph_color(28, 113, 216);
             let flow_box_chld = FlowBoxChild::builder()
                 .child(&thread_box)
