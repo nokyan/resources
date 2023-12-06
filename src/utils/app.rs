@@ -651,7 +651,10 @@ impl AppsContext {
                 description: None,
                 memory_usage: system_memory_usage,
                 cpu_time_ratio: system_cpu_ratio,
-                processes_amount: self.processes.len(),
+                processes_amount: self
+                    .processes
+                    .len()
+                    .saturating_sub(self.processes_assigned_to_apps.len()),
                 containerization: Containerization::None,
                 running_since: system_running_since,
                 read_speed: system_read_speed,
