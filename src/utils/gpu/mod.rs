@@ -262,6 +262,11 @@ impl Gpu {
                 .get("DRIVER")
                 .map_or_else(|| i18n("N/A"), std::string::ToString::to_string);
 
+            // if the driver is simple-framebuffer, it's likely not a GPU
+            if driver == "simple-framebuffer" {
+                continue;
+            }
+
             let gpu = match vid {
                 VID_AMD => Gpu::Amd(AmdGpu::new(
                     device,
