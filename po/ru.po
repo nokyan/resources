@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-12-02 22:35+0300\n"
+"PO-Revision-Date: 2023-12-07 11:55+0300\n"
 "Last-Translator: Aleksandr Melman <Alexmelman88@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -174,6 +174,14 @@ msgstr ""
 msgid "Display logical CPU graphs in Processor view"
 msgstr "Отображение графиков логических процессоров в разделе процессоров"
 
+#: data/net.nokyan.Resources.gschema.xml.in:142
+msgid "Show grids in graphs"
+msgstr "Показывать сетки на графиках"
+
+#: data/net.nokyan.Resources.gschema.xml.in:146
+msgid "Amount of data points that should be shown in a graph"
+msgstr "Количество точек данных, которые должны быть показаны на графике"
+
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
 "Resources allows you to check the utilization of your system resources and "
@@ -200,21 +208,23 @@ msgstr "ЦП"
 #: data/resources/ui/window.ui:155 data/resources/ui/window.ui:162
 #: data/resources/ui/dialogs/app_dialog.ui:83
 #: data/resources/ui/dialogs/process_dialog.ui:70
-#: data/resources/ui/dialogs/settings_dialog.ui:90
-#: data/resources/ui/dialogs/settings_dialog.ui:161
+#: data/resources/ui/dialogs/settings_dialog.ui:109
+#: data/resources/ui/dialogs/settings_dialog.ui:180
 msgid "Memory"
 msgstr "Память"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:26
 #: src/ui/pages/applications/mod.rs:771 src/ui/pages/gpu.rs:119
 #: src/ui/pages/processes/mod.rs:849 src/ui/window.rs:240
-#: data/resources/ui/dialogs/settings_dialog.ui:120
-#: data/resources/ui/dialogs/settings_dialog.ui:191
+#: data/resources/ui/dialogs/app_dialog.ui:132
+#: data/resources/ui/dialogs/process_dialog.ui:115
+#: data/resources/ui/dialogs/settings_dialog.ui:139
+#: data/resources/ui/dialogs/settings_dialog.ui:210
 msgid "GPU"
 msgstr "ГП"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:27
-#: data/resources/ui/dialogs/settings_dialog.ui:229
+#: data/resources/ui/dialogs/settings_dialog.ui:248
 msgid "Network Interfaces"
 msgstr "Сетевые интерфейсы"
 
@@ -242,44 +252,45 @@ msgstr ""
 msgid "Icon by"
 msgstr "Иконка от"
 
-#: src/ui/dialogs/app_dialog.rs:139 src/ui/dialogs/process_dialog.rs:152
-#: src/ui/pages/drive.rs:245 src/ui/pages/drive.rs:251
+#: src/ui/dialogs/app_dialog.rs:163 src/ui/dialogs/process_dialog.rs:176
+#: src/ui/pages/drive.rs:244 src/ui/pages/drive.rs:250
 msgid "No"
 msgstr "Нет"
 
-#: src/ui/dialogs/app_dialog.rs:140 src/ui/dialogs/process_dialog.rs:153
+#: src/ui/dialogs/app_dialog.rs:164 src/ui/dialogs/process_dialog.rs:177
 msgid "Yes (Flatpak)"
 msgstr "Да (Flatpak)"
 
-#: src/ui/dialogs/app_dialog.rs:141 src/ui/dialogs/process_dialog.rs:154
+#: src/ui/dialogs/app_dialog.rs:165 src/ui/dialogs/process_dialog.rs:178
 msgid "Yes (Snap)"
 msgstr "Да (Snap)"
 
-#: src/ui/dialogs/process_dialog.rs:117 src/ui/dialogs/process_dialog.rs:124
-#: src/ui/dialogs/process_dialog.rs:131 src/ui/dialogs/process_dialog.rs:138
-#: src/ui/dialogs/process_dialog.rs:147 src/ui/dialogs/process_dialog.rs:149
+#: src/ui/dialogs/process_dialog.rs:127 src/ui/dialogs/process_dialog.rs:134
+#: src/ui/dialogs/process_dialog.rs:141 src/ui/dialogs/process_dialog.rs:148
+#: src/ui/dialogs/process_dialog.rs:171 src/ui/dialogs/process_dialog.rs:173
 #: src/ui/pages/applications/mod.rs:608 src/ui/pages/applications/mod.rs:696
-#: src/ui/pages/cpu.rs:200 src/ui/pages/cpu.rs:212 src/ui/pages/cpu.rs:227
-#: src/ui/pages/cpu.rs:233 src/ui/pages/cpu.rs:239 src/ui/pages/cpu.rs:245
-#: src/ui/pages/cpu.rs:249 src/ui/pages/cpu.rs:252 src/ui/pages/cpu.rs:325
-#: src/ui/pages/drive.rs:208 src/ui/pages/gpu.rs:225 src/ui/pages/gpu.rs:266
-#: src/ui/pages/gpu.rs:289 src/ui/pages/gpu.rs:292 src/ui/pages/gpu.rs:303
-#: src/ui/pages/gpu.rs:325 src/ui/pages/gpu.rs:335 src/ui/pages/gpu.rs:347
-#: src/ui/pages/gpu.rs:350 src/ui/pages/gpu.rs:356 src/ui/pages/gpu.rs:363
-#: src/ui/pages/gpu.rs:367 src/ui/pages/gpu.rs:370 src/ui/pages/memory.rs:201
-#: src/ui/pages/memory.rs:206 src/ui/pages/memory.rs:211
-#: src/ui/pages/memory.rs:270 src/ui/pages/network.rs:224
-#: src/ui/pages/network.rs:232 src/ui/pages/network.rs:239
-#: src/ui/pages/network.rs:246 src/ui/pages/network.rs:249
+#: src/ui/pages/cpu.rs:200 src/ui/pages/cpu.rs:211 src/ui/pages/cpu.rs:225
+#: src/ui/pages/cpu.rs:231 src/ui/pages/cpu.rs:237 src/ui/pages/cpu.rs:243
+#: src/ui/pages/cpu.rs:247 src/ui/pages/cpu.rs:250 src/ui/pages/cpu.rs:323
+#: src/ui/pages/drive.rs:207 src/ui/pages/gpu.rs:214 src/ui/pages/gpu.rs:255
+#: src/ui/pages/gpu.rs:278 src/ui/pages/gpu.rs:281 src/ui/pages/gpu.rs:292
+#: src/ui/pages/gpu.rs:314 src/ui/pages/gpu.rs:324 src/ui/pages/gpu.rs:336
+#: src/ui/pages/gpu.rs:339 src/ui/pages/gpu.rs:345 src/ui/pages/gpu.rs:352
+#: src/ui/pages/gpu.rs:356 src/ui/pages/gpu.rs:359 src/ui/pages/memory.rs:199
+#: src/ui/pages/memory.rs:204 src/ui/pages/memory.rs:209
+#: src/ui/pages/memory.rs:268 src/ui/pages/network.rs:222
+#: src/ui/pages/network.rs:230 src/ui/pages/network.rs:237
+#: src/ui/pages/network.rs:244 src/ui/pages/network.rs:247
 #: src/ui/pages/processes/mod.rs:676 src/ui/pages/processes/mod.rs:726
 #: src/ui/pages/processes/mod.rs:770 src/ui/pages/processes/mod.rs:820
-#: src/utils/gpu/mod.rs:257 src/utils/gpu/mod.rs:263
+#: src/utils/app.rs:495 src/utils/app.rs:567 src/utils/app.rs:643
+#: src/utils/gpu/mod.rs:265 src/utils/gpu/mod.rs:271
 msgid "N/A"
 msgstr "Н/Д"
 
 #: src/ui/pages/applications/mod.rs:122 data/resources/ui/window.ui:62
 #: data/resources/ui/window.ui:69
-#: data/resources/ui/dialogs/settings_dialog.ui:84
+#: data/resources/ui/dialogs/settings_dialog.ui:103
 msgid "Applications"
 msgstr "Приложения"
 
@@ -300,62 +311,68 @@ msgstr "Процесс"
 #: data/resources/ui/window.ui:124 data/resources/ui/window.ui:131
 #: data/resources/ui/dialogs/app_dialog.ui:74
 #: data/resources/ui/dialogs/process_dialog.ui:61
-#: data/resources/ui/dialogs/settings_dialog.ui:95
-#: data/resources/ui/dialogs/settings_dialog.ui:166
+#: data/resources/ui/dialogs/settings_dialog.ui:114
+#: data/resources/ui/dialogs/settings_dialog.ui:185
 msgid "Processor"
 msgstr "Процессор"
 
 #: src/ui/pages/applications/mod.rs:594 src/ui/pages/processes/mod.rs:662
 #: data/resources/ui/dialogs/app_dialog.ui:92
 #: data/resources/ui/dialogs/process_dialog.ui:75
-#: data/resources/ui/dialogs/settings_dialog.ui:100
-#: data/resources/ui/dialogs/settings_dialog.ui:171
+#: data/resources/ui/dialogs/settings_dialog.ui:119
+#: data/resources/ui/dialogs/settings_dialog.ui:190
 msgid "Drive Read"
 msgstr "Чтение с диска"
 
 #: src/ui/pages/applications/mod.rs:643 src/ui/pages/processes/mod.rs:712
 #: data/resources/ui/dialogs/app_dialog.ui:101
 #: data/resources/ui/dialogs/process_dialog.ui:84
-#: data/resources/ui/dialogs/settings_dialog.ui:105
-#: data/resources/ui/dialogs/settings_dialog.ui:176
+#: data/resources/ui/dialogs/settings_dialog.ui:124
+#: data/resources/ui/dialogs/settings_dialog.ui:195
 msgid "Drive Read Total"
 msgstr "Общее чтение с диска"
 
 #: src/ui/pages/applications/mod.rs:682 src/ui/pages/processes/mod.rs:756
 #: data/resources/ui/dialogs/app_dialog.ui:110
 #: data/resources/ui/dialogs/process_dialog.ui:93
-#: data/resources/ui/dialogs/settings_dialog.ui:110
-#: data/resources/ui/dialogs/settings_dialog.ui:181
+#: data/resources/ui/dialogs/settings_dialog.ui:129
+#: data/resources/ui/dialogs/settings_dialog.ui:200
 msgid "Drive Write"
 msgstr "Запись на диск"
 
 #: src/ui/pages/applications/mod.rs:732 src/ui/pages/processes/mod.rs:806
 #: data/resources/ui/dialogs/app_dialog.ui:119
 #: data/resources/ui/dialogs/process_dialog.ui:102
-#: data/resources/ui/dialogs/settings_dialog.ui:115
-#: data/resources/ui/dialogs/settings_dialog.ui:186
+#: data/resources/ui/dialogs/settings_dialog.ui:134
+#: data/resources/ui/dialogs/settings_dialog.ui:205
 msgid "Drive Write Total"
 msgstr "Общая запись на диск"
 
 #: src/ui/pages/applications/mod.rs:814 src/ui/pages/processes/mod.rs:892
-#: data/resources/ui/dialogs/settings_dialog.ui:130
-#: data/resources/ui/dialogs/settings_dialog.ui:201
+#: data/resources/ui/dialogs/app_dialog.ui:150
+#: data/resources/ui/dialogs/process_dialog.ui:133
+#: data/resources/ui/dialogs/settings_dialog.ui:149
+#: data/resources/ui/dialogs/settings_dialog.ui:220
 msgid "Video Encoder"
 msgstr "Видеокодер"
 
 #: src/ui/pages/applications/mod.rs:858 src/ui/pages/processes/mod.rs:936
-#: data/resources/ui/dialogs/settings_dialog.ui:135
-#: data/resources/ui/dialogs/settings_dialog.ui:206
+#: data/resources/ui/dialogs/app_dialog.ui:159
+#: data/resources/ui/dialogs/process_dialog.ui:142
+#: data/resources/ui/dialogs/settings_dialog.ui:154
+#: data/resources/ui/dialogs/settings_dialog.ui:225
 msgid "Video Decoder"
 msgstr "Видеодекодер"
 
 #: src/ui/pages/applications/mod.rs:901 src/ui/pages/processes/mod.rs:979
-#: data/resources/ui/dialogs/settings_dialog.ui:125
-#: data/resources/ui/dialogs/settings_dialog.ui:196
+#: data/resources/ui/dialogs/app_dialog.ui:141
+#: data/resources/ui/dialogs/process_dialog.ui:124
+#: data/resources/ui/dialogs/settings_dialog.ui:144
+#: data/resources/ui/dialogs/settings_dialog.ui:215
 msgid "Video Memory"
 msgstr "Видеопамять"
 
-#: src/ui/pages/cpu.rs:211
+#: src/ui/pages/cpu.rs:210
 msgid "CPU {}"
 msgstr "ЦП {}"
 
@@ -367,65 +384,65 @@ msgstr "Диск"
 msgid "Total Usage"
 msgstr "Общее использование"
 
-#: src/ui/pages/drive.rs:200 src/utils/drive.rs:127
+#: src/ui/pages/drive.rs:199 src/utils/drive.rs:127
 msgid "CD/DVD/Blu-ray Drive"
 msgstr "Привод CD/DVD/Blu-ray"
 
-#: src/ui/pages/drive.rs:201
+#: src/ui/pages/drive.rs:200
 msgid "eMMC Storage"
 msgstr "eMMC накопитель"
 
-#: src/ui/pages/drive.rs:202
+#: src/ui/pages/drive.rs:201
 msgid "Flash Storage"
 msgstr "Флеш накопитель"
 
-#: src/ui/pages/drive.rs:203 src/utils/drive.rs:128
+#: src/ui/pages/drive.rs:202 src/utils/drive.rs:128
 msgid "Floppy Drive"
 msgstr "Дисковод"
 
-#: src/ui/pages/drive.rs:204
+#: src/ui/pages/drive.rs:203
 msgid "Hard Disk Drive"
 msgstr "Жесткий диск"
 
-#: src/ui/pages/drive.rs:205
+#: src/ui/pages/drive.rs:204
 msgid "Loop Device"
 msgstr "Петлевое устройство"
 
-#: src/ui/pages/drive.rs:206
+#: src/ui/pages/drive.rs:205
 msgid "Mapped Device"
 msgstr "Сопоставленное устройство"
 
-#: src/ui/pages/drive.rs:207
+#: src/ui/pages/drive.rs:206
 msgid "NVMe Drive"
 msgstr "NVMe накопитель"
 
-#: src/ui/pages/drive.rs:209
+#: src/ui/pages/drive.rs:208
 msgid "Software Raid"
 msgstr "Программный RAID"
 
-#: src/ui/pages/drive.rs:210
+#: src/ui/pages/drive.rs:209
 msgid "RAM Disk"
 msgstr "RAM-диск"
 
-#: src/ui/pages/drive.rs:211
+#: src/ui/pages/drive.rs:210
 msgid "Solid State Drive"
 msgstr "Твердотельный накопитель"
 
-#: src/ui/pages/drive.rs:212
+#: src/ui/pages/drive.rs:211
 msgid "ZFS Volume"
 msgstr "Том ZFS"
 
-#: src/ui/pages/drive.rs:213
+#: src/ui/pages/drive.rs:212
 msgid "Compressed RAM Disk (zram)"
 msgstr "Сжатый RAM-диск (zram)"
 
-#: src/ui/pages/drive.rs:243 src/ui/pages/drive.rs:249
+#: src/ui/pages/drive.rs:242 src/ui/pages/drive.rs:248
 msgid "Yes"
 msgstr "Да"
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
-#: src/ui/pages/drive.rs:316
+#: src/ui/pages/drive.rs:315
 msgid "R: {} · W: {}"
 msgstr "Ч: {} · З: {}"
 
@@ -433,37 +450,37 @@ msgstr "Ч: {} · З: {}"
 msgid "GPU Usage"
 msgstr "Использование ГП"
 
-#: src/ui/pages/gpu.rs:193
+#: src/ui/pages/gpu.rs:192
 msgid "Video Encoder/Decoder Usage"
 msgstr "Использование видеокодера/декодера"
 
-#: src/ui/pages/gpu.rs:202
+#: src/ui/pages/gpu.rs:198
 msgid "Video Encoder Usage"
 msgstr "Использование видеокодера"
 
-#: src/ui/pages/gpu.rs:210
+#: src/ui/pages/gpu.rs:203
 msgid "Video Decoder Usage"
 msgstr "Использование видеодекодера"
 
-#: src/ui/pages/gpu.rs:218
+#: src/ui/pages/gpu.rs:208
 msgid "Video Memory Usage"
 msgstr "Использование видеопамяти"
 
-#: src/ui/pages/gpu.rs:378
+#: src/ui/pages/gpu.rs:367
 msgid "{} · VRAM: {}"
 msgstr "{} · VRAM: {}"
 
-#: src/ui/pages/memory.rs:169
+#: src/ui/pages/memory.rs:168
 msgid "Swap"
 msgstr "Подкачка"
 
-#: src/ui/pages/memory.rs:214
+#: src/ui/pages/memory.rs:212
 msgid "{} of {}"
 msgstr "{} из {}"
 
 #. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
 #. preferably be quite short or an abbreviation
-#: src/ui/pages/memory.rs:289
+#: src/ui/pages/memory.rs:287
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · Подкачка: {} %"
 
@@ -516,23 +533,23 @@ msgstr "WWAN подключение"
 msgid "Receiving"
 msgstr "Получение"
 
-#: src/ui/pages/network.rs:214
+#: src/ui/pages/network.rs:213
 msgid "Sending"
 msgstr "Отправка"
 
-#: src/ui/pages/network.rs:293 src/ui/pages/network.rs:302
+#: src/ui/pages/network.rs:291 src/ui/pages/network.rs:300
 msgid "Highest:"
 msgstr "Наибольшее:"
 
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
-#: src/ui/pages/network.rs:316
+#: src/ui/pages/network.rs:314
 msgid "R: {} · S: {}"
 msgstr "О: {} · П: {}"
 
 #: src/ui/pages/processes/mod.rs:126 data/resources/ui/window.ui:93
 #: data/resources/ui/window.ui:100
-#: data/resources/ui/dialogs/settings_dialog.ui:145
+#: data/resources/ui/dialogs/settings_dialog.ui:164
 msgid "Processes"
 msgstr "Процессы"
 
@@ -545,14 +562,14 @@ msgid "root"
 msgstr "root"
 
 #: src/ui/pages/processes/mod.rs:515
-#: data/resources/ui/dialogs/process_dialog.ui:120
-#: data/resources/ui/dialogs/settings_dialog.ui:151
+#: data/resources/ui/dialogs/process_dialog.ui:156
+#: data/resources/ui/dialogs/settings_dialog.ui:170
 msgid "Process ID"
 msgstr "ИД процесса"
 
 #: src/ui/pages/processes/mod.rs:548
-#: data/resources/ui/dialogs/process_dialog.ui:138
-#: data/resources/ui/dialogs/settings_dialog.ui:156
+#: data/resources/ui/dialogs/process_dialog.ui:183
+#: data/resources/ui/dialogs/settings_dialog.ui:175
 msgid "User"
 msgstr "Пользователь"
 
@@ -672,7 +689,7 @@ msgstr "Не удалось убить {}"
 msgid "There was a problem continuing {}"
 msgstr "Не удалось продолжить {}"
 
-#: src/utils/app.rs:572
+#: src/utils/app.rs:649
 msgid "System Processes"
 msgstr "Системные процессы"
 
@@ -1106,24 +1123,29 @@ msgstr "Информация о приложении"
 msgid "Usage"
 msgstr "Использование"
 
-#: data/resources/ui/dialogs/app_dialog.ui:130
-#: data/resources/ui/dialogs/process_dialog.ui:113
+#: data/resources/ui/dialogs/app_dialog.ui:166
+#: data/resources/ui/dialogs/process_dialog.ui:149
 #: data/resources/ui/pages/cpu.ui:91 data/resources/ui/pages/drive.ui:48
 #: data/resources/ui/pages/gpu.ui:80 data/resources/ui/pages/memory.ui:42
 #: data/resources/ui/pages/network.ui:51
 msgid "Properties"
 msgstr "Свойства"
 
-#: data/resources/ui/dialogs/app_dialog.ui:136
+#: data/resources/ui/dialogs/app_dialog.ui:172
 msgid "ID"
 msgstr "ИД"
 
-#: data/resources/ui/dialogs/app_dialog.ui:145
+#: data/resources/ui/dialogs/app_dialog.ui:182
+#: data/resources/ui/dialogs/process_dialog.ui:165
+msgid "Running Since"
+msgstr "Выполняется c"
+
+#: data/resources/ui/dialogs/app_dialog.ui:190
 msgid "Running Processes"
 msgstr "Выполняемые процессы"
 
-#: data/resources/ui/dialogs/app_dialog.ui:154
-#: data/resources/ui/dialogs/process_dialog.ui:156
+#: data/resources/ui/dialogs/app_dialog.ui:199
+#: data/resources/ui/dialogs/process_dialog.ui:201
 msgid "Containerized"
 msgstr "Контейнеризированный"
 
@@ -1131,11 +1153,11 @@ msgstr "Контейнеризированный"
 msgid "Process Information"
 msgstr "Информация о процессе"
 
-#: data/resources/ui/dialogs/process_dialog.ui:129
+#: data/resources/ui/dialogs/process_dialog.ui:174
 msgid "Commandline"
 msgstr "Командная строка"
 
-#: data/resources/ui/dialogs/process_dialog.ui:147
+#: data/resources/ui/dialogs/process_dialog.ui:192
 msgid "Control Group"
 msgstr "Группа контроля"
 
@@ -1204,31 +1226,39 @@ msgid "Very Fast"
 msgstr "Очень быстро"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:69
+msgid "Show Graph Grids"
+msgstr "Показывать сетки графиков"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:74
+msgid "Graph Data Points"
+msgstr "Точки данных на графике"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:88
 msgid "Show Search Fields on Launch"
 msgstr "Показывать поля поиска при запуске"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:74
+#: data/resources/ui/dialogs/settings_dialog.ui:93
 msgid "Show Usage Details in Sidebar"
 msgstr "Показывать подробную информацию об использовании в боковой панели"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:87
-#: data/resources/ui/dialogs/settings_dialog.ui:148
+#: data/resources/ui/dialogs/settings_dialog.ui:106
+#: data/resources/ui/dialogs/settings_dialog.ui:167
 msgid "Information Columns"
 msgstr "Информационные столбцы"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:216
+#: data/resources/ui/dialogs/settings_dialog.ui:235
 msgid "Devices"
 msgstr "Устройства"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:219
+#: data/resources/ui/dialogs/settings_dialog.ui:238
 msgid "Drives"
 msgstr "Диски"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:222
+#: data/resources/ui/dialogs/settings_dialog.ui:241
 msgid "Show Virtual Drives"
 msgstr "Показывать виртуальные диски"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:232
+#: data/resources/ui/dialogs/settings_dialog.ui:251
 msgid "Show Virtual Network Interfaces"
 msgstr "Показывать виртуальные сетевые интерфейсы"
 
