@@ -250,7 +250,6 @@ impl ResProcesses {
         *imp.filter_model.borrow_mut() = filter_model;
 
         imp.processes_scrolled_window.set_child(Some(&column_view));
-        column_view.set_enable_rubberband(true);
         *imp.column_view.borrow_mut() = column_view;
 
         self.add_name_column();
