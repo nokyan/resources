@@ -198,6 +198,7 @@ impl ResNetwork {
             InterfaceType::Slip => i18n("Serial Line IP Connection"),
             InterfaceType::VirtualEthernet => i18n("Virtual Ethernet Device"),
             InterfaceType::VmBridge => i18n("VM Network Bridge"),
+            InterfaceType::Vpn => i18n("VPN Tunnel"),
             InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
             InterfaceType::Wlan => i18n("Wi-Fi Connection"),
             InterfaceType::Wwan => i18n("WWAN Connection"),
