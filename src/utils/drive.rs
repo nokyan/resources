@@ -4,6 +4,7 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use std::{
     collections::HashMap,
+    fmt::Display,
     path::{Path, PathBuf},
 };
 
@@ -70,6 +71,31 @@ pub struct Drive {
     pub drive_type: DriveType,
     pub block_device: String,
     pub sysfs_path: PathBuf,
+}
+
+impl Display for DriveType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),
+                DriveType::Emmc => i18n("eMMC Storage"),
+                DriveType::Flash => i18n("Flash Storage"),
+                DriveType::Floppy => i18n("Floppy Drive"),
+                DriveType::Hdd => i18n("Hard Disk Drive"),
+                DriveType::LoopDevice => i18n("Loop Device"),
+                DriveType::MappedDevice => i18n("Mapped Device"),
+                DriveType::Nvme => i18n("NVMe Drive"),
+                DriveType::Unknown => i18n("N/A"),
+                DriveType::Raid => i18n("Software Raid"),
+                DriveType::RamDisk => i18n("RAM Disk"),
+                DriveType::Ssd => i18n("Solid State Drive"),
+                DriveType::ZfsVolume => i18n("ZFS Volume"),
+                DriveType::Zram => i18n("Compressed RAM Disk (zram)"),
+            }
+        )
+    }
 }
 
 impl PartialEq for Drive {
@@ -272,7 +298,7 @@ impl Drive {
         match self.drive_type {
             DriveType::CdDvdBluray => ThemedIcon::new("cd-dvd-bluray-symbolic").into(),
             DriveType::Emmc => ThemedIcon::new("emmc-symbolic").into(),
-            DriveType::Flash => ThemedIcon::new("flash-symbolic").into(),
+            DriveType::Flash => ThemedIcon::new("flash-memory-symbolic").into(),
             DriveType::Floppy => ThemedIcon::new("floppy-symbolic").into(),
             DriveType::Hdd => ThemedIcon::new("hdd-symbolic").into(),
             DriveType::LoopDevice => ThemedIcon::new("loop-device-symbolic").into(),
