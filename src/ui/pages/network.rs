@@ -5,7 +5,7 @@ use gtk::glib;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
-use crate::utils::network::{InterfaceType, NetworkData, NetworkInterface};
+use crate::utils::network::{NetworkData, NetworkInterface};
 use crate::utils::units::{convert_speed, convert_storage};
 use crate::utils::NaNDefault;
 
@@ -190,22 +190,7 @@ impl ResNetwork {
 
         self.imp().set_icon(&network_interface.icon());
 
-        let sidebar_title = match network_interface.interface_type {
-            InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
-            InterfaceType::Bridge => i18n("Network Bridge"),
-            InterfaceType::Ethernet => i18n("Ethernet Connection"),
-            InterfaceType::InfiniBand => i18n("InfiniBand Connection"),
-            InterfaceType::Slip => i18n("Serial Line IP Connection"),
-            InterfaceType::VirtualEthernet => i18n("Virtual Ethernet Device"),
-            InterfaceType::VmBridge => i18n("VM Network Bridge"),
-            InterfaceType::Vpn => i18n("VPN Tunnel"),
-            InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
-            InterfaceType::Wlan => i18n("Wi-Fi Connection"),
-            InterfaceType::Wwan => i18n("WWAN Connection"),
-            InterfaceType::Unknown => i18n("Network Interface"),
-        };
-
-        imp.set_tab_name(&sidebar_title);
+        imp.set_tab_name(&i18n(&network_interface.interface_type.to_string()));
 
         imp.receiving.set_title_label(&i18n("Receiving"));
         imp.receiving.graph().set_graph_color(52, 170, 175);

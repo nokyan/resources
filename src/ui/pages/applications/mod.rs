@@ -6,7 +6,7 @@ use std::collections::HashSet;
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, closure, Object, Sender};
-use gtk::{gio, CustomSorter, FilterChange, Ordering, SortType, Widget};
+use gtk::{gio, CustomSorter, FilterChange, ListItem, Ordering, SortType, Widget};
 use gtk_macros::send;
 
 use log::error;
@@ -46,6 +46,8 @@ mod imp {
         #[template_child]
         pub toast_overlay: TemplateChild<adw::ToastOverlay>,
         #[template_child]
+        pub popover_menu: TemplateChild<gtk::PopoverMenu>,
+        #[template_child]
         pub search_revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub search_entry: TemplateChild<gtk::SearchEntry>,
@@ -66,6 +68,8 @@ mod imp {
         pub open_dialog: RefCell<Option<(Option<String>, ResAppDialog)>>,
 
         pub sender: OnceLock<Sender<Action>>,
+
+        pub popped_over_app: RefCell<Option<ApplicationEntry>>,
 
         #[property(get)]
         uses_progress_bar: Cell<bool>,
@@ -121,6 +125,8 @@ mod imp {
                 icon: RefCell::new(ThemedIcon::new("app-symbolic").into()),
                 tab_name: Cell::from(glib::GString::from(i18n("Applications"))),
                 tab_subtitle: Cell::new(glib::GString::from("")),
+                popover_menu: Default::default(),
+                popped_over_app: Default::default(),
             }
         }
     }
@@ -132,6 +138,78 @@ mod imp {
         type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
+            klass.install_action(
+                "applications.context-end-process",
+                None,
+                move |res_applications, _, _| {
+                    if let Some(application_entry) =
+                        res_applications.imp().popped_over_app.borrow().as_ref()
+                    {
+                        if let Some(app_item) = application_entry.app_item() {
+                            res_applications
+                                .execute_process_action_dialog(app_item, ProcessAction::TERM);
+                        }
+                    }
+                },
+            );
+
+            klass.install_action(
+                "applications.context-kill-process",
+                None,
+                move |res_applications, _, _| {
+                    if let Some(application_entry) =
+                        res_applications.imp().popped_over_app.borrow().as_ref()
+                    {
+                        if let Some(app_item) = application_entry.app_item() {
+                            res_applications
+                                .execute_process_action_dialog(app_item, ProcessAction::KILL);
+                        }
+                    }
+                },
+            );
+
+            klass.install_action(
+                "applications.context-halt-process",
+                None,
+                move |res_applications, _, _| {
+                    if let Some(application_entry) =
+                        res_applications.imp().popped_over_app.borrow().as_ref()
+                    {
+                        if let Some(app_item) = application_entry.app_item() {
+                            res_applications
+                                .execute_process_action_dialog(app_item, ProcessAction::STOP);
+                        }
+                    }
+                },
+            );
+
+            klass.install_action(
+                "applications.context-continue-process",
+                None,
+                move |res_applications, _, _| {
+                    if let Some(application_entry) =
+                        res_applications.imp().popped_over_app.borrow().as_ref()
+                    {
+                        if let Some(app_item) = application_entry.app_item() {
+                            res_applications
+                                .execute_process_action_dialog(app_item, ProcessAction::CONT);
+                        }
+                    }
+                },
+            );
+
+            klass.install_action(
+                "applications.context-information",
+                None,
+                move |res_applications, _, _| {
+                    if let Some(application_entry) =
+                        res_applications.imp().popped_over_app.borrow().as_ref()
+                    {
+                        res_applications.open_information_dialog(application_entry);
+                    }
+                },
+            );
+
             klass.install_action(
                 "applications.kill-application",
                 None,
@@ -226,6 +304,8 @@ impl ResApplications {
     pub fn setup_widgets(&self) {
         let imp = self.imp();
 
+        imp.popover_menu.set_parent(self);
+
         let column_view = gtk::ColumnView::new(None::<gtk::SingleSelection>);
         let store = gio::ListStore::new::<ApplicationEntry>();
         let filter_model = gtk::FilterListModel::new(
@@ -247,7 +327,6 @@ impl ResApplications {
 
         imp.applications_scrolled_window
             .set_child(Some(&column_view));
-        column_view.set_enable_rubberband(true);
         *imp.column_view.borrow_mut() = column_view;
 
         self.add_name_column();
@@ -312,10 +391,7 @@ impl ResApplications {
                     .unwrap()
                 });
                 if let Some(selection) = selection_option {
-                    let app_dialog = ResAppDialog::new();
-                    app_dialog.init(selection.app_item().as_ref().unwrap());
-                    app_dialog.show();
-                    *imp.open_dialog.borrow_mut() = Some((selection.id().map(|gs| gs.to_string()), app_dialog));
+                    this.open_information_dialog(&selection);
                 }
             }));
 
@@ -325,6 +401,14 @@ impl ResApplications {
                     this.execute_process_action_dialog(app, ProcessAction::TERM);
                 }
             }));
+    }
+
+    fn open_information_dialog(&self, app: &ApplicationEntry) {
+        let imp = self.imp();
+        let app_dialog = ResAppDialog::new();
+        app_dialog.init(app.app_item().as_ref().unwrap());
+        app_dialog.show();
+        *imp.open_dialog.borrow_mut() = Some((app.id().map(|gs| gs.to_string()), app_dialog));
     }
 
     fn search_filter(&self, obj: &Object) -> bool {
@@ -380,6 +464,8 @@ impl ResApplications {
                             dialog_opt = &None;
                         }
                     }
+                    imp.popover_menu.popdown();
+                    *imp.popped_over_app.borrow_mut() = None;
                     ids_to_remove.insert(app_id.clone());
                 }
                 if let Some((_, new_item)) = new_items.remove_entry(&app_id) {
@@ -465,13 +551,39 @@ impl ResApplications {
         dialog.show();
     }
 
+    fn add_gestures(&self, widget: &impl IsA<Widget>, item: &ListItem) {
+        let secondary_click = gtk::GestureClick::new();
+        secondary_click.set_button(3);
+        secondary_click.connect_released(
+            clone!(@strong self as this, @strong item as this_item, @strong widget as this_widget => move |_, _, x, y| {
+                if let Some(process_entry) = this_item.item().and_downcast_ref::<ApplicationEntry>() {
+                    let imp = this.imp();
+                    let popover_menu = &imp.popover_menu;
+
+                    *imp.popped_over_app.borrow_mut() = Some(process_entry.clone());
+
+                    let position = this_widget.compute_point(&this, &gtk::graphene::Point::new(x as _, y as _)).unwrap();
+                    popover_menu.set_pointing_to(Some(&gtk::gdk::Rectangle::new(
+                        position.x().round() as i32,
+                        position.y().round() as i32,
+                        1,
+                        1,
+                    )));
+                    popover_menu.popup();
+                }
+            }),
+        );
+
+        widget.add_controller(secondary_click);
+    }
+
     fn add_name_column(&self) {
         let imp = self.imp();
 
         let name_col_factory = gtk::SignalListItemFactory::new();
 
         let name_col =
-            gtk::ColumnViewColumn::new(Some(&i18n("Process")), Some(name_col_factory.clone()));
+            gtk::ColumnViewColumn::new(Some(&i18n("Application")), Some(name_col_factory.clone()));
 
         name_col.set_resizable(true);
 
@@ -479,15 +591,31 @@ impl ResApplications {
 
         name_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = ResApplicationNameCell::new();
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("name")
                 .bind(&row, "name", Widget::NONE);
+
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("icon")
                 .bind(&row, "icon", Widget::NONE);
         });
+
+        name_col_factory.connect_bind(clone!(@strong self as this => move |_, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+            let child = item
+                .child()
+                .unwrap()
+                .downcast::<ResApplicationNameCell>()
+                .unwrap();
+
+            this.add_gestures(&child.parent().and_then(|p| p.parent()).unwrap(), &item);
+        }));
 
         let name_col_sorter = CustomSorter::new(move |a, b| {
             let item_a = a.downcast_ref::<ApplicationEntry>().unwrap();
@@ -512,15 +640,21 @@ impl ResApplications {
         let imp = self.imp();
 
         let memory_col_factory = gtk::SignalListItemFactory::new();
+
         let memory_col =
             gtk::ColumnViewColumn::new(Some(&i18n("Memory")), Some(memory_col_factory.clone()));
+
         memory_col.set_resizable(true);
 
         memory_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+
             row.set_min_chars(9);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("memory_usage")
                 .chain_closure::<String>(closure!(|_: Option<Object>, memory_usage: u64| {
@@ -555,8 +689,12 @@ impl ResApplications {
 
         cpu_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(7);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("cpu_usage")
                 .chain_closure::<String>(closure!(|_: Option<Object>, cpu_usage: f32| {
@@ -599,8 +737,12 @@ impl ResApplications {
 
         read_speed_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(11);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("read_speed")
                 .chain_closure::<String>(closure!(|_: Option<Object>, read_speed: f64| {
@@ -648,8 +790,12 @@ impl ResApplications {
 
         read_total_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(9);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("read_total")
                 .chain_closure::<String>(closure!(|_: Option<Object>, read_total: u64| {
@@ -687,8 +833,12 @@ impl ResApplications {
 
         write_speed_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(11);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("write_speed")
                 .chain_closure::<String>(closure!(|_: Option<Object>, write_speed: f64| {
@@ -737,8 +887,12 @@ impl ResApplications {
 
         write_total_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(9);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("write_total")
                 .chain_closure::<String>(closure!(|_: Option<Object>, write_total: u64| {
@@ -774,9 +928,12 @@ impl ResApplications {
 
         gpu_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
             row.set_min_chars(7);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("gpu_usage")
                 .chain_closure::<String>(closure!(|_: Option<Object>, gpu_usage: f32| {
@@ -819,8 +976,12 @@ impl ResApplications {
 
         encoder_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(7);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("enc_usage")
                 .chain_closure::<String>(closure!(|_: Option<Object>, enc_usage: f32| {
@@ -863,8 +1024,12 @@ impl ResApplications {
 
         decoder_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(7);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("dec_usage")
                 .chain_closure::<String>(closure!(|_: Option<Object>, dec_usage: f32| {
@@ -905,8 +1070,10 @@ impl ResApplications {
 
         gpu_mem_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
             row.set_min_chars(9);
+
             item.set_child(Some(&row));
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("gpu_mem_usage")
