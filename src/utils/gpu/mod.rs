@@ -277,39 +277,54 @@ impl Gpu {
 
         let path = path.as_ref().to_path_buf();
 
-        let gpu = match vid {
-            VID_AMD => Gpu::Amd(AmdGpu::new(
-                device,
-                pci_slot,
-                driver,
-                path,
-                hwmon_vec.get(0).cloned(),
-            )),
-            VID_INTEL => Gpu::Intel(IntelGpu::new(
-                device,
-                pci_slot,
-                driver,
-                path,
-                hwmon_vec.get(0).cloned(),
-            )),
-            VID_NVIDIA => Gpu::Nvidia(NvidiaGpu::new(
-                device,
-                pci_slot,
-                driver,
-                path,
-                hwmon_vec.get(0).cloned(),
-            )),
-            _ => Gpu::Other(OtherGpu::new(
-                device,
-                pci_slot,
-                driver,
-                path,
-                hwmon_vec.get(0).cloned(),
-            )),
+        let (gpu, gpu_category) = if vid == VID_AMD || driver == "amdgpu" {
+            (
+                Gpu::Amd(AmdGpu::new(
+                    device,
+                    pci_slot,
+                    driver,
+                    path,
+                    hwmon_vec.get(0).cloned(),
+                )),
+                "NVIDIA",
+            )
+        } else if vid == VID_INTEL || driver == "i915" {
+            (
+                Gpu::Intel(IntelGpu::new(
+                    device,
+                    pci_slot,
+                    driver,
+                    path,
+                    hwmon_vec.get(0).cloned(),
+                )),
+                "Intel",
+            )
+        } else if vid == VID_NVIDIA || driver == "nvidia" {
+            (
+                Gpu::Nvidia(NvidiaGpu::new(
+                    device,
+                    pci_slot,
+                    driver,
+                    path,
+                    hwmon_vec.get(0).cloned(),
+                )),
+                "NVIDIA",
+            )
+        } else {
+            (
+                Gpu::Other(OtherGpu::new(
+                    device,
+                    pci_slot,
+                    driver,
+                    path,
+                    hwmon_vec.get(0).cloned(),
+                )),
+                "Other",
+            )
         };
 
         debug!(
-            "Found GPU \"{}\" at PCI slot {} with PCI ID {vid:x}:{pid:x}",
+            "Found GPU \"{}\" (PCI slot: {} · PCI ID: {vid:x}:{pid:x} · Category: {gpu_category})",
             gpu.name().unwrap_or("<unknown name>".into()),
             gpu.pci_slot(),
         );
