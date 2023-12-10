@@ -48,6 +48,7 @@ pub enum InterfaceType {
     Slip,
     VirtualEthernet,
     VmBridge,
+    Vpn,
     Wireguard,
     Wlan,
     Wwan,
@@ -71,6 +72,8 @@ impl InterfaceType {
             Self::VirtualEthernet
         } else if interface_name.starts_with("virbr") {
             Self::VmBridge
+        } else if interface_name.starts_with("vpn") {
+            Self::Vpn
         } else if interface_name.starts_with("wg") {
             Self::Wireguard
         } else if interface_name.starts_with("wl") {
@@ -112,6 +115,7 @@ impl Display for InterfaceType {
                 InterfaceType::Slip => i18n("Serial Line IP Connection"),
                 InterfaceType::VirtualEthernet => i18n("Virtual Ethernet Device"),
                 InterfaceType::VmBridge => i18n("VM Network Bridge"),
+                InterfaceType::Vpn => i18n("VPN Tunnel"),
                 InterfaceType::Wireguard => i18n("VPN Tunnel (WireGuard)"),
                 InterfaceType::Wlan => i18n("Wi-Fi Connection"),
                 InterfaceType::Wwan => i18n("WWAN Connection"),
@@ -263,6 +267,7 @@ impl NetworkInterface {
             InterfaceType::Slip => ThemedIcon::new("slip-symbolic").into(),
             InterfaceType::VirtualEthernet => ThemedIcon::new("virtual-ethernet").into(),
             InterfaceType::VmBridge => ThemedIcon::new("vm-bridge-symbolic").into(),
+            InterfaceType::Vpn => ThemedIcon::new("vpn-symbolic").into(),
             InterfaceType::Wireguard => ThemedIcon::new("vpn-symbolic").into(),
             InterfaceType::Wlan => ThemedIcon::new("wlan-symbolic").into(),
             InterfaceType::Wwan => ThemedIcon::new("wwan-symbolic").into(),
@@ -274,8 +279,9 @@ impl NetworkInterface {
         matches!(
             self.interface_type,
             InterfaceType::Bridge
-                | InterfaceType::VmBridge
                 | InterfaceType::VirtualEthernet
+                | InterfaceType::Vpn
+                | InterfaceType::VmBridge
                 | InterfaceType::Wireguard
         )
     }
