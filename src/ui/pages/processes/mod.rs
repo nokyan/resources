@@ -6,7 +6,7 @@ use std::collections::HashSet;
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, closure, Object, Sender};
-use gtk::{gio, CustomSorter, FilterChange, Ordering, SortType, Widget};
+use gtk::{gio, CustomSorter, FilterChange, ListItem, Ordering, SortType, Widget};
 use gtk_macros::send;
 
 use log::error;
@@ -47,6 +47,8 @@ mod imp {
         #[template_child]
         pub toast_overlay: TemplateChild<adw::ToastOverlay>,
         #[template_child]
+        pub popover_menu: TemplateChild<gtk::PopoverMenu>,
+        #[template_child]
         pub search_revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub search_entry: TemplateChild<gtk::SearchEntry>,
@@ -69,6 +71,8 @@ mod imp {
         pub username_cache: RefCell<HashMap<u32, String>>,
 
         pub sender: OnceLock<Sender<Action>>,
+
+        pub popped_over_process: RefCell<Option<ProcessEntry>>,
 
         #[property(get)]
         uses_progress_bar: Cell<bool>,
@@ -125,6 +129,8 @@ mod imp {
                 icon: RefCell::new(ThemedIcon::new("generic-process-symbolic").into()),
                 tab_name: Cell::new(glib::GString::from(i18n("Processes"))),
                 tab_subtitle: Cell::new(glib::GString::from("")),
+                popover_menu: Default::default(),
+                popped_over_process: Default::default(),
             }
         }
     }
@@ -137,11 +143,83 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.install_action(
+                "processes.context-end-process",
+                None,
+                move |res_processes, _, _| {
+                    if let Some(process_entry) =
+                        res_processes.imp().popped_over_process.borrow().as_ref()
+                    {
+                        if let Some(process_item) = process_entry.process_item() {
+                            res_processes
+                                .execute_process_action_dialog(process_item, ProcessAction::TERM);
+                        }
+                    }
+                },
+            );
+
+            klass.install_action(
+                "processes.context-kill-process",
+                None,
+                move |res_processes, _, _| {
+                    if let Some(process_entry) =
+                        res_processes.imp().popped_over_process.borrow().as_ref()
+                    {
+                        if let Some(process_item) = process_entry.process_item() {
+                            res_processes
+                                .execute_process_action_dialog(process_item, ProcessAction::KILL);
+                        }
+                    }
+                },
+            );
+
+            klass.install_action(
+                "processes.context-halt-process",
+                None,
+                move |res_processes, _, _| {
+                    if let Some(process_entry) =
+                        res_processes.imp().popped_over_process.borrow().as_ref()
+                    {
+                        if let Some(process_item) = process_entry.process_item() {
+                            res_processes
+                                .execute_process_action_dialog(process_item, ProcessAction::STOP);
+                        }
+                    }
+                },
+            );
+
+            klass.install_action(
+                "processes.context-continue-process",
+                None,
+                move |res_processes, _, _| {
+                    if let Some(process_entry) =
+                        res_processes.imp().popped_over_process.borrow().as_ref()
+                    {
+                        if let Some(process_item) = process_entry.process_item() {
+                            res_processes
+                                .execute_process_action_dialog(process_item, ProcessAction::CONT);
+                        }
+                    }
+                },
+            );
+
+            klass.install_action(
+                "processes.context-information",
+                None,
+                move |res_processes, _, _| {
+                    if let Some(process_entry) =
+                        res_processes.imp().popped_over_process.borrow().as_ref()
+                    {
+                        res_processes.open_information_dialog(process_entry);
+                    }
+                },
+            );
+
+            klass.install_action(
                 "processes.kill-process",
                 None,
                 move |res_processes, _, _| {
-                    if let Some(app) = res_processes.get_selected_process_item() {
-                        res_processes.execute_process_action_dialog(app, ProcessAction::KILL);
+                    if let Some(process) = res_processes.get_selected_process_item() {
+                        res_processes.execute_process_action_dialog(process, ProcessAction::KILL);
                     }
                 },
             );
@@ -150,8 +228,8 @@ mod imp {
                 "processes.halt-process",
                 None,
                 move |res_processes, _, _| {
-                    if let Some(app) = res_processes.get_selected_process_item() {
-                        res_processes.execute_process_action_dialog(app, ProcessAction::STOP);
+                    if let Some(process) = res_processes.get_selected_process_item() {
+                        res_processes.execute_process_action_dialog(process, ProcessAction::STOP);
                     }
                 },
             );
@@ -160,8 +238,8 @@ mod imp {
                 "processes.continue-process",
                 None,
                 move |res_processes, _, _| {
-                    if let Some(app) = res_processes.get_selected_process_item() {
-                        res_processes.execute_process_action_dialog(app, ProcessAction::CONT);
+                    if let Some(process) = res_processes.get_selected_process_item() {
+                        res_processes.execute_process_action_dialog(process, ProcessAction::CONT);
                     }
                 },
             );
@@ -229,6 +307,8 @@ impl ResProcesses {
 
     pub fn setup_widgets(&self) {
         let imp = self.imp();
+
+        imp.popover_menu.set_parent(self);
 
         let column_view = gtk::ColumnView::new(None::<gtk::SingleSelection>);
         let store = gio::ListStore::new::<ProcessEntry>();
@@ -299,7 +379,7 @@ impl ResProcesses {
             }));
 
         imp.information_button
-        .connect_clicked(clone!(@strong self as this => move |_| {
+            .connect_clicked(clone!(@strong self as this => move |_| {
             let imp = this.imp();
                 let selection_option = imp.selection_model.borrow()
                 .selected_item()
@@ -309,10 +389,7 @@ impl ResProcesses {
                     .unwrap()
                 });
                 if let Some(selection) = selection_option {
-                    let process_dialog = ResProcessDialog::new();
-                    process_dialog.init(selection.process_item().as_ref().unwrap(), selection.user());
-                    process_dialog.show();
-                    *imp.open_dialog.borrow_mut() = Some((selection.pid(), process_dialog));
+                    this.open_information_dialog(&selection);
                 }
             }));
 
@@ -322,6 +399,14 @@ impl ResProcesses {
                     this.execute_process_action_dialog(app, ProcessAction::TERM);
                 }
             }));
+    }
+
+    fn open_information_dialog(&self, process: &ProcessEntry) {
+        let imp = self.imp();
+        let process_dialog = ResProcessDialog::new();
+        process_dialog.init(process.process_item().as_ref().unwrap(), process.user());
+        process_dialog.show();
+        *imp.open_dialog.borrow_mut() = Some((process.pid(), process_dialog));
     }
 
     fn search_filter(&self, obj: &Object) -> bool {
@@ -361,6 +446,8 @@ impl ResProcesses {
                         dialog_opt = &None;
                     }
                 }
+                imp.popover_menu.popdown();
+                *imp.popped_over_process.borrow_mut() = None;
                 pids_to_remove.insert(item_pid);
             }
             if let Some((_, new_item)) = new_items.remove_entry(&item_pid) {
@@ -463,6 +550,32 @@ impl ResProcesses {
         .to_string()
     }
 
+    fn add_gestures(&self, widget: &impl IsA<Widget>, item: &ListItem) {
+        let secondary_click = gtk::GestureClick::new();
+        secondary_click.set_button(3);
+        secondary_click.connect_released(
+            clone!(@strong self as this, @strong item as this_item, @strong widget as this_widget => move |_, _, x, y| {
+                if let Some(process_entry) = this_item.item().and_downcast_ref::<ProcessEntry>() {
+                    let imp = this.imp();
+                    let popover_menu = &imp.popover_menu;
+
+                    *imp.popped_over_process.borrow_mut() = Some(process_entry.clone());
+
+                    let position = this_widget.compute_point(&this, &gtk::graphene::Point::new(x as _, y as _)).unwrap();
+                    popover_menu.set_pointing_to(Some(&gtk::gdk::Rectangle::new(
+                        position.x().round() as i32,
+                        position.y().round() as i32,
+                        1,
+                        1,
+                    )));
+                    popover_menu.popup();
+                }
+            }),
+        );
+
+        widget.add_controller(secondary_click);
+    }
+
     fn add_name_column(&self) {
         let imp = self.imp();
 
@@ -477,18 +590,35 @@ impl ResProcesses {
 
         name_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = ResProcessNameCell::new();
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("name")
                 .bind(&row, "name", Widget::NONE);
+
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("icon")
                 .bind(&row, "icon", Widget::NONE);
+
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("commandline")
                 .bind(&row, "tooltip", Widget::NONE);
         });
+
+        name_col_factory.connect_bind(clone!(@strong self as this => move |_, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+            let child = item
+                .child()
+                .unwrap()
+                .downcast::<ResProcessNameCell>()
+                .unwrap();
+
+            this.add_gestures(&child.parent().and_then(|p| p.parent()).unwrap(), &item);
+        }));
 
         let name_col_sorter = CustomSorter::new(move |a, b| {
             let item_a = a.downcast_ref::<ProcessEntry>().unwrap();
@@ -515,14 +645,16 @@ impl ResProcesses {
 
         pid_col.set_resizable(true);
 
-        pid_col_factory.connect_setup(move |_factory, item| {
+        pid_col_factory.connect_setup(clone!(@strong self as this => move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+
             item.set_child(Some(&row));
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("pid")
                 .bind(&row, "text", Widget::NONE);
-        });
+        }));
 
         let pid_col_sorter = CustomSorter::new(move |a, b| {
             let item_a = a.downcast_ref::<ProcessEntry>().unwrap();
@@ -550,8 +682,11 @@ impl ResProcesses {
 
         user_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("user")
                 .bind(&row, "text", Widget::NONE);
@@ -575,15 +710,20 @@ impl ResProcesses {
         let imp = self.imp();
 
         let memory_col_factory = gtk::SignalListItemFactory::new();
+
         let memory_col =
             gtk::ColumnViewColumn::new(Some(&i18n("Memory")), Some(memory_col_factory.clone()));
+
         memory_col.set_resizable(true);
 
         memory_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
             row.set_min_chars(9);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("memory_usage")
                 .chain_closure::<String>(closure!(|_: Option<Object>, memory_usage: u64| {
@@ -622,8 +762,12 @@ impl ResProcesses {
 
         cpu_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(7);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("cpu_usage")
                 .chain_closure::<String>(closure!(|_: Option<Object>, cpu_usage: f32| {
@@ -666,8 +810,12 @@ impl ResProcesses {
 
         read_speed_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(11);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("read_speed")
                 .chain_closure::<String>(closure!(|_: Option<Object>, read_speed: f64| {
@@ -716,8 +864,12 @@ impl ResProcesses {
 
         read_total_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(9);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("read_total")
                 .chain_closure::<String>(closure!(|_: Option<Object>, read_total: i64| {
@@ -760,8 +912,12 @@ impl ResProcesses {
 
         write_speed_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(11);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("write_speed")
                 .chain_closure::<String>(closure!(|_: Option<Object>, write_speed: f64| {
@@ -810,8 +966,12 @@ impl ResProcesses {
 
         write_total_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(9);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("write_total")
                 .chain_closure::<String>(closure!(|_: Option<Object>, write_total: i64| {
@@ -851,9 +1011,12 @@ impl ResProcesses {
 
         gpu_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
             row.set_min_chars(7);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("gpu_usage")
                 .chain_closure::<String>(closure!(|_: Option<Object>, gpu_usage: f32| {
@@ -896,8 +1059,12 @@ impl ResProcesses {
 
         encoder_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(7);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("enc_usage")
                 .chain_closure::<String>(closure!(|_: Option<Object>, enc_usage: f32| {
@@ -940,8 +1107,12 @@ impl ResProcesses {
 
         decoder_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
+            row.set_min_chars(7);
+
             item.set_child(Some(&row));
+
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("dec_usage")
                 .chain_closure::<String>(closure!(|_: Option<Object>, dec_usage: f32| {
@@ -974,16 +1145,20 @@ impl ResProcesses {
         let imp = self.imp();
 
         let gpu_mem_col_factory = gtk::SignalListItemFactory::new();
+
         let gpu_mem_col = gtk::ColumnViewColumn::new(
             Some(&i18n("Video Memory")),
             Some(gpu_mem_col_factory.clone()),
         );
+
         gpu_mem_col.set_resizable(true);
 
         gpu_mem_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
             let row = gtk::Inscription::new(None);
             row.set_min_chars(9);
+
             item.set_child(Some(&row));
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("gpu_mem_usage")

@@ -1,6 +1,7 @@
 use anyhow::{Context, Result};
 use gtk::glib::DateTime;
 use ini::Ini;
+use log::debug;
 use once_cell::sync::Lazy;
 use process_data::unix_as_millis;
 
@@ -41,7 +42,17 @@ static TICK_RATE: Lazy<usize> =
     Lazy::new(|| sysconf::sysconf(sysconf::SysconfVariable::ScClkTck).unwrap_or(100) as usize);
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
-static IS_FLATPAK: Lazy<bool> = Lazy::new(|| std::path::Path::new("/.flatpak-info").exists());
+static IS_FLATPAK: Lazy<bool> = Lazy::new(|| {
+    let is_flatpak = std::path::Path::new("/.flatpak-info").exists();
+
+    if is_flatpak {
+        debug!("Running as Flatpak")
+    } else {
+        debug!("Not running as Flatpak")
+    }
+
+    is_flatpak
+});
 
 static FLATPAK_APP_PATH: Lazy<String> =
     Lazy::new(|| flatpak_app_path().unwrap_or_else(|_| String::new()));
