@@ -61,7 +61,7 @@ pub struct Process {
     pub executable_name: String,
     pub icon: Icon,
     pub cpu_time_last: u64,
-    pub cpu_time_last_timestamp: u64,
+    pub timestamp_last: u64,
     pub read_bytes_last: Option<u64>,
     pub read_bytes_last_timestamp: Option<u64>,
     pub write_bytes_last: Option<u64>,
@@ -162,7 +162,7 @@ impl Process {
             data: process_data,
             icon: ThemedIcon::new("generic-process").into(),
             cpu_time_last: 0,
-            cpu_time_last_timestamp: 0,
+            timestamp_last: 0,
             read_bytes_last,
             read_bytes_last_timestamp,
             write_bytes_last,
@@ -288,10 +288,7 @@ impl Process {
         } else {
             let delta_cpu_time =
                 self.data.cpu_time.saturating_sub(self.cpu_time_last) as f32 * 1000.0;
-            let delta_time = self
-                .data
-                .cpu_time_timestamp
-                .saturating_sub(self.cpu_time_last_timestamp);
+            let delta_time = self.data.timestamp.saturating_sub(self.timestamp_last);
 
             delta_cpu_time / (delta_time * *TICK_RATE as u64 * *NUM_CPUS as u64) as f32
         }
@@ -360,7 +357,7 @@ impl Process {
                     0.0
                 } else {
                     ((usage.gfx.saturating_sub(old_usage.gfx) as f32)
-                        / (usage.gfx_timestamp.saturating_sub(old_usage.gfx_timestamp) as f32)
+                        / (self.data.timestamp.saturating_sub(self.timestamp_last) as f32)
                             .nan_default(0.0))
                         / 1_000_000.0
                 };
@@ -385,7 +382,7 @@ impl Process {
                     0.0
                 } else {
                     ((usage.enc.saturating_sub(old_usage.enc) as f32)
-                        / (usage.enc_timestamp.saturating_sub(old_usage.enc_timestamp) as f32)
+                        / (self.data.timestamp.saturating_sub(self.timestamp_last) as f32)
                             .nan_default(0.0))
                         / 1_000_000.0
                 };
@@ -410,7 +407,7 @@ impl Process {
                     0.0
                 } else {
                     ((usage.dec.saturating_sub(old_usage.dec) as f32)
-                        / (usage.dec_timestamp.saturating_sub(old_usage.dec_timestamp) as f32)
+                        / (self.data.timestamp.saturating_sub(self.timestamp_last) as f32)
                             .nan_default(0.0))
                         / 1_000_000.0
                 };
