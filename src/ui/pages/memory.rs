@@ -169,15 +169,16 @@ impl ResMemory {
         imp.swap.graph().set_graph_color(46, 194, 126);
 
         if let Ok(memory_devices) = memory::get_memory_devices() {
-            self.setup_properties(&memory_devices);
+            self.setup_properties(memory_devices);
         } else {
             imp.properties.set_visible(false);
             imp.authentication_banner.set_revealed(true);
         }
     }
 
-    pub fn setup_properties(&self, memory_devices: &[MemoryDevice]) {
+    pub fn setup_properties(&self, memory_devices: Vec<MemoryDevice>) {
         let imp = self.imp();
+
         let slots_used = memory_devices
             .iter()
             .filter(|md| md.installed)
@@ -190,29 +191,40 @@ impl ResMemory {
             .iter()
             .filter(|md| md.installed)
             .map(|md| md.speed.unwrap_or(0))
-            .max()
-            .unwrap_or(0);
+            .max();
 
-        let form_factor = memory_devices
-            .iter()
-            .find(|md| md.installed)
-            .map_or_else(|| i18n("N/A"), |md| md.form_factor.clone());
+        let form_factor = memory_devices.iter().find(|md| md.installed).map_or_else(
+            || i18n("N/A"),
+            |md| {
+                md.form_factor
+                    .as_ref()
+                    .cloned()
+                    .unwrap_or_else(|| i18n("N/A"))
+            },
+        );
 
-        let r#type = memory_devices
-            .iter()
-            .find(|md| md.installed)
-            .map_or_else(|| i18n("N/A"), |md| md.r#type.clone());
+        let r#type = memory_devices.iter().find(|md| md.installed).map_or_else(
+            || i18n("N/A"),
+            |md| md.r#type.as_ref().cloned().unwrap_or_else(|| i18n("N/A")),
+        );
 
-        let type_detail = memory_devices
-            .iter()
-            .find(|md| md.installed)
-            .map_or_else(|| i18n("N/A"), |md| md.type_detail.clone());
+        let type_detail = memory_devices.iter().find(|md| md.installed).map_or_else(
+            || i18n("N/A"),
+            |md| {
+                md.type_detail
+                    .as_ref()
+                    .cloned()
+                    .unwrap_or_else(|| i18n("N/A"))
+            },
+        );
 
         imp.slots_used
             .set_subtitle(&i18n_f("{} of {}", &[slots_used.as_str(), slots.as_str()]));
 
-        imp.speed
-            .set_subtitle(&i18n_f("{} MT/s", &[&speed.to_string()]));
+        imp.speed.set_subtitle(&i18n_f(
+            "{} MT/s",
+            &[&speed.map_or_else(|| i18n("N/A"), |i| i.to_string())],
+        ));
 
         imp.form_factor.set_subtitle(&form_factor);
 
@@ -228,7 +240,7 @@ impl ResMemory {
             .connect_button_clicked(clone!(@strong self as this => move |_| {
                 let imp = this.imp();
                 if let Ok(memory_devices) = memory::pkexec_get_memory_devices() {
-                    this.setup_properties(&memory_devices);
+                    this.setup_properties(memory_devices);
                     imp.properties.set_visible(true);
                 }
                 imp.authentication_banner.set_revealed(false)

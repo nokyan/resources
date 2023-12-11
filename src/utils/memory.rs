@@ -121,9 +121,9 @@ pub fn get_free_swap() -> Option<usize> {
 #[derive(Debug, Clone, Default)]
 pub struct MemoryDevice {
     pub speed: Option<u32>,
-    pub form_factor: String,
-    pub r#type: String,
-    pub type_detail: String,
+    pub form_factor: Option<String>,
+    pub r#type: Option<String>,
+    pub type_detail: Option<String>,
     pub installed: bool,
 }
 
@@ -143,13 +143,11 @@ fn parse_dmidecode(dmi: &str) -> Vec<MemoryDevice> {
                 .map(|x| x[1].parse().unwrap()),
             form_factor: RE_FORMFACTOR
                 .captures(device_string)
-                .map_or_else(|| "N/A".to_string(), |x| x[1].to_string()),
-            r#type: RE_TYPE
-                .captures(device_string)
-                .map_or_else(|| "N/A".to_string(), |x| x[1].to_string()),
+                .map(|x| x[1].to_string()),
+            r#type: RE_TYPE.captures(device_string).map(|x| x[1].to_string()),
             type_detail: RE_TYPE_DETAIL
                 .captures(device_string)
-                .map_or_else(|| "N/A".to_string(), |x| x[1].to_string()),
+                .map(|x| x[1].to_string()),
             installed: RE_SPEED
                 .captures(device_string)
                 .map(|x| x[1].to_string())

@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2023-12-11 01:43+0200\n"
+"PO-Revision-Date: 2023-12-11 02:00+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -263,9 +263,11 @@ msgstr ""
 #: src/ui/pages/gpu.rs:281 src/ui/pages/gpu.rs:292 src/ui/pages/gpu.rs:314
 #: src/ui/pages/gpu.rs:324 src/ui/pages/gpu.rs:336 src/ui/pages/gpu.rs:339
 #: src/ui/pages/gpu.rs:345 src/ui/pages/gpu.rs:352 src/ui/pages/gpu.rs:356
-#: src/ui/pages/gpu.rs:359 src/ui/pages/memory.rs:199
-#: src/ui/pages/memory.rs:204 src/ui/pages/memory.rs:209
-#: src/ui/pages/memory.rs:269 src/ui/pages/network.rs:208
+#: src/ui/pages/gpu.rs:359 src/ui/pages/memory.rs:197
+#: src/ui/pages/memory.rs:202 src/ui/pages/memory.rs:207
+#: src/ui/pages/memory.rs:208 src/ui/pages/memory.rs:212
+#: src/ui/pages/memory.rs:217 src/ui/pages/memory.rs:226
+#: src/ui/pages/memory.rs:281 src/ui/pages/network.rs:208
 #: src/ui/pages/network.rs:216 src/ui/pages/network.rs:223
 #: src/ui/pages/network.rs:230 src/ui/pages/network.rs:233
 #: src/ui/pages/processes/mod.rs:823 src/ui/pages/processes/mod.rs:877
@@ -409,17 +411,17 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
-#: src/ui/pages/memory.rs:212
+#: src/ui/pages/memory.rs:222
 msgid "{} of {}"
 msgstr ""
 
-#: src/ui/pages/memory.rs:215
+#: src/ui/pages/memory.rs:225
 msgid "{} MT/s"
 msgstr ""
 
 #. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
 #. preferably be quite short or an abbreviation
-#: src/ui/pages/memory.rs:288
+#: src/ui/pages/memory.rs:300
 msgid "{} / {} · Swap: {} %"
 msgstr ""
 
