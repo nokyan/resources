@@ -405,7 +405,7 @@ impl ResProcesses {
         let imp = self.imp();
         let process_dialog = ResProcessDialog::new();
         process_dialog.init(process.process_item().as_ref().unwrap(), process.user());
-        process_dialog.show();
+        process_dialog.set_visible(true);
         *imp.open_dialog.borrow_mut() = Some((process.pid(), process_dialog));
     }
 
@@ -471,7 +471,18 @@ impl ResProcesses {
             store.append(&ProcessEntry::new(new_item, &user_name));
         }
 
-        store.items_changed(0, store.n_items(), store.n_items());
+        let column_view = imp.column_view.borrow();
+
+        let sorter = column_view
+            .sorter()
+            .and_downcast::<gtk::ColumnViewSorter>()
+            .unwrap();
+
+        let selected_column = sorter.primary_sort_column();
+
+        let selected_order = sorter.primary_sort_order();
+
+        column_view.sort_by_column(selected_column.as_ref(), selected_order);
 
         self.set_property(
             "tab_subtitle",
@@ -530,7 +541,7 @@ impl ResProcesses {
             }),
         );
 
-        dialog.show();
+        dialog.set_visible(true);
     }
 
     fn get_user_name_by_uid(&self, uid: u32) -> String {
