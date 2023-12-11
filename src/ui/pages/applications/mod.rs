@@ -407,7 +407,7 @@ impl ResApplications {
         let imp = self.imp();
         let app_dialog = ResAppDialog::new();
         app_dialog.init(app.app_item().as_ref().unwrap());
-        app_dialog.show();
+        app_dialog.set_visible(true);
         *imp.open_dialog.borrow_mut() = Some((app.id().map(|gs| gs.to_string()), app_dialog));
     }
 
@@ -559,7 +559,7 @@ impl ResApplications {
             }),
         );
 
-        dialog.show();
+        dialog.set_visible(true);
     }
 
     fn add_gestures(&self, widget: &impl IsA<Widget>, item: &ListItem) {

@@ -405,7 +405,7 @@ impl ResProcesses {
         let imp = self.imp();
         let process_dialog = ResProcessDialog::new();
         process_dialog.init(process.process_item().as_ref().unwrap(), process.user());
-        process_dialog.show();
+        process_dialog.set_visible(true);
         *imp.open_dialog.borrow_mut() = Some((process.pid(), process_dialog));
     }
 
@@ -541,7 +541,7 @@ impl ResProcesses {
             }),
         );
 
-        dialog.show();
+        dialog.set_visible(true);
     }
 
     fn get_user_name_by_uid(&self, uid: u32) -> String {
