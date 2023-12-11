@@ -1,6 +1,7 @@
 use std::process::Command;
 
 use anyhow::{bail, Context, Result};
+use log::debug;
 use nparse::KVStrToJson;
 use once_cell::sync::Lazy;
 use regex::Regex;
@@ -8,6 +9,8 @@ use serde_json::Value;
 
 use super::{FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
 
+static RE_CONFIGURED_SPEED: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"Configured Memory Speed: (\d+) MT/s").unwrap());
 static RE_SPEED: Lazy<Regex> = Lazy::new(|| Regex::new(r"Speed: (\d+) MT/s").unwrap());
 static RE_FORMFACTOR: Lazy<Regex> = Lazy::new(|| Regex::new(r"Form Factor: (.+)").unwrap());
 static RE_TYPE: Lazy<Regex> = Lazy::new(|| Regex::new(r"Type: (.+)").unwrap());
@@ -118,9 +121,9 @@ pub fn get_free_swap() -> Option<usize> {
 #[derive(Debug, Clone, Default)]
 pub struct MemoryDevice {
     pub speed: Option<u32>,
-    pub form_factor: String,
-    pub r#type: String,
-    pub type_detail: String,
+    pub form_factor: Option<String>,
+    pub r#type: Option<String>,
+    pub type_detail: Option<String>,
     pub installed: bool,
 }
 
@@ -134,18 +137,17 @@ fn parse_dmidecode(dmi: &str) -> Vec<MemoryDevice> {
             continue;
         }
         let memory_device = MemoryDevice {
-            speed: RE_SPEED
+            speed: RE_CONFIGURED_SPEED
                 .captures(device_string)
+                .or_else(|| RE_SPEED.captures(device_string))
                 .map(|x| x[1].parse().unwrap()),
             form_factor: RE_FORMFACTOR
                 .captures(device_string)
-                .map_or_else(|| "N/A".to_string(), |x| x[1].to_string()),
-            r#type: RE_TYPE
-                .captures(device_string)
-                .map_or_else(|| "N/A".to_string(), |x| x[1].to_string()),
+                .map(|x| x[1].to_string()),
+            r#type: RE_TYPE.captures(device_string).map(|x| x[1].to_string()),
             type_detail: RE_TYPE_DETAIL
                 .captures(device_string)
-                .map_or_else(|| "N/A".to_string(), |x| x[1].to_string()),
+                .map(|x| x[1].to_string()),
             installed: RE_SPEED
                 .captures(device_string)
                 .map(|x| x[1].to_string())
@@ -163,12 +165,14 @@ pub fn get_memory_devices() -> Result<Vec<MemoryDevice>> {
         .args(["-t", "17", "-q"])
         .output()?;
     if output.status.code().unwrap_or(1) == 1 {
+        debug!("Unable to get memory information (dmidecode) without privileges");
         bail!("no permission")
     }
     Ok(parse_dmidecode(String::from_utf8(output.stdout)?.as_str()))
 }
 
 pub fn pkexec_get_memory_devices() -> Result<Vec<MemoryDevice>> {
+    debug!("Using pkexec to get memory information (dmidecode)…");
     let output = if *IS_FLATPAK {
         Command::new(FLATPAK_SPAWN)
             .args([
