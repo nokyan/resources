@@ -211,7 +211,8 @@ impl ResMemory {
         imp.slots_used
             .set_subtitle(&i18n_f("{} of {}", &[slots_used.as_str(), slots.as_str()]));
 
-        imp.speed.set_subtitle(&format!("{speed} MT/s"));
+        imp.speed
+            .set_subtitle(&i18n_f("{} MT/s", &[&speed.to_string()]));
 
         imp.form_factor.set_subtitle(&form_factor);
 
