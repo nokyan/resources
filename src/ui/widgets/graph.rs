@@ -5,6 +5,8 @@ use plotters::style::RGBColor;
 
 use std::f64;
 
+use crate::utils::settings::SETTINGS;
+
 static MAX_DATA_POINTS: u32 = 300;
 
 mod imp {
@@ -154,9 +156,12 @@ impl ResGraph {
 
     pub fn get_highest_value(&self) -> f64 {
         let imp = self.imp();
+
+        let start_point = (MAX_DATA_POINTS - SETTINGS.graph_data_points()) as usize;
+
         *imp.data_points
             .borrow()
-            .iter()
+            .range(start_point..(MAX_DATA_POINTS as usize))
             .max_by(|x, y| x.total_cmp(y))
             .unwrap_or(&0.0)
     }
