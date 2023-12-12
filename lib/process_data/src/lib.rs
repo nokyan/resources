@@ -111,12 +111,9 @@ pub enum Containerization {
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, Copy)]
 pub struct GpuUsageStats {
     pub gfx: u64,
-    pub gfx_timestamp: u64,
     pub mem: u64,
     pub enc: u64,
-    pub enc_timestamp: u64,
     pub dec: u64,
-    pub dec_timestamp: u64,
     pub nvidia: bool,
 }
 
@@ -382,15 +379,12 @@ impl ProcessData {
                     .and_modify(|existing_value: &mut GpuUsageStats| {
                         if stats.1.gfx > existing_value.gfx {
                             existing_value.gfx = stats.1.gfx;
-                            existing_value.gfx_timestamp = stats.1.gfx_timestamp;
                         }
                         if stats.1.dec > existing_value.dec {
                             existing_value.dec = stats.1.dec;
-                            existing_value.dec_timestamp = stats.1.dec_timestamp;
                         }
                         if stats.1.enc > existing_value.enc {
                             existing_value.enc = stats.1.enc;
-                            existing_value.enc_timestamp = stats.1.enc_timestamp;
                         }
                         if stats.1.mem > existing_value.mem {
                             existing_value.mem = stats.1.mem;
@@ -476,12 +470,9 @@ impl ProcessData {
 
             let stats = GpuUsageStats {
                 gfx: gfx + compute,
-                gfx_timestamp: unix_as_millis(),
                 mem: vram.saturating_add(gtt),
                 enc,
-                enc_timestamp: unix_as_millis(),
                 dec,
-                dec_timestamp: unix_as_millis(),
                 nvidia: false,
             };
 
@@ -529,12 +520,9 @@ impl ProcessData {
 
         let gpu_stats = GpuUsageStats {
             gfx: this_process_stats.unwrap_or_default().0 as u64,
-            gfx_timestamp: unix_as_millis(),
             mem: this_process_mem_stats,
             enc: this_process_stats.unwrap_or_default().1 as u64,
-            enc_timestamp: unix_as_millis(),
             dec: this_process_stats.unwrap_or_default().2 as u64,
-            dec_timestamp: unix_as_millis(),
             nvidia: true,
         };
         Ok(gpu_stats)
