@@ -111,12 +111,9 @@ pub enum Containerization {
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, Copy)]
 pub struct GpuUsageStats {
     pub gfx: u64,
-    pub gfx_timestamp: u64,
     pub mem: u64,
     pub enc: u64,
-    pub enc_timestamp: u64,
     pub dec: u64,
-    pub dec_timestamp: u64,
     pub nvidia: bool,
 }
 
@@ -137,9 +134,8 @@ pub struct ProcessData {
     pub cgroup: Option<String>,
     pub containerization: Containerization,
     pub read_bytes: Option<u64>,
-    pub read_bytes_timestamp: Option<u64>,
     pub write_bytes: Option<u64>,
-    pub write_bytes_timestamp: Option<u64>,
+    pub timestamp: u64,
     /// Key: PCI Slot ID of the GPU
     pub gpu_usage_stats: BTreeMap<PciSlot, GpuUsageStats>,
 }
@@ -225,7 +221,7 @@ impl ProcessData {
         let comm = std::fs::read_to_string(&proc_path.join("comm"))?;
         let commandline = std::fs::read_to_string(&proc_path.join("cmdline"))?;
         let cgroup = std::fs::read_to_string(&proc_path.join("cgroup"))?;
-        let io = std::fs::read_to_string(&proc_path.join("io"));
+        let io = std::fs::read_to_string(&proc_path.join("io")).ok();
 
         let pid = proc_path
             .file_name()
@@ -267,42 +263,23 @@ impl ProcessData {
             },
         };
 
-        let (mut read_bytes, mut read_bytes_timestamp, mut write_bytes, mut write_bytes_timestamp) =
-            (None, None, None, None);
-
-        if let Ok(io) = io {
-            read_bytes = IO_READ_REGEX
-                .captures(&io)
+        let read_bytes = io.as_ref().and_then(|io| {
+            IO_READ_REGEX
+                .captures(io)
                 .and_then(|captures| captures.get(1))
-                .and_then(|capture| capture.as_str().parse::<u64>().ok());
+                .and_then(|capture| capture.as_str().parse::<u64>().ok())
+        });
 
-            read_bytes_timestamp = if read_bytes.is_some() {
-                Some(
-                    SystemTime::now()
-                        .duration_since(SystemTime::UNIX_EPOCH)?
-                        .as_millis() as u64,
-                )
-            } else {
-                None
-            };
-
-            write_bytes = IO_WRITE_REGEX
-                .captures(&io)
+        let write_bytes = io.as_ref().and_then(|io| {
+            IO_WRITE_REGEX
+                .captures(io)
                 .and_then(|captures| captures.get(1))
-                .and_then(|capture| capture.as_str().parse::<u64>().ok());
-
-            write_bytes_timestamp = if write_bytes.is_some() {
-                Some(
-                    SystemTime::now()
-                        .duration_since(SystemTime::UNIX_EPOCH)?
-                        .as_millis() as u64,
-                )
-            } else {
-                None
-            };
-        }
+                .and_then(|capture| capture.as_str().parse::<u64>().ok())
+        });
 
         let gpu_usage_stats = Self::gpu_usage_stats(&proc_path, pid);
+
+        let timestamp = unix_as_millis();
 
         Ok(Self {
             pid,
@@ -317,9 +294,8 @@ impl ProcessData {
             proc_path,
             containerization,
             read_bytes,
-            read_bytes_timestamp,
             write_bytes,
-            write_bytes_timestamp,
+            timestamp,
             gpu_usage_stats,
         })
     }
@@ -403,15 +379,12 @@ impl ProcessData {
                     .and_modify(|existing_value: &mut GpuUsageStats| {
                         if stats.1.gfx > existing_value.gfx {
                             existing_value.gfx = stats.1.gfx;
-                            existing_value.gfx_timestamp = stats.1.gfx_timestamp;
                         }
                         if stats.1.dec > existing_value.dec {
                             existing_value.dec = stats.1.dec;
-                            existing_value.dec_timestamp = stats.1.dec_timestamp;
                         }
                         if stats.1.enc > existing_value.enc {
                             existing_value.enc = stats.1.enc;
-                            existing_value.enc_timestamp = stats.1.enc_timestamp;
                         }
                         if stats.1.mem > existing_value.mem {
                             existing_value.mem = stats.1.mem;
@@ -497,12 +470,9 @@ impl ProcessData {
 
             let stats = GpuUsageStats {
                 gfx: gfx + compute,
-                gfx_timestamp: unix_as_millis(),
                 mem: vram.saturating_add(gtt),
                 enc,
-                enc_timestamp: unix_as_millis(),
                 dec,
-                dec_timestamp: unix_as_millis(),
                 nvidia: false,
             };
 
@@ -550,12 +520,9 @@ impl ProcessData {
 
         let gpu_stats = GpuUsageStats {
             gfx: this_process_stats.unwrap_or_default().0 as u64,
-            gfx_timestamp: unix_as_millis(),
             mem: this_process_mem_stats,
             enc: this_process_stats.unwrap_or_default().1 as u64,
-            enc_timestamp: unix_as_millis(),
             dec: this_process_stats.unwrap_or_default().2 as u64,
-            dec_timestamp: unix_as_millis(),
             nvidia: true,
         };
         Ok(gpu_stats)
