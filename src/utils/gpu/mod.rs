@@ -286,7 +286,7 @@ impl Gpu {
                     path,
                     hwmon_vec.get(0).cloned(),
                 )),
-                "NVIDIA",
+                "AMD",
             )
         } else if vid == VID_INTEL || driver == "i915" {
             (
