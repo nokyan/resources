@@ -724,9 +724,7 @@ impl AppsContext {
                 old_process.cpu_time_last = old_process.data.cpu_time;
                 old_process.timestamp_last = old_process.data.timestamp;
                 old_process.read_bytes_last = old_process.data.read_bytes;
-                old_process.read_bytes_last_timestamp = old_process.data.read_bytes_timestamp;
                 old_process.write_bytes_last = old_process.data.write_bytes;
-                old_process.write_bytes_last_timestamp = old_process.data.write_bytes_timestamp;
                 old_process.gpu_usage_stats_last = old_process.data.gpu_usage_stats.clone();
 
                 old_process.data = process_data.clone();

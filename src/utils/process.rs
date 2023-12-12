@@ -63,9 +63,7 @@ pub struct Process {
     pub cpu_time_last: u64,
     pub timestamp_last: u64,
     pub read_bytes_last: Option<u64>,
-    pub read_bytes_last_timestamp: Option<u64>,
     pub write_bytes_last: Option<u64>,
-    pub write_bytes_last_timestamp: Option<u64>,
     pub gpu_usage_stats_last: BTreeMap<PciSlot, GpuUsageStats>,
 }
 
@@ -144,16 +142,16 @@ impl Process {
             .unwrap_or(&process_data.commandline)
             .to_string();
 
-        let (read_bytes_last, read_bytes_last_timestamp) = if process_data.read_bytes.is_some() {
-            (Some(0), Some(0))
+        let read_bytes_last = if process_data.read_bytes.is_some() {
+            Some(0)
         } else {
-            (None, None)
+            None
         };
 
-        let (write_bytes_last, write_bytes_last_timestamp) = if process_data.write_bytes.is_some() {
-            (Some(0), Some(0))
+        let write_bytes_last = if process_data.write_bytes.is_some() {
+            Some(0)
         } else {
-            (None, None)
+            None
         };
 
         Self {
@@ -164,9 +162,7 @@ impl Process {
             cpu_time_last: 0,
             timestamp_last: 0,
             read_bytes_last,
-            read_bytes_last_timestamp,
             write_bytes_last,
-            write_bytes_last_timestamp,
             gpu_usage_stats_last: Default::default(),
         }
     }
@@ -296,23 +292,14 @@ impl Process {
 
     #[must_use]
     pub fn read_speed(&self) -> Option<f64> {
-        if let (
-            Some(read_bytes),
-            Some(read_bytes_timestamp),
-            Some(read_bytes_last),
-            Some(read_bytes_last_timestamp),
-        ) = (
-            self.data.read_bytes,
-            self.data.read_bytes_timestamp,
-            self.read_bytes_last,
-            self.read_bytes_last_timestamp,
-        ) {
-            if read_bytes_last_timestamp == 0 {
+        if let (Some(read_bytes), Some(read_bytes_last)) =
+            (self.data.read_bytes, self.read_bytes_last)
+        {
+            if self.timestamp_last == 0 {
                 Some(0.0)
             } else {
                 let bytes_delta = read_bytes.saturating_sub(read_bytes_last) as f64;
-                let time_delta =
-                    read_bytes_timestamp.saturating_sub(read_bytes_last_timestamp) as f64;
+                let time_delta = self.data.timestamp.saturating_sub(self.timestamp_last) as f64;
                 Some((bytes_delta / time_delta) * 1000.0)
             }
         } else {
@@ -322,23 +309,14 @@ impl Process {
 
     #[must_use]
     pub fn write_speed(&self) -> Option<f64> {
-        if let (
-            Some(write_bytes),
-            Some(write_bytes_timestamp),
-            Some(write_bytes_last),
-            Some(write_bytes_last_timestamp),
-        ) = (
-            self.data.write_bytes,
-            self.data.write_bytes_timestamp,
-            self.write_bytes_last,
-            self.write_bytes_last_timestamp,
-        ) {
-            if write_bytes_last_timestamp == 0 {
+        if let (Some(write_bytes), Some(write_bytes_last)) =
+            (self.data.write_bytes, self.write_bytes_last)
+        {
+            if self.timestamp_last == 0 {
                 Some(0.0)
             } else {
                 let bytes_delta = write_bytes.saturating_sub(write_bytes_last) as f64;
-                let time_delta =
-                    write_bytes_timestamp.saturating_sub(write_bytes_last_timestamp) as f64;
+                let time_delta = self.data.timestamp.saturating_sub(self.timestamp_last) as f64;
                 Some((bytes_delta / time_delta) * 1000.0)
             }
         } else {
