@@ -224,7 +224,7 @@ impl ProcessData {
         let comm = std::fs::read_to_string(&proc_path.join("comm"))?;
         let commandline = std::fs::read_to_string(&proc_path.join("cmdline"))?;
         let cgroup = std::fs::read_to_string(&proc_path.join("cgroup"))?;
-        let io = std::fs::read_to_string(&proc_path.join("io"));
+        let io = std::fs::read_to_string(&proc_path.join("io")).ok();
 
         let pid = proc_path
             .file_name()
@@ -266,19 +266,19 @@ impl ProcessData {
             },
         };
 
-        let (mut read_bytes, mut write_bytes) = (None, None);
-
-        if let Ok(io) = io {
-            read_bytes = IO_READ_REGEX
-                .captures(&io)
+        let read_bytes = io.as_ref().and_then(|io| {
+            IO_READ_REGEX
+                .captures(io)
                 .and_then(|captures| captures.get(1))
-                .and_then(|capture| capture.as_str().parse::<u64>().ok());
+                .and_then(|capture| capture.as_str().parse::<u64>().ok())
+        });
 
-            write_bytes = IO_WRITE_REGEX
-                .captures(&io)
+        let write_bytes = io.as_ref().and_then(|io| {
+            IO_WRITE_REGEX
+                .captures(io)
                 .and_then(|captures| captures.get(1))
-                .and_then(|capture| capture.as_str().parse::<u64>().ok());
-        }
+                .and_then(|capture| capture.as_str().parse::<u64>().ok())
+        });
 
         let gpu_usage_stats = Self::gpu_usage_stats(&proc_path, pid);
 
