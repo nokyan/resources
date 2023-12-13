@@ -240,7 +240,7 @@ impl Drive {
             .replace('\n', "")
             .parse::<u8>()
             .map(|rem| rem != 0)
-            .with_context(|| "unable to parse removable sysfs file")
+            .context("unable to parse removable sysfs file")
     }
 
     /// Returns, whether the drive is writable
@@ -254,7 +254,7 @@ impl Drive {
             .replace('\n', "")
             .parse::<u8>()
             .map(|ro| ro == 0)
-            .with_context(|| "unable to parse ro sysfs file")
+            .context("unable to parse ro sysfs file")
     }
 
     /// Returns the capacity of the drive **in bytes**
@@ -268,7 +268,7 @@ impl Drive {
             .replace('\n', "")
             .parse::<u64>()
             .map(|sectors| sectors * 512)
-            .with_context(|| "unable to parse size sysfs file")
+            .context("unable to parse size sysfs file")
     }
 
     /// Returns the model information of the drive
@@ -279,7 +279,7 @@ impl Drive {
     /// reading or parsing
     pub fn model(&self) -> Result<String> {
         std::fs::read_to_string(self.sysfs_path.join("device/model"))
-            .with_context(|| "unable to parse model sysfs file")
+            .context("unable to parse model sysfs file")
     }
 
     /// Returns the World-Wide Identification of the drive
@@ -290,7 +290,7 @@ impl Drive {
     /// reading or parsing
     pub fn wwid(&self) -> Result<String> {
         std::fs::read_to_string(self.sysfs_path.join("device/wwid"))
-            .with_context(|| "unable to parse wwid sysfs file")
+            .context("unable to parse wwid sysfs file")
     }
 
     /// Returns the appropriate Icon for the type of drive

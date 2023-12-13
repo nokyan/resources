@@ -174,7 +174,7 @@ pub fn get_cpu_freq(core: usize) -> Result<u64> {
     .with_context(|| format!("unable to read scaling_cur_freq for core {core}"))?
     .replace('\n', "")
     .parse::<u64>()
-    .with_context(|| "can't parse scaling_cur_freq to usize")
+    .context("can't parse scaling_cur_freq to usize")
     .map(|x| x * 1000)
 }
 
@@ -206,7 +206,7 @@ fn get_proc_stat(core: Option<usize>) -> Result<String> {
     // since our `core` argument starts with 0, we must add 1 to it if it's not `None`.
     let selected_line_number = core.map_or(0, |x| x + 1);
     let proc_stat_raw =
-        std::fs::read_to_string("/proc/stat").with_context(|| "unable to read /proc/stat")?;
+        std::fs::read_to_string("/proc/stat").context("unable to read /proc/stat")?;
     let mut proc_stat = proc_stat_raw.split('\n').collect::<Vec<&str>>();
     proc_stat.retain(|x| x.starts_with("cpu"));
     // return an `Error` if `core` is greater than the number of cores

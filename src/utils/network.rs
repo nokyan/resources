@@ -175,7 +175,7 @@ impl NetworkInterface {
         let dev_uevent = Self::read_uevent(sysfs_path.join("device/uevent")).unwrap_or_default();
         let interface_name = sysfs_path
             .file_name()
-            .with_context(|| "invalid sysfs path")?
+            .context("invalid sysfs path")?
             .to_owned();
         let mut vid_pid = (0, 0);
         if let Some(dev) = dev_uevent.get("PCI_ID") {
@@ -236,10 +236,10 @@ impl NetworkInterface {
     /// is unreadable or not parsable to a `usize`
     pub fn received_bytes(&self) -> Result<usize> {
         std::fs::read_to_string(&self.received_bytes_path)
-            .with_context(|| "read failure")?
+            .context("read failure")?
             .replace('\n', "")
             .parse()
-            .with_context(|| "parsing failure")
+            .context("parsing failure")
     }
 
     /// Returns the amount of bytes sent by this Network
@@ -251,10 +251,10 @@ impl NetworkInterface {
     /// is unreadable or not parsable to a `usize`
     pub fn sent_bytes(&self) -> Result<usize> {
         std::fs::read_to_string(&self.sent_bytes_path)
-            .with_context(|| "read failure")?
+            .context("read failure")?
             .replace('\n', "")
             .parse()
-            .with_context(|| "parsing failure")
+            .context("parsing failure")
     }
 
     /// Returns the appropriate Icon for the type of drive
