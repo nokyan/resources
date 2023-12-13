@@ -253,7 +253,6 @@ impl ResMemory {
         let MemoryData {
             total_mem,
             available_mem,
-            free_mem: _,
             total_swap,
             free_swap,
         } = memdata;

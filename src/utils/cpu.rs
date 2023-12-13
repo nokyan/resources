@@ -1,13 +1,28 @@
 use anyhow::{anyhow, bail, Context, Result};
 use glob::glob;
-use nparse::KVStrToJson;
 use once_cell::sync::Lazy;
-use regex::bytes::Regex;
-use serde_json::Value;
+use regex::Regex;
 use std::path::PathBuf;
 use std::sync::OnceLock;
 
-static PROC_STAT_REGEX: Lazy<Regex> = Lazy::new(|| {
+static RE_LSCPU_MODEL_NAME: Lazy<Regex> = Lazy::new(|| Regex::new(r"Model name:\s*(.*)").unwrap());
+
+static RE_LSCPU_ARCHITECTURE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"Architecture:\s*(.*)").unwrap());
+
+static RE_LSCPU_CPUS: Lazy<Regex> = Lazy::new(|| Regex::new(r"CPU\(s\):\s*(.*)").unwrap());
+
+static RE_LSCPU_SOCKETS: Lazy<Regex> = Lazy::new(|| Regex::new(r"Socket\(s\):\s*(.*)").unwrap());
+
+static RE_LSCPU_CORES: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"Core\(s\) per socket:\s*(.*)").unwrap());
+
+static RE_LSCPU_VIRTUALIZATION: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"Virtualization:\s*(.*)").unwrap());
+
+static RE_LSCPU_MAX_MHZ: Lazy<Regex> = Lazy::new(|| Regex::new(r"CPU max MHz:\s*(.*)").unwrap());
+
+static RE_PROC_STAT: Lazy<Regex> = Lazy::new(|| {
     Regex::new(r"cpu[0-9]* *(?P<user>[0-9]*) *(?P<nice>[0-9]*) *(?P<system>[0-9]*) *(?P<idle>[0-9]*) *(?P<iowait>[0-9]*) *(?P<irq>[0-9]*) *(?P<softirq>[0-9]*) *(?P<steal>[0-9]*) *(?P<guest>[0-9]*) *(?P<guest_nice>[0-9]*)").unwrap()
 });
 
@@ -51,27 +66,13 @@ impl CpuData {
 
 #[derive(Debug, Clone, Default)]
 pub struct CpuInfo {
-    pub vendor_id: Option<String>,
     pub model_name: Option<String>,
     pub architecture: Option<String>,
     pub logical_cpus: Option<usize>,
     pub physical_cpus: Option<usize>,
     pub sockets: Option<usize>,
     pub virtualization: Option<String>,
-    pub max_speed: Option<f32>,
-}
-
-fn lscpu() -> Result<Value> {
-    String::from_utf8(
-        std::process::Command::new("lscpu")
-            .env("LC_ALL", "C")
-            .output()
-            .with_context(|| "unable to run lscpu, is util-linux installed?")?
-            .stdout,
-    )
-    .with_context(|| "unable to parse lscpu output to UTF-8")?
-    .kv_str_to_json()
-    .map_err(|x| anyhow!("{}", x))
+    pub max_speed: Option<f64>,
 }
 
 fn trade_mark_symbols<S: AsRef<str>>(s: S) -> String {
@@ -88,32 +89,68 @@ fn trade_mark_symbols<S: AsRef<str>>(s: S) -> String {
 /// Will return `Err` if the are problems during reading or parsing
 /// of the `lscpu` command
 pub fn cpu_info() -> Result<CpuInfo> {
-    let lscpu_output = lscpu()?;
+    let lscpu_output = String::from_utf8(
+        std::process::Command::new("lscpu")
+            .env("LC_ALL", "C")
+            .output()
+            .context("unable to run lscpu, is util-linux installed?")?
+            .stdout,
+    )
+    .context("unable to parse lscpu output to UTF-8")?;
 
-    let vendor_id = lscpu_output["Vendor ID"].as_str().map(trade_mark_symbols);
-    let model_name = lscpu_output["Model name"].as_str().map(trade_mark_symbols);
-    let architecture = lscpu_output["Architecture"]
-        .as_str()
-        .map(std::string::ToString::to_string);
-    let logical_cpus = lscpu_output["CPU(s)"]
-        .as_str()
-        .and_then(|x| x.parse::<usize>().ok());
-    let sockets = lscpu_output["Socket(s)"]
-        .as_str()
-        .and_then(|x| x.parse::<usize>().ok());
-    let physical_cpus = lscpu_output["Core(s) per socket"]
-        .as_str()
-        .and_then(|x| x.parse::<usize>().ok().map(|y| y * sockets.unwrap_or(1)));
-    let virtualization = lscpu_output["Virtualization"]
-        .as_str()
-        .map(std::string::ToString::to_string);
-    let max_speed = lscpu_output["CPU max MHz"]
-        .as_str()
-        .and_then(|x| x.parse::<f32>().ok())
-        .map(|y| y * 1_000_000.0);
+    let model_name = RE_LSCPU_MODEL_NAME
+        .captures(&lscpu_output)
+        .and_then(|captures| {
+            captures
+                .get(1)
+                .map(|capture| trade_mark_symbols(capture.as_str()))
+        });
+
+    let architecture = RE_LSCPU_ARCHITECTURE
+        .captures(&lscpu_output)
+        .and_then(|captures| captures.get(1).map(|capture| capture.as_str().into()));
+
+    let sockets = RE_LSCPU_SOCKETS
+        .captures(&lscpu_output)
+        .and_then(|captures| {
+            captures
+                .get(1)
+                .and_then(|capture| capture.as_str().parse().ok())
+        });
+
+    let logical_cpus = RE_LSCPU_CPUS.captures(&lscpu_output).and_then(|captures| {
+        captures.get(1).and_then(|capture| {
+            capture
+                .as_str()
+                .parse::<usize>()
+                .ok()
+                .map(|int| int * sockets.unwrap_or(1))
+        })
+    });
+
+    let physical_cpus = RE_LSCPU_CORES.captures(&lscpu_output).and_then(|captures| {
+        captures
+            .get(1)
+            .and_then(|capture| capture.as_str().parse().ok())
+    });
+
+    let virtualization = RE_LSCPU_VIRTUALIZATION
+        .captures(&lscpu_output)
+        .and_then(|captures| captures.get(1).map(|capture| capture.as_str().into()));
+
+    let max_speed = RE_LSCPU_MAX_MHZ
+        .captures(&lscpu_output)
+        .and_then(|captures| {
+            captures.get(1).and_then(|capture| {
+                capture
+                    .as_str()
+                    .parse::<f64>()
+                    .ok()
+                    .map(|float| float * 1_000_000.0)
+            })
+        });
 
     Ok(CpuInfo {
-        vendor_id,
         model_name,
         architecture,
         logical_cpus,
@@ -141,23 +178,23 @@ pub fn get_cpu_freq(core: usize) -> Result<u64> {
     .map(|x| x * 1000)
 }
 
-fn parse_proc_stat_line(line: &[u8]) -> Result<(u64, u64)> {
-    let captures = PROC_STAT_REGEX
-        .captures(line)
+fn parse_proc_stat_line<S: AsRef<str>>(line: S) -> Result<(u64, u64)> {
+    let captures = RE_PROC_STAT
+        .captures(line.as_ref())
         .ok_or_else(|| anyhow!("using regex to parse /proc/stat failed"))?;
     let idle_time = captures
         .name("idle")
-        .and_then(|x| String::from_utf8_lossy(x.as_bytes()).parse::<u64>().ok())
+        .and_then(|x| x.as_str().parse::<u64>().ok())
         .ok_or_else(|| anyhow!("unable to get idle time"))?
         + captures
             .name("iowait")
-            .and_then(|x| String::from_utf8_lossy(x.as_bytes()).parse::<u64>().ok())
+            .and_then(|x| x.as_str().parse::<u64>().ok())
             .ok_or_else(|| anyhow!("unable to get iowait time"))?;
     let sum = captures
         .iter()
         .skip(1)
         .flat_map(|cap| {
-            cap.and_then(|x| String::from_utf8_lossy(x.as_bytes()).parse::<u64>().ok())
+            cap.and_then(|x| x.as_str().parse::<u64>().ok())
                 .ok_or_else(|| anyhow!("unable to sum CPU times from /proc/stat"))
         })
         .sum();
@@ -189,7 +226,7 @@ fn get_proc_stat(core: Option<usize>) -> Result<String> {
 /// Will return `Err` if the are problems during reading or parsing
 /// of /proc/stat
 pub fn get_cpu_usage(core: Option<usize>) -> Result<(u64, u64)> {
-    parse_proc_stat_line(get_proc_stat(core)?.as_bytes())
+    parse_proc_stat_line(get_proc_stat(core)?)
 }
 
 /// Returns the CPU temperature.

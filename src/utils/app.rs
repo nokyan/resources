@@ -19,7 +19,7 @@ use super::{
     NaNDefault,
 };
 
-static ENV_FILTER_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"env\s*\S*=\S*\s*(.*)").unwrap());
+static RE_ENV_FILTER: Lazy<Regex> = Lazy::new(|| Regex::new(r"env\s*\S*=\S*\s*(.*)").unwrap());
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
@@ -149,7 +149,7 @@ impl App {
         let exec = desktop_entry.get("Exec");
         let commandline = exec
             .and_then(|exec| {
-                ENV_FILTER_REGEX
+                RE_ENV_FILTER
                     .captures(exec)
                     .and_then(|captures| captures.get(1))
                     .map(|capture| capture.as_str())

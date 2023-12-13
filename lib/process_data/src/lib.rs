@@ -20,49 +20,48 @@ use std::{path::PathBuf, time::SystemTime};
 
 static PAGESIZE: Lazy<usize> = Lazy::new(sysconf::pagesize);
 
-static UID_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"Uid:\s*(\d+)").unwrap());
+static RE_UID: Lazy<Regex> = Lazy::new(|| Regex::new(r"Uid:\s*(\d+)").unwrap());
 
-static IO_READ_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"read_bytes:\s*(\d+)").unwrap());
+static RE_IO_READ: Lazy<Regex> = Lazy::new(|| Regex::new(r"read_bytes:\s*(\d+)").unwrap());
 
-static IO_WRITE_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"write_bytes:\s*(\d+)").unwrap());
+static RE_IO_WRITE: Lazy<Regex> = Lazy::new(|| Regex::new(r"write_bytes:\s*(\d+)").unwrap());
 
-static DRM_PDEV_REGEX: Lazy<Regex> = Lazy::new(|| {
+static RE_DRM_PDEV: Lazy<Regex> = Lazy::new(|| {
     Regex::new(r"drm-pdev:\s*([0-9A-Fa-f]{4}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}\.[0-9A-Fa-f])").unwrap()
 });
 
-static DRM_CLIENT_ID_REGEX: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"drm-client-id:\s*(\d+)").unwrap());
+static RE_DRM_CLIENT_ID: Lazy<Regex> = Lazy::new(|| Regex::new(r"drm-client-id:\s*(\d+)").unwrap());
 
 // AMD only
-static DRM_ENGINE_GFX_REGEX: Lazy<Regex> =
+static RE_DRM_ENGINE_GFX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-engine-gfx:\s*(\d+) ns").unwrap());
 
 // AMD only
-static DRM_ENGINE_COMPUTE_REGEX: Lazy<Regex> =
+static RE_DRM_ENGINE_COMPUTE: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-engine-compute:\s*(\d+) ns").unwrap());
 
 // AMD only
-static DRM_ENGINE_ENC_REGEX: Lazy<Regex> =
+static RE_DRM_ENGINE_ENC: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-engine-enc:\s*(\d+) ns").unwrap());
 
 // AMD only
-static DRM_ENGINE_DEC_REGEX: Lazy<Regex> =
+static RE_DRM_ENGINE_DEC: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-engine-dec:\s*(\d+) ns").unwrap());
 
 // AMD only
-static DRM_MEMORY_VRAM_REGEX: Lazy<Regex> =
+static RE_DRM_MEMORY_VRAM: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-memory-vram:\s*(\d+) KiB").unwrap());
 
 // AMD only
-static DRM_MEMORY_GTT_REGEX: Lazy<Regex> =
+static RE_DRM_MEMORY_GTT: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-memory-gtt:\s*(\d+) KiB").unwrap());
 
 // Intel only
-static DRM_ENGINE_RENDER_REGEX: Lazy<Regex> =
+static RE_DRM_ENGINE_RENDER: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-engine-render:\s*(\d+) ns").unwrap());
 
 // Intel only
-static DRM_ENGINE_VIDEO: Lazy<Regex> =
+static RE_DRM_ENGINE_VIDEO: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"drm-engine-video:\s*(\d+) ns").unwrap());
 
 static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(Nvml::init);
@@ -176,7 +175,7 @@ impl ProcessData {
 
     fn get_uid(proc_path: &PathBuf) -> Result<u32> {
         let status = std::fs::read_to_string(proc_path.join("status"))?;
-        if let Some(captures) = UID_REGEX.captures(&status) {
+        if let Some(captures) = RE_UID.captures(&status) {
             let first_num_str = captures.get(1).context("no uid found")?;
             first_num_str
                 .as_str()
@@ -264,14 +263,14 @@ impl ProcessData {
         };
 
         let read_bytes = io.as_ref().and_then(|io| {
-            IO_READ_REGEX
+            RE_IO_READ
                 .captures(io)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
         });
 
         let write_bytes = io.as_ref().and_then(|io| {
-            IO_WRITE_REGEX
+            RE_IO_WRITE
                 .captures(io)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
@@ -405,63 +404,63 @@ impl ProcessData {
         fdinfo_file.read_to_string(&mut content)?;
         fdinfo_file.flush()?;
 
-        let pci_slot = DRM_PDEV_REGEX
+        let pci_slot = RE_DRM_PDEV
             .captures(&content)
             .and_then(|captures| captures.get(1))
             .and_then(|capture| PciSlot::from_str(capture.as_str()).ok());
 
-        let client_id = DRM_CLIENT_ID_REGEX
+        let client_id = RE_DRM_CLIENT_ID
             .captures(&content)
             .and_then(|captures| captures.get(1))
             .and_then(|capture| capture.as_str().parse::<i64>().ok());
 
         if let (Some(pci_slot), Some(client_id)) = (pci_slot, client_id) {
-            let gfx = DRM_ENGINE_GFX_REGEX // amd
+            let gfx = RE_DRM_ENGINE_GFX // amd
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 .or_else(|| {
                     // intel
-                    DRM_ENGINE_RENDER_REGEX
+                    RE_DRM_ENGINE_RENDER
                         .captures(&content)
                         .and_then(|captures| captures.get(1))
                         .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 })
                 .unwrap_or_default();
 
-            let compute = DRM_ENGINE_COMPUTE_REGEX
+            let compute = RE_DRM_ENGINE_COMPUTE
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 .unwrap_or_default();
 
-            let enc = DRM_ENGINE_ENC_REGEX // amd
+            let enc = RE_DRM_ENGINE_ENC // amd
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 .or_else(|| {
                     // intel
-                    DRM_ENGINE_VIDEO
+                    RE_DRM_ENGINE_VIDEO
                         .captures(&content)
                         .and_then(|captures| captures.get(1))
                         .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 })
                 .unwrap_or_default();
 
-            let dec = DRM_ENGINE_DEC_REGEX
+            let dec = RE_DRM_ENGINE_DEC
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 .unwrap_or_default();
 
-            let vram = DRM_MEMORY_VRAM_REGEX
+            let vram = RE_DRM_MEMORY_VRAM
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 .unwrap_or_default()
                 * 1024;
 
-            let gtt = DRM_MEMORY_GTT_REGEX
+            let gtt = RE_DRM_MEMORY_GTT
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())

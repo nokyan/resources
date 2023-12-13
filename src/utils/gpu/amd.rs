@@ -10,7 +10,7 @@ use crate::utils::{pci::Device, IS_FLATPAK};
 
 use super::GpuImpl;
 
-static AMDGPU_IDS_REGEX: Lazy<Regex> =
+static RE_AMDGPU_IDS: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"([0-9A-F]{4}),\s*([0-9A-F]{2}),\s*(.*)").unwrap());
 
 static AMDGPU_IDS: Lazy<HashMap<(u16, u8), String>> =
@@ -54,7 +54,7 @@ impl AmdGpu {
 
         let amdgpu_ids_raw = std::fs::read_to_string(path)?;
 
-        for capture in AMDGPU_IDS_REGEX.captures_iter(&amdgpu_ids_raw) {
+        for capture in RE_AMDGPU_IDS.captures_iter(&amdgpu_ids_raw) {
             if let (Some(device_id), Some(revision), Some(name)) =
                 (capture.get(1), capture.get(2), capture.get(3))
             {
