@@ -197,14 +197,14 @@ impl Process {
                 .output()?
                 .status
                 .code()
-                .with_context(|| "no status code?")?
+                .context("no status code?")?
         } else {
             Command::new(kill_path.as_str())
                 .args([action_str, self.data.pid.to_string().as_str()])
                 .output()?
                 .status
                 .code()
-                .with_context(|| "no status code?")?
+                .context("no status code?")?
         };
 
         if status_code == 0 || status_code == 3 {
@@ -244,7 +244,7 @@ impl Process {
                 .output()?
                 .status
                 .code()
-                .with_context(|| "no status code?")?
+                .context("no status code?")?
         } else {
             Command::new("pkexec")
                 .args([
@@ -256,7 +256,7 @@ impl Process {
                 .output()?
                 .status
                 .code()
-                .with_context(|| "no status code?")?
+                .context("no status code?")?
         };
 
         if status_code == 0 || status_code == 3 {

@@ -3,7 +3,7 @@ mod intel;
 mod nvidia;
 mod other;
 
-use anyhow::{anyhow, bail, Context, Result};
+use anyhow::{bail, Context, Result};
 use log::debug;
 use process_data::pci_slot::PciSlot;
 
@@ -125,12 +125,7 @@ pub trait GpuImpl {
         std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
-            .context(format!(
-                "error parsing file {}",
-                &path
-                    .to_str()
-                    .with_context(|| anyhow!("error transforming PathBuf to str"))?
-            ))
+            .with_context(|| format!("error parsing file {}", &path.to_string_lossy()))
     }
 
     fn read_device_file<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<String> {
@@ -142,12 +137,7 @@ pub trait GpuImpl {
         let path = self.sysfs_path().join("device").join(file);
         self.read_device_file(&path)?
             .parse::<isize>()
-            .context(format!(
-                "error parsing file {}",
-                &path
-                    .to_str()
-                    .with_context(|| anyhow!("error transforming PathBuf to str"))?
-            ))
+            .with_context(|| format!("error parsing file {}", &path.to_string_lossy()))
     }
 
     fn read_hwmon_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
@@ -155,12 +145,7 @@ pub trait GpuImpl {
         std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
-            .context(format!(
-                "error parsing file {}",
-                &path
-                    .to_str()
-                    .with_context(|| anyhow!("error transforming PathBuf to str"))?
-            ))
+            .with_context(|| format!("error parsing file {}", &path.to_string_lossy()))
     }
 
     // These are preimplemented ways of getting information through the DRM and hwmon interface.

@@ -181,6 +181,12 @@ impl Application {
         info!("Version: {} ({})", VERSION, PROFILE);
         info!("Datadir: {}", PKGDATADIR);
 
+        if PROFILE == "Devel" {
+            info!(
+                "You are running a development version of Resources, things may be slow or break!"
+            )
+        }
+
         ApplicationExtManual::run(self);
     }
 }

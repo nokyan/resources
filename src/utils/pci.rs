@@ -113,21 +113,21 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
             let sub_vid = u16::from_str_radix(
                 split
                     .next()
-                    .context(format!("this subdevice has no vid (line: {line})"))?,
+                    .with_context(|| format!("this subdevice has no vid (line: {line})"))?,
                 16,
             )?;
 
             let sub_pid = u16::from_str_radix(
                 split
                     .next()
-                    .context(format!("this subdevice has no üid (line: {line})"))?,
+                    .with_context(|| format!("this subdevice has no üid (line: {line})"))?,
                 16,
             )?;
 
             let name = split
                 .last()
                 .map(str::to_string)
-                .context(format!("this vendor has no name (line: {line})"))?;
+                .with_context(|| format!("this vendor has no name (line: {line})"))?;
 
             let subdevice = Subdevice {
                 id: sub_pid,
@@ -138,7 +138,7 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
             seen.values_mut()
                 .last()
                 .and_then(|vendor| vendor.devices.values_mut().last())
-                .context(format!("no preceeding vendor (line: {line})"))?
+                .with_context(|| format!("no preceeding vendor (line: {line})"))?
                 .sub_devices
                 .push(subdevice);
         } else if line.starts_with('\t') {
@@ -148,19 +148,19 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
             let vid = *seen
                 .keys()
                 .last()
-                .context(format!("no preceeding device (line: {line})"))?;
+                .with_context(|| format!("no preceeding device (line: {line})"))?;
 
             let pid = u16::from_str_radix(
                 split
                     .next()
-                    .context(format!("this device has no pid (line: {line})"))?,
+                    .with_context(|| format!("this device has no pid (line: {line})"))?,
                 16,
             )?;
 
             let name = split
                 .next()
                 .map(str::to_string)
-                .context(format!("this vendor has no name (line: {line})"))?;
+                .with_context(|| format!("this vendor has no name (line: {line})"))?;
 
             let device = Device {
                 id: pid,
@@ -171,7 +171,7 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
 
             seen.values_mut()
                 .last()
-                .context(format!("no preceeding device (line: {line})"))?
+                .with_context(|| format!("no preceeding device (line: {line})"))?
                 .devices
                 .insert(pid, device);
         } else {
@@ -181,14 +181,14 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
             let vid = u16::from_str_radix(
                 split
                     .next()
-                    .context(format!("this vendor has no vid (line: {line})"))?,
+                    .with_context(|| format!("this vendor has no vid (line: {line})"))?,
                 16,
             )?;
 
             let name = split
                 .next()
                 .map(str::to_string)
-                .context(format!("this vendor has no name (line: {line})"))?;
+                .with_context(|| format!("this vendor has no name (line: {line})"))?;
 
             let vendor = Vendor {
                 id: vid,

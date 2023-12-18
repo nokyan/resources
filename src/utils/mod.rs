@@ -61,16 +61,15 @@ static FLATPAK_SPAWN: &str = "/usr/bin/flatpak-spawn";
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 pub fn flatpak_app_path() -> Result<String> {
-    let ini =
-        Ini::load_from_file("/.flatpak-info").with_context(|| "unable to find ./flatpak-info")?;
+    let ini = Ini::load_from_file("/.flatpak-info").context("unable to find ./flatpak-info")?;
 
     let section = ini
         .section(Some("Instance"))
-        .with_context(|| "unable to find Instance section in ./flatpak-info")?;
+        .context("unable to find Instance section in ./flatpak-info")?;
 
     Ok(section
         .get("app-path")
-        .with_context(|| "unable to find app-path in ./flatpak-info")?
+        .context("unable to find app-path in ./flatpak-info")?
         .to_string())
 }
 
