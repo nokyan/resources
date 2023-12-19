@@ -310,27 +310,8 @@ impl ResProcesses {
 
         imp.popover_menu.set_parent(self);
 
-        let column_view = gtk::ColumnView::new(None::<gtk::SingleSelection>);
-        let store = gio::ListStore::new::<ProcessEntry>();
-        let filter_model = gtk::FilterListModel::new(
-            Some(store.clone()),
-            Some(gtk::CustomFilter::new(
-                clone!(@strong self as this => move |obj| this.search_filter(obj)),
-            )),
-        );
-        let sort_model = gtk::SortListModel::new(Some(filter_model.clone()), column_view.sorter());
-        let selection_model = gtk::SingleSelection::new(Some(sort_model.clone()));
-        column_view.set_model(Some(&selection_model));
-        selection_model.set_can_unselect(true);
-        selection_model.set_autoselect(false);
-
-        *imp.store.borrow_mut() = store;
-        *imp.selection_model.borrow_mut() = selection_model;
-        *imp.sort_model.borrow_mut() = sort_model;
-        *imp.filter_model.borrow_mut() = filter_model;
-
-        imp.processes_scrolled_window.set_child(Some(&column_view));
-        *imp.column_view.borrow_mut() = column_view;
+        *imp.column_view.borrow_mut() = gtk::ColumnView::new(None::<gtk::SingleSelection>);
+        let column_view = imp.column_view.borrow();
 
         self.add_name_column();
         self.add_pid_column();
@@ -345,6 +326,30 @@ impl ResProcesses {
         self.add_gpu_mem_column();
         self.add_encoder_column();
         self.add_decoder_column();
+
+        let store = gio::ListStore::new::<ProcessEntry>();
+
+        let filter_model = gtk::FilterListModel::new(
+            Some(store.clone()),
+            Some(gtk::CustomFilter::new(
+                clone!(@strong self as this => move |obj| this.search_filter(obj)),
+            )),
+        );
+
+        let sort_model = gtk::SortListModel::new(Some(filter_model.clone()), column_view.sorter());
+
+        let selection_model = gtk::SingleSelection::new(Some(sort_model.clone()));
+        selection_model.set_can_unselect(true);
+        selection_model.set_autoselect(false);
+
+        column_view.set_model(Some(&selection_model));
+
+        *imp.store.borrow_mut() = store;
+        *imp.selection_model.borrow_mut() = selection_model;
+        *imp.sort_model.borrow_mut() = sort_model;
+        *imp.filter_model.borrow_mut() = filter_model;
+
+        imp.processes_scrolled_window.set_child(Some(&*column_view));
     }
 
     pub fn setup_signals(&self) {
@@ -471,18 +476,12 @@ impl ResProcesses {
             store.append(&ProcessEntry::new(new_item, &user_name));
         }
 
-        let column_view = imp.column_view.borrow();
-
-        let sorter = column_view
+        imp.column_view
+            .borrow()
             .sorter()
             .and_downcast::<gtk::ColumnViewSorter>()
-            .unwrap();
-
-        let selected_column = sorter.primary_sort_column();
-
-        let selected_order = sorter.primary_sort_order();
-
-        column_view.sort_by_column(selected_column.as_ref(), selected_order);
+            .unwrap()
+            .changed(gtk::SorterChange::Different);
 
         self.set_property(
             "tab_subtitle",
