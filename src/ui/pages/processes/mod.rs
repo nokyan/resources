@@ -6,7 +6,7 @@ use std::collections::HashSet;
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, closure, Object, Sender};
-use gtk::{gio, CustomSorter, FilterChange, ListItem, Ordering, SortType, Widget};
+use gtk::{gio, FilterChange, ListItem, NumericSorter, SortType, StringSorter, Widget};
 use gtk_macros::send;
 
 use log::error;
@@ -480,8 +480,7 @@ impl ResProcesses {
             .borrow()
             .sorter()
             .and_downcast::<gtk::ColumnViewSorter>()
-            .unwrap()
-            .changed(gtk::SorterChange::Different);
+            .map(|sorter| sorter.changed(gtk::SorterChange::Different));
 
         self.set_property(
             "tab_subtitle",
@@ -630,15 +629,14 @@ impl ResProcesses {
             this.add_gestures(&child.parent().and_then(|p| p.parent()).unwrap(), &item);
         }));
 
-        let name_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ProcessEntry>().unwrap();
-            let item_b = b.downcast_ref::<ProcessEntry>().unwrap();
-            item_a
-                .name()
-                .to_lowercase()
-                .cmp(&item_b.name().to_lowercase())
-                .into()
-        });
+        let name_col_sorter = StringSorter::builder()
+            .ignore_case(true)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "name",
+            ))
+            .build();
 
         name_col.set_sorter(Some(&name_col_sorter));
 
@@ -666,11 +664,14 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         }));
 
-        let pid_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ProcessEntry>().unwrap();
-            let item_b = b.downcast_ref::<ProcessEntry>().unwrap();
-            item_a.pid().cmp(&item_b.pid()).into()
-        });
+        let pid_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "pid",
+            ))
+            .build();
 
         pid_col.set_sorter(Some(&pid_col_sorter));
         pid_col.set_visible(SETTINGS.processes_show_id());
@@ -702,11 +703,14 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let user_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ProcessEntry>().unwrap();
-            let item_b = b.downcast_ref::<ProcessEntry>().unwrap();
-            item_a.user().cmp(&item_b.user()).into()
-        });
+        let user_col_sorter = StringSorter::builder()
+            .ignore_case(true)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "user",
+            ))
+            .build();
 
         user_col.set_sorter(Some(&user_col_sorter));
         user_col.set_visible(SETTINGS.processes_show_user());
@@ -742,11 +746,14 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let memory_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().memory_usage();
-            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().memory_usage();
-            item_a.cmp(&item_b).into()
-        });
+        let memory_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "memory_usage",
+            ))
+            .build();
 
         memory_col.set_sorter(Some(&memory_col_sorter));
         memory_col.set_visible(SETTINGS.processes_show_memory());
@@ -786,17 +793,14 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let cpu_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().cpu_usage();
-            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().cpu_usage();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let cpu_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "cpu_usage",
+            ))
+            .build();
 
         cpu_col.set_sorter(Some(&cpu_col_sorter));
         cpu_col.set_visible(SETTINGS.processes_show_cpu());
@@ -838,17 +842,14 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let read_speed_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().read_speed();
-            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().read_speed();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let read_speed_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "read_speed",
+            ))
+            .build();
 
         read_speed_col.set_sorter(Some(&read_speed_col_sorter));
         read_speed_col.set_visible(SETTINGS.processes_show_drive_read_speed());
@@ -892,11 +893,14 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let read_total_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().read_total();
-            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().read_total();
-            item_a.cmp(&item_b).into()
-        });
+        let read_total_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "read_total",
+            ))
+            .build();
 
         read_total_col.set_sorter(Some(&read_total_col_sorter));
         read_total_col.set_visible(SETTINGS.processes_show_drive_read_total());
@@ -940,17 +944,14 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let write_speed_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().write_speed();
-            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().write_speed();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let write_speed_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "write_speed",
+            ))
+            .build();
 
         write_speed_col.set_sorter(Some(&write_speed_col_sorter));
         write_speed_col.set_visible(SETTINGS.processes_show_drive_write_speed());
@@ -994,11 +995,14 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let write_total_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().write_total();
-            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().write_total();
-            item_a.cmp(&item_b).into()
-        });
+        let write_total_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "write_total",
+            ))
+            .build();
 
         write_total_col.set_sorter(Some(&write_total_col_sorter));
         write_total_col.set_visible(SETTINGS.processes_show_drive_write_total());
@@ -1035,17 +1039,14 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let gpu_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().gpu_usage();
-            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().gpu_usage();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let gpu_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "gpu_usage",
+            ))
+            .build();
 
         gpu_col.set_sorter(Some(&gpu_col_sorter));
         gpu_col.set_visible(SETTINGS.processes_show_gpu());
@@ -1083,17 +1084,14 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let encoder_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().enc_usage();
-            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().enc_usage();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let encoder_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "enc_usage",
+            ))
+            .build();
 
         encoder_col.set_sorter(Some(&encoder_col_sorter));
         encoder_col.set_visible(SETTINGS.processes_show_encoder());
@@ -1131,17 +1129,14 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let decoder_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().dec_usage();
-            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().dec_usage();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let decoder_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "dec_usage",
+            ))
+            .build();
 
         decoder_col.set_sorter(Some(&decoder_col_sorter));
         decoder_col.set_visible(SETTINGS.processes_show_decoder());
@@ -1178,11 +1173,14 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let gpu_mem_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ProcessEntry>().unwrap().gpu_mem_usage();
-            let item_b = b.downcast_ref::<ProcessEntry>().unwrap().gpu_mem_usage();
-            item_a.cmp(&item_b).into()
-        });
+        let gpu_mem_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "gpu_mem_usage",
+            ))
+            .build();
 
         gpu_mem_col.set_sorter(Some(&gpu_mem_col_sorter));
         gpu_mem_col.set_visible(SETTINGS.processes_show_gpu_memory());

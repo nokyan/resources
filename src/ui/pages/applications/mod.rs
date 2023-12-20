@@ -6,7 +6,7 @@ use std::collections::HashSet;
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, closure, Object, Sender};
-use gtk::{gio, CustomSorter, FilterChange, ListItem, Ordering, SortType, Widget};
+use gtk::{gio, FilterChange, ListItem, NumericSorter, SortType, StringSorter, Widget};
 use gtk_macros::send;
 
 use log::error;
@@ -504,8 +504,7 @@ impl ResApplications {
             .borrow()
             .sorter()
             .and_downcast::<gtk::ColumnViewSorter>()
-            .unwrap()
-            .changed(gtk::SorterChange::Different);
+            .map(|sorter| sorter.changed(gtk::SorterChange::Different));
 
         // -1 because we don't want to count System Processes
         self.set_property(
@@ -627,15 +626,14 @@ impl ResApplications {
             this.add_gestures(&child.parent().and_then(|p| p.parent()).unwrap(), &item);
         }));
 
-        let name_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap();
-            item_a
-                .name()
-                .to_lowercase()
-                .cmp(&item_b.name().to_lowercase())
-                .into()
-        });
+        let name_col_sorter = StringSorter::builder()
+            .ignore_case(true)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "name",
+            ))
+            .build();
 
         name_col.set_sorter(Some(&name_col_sorter));
 
@@ -673,11 +671,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let memory_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().memory_usage();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().memory_usage();
-            item_a.cmp(&item_b).into()
-        });
+        let memory_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "memory_usage",
+            ))
+            .build();
 
         memory_col.set_sorter(Some(&memory_col_sorter));
         memory_col.set_visible(SETTINGS.apps_show_memory());
@@ -713,17 +714,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let cpu_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().cpu_usage();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().cpu_usage();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let cpu_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "cpu_usage",
+            ))
+            .build();
 
         cpu_col.set_sorter(Some(&cpu_col_sorter));
         cpu_col.set_visible(SETTINGS.apps_show_cpu());
@@ -765,17 +763,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let read_speed_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().read_speed();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().read_speed();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let read_speed_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "read_speed",
+            ))
+            .build();
 
         read_speed_col.set_sorter(Some(&read_speed_col_sorter));
         read_speed_col.set_visible(SETTINGS.apps_show_drive_read_speed());
@@ -814,11 +809,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let read_total_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().read_total();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().read_total();
-            item_a.cmp(&item_b).into()
-        });
+        let read_total_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "read_total",
+            ))
+            .build();
 
         read_total_col.set_sorter(Some(&read_total_col_sorter));
         read_total_col.set_visible(SETTINGS.apps_show_drive_read_total());
@@ -861,17 +859,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let write_speed_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().write_speed();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().write_speed();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let write_speed_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "write_speed",
+            ))
+            .build();
 
         write_speed_col.set_sorter(Some(&write_speed_col_sorter));
         write_speed_col.set_visible(SETTINGS.apps_show_drive_write_speed());
@@ -911,11 +906,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let write_total_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().write_total();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().write_total();
-            item_a.cmp(&item_b).into()
-        });
+        let write_total_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "write_total",
+            ))
+            .build();
 
         write_total_col.set_sorter(Some(&write_total_col_sorter));
         write_total_col.set_visible(SETTINGS.apps_show_drive_write_total());
@@ -952,17 +950,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let gpu_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().gpu_usage();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().gpu_usage();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let gpu_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "gpu_usage",
+            ))
+            .build();
 
         gpu_col.set_sorter(Some(&gpu_col_sorter));
         gpu_col.set_visible(SETTINGS.apps_show_gpu());
@@ -1000,17 +995,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let encoder_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().enc_usage();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().enc_usage();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let encoder_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "enc_usage",
+            ))
+            .build();
 
         encoder_col.set_sorter(Some(&encoder_col_sorter));
         encoder_col.set_visible(SETTINGS.apps_show_encoder());
@@ -1048,17 +1040,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let decoder_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().dec_usage();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().dec_usage();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let decoder_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "dec_usage",
+            ))
+            .build();
 
         decoder_col.set_sorter(Some(&decoder_col_sorter));
         decoder_col.set_visible(SETTINGS.apps_show_decoder());
@@ -1093,17 +1082,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let gpu_mem_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a
-                .downcast_ref::<ApplicationEntry>()
-                .unwrap()
-                .gpu_mem_usage();
-            let item_b = b
-                .downcast_ref::<ApplicationEntry>()
-                .unwrap()
-                .gpu_mem_usage();
-            item_a.cmp(&item_b).into()
-        });
+        let gpu_mem_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "gpu_mem_usage",
+            ))
+            .build();
 
         gpu_mem_col.set_sorter(Some(&gpu_mem_col_sorter));
         gpu_mem_col.set_visible(SETTINGS.apps_show_gpu_memory());
