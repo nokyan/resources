@@ -471,10 +471,14 @@ impl ResProcesses {
         });
 
         // add the newly started process to the store
-        for (_, new_item) in new_items.drain() {
-            let user_name = self.get_user_name_by_uid(new_item.uid);
-            store.append(&ProcessEntry::new(new_item, &user_name));
-        }
+        let items: Vec<ProcessEntry> = new_items
+            .drain()
+            .map(|(_, new_item)| {
+                let user_name = self.get_user_name_by_uid(new_item.uid);
+                ProcessEntry::new(new_item, &user_name)
+            })
+            .collect();
+        store.extend_from_slice(&items);
 
         imp.column_view
             .borrow()

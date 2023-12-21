@@ -496,9 +496,11 @@ impl ResApplications {
         });
 
         // add the newly started apps to the store
-        new_items
+        let items: Vec<ApplicationEntry> = new_items
             .drain()
-            .for_each(|(_, new_item)| store.append(&ApplicationEntry::new(new_item)));
+            .map(|(_, new_item)| ApplicationEntry::new(new_item))
+            .collect();
+        store.extend_from_slice(&items);
 
         imp.column_view
             .borrow()
