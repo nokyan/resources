@@ -9,6 +9,7 @@ use super::{FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
 
 static RE_CONFIGURED_SPEED: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"Configured Memory Speed: (\d+) MT/s").unwrap());
+
 static RE_SPEED: Lazy<Regex> = Lazy::new(|| Regex::new(r"Speed: (\d+) MT/s").unwrap());
 
 static RE_FORMFACTOR: Lazy<Regex> = Lazy::new(|| Regex::new(r"Form Factor: (.+)").unwrap());
@@ -25,6 +26,21 @@ static RE_MEM_AVAILABLE: Lazy<Regex> =
 static RE_SWAP_TOTAL: Lazy<Regex> = Lazy::new(|| Regex::new(r"SwapTotal:\s*(\d*) kB").unwrap());
 
 static RE_SWAP_FREE: Lazy<Regex> = Lazy::new(|| Regex::new(r"SwapFree:\s*(\d*) kB").unwrap());
+
+static RE_NUM_MEMORY_DEVICES: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"MEMORY_ARRAY_NUM_DEVICES=(\d*)").unwrap());
+
+static TEMPLATE_RE_PRESENT: &str = r"MEMORY_DEVICE_%_PRESENT=(\d)";
+
+static TEMPLATE_RE_CONFIGURED_SPEED_MTS: &str = r"MEMORY_DEVICE_%_CONFIGURED_SPEED_MTS=(\d*)";
+
+static TEMPLATE_RE_SPEED_MTS: &str = r"MEMORY_DEVICE_%_SPEED_MTS=(\d*)";
+
+static TEMPLATE_RE_FORM_FACTOR: &str = r"MEMORY_DEVICE_%_FORM_FACTOR=(.*)";
+
+static TEMPLATE_RE_TYPE: &str = r"MEMORY_DEVICE_%_TYPE=(.*)";
+
+static TEMPLATE_RE_TYPE_DETAIL: &str = r"MEMORY_DEVICE_%_TYPE_DETAIL=(.*)";
 
 #[derive(Debug)]
 pub struct MemoryData {
@@ -114,24 +130,24 @@ impl MemoryData {
 
 #[derive(Debug, Clone, Default)]
 pub struct MemoryDevice {
-    pub speed: Option<u32>,
+    pub speed_mts: Option<u32>,
     pub form_factor: Option<String>,
     pub r#type: Option<String>,
     pub type_detail: Option<String>,
     pub installed: bool,
 }
 
-fn parse_dmidecode(dmi: &str) -> Vec<MemoryDevice> {
+fn parse_dmidecode<S: AsRef<str>>(dmi: S) -> Vec<MemoryDevice> {
     let mut devices = Vec::new();
 
-    let device_strings = dmi.split("\n\n");
+    let device_strings = dmi.as_ref().split("\n\n");
 
     for device_string in device_strings {
         if device_string.is_empty() {
             continue;
         }
         let memory_device = MemoryDevice {
-            speed: RE_CONFIGURED_SPEED
+            speed_mts: RE_CONFIGURED_SPEED
                 .captures(device_string)
                 .or_else(|| RE_SPEED.captures(device_string))
                 .map(|x| x[1].parse().unwrap()),
@@ -154,18 +170,115 @@ fn parse_dmidecode(dmi: &str) -> Vec<MemoryDevice> {
     devices
 }
 
-pub fn get_memory_devices() -> Result<Vec<MemoryDevice>> {
-    let output = Command::new("dmidecode")
-        .args(["-t", "17", "-q"])
-        .output()?;
-    if output.status.code().unwrap_or(1) == 1 {
-        debug!("Unable to get memory information (dmidecode) without privileges");
-        bail!("no permission")
-    }
-    Ok(parse_dmidecode(String::from_utf8(output.stdout)?.as_str()))
+fn virtual_dmi() -> Vec<MemoryDevice> {
+    let command = if *IS_FLATPAK {
+        Command::new(FLATPAK_SPAWN)
+            .args([
+                "--host",
+                "udevadm",
+                "info",
+                "-p",
+                "/sys/devices/virtual/dmi/id",
+            ])
+            .output()
+    } else {
+        Command::new("udevadm")
+            .args(["info", "-p", "/sys/devices/virtual/dmi/id"])
+            .output()
+    };
+
+    let virtual_dmi_output = command
+        .context("unable to execute udevadm")
+        .and_then(|output| {
+            String::from_utf8(output.stdout).context("unable to parse stdout of udevadm to UTF-8")
+        })
+        .unwrap_or_default();
+
+    parse_virtual_dmi(virtual_dmi_output)
 }
 
-pub fn pkexec_get_memory_devices() -> Result<Vec<MemoryDevice>> {
+fn parse_virtual_dmi<S: AsRef<str>>(dmi: S) -> Vec<MemoryDevice> {
+    let dmi = dmi.as_ref();
+
+    let devices_amount: usize = RE_NUM_MEMORY_DEVICES
+        .captures(dmi)
+        .and_then(|captures| captures.get(1))
+        .and_then(|capture| capture.as_str().parse().ok())
+        .unwrap_or(0);
+
+    let mut devices = Vec::with_capacity(devices_amount);
+
+    for i in 0..devices_amount {
+        let i = i.to_string();
+
+        let speed = Regex::new(&TEMPLATE_RE_CONFIGURED_SPEED_MTS.replace('%', &i))
+            .ok()
+            .and_then(|regex| regex.captures(dmi))
+            .or_else(|| {
+                Regex::new(&TEMPLATE_RE_SPEED_MTS.replace('%', &i.to_string()))
+                    .ok()
+                    .and_then(|regex| regex.captures(dmi))
+            })
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse().ok());
+
+        let form_factor = Regex::new(&TEMPLATE_RE_FORM_FACTOR.replace('%', &i))
+            .ok()
+            .and_then(|regex| regex.captures(dmi))
+            .and_then(|captures| captures.get(1))
+            .map(|capture| capture.as_str().to_string());
+
+        let r#type = Regex::new(&TEMPLATE_RE_TYPE.replace('%', &i))
+            .ok()
+            .and_then(|regex| regex.captures(dmi))
+            .and_then(|captures| captures.get(1))
+            .map(|capture| capture.as_str().to_string());
+
+        let type_detail = Regex::new(&TEMPLATE_RE_TYPE_DETAIL.replace('%', &i))
+            .ok()
+            .and_then(|regex| regex.captures(dmi))
+            .and_then(|captures| captures.get(1))
+            .map(|capture| capture.as_str().to_string());
+
+        let installed = Regex::new(&TEMPLATE_RE_PRESENT.replace('%', &i))
+            .ok()
+            .and_then(|regex| regex.captures(dmi))
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse::<usize>().ok())
+            .map(|int| int != 0)
+            .unwrap_or(true);
+
+        devices.push(MemoryDevice {
+            speed_mts: speed,
+            form_factor,
+            r#type,
+            type_detail,
+            installed,
+        })
+    }
+
+    devices
+}
+
+pub fn get_memory_devices() -> Result<Vec<MemoryDevice>> {
+    let virtual_dmi = virtual_dmi();
+    if virtual_dmi.len() > 0 {
+        debug!("Memory information obtained using udevadm");
+        Ok(virtual_dmi)
+    } else {
+        let output = Command::new("dmidecode")
+            .args(["-t", "17", "-q"])
+            .output()?;
+        if output.status.code().unwrap_or(1) == 1 {
+            debug!("Unable to get memory information without elevated privileges");
+            bail!("no permission")
+        }
+        debug!("Memory information obtained using dmidecode (unprivileged)");
+        Ok(parse_dmidecode(String::from_utf8(output.stdout)?))
+    }
+}
+
+pub fn pkexec_dmidecode() -> Result<Vec<MemoryDevice>> {
     debug!("Using pkexec to get memory information (dmidecode)…");
     let output = if *IS_FLATPAK {
         Command::new(FLATPAK_SPAWN)
@@ -184,5 +297,6 @@ pub fn pkexec_get_memory_devices() -> Result<Vec<MemoryDevice>> {
             .args(["--disable-internal-agent", "dmidecode", "-t", "17", "-q"])
             .output()?
     };
+    debug!("Memory information obtained using dmidecode (privileged)");
     Ok(parse_dmidecode(String::from_utf8(output.stdout)?.as_str()))
 }
