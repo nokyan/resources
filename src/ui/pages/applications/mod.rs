@@ -6,7 +6,7 @@ use std::collections::HashSet;
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, closure, Object, Sender};
-use gtk::{gio, FilterChange, ListItem, NumericSorter, SortType, StringSorter, Widget};
+use gtk::{gio, FilterChange, NumericSorter, SortType, StringSorter, Widget};
 use gtk_macros::send;
 
 use log::error;
@@ -562,32 +562,6 @@ impl ResApplications {
         dialog.set_visible(true);
     }
 
-    fn add_gestures(&self, widget: &impl IsA<Widget>, item: &ListItem) {
-        let secondary_click = gtk::GestureClick::new();
-        secondary_click.set_button(3);
-        secondary_click.connect_released(
-            clone!(@strong self as this, @strong item as this_item, @strong widget as this_widget => move |_, _, x, y| {
-                if let Some(process_entry) = this_item.item().and_downcast_ref::<ApplicationEntry>() {
-                    let imp = this.imp();
-                    let popover_menu = &imp.popover_menu;
-
-                    *imp.popped_over_app.borrow_mut() = Some(process_entry.clone());
-
-                    let position = this_widget.compute_point(&this, &gtk::graphene::Point::new(x as _, y as _)).unwrap();
-                    popover_menu.set_pointing_to(Some(&gtk::gdk::Rectangle::new(
-                        position.x().round() as i32,
-                        position.y().round() as i32,
-                        1,
-                        1,
-                    )));
-                    popover_menu.popup();
-                }
-            }),
-        );
-
-        widget.add_controller(secondary_click);
-    }
-
     fn add_name_column(&self) {
         let imp = self.imp();
 
@@ -615,18 +589,6 @@ impl ResApplications {
                 .chain_property::<ApplicationEntry>("icon")
                 .bind(&row, "icon", Widget::NONE);
         });
-
-        name_col_factory.connect_bind(clone!(@strong self as this => move |_, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-            let child = item
-                .child()
-                .unwrap()
-                .downcast::<ResApplicationNameCell>()
-                .unwrap();
-
-            this.add_gestures(&child.parent().and_then(|p| p.parent()).unwrap(), &item);
-        }));
 
         let name_col_sorter = StringSorter::builder()
             .ignore_case(true)
