@@ -198,12 +198,12 @@ impl ResGPU {
             .set_start_title_label(&i18n("Video Encoder Usage"));
         imp.encode_decode_usage
             .start_graph()
-            .set_graph_color(230, 97, 0);
+            .set_graph_color(211, 49, 14);
         imp.encode_decode_usage
             .set_end_title_label(&i18n("Video Decoder Usage"));
         imp.encode_decode_usage
             .end_graph()
-            .set_graph_color(230, 97, 0);
+            .set_graph_color(211, 49, 14);
 
         imp.vram_usage.set_title_label(&i18n("Video Memory Usage"));
         imp.vram_usage.graph().set_graph_color(192, 28, 40);
