@@ -505,7 +505,6 @@ impl ResApplications {
         imp.column_view
             .borrow()
             .sorter()
-            .and_downcast::<gtk::ColumnViewSorter>()
             .map(|sorter| sorter.changed(gtk::SorterChange::Different));
 
         // -1 because we don't want to count System Processes

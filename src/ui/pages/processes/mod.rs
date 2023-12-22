@@ -483,7 +483,6 @@ impl ResProcesses {
         imp.column_view
             .borrow()
             .sorter()
-            .and_downcast::<gtk::ColumnViewSorter>()
             .map(|sorter| sorter.changed(gtk::SorterChange::Different));
 
         self.set_property(
