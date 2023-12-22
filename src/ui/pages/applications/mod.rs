@@ -6,7 +6,7 @@ use std::collections::HashSet;
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, closure, Object, Sender};
-use gtk::{gio, CustomSorter, FilterChange, ListItem, Ordering, SortType, Widget};
+use gtk::{gio, FilterChange, NumericSorter, SortType, StringSorter, Widget};
 use gtk_macros::send;
 
 use log::error;
@@ -306,28 +306,8 @@ impl ResApplications {
 
         imp.popover_menu.set_parent(self);
 
-        let column_view = gtk::ColumnView::new(None::<gtk::SingleSelection>);
-        let store = gio::ListStore::new::<ApplicationEntry>();
-        let filter_model = gtk::FilterListModel::new(
-            Some(store.clone()),
-            Some(gtk::CustomFilter::new(
-                clone!(@strong self as this => move |obj| this.search_filter(obj)),
-            )),
-        );
-        let sort_model = gtk::SortListModel::new(Some(filter_model.clone()), column_view.sorter());
-        let selection_model = gtk::SingleSelection::new(Some(sort_model.clone()));
-        column_view.set_model(Some(&selection_model));
-        selection_model.set_can_unselect(true);
-        selection_model.set_autoselect(false);
-
-        *imp.store.borrow_mut() = store;
-        *imp.selection_model.borrow_mut() = selection_model;
-        *imp.sort_model.borrow_mut() = sort_model;
-        *imp.filter_model.borrow_mut() = filter_model;
-
-        imp.applications_scrolled_window
-            .set_child(Some(&column_view));
-        *imp.column_view.borrow_mut() = column_view;
+        *imp.column_view.borrow_mut() = gtk::ColumnView::new(None::<gtk::SingleSelection>);
+        let column_view = imp.column_view.borrow();
 
         self.add_name_column();
         self.add_memory_column();
@@ -340,6 +320,31 @@ impl ResApplications {
         self.add_gpu_mem_column();
         self.add_encoder_column();
         self.add_decoder_column();
+
+        let store = gio::ListStore::new::<ApplicationEntry>();
+
+        let filter_model = gtk::FilterListModel::new(
+            Some(store.clone()),
+            Some(gtk::CustomFilter::new(
+                clone!(@strong self as this => move |obj| this.search_filter(obj)),
+            )),
+        );
+
+        let sort_model = gtk::SortListModel::new(Some(filter_model.clone()), column_view.sorter());
+
+        let selection_model = gtk::SingleSelection::new(Some(sort_model.clone()));
+        selection_model.set_can_unselect(true);
+        selection_model.set_autoselect(false);
+
+        column_view.set_model(Some(&selection_model));
+
+        *imp.store.borrow_mut() = store;
+        *imp.selection_model.borrow_mut() = selection_model;
+        *imp.sort_model.borrow_mut() = sort_model;
+        *imp.filter_model.borrow_mut() = filter_model;
+
+        imp.applications_scrolled_window
+            .set_child(Some(&*column_view));
     }
 
     pub fn setup_signals(&self) {
@@ -491,22 +496,16 @@ impl ResApplications {
         });
 
         // add the newly started apps to the store
-        new_items
+        let items: Vec<ApplicationEntry> = new_items
             .drain()
-            .for_each(|(_, new_item)| store.append(&ApplicationEntry::new(new_item)));
+            .map(|(_, new_item)| ApplicationEntry::new(new_item))
+            .collect();
+        store.extend_from_slice(&items);
 
-        let column_view = imp.column_view.borrow();
-
-        let sorter = column_view
+        imp.column_view
+            .borrow()
             .sorter()
-            .and_downcast::<gtk::ColumnViewSorter>()
-            .unwrap();
-
-        let selected_column = sorter.primary_sort_column();
-
-        let selected_order = sorter.primary_sort_order();
-
-        column_view.sort_by_column(selected_column.as_ref(), selected_order);
+            .map(|sorter| sorter.changed(gtk::SorterChange::Different));
 
         // -1 because we don't want to count System Processes
         self.set_property(
@@ -562,32 +561,6 @@ impl ResApplications {
         dialog.set_visible(true);
     }
 
-    fn add_gestures(&self, widget: &impl IsA<Widget>, item: &ListItem) {
-        let secondary_click = gtk::GestureClick::new();
-        secondary_click.set_button(3);
-        secondary_click.connect_released(
-            clone!(@strong self as this, @strong item as this_item, @strong widget as this_widget => move |_, _, x, y| {
-                if let Some(process_entry) = this_item.item().and_downcast_ref::<ApplicationEntry>() {
-                    let imp = this.imp();
-                    let popover_menu = &imp.popover_menu;
-
-                    *imp.popped_over_app.borrow_mut() = Some(process_entry.clone());
-
-                    let position = this_widget.compute_point(&this, &gtk::graphene::Point::new(x as _, y as _)).unwrap();
-                    popover_menu.set_pointing_to(Some(&gtk::gdk::Rectangle::new(
-                        position.x().round() as i32,
-                        position.y().round() as i32,
-                        1,
-                        1,
-                    )));
-                    popover_menu.popup();
-                }
-            }),
-        );
-
-        widget.add_controller(secondary_click);
-    }
-
     fn add_name_column(&self) {
         let imp = self.imp();
 
@@ -616,27 +589,14 @@ impl ResApplications {
                 .bind(&row, "icon", Widget::NONE);
         });
 
-        name_col_factory.connect_bind(clone!(@strong self as this => move |_, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-            let child = item
-                .child()
-                .unwrap()
-                .downcast::<ResApplicationNameCell>()
-                .unwrap();
-
-            this.add_gestures(&child.parent().and_then(|p| p.parent()).unwrap(), &item);
-        }));
-
-        let name_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap();
-            item_a
-                .name()
-                .to_lowercase()
-                .cmp(&item_b.name().to_lowercase())
-                .into()
-        });
+        let name_col_sorter = StringSorter::builder()
+            .ignore_case(true)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "name",
+            ))
+            .build();
 
         name_col.set_sorter(Some(&name_col_sorter));
 
@@ -674,11 +634,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let memory_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().memory_usage();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().memory_usage();
-            item_a.cmp(&item_b).into()
-        });
+        let memory_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "memory_usage",
+            ))
+            .build();
 
         memory_col.set_sorter(Some(&memory_col_sorter));
         memory_col.set_visible(SETTINGS.apps_show_memory());
@@ -714,17 +677,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let cpu_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().cpu_usage();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().cpu_usage();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let cpu_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "cpu_usage",
+            ))
+            .build();
 
         cpu_col.set_sorter(Some(&cpu_col_sorter));
         cpu_col.set_visible(SETTINGS.apps_show_cpu());
@@ -766,17 +726,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let read_speed_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().read_speed();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().read_speed();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let read_speed_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "read_speed",
+            ))
+            .build();
 
         read_speed_col.set_sorter(Some(&read_speed_col_sorter));
         read_speed_col.set_visible(SETTINGS.apps_show_drive_read_speed());
@@ -815,11 +772,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let read_total_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().read_total();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().read_total();
-            item_a.cmp(&item_b).into()
-        });
+        let read_total_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "read_total",
+            ))
+            .build();
 
         read_total_col.set_sorter(Some(&read_total_col_sorter));
         read_total_col.set_visible(SETTINGS.apps_show_drive_read_total());
@@ -862,17 +822,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let write_speed_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().write_speed();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().write_speed();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let write_speed_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "write_speed",
+            ))
+            .build();
 
         write_speed_col.set_sorter(Some(&write_speed_col_sorter));
         write_speed_col.set_visible(SETTINGS.apps_show_drive_write_speed());
@@ -912,11 +869,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let write_total_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().write_total();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().write_total();
-            item_a.cmp(&item_b).into()
-        });
+        let write_total_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "write_total",
+            ))
+            .build();
 
         write_total_col.set_sorter(Some(&write_total_col_sorter));
         write_total_col.set_visible(SETTINGS.apps_show_drive_write_total());
@@ -953,17 +913,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let gpu_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().gpu_usage();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().gpu_usage();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let gpu_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "gpu_usage",
+            ))
+            .build();
 
         gpu_col.set_sorter(Some(&gpu_col_sorter));
         gpu_col.set_visible(SETTINGS.apps_show_gpu());
@@ -1001,17 +958,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let encoder_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().enc_usage();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().enc_usage();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let encoder_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "enc_usage",
+            ))
+            .build();
 
         encoder_col.set_sorter(Some(&encoder_col_sorter));
         encoder_col.set_visible(SETTINGS.apps_show_encoder());
@@ -1049,17 +1003,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let decoder_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a.downcast_ref::<ApplicationEntry>().unwrap().dec_usage();
-            let item_b = b.downcast_ref::<ApplicationEntry>().unwrap().dec_usage();
-            if item_a > item_b {
-                Ordering::Larger
-            } else if item_a < item_b {
-                Ordering::Smaller
-            } else {
-                Ordering::Equal
-            }
-        });
+        let decoder_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "dec_usage",
+            ))
+            .build();
 
         decoder_col.set_sorter(Some(&decoder_col_sorter));
         decoder_col.set_visible(SETTINGS.apps_show_decoder());
@@ -1094,17 +1045,14 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
-        let gpu_mem_col_sorter = CustomSorter::new(move |a, b| {
-            let item_a = a
-                .downcast_ref::<ApplicationEntry>()
-                .unwrap()
-                .gpu_mem_usage();
-            let item_b = b
-                .downcast_ref::<ApplicationEntry>()
-                .unwrap()
-                .gpu_mem_usage();
-            item_a.cmp(&item_b).into()
-        });
+        let gpu_mem_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "gpu_mem_usage",
+            ))
+            .build();
 
         gpu_mem_col.set_sorter(Some(&gpu_mem_col_sorter));
         gpu_mem_col.set_visible(SETTINGS.apps_show_gpu_memory());

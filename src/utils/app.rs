@@ -296,10 +296,10 @@ impl App {
     }
 
     #[must_use]
-    pub fn starttime(&self, apps: &AppsContext) -> u64 {
+    pub fn starttime(&self, apps: &AppsContext) -> f64 {
         self.processes_iter(apps)
             .map(Process::starttime)
-            .min()
+            .min_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal))
             .unwrap_or_default()
     }
 
@@ -526,16 +526,6 @@ impl AppsContext {
             } else {
                 process.data.comm.clone()
             };
-
-            let running_since = boot_time()
-                .and_then(|boot_time| {
-                    boot_time
-                        .add_seconds(process.starttime() as f64)
-                        .context("unable to add seconds to boot time")
-                })
-                .and_then(|time| time.format("%c").context("unable to format running_since"))
-                .unwrap_or_else(|_| GString::from(i18n("N/A")));
-
             ProcessItem {
                 pid: process.data.pid,
                 display_name: full_comm.clone(),
@@ -545,7 +535,7 @@ impl AppsContext {
                 commandline: Process::sanitize_cmdline(process.data.commandline.clone())
                     .unwrap_or(full_comm),
                 containerization: process.data.containerization,
-                running_since,
+                starttime: process.starttime(),
                 cgroup: process.data.cgroup.clone(),
                 uid: process.data.uid,
                 read_speed: process.read_speed(),

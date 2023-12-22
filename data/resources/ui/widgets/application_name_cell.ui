@@ -18,6 +18,7 @@
         <property name="vexpand">1</property>
         <property name="valign">center</property>
         <property name="text-overflow">2</property>
+        <property name="min-chars">12</property>
       </object>
     </child>
   </template>

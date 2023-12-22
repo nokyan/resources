@@ -11,10 +11,7 @@ use std::{
 };
 use strum_macros::Display;
 
-use gtk::{
-    gio::{Icon, ThemedIcon},
-    glib::GString,
-};
+use gtk::gio::{Icon, ThemedIcon};
 
 use crate::config;
 
@@ -86,7 +83,7 @@ pub struct ProcessItem {
     pub cpu_time_ratio: f32,
     pub commandline: String,
     pub containerization: Containerization,
-    pub running_since: GString,
+    pub starttime: f64,
     pub cgroup: Option<String>,
     pub read_speed: Option<f64>,
     pub read_total: Option<u64>,
@@ -409,8 +406,8 @@ impl Process {
     }
 
     #[must_use]
-    pub fn starttime(&self) -> u64 {
-        self.data.starttime / *TICK_RATE as u64
+    pub fn starttime(&self) -> f64 {
+        self.data.starttime as f64 / *TICK_RATE as f64
     }
 
     pub fn sanitize_cmdline<S: AsRef<str>>(cmdline: S) -> Option<String> {

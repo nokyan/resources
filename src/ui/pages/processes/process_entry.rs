@@ -30,7 +30,7 @@ mod imp {
         user: Cell<glib::GString>,
 
         #[property(get = Self::icon, set = Self::set_icon, type = Icon)]
-        icon: RefCell<Icon>,
+        icon: Cell<Icon>,
 
         #[property(get, set)]
         pid: Cell<i32>,
@@ -74,7 +74,7 @@ mod imp {
                 name: Cell::new(glib::GString::default()),
                 commandline: Cell::new(glib::GString::default()),
                 user: Cell::new(glib::GString::default()),
-                icon: RefCell::new(ThemedIcon::new("generic-process").into()),
+                icon: Cell::new(ThemedIcon::new("generic-process").into()),
                 pid: Cell::new(0),
                 cpu_usage: Cell::new(0.0),
                 memory_usage: Cell::new(0),
@@ -126,9 +126,7 @@ mod imp {
         }
 
         pub fn icon(&self) -> Icon {
-            let icon = self
-                .icon
-                .replace_with(|_| ThemedIcon::new("generic-process").into());
+            let icon = self.icon.replace(ThemedIcon::new("generic-process").into());
             let result = icon.clone();
             self.icon.set(icon);
             result

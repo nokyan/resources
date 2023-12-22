@@ -1,10 +1,12 @@
 use adw::{prelude::*, subclass::prelude::*};
+use anyhow::Context;
 use gtk::glib;
 use process_data::Containerization;
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::ui::window::MainWindow;
+use crate::utils::boot_time;
 use crate::utils::process::ProcessItem;
 use crate::utils::units::{convert_speed, convert_storage};
 
@@ -162,7 +164,17 @@ impl ResProcessDialog {
 
         imp.pid.set_subtitle(&process.pid.to_string());
 
-        imp.running_since.set_subtitle(&process.running_since);
+        imp.running_since.set_subtitle(
+            &boot_time()
+                .and_then(|boot_time| {
+                    boot_time
+                        .add_seconds(process.starttime)
+                        .context("unable to add seconds to boot time")
+                })
+                .and_then(|time| time.format("%c").context("unable to format running_since"))
+                .map(|gstr| gstr.to_string())
+                .unwrap_or(i18n("N/A")),
+        );
 
         imp.commandline.set_subtitle(&process.commandline);
         imp.commandline.set_tooltip_text(Some(&process.commandline));
