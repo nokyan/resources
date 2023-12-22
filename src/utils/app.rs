@@ -21,6 +21,9 @@ use super::{
 
 static RE_ENV_FILTER: Lazy<Regex> = Lazy::new(|| Regex::new(r"env\s*\S*=\S*\s*(.*)").unwrap());
 
+static RE_FLATPAK_FILTER: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"flatpak run .* --command=(\S*)").unwrap());
+
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
     let home = std::env::var("HOME").unwrap_or_else(|_| "/".to_string());
@@ -47,7 +50,7 @@ static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: Lazy<HashMap<String, String>> = Lazy::n
 });
 
 // This contains executable names that are blacklisted from being recognized as applications
-static APPLICATION_EXEC_BLACKLIST: &[&str] = &["bash", "zsh", "fish", "sh", "ksh"];
+static APPLICATION_EXEC_BLACKLIST: &[&str] = &["bash", "zsh", "fish", "sh", "ksh", "flatpak"];
 
 #[derive(Debug, Clone, Default)]
 pub struct AppsContext {
@@ -116,6 +119,7 @@ impl App {
             })
             .flatten()
             .collect();
+
         debug!("Detected {} applications", apps.len());
 
         apps
@@ -158,7 +162,11 @@ impl App {
             .map(str::to_string);
 
         let executable_name = commandline.clone().map(|cmdline| {
-            cmdline
+            RE_FLATPAK_FILTER // filter flatpak stuff (e. g. from "/usr/bin/flatpak run … --command=inkscape …" to "inkscape")
+                .captures(&cmdline)
+                .and_then(|captures| captures.get(1))
+                .map(|capture| capture.as_str().to_string())
+                .unwrap_or(cmdline) // if there's no flatpak stuff, return the bare cmdline
                 .split(' ') // filter any arguments (e. g. from "/usr/bin/firefox %u" to "/usr/bin/firefox")
                 .nth(0)
                 .unwrap_or_default()
@@ -168,12 +176,12 @@ impl App {
                 .to_string()
         });
 
-        if let Some(executable) = &executable_name {
-            if APPLICATION_EXEC_BLACKLIST.contains(&executable.as_str()) {
+        if let Some(executable_name) = &executable_name {
+            if APPLICATION_EXEC_BLACKLIST.contains(&executable_name.as_str()) {
                 bail!(
                     "skipping {} because its executable {} is blacklisted",
                     id,
-                    executable
+                    executable_name
                 )
             }
         }
@@ -482,7 +490,9 @@ impl AppsContext {
                         .and_then(|executable_name| {
                             KNOWN_EXECUTABLE_NAME_EXCEPTIONS
                                 .get(&process.executable_name)
-                                .map(|sub_executable_name| sub_executable_name == executable_name)
+                                .map(|substituted_executable_name| {
+                                    substituted_executable_name == executable_name
+                                })
                         })
                         .unwrap_or(false);
 
@@ -592,7 +602,7 @@ impl AppsContext {
                 let running_since = boot_time()
                     .and_then(|boot_time| {
                         boot_time
-                            .add_seconds(app.starttime(self) as f64)
+                            .add_seconds(app.starttime(self))
                             .context("unable to add seconds to boot time")
                     })
                     .and_then(|time| time.format("%c").context("unable to format running_since"))
