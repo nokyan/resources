@@ -262,7 +262,7 @@ fn parse_virtual_dmi<S: AsRef<str>>(dmi: S) -> Vec<MemoryDevice> {
 
 pub fn get_memory_devices() -> Result<Vec<MemoryDevice>> {
     let virtual_dmi = virtual_dmi();
-    if virtual_dmi.len() > 0 {
+    if !virtual_dmi.is_empty() {
         debug!("Memory information obtained using udevadm");
         Ok(virtual_dmi)
     } else {
