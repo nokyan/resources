@@ -190,7 +190,7 @@ impl ResMemory {
         let speed = memory_devices
             .iter()
             .filter(|md| md.installed)
-            .map(|md| md.speed.unwrap_or(0))
+            .map(|md| md.speed_mts.unwrap_or(0))
             .max();
 
         let form_factor = memory_devices.iter().find(|md| md.installed).map_or_else(
@@ -239,7 +239,7 @@ impl ResMemory {
         imp.authentication_banner
             .connect_button_clicked(clone!(@strong self as this => move |_| {
                 let imp = this.imp();
-                if let Ok(memory_devices) = memory::pkexec_get_memory_devices() {
+                if let Ok(memory_devices) = memory::pkexec_dmidecode() {
                     this.setup_properties(memory_devices);
                     imp.properties.set_visible(true);
                 }
