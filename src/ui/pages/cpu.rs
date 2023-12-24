@@ -311,7 +311,11 @@ impl ResCPU {
                 curr_threadbox.graph().push_data_point(thread_fraction);
                 curr_threadbox.set_title_label(&format!("{} %", (thread_fraction * 100.0).round()));
 
-                curr_threadbox.set_subtitle(&convert_frequency(frequencies[i] as f64));
+                if let Some(frequency) = frequencies[i] {
+                    curr_threadbox.set_subtitle(&convert_frequency(frequency as f64));
+                } else {
+                    curr_threadbox.set_subtitle(&i18n_f("CPU {}", &[&(i + 1).to_string()]))
+                }
                 *old_thread_usage = new_thread_usage;
             }
         }

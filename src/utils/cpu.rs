@@ -36,7 +36,7 @@ pub struct CpuData {
     pub new_total_usage: (u64, u64),
     pub new_thread_usages: Vec<(u64, u64)>,
     pub temperature: Result<f32, anyhow::Error>,
-    pub frequencies: Vec<u64>,
+    pub frequencies: Vec<Option<u64>>,
 }
 
 impl CpuData {
@@ -51,8 +51,8 @@ impl CpuData {
             let smth = get_cpu_usage(Some(i)).unwrap_or((0, 0));
             new_thread_usages.push(smth);
 
-            let freq = get_cpu_freq(i).unwrap_or(0);
-            frequencies.push(freq);
+            let freq = get_cpu_freq(i);
+            frequencies.push(freq.ok());
         }
 
         Self {
