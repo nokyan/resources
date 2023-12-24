@@ -61,7 +61,7 @@
           🐛 Bug fixes
         </p>
         <ul>
-          <li>Snap applications were not properly detected and categorized as system processes, this fix requires an additional Flatpak permission (read-only access to /var/lib/snapd/desktop)</li>
+          <li>Snap applications were not properly detected and categorized as system processes, this fix requires an additional Flatpak permission (read-only access to /var/lib/snapd/)</li>
           <li>CPU usage of processes and applications was not calculated correctly</li>
           <li>Newer AMD GPUs were not properly detected</li>
           <li>The counting for multiple GPUs started at 0</li>
