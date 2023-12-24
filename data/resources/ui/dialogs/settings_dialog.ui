@@ -93,6 +93,19 @@
                 <property name="title" translatable="yes">Show Usage Details in Sidebar</property>
               </object>
             </child>
+            <child>
+              <object class="AdwComboRow" id="sidebar_meter_type_row">
+                <property name="title" translatable="yes">Sidebar Meter Type</property>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">Progress Bar</item>
+                      <item translatable="yes">Graph</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
           </object>
         </child>
       </object>

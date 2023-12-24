@@ -47,6 +47,11 @@
             </style>
           </object>
         </child>
+        <child>
+          <object class="ResGraph" id="graph">
+            <property name="height-request">80</property>
+          </object>
+        </child>
       </object>
     </property>
   </template>

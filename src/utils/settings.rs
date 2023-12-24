@@ -127,6 +127,14 @@ impl RefreshSpeed {
     }
 }
 
+#[repr(u8)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, EnumString, Display, Hash, FromRepr)]
+pub enum SidebarMeterType {
+    #[default]
+    ProgressBar,
+    Graph,
+}
+
 #[derive(Clone, Debug, Hash)]
 pub struct Settings(gio::Settings);
 
@@ -183,6 +191,29 @@ impl Settings {
         self.connect_changed(Some("refresh-speed"), move |settings, _key| {
             f(
                 RefreshSpeed::from_str(settings.string("refresh-speed").as_str())
+                    .unwrap_or_default(),
+            )
+        })
+    }
+
+    pub fn sidebar_meter_type(&self) -> SidebarMeterType {
+        SidebarMeterType::from_str(self.string("sidebar-meter-type").as_str()).unwrap_or_default()
+    }
+
+    pub fn set_sidebar_meter_type(
+        &self,
+        value: SidebarMeterType,
+    ) -> Result<(), glib::error::BoolError> {
+        self.set_string("sidebar-meter-type", &value.to_string())
+    }
+
+    pub fn connect_sidebar_meter_type<F: Fn(SidebarMeterType) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(Some("sidebar-meter-type"), move |settings, _key| {
+            f(
+                SidebarMeterType::from_str(settings.string("sidebar-meter-type").as_str())
                     .unwrap_or_default(),
             )
         })
