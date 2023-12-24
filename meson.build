@@ -1,7 +1,7 @@
 project(
   'resources',
   'rust',
-  version: '1.2.1',
+  version: '1.3.0',
   meson_version: '>= 0.59',
 )
 
