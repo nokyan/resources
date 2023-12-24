@@ -240,14 +240,17 @@ msgid "Icon by"
 msgstr ""
 
 #: src/ui/dialogs/app_dialog.rs:163 src/ui/dialogs/process_dialog.rs:188
+#: src/ui/dialogs/app_dialog.rs:163 src/ui/dialogs/process_dialog.rs:188
 #: src/ui/pages/drive.rs:227 src/ui/pages/drive.rs:233
 msgid "No"
 msgstr ""
 
 #: src/ui/dialogs/app_dialog.rs:164 src/ui/dialogs/process_dialog.rs:189
+#: src/ui/dialogs/app_dialog.rs:164 src/ui/dialogs/process_dialog.rs:189
 msgid "Yes (Flatpak)"
 msgstr ""
 
+#: src/ui/dialogs/app_dialog.rs:165 src/ui/dialogs/process_dialog.rs:190
 #: src/ui/dialogs/app_dialog.rs:165 src/ui/dialogs/process_dialog.rs:190
 msgid "Yes (Snap)"
 msgstr ""
@@ -284,17 +287,22 @@ msgid "Applications"
 msgstr ""
 
 #: src/ui/pages/applications/mod.rs:514
+#: src/ui/pages/applications/mod.rs:514
 msgid "Running Applications: {}"
 msgstr ""
 
+#: src/ui/pages/applications/mod.rs:543 src/ui/pages/processes/mod.rs:522
 #: src/ui/pages/applications/mod.rs:543 src/ui/pages/processes/mod.rs:522
 msgid "Cancel"
 msgstr ""
 
 #: src/ui/pages/applications/mod.rs:570
+#: src/ui/pages/applications/mod.rs:570
 msgid "Application"
 msgstr ""
 
+#: src/ui/pages/applications/mod.rs:660 src/ui/pages/cpu.rs:117
+#: src/ui/pages/processes/mod.rs:741 src/ui/window.rs:279
 #: src/ui/pages/applications/mod.rs:660 src/ui/pages/cpu.rs:117
 #: src/ui/pages/processes/mod.rs:741 src/ui/window.rs:279
 #: data/resources/ui/window.ui:124 data/resources/ui/window.ui:131
@@ -306,6 +314,7 @@ msgid "Processor"
 msgstr ""
 
 #: src/ui/pages/applications/mod.rs:703 src/ui/pages/processes/mod.rs:784
+#: src/ui/pages/applications/mod.rs:703 src/ui/pages/processes/mod.rs:784
 #: data/resources/ui/dialogs/app_dialog.ui:92
 #: data/resources/ui/dialogs/process_dialog.ui:75
 #: data/resources/ui/dialogs/settings_dialog.ui:119
@@ -313,6 +322,7 @@ msgstr ""
 msgid "Drive Read"
 msgstr ""
 
+#: src/ui/pages/applications/mod.rs:753 src/ui/pages/processes/mod.rs:835
 #: src/ui/pages/applications/mod.rs:753 src/ui/pages/processes/mod.rs:835
 #: data/resources/ui/dialogs/app_dialog.ui:101
 #: data/resources/ui/dialogs/process_dialog.ui:84
@@ -322,6 +332,7 @@ msgid "Drive Read Total"
 msgstr ""
 
 #: src/ui/pages/applications/mod.rs:799 src/ui/pages/processes/mod.rs:886
+#: src/ui/pages/applications/mod.rs:799 src/ui/pages/processes/mod.rs:886
 #: data/resources/ui/dialogs/app_dialog.ui:110
 #: data/resources/ui/dialogs/process_dialog.ui:93
 #: data/resources/ui/dialogs/settings_dialog.ui:129
@@ -329,6 +340,7 @@ msgstr ""
 msgid "Drive Write"
 msgstr ""
 
+#: src/ui/pages/applications/mod.rs:850 src/ui/pages/processes/mod.rs:937
 #: src/ui/pages/applications/mod.rs:850 src/ui/pages/processes/mod.rs:937
 #: data/resources/ui/dialogs/app_dialog.ui:119
 #: data/resources/ui/dialogs/process_dialog.ui:102
@@ -338,6 +350,7 @@ msgid "Drive Write Total"
 msgstr ""
 
 #: src/ui/pages/applications/mod.rs:939 src/ui/pages/processes/mod.rs:1030
+#: src/ui/pages/applications/mod.rs:939 src/ui/pages/processes/mod.rs:1030
 #: data/resources/ui/dialogs/app_dialog.ui:150
 #: data/resources/ui/dialogs/process_dialog.ui:133
 #: data/resources/ui/dialogs/settings_dialog.ui:149
@@ -346,6 +359,7 @@ msgid "Video Encoder"
 msgstr ""
 
 #: src/ui/pages/applications/mod.rs:984 src/ui/pages/processes/mod.rs:1075
+#: src/ui/pages/applications/mod.rs:984 src/ui/pages/processes/mod.rs:1075
 #: data/resources/ui/dialogs/app_dialog.ui:159
 #: data/resources/ui/dialogs/process_dialog.ui:142
 #: data/resources/ui/dialogs/settings_dialog.ui:154
@@ -353,6 +367,7 @@ msgstr ""
 msgid "Video Decoder"
 msgstr ""
 
+#: src/ui/pages/applications/mod.rs:1028 src/ui/pages/processes/mod.rs:1120
 #: src/ui/pages/applications/mod.rs:1028 src/ui/pages/processes/mod.rs:1120
 #: data/resources/ui/dialogs/app_dialog.ui:141
 #: data/resources/ui/dialogs/process_dialog.ui:124

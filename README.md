@@ -11,11 +11,17 @@ Resources is a simple yet powerful monitor for your system resources and process
 
   ![Applications View of Resources](data/resources/screenshots/1.png?raw=true "Applications View of Resources")
 
-  ![Applications View of Resources](data/resources/screenshots/2.png?raw=true "Processor View of Resources")
+  ![Applications View of Resources](data/resources/screenshots/2.png?raw=true "Processes View of Resources")
 
-  ![Applications View of Resources](data/resources/screenshots/3.png?raw=true "GPU View of Resources")
+  ![Applications View of Resources](data/resources/screenshots/3.png?raw=true "Processor View of Resources")
 
-  ![Applications View of Resources](data/resources/screenshots/4.png?raw=true "Network Interface View of Resources")
+  ![Applications View of Resources](data/resources/screenshots/4.png?raw=true "Memory View of Resources")
+
+  ![Applications View of Resources](data/resources/screenshots/5.png?raw=true "GPU View of Resources")
+
+  ![Applications View of Resources](data/resources/screenshots/6.png?raw=true "Disk View of Resources")
+
+  ![Applications View of Resources](data/resources/screenshots/7.png?raw=true "Network Interface View of Resources")
   
 </details>
 
@@ -74,7 +80,6 @@ If you've built Resources as a Flatpak, type `flatpak-builder --run flatpak_app 
 
 The following list is *roughly* in order of their importance with the most important item being first in the list.
 
-- Support reading statistics of Intel GPUs
 - Translations
 - Battery usage and details
 
