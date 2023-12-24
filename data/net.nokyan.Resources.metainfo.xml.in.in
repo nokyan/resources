@@ -61,6 +61,50 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.3.0" date="2023-12-24">
+      <description>
+        <p>
+          Resources 1.3 has been a long time in the making and brings a number of new and exciting features as well as many bug fixes. Enjoy!
+        </p>
+        <p>
+          🐛 Bug fixes
+        </p>
+        <ul>
+          <li>Snap applications were not properly detected and categorized as system processes, this fix requires an additional Flatpak permission (read-only access to /var/lib/snapd/)</li>
+          <li>CPU usage of processes and applications was not calculated correctly</li>
+          <li>Newer AMD GPUs were not properly detected</li>
+          <li>The counting for multiple GPUs started at 0</li>
+          <li>bash was recognized as an application if there was a detected .desktop file using bash to start the app</li>
+          <li>“simple-framebuffers” were recognized as GPU</li>
+          <li>Displayed stock speed instead of overclocked speed for RAM using AMD EXPO or Intel XMP</li>
+        </ul>
+        <p>
+          ✨ New features
+        </p>
+        <ul>
+          <li>GPU usage (including video encoder, video decoder and VRAM usage) is now tracked per-process</li>
+          <li>The amount of datapoints in graphs is now configurable</li>
+          <li>A grid can now be displayed for graphs</li>
+          <li>The counting for multiple GPUs started at 0</li>
+          <li>More statistics for Intel GPUs</li>
+          <li>The info window for applications and processes now shows the launch date</li>
+        </ul>
+        <p>
+          📈 Improvements
+        </p>
+        <ul>
+          <li>Vastly improved memory usage over time</li>
+          <li>Non-Wireguard VPNs are now recognized as such</li>
+          <li>Memory properties can now be accessed without root privileges</li>
+          <li>Resources needs less time to load after launch</li>
+          <li>Resources’ companion process “resources-processes” is now launched once to run for as long as Resources itself is running, rather than being launched on every refresh</li>
+          <li>Better recognition of Chromium-based applications and their many processes</li>
+          <li>AMD GPUs have a more precise name in the titlebar</li>
+          <li>Processes and applications refresh now as fast as the rest of the UI does</li>
+          <li>The scrollbar doesn’t jump around anymore when scrolling the processes or applications list during a refresh</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.2.1" date="2023-11-02"/>
     <release version="1.2.0" date="2023-10-31"/>
     <release version="1.1.0" date="2023-10-15"/>
