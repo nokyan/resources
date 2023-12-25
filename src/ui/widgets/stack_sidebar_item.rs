@@ -94,9 +94,6 @@ mod imp {
         pub fn set_usage(&self, usage: f64) {
             self.usage.set(usage);
             self.progress_bar.set_fraction(usage);
-            // TODO: find a better place for this
-            // TODO: make this equal to the corresponding page's main graph color
-            self.graph.set_graph_color(28, 113, 216);
             self.graph.push_data_point(usage);
         }
     }
@@ -177,6 +174,10 @@ impl ResStackSidebarItem {
 
     pub fn set_graph_visible(&self, visible: bool) {
         self.imp().graph.set_visible(visible);
+    }
+
+    pub fn set_graph_color(&self, r: u8, g: u8, b: u8) {
+        self.imp().graph.set_graph_color(r, g, b);
     }
 
     pub fn set_subtitle_visible(&self, visible: bool) {

@@ -148,6 +148,11 @@ impl ResStackSidebar {
                 sidebar_item.set_progress_bar_visible(false);
                 sidebar_item.set_graph_visible(false);
             } else {
+                if child.has_property("main_graph_color", Some(glib::Bytes::static_type())) {
+                    let b = child.property::<glib::Bytes>("main_graph_color");
+                    sidebar_item.set_graph_color(b[0], b[1], b[2]);
+                }
+
                 sidebar_item.set_progress_bar_visible(
                     SETTINGS.sidebar_meter_type() == SidebarMeterType::ProgressBar,
                 );

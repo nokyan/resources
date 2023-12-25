@@ -60,6 +60,9 @@ mod imp {
         uses_progress_bar: Cell<bool>,
 
         #[property(get)]
+        main_graph_color: glib::Bytes,
+
+        #[property(get)]
         icon: RefCell<Icon>,
 
         #[property(get, set)]
@@ -114,6 +117,7 @@ mod imp {
                 max_power_cap: Default::default(),
                 number: Default::default(),
                 uses_progress_bar: Cell::new(true),
+                main_graph_color: glib::Bytes::from_static(&super::ResGPU::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(ThemedIcon::new("gpu-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("GPU"))),
@@ -172,6 +176,8 @@ glib::wrapper! {
 }
 
 impl ResGPU {
+    const MAIN_GRAPH_COLOR: [u8; 3] = [230, 97, 0];
+
     pub fn new() -> Self {
         glib::Object::new::<Self>()
     }
@@ -186,7 +192,11 @@ impl ResGPU {
         let imp = self.imp();
 
         imp.gpu_usage.set_title_label(&i18n("GPU Usage"));
-        imp.gpu_usage.graph().set_graph_color(230, 97, 0);
+        imp.gpu_usage.graph().set_graph_color(
+            Self::MAIN_GRAPH_COLOR[0],
+            Self::MAIN_GRAPH_COLOR[1],
+            Self::MAIN_GRAPH_COLOR[2],
+        );
 
         imp.encode_decode_combined_usage
             .set_title_label(&i18n("Video Encoder/Decoder Usage"));
