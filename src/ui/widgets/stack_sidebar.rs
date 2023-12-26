@@ -3,7 +3,7 @@ use std::rc::Rc;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone};
 
-use crate::utils::settings::SETTINGS;
+use crate::utils::settings::{SidebarMeterType, SETTINGS};
 
 use super::stack_sidebar_item::ResStackSidebarItem;
 
@@ -143,9 +143,27 @@ impl ResStackSidebar {
                 }),
             );
 
+            // TODO: generalize to "uses_meter"?
             if !child.property::<bool>("uses_progress_bar") {
                 sidebar_item.set_progress_bar_visible(false);
+                sidebar_item.set_graph_visible(false);
             } else {
+                if child.has_property("main_graph_color", Some(glib::Bytes::static_type())) {
+                    let b = child.property::<glib::Bytes>("main_graph_color");
+                    sidebar_item.set_graph_color(b[0], b[1], b[2]);
+                }
+
+                sidebar_item.set_progress_bar_visible(
+                    SETTINGS.sidebar_meter_type() == SidebarMeterType::ProgressBar,
+                );
+                sidebar_item
+                    .set_graph_visible(SETTINGS.sidebar_meter_type() == SidebarMeterType::Graph);
+                SETTINGS.connect_sidebar_meter_type(
+                    clone!(@strong sidebar_item as item => move |sidebar_meter_type| {
+                        item.set_progress_bar_visible(sidebar_meter_type == SidebarMeterType::ProgressBar);
+                        item.set_graph_visible(sidebar_meter_type == SidebarMeterType::Graph);
+                    }),
+                );
                 child
                     .bind_property("usage", &sidebar_item, "usage")
                     .sync_create()

@@ -51,6 +51,9 @@ mod imp {
         #[property(get)]
         uses_progress_bar: Cell<bool>,
 
+        #[property(get)]
+        main_graph_color: glib::Bytes,
+
         #[property(get = Self::icon, set = Self::set_icon, type = Icon)]
         icon: RefCell<Icon>,
 
@@ -111,6 +114,7 @@ mod imp {
                 writable: Default::default(),
                 removable: Default::default(),
                 uses_progress_bar: Cell::new(true),
+                main_graph_color: glib::Bytes::from_static(&super::ResDrive::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(Drive::default_icon()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("Drive"))),
@@ -176,6 +180,8 @@ glib::wrapper! {
 }
 
 impl ResDrive {
+    const MAIN_GRAPH_COLOR: [u8; 3] = [229, 165, 10];
+
     pub fn new() -> Self {
         glib::Object::new::<Self>()
     }
@@ -192,7 +198,11 @@ impl ResDrive {
         imp.set_tab_name(&drive.display_name(drive_data.capacity as f64));
 
         imp.total_usage.set_title_label(&i18n("Total Usage"));
-        imp.total_usage.graph().set_graph_color(229, 165, 10);
+        imp.total_usage.graph().set_graph_color(
+            Self::MAIN_GRAPH_COLOR[0],
+            Self::MAIN_GRAPH_COLOR[1],
+            Self::MAIN_GRAPH_COLOR[2],
+        );
 
         imp.drive_type.set_subtitle(&drive.drive_type.to_string());
 

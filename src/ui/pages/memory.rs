@@ -47,6 +47,9 @@ mod imp {
         uses_progress_bar: Cell<bool>,
 
         #[property(get)]
+        main_graph_color: glib::Bytes,
+
+        #[property(get)]
         icon: RefCell<Icon>,
 
         #[property(get, set)]
@@ -92,6 +95,7 @@ mod imp {
                 memory_type: Default::default(),
                 type_detail: Default::default(),
                 uses_progress_bar: Cell::new(true),
+                main_graph_color: glib::Bytes::from_static(&super::ResMemory::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(ThemedIcon::new("memory-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("Memory"))),
@@ -150,6 +154,8 @@ glib::wrapper! {
 }
 
 impl ResMemory {
+    const MAIN_GRAPH_COLOR: [u8; 3] = [129, 61, 156];
+
     pub fn new() -> Self {
         glib::Object::new::<Self>()
     }
@@ -163,8 +169,11 @@ impl ResMemory {
         let imp = self.imp();
 
         imp.memory.set_title_label(&i18n("Memory"));
-        imp.memory.graph().set_graph_color(129, 61, 156);
-
+        imp.memory.graph().set_graph_color(
+            Self::MAIN_GRAPH_COLOR[0],
+            Self::MAIN_GRAPH_COLOR[1],
+            Self::MAIN_GRAPH_COLOR[2],
+        );
         imp.swap.set_title_label(&i18n("Swap"));
         imp.swap.graph().set_graph_color(46, 194, 126);
 

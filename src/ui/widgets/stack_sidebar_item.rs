@@ -27,6 +27,8 @@ mod imp {
         pub subtitle_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub progress_bar: TemplateChild<gtk::ProgressBar>,
+        #[template_child]
+        pub graph: TemplateChild<super::super::graph::ResGraph>,
 
         #[property(get = Self::name, set = Self::set_name, type = glib::GString)]
         name: Cell<glib::GString>,
@@ -92,6 +94,7 @@ mod imp {
         pub fn set_usage(&self, usage: f64) {
             self.usage.set(usage);
             self.progress_bar.set_fraction(usage);
+            self.graph.push_data_point(usage);
         }
     }
 
@@ -101,6 +104,7 @@ mod imp {
                 image: Default::default(),
                 label: Default::default(),
                 progress_bar: Default::default(),
+                graph: Default::default(),
                 subtitle_label: Default::default(),
                 name: Default::default(),
                 subtitle: Default::default(),
@@ -166,6 +170,14 @@ impl ResStackSidebarItem {
 
     pub fn set_progress_bar_visible(&self, visible: bool) {
         self.imp().progress_bar.set_visible(visible);
+    }
+
+    pub fn set_graph_visible(&self, visible: bool) {
+        self.imp().graph.set_visible(visible);
+    }
+
+    pub fn set_graph_color(&self, r: u8, g: u8, b: u8) {
+        self.imp().graph.set_graph_color(r, g, b);
     }
 
     pub fn set_subtitle_visible(&self, visible: bool) {

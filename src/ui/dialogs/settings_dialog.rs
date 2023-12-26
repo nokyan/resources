@@ -3,7 +3,7 @@ use gtk::glib;
 
 use crate::{
     config::PROFILE,
-    utils::settings::{Base, RefreshSpeed, TemperatureUnit, SETTINGS},
+    utils::settings::{Base, RefreshSpeed, SidebarMeterType, TemperatureUnit, SETTINGS},
 };
 
 mod imp {
@@ -32,6 +32,8 @@ mod imp {
         pub show_search_on_start_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub sidebar_details_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub sidebar_meter_type_row: TemplateChild<adw::ComboRow>,
 
         #[template_child]
         pub apps_show_memory_row: TemplateChild<adw::SwitchRow>,
@@ -153,6 +155,8 @@ impl ResSettingsDialog {
             .set_value(SETTINGS.graph_data_points() as f64);
         imp.sidebar_details_row
             .set_active(SETTINGS.sidebar_details());
+        imp.sidebar_meter_type_row
+            .set_selected((SETTINGS.sidebar_meter_type() as u8) as u32);
         imp.show_search_on_start_row
             .set_active(SETTINGS.show_search_on_start());
 
@@ -248,6 +252,13 @@ impl ResSettingsDialog {
         imp.sidebar_details_row.connect_active_notify(|switch_row| {
             let _ = SETTINGS.set_sidebar_details(switch_row.is_active());
         });
+
+        imp.sidebar_meter_type_row
+            .connect_selected_item_notify(|combo_row| {
+                if let Some(t) = SidebarMeterType::from_repr(combo_row.selected() as u8) {
+                    let _ = SETTINGS.set_sidebar_meter_type(t);
+                }
+            });
 
         imp.show_search_on_start_row
             .connect_active_notify(|switch_row| {

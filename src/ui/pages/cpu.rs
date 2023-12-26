@@ -62,6 +62,9 @@ mod imp {
         uses_progress_bar: Cell<bool>,
 
         #[property(get)]
+        main_graph_color: glib::Bytes,
+
+        #[property(get)]
         icon: RefCell<Icon>,
 
         #[property(get, set)]
@@ -112,6 +115,7 @@ mod imp {
                 temperature: Default::default(),
                 thread_graphs: Default::default(),
                 uses_progress_bar: Cell::new(true),
+                main_graph_color: glib::Bytes::from_static(&super::ResCPU::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(ThemedIcon::new("processor-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("Processor"))),
@@ -173,6 +177,8 @@ glib::wrapper! {
 }
 
 impl ResCPU {
+    const MAIN_GRAPH_COLOR: [u8; 3] = [28, 113, 216];
+
     pub fn new() -> Self {
         glib::Object::new::<Self>()
     }
@@ -198,7 +204,11 @@ impl ResCPU {
 
         imp.total_cpu.set_title_label(&i18n("CPU"));
         imp.total_cpu.set_subtitle(&i18n("N/A"));
-        imp.total_cpu.graph().set_graph_color(28, 113, 216);
+        imp.total_cpu.graph().set_graph_color(
+            Self::MAIN_GRAPH_COLOR[0],
+            Self::MAIN_GRAPH_COLOR[1],
+            Self::MAIN_GRAPH_COLOR[2],
+        );
 
         // if our CPU happens to only have one thread, showing a single thread box with the exact
         // same fraction as the progress bar for total CPU usage would be silly, so only do

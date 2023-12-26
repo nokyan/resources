@@ -50,6 +50,9 @@ mod imp {
         #[property(get)]
         uses_progress_bar: Cell<bool>,
 
+        #[property(get)]
+        main_graph_color: glib::Bytes,
+
         #[property(get = Self::icon, set = Self::set_icon, type = Icon)]
         icon: RefCell<Icon>,
 
@@ -110,6 +113,7 @@ mod imp {
                 interface: Default::default(),
                 hw_address: Default::default(),
                 uses_progress_bar: Cell::new(true),
+                main_graph_color: glib::Bytes::from_static(&super::ResNetwork::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(ThemedIcon::new("unknown-network-type-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("Network Interface"))),
@@ -176,6 +180,12 @@ glib::wrapper! {
 }
 
 impl ResNetwork {
+    // TODO: this is the color for receiving, but it is also used in sidebar,
+    // which graphs the sum of send+recv.
+    // This does not make much sense, but we probably can't do something
+    // like separate send/receive lines without some refactoring to ResGraph.
+    const MAIN_GRAPH_COLOR: [u8; 3] = [52, 170, 175];
+
     pub fn new() -> Self {
         glib::Object::new::<Self>()
     }
@@ -193,7 +203,11 @@ impl ResNetwork {
         imp.set_tab_name(&i18n(&network_interface.interface_type.to_string()));
 
         imp.receiving.set_title_label(&i18n("Receiving"));
-        imp.receiving.graph().set_graph_color(52, 170, 175);
+        imp.receiving.graph().set_graph_color(
+            Self::MAIN_GRAPH_COLOR[0],
+            Self::MAIN_GRAPH_COLOR[1],
+            Self::MAIN_GRAPH_COLOR[2],
+        );
         imp.receiving.graph().set_locked_max_y(None);
 
         imp.sending.set_title_label(&i18n("Sending"));

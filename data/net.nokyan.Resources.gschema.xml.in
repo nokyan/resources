@@ -41,6 +41,10 @@
       <default>false</default>
       <summary>Show usage details in the sidebar</summary>
     </key>
+    <key name="sidebar-meter-type" type="s">
+      <default>"Progress Bar"</default>
+      <summary>Sidebar Meter Type</summary>
+    </key>
     <key name="network-bits" type="b">
       <default>false</default>
       <summary>Display network speeds in bits per second</summary>
