@@ -232,7 +232,8 @@ fn parse_virtual_dmi<S: AsRef<str>>(dmi: S) -> Vec<MemoryDevice> {
             .ok()
             .and_then(|regex| regex.captures(dmi))
             .and_then(|captures| captures.get(1))
-            .map(|capture| capture.as_str().to_string());
+            .map(|capture| capture.as_str().to_string())
+            .filter(|capture| capture != "<OUT OF SPEC>");
 
         let type_detail = Regex::new(&TEMPLATE_RE_TYPE_DETAIL.replace('%', &i))
             .ok()
