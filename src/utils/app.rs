@@ -52,6 +52,45 @@ static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: Lazy<HashMap<String, String>> = Lazy::n
 // This contains executable names that are blacklisted from being recognized as applications
 static APPLICATION_EXEC_BLACKLIST: &[&str] = &["bash", "zsh", "fish", "sh", "ksh", "flatpak"];
 
+static MESSAGE_LOCALES: Lazy<Vec<String>> = Lazy::new(|| {
+    let envs = ["LC_MESSAGES", "LANGUAGE", "LANG", "LC_ALL"];
+    let mut return_vec: Vec<String> = Vec::new();
+
+    for env in envs.iter() {
+        if let Ok(locales) = std::env::var(env) {
+            // split because LANGUAGE may contain multiple languages
+            for locale in locales.split(":") {
+                let locale = locale.to_string();
+
+                if !return_vec.contains(&locale) {
+                    return_vec.push(locale.clone());
+                }
+
+                if let Some(no_character_encoding) = locale.split_once('.') {
+                    let no_character_encoding = no_character_encoding.0.to_string();
+                    if !return_vec.contains(&no_character_encoding) {
+                        return_vec.push(no_character_encoding);
+                    }
+                }
+
+                if let Some(no_country_code) = locale.split_once('_') {
+                    let no_country_code = no_country_code.0.to_string();
+                    if !return_vec.contains(&no_country_code) {
+                        return_vec.push(no_country_code);
+                    }
+                }
+            }
+        }
+    }
+
+    debug!(
+        "The following locales will be used for app names and descriptions: {:?}",
+        &return_vec
+    );
+
+    return_vec
+});
+
 #[derive(Debug, Clone, Default)]
 pub struct AppsContext {
     apps: HashMap<String, App>,
@@ -196,12 +235,38 @@ impl App {
             ThemedIcon::new("generic-process").into()
         };
 
+        let mut display_name_opt = None;
+        let mut description_opt = None;
+
+        for locale in MESSAGE_LOCALES.iter() {
+            if let Some(name) = desktop_entry.get(format!("Name[{}]", locale)) {
+                display_name_opt = Some(name);
+                break;
+            }
+        }
+
+        for locale in MESSAGE_LOCALES.iter() {
+            if let Some(comment) = desktop_entry.get(format!("Comment[{}]", locale)) {
+                description_opt = Some(comment);
+                break;
+            }
+        }
+
+        let display_name = display_name_opt
+            .or_else(|| desktop_entry.get("Name"))
+            .unwrap_or(&id)
+            .to_string();
+
+        let description = description_opt
+            .or_else(|| desktop_entry.get("Comment"))
+            .map(str::to_string);
+
         Ok(App {
             processes: Vec::new(),
             commandline,
             executable_name,
-            display_name: desktop_entry.get("Name").unwrap_or(&id).to_string(),
-            description: desktop_entry.get("Comment").map(str::to_string),
+            display_name,
+            description,
             icon,
             id,
             read_bytes_from_dead_processes: 0,
