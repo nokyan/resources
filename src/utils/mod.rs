@@ -16,6 +16,8 @@ pub mod process;
 pub mod settings;
 pub mod units;
 
+const FLATPAK_SPAWN: &str = "/usr/bin/flatpak-spawn";
+
 static BOOT_TIMESTAMP: Lazy<Option<i64>> = Lazy::new(|| {
     let unix_timestamp = (unix_as_millis() / 1000) as i64;
     std::fs::read_to_string("/proc/uptime")
@@ -56,8 +58,6 @@ static IS_FLATPAK: Lazy<bool> = Lazy::new(|| {
 
 static FLATPAK_APP_PATH: Lazy<String> =
     Lazy::new(|| flatpak_app_path().unwrap_or_else(|_| String::new()));
-
-static FLATPAK_SPAWN: &str = "/usr/bin/flatpak-spawn";
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 pub fn flatpak_app_path() -> Result<String> {

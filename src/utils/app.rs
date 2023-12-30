@@ -19,6 +19,9 @@ use super::{
     NaNDefault,
 };
 
+// This contains executable names that are blacklisted from being recognized as applications
+const APPLICATION_EXEC_BLACKLIST: &[&str] = &["bash", "zsh", "fish", "sh", "ksh", "flatpak"];
+
 static RE_ENV_FILTER: Lazy<Regex> = Lazy::new(|| Regex::new(r"env\s*\S*=\S*\s*(.*)").unwrap());
 
 static RE_FLATPAK_FILTER: Lazy<Regex> =
@@ -48,9 +51,6 @@ static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: Lazy<HashMap<String, String>> = Lazy::n
         ("resources-processes".into(), "resources".into()),
     ])
 });
-
-// This contains executable names that are blacklisted from being recognized as applications
-static APPLICATION_EXEC_BLACKLIST: &[&str] = &["bash", "zsh", "fish", "sh", "ksh", "flatpak"];
 
 static MESSAGE_LOCALES: Lazy<Vec<String>> = Lazy::new(|| {
     let envs = ["LC_MESSAGES", "LANGUAGE", "LANG", "LC_ALL"];
