@@ -7,6 +7,18 @@ use regex::Regex;
 
 use super::{FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
 
+const TEMPLATE_RE_PRESENT: &str = r"MEMORY_DEVICE_%_PRESENT=(\d)";
+
+const TEMPLATE_RE_CONFIGURED_SPEED_MTS: &str = r"MEMORY_DEVICE_%_CONFIGURED_SPEED_MTS=(\d*)";
+
+const TEMPLATE_RE_SPEED_MTS: &str = r"MEMORY_DEVICE_%_SPEED_MTS=(\d*)";
+
+const TEMPLATE_RE_FORM_FACTOR: &str = r"MEMORY_DEVICE_%_FORM_FACTOR=(.*)";
+
+const TEMPLATE_RE_TYPE: &str = r"MEMORY_DEVICE_%_TYPE=(.*)";
+
+const TEMPLATE_RE_TYPE_DETAIL: &str = r"MEMORY_DEVICE_%_TYPE_DETAIL=(.*)";
+
 static RE_CONFIGURED_SPEED: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"Configured Memory Speed: (\d+) MT/s").unwrap());
 
@@ -29,18 +41,6 @@ static RE_SWAP_FREE: Lazy<Regex> = Lazy::new(|| Regex::new(r"SwapFree:\s*(\d*) k
 
 static RE_NUM_MEMORY_DEVICES: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"MEMORY_ARRAY_NUM_DEVICES=(\d*)").unwrap());
-
-static TEMPLATE_RE_PRESENT: &str = r"MEMORY_DEVICE_%_PRESENT=(\d)";
-
-static TEMPLATE_RE_CONFIGURED_SPEED_MTS: &str = r"MEMORY_DEVICE_%_CONFIGURED_SPEED_MTS=(\d*)";
-
-static TEMPLATE_RE_SPEED_MTS: &str = r"MEMORY_DEVICE_%_SPEED_MTS=(\d*)";
-
-static TEMPLATE_RE_FORM_FACTOR: &str = r"MEMORY_DEVICE_%_FORM_FACTOR=(.*)";
-
-static TEMPLATE_RE_TYPE: &str = r"MEMORY_DEVICE_%_TYPE=(.*)";
-
-static TEMPLATE_RE_TYPE_DETAIL: &str = r"MEMORY_DEVICE_%_TYPE_DETAIL=(.*)";
 
 #[derive(Debug)]
 pub struct MemoryData {

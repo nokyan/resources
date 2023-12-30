@@ -2,8 +2,7 @@ use anyhow::{anyhow, bail, Context, Result};
 use glob::glob;
 use once_cell::sync::Lazy;
 use regex::Regex;
-use std::path::PathBuf;
-use std::sync::OnceLock;
+use std::path::{Path, PathBuf};
 
 static RE_LSCPU_MODEL_NAME: Lazy<Regex> = Lazy::new(|| Regex::new(r"Model name:\s*(.*)").unwrap());
 
@@ -26,11 +25,31 @@ static RE_PROC_STAT: Lazy<Regex> = Lazy::new(|| {
     Regex::new(r"cpu[0-9]* *(?P<user>[0-9]*) *(?P<nice>[0-9]*) *(?P<system>[0-9]*) *(?P<idle>[0-9]*) *(?P<iowait>[0-9]*) *(?P<irq>[0-9]*) *(?P<softirq>[0-9]*) *(?P<steal>[0-9]*) *(?P<guest>[0-9]*) *(?P<guest_nice>[0-9]*)").unwrap()
 });
 
-static ZENPOWER: OnceLock<PathBuf> = OnceLock::new();
-static CORETEMP: OnceLock<PathBuf> = OnceLock::new();
-static K10TEMP: OnceLock<PathBuf> = OnceLock::new();
-static X86_PKG_TEMP: OnceLock<PathBuf> = OnceLock::new();
-static ACPI: OnceLock<PathBuf> = OnceLock::new();
+static CPU_TEMPERATURE_PATH: Lazy<Option<PathBuf>> = Lazy::new(|| {
+    for path in (glob("/sys/class/hwmon/hwmon*").unwrap()).flatten() {
+        match std::fs::read_to_string(path.join("name")).as_deref() {
+            Ok("zenpower\n") => return Some(path.join("temp1_input")),
+            Ok("coretemp\n") => return Some(path.join(path.join("temp1_input"))),
+            Ok("k10temp\n") => return Some(path.join(path.join("temp1_input"))),
+            Ok(_) | Err(_) => {
+                continue;
+            }
+        };
+    }
+
+    // collect all the known thermal zones
+    for path in (glob("/sys/class/thermal/thermal_zone*").unwrap()).flatten() {
+        match std::fs::read_to_string(path.join("type")).as_deref() {
+            Ok("x86_pkg_temp\n") => return Some(path.join(path.join("temp"))),
+            Ok("acpitz\n") => return Some(path.join(path.join("temp"))),
+            Ok(_) | Err(_) => {
+                continue;
+            }
+        };
+    }
+
+    return None;
+});
 
 pub struct CpuData {
     pub new_total_usage: (u64, u64),
@@ -45,8 +64,9 @@ impl CpuData {
 
         let temperature = get_temperature();
 
-        let mut frequencies = vec![];
-        let mut new_thread_usages = vec![];
+        let mut frequencies = Vec::with_capacity(logical_cpus);
+        let mut new_thread_usages = Vec::with_capacity(logical_cpus);
+
         for i in 0..logical_cpus {
             let smth = get_cpu_usage(Some(i)).unwrap_or((0, 0));
             new_thread_usages.push(smth);
@@ -235,55 +255,15 @@ pub fn get_cpu_usage(core: Option<usize>) -> Result<(u64, u64)> {
 ///
 /// Will return `Err` if there was no way to read the CPU temperature.
 pub fn get_temperature() -> Result<f32> {
-    if ZENPOWER.get().is_none()
-        && CORETEMP.get().is_none()
-        && ACPI.get().is_none()
-        && X86_PKG_TEMP.get().is_none()
-    {
-        // collect all the known hwmons
-        for path in (glob("/sys/class/hwmon/hwmon*")?).flatten() {
-            match std::fs::read_to_string(path.join("name")).as_deref() {
-                Ok("zenpower\n") => std::mem::drop(ZENPOWER.set(path.join("temp1_input"))),
-                Ok("coretemp\n") => std::mem::drop(CORETEMP.set(path.join("temp1_input"))),
-                Ok("k10temp\n") => std::mem::drop(K10TEMP.set(path.join("temp1_input"))),
-                Ok(_) | Err(_) => {
-                    continue;
-                }
-            };
-        }
-
-        // collect all the known thermal zones
-        for path in (glob("/sys/class/thermal/thermal_zone*")?).flatten() {
-            match std::fs::read_to_string(path.join("type")).as_deref() {
-                Ok("x86_pkg_temp\n") => std::mem::drop(X86_PKG_TEMP.set(path.join("temp"))),
-                Ok("acpitz\n") => std::mem::drop(ACPI.set(path.join("temp"))),
-                Ok(_) | Err(_) => {
-                    continue;
-                }
-            };
-        }
+    if let Some(path) = CPU_TEMPERATURE_PATH.as_ref() {
+        read_sysfs_thermal(path)
+    } else {
+        bail!("no CPU temperature sensor found")
     }
-
-    if let Some(path) = ZENPOWER.get() {
-        return read_sysfs_thermal(path);
-    }
-    if let Some(path) = K10TEMP.get() {
-        return read_sysfs_thermal(path);
-    }
-    if let Some(path) = CORETEMP.get() {
-        return read_sysfs_thermal(path);
-    }
-    if let Some(path) = X86_PKG_TEMP.get() {
-        return read_sysfs_thermal(path);
-    }
-    if let Some(path) = ACPI.get() {
-        return read_sysfs_thermal(path);
-    }
-
-    bail!("no CPU temperature sensor found")
 }
 
-fn read_sysfs_thermal(path: &PathBuf) -> Result<f32> {
+fn read_sysfs_thermal<P: AsRef<Path>>(path: P) -> Result<f32> {
+    let path = path.as_ref();
     let temp_string = std::fs::read_to_string(path)
         .with_context(|| format!("unable to read {}", path.display()))?;
     temp_string

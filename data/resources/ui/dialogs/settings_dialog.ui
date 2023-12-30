@@ -99,7 +99,7 @@
                 <property name="model">
                   <object class="GtkStringList">
                     <items>
-                      <item translatable="yes">Progress Bar</item>
+                      <item translatable="yes">Bar</item>
                       <item translatable="yes">Graph</item>
                     </items>
                   </object>
