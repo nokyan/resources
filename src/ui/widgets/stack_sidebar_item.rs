@@ -165,6 +165,7 @@ impl ResStackSidebarItem {
             .property("icon", icon)
             .property("subtitle", subtitle)
             .build();
+        this.imp().graph.set_height_request(64);
         this
     }
 
