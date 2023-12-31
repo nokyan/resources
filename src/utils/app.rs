@@ -39,7 +39,7 @@ static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
     data_dirs
 });
 
-// This contains known occurences of processes having a too distinct name from the actual app
+// This contains known occurrences of processes having a too distinct name from the actual app
 // The HashMap is used like this:
 //   Key: The name of the executable of the process
 //   Value: What it should be replaced with when finding out to which app it belongs

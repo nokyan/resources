@@ -138,7 +138,7 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
             seen.values_mut()
                 .last()
                 .and_then(|vendor| vendor.devices.values_mut().last())
-                .with_context(|| format!("no preceeding vendor (line: {line})"))?
+                .with_context(|| format!("no preceding vendor (line: {line})"))?
                 .sub_devices
                 .push(subdevice);
         } else if line.starts_with('\t') {
@@ -148,7 +148,7 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
             let vid = *seen
                 .keys()
                 .last()
-                .with_context(|| format!("no preceeding device (line: {line})"))?;
+                .with_context(|| format!("no preceding device (line: {line})"))?;
 
             let pid = u16::from_str_radix(
                 split
@@ -171,7 +171,7 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
 
             seen.values_mut()
                 .last()
-                .with_context(|| format!("no preceeding device (line: {line})"))?
+                .with_context(|| format!("no preceding device (line: {line})"))?
                 .devices
                 .insert(pid, device);
         } else {
