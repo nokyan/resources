@@ -74,7 +74,7 @@ If you use [GNOME Builder](https://apps.gnome.org/app/org.gnome.Builder/) or Vis
 
 Running Resources is as simple as typing `flatpak run net.nokyan.Resources` into a terminal or running it from your application launcher.
 If you've built Resources natively or installed it from a traditional package manager such as `apt` or `dnf`, or if you've built Resources yourself, typing `resources` in a terminal will start Resources.
-If you've built Resources as a Flatpak, type `flatpak-builder --run flatpak_app build-aux/net.nokyan.Resources.Devel.json resources` into your terminal or use one of the afforementioned IDEs to do that automatically.
+If you've built Resources as a Flatpak, type `flatpak-builder --run flatpak_app build-aux/net.nokyan.Resources.Devel.json resources` into your terminal or use one of the aforementioned IDEs to do that automatically.
 
 ## To-do
 
