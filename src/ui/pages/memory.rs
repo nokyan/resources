@@ -58,8 +58,11 @@ mod imp {
         #[property(get = Self::tab_name, type = glib::GString)]
         tab_name: Cell<glib::GString>,
 
-        #[property(get = Self::tab_subtitle, set = Self::set_tab_subtitle, type = glib::GString)]
-        tab_subtitle: Cell<glib::GString>,
+        #[property(get = Self::tab_detail, set = Self::set_tab_detail, type = glib::GString)]
+        tab_detail_string: Cell<glib::GString>,
+
+        #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
+        tab_usage_string: Cell<glib::GString>,
     }
 
     impl ResMemory {
@@ -70,15 +73,27 @@ mod imp {
             result
         }
 
-        pub fn tab_subtitle(&self) -> glib::GString {
-            let tab_subtitle = self.tab_subtitle.take();
-            let result = tab_subtitle.clone();
-            self.tab_subtitle.set(tab_subtitle);
+        pub fn tab_detail(&self) -> glib::GString {
+            let detail = self.tab_detail_string.take();
+            let result = detail.clone();
+            self.tab_detail_string.set(detail);
             result
         }
 
-        pub fn set_tab_subtitle(&self, tab_subtitle: &str) {
-            self.tab_subtitle.set(glib::GString::from(tab_subtitle));
+        pub fn set_tab_detail(&self, detail: &str) {
+            self.tab_detail_string.set(glib::GString::from(detail));
+        }
+
+        pub fn tab_usage_string(&self) -> glib::GString {
+            let tab_usage_string = self.tab_usage_string.take();
+            let result = tab_usage_string.clone();
+            self.tab_usage_string.set(tab_usage_string);
+            result
+        }
+
+        pub fn set_tab_usage_string(&self, tab_usage_string: &str) {
+            self.tab_usage_string
+                .set(glib::GString::from(tab_usage_string));
         }
     }
 
@@ -99,7 +114,8 @@ mod imp {
                 icon: RefCell::new(ThemedIcon::new("memory-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("Memory"))),
-                tab_subtitle: Cell::new(glib::GString::from("")),
+                tab_detail_string: Cell::new(glib::GString::from("")),
+                tab_usage_string: Cell::new(glib::GString::from("")),
             }
         }
     }
@@ -288,7 +304,7 @@ impl ResMemory {
             imp.swap.graph().set_visible(false);
             imp.swap.set_subtitle(&i18n("N/A"));
             self.set_property(
-                "tab_subtitle",
+                "tab_usage_string",
                 format!("{} / {}", &formatted_used_mem, &formatted_total_mem),
             );
         } else {
@@ -301,7 +317,7 @@ impl ResMemory {
                 (swap_fraction * 100.0).round()
             ));
             self.set_property(
-                "tab_subtitle",
+                "tab_usage_string",
                 i18n_f(
                     // Translators: This will be displayed in the sidebar, so your translation for "Swap" should
                     // preferably be quite short or an abbreviation

@@ -7,6 +7,8 @@ use gtk::{
 mod imp {
     use std::cell::{Cell, RefCell};
 
+    use crate::ui::widgets::graph::ResGraph;
+
     use super::*;
 
     use gtk::{
@@ -24,14 +26,18 @@ mod imp {
         #[template_child]
         pub label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub subtitle_label: TemplateChild<gtk::Label>,
+        pub detail_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub usage_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub progress_bar: TemplateChild<gtk::ProgressBar>,
         #[template_child]
-        pub graph: TemplateChild<super::super::graph::ResGraph>,
+        pub graph: TemplateChild<ResGraph>,
 
         #[property(get = Self::name, set = Self::set_name, type = glib::GString)]
         name: Cell<glib::GString>,
+        #[property(get = Self::detail, set = Self::set_detail, type = glib::GString)]
+        detail: Cell<glib::GString>,
         #[property(get = Self::subtitle, set = Self::set_subtitle, type = glib::GString)]
         subtitle: Cell<glib::GString>,
         #[property(get = Self::icon, set = Self::set_icon, type = Icon)]
@@ -60,21 +66,38 @@ mod imp {
         }
 
         pub fn subtitle(&self) -> glib::GString {
-            let subtitle = self.subtitle.take();
-            let result = subtitle.clone();
-            self.subtitle.set(subtitle);
+            let usage_string = self.subtitle.take();
+            let result = usage_string.clone();
+            self.subtitle.set(usage_string);
 
             result
         }
 
-        pub fn set_subtitle(&self, subtitle: &str) {
-            let current_subtitle = self.subtitle.take();
-            if current_subtitle.as_str() == subtitle {
-                self.subtitle.set(current_subtitle);
+        pub fn set_subtitle(&self, usage_string: &str) {
+            let current_usage_string = self.subtitle.take();
+            if current_usage_string.as_str() == usage_string {
+                self.subtitle.set(current_usage_string);
                 return;
             }
-            self.name.set(glib::GString::from(subtitle));
-            self.subtitle_label.set_label(subtitle);
+            self.usage_label.set_label(usage_string);
+        }
+
+        pub fn detail(&self) -> glib::GString {
+            let detail = self.detail.take();
+            let result = detail.clone();
+            self.detail.set(detail);
+
+            result
+        }
+
+        pub fn set_detail(&self, detail: &str) {
+            let current_detail = self.detail.take();
+            if current_detail.as_str() == detail {
+                self.detail.set(current_detail);
+                return;
+            }
+            self.detail_label.set_label(detail);
+            self.detail_label.set_visible(!detail.is_empty());
         }
 
         pub fn icon(&self) -> Icon {
@@ -105,8 +128,10 @@ mod imp {
                 label: Default::default(),
                 progress_bar: Default::default(),
                 graph: Default::default(),
-                subtitle_label: Default::default(),
+                detail_label: Default::default(),
+                usage_label: Default::default(),
                 name: Default::default(),
+                detail: Default::default(),
                 subtitle: Default::default(),
                 icon: RefCell::new(ThemedIcon::new("generic-process").into()),
                 usage: Default::default(),
@@ -159,13 +184,18 @@ glib::wrapper! {
 }
 
 impl ResStackSidebarItem {
-    pub fn new(name: String, icon: Icon, subtitle: String) -> Self {
+    pub fn new(name: String, icon: Icon, detail: Option<String>, usage_string: String) -> Self {
+        let detail = detail.unwrap_or_default();
         let this: Self = glib::Object::builder()
-            .property("name", &name)
+            .property("name", name)
             .property("icon", icon)
-            .property("subtitle", subtitle)
+            .property("detail", &detail)
+            .property("subtitle", usage_string)
             .build();
         this.imp().graph.set_height_request(64);
+
+        this.imp().detail_label.set_visible(!detail.is_empty());
+
         this
     }
 
@@ -181,7 +211,11 @@ impl ResStackSidebarItem {
         self.imp().graph.set_graph_color(r, g, b);
     }
 
-    pub fn set_subtitle_visible(&self, visible: bool) {
-        self.imp().subtitle_label.set_visible(visible);
+    pub fn set_usage_label_visible(&self, visible: bool) {
+        self.imp().usage_label.set_visible(visible);
+    }
+
+    pub fn set_detail_label_visible(&self, visible: bool) {
+        self.imp().detail_label.set_visible(visible);
     }
 }

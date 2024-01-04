@@ -1,7 +1,7 @@
 use std::rc::Rc;
 
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone};
+use gtk::glib::{self, clone, GString};
 
 use crate::utils::settings::{SidebarMeterType, SETTINGS};
 
@@ -118,7 +118,8 @@ impl ResStackSidebar {
             let sidebar_item = ResStackSidebarItem::new(
                 child.property("tab_name"),
                 child.property("icon"),
-                child.property("tab_subtitle"),
+                child.property("tab_detail_string"),
+                child.property("tab_usage_string"),
             );
 
             child
@@ -132,14 +133,30 @@ impl ResStackSidebar {
                 .build();
 
             child
-                .bind_property("tab_subtitle", &sidebar_item, "subtitle")
+                .bind_property("tab_usage_string", &sidebar_item, "subtitle")
                 .sync_create()
                 .build();
 
-            sidebar_item.set_subtitle_visible(SETTINGS.sidebar_details());
+            child
+                .bind_property("tab_detail_string", &sidebar_item, "detail")
+                .sync_create()
+                .build();
+
+            sidebar_item.set_usage_label_visible(SETTINGS.sidebar_details());
             SETTINGS.connect_sidebar_details(
                 clone!(@strong sidebar_item as item => move |sidebar_details| {
-                    item.set_subtitle_visible(sidebar_details);
+                    item.set_usage_label_visible(sidebar_details);
+                }),
+            );
+
+            sidebar_item.set_detail_label_visible(
+                SETTINGS.sidebar_description()
+                    && !child.property::<GString>("tab_detail_string").is_empty(),
+            );
+            SETTINGS.connect_sidebar_description(
+                clone!(@strong sidebar_item as item, @strong child as child => move |sidebar_details| {
+                    // if the view doesn't provide a description, disable it regardless of the setting
+                    item.set_detail_label_visible(sidebar_details && !child.property::<GString>("tab_detail_string").is_empty());
                 }),
             );
 

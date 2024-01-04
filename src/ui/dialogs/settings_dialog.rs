@@ -33,6 +33,8 @@ mod imp {
         #[template_child]
         pub sidebar_details_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
+        pub sidebar_description_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
         pub sidebar_meter_type_row: TemplateChild<adw::ComboRow>,
 
         #[template_child]
@@ -155,6 +157,8 @@ impl ResSettingsDialog {
             .set_value(SETTINGS.graph_data_points() as f64);
         imp.sidebar_details_row
             .set_active(SETTINGS.sidebar_details());
+        imp.sidebar_description_row
+            .set_active(SETTINGS.sidebar_description());
         imp.sidebar_meter_type_row
             .set_selected((SETTINGS.sidebar_meter_type() as u8) as u32);
         imp.show_search_on_start_row
@@ -252,6 +256,11 @@ impl ResSettingsDialog {
         imp.sidebar_details_row.connect_active_notify(|switch_row| {
             let _ = SETTINGS.set_sidebar_details(switch_row.is_active());
         });
+
+        imp.sidebar_description_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_sidebar_description(switch_row.is_active());
+            });
 
         imp.sidebar_meter_type_row
             .connect_selected_item_notify(|combo_row| {
