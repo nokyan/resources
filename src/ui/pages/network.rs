@@ -62,8 +62,11 @@ mod imp {
         #[property(get = Self::tab_name, set = Self::set_tab_name, type = glib::GString)]
         tab_name: Cell<glib::GString>,
 
-        #[property(get = Self::tab_subtitle, set = Self::set_tab_subtitle, type = glib::GString)]
-        tab_subtitle: Cell<glib::GString>,
+        #[property(get = Self::tab_detail, set = Self::set_tab_detail, type = glib::GString)]
+        tab_detail_string: Cell<glib::GString>,
+
+        #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
+        tab_usage_string: Cell<glib::GString>,
     }
 
     impl ResNetwork {
@@ -78,6 +81,17 @@ mod imp {
             self.tab_name.set(glib::GString::from(tab_name));
         }
 
+        pub fn tab_detail(&self) -> glib::GString {
+            let detail = self.tab_detail_string.take();
+            let result = detail.clone();
+            self.tab_detail_string.set(detail);
+            result
+        }
+
+        pub fn set_tab_detail(&self, detail: &str) {
+            self.tab_detail_string.set(glib::GString::from(detail));
+        }
+
         pub fn icon(&self) -> Icon {
             let icon = self.icon.replace_with(|_| NetworkInterface::default_icon());
             let result = icon.clone();
@@ -89,15 +103,16 @@ mod imp {
             self.icon.set(icon.clone());
         }
 
-        pub fn tab_subtitle(&self) -> glib::GString {
-            let tab_subtitle = self.tab_subtitle.take();
-            let result = tab_subtitle.clone();
-            self.tab_subtitle.set(tab_subtitle);
+        pub fn tab_usage_string(&self) -> glib::GString {
+            let tab_usage_string = self.tab_usage_string.take();
+            let result = tab_usage_string.clone();
+            self.tab_usage_string.set(tab_usage_string);
             result
         }
 
-        pub fn set_tab_subtitle(&self, tab_subtitle: &str) {
-            self.tab_subtitle.set(glib::GString::from(tab_subtitle));
+        pub fn set_tab_usage_string(&self, tab_usage_string: &str) {
+            self.tab_usage_string
+                .set(glib::GString::from(tab_usage_string));
         }
     }
 
@@ -117,6 +132,7 @@ mod imp {
                 icon: RefCell::new(ThemedIcon::new("unknown-network-type-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("Network Interface"))),
+                tab_detail_string: Cell::new(glib::GString::from("")),
                 old_received_bytes: Cell::default(),
                 old_sent_bytes: Cell::default(),
                 last_timestamp: Cell::new(
@@ -125,7 +141,7 @@ mod imp {
                         .unwrap(),
                 ),
                 network_interface: RefCell::default(),
-                tab_subtitle: Cell::new(glib::GString::from("")),
+                tab_usage_string: Cell::new(glib::GString::from("")),
             }
         }
     }
@@ -257,6 +273,8 @@ impl ResNetwork {
 
         imp.old_received_bytes.set(network_data.received_bytes);
         imp.old_sent_bytes.set(network_data.sent_bytes);
+
+        imp.set_tab_detail(&network_data.display_name);
     }
 
     pub fn refresh_page(&self, network_data: NetworkData) {
@@ -307,7 +325,7 @@ impl ResNetwork {
         );
 
         self.set_property(
-            "tab_subtitle",
+            "tab_usage_string",
             i18n_f(
                 // Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
                 // your translation should preferably be quite short or an abbreviation

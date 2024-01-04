@@ -73,8 +73,11 @@ mod imp {
         #[property(get = Self::tab_name, type = glib::GString)]
         tab_name: Cell<glib::GString>,
 
-        #[property(get = Self::tab_subtitle, set = Self::set_tab_subtitle, type = glib::GString)]
-        tab_subtitle: Cell<glib::GString>,
+        #[property(get = Self::tab_detail, set = Self::set_tab_detail, type = glib::GString)]
+        tab_detail_string: Cell<glib::GString>,
+
+        #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
+        tab_usage_string: Cell<glib::GString>,
     }
 
     impl ResCPU {
@@ -85,15 +88,27 @@ mod imp {
             result
         }
 
-        pub fn tab_subtitle(&self) -> glib::GString {
-            let tab_subtitle = self.tab_subtitle.take();
-            let result = tab_subtitle.clone();
-            self.tab_subtitle.set(tab_subtitle);
+        pub fn tab_detail(&self) -> glib::GString {
+            let detail = self.tab_detail_string.take();
+            let result = detail.clone();
+            self.tab_detail_string.set(detail);
             result
         }
 
-        pub fn set_tab_subtitle(&self, tab_subtitle: &str) {
-            self.tab_subtitle.set(glib::GString::from(tab_subtitle));
+        pub fn set_tab_detail(&self, detail: &str) {
+            self.tab_detail_string.set(glib::GString::from(detail));
+        }
+
+        pub fn tab_usage_string(&self) -> glib::GString {
+            let tab_usage_string = self.tab_usage_string.take();
+            let result = tab_usage_string.clone();
+            self.tab_usage_string.set(tab_usage_string);
+            result
+        }
+
+        pub fn set_tab_usage_string(&self, tab_usage_string: &str) {
+            self.tab_usage_string
+                .set(glib::GString::from(tab_usage_string));
         }
     }
 
@@ -119,7 +134,8 @@ mod imp {
                 icon: RefCell::new(ThemedIcon::new("processor-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("Processor"))),
-                tab_subtitle: Cell::new(glib::GString::from("")),
+                tab_detail_string: Cell::new(glib::GString::from("")),
+                tab_usage_string: Cell::new(glib::GString::from("")),
                 old_total_usage: Cell::default(),
                 old_thread_usages: RefCell::default(),
                 logical_cpus_amount: Cell::default(),
@@ -258,6 +274,10 @@ impl ResCPU {
 
         imp.architecture
             .set_subtitle(&cpu_info.architecture.unwrap_or_else(|| i18n("N/A")));
+
+        if let Some(model_name) = cpu_info.model_name {
+            imp.set_tab_detail(&model_name);
+        }
     }
 
     pub fn setup_signals(&self) {
@@ -343,6 +363,6 @@ impl ResCPU {
 
         self.set_property("usage", total_fraction);
 
-        self.set_property("tab_subtitle", percentage_string);
+        self.set_property("tab_usage_string", percentage_string);
     }
 }

@@ -31,7 +31,17 @@
           </object>
         </child>
         <child>
-          <object class="GtkLabel" id="subtitle_label">
+          <object class="GtkLabel" id="detail_label">
+            <property name="xalign">0</property>
+            <property name="hexpand">1</property>
+            <property name="ellipsize">end</property>
+            <style>
+              <class name="caption"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="usage_label">
             <property name="xalign">0</property>
             <property name="hexpand">1</property>
             <property name="ellipsize">end</property>

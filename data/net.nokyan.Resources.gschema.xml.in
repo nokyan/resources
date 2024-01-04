@@ -41,8 +41,12 @@
       <default>false</default>
       <summary>Show usage details in the sidebar</summary>
     </key>
+    <key name="sidebar-description" type="b">
+      <default>false</default>
+      <summary>Show device description in the sidebar</summary>
+    </key>
     <key name="sidebar-meter-type" type="s">
-      <default>"Progress Bar"</default>
+      <default>&quot;Progress Bar&quot;</default>
       <summary>Sidebar Meter Type</summary>
     </key>
     <key name="network-bits" type="b">
