@@ -319,12 +319,16 @@ impl ResCPU {
                     ((work_thread_time as f64) / (sum_thread_delta as f64)).nan_default(0.0);
 
                 curr_threadbox.graph().push_data_point(thread_fraction);
-                curr_threadbox.set_title_label(&format!("{} %", (thread_fraction * 100.0).round()));
+                curr_threadbox.set_subtitle(&format!("{} %", (thread_fraction * 100.0).round()));
 
                 if let Some(frequency) = frequencies[i] {
-                    curr_threadbox.set_subtitle(&convert_frequency(frequency as f64));
+                    curr_threadbox.set_title_label(&format!(
+                        "{} · {}",
+                        &i18n_f("CPU {}", &[&(i + 1).to_string()]),
+                        &convert_frequency(frequency as f64)
+                    ));
                 } else {
-                    curr_threadbox.set_subtitle(&i18n_f("CPU {}", &[&(i + 1).to_string()]))
+                    curr_threadbox.set_title_label(&i18n_f("CPU {}", &[&(i + 1).to_string()]))
                 }
                 *old_thread_usage = new_thread_usage;
             }

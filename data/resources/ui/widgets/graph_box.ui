@@ -11,7 +11,7 @@
         <property name="margin-start">12</property>
         <property name="margin-end">12</property>
         <property name="margin-top">12</property>
-        <property name="margin-bottom">12</property>
+        <property name="margin-bottom">6</property>
         <property name="spacing">12</property>
         <property name="hexpand">true</property>
         <child>
@@ -22,9 +22,14 @@
         </child>
         <child>
           <object class="GtkBox">
+            <property name="orientation">vertical</property>
             <property name="hexpand">true</property>
+            <property name="spacing">4</property>
             <child>
               <object class="GtkLabel" id="title_label">
+                <style>
+                  <class name="subtitle"/>
+                </style>
                 <property name="hexpand">true</property>
                 <property name="justify">right</property>
                 <property name="halign">start</property>
@@ -34,9 +39,6 @@
             </child>
             <child>
               <object class="GtkLabel" id="info_label">
-                <style>
-                  <class name="dim-label"/>
-                </style>
                 <property name="justify">right</property>
                 <property name="halign">start</property>
                 <property name="selectable">true</property>
