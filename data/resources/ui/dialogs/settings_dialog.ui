@@ -95,7 +95,7 @@
             </child>
             <child>
               <object class="AdwSwitchRow" id="sidebar_description_row">
-                <property name="title" translatable="yes">Show Device Description in Sidebar</property>
+                <property name="title" translatable="yes">Show Device Descriptions in Sidebar</property>
               </object>
             </child>
             <child>

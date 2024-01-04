@@ -1255,7 +1255,7 @@ msgid "Show Usage Details in Sidebar"
 msgstr "Auslastungsdetails in der Seitenleiste anzeigen"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
-msgid "Show Device Description in Sidebar"
+msgid "Show Device Descriptions in Sidebar"
 msgstr "Gerätebeschreibungen in der Seitenleiste anzeigen"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:107

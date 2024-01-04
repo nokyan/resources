@@ -1244,7 +1244,7 @@ msgid "Show Usage Details in Sidebar"
 msgstr ""
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
-msgid "Show Device Description in Sidebar"
+msgid "Show Device Descriptions in Sidebar"
 msgstr ""
 
 #: data/resources/ui/dialogs/settings_dialog.ui:107
