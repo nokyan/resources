@@ -48,7 +48,7 @@ static CPU_TEMPERATURE_PATH: Lazy<Option<PathBuf>> = Lazy::new(|| {
         };
     }
 
-    return None;
+    None
 });
 
 pub struct CpuData {

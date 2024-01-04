@@ -59,7 +59,7 @@ static MESSAGE_LOCALES: Lazy<Vec<String>> = Lazy::new(|| {
     for env in envs.iter() {
         if let Ok(locales) = std::env::var(env) {
             // split because LANGUAGE may contain multiple languages
-            for locale in locales.split(":") {
+            for locale in locales.split(':') {
                 let locale = locale.to_string();
 
                 if !return_vec.contains(&locale) {
