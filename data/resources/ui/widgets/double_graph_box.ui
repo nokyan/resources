@@ -36,7 +36,6 @@
                       <class name="subtitle"/>
                     </style>
                     <property name="hexpand">true</property>
-                    <property name="justify">right</property>
                     <property name="halign">start</property>
                     <property name="selectable">true</property>
                     <property name="ellipsize">2</property>
@@ -44,7 +43,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="start_info_label">
-                    <property name="justify">right</property>
+                    <property name="hexpand">true</property>
                     <property name="halign">start</property>
                     <property name="selectable">true</property>
                     <property name="ellipsize">2</property>
@@ -76,7 +75,6 @@
                       <class name="subtitle"/>
                     </style>
                     <property name="hexpand">true</property>
-                    <property name="justify">right</property>
                     <property name="halign">start</property>
                     <property name="selectable">true</property>
                     <property name="ellipsize">2</property>
@@ -84,7 +82,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="end_info_label">
-                    <property name="justify">right</property>
+                    <property name="hexpand">true</property>
                     <property name="halign">start</property>
                     <property name="selectable">true</property>
                     <property name="ellipsize">2</property>

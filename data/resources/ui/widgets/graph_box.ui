@@ -31,7 +31,6 @@
                   <class name="subtitle"/>
                 </style>
                 <property name="hexpand">true</property>
-                <property name="justify">right</property>
                 <property name="halign">start</property>
                 <property name="selectable">true</property>
                 <property name="ellipsize">2</property>
@@ -39,7 +38,6 @@
             </child>
             <child>
               <object class="GtkLabel" id="info_label">
-                <property name="justify">right</property>
                 <property name="halign">start</property>
                 <property name="selectable">true</property>
                 <property name="ellipsize">2</property>

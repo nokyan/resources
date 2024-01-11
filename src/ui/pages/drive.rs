@@ -31,9 +31,9 @@ mod imp {
         #[template_child]
         pub total_usage: TemplateChild<ResGraphBox>,
         #[template_child]
-        pub read: TemplateChild<adw::ActionRow>,
+        pub read_speed: TemplateChild<ResGraphBox>,
         #[template_child]
-        pub write: TemplateChild<adw::ActionRow>,
+        pub write_speed: TemplateChild<ResGraphBox>,
         #[template_child]
         pub drive_type: TemplateChild<adw::ActionRow>,
         #[template_child]
@@ -121,8 +121,8 @@ mod imp {
         fn default() -> Self {
             Self {
                 total_usage: Default::default(),
-                read: Default::default(),
-                write: Default::default(),
+                read_speed: Default::default(),
+                write_speed: Default::default(),
                 drive_type: Default::default(),
                 device: Default::default(),
                 capacity: Default::default(),
@@ -196,7 +196,7 @@ glib::wrapper! {
 }
 
 impl ResDrive {
-    const MAIN_GRAPH_COLOR: [u8; 3] = [229, 165, 10];
+    const MAIN_GRAPH_COLOR: [u8; 3] = [246, 211, 45];
 
     pub fn new() -> Self {
         glib::Object::new::<Self>()
@@ -219,6 +219,14 @@ impl ResDrive {
             Self::MAIN_GRAPH_COLOR[1],
             Self::MAIN_GRAPH_COLOR[2],
         );
+
+        imp.read_speed.set_title_label(&i18n("Read Speed"));
+        imp.read_speed.graph().set_graph_color(229, 165, 10);
+        imp.read_speed.graph().set_locked_max_y(None);
+
+        imp.write_speed.set_title_label(&i18n("Write Speed"));
+        imp.write_speed.graph().set_graph_color(229, 165, 10);
+        imp.write_speed.graph().set_locked_max_y(None);
 
         imp.drive_type.set_subtitle(&drive.drive_type.to_string());
 
@@ -293,7 +301,7 @@ impl ResDrive {
         imp.total_usage.set_subtitle(&percentage_string);
         self.set_property("usage", total_usage.unwrap_or(0.0));
 
-        let rw_bytes_per_second = if let (
+        let (read_speed, write_speed) = if let (
             Some(read_sectors),
             Some(write_sectors),
             Some(old_read_sectors),
@@ -306,21 +314,35 @@ impl ResDrive {
         ) {
             let delta_read_sectors = read_sectors.saturating_sub(*old_read_sectors);
             let delta_write_sectors = write_sectors.saturating_sub(*old_write_sectors);
-            Some((
+            (
                 (delta_read_sectors * 512) as f64 / time_passed,
                 (delta_write_sectors * 512) as f64 / time_passed,
-            ))
+            )
         } else {
-            None
+            (0.0, 0.0)
         };
 
-        let formatted_read_speed =
-            convert_speed(rw_bytes_per_second.unwrap_or((0.0, 0.0)).0, false);
-        let formatted_write_speed =
-            convert_speed(rw_bytes_per_second.unwrap_or((0.0, 0.0)).1, false);
+        imp.read_speed.graph().push_data_point(read_speed);
+        imp.write_speed.graph().push_data_point(write_speed);
 
-        imp.read.set_subtitle(&formatted_read_speed);
-        imp.write.set_subtitle(&formatted_write_speed);
+        let highest_read_speed = imp.read_speed.graph().get_highest_value();
+        let highest_write_speed = imp.write_speed.graph().get_highest_value();
+
+        let formatted_read_speed = convert_speed(read_speed, false);
+        let formatted_write_speed = convert_speed(write_speed, false);
+
+        let formatted_highest_read_speed = convert_speed(highest_read_speed, false);
+        let formatted_highest_write_speed = convert_speed(highest_write_speed, false);
+
+        imp.read_speed.set_subtitle(&format!(
+            "{formatted_read_speed} · {} {formatted_highest_read_speed}",
+            i18n("Highest:")
+        ));
+
+        imp.write_speed.set_subtitle(&format!(
+            "{formatted_write_speed} · {} {formatted_highest_write_speed}",
+            i18n("Highest:")
+        ));
 
         self.set_property(
             "tab_usage_string",

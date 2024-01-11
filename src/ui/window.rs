@@ -234,18 +234,18 @@ impl MainWindow {
         for (i, gpu) in gpus.iter().enumerate() {
             let page = ResGPU::new();
 
-            let title = if gpus_len > 1 {
+            let tab_name = if gpus_len > 1 {
                 i18n_f("GPU {}", &[&(i + 1).to_string()])
             } else {
                 i18n("GPU")
             };
 
-            page.set_tab_name(&*title);
+            page.set_tab_name(&*tab_name);
 
             let added_page = if let Ok(gpu_name) = gpu.name() {
-                self.add_page(&page, &title, &gpu_name)
+                self.add_page(&page, &gpu_name, &tab_name)
             } else {
-                self.add_page(&page, &title, &title)
+                self.add_page(&page, &tab_name, &tab_name)
             };
 
             page.init(gpu, i);
