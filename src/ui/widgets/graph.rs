@@ -96,10 +96,15 @@ mod imp {
             root.fill(&self.graph_color.get().mix(0.1))?;
 
             let y_max = self.max_y.get().unwrap_or_else(|| {
-                *data_points
+                let max = *data_points
                     .range(start_point..(MAX_DATA_POINTS as usize))
                     .max_by(|x, y| x.total_cmp(y))
-                    .unwrap()
+                    .unwrap_or(&0.0);
+                if max == 0.0 {
+                    f64::EPSILON
+                } else {
+                    max
+                }
             });
 
             let mut chart = ChartBuilder::on(&root).build_cartesian_2d(

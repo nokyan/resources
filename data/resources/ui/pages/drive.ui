@@ -24,22 +24,10 @@
                       <object class="ResGraphBox" id="total_usage"/>
                     </child>
                     <child>
-                      <object class="AdwActionRow" id="read">
-                        <property name="title" translatable="yes">Read Speed</property>
-                        <style>
-                          <class name="property"/>
-                        </style>
-                        <property name="subtitle-selectable">true</property>
-                      </object>
+                      <object class="ResGraphBox" id="read_speed"/>
                     </child>
                     <child>
-                      <object class="AdwActionRow" id="write">
-                        <property name="title" translatable="yes">Write Speed</property>
-                        <style>
-                          <class name="property"/>
-                        </style>
-                        <property name="subtitle-selectable">true</property>
-                      </object>
+                      <object class="ResGraphBox" id="write_speed"/>
                     </child>
                   </object>
                 </child>
