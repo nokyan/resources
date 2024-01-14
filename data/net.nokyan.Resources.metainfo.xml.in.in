@@ -2,7 +2,8 @@
 <component type="desktop-application">
   <id>@app-id@</id>
   <name>Resources</name>
-  <summary>Monitor your system resources and processes</summary>
+  <!--Translators: The summary should be 35 characters or less according to Flathub appstream guidelines-->
+  <summary>Keep an eye on system resources</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <requires>

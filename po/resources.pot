@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-25 15:51+0100\n"
-"PO-Revision-Date: 2024-01-04 14:53+0200\n"
-"Last-Translator: nokyan <nokyan@tuta.io>\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -20,9 +20,10 @@ msgstr ""
 msgid "Resources"
 msgstr ""
 
+#. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
 #: data/net.nokyan.Resources.desktop.in.in:4
-#: data/net.nokyan.Resources.metainfo.xml.in.in:5
-msgid "Monitor your system resources and processes"
+#: data/net.nokyan.Resources.metainfo.xml.in.in:6
+msgid "Keep an eye on system resources"
 msgstr ""
 
 #: data/net.nokyan.Resources.desktop.in.in:10
@@ -184,7 +185,7 @@ msgstr ""
 msgid "Amount of data points that should be shown in a graph"
 msgstr ""
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:17
+#: data/net.nokyan.Resources.metainfo.xml.in.in:18
 msgid ""
 "Resources allows you to check the utilization of your system resources and "
 "control your running processes and applications. It’s designed to be user-"
@@ -192,15 +193,15 @@ msgid ""
 "libadwaita."
 msgstr ""
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:20
+#: data/net.nokyan.Resources.metainfo.xml.in.in:21
 msgid "Resources supports monitoring the following components:"
 msgstr ""
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:24 src/ui/pages/cpu.rs:221
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25 src/ui/pages/cpu.rs:221
 msgid "CPU"
 msgstr ""
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+#: data/net.nokyan.Resources.metainfo.xml.in.in:26
 #: src/ui/pages/applications/mod.rs:628 src/ui/pages/memory.rs:116
 #: src/ui/pages/memory.rs:187 src/ui/pages/processes/mod.rs:710
 #: data/resources/ui/window.ui:155 data/resources/ui/window.ui:162
@@ -211,7 +212,7 @@ msgstr ""
 msgid "Memory"
 msgstr ""
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:26
+#: data/net.nokyan.Resources.metainfo.xml.in.in:27
 #: src/ui/pages/applications/mod.rs:908 src/ui/pages/gpu.rs:138
 #: src/ui/pages/processes/mod.rs:1003 src/ui/window.rs:240
 #: data/resources/ui/dialogs/app_dialog.ui:132
@@ -221,12 +222,12 @@ msgstr ""
 msgid "GPU"
 msgstr ""
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:27
+#: data/net.nokyan.Resources.metainfo.xml.in.in:28
 #: data/resources/ui/dialogs/settings_dialog.ui:266
 msgid "Network Interfaces"
 msgstr ""
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:28
+#: data/net.nokyan.Resources.metainfo.xml.in.in:29
 msgid "Storage Devices"
 msgstr ""
 
@@ -249,7 +250,7 @@ msgid "Icon by"
 msgstr ""
 
 #: src/ui/dialogs/app_dialog.rs:163 src/ui/dialogs/process_dialog.rs:188
-#: src/ui/pages/drive.rs:259 src/ui/pages/drive.rs:265
+#: src/ui/pages/drive.rs:267 src/ui/pages/drive.rs:273
 msgid "No"
 msgstr ""
 
@@ -268,7 +269,7 @@ msgstr ""
 #: src/ui/pages/applications/mod.rs:829 src/ui/pages/cpu.rs:222
 #: src/ui/pages/cpu.rs:237 src/ui/pages/cpu.rs:251 src/ui/pages/cpu.rs:257
 #: src/ui/pages/cpu.rs:263 src/ui/pages/cpu.rs:269 src/ui/pages/cpu.rs:273
-#: src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:357 src/ui/pages/gpu.rs:240
+#: src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:361 src/ui/pages/gpu.rs:240
 #: src/ui/pages/gpu.rs:285 src/ui/pages/gpu.rs:308 src/ui/pages/gpu.rs:311
 #: src/ui/pages/gpu.rs:322 src/ui/pages/gpu.rs:344 src/ui/pages/gpu.rs:354
 #: src/ui/pages/gpu.rs:366 src/ui/pages/gpu.rs:369 src/ui/pages/gpu.rs:375
@@ -370,7 +371,7 @@ msgstr ""
 msgid "Video Memory"
 msgstr ""
 
-#: src/ui/pages/cpu.rs:236 src/ui/pages/cpu.rs:347
+#: src/ui/pages/cpu.rs:236 src/ui/pages/cpu.rs:347 src/ui/pages/cpu.rs:351
 msgid "CPU {}"
 msgstr ""
 
@@ -382,13 +383,26 @@ msgstr ""
 msgid "Total Usage"
 msgstr ""
 
-#: src/ui/pages/drive.rs:257 src/ui/pages/drive.rs:263
+#: src/ui/pages/drive.rs:223
+msgid "Read Speed"
+msgstr ""
+
+#: src/ui/pages/drive.rs:227
+msgid "Write Speed"
+msgstr ""
+
+#: src/ui/pages/drive.rs:265 src/ui/pages/drive.rs:271
 msgid "Yes"
+msgstr ""
+
+#: src/ui/pages/drive.rs:339 src/ui/pages/drive.rs:344
+#: src/ui/pages/network.rs:309 src/ui/pages/network.rs:318
+msgid "Highest:"
 msgstr ""
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
-#: src/ui/pages/drive.rs:330
+#: src/ui/pages/drive.rs:352
 msgid "R: {} · W: {}"
 msgstr ""
 
@@ -444,10 +458,6 @@ msgstr ""
 
 #: src/ui/pages/network.rs:229
 msgid "Sending"
-msgstr ""
-
-#: src/ui/pages/network.rs:309 src/ui/pages/network.rs:318
-msgid "Highest:"
 msgstr ""
 
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
@@ -1127,7 +1137,7 @@ msgstr ""
 #: data/resources/ui/dialogs/app_dialog.ui:166
 #: data/resources/ui/dialogs/process_dialog.ui:149
 #: data/resources/ui/pages/applications.ui:26 data/resources/ui/pages/cpu.ui:91
-#: data/resources/ui/pages/drive.ui:48 data/resources/ui/pages/gpu.ui:80
+#: data/resources/ui/pages/drive.ui:36 data/resources/ui/pages/gpu.ui:80
 #: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
 #: data/resources/ui/pages/processes.ui:26
 msgid "Properties"
@@ -1336,31 +1346,23 @@ msgstr ""
 msgid "Architecture"
 msgstr ""
 
-#: data/resources/ui/pages/drive.ui:28
-msgid "Read Speed"
-msgstr ""
-
-#: data/resources/ui/pages/drive.ui:37
-msgid "Write Speed"
-msgstr ""
-
-#: data/resources/ui/pages/drive.ui:51 data/resources/ui/pages/memory.ui:72
+#: data/resources/ui/pages/drive.ui:39 data/resources/ui/pages/memory.ui:72
 msgid "Type"
 msgstr ""
 
-#: data/resources/ui/pages/drive.ui:60
+#: data/resources/ui/pages/drive.ui:48
 msgid "Device"
 msgstr ""
 
-#: data/resources/ui/pages/drive.ui:69
+#: data/resources/ui/pages/drive.ui:57
 msgid "Capacity"
 msgstr ""
 
-#: data/resources/ui/pages/drive.ui:78
+#: data/resources/ui/pages/drive.ui:66
 msgid "Writable"
 msgstr ""
 
-#: data/resources/ui/pages/drive.ui:87
+#: data/resources/ui/pages/drive.ui:75
 msgid "Removable"
 msgstr ""
 
