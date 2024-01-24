@@ -497,10 +497,9 @@ impl ResProcesses {
             .collect();
         store.extend_from_slice(&items);
 
-        imp.column_view
-            .borrow()
-            .sorter()
-            .map(|sorter| sorter.changed(gtk::SorterChange::Different));
+        if let Some(sorter) = imp.column_view.borrow().sorter() {
+            sorter.changed(gtk::SorterChange::Different)
+        }
 
         self.set_property(
             "tab_usage_string",

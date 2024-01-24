@@ -516,10 +516,9 @@ impl ResApplications {
             .collect();
         store.extend_from_slice(&items);
 
-        imp.column_view
-            .borrow()
-            .sorter()
-            .map(|sorter| sorter.changed(gtk::SorterChange::Different));
+        if let Some(sorter) = imp.column_view.borrow().sorter() {
+            sorter.changed(gtk::SorterChange::Different)
+        }
 
         // -1 because we don't want to count System Processes
         self.set_property(
