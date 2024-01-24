@@ -1,11 +1,14 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# nokyan <nokyan@tuta.io>, 2022-2024.
-#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: resources\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-25 15:51+0100\n"
+"POT-Creation-Date: 2024-01-24 13:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:3
-#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:154
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:196
 msgid "Resources"
 msgstr ""
 
@@ -202,8 +205,8 @@ msgid "CPU"
 msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:26
-#: src/ui/pages/applications/mod.rs:628 src/ui/pages/memory.rs:116
-#: src/ui/pages/memory.rs:187 src/ui/pages/processes/mod.rs:710
+#: src/ui/pages/applications/mod.rs:629 src/ui/pages/memory.rs:116
+#: src/ui/pages/memory.rs:187 src/ui/pages/processes/mod.rs:714
 #: data/resources/ui/window.ui:155 data/resources/ui/window.ui:162
 #: data/resources/ui/dialogs/app_dialog.ui:83
 #: data/resources/ui/dialogs/process_dialog.ui:70
@@ -213,8 +216,8 @@ msgid "Memory"
 msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:27
-#: src/ui/pages/applications/mod.rs:908 src/ui/pages/gpu.rs:138
-#: src/ui/pages/processes/mod.rs:1003 src/ui/window.rs:240
+#: src/ui/pages/applications/mod.rs:909 src/ui/pages/gpu.rs:138
+#: src/ui/pages/processes/mod.rs:1007 src/ui/window.rs:277
 #: data/resources/ui/dialogs/app_dialog.ui:132
 #: data/resources/ui/dialogs/process_dialog.ui:115
 #: data/resources/ui/dialogs/settings_dialog.ui:157
@@ -231,21 +234,21 @@ msgstr ""
 msgid "Storage Devices"
 msgstr ""
 
-#: src/application.rs:156
+#: src/application.rs:198
 msgid "The Nalux Team"
 msgstr ""
 
-#: src/application.rs:164
+#: src/application.rs:206
 msgid "Report Issues"
 msgstr ""
 
 #. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
 #. One name per line, please do not remove previous names.
-#: src/application.rs:170
+#: src/application.rs:212
 msgid "translator-credits"
 msgstr ""
 
-#: src/application.rs:171
+#: src/application.rs:213
 msgid "Icon by"
 msgstr ""
 
@@ -265,8 +268,8 @@ msgstr ""
 #: src/ui/dialogs/process_dialog.rs:129 src/ui/dialogs/process_dialog.rs:136
 #: src/ui/dialogs/process_dialog.rs:143 src/ui/dialogs/process_dialog.rs:150
 #: src/ui/dialogs/process_dialog.rs:176 src/ui/dialogs/process_dialog.rs:183
-#: src/ui/dialogs/process_dialog.rs:185 src/ui/pages/applications/mod.rs:733
-#: src/ui/pages/applications/mod.rs:829 src/ui/pages/cpu.rs:222
+#: src/ui/dialogs/process_dialog.rs:185 src/ui/pages/applications/mod.rs:734
+#: src/ui/pages/applications/mod.rs:830 src/ui/pages/cpu.rs:222
 #: src/ui/pages/cpu.rs:237 src/ui/pages/cpu.rs:251 src/ui/pages/cpu.rs:257
 #: src/ui/pages/cpu.rs:263 src/ui/pages/cpu.rs:269 src/ui/pages/cpu.rs:273
 #: src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:361 src/ui/pages/gpu.rs:240
@@ -280,9 +283,9 @@ msgstr ""
 #: src/ui/pages/memory.rs:251 src/ui/pages/memory.rs:305
 #: src/ui/pages/network.rs:238 src/ui/pages/network.rs:246
 #: src/ui/pages/network.rs:253 src/ui/pages/network.rs:260
-#: src/ui/pages/network.rs:263 src/ui/pages/processes/mod.rs:818
-#: src/ui/pages/processes/mod.rs:869 src/ui/pages/processes/mod.rs:920
-#: src/ui/pages/processes/mod.rs:971 src/utils/app.rs:674 src/utils/app.rs:750
+#: src/ui/pages/network.rs:263 src/ui/pages/processes/mod.rs:822
+#: src/ui/pages/processes/mod.rs:873 src/ui/pages/processes/mod.rs:924
+#: src/ui/pages/processes/mod.rs:975 src/utils/app.rs:674 src/utils/app.rs:750
 #: src/utils/drive.rs:90 src/utils/gpu/mod.rs:250 src/utils/gpu/mod.rs:256
 msgid "N/A"
 msgstr ""
@@ -293,20 +296,20 @@ msgstr ""
 msgid "Applications"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:526
+#: src/ui/pages/applications/mod.rs:527
 msgid "Running Applications: {}"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:555 src/ui/pages/processes/mod.rs:538
+#: src/ui/pages/applications/mod.rs:556 src/ui/pages/processes/mod.rs:538
 msgid "Cancel"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:582
+#: src/ui/pages/applications/mod.rs:583
 msgid "Application"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:672 src/ui/pages/cpu.rs:136
-#: src/ui/pages/processes/mod.rs:757 src/ui/window.rs:279
+#: src/ui/pages/applications/mod.rs:673 src/ui/pages/cpu.rs:136
+#: src/ui/pages/processes/mod.rs:761 src/ui/window.rs:316
 #: data/resources/ui/window.ui:124 data/resources/ui/window.ui:131
 #: data/resources/ui/dialogs/app_dialog.ui:74
 #: data/resources/ui/dialogs/process_dialog.ui:61
@@ -315,7 +318,7 @@ msgstr ""
 msgid "Processor"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:715 src/ui/pages/processes/mod.rs:800
+#: src/ui/pages/applications/mod.rs:716 src/ui/pages/processes/mod.rs:804
 #: data/resources/ui/dialogs/app_dialog.ui:92
 #: data/resources/ui/dialogs/process_dialog.ui:75
 #: data/resources/ui/dialogs/settings_dialog.ui:137
@@ -323,7 +326,7 @@ msgstr ""
 msgid "Drive Read"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:765 src/ui/pages/processes/mod.rs:851
+#: src/ui/pages/applications/mod.rs:766 src/ui/pages/processes/mod.rs:855
 #: data/resources/ui/dialogs/app_dialog.ui:101
 #: data/resources/ui/dialogs/process_dialog.ui:84
 #: data/resources/ui/dialogs/settings_dialog.ui:142
@@ -331,7 +334,7 @@ msgstr ""
 msgid "Drive Read Total"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:811 src/ui/pages/processes/mod.rs:902
+#: src/ui/pages/applications/mod.rs:812 src/ui/pages/processes/mod.rs:906
 #: data/resources/ui/dialogs/app_dialog.ui:110
 #: data/resources/ui/dialogs/process_dialog.ui:93
 #: data/resources/ui/dialogs/settings_dialog.ui:147
@@ -339,7 +342,7 @@ msgstr ""
 msgid "Drive Write"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:862 src/ui/pages/processes/mod.rs:953
+#: src/ui/pages/applications/mod.rs:863 src/ui/pages/processes/mod.rs:957
 #: data/resources/ui/dialogs/app_dialog.ui:119
 #: data/resources/ui/dialogs/process_dialog.ui:102
 #: data/resources/ui/dialogs/settings_dialog.ui:152
@@ -347,7 +350,7 @@ msgstr ""
 msgid "Drive Write Total"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:951 src/ui/pages/processes/mod.rs:1046
+#: src/ui/pages/applications/mod.rs:952 src/ui/pages/processes/mod.rs:1050
 #: data/resources/ui/dialogs/app_dialog.ui:150
 #: data/resources/ui/dialogs/process_dialog.ui:133
 #: data/resources/ui/dialogs/settings_dialog.ui:167
@@ -355,7 +358,7 @@ msgstr ""
 msgid "Video Encoder"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:996 src/ui/pages/processes/mod.rs:1091
+#: src/ui/pages/applications/mod.rs:997 src/ui/pages/processes/mod.rs:1095
 #: data/resources/ui/dialogs/app_dialog.ui:159
 #: data/resources/ui/dialogs/process_dialog.ui:142
 #: data/resources/ui/dialogs/settings_dialog.ui:172
@@ -363,7 +366,7 @@ msgstr ""
 msgid "Video Decoder"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:1040 src/ui/pages/processes/mod.rs:1136
+#: src/ui/pages/applications/mod.rs:1041 src/ui/pages/processes/mod.rs:1140
 #: data/resources/ui/dialogs/app_dialog.ui:141
 #: data/resources/ui/dialogs/process_dialog.ui:124
 #: data/resources/ui/dialogs/settings_dialog.ui:162
@@ -476,131 +479,131 @@ msgstr ""
 msgid "Running Processes: {}"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:574
+#: src/ui/pages/processes/mod.rs:577
 msgid "root"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:587
+#: src/ui/pages/processes/mod.rs:591
 msgid "Process"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:633
+#: src/ui/pages/processes/mod.rs:637
 #: data/resources/ui/dialogs/process_dialog.ui:156
 #: data/resources/ui/dialogs/settings_dialog.ui:188
 msgid "Process ID"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:671
+#: src/ui/pages/processes/mod.rs:675
 #: data/resources/ui/dialogs/process_dialog.ui:183
 #: data/resources/ui/dialogs/settings_dialog.ui:193
 msgid "User"
 msgstr ""
 
-#: src/ui/window.rs:238
+#: src/ui/window.rs:275
 msgid "GPU {}"
 msgstr ""
 
-#: src/ui/window.rs:757
+#: src/ui/window.rs:794
 msgid "End {}?"
 msgstr ""
 
-#: src/ui/window.rs:758
+#: src/ui/window.rs:795
 msgid "Halt {}?"
 msgstr ""
 
-#: src/ui/window.rs:759
+#: src/ui/window.rs:796
 msgid "Kill {}?"
 msgstr ""
 
-#: src/ui/window.rs:760
+#: src/ui/window.rs:797
 msgid "Continue {}?"
 msgstr ""
 
-#: src/ui/window.rs:766
+#: src/ui/window.rs:803
 msgid "Unsaved work might be lost."
 msgstr ""
 
-#: src/ui/window.rs:767
+#: src/ui/window.rs:804
 msgid ""
 "Halting an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
 
-#: src/ui/window.rs:768
+#: src/ui/window.rs:805
 msgid ""
 "Killing an application can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
 
-#: src/ui/window.rs:775
+#: src/ui/window.rs:812
 msgid "End application"
 msgstr ""
 
-#: src/ui/window.rs:776
+#: src/ui/window.rs:813
 msgid "Halt application"
 msgstr ""
 
-#: src/ui/window.rs:777
+#: src/ui/window.rs:814
 msgid "Kill application"
 msgstr ""
 
-#: src/ui/window.rs:778
+#: src/ui/window.rs:815
 msgid "Continue application"
 msgstr ""
 
-#: src/ui/window.rs:784
+#: src/ui/window.rs:821
 msgid "Successfully ended {}"
 msgstr ""
 
-#: src/ui/window.rs:785
+#: src/ui/window.rs:822
 msgid "Successfully halted {}"
 msgstr ""
 
-#: src/ui/window.rs:786
+#: src/ui/window.rs:823
 msgid "Successfully killed {}"
 msgstr ""
 
-#: src/ui/window.rs:787
+#: src/ui/window.rs:824
 msgid "Successfully continued {}"
 msgstr ""
 
-#: src/ui/window.rs:794
+#: src/ui/window.rs:831
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:800
+#: src/ui/window.rs:837
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:806
+#: src/ui/window.rs:843
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:812
+#: src/ui/window.rs:849
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:822
+#: src/ui/window.rs:859
 msgid "There was a problem ending {}"
 msgstr ""
 
-#: src/ui/window.rs:823
+#: src/ui/window.rs:860
 msgid "There was a problem halting {}"
 msgstr ""
 
-#: src/ui/window.rs:824
+#: src/ui/window.rs:861
 msgid "There was a problem killing {}"
 msgstr ""
 
-#: src/ui/window.rs:825
+#: src/ui/window.rs:862
 msgid "There was a problem continuing {}"
 msgstr ""
 
@@ -1108,6 +1111,31 @@ msgstr ""
 #: data/resources/ui/shortcuts.ui:32
 msgctxt "shortcut window"
 msgid "Toggle Search Field"
+msgstr ""
+
+#: data/resources/ui/shortcuts.ui:38
+msgctxt "shortcut window"
+msgid "End Application/Process"
+msgstr ""
+
+#: data/resources/ui/shortcuts.ui:44
+msgctxt "shortcut window"
+msgid "Kill Application/Process"
+msgstr ""
+
+#: data/resources/ui/shortcuts.ui:50
+msgctxt "shortcut window"
+msgid "Halt Application/Process"
+msgstr ""
+
+#: data/resources/ui/shortcuts.ui:56
+msgctxt "shortcut window"
+msgid "Continue Application/Process"
+msgstr ""
+
+#: data/resources/ui/shortcuts.ui:62
+msgctxt "shortcut window"
+msgid "Show Information for Application/Process"
 msgstr ""
 
 #: data/resources/ui/window.ui:6

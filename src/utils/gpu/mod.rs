@@ -269,7 +269,7 @@ impl Gpu {
                     pci_slot,
                     driver,
                     path,
-                    hwmon_vec.get(0).cloned(),
+                    hwmon_vec.first().cloned(),
                 )),
                 "AMD",
             )
@@ -280,7 +280,7 @@ impl Gpu {
                     pci_slot,
                     driver,
                     path,
-                    hwmon_vec.get(0).cloned(),
+                    hwmon_vec.first().cloned(),
                 )),
                 "Intel",
             )
@@ -291,7 +291,7 @@ impl Gpu {
                     pci_slot,
                     driver,
                     path,
-                    hwmon_vec.get(0).cloned(),
+                    hwmon_vec.first().cloned(),
                 )),
                 "NVIDIA",
             )
@@ -302,7 +302,7 @@ impl Gpu {
                     pci_slot,
                     driver,
                     path,
-                    hwmon_vec.get(0).cloned(),
+                    hwmon_vec.first().cloned(),
                 )),
                 "Other",
             )

@@ -225,7 +225,8 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        res_processes.open_information_dialog(process_entry);
+                        res_processes
+                            .open_information_dialog(&process_entry.process_item().unwrap());
                     }
                 },
             );
@@ -410,7 +411,7 @@ impl ResProcesses {
                     .unwrap()
                 });
                 if let Some(selection) = selection_option {
-                    this.open_information_dialog(&selection);
+                    this.open_information_dialog(&selection.process_item().unwrap());
                 }
             }));
 
@@ -422,12 +423,12 @@ impl ResProcesses {
             }));
     }
 
-    fn open_information_dialog(&self, process: &ProcessEntry) {
+    pub fn open_information_dialog(&self, process: &ProcessItem) {
         let imp = self.imp();
         let process_dialog = ResProcessDialog::new();
-        process_dialog.init(process.process_item().as_ref().unwrap(), process.user());
+        process_dialog.init(process, self.get_user_name_by_uid(process.uid));
         process_dialog.set_visible(true);
-        *imp.open_dialog.borrow_mut() = Some((process.pid(), process_dialog));
+        *imp.open_dialog.borrow_mut() = Some((process.pid, process_dialog));
     }
 
     fn search_filter(&self, obj: &Object) -> bool {
@@ -439,7 +440,7 @@ impl ResProcesses {
             || item.commandline().to_lowercase().contains(&search_string)
     }
 
-    fn get_selected_process_item(&self) -> Option<ProcessItem> {
+    pub fn get_selected_process_item(&self) -> Option<ProcessItem> {
         self.imp()
             .selection_model
             .borrow()
@@ -496,10 +497,9 @@ impl ResProcesses {
             .collect();
         store.extend_from_slice(&items);
 
-        imp.column_view
-            .borrow()
-            .sorter()
-            .map(|sorter| sorter.changed(gtk::SorterChange::Different));
+        if let Some(sorter) = imp.column_view.borrow().sorter() {
+            sorter.changed(gtk::SorterChange::Different)
+        }
 
         self.set_property(
             "tab_usage_string",
@@ -563,19 +563,23 @@ impl ResProcesses {
 
     fn get_user_name_by_uid(&self, uid: u32) -> String {
         let imp = self.imp();
-        // cache all the user names so we don't have
-        // to do expensive lookups all the time
-        (*(imp
-            .username_cache
-            .borrow_mut()
-            .entry(uid)
-            .or_insert_with(|| {
-                uzers::get_user_by_uid(uid).map_or_else(
-                    || i18n("root"),
-                    |user| user.name().to_string_lossy().to_string(),
-                )
-            })))
-        .to_string()
+
+        // we do this to avoid mut-borrows when possible
+        let cached = {
+            let borrow = imp.username_cache.borrow();
+            borrow.get(&uid).cloned()
+        };
+
+        if let Some(cached) = cached {
+            cached
+        } else {
+            let name = uzers::get_user_by_uid(uid).map_or_else(
+                || i18n("root"),
+                |user| user.name().to_string_lossy().to_string(),
+            );
+            imp.username_cache.borrow_mut().insert(uid, name.clone());
+            name
+        }
     }
 
     fn add_name_column(&self) {

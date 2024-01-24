@@ -8,6 +8,7 @@ use crate::config::{self, APP_ID, PKGDATADIR, PROFILE, VERSION};
 use crate::i18n::i18n;
 use crate::ui::dialogs::settings_dialog::ResSettingsDialog;
 use crate::ui::window::MainWindow;
+use crate::utils::process::ProcessAction;
 
 mod imp {
     use std::sync::OnceLock;
@@ -100,7 +101,7 @@ impl Application {
         // Toggle Search
         let action_search = gio::SimpleAction::new("toggle-search", None);
         action_search.connect_activate(clone!(@weak self as app => move |_, _| {
-            app.main_window().toggle_search();
+            app.main_window().shortcut_toggle_search();
         }));
         self.add_action(&action_search);
 
@@ -117,6 +118,42 @@ impl Application {
             app.show_about_dialog();
         }));
         self.add_action(&action_about);
+
+        // End App/Process
+        let action_end_app_process = gio::SimpleAction::new("end-app-process", None);
+        action_end_app_process.connect_activate(clone!(@weak self as app => move |_, _| {
+            app.main_window().shortcut_manipulate_app_process(ProcessAction::TERM);
+        }));
+        self.add_action(&action_end_app_process);
+
+        // Kill App/Process
+        let action_kill_app_process = gio::SimpleAction::new("kill-app-process", None);
+        action_kill_app_process.connect_activate(clone!(@weak self as app => move |_, _| {
+            app.main_window().shortcut_manipulate_app_process(ProcessAction::KILL);
+        }));
+        self.add_action(&action_kill_app_process);
+
+        // Halt App/Process
+        let action_halt_app_process = gio::SimpleAction::new("halt-app-process", None);
+        action_halt_app_process.connect_activate(clone!(@weak self as app => move |_, _| {
+            app.main_window().shortcut_manipulate_app_process(ProcessAction::STOP);
+        }));
+        self.add_action(&action_halt_app_process);
+
+        // Continue App/Process
+        let action_continue_app_process = gio::SimpleAction::new("continue-app-process", None);
+        action_continue_app_process.connect_activate(clone!(@weak self as app => move |_, _| {
+            app.main_window().shortcut_manipulate_app_process(ProcessAction::CONT);
+        }));
+        self.add_action(&action_continue_app_process);
+
+        // Show Information for App/Process
+        let action_information_app_process =
+            gio::SimpleAction::new("information-app-process", None);
+        action_information_app_process.connect_activate(clone!(@weak self as app => move |_, _| {
+            app.main_window().shortcut_information_app_process();
+        }));
+        self.add_action(&action_information_app_process);
     }
 
     // Sets up keyboard shortcuts
@@ -124,6 +161,11 @@ impl Application {
         self.set_accels_for_action("app.quit", &["<Control>q"]);
         self.set_accels_for_action("app.settings", &["<Control>comma"]);
         self.set_accels_for_action("app.toggle-search", &["<Control>f", "F3"]);
+        self.set_accels_for_action("app.end-app-process", &["<Control>E", "Delete"]);
+        self.set_accels_for_action("app.kill-app-process", &["<Control>K", "<Shift>Delete"]);
+        self.set_accels_for_action("app.halt-app-process", &["<Control>H"]);
+        self.set_accels_for_action("app.continue-app-process", &["<Control>C"]);
+        self.set_accels_for_action("app.information-app-process", &["<Control>I", "Return"]);
     }
 
     fn setup_css(&self) {
