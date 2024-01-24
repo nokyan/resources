@@ -217,7 +217,8 @@ mod imp {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
-                        res_applications.open_information_dialog(application_entry);
+                        res_applications
+                            .open_information_dialog(&application_entry.app_item().unwrap());
                     }
                 },
             );
@@ -408,7 +409,7 @@ impl ResApplications {
                     .unwrap()
                 });
                 if let Some(selection) = selection_option {
-                    this.open_information_dialog(&selection);
+                    this.open_information_dialog(&selection.app_item().unwrap());
                 }
             }));
 
@@ -420,12 +421,13 @@ impl ResApplications {
             }));
     }
 
-    fn open_information_dialog(&self, app: &ApplicationEntry) {
+    pub fn open_information_dialog(&self, app_item: &AppItem) {
         let imp = self.imp();
         let app_dialog = ResAppDialog::new();
-        app_dialog.init(app.app_item().as_ref().unwrap());
+        app_dialog.init(app_item);
         app_dialog.set_visible(true);
-        *imp.open_dialog.borrow_mut() = Some((app.id().map(|gs| gs.to_string()), app_dialog));
+        *imp.open_dialog.borrow_mut() =
+            Some((app_item.id.as_ref().map(|gs| gs.to_string()), app_dialog));
     }
 
     fn search_filter(&self, obj: &Object) -> bool {
@@ -445,7 +447,7 @@ impl ResApplications {
                 .contains(&search_string)
     }
 
-    fn get_selected_app_item(&self) -> Option<AppItem> {
+    pub fn get_selected_app_item(&self) -> Option<AppItem> {
         self.imp()
             .selection_model
             .borrow()

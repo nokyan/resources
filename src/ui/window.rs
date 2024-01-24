@@ -208,20 +208,57 @@ impl MainWindow {
         window
     }
 
-    pub fn toggle_search(&self) {
-        let imp = self.imp();
-
-        let selected_page = imp
+    fn get_selected_page(&self) -> Option<Widget> {
+        self.imp()
             .content_stack
             .visible_child()
             .and_downcast::<adw::ToolbarView>()
             .and_then(|toolbar| toolbar.content())
-            .unwrap();
+    }
+
+    pub fn shortcut_toggle_search(&self) {
+        let imp = self.imp();
+
+        let selected_page = self.get_selected_page().unwrap();
 
         if selected_page.is::<ResApplications>() {
             imp.applications.toggle_search();
         } else if selected_page.is::<ResProcesses>() {
             imp.processes.toggle_search();
+        }
+    }
+
+    pub fn shortcut_manipulate_app_process(&self, process_action: ProcessAction) {
+        let imp = self.imp();
+
+        let selected_page = self.get_selected_page().unwrap();
+
+        if selected_page.is::<ResApplications>() {
+            if let Some(app_item) = imp.applications.get_selected_app_item() {
+                imp.applications
+                    .execute_process_action_dialog(app_item, process_action);
+            }
+        } else if selected_page.is::<ResProcesses>() {
+            if let Some(process_item) = imp.processes.get_selected_process_item() {
+                imp.processes
+                    .execute_process_action_dialog(process_item, process_action);
+            }
+        }
+    }
+
+    pub fn shortcut_information_app_process(&self) {
+        let imp = self.imp();
+
+        let selected_page = self.get_selected_page().unwrap();
+
+        if selected_page.is::<ResApplications>() {
+            if let Some(app_item) = imp.applications.get_selected_app_item() {
+                imp.applications.open_information_dialog(&app_item);
+            }
+        } else if selected_page.is::<ResProcesses>() {
+            if let Some(process_item) = imp.processes.get_selected_process_item() {
+                imp.processes.open_information_dialog(&process_item);
+            }
         }
     }
 
