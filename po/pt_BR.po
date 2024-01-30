@@ -254,7 +254,7 @@ msgstr "Reportar Problemas"
 #: src/application.rs:212
 msgid "translator-credits"
 msgstr ""
-"Victor L. Pavan <victorpavan001@gmail.com>, 2023.\n"
+"Victor L. Pavan <victorpavan001@gmail.com>, 2023-2024.\n"
 "Filipe Motta <luizfilipemotta@gmail.com>, 2024."
 
 #: src/application.rs:213
