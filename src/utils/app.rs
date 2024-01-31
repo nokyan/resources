@@ -20,7 +20,13 @@ use super::{
 };
 
 // This contains executable names that are blacklisted from being recognized as applications
-const APPLICATION_EXEC_BLACKLIST: &[&str] = &["bash", "zsh", "fish", "sh", "ksh", "flatpak"];
+const DESKTOP_EXEC_BLOCKLIST: [&str; 6] = ["bash", "zsh", "fish", "sh", "ksh", "flatpak"];
+
+// This contains IDs of desktop files that shouldn't be counted as applications for whatever reason
+const APP_ID_BLOCKLIST: [&str; 2] = [
+    "org.gnome.Terminal.Preferences", // Prevents the actual Terminal app "org.gnome.Terminal" from being shown
+    "org.freedesktop.IBus.Panel.Extension.Gtk3", // Technical application
+];
 
 static RE_ENV_FILTER: Lazy<Regex> = Lazy::new(|| Regex::new(r"env\s*\S*=\S*\s*(.*)").unwrap());
 
@@ -49,6 +55,8 @@ static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: Lazy<HashMap<String, String>> = Lazy::n
         ("oosplash".into(), "libreoffice".into()),
         ("soffice.bin".into(), "libreoffice".into()),
         ("resources-processes".into(), "resources".into()),
+        ("gnome-terminal-server".into(), "gnome-terminal".into()),
+        ("chrome".into(), "google-chrome-stable".into()),
     ])
 });
 
@@ -96,8 +104,8 @@ pub struct AppsContext {
     apps: HashMap<String, App>,
     processes: HashMap<i32, Process>,
     processes_assigned_to_apps: HashSet<i32>,
-    read_bytes_from_dead_processes: u64,
-    write_bytes_from_dead_processes: u64,
+    read_bytes_from_dead_system_processes: u64,
+    write_bytes_from_dead_system_processes: u64,
 }
 
 /// Convenience struct for displaying running applications and
@@ -189,6 +197,10 @@ impl App {
             })
             .context("unable to get ID of desktop file")?;
 
+        if APP_ID_BLOCKLIST.contains(&id.as_str()) {
+            bail!("skipping {id} because the ID is blacklisted")
+        }
+
         let exec = desktop_entry.get("Exec");
         let commandline = exec
             .and_then(|exec| {
@@ -216,7 +228,7 @@ impl App {
         });
 
         if let Some(executable_name) = &executable_name {
-            if APPLICATION_EXEC_BLACKLIST.contains(&executable_name.as_str()) {
+            if DESKTOP_EXEC_BLOCKLIST.contains(&executable_name.as_str()) {
                 bail!(
                     "skipping {} because its executable {} is blacklisted",
                     id,
@@ -401,8 +413,8 @@ impl AppsContext {
             apps,
             processes: HashMap::new(),
             processes_assigned_to_apps: HashSet::new(),
-            read_bytes_from_dead_processes: 0,
-            write_bytes_from_dead_processes: 0,
+            read_bytes_from_dead_system_processes: 0,
+            write_bytes_from_dead_system_processes: 0,
         }
     }
 
@@ -713,7 +725,7 @@ impl AppsContext {
             .filter_map(|process| process.read_speed())
             .sum();
 
-        let system_read_total = self.read_bytes_from_dead_processes
+        let system_read_total = self.read_bytes_from_dead_system_processes
             + self
                 .system_processes_iter()
                 .filter_map(|process| process.data.read_bytes)
@@ -724,7 +736,7 @@ impl AppsContext {
             .filter_map(|process| process.write_speed())
             .sum();
 
-        let system_write_total = self.write_bytes_from_dead_processes
+        let system_write_total = self.write_bytes_from_dead_system_processes
             + self
                 .system_processes_iter()
                 .filter_map(|process| process.data.write_bytes)
@@ -857,8 +869,8 @@ impl AppsContext {
             )
             .reduce(|sum, current| (sum.0 + current.0, sum.1 + current.1))
             .unwrap_or((0, 0));
-        self.read_bytes_from_dead_processes += read_dead;
-        self.write_bytes_from_dead_processes += write_dead;
+        self.read_bytes_from_dead_system_processes += read_dead;
+        self.write_bytes_from_dead_system_processes += write_dead;
 
         // remove the dead process from our process map
         self.processes
