@@ -442,8 +442,8 @@ msgid "Video Memory Usage"
 msgstr "Wykorzystanie pamięci wideo"
 
 #: src/ui/pages/gpu.rs:378
-msgid "{} · VRAM: {}"
-msgstr "{} · VRAM: {}"
+msgid "VRAM: {}"
+msgstr "VRAM: {}"
 
 #: src/ui/pages/memory.rs:169
 msgid "Swap"

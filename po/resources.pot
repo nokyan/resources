@@ -272,11 +272,11 @@ msgstr ""
 #: src/ui/pages/applications/mod.rs:830 src/ui/pages/cpu.rs:222
 #: src/ui/pages/cpu.rs:237 src/ui/pages/cpu.rs:251 src/ui/pages/cpu.rs:257
 #: src/ui/pages/cpu.rs:263 src/ui/pages/cpu.rs:269 src/ui/pages/cpu.rs:273
-#: src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:361 src/ui/pages/gpu.rs:240
+#: src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:364 src/ui/pages/gpu.rs:240
 #: src/ui/pages/gpu.rs:285 src/ui/pages/gpu.rs:308 src/ui/pages/gpu.rs:311
 #: src/ui/pages/gpu.rs:322 src/ui/pages/gpu.rs:344 src/ui/pages/gpu.rs:354
-#: src/ui/pages/gpu.rs:366 src/ui/pages/gpu.rs:369 src/ui/pages/gpu.rs:375
-#: src/ui/pages/gpu.rs:382 src/ui/pages/gpu.rs:386 src/ui/pages/gpu.rs:389
+#: src/ui/pages/gpu.rs:368 src/ui/pages/gpu.rs:371 src/ui/pages/gpu.rs:377
+#: src/ui/pages/gpu.rs:384 src/ui/pages/gpu.rs:388 src/ui/pages/gpu.rs:391
 #: src/ui/pages/memory.rs:222 src/ui/pages/memory.rs:227
 #: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233
 #: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:242
@@ -285,7 +285,7 @@ msgstr ""
 #: src/ui/pages/network.rs:253 src/ui/pages/network.rs:260
 #: src/ui/pages/network.rs:263 src/ui/pages/processes/mod.rs:822
 #: src/ui/pages/processes/mod.rs:873 src/ui/pages/processes/mod.rs:924
-#: src/ui/pages/processes/mod.rs:975 src/utils/app.rs:674 src/utils/app.rs:750
+#: src/ui/pages/processes/mod.rs:975 src/utils/app.rs:686 src/utils/app.rs:762
 #: src/utils/drive.rs:90 src/utils/gpu/mod.rs:250 src/utils/gpu/mod.rs:256
 msgid "N/A"
 msgstr ""
@@ -374,7 +374,7 @@ msgstr ""
 msgid "Video Memory"
 msgstr ""
 
-#: src/ui/pages/cpu.rs:236 src/ui/pages/cpu.rs:347 src/ui/pages/cpu.rs:351
+#: src/ui/pages/cpu.rs:236 src/ui/pages/cpu.rs:348 src/ui/pages/cpu.rs:352
 msgid "CPU {}"
 msgstr ""
 
@@ -430,7 +430,7 @@ msgid "Video Memory Usage"
 msgstr ""
 
 #: src/ui/pages/gpu.rs:397
-msgid "{} · VRAM: {}"
+msgid "VRAM: {}"
 msgstr ""
 
 #: src/ui/pages/memory.rs:193
@@ -607,7 +607,7 @@ msgstr ""
 msgid "There was a problem continuing {}"
 msgstr ""
 
-#: src/utils/app.rs:756
+#: src/utils/app.rs:768
 msgid "System Processes"
 msgstr ""
 

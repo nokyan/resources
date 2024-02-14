@@ -318,8 +318,9 @@ impl ResCPU {
 
         imp.total_cpu.graph().push_data_point(total_fraction);
 
-        let percentage_string = &format!("{} %", (total_fraction * 100.0).round());
-        imp.total_cpu.set_subtitle(percentage_string);
+        let mut percentage_string = format!("{} %", (total_fraction * 100.0).round());
+        imp.total_cpu.set_subtitle(&percentage_string);
+
         imp.old_total_usage.set(*new_total_usage);
 
         if imp.logical_cpus_amount.get() > 1 {
@@ -354,14 +355,20 @@ impl ResCPU {
             }
         }
 
-        if let Ok(temp) = temperature {
-            imp.temperature
-                .set_subtitle(&convert_temperature(*temp as f64));
-        } else {
-            imp.temperature.set_subtitle(&i18n("N/A"));
-        }
+        let temperature_string = temperature
+            .as_ref()
+            .map(|temp| convert_temperature(*temp as f64))
+            .ok();
+
+        imp.temperature
+            .set_subtitle(&temperature_string.clone().unwrap_or_else(|| i18n("N/A")));
 
         self.set_property("usage", total_fraction);
+
+        if let Some(temperature_string) = temperature_string {
+            percentage_string.push_str(" · ");
+            percentage_string.push_str(&temperature_string);
+        }
 
         self.set_property("tab_usage_string", percentage_string);
     }
