@@ -20,10 +20,10 @@ use super::{
 };
 
 // This contains executable names that are blacklisted from being recognized as applications
-const DESKTOP_EXEC_BLOCKLIST: [&str; 6] = ["bash", "zsh", "fish", "sh", "ksh", "flatpak"];
+const DESKTOP_EXEC_BLOCKLIST: &[&'static str] = &["bash", "zsh", "fish", "sh", "ksh", "flatpak"];
 
 // This contains IDs of desktop files that shouldn't be counted as applications for whatever reason
-const APP_ID_BLOCKLIST: [&str; 2] = [
+const APP_ID_BLOCKLIST: &[&'static str] = &[
     "org.gnome.Terminal.Preferences", // Prevents the actual Terminal app "org.gnome.Terminal" from being shown
     "org.freedesktop.IBus.Panel.Extension.Gtk3", // Technical application
 ];
