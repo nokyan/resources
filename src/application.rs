@@ -32,7 +32,6 @@ mod imp {
 
     impl ApplicationImpl for Application {
         fn activate(&self) {
-            debug!("GtkApplication<Application>::activate");
             self.parent_activate();
             let app = self.obj();
 
@@ -51,7 +50,6 @@ mod imp {
         }
 
         fn startup(&self) {
-            debug!("GtkApplication<Application>::startup");
             self.parent_startup();
             let app = self.obj();
 
