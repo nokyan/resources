@@ -1,8 +1,13 @@
 use anyhow::{anyhow, bail, Context, Result};
 use glob::glob;
+use log::{debug, warn};
 use once_cell::sync::Lazy;
 use regex::Regex;
 use std::path::{Path, PathBuf};
+
+const KNOWN_HWMONS: &[&'static str] = &["zenpower", "coretemp", "k10temp"];
+
+const KNOWN_THERMAL_ZONES: &[&'static str] = &["x86_pkg_temp", "acpitz"];
 
 static RE_LSCPU_MODEL_NAME: Lazy<Regex> = Lazy::new(|| Regex::new(r"Model name:\s*(.*)").unwrap());
 
@@ -26,30 +31,52 @@ static RE_PROC_STAT: Lazy<Regex> = Lazy::new(|| {
 });
 
 static CPU_TEMPERATURE_PATH: Lazy<Option<PathBuf>> = Lazy::new(|| {
-    for path in (glob("/sys/class/hwmon/hwmon*").unwrap()).flatten() {
-        match std::fs::read_to_string(path.join("name")).as_deref() {
-            Ok("zenpower\n") => return Some(path.join("temp1_input")),
-            Ok("coretemp\n") => return Some(path.join(path.join("temp1_input"))),
-            Ok("k10temp\n") => return Some(path.join(path.join("temp1_input"))),
-            Ok(_) | Err(_) => {
-                continue;
-            }
-        };
+    let cpu_temperature_path =
+        search_for_hwmons(KNOWN_HWMONS).or_else(|| search_for_thermal_zones(KNOWN_THERMAL_ZONES));
+
+    if let Some((sensor, path)) = &cpu_temperature_path {
+        debug!(
+            "CPU temperature sensor located at {} ({sensor})",
+            path.display()
+        );
+    } else {
+        warn!("No sensor for CPU temperature found!");
     }
 
-    // collect all the known thermal zones
-    for path in (glob("/sys/class/thermal/thermal_zone*").unwrap()).flatten() {
-        match std::fs::read_to_string(path.join("type")).as_deref() {
-            Ok("x86_pkg_temp\n") => return Some(path.join(path.join("temp"))),
-            Ok("acpitz\n") => return Some(path.join(path.join("temp"))),
-            Ok(_) | Err(_) => {
-                continue;
+    cpu_temperature_path.map(|(_, path)| path)
+});
+
+/// Looks for hwmons with the given names.
+/// This function is a bit inefficient since the `names` array is considered to be ordered by priority.
+fn search_for_hwmons(names: &[&'static str]) -> Option<(&'static str, PathBuf)> {
+    for temp_name in names {
+        for path in (glob("/sys/class/hwmon/hwmon*").unwrap()).flatten() {
+            if let Ok(read_name) = std::fs::read_to_string(path.join("name")) {
+                if &read_name.trim_end() == temp_name {
+                    return Some((&temp_name, path.join("temp1_input")));
+                }
             }
-        };
+        }
     }
 
     None
-});
+}
+
+/// Looks for thermal zones with the given types.
+/// This function is a bit inefficient since the `types` array is considered to be ordered by priority.
+fn search_for_thermal_zones(types: &[&'static str]) -> Option<(&'static str, PathBuf)> {
+    for temp_type in types {
+        for path in (glob("/sys/class/thermal/thermal_zone*").unwrap()).flatten() {
+            if let Ok(read_type) = std::fs::read_to_string(path.join("type")) {
+                if &read_type.trim_end() == temp_type {
+                    return Some((&temp_type, path.join("temp1_input")));
+                }
+            }
+        }
+    }
+
+    None
+}
 
 pub struct CpuData {
     pub new_total_usage: (u64, u64),
