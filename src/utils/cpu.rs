@@ -69,7 +69,7 @@ fn search_for_thermal_zones(types: &[&'static str]) -> Option<(&'static str, Pat
         for path in (glob("/sys/class/thermal/thermal_zone*").unwrap()).flatten() {
             if let Ok(read_type) = std::fs::read_to_string(path.join("type")) {
                 if &read_type.trim_end() == temp_type {
-                    return Some((&temp_type, path.join("temp1_input")));
+                    return Some((&temp_type, path.join("temp")));
                 }
             }
         }
