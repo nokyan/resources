@@ -436,9 +436,9 @@ msgstr "Використання декодувальника"
 msgid "Video Memory Usage"
 msgstr "Використання відеопам'яті"
 
-#: src/ui/pages/gpu.rs:397
-msgid "{} · VRAM: {}"
-msgstr "{} · Відеопам'ять: {}"
+#: src/ui/pages/gpu.rs:377
+msgid "VRAM: {}"
+msgstr "Відеопам'ять: {}"
 
 #: src/ui/pages/memory.rs:193
 msgid "Swap"

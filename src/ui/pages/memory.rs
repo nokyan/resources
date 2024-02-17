@@ -43,6 +43,8 @@ mod imp {
         #[template_child]
         pub type_detail: TemplateChild<adw::ActionRow>,
 
+        pub memory_devices: RefCell<Vec<MemoryDevice>>,
+
         #[property(get)]
         uses_progress_bar: Cell<bool>,
 
@@ -109,6 +111,7 @@ mod imp {
                 form_factor: Default::default(),
                 memory_type: Default::default(),
                 type_detail: Default::default(),
+                memory_devices: Default::default(),
                 uses_progress_bar: Cell::new(true),
                 main_graph_color: glib::Bytes::from_static(&super::ResMemory::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(ThemedIcon::new("memory-symbolic").into()),
@@ -243,6 +246,26 @@ impl ResMemory {
             },
         );
 
+        let total_memory = memory_devices
+            .iter()
+            .map(|md| md.size.unwrap_or(0))
+            .sum::<u64>() as f64;
+
+        self.set_property(
+            "tab_detail_string",
+            &format!(
+                "{} {}",
+                convert_storage(total_memory, false),
+                memory_devices
+                    .iter()
+                    .find(|md| md.installed)
+                    .and_then(|md| md.r#type.clone())
+                    .unwrap_or_default()
+            ),
+        );
+
+        imp.memory_devices.replace(memory_devices);
+
         imp.slots_used
             .set_subtitle(&i18n_f("{} of {}", &[slots_used.as_str(), slots.as_str()]));
 
@@ -330,6 +353,26 @@ impl ResMemory {
                 ),
             );
         }
+
+        let memory_devices = imp.memory_devices.borrow();
+
+        let total_memory = memory_devices
+            .iter()
+            .map(|md| md.size.unwrap_or(0))
+            .sum::<u64>() as f64;
+
+        self.set_property(
+            "tab_detail_string",
+            &format!(
+                "{} {}",
+                convert_storage(total_memory, false),
+                memory_devices
+                    .iter()
+                    .find(|md| md.installed)
+                    .and_then(|md| md.r#type.clone())
+                    .unwrap_or_default()
+            ),
+        );
 
         self.set_property("usage", memory_fraction);
     }

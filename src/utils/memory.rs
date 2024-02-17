@@ -19,6 +19,10 @@ const TEMPLATE_RE_TYPE: &str = r"MEMORY_DEVICE_%_TYPE=(.*)";
 
 const TEMPLATE_RE_TYPE_DETAIL: &str = r"MEMORY_DEVICE_%_TYPE_DETAIL=(.*)";
 
+const TEMPLATE_RE_SIZE: &str = r"MEMORY_DEVICE_%_SIZE=(\d*)";
+
+const BYTES_IN_GIB: u64 = 1073741824; // 1024 * 1024 * 1024
+
 static RE_CONFIGURED_SPEED: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"Configured Memory Speed: (\d+) MT/s").unwrap());
 
@@ -29,6 +33,8 @@ static RE_FORMFACTOR: Lazy<Regex> = Lazy::new(|| Regex::new(r"Form Factor: (.+)"
 static RE_TYPE: Lazy<Regex> = Lazy::new(|| Regex::new(r"Type: (.+)").unwrap());
 
 static RE_TYPE_DETAIL: Lazy<Regex> = Lazy::new(|| Regex::new(r"Type Detail: (.+)").unwrap());
+
+static RE_SIZE: Lazy<Regex> = Lazy::new(|| Regex::new(r"Size: (\d+) GB").unwrap());
 
 static RE_MEM_TOTAL: Lazy<Regex> = Lazy::new(|| Regex::new(r"MemTotal:\s*(\d*) kB").unwrap());
 
@@ -134,6 +140,7 @@ pub struct MemoryDevice {
     pub form_factor: Option<String>,
     pub r#type: Option<String>,
     pub type_detail: Option<String>,
+    pub size: Option<u64>,
     pub installed: bool,
 }
 
@@ -158,6 +165,9 @@ fn parse_dmidecode<S: AsRef<str>>(dmi: S) -> Vec<MemoryDevice> {
             type_detail: RE_TYPE_DETAIL
                 .captures(device_string)
                 .map(|x| x[1].to_string()),
+            size: RE_SIZE
+                .captures(device_string)
+                .map(|x| x[1].parse::<u64>().unwrap() * BYTES_IN_GIB),
             installed: RE_SPEED
                 .captures(device_string)
                 .map(|x| x[1].to_string())
@@ -241,6 +251,12 @@ fn parse_virtual_dmi<S: AsRef<str>>(dmi: S) -> Vec<MemoryDevice> {
             .and_then(|captures| captures.get(1))
             .map(|capture| capture.as_str().to_string());
 
+        let size = Regex::new(&TEMPLATE_RE_SIZE.replace('%', &i))
+            .ok()
+            .and_then(|regex| regex.captures(dmi))
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse().ok());
+
         let installed = Regex::new(&TEMPLATE_RE_PRESENT.replace('%', &i))
             .ok()
             .and_then(|regex| regex.captures(dmi))
@@ -254,6 +270,7 @@ fn parse_virtual_dmi<S: AsRef<str>>(dmi: S) -> Vec<MemoryDevice> {
             form_factor,
             r#type,
             type_detail,
+            size,
             installed,
         })
     }

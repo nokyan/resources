@@ -280,7 +280,7 @@ impl ResGPU {
             power_cap_max,
         } = gpu_data;
 
-        let usage_percentage_string = usage_fraction
+        let mut usage_percentage_string = usage_fraction
             .map(|fraction| format!("{} %", (fraction * 100.0).round()))
             .unwrap_or(i18n("N/A"));
 
@@ -362,8 +362,10 @@ impl ResGPU {
             .graph()
             .set_visible(used_vram_fraction.is_some());
 
+        let temperature_string = temp.map(convert_temperature);
+
         imp.temperature
-            .set_subtitle(&temp.map_or_else(|| i18n("N/A"), convert_temperature));
+            .set_subtitle(&temperature_string.clone().unwrap_or_else(|| i18n("N/A")));
 
         imp.power_usage
             .set_subtitle(&power_usage.map_or_else(|| i18n("N/A"), convert_power));
@@ -391,15 +393,15 @@ impl ResGPU {
         self.set_property("usage", usage_fraction.unwrap_or(0.0));
 
         if used_vram_fraction.is_some() {
-            self.set_property(
-                "tab_usage_string",
-                i18n_f(
-                    "{} · VRAM: {}",
-                    &[&usage_percentage_string, &vram_percentage_string],
-                ),
-            );
-        } else {
-            self.set_property("tab_usage_string", &usage_percentage_string);
+            usage_percentage_string.push_str(" · ");
+            usage_percentage_string.push_str(&i18n_f("VRAM: {}", &[&vram_percentage_string]));
         }
+
+        if let Some(temperature_string) = temperature_string {
+            usage_percentage_string.push_str(" · ");
+            usage_percentage_string.push_str(&temperature_string);
+        }
+
+        self.set_property("tab_usage_string", &usage_percentage_string)
     }
 }
