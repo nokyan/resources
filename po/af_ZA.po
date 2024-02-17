@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-12 18:38+0200\n"
-"PO-Revision-Date: 2024-02-12 18:38+0200\n"
+"PO-Revision-Date: 2024-02-17 18:12+0200\n"
 "Last-Translator: \n"
 "Language-Team: Afrikaans <odofad@gmail.com>\n"
 "Language: af_ZA\n"
@@ -250,7 +250,7 @@ msgstr "Rapporteer kwessies"
 #. One name per line, please do not remove previous names.
 #: src/application.rs:212
 msgid "translator-credits"
-msgstr "odofad odofad@gmail.com"
+msgstr "odofad github.com/odofad"
 
 #: src/application.rs:213
 msgid "Icon by"
@@ -637,7 +637,7 @@ msgstr "Floppyskyf"
 
 #: src/utils/drive.rs:86
 msgid "Hard Disk Drive"
-msgstr "Hardeskyfaandrywer"
+msgstr "Hardeskyf"
 
 #: src/utils/drive.rs:87
 msgid "Loop Device"
