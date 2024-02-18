@@ -153,5 +153,21 @@
       <default>60</default>
       <summary>Amount of data points that should be shown in a graph</summary>
     </key>
+    <key name="apps-sort-by" type="u">
+      <default>0</default>
+      <summary>Which column the Applications column view should be sorted by</summary>
+    </key>
+    <key name="apps-sort-by-ascending" type="b">
+      <default>true</default>
+      <summary>Sort direction for the Applications column view</summary>
+    </key>
+    <key name="processes-sort-by" type="u">
+      <default>3</default>
+      <summary>Which column the Processes column view should be sorted by</summary>
+    </key>
+    <key name="processes-sort-by-ascending" type="b">
+      <default>false</default>
+      <summary>Sort direction for the Processes column view</summary>
+    </key>
   </schema>
 </schemalist>

@@ -207,7 +207,7 @@ impl ResGPU {
     pub fn setup_widgets(&self, gpu: &Gpu) {
         let imp = self.imp();
 
-        imp.gpu_usage.set_title_label(&i18n("GPU Usage"));
+        imp.gpu_usage.set_title_label(&i18n("Total Usage"));
         imp.gpu_usage.graph().set_graph_color(
             Self::MAIN_GRAPH_COLOR[0],
             Self::MAIN_GRAPH_COLOR[1],

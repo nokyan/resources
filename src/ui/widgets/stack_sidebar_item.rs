@@ -97,7 +97,6 @@ mod imp {
                 return;
             }
             self.detail_label.set_label(detail);
-            self.detail_label.set_visible(!detail.is_empty());
         }
 
         pub fn icon(&self) -> Icon {

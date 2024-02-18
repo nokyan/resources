@@ -213,7 +213,7 @@ impl ResDrive {
         imp.set_icon(&drive.icon());
         imp.set_tab_name(&drive.display_name(drive_data.capacity as f64));
 
-        imp.total_usage.set_title_label(&i18n("Total Usage"));
+        imp.total_usage.set_title_label(&i18n("Drive Activity"));
         imp.total_usage.graph().set_graph_color(
             Self::MAIN_GRAPH_COLOR[0],
             Self::MAIN_GRAPH_COLOR[1],

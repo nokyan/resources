@@ -6,7 +6,9 @@ use std::collections::HashSet;
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, closure, Object, Sender};
-use gtk::{gio, FilterChange, NumericSorter, SortType, StringSorter, Widget};
+use gtk::{
+    gio, ColumnView, ColumnViewColumn, FilterChange, NumericSorter, SortType, StringSorter, Widget,
+};
 use gtk_macros::send;
 
 use log::error;
@@ -36,7 +38,7 @@ mod imp {
     use gtk::{
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Sender, Value},
-        CompositeTemplate,
+        ColumnViewColumn, CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]
@@ -70,6 +72,8 @@ mod imp {
         pub sender: OnceLock<Sender<Action>>,
 
         pub popped_over_app: RefCell<Option<ApplicationEntry>>,
+
+        pub columns: RefCell<Vec<ColumnViewColumn>>,
 
         #[property(get)]
         uses_progress_bar: Cell<bool>,
@@ -139,6 +143,7 @@ mod imp {
                 tab_usage_string: Cell::new(glib::GString::from("")),
                 popover_menu: Default::default(),
                 popped_over_app: Default::default(),
+                columns: Default::default(),
             }
         }
     }
@@ -322,17 +327,19 @@ impl ResApplications {
         *imp.column_view.borrow_mut() = gtk::ColumnView::new(None::<gtk::SingleSelection>);
         let column_view = imp.column_view.borrow();
 
-        self.add_name_column();
-        self.add_memory_column();
-        self.add_cpu_column();
-        self.add_read_speed_column();
-        self.add_read_total_column();
-        self.add_write_speed_column();
-        self.add_write_total_column();
-        self.add_gpu_column();
-        self.add_gpu_mem_column();
-        self.add_encoder_column();
-        self.add_decoder_column();
+        let mut columns = imp.columns.borrow_mut();
+
+        columns.push(self.add_name_column(&column_view));
+        columns.push(self.add_memory_column(&column_view));
+        columns.push(self.add_cpu_column(&column_view));
+        columns.push(self.add_read_speed_column(&column_view));
+        columns.push(self.add_read_total_column(&column_view));
+        columns.push(self.add_write_speed_column(&column_view));
+        columns.push(self.add_write_total_column(&column_view));
+        columns.push(self.add_gpu_column(&column_view));
+        columns.push(self.add_gpu_mem_column(&column_view));
+        columns.push(self.add_encoder_column(&column_view));
+        columns.push(self.add_decoder_column(&column_view));
 
         let store = gio::ListStore::new::<ApplicationEntry>();
 
@@ -350,6 +357,13 @@ impl ResApplications {
         selection_model.set_autoselect(false);
 
         column_view.set_model(Some(&selection_model));
+
+        column_view.sort_by_column(
+            columns
+                .get(SETTINGS.apps_sort_by() as usize)
+                .or_else(|| columns.get(0)),
+            SETTINGS.apps_sort_by_ascending(),
+        );
 
         *imp.store.borrow_mut() = store;
         *imp.selection_model.borrow_mut() = selection_model;
@@ -419,6 +433,24 @@ impl ResApplications {
                     this.execute_process_action_dialog(app, ProcessAction::TERM);
                 }
             }));
+
+        if let Some(column_view_sorter) = imp.column_view.borrow().sorter() {
+            column_view_sorter.connect_changed(clone!(@strong self as this => move |sorter, _| {
+                if let Some(sorter) = sorter.downcast_ref::<gtk::ColumnViewSorter>() {
+                    let current_column = sorter.primary_sort_column().map(|column| column.as_ptr() as usize).unwrap_or_default();
+
+                    let current_column_number = this.imp().columns.borrow().iter().enumerate().find(|(_, column)| column.as_ptr() as usize == current_column).map(|(i, _)| i as u32).unwrap_or(0); // 0 corresponds to the name column
+
+                    if SETTINGS.apps_sort_by() != current_column_number {
+                        let _ = SETTINGS.set_apps_sort_by(current_column_number);
+                    }
+
+                    if SETTINGS.apps_sort_by_ascending() != sorter.primary_sort_order() {
+                        let _ = SETTINGS.set_apps_sort_by_ascending(sorter.primary_sort_order());
+                    }
+                }
+            }));
+        }
     }
 
     pub fn open_information_dialog(&self, app_item: &AppItem) {
@@ -574,9 +606,7 @@ impl ResApplications {
         dialog.set_visible(true);
     }
 
-    fn add_name_column(&self) {
-        let imp = self.imp();
-
+    fn add_name_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let name_col_factory = gtk::SignalListItemFactory::new();
 
         let name_col =
@@ -613,16 +643,12 @@ impl ResApplications {
 
         name_col.set_sorter(Some(&name_col_sorter));
 
-        imp.column_view.borrow().append_column(&name_col);
+        column_view.append_column(&name_col);
 
-        imp.column_view
-            .borrow()
-            .sort_by_column(Some(&name_col), SortType::Ascending);
+        name_col
     }
 
-    fn add_memory_column(&self) {
-        let imp = self.imp();
-
+    fn add_memory_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let memory_col_factory = gtk::SignalListItemFactory::new();
 
         let memory_col =
@@ -659,14 +685,16 @@ impl ResApplications {
         memory_col.set_sorter(Some(&memory_col_sorter));
         memory_col.set_visible(SETTINGS.apps_show_memory());
 
-        imp.column_view.borrow().append_column(&memory_col);
+        column_view.append_column(&memory_col);
 
-        SETTINGS.connect_apps_show_memory(move |visible| memory_col.set_visible(visible));
+        SETTINGS.connect_apps_show_memory(
+            clone!(@strong memory_col => move |visible| memory_col.set_visible(visible)),
+        );
+
+        memory_col
     }
 
-    fn add_cpu_column(&self) {
-        let imp = self.imp();
-
+    fn add_cpu_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let cpu_col_factory = gtk::SignalListItemFactory::new();
 
         let cpu_col =
@@ -702,14 +730,16 @@ impl ResApplications {
         cpu_col.set_sorter(Some(&cpu_col_sorter));
         cpu_col.set_visible(SETTINGS.apps_show_cpu());
 
-        imp.column_view.borrow().append_column(&cpu_col);
+        column_view.append_column(&cpu_col);
 
-        SETTINGS.connect_apps_show_cpu(move |visible| cpu_col.set_visible(visible));
+        SETTINGS.connect_apps_show_cpu(
+            clone!(@strong cpu_col => move |visible| cpu_col.set_visible(visible)),
+        );
+
+        cpu_col
     }
 
-    fn add_read_speed_column(&self) {
-        let imp = self.imp();
-
+    fn add_read_speed_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let read_speed_col_factory = gtk::SignalListItemFactory::new();
 
         let read_speed_col = gtk::ColumnViewColumn::new(
@@ -751,15 +781,16 @@ impl ResApplications {
         read_speed_col.set_sorter(Some(&read_speed_col_sorter));
         read_speed_col.set_visible(SETTINGS.apps_show_drive_read_speed());
 
-        imp.column_view.borrow().append_column(&read_speed_col);
+        column_view.append_column(&read_speed_col);
 
-        SETTINGS
-            .connect_apps_show_drive_read_speed(move |visible| read_speed_col.set_visible(visible));
+        SETTINGS.connect_apps_show_drive_read_speed(
+            clone!(@strong read_speed_col => move |visible| read_speed_col.set_visible(visible)),
+        );
+
+        read_speed_col
     }
 
-    fn add_read_total_column(&self) {
-        let imp = self.imp();
-
+    fn add_read_total_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let read_total_col_factory = gtk::SignalListItemFactory::new();
 
         let read_total_col = gtk::ColumnViewColumn::new(
@@ -797,15 +828,16 @@ impl ResApplications {
         read_total_col.set_sorter(Some(&read_total_col_sorter));
         read_total_col.set_visible(SETTINGS.apps_show_drive_read_total());
 
-        imp.column_view.borrow().append_column(&read_total_col);
+        column_view.append_column(&read_total_col);
 
-        SETTINGS
-            .connect_apps_show_drive_read_total(move |visible| read_total_col.set_visible(visible));
+        SETTINGS.connect_apps_show_drive_read_total(
+            clone!(@strong read_total_col => move |visible| read_total_col.set_visible(visible)),
+        );
+
+        read_total_col
     }
 
-    fn add_write_speed_column(&self) {
-        let imp = self.imp();
-
+    fn add_write_speed_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let write_speed_col_factory = gtk::SignalListItemFactory::new();
 
         let write_speed_col = gtk::ColumnViewColumn::new(
@@ -847,16 +879,18 @@ impl ResApplications {
         write_speed_col.set_sorter(Some(&write_speed_col_sorter));
         write_speed_col.set_visible(SETTINGS.apps_show_drive_write_speed());
 
-        imp.column_view.borrow().append_column(&write_speed_col);
+        column_view.append_column(&write_speed_col);
 
-        SETTINGS.connect_apps_show_drive_write_speed(move |visible| {
-            write_speed_col.set_visible(visible)
-        });
+        SETTINGS.connect_apps_show_drive_write_speed(
+            clone!(@strong write_speed_col => move |visible| {
+                write_speed_col.set_visible(visible)
+            }),
+        );
+
+        write_speed_col
     }
 
-    fn add_write_total_column(&self) {
-        let imp = self.imp();
-
+    fn add_write_total_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let write_total_col_factory = gtk::SignalListItemFactory::new();
 
         let write_total_col = gtk::ColumnViewColumn::new(
@@ -894,16 +928,18 @@ impl ResApplications {
         write_total_col.set_sorter(Some(&write_total_col_sorter));
         write_total_col.set_visible(SETTINGS.apps_show_drive_write_total());
 
-        imp.column_view.borrow().append_column(&write_total_col);
+        column_view.append_column(&write_total_col);
 
-        SETTINGS.connect_apps_show_drive_write_total(move |visible| {
-            write_total_col.set_visible(visible)
-        });
+        SETTINGS.connect_apps_show_drive_write_total(
+            clone!(@strong write_total_col => move |visible| {
+                write_total_col.set_visible(visible)
+            }),
+        );
+
+        write_total_col
     }
 
-    fn add_gpu_column(&self) {
-        let imp = self.imp();
-
+    fn add_gpu_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let gpu_col_factory = gtk::SignalListItemFactory::new();
 
         let gpu_col = gtk::ColumnViewColumn::new(Some(&i18n("GPU")), Some(gpu_col_factory.clone()));
@@ -938,14 +974,16 @@ impl ResApplications {
         gpu_col.set_sorter(Some(&gpu_col_sorter));
         gpu_col.set_visible(SETTINGS.apps_show_gpu());
 
-        imp.column_view.borrow().append_column(&gpu_col);
+        column_view.append_column(&gpu_col);
 
-        SETTINGS.connect_apps_show_gpu(move |visible| gpu_col.set_visible(visible));
+        SETTINGS.connect_apps_show_gpu(
+            clone!(@strong gpu_col => move |visible| gpu_col.set_visible(visible)),
+        );
+
+        gpu_col
     }
 
-    fn add_encoder_column(&self) {
-        let imp = self.imp();
-
+    fn add_encoder_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let encoder_col_factory = gtk::SignalListItemFactory::new();
 
         let encoder_col = gtk::ColumnViewColumn::new(
@@ -983,14 +1021,16 @@ impl ResApplications {
         encoder_col.set_sorter(Some(&encoder_col_sorter));
         encoder_col.set_visible(SETTINGS.apps_show_encoder());
 
-        imp.column_view.borrow().append_column(&encoder_col);
+        column_view.append_column(&encoder_col);
 
-        SETTINGS.connect_apps_show_encoder(move |visible| encoder_col.set_visible(visible));
+        SETTINGS.connect_apps_show_encoder(
+            clone!(@strong encoder_col => move |visible| encoder_col.set_visible(visible)),
+        );
+
+        encoder_col
     }
 
-    fn add_decoder_column(&self) {
-        let imp = self.imp();
-
+    fn add_decoder_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let decoder_col_factory = gtk::SignalListItemFactory::new();
 
         let decoder_col = gtk::ColumnViewColumn::new(
@@ -1028,14 +1068,16 @@ impl ResApplications {
         decoder_col.set_sorter(Some(&decoder_col_sorter));
         decoder_col.set_visible(SETTINGS.apps_show_decoder());
 
-        imp.column_view.borrow().append_column(&decoder_col);
+        column_view.append_column(&decoder_col);
 
-        SETTINGS.connect_apps_show_decoder(move |visible| decoder_col.set_visible(visible));
+        SETTINGS.connect_apps_show_decoder(
+            clone!(@strong decoder_col => move |visible| decoder_col.set_visible(visible)),
+        );
+
+        decoder_col
     }
 
-    fn add_gpu_mem_column(&self) {
-        let imp = self.imp();
-
+    fn add_gpu_mem_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let gpu_mem_col_factory = gtk::SignalListItemFactory::new();
         let gpu_mem_col = gtk::ColumnViewColumn::new(
             Some(&i18n("Video Memory")),
@@ -1070,8 +1112,12 @@ impl ResApplications {
         gpu_mem_col.set_sorter(Some(&gpu_mem_col_sorter));
         gpu_mem_col.set_visible(SETTINGS.apps_show_gpu_memory());
 
-        imp.column_view.borrow().append_column(&gpu_mem_col);
+        column_view.append_column(&gpu_mem_col);
 
-        SETTINGS.connect_apps_show_gpu_memory(move |visible| gpu_mem_col.set_visible(visible));
+        SETTINGS.connect_apps_show_gpu_memory(
+            clone!(@strong gpu_mem_col => move |visible| gpu_mem_col.set_visible(visible)),
+        );
+
+        gpu_mem_col
     }
 }
