@@ -218,7 +218,7 @@ impl ResCPU {
 
         imp.logical_cpus_amount.set(logical_cpus);
 
-        imp.total_cpu.set_title_label(&i18n("CPU"));
+        imp.total_cpu.set_title_label(&i18n("Total Usage"));
         imp.total_cpu.set_subtitle(&i18n("N/A"));
         imp.total_cpu.graph().set_graph_color(
             Self::MAIN_GRAPH_COLOR[0],
