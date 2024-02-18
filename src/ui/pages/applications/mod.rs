@@ -441,8 +441,13 @@ impl ResApplications {
 
                     let current_column_number = this.imp().columns.borrow().iter().enumerate().find(|(_, column)| column.as_ptr() as usize == current_column).map(|(i, _)| i as u32).unwrap_or(0); // 0 corresponds to the name column
 
-                    let _ = SETTINGS.set_apps_sort_by(current_column_number);
-                    let _ = SETTINGS.set_apps_sort_by_ascending(sorter.primary_sort_order());
+                    if SETTINGS.apps_sort_by() != current_column_number {
+                        let _ = SETTINGS.set_apps_sort_by(current_column_number);
+                    }
+
+                    if SETTINGS.apps_sort_by_ascending() != sorter.primary_sort_order() {
+                        let _ = SETTINGS.set_apps_sort_by_ascending(sorter.primary_sort_order());
+                    }
                 }
             }));
         }

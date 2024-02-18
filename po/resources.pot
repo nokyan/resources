@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-18 20:19+0100\n"
+"POT-Creation-Date: 2024-02-18 20:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,8 +51,8 @@ msgid "CPU"
 msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:26
-#: src/ui/pages/applications/mod.rs:650 src/ui/pages/memory.rs:119
-#: src/ui/pages/memory.rs:190 src/ui/pages/processes/mod.rs:743
+#: src/ui/pages/applications/mod.rs:655 src/ui/pages/memory.rs:119
+#: src/ui/pages/memory.rs:190 src/ui/pages/processes/mod.rs:748
 #: data/resources/ui/window.ui:155 data/resources/ui/window.ui:162
 #: data/resources/ui/dialogs/app_dialog.ui:83
 #: data/resources/ui/dialogs/process_dialog.ui:70
@@ -62,8 +62,8 @@ msgid "Memory"
 msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:27
-#: src/ui/pages/applications/mod.rs:940 src/ui/pages/gpu.rs:138
-#: src/ui/pages/processes/mod.rs:1044 src/ui/window.rs:277
+#: src/ui/pages/applications/mod.rs:945 src/ui/pages/gpu.rs:138
+#: src/ui/pages/processes/mod.rs:1049 src/ui/window.rs:277
 #: data/resources/ui/dialogs/app_dialog.ui:132
 #: data/resources/ui/dialogs/process_dialog.ui:115
 #: data/resources/ui/dialogs/settings_dialog.ui:157
@@ -114,8 +114,8 @@ msgstr ""
 #: src/ui/dialogs/process_dialog.rs:129 src/ui/dialogs/process_dialog.rs:136
 #: src/ui/dialogs/process_dialog.rs:143 src/ui/dialogs/process_dialog.rs:150
 #: src/ui/dialogs/process_dialog.rs:176 src/ui/dialogs/process_dialog.rs:183
-#: src/ui/dialogs/process_dialog.rs:185 src/ui/pages/applications/mod.rs:759
-#: src/ui/pages/applications/mod.rs:857 src/ui/pages/cpu.rs:222
+#: src/ui/dialogs/process_dialog.rs:185 src/ui/pages/applications/mod.rs:764
+#: src/ui/pages/applications/mod.rs:862 src/ui/pages/cpu.rs:222
 #: src/ui/pages/cpu.rs:237 src/ui/pages/cpu.rs:251 src/ui/pages/cpu.rs:257
 #: src/ui/pages/cpu.rs:263 src/ui/pages/cpu.rs:269 src/ui/pages/cpu.rs:273
 #: src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:364 src/ui/pages/gpu.rs:240
@@ -129,9 +129,9 @@ msgstr ""
 #: src/ui/pages/memory.rs:274 src/ui/pages/memory.rs:328
 #: src/ui/pages/network.rs:238 src/ui/pages/network.rs:246
 #: src/ui/pages/network.rs:253 src/ui/pages/network.rs:260
-#: src/ui/pages/network.rs:263 src/ui/pages/processes/mod.rs:851
-#: src/ui/pages/processes/mod.rs:904 src/ui/pages/processes/mod.rs:957
-#: src/ui/pages/processes/mod.rs:1010 src/utils/app.rs:686 src/utils/app.rs:762
+#: src/ui/pages/network.rs:263 src/ui/pages/processes/mod.rs:856
+#: src/ui/pages/processes/mod.rs:909 src/ui/pages/processes/mod.rs:962
+#: src/ui/pages/processes/mod.rs:1015 src/utils/app.rs:686 src/utils/app.rs:762
 #: src/utils/drive.rs:90 src/utils/gpu/mod.rs:250 src/utils/gpu/mod.rs:256
 msgid "N/A"
 msgstr ""
@@ -142,20 +142,20 @@ msgstr ""
 msgid "Applications"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:554
+#: src/ui/pages/applications/mod.rs:559
 msgid "Running Applications: {}"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:583 src/ui/pages/processes/mod.rs:565
+#: src/ui/pages/applications/mod.rs:588 src/ui/pages/processes/mod.rs:570
 msgid "Cancel"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:608
+#: src/ui/pages/applications/mod.rs:613
 msgid "Application"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:696 src/ui/pages/cpu.rs:136
-#: src/ui/pages/processes/mod.rs:788 src/ui/window.rs:316
+#: src/ui/pages/applications/mod.rs:701 src/ui/pages/cpu.rs:136
+#: src/ui/pages/processes/mod.rs:793 src/ui/window.rs:316
 #: data/resources/ui/window.ui:124 data/resources/ui/window.ui:131
 #: data/resources/ui/dialogs/app_dialog.ui:74
 #: data/resources/ui/dialogs/process_dialog.ui:61
@@ -164,7 +164,7 @@ msgstr ""
 msgid "Processor"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:741 src/ui/pages/processes/mod.rs:833
+#: src/ui/pages/applications/mod.rs:746 src/ui/pages/processes/mod.rs:838
 #: data/resources/ui/dialogs/app_dialog.ui:92
 #: data/resources/ui/dialogs/process_dialog.ui:75
 #: data/resources/ui/dialogs/settings_dialog.ui:137
@@ -172,7 +172,7 @@ msgstr ""
 msgid "Drive Read"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:792 src/ui/pages/processes/mod.rs:886
+#: src/ui/pages/applications/mod.rs:797 src/ui/pages/processes/mod.rs:891
 #: data/resources/ui/dialogs/app_dialog.ui:101
 #: data/resources/ui/dialogs/process_dialog.ui:84
 #: data/resources/ui/dialogs/settings_dialog.ui:142
@@ -180,7 +180,7 @@ msgstr ""
 msgid "Drive Read Total"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:839 src/ui/pages/processes/mod.rs:939
+#: src/ui/pages/applications/mod.rs:844 src/ui/pages/processes/mod.rs:944
 #: data/resources/ui/dialogs/app_dialog.ui:110
 #: data/resources/ui/dialogs/process_dialog.ui:93
 #: data/resources/ui/dialogs/settings_dialog.ui:147
@@ -188,7 +188,7 @@ msgstr ""
 msgid "Drive Write"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:892 src/ui/pages/processes/mod.rs:992
+#: src/ui/pages/applications/mod.rs:897 src/ui/pages/processes/mod.rs:997
 #: data/resources/ui/dialogs/app_dialog.ui:119
 #: data/resources/ui/dialogs/process_dialog.ui:102
 #: data/resources/ui/dialogs/settings_dialog.ui:152
@@ -196,7 +196,7 @@ msgstr ""
 msgid "Drive Write Total"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:985 src/ui/pages/processes/mod.rs:1089
+#: src/ui/pages/applications/mod.rs:990 src/ui/pages/processes/mod.rs:1094
 #: data/resources/ui/dialogs/app_dialog.ui:150
 #: data/resources/ui/dialogs/process_dialog.ui:133
 #: data/resources/ui/dialogs/settings_dialog.ui:167
@@ -204,7 +204,7 @@ msgstr ""
 msgid "Video Encoder"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:1032 src/ui/pages/processes/mod.rs:1136
+#: src/ui/pages/applications/mod.rs:1037 src/ui/pages/processes/mod.rs:1141
 #: data/resources/ui/dialogs/app_dialog.ui:159
 #: data/resources/ui/dialogs/process_dialog.ui:142
 #: data/resources/ui/dialogs/settings_dialog.ui:172
@@ -212,7 +212,7 @@ msgstr ""
 msgid "Video Decoder"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:1078 src/ui/pages/processes/mod.rs:1183
+#: src/ui/pages/applications/mod.rs:1083 src/ui/pages/processes/mod.rs:1188
 #: data/resources/ui/dialogs/app_dialog.ui:141
 #: data/resources/ui/dialogs/process_dialog.ui:124
 #: data/resources/ui/dialogs/settings_dialog.ui:162
@@ -321,25 +321,25 @@ msgstr ""
 msgid "Processes"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:533
+#: src/ui/pages/processes/mod.rs:538
 msgid "Running Processes: {}"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:604
+#: src/ui/pages/processes/mod.rs:609
 msgid "root"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:616
+#: src/ui/pages/processes/mod.rs:621
 msgid "Process"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:662
+#: src/ui/pages/processes/mod.rs:667
 #: data/resources/ui/dialogs/process_dialog.ui:156
 #: data/resources/ui/dialogs/settings_dialog.ui:188
 msgid "Process ID"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:702
+#: src/ui/pages/processes/mod.rs:707
 #: data/resources/ui/dialogs/process_dialog.ui:183
 #: data/resources/ui/dialogs/settings_dialog.ui:193
 msgid "User"
