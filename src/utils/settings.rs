@@ -2,7 +2,7 @@ use std::{ops::Deref, str::FromStr};
 
 use adw::prelude::*;
 
-use gtk::{gio, glib};
+use gtk::{gio, glib, SortType};
 use once_cell::sync::Lazy;
 use strum_macros::{Display, EnumString, FromRepr};
 
@@ -235,9 +235,84 @@ impl Settings {
         })
     }
 
+    pub fn processes_sort_by_ascending(&self) -> SortType {
+        if self.boolean("processes-sort-by-ascending") {
+            SortType::Ascending
+        } else {
+            SortType::Descending
+        }
+    }
+
+    pub fn set_processes_sort_by_ascending(
+        &self,
+        value: SortType,
+    ) -> Result<(), glib::error::BoolError> {
+        self.set_boolean(
+            "processes-sort-by-ascending",
+            match value {
+                SortType::Ascending => true,
+                _ => false,
+            },
+        )
+    }
+
+    pub fn connect_processes_sort_by_ascending<F: Fn(SortType) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(
+            Some("processes-sort-by-ascending"),
+            move |settings, _key| {
+                let sort_type = if settings.boolean("processes-sort-by-ascending") {
+                    SortType::Ascending
+                } else {
+                    SortType::Descending
+                };
+
+                f(sort_type);
+            },
+        )
+    }
+
+    pub fn apps_sort_by_ascending(&self) -> SortType {
+        if self.boolean("apps-sort-by-ascending") {
+            SortType::Ascending
+        } else {
+            SortType::Descending
+        }
+    }
+
+    pub fn set_apps_sort_by_ascending(
+        &self,
+        value: SortType,
+    ) -> Result<(), glib::error::BoolError> {
+        self.set_boolean(
+            "apps-sort-by-ascending",
+            match value {
+                SortType::Ascending => true,
+                _ => false,
+            },
+        )
+    }
+
+    pub fn connect_apps_sort_by_ascending<F: Fn(SortType) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        self.connect_changed(Some("apps-sort-by-ascending"), move |settings, _key| {
+            let sort_type = if settings.boolean("apps-sort-by-ascending") {
+                SortType::Ascending
+            } else {
+                SortType::Descending
+            };
+
+            f(sort_type);
+        })
+    }
+
     int_settings!(window_width, window_height);
 
-    uint_settings!(graph_data_points);
+    uint_settings!(graph_data_points, apps_sort_by, processes_sort_by);
 
     bool_settings!(
         show_search_on_start,

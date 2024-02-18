@@ -19,7 +19,7 @@ anyhow = "1.0.75"
 log = "0.4.20"
 pretty_env_logger = "0.5"
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
-gtk = { version = "0.7.3", features = ["v4_8"], package = "gtk4" }
+gtk = { version = "0.7.3", features = ["v4_10"], package = "gtk4" }
 adw = { version = "0.5.3", features = ["v1_4"], package = "libadwaita" }
 regex = "1.10.2"
 sysconf = "0.3.4"

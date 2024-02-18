@@ -1,4 +1,4 @@
-use log::{debug, info};
+use log::info;
 
 use adw::{prelude::*, subclass::prelude::*};
 use glib::clone;
