@@ -8,10 +8,7 @@ use crate::utils::units::{convert_frequency, convert_power, convert_storage, con
 use crate::utils::NaNDefault;
 
 mod imp {
-    use std::{
-        cell::{Cell, RefCell},
-        sync::OnceLock,
-    };
+    use std::cell::{Cell, RefCell};
 
     use crate::ui::widgets::{double_graph_box::ResDoubleGraphBox, graph_box::ResGraphBox};
 
@@ -53,8 +50,6 @@ mod imp {
         pub current_power_cap: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub max_power_cap: TemplateChild<adw::ActionRow>,
-
-        pub number: OnceLock<usize>,
 
         #[property(get)]
         uses_progress_bar: Cell<bool>,
@@ -130,7 +125,6 @@ mod imp {
                 driver_used: Default::default(),
                 current_power_cap: Default::default(),
                 max_power_cap: Default::default(),
-                number: Default::default(),
                 uses_progress_bar: Cell::new(true),
                 main_graph_color: glib::Bytes::from_static(&super::ResGPU::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(ThemedIcon::new("gpu-symbolic").into()),
@@ -198,9 +192,7 @@ impl ResGPU {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self, gpu: &Gpu, number: usize) {
-        let imp = self.imp();
-        imp.number.set(number).unwrap_or_default();
+    pub fn init(&self, gpu: &Gpu) {
         self.setup_widgets(gpu);
     }
 

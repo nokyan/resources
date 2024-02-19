@@ -285,7 +285,7 @@ impl MainWindow {
                 self.add_page(&page, &tab_name, &tab_name)
             };
 
-            page.init(gpu, i);
+            page.init(gpu);
 
             imp.gpu_pages
                 .borrow_mut()
