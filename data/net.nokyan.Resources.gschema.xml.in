@@ -46,7 +46,7 @@
       <summary>Show device description in the sidebar</summary>
     </key>
     <key name="sidebar-meter-type" type="s">
-      <default>&quot;Progress Bar&quot;</default>
+      <default>&quot;Graph&quot;</default>
       <summary>Sidebar Meter Type</summary>
     </key>
     <key name="network-bits" type="b">
