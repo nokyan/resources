@@ -49,8 +49,6 @@ mod imp {
         #[template_child]
         pub toast_overlay: TemplateChild<adw::ToastOverlay>,
         #[template_child]
-        pub popover_menu: TemplateChild<gtk::PopoverMenu>,
-        #[template_child]
         pub search_revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub search_entry: TemplateChild<gtk::SearchEntry>,
@@ -149,7 +147,6 @@ mod imp {
                 tab_name: Cell::new(glib::GString::from(i18n("Processes"))),
                 tab_detail_string: Cell::new(glib::GString::from("")),
                 tab_usage_string: Cell::new(glib::GString::from("")),
-                popover_menu: Default::default(),
                 popped_over_process: Default::default(),
                 columns: Default::default(),
             }
@@ -330,8 +327,6 @@ impl ResProcesses {
     pub fn setup_widgets(&self) {
         let imp = self.imp();
 
-        imp.popover_menu.set_parent(self);
-
         *imp.column_view.borrow_mut() = gtk::ColumnView::new(None::<gtk::SingleSelection>);
         let column_view = imp.column_view.borrow();
 
@@ -500,7 +495,6 @@ impl ResProcesses {
                         dialog_opt = &None;
                     }
                 }
-                imp.popover_menu.popdown();
                 *imp.popped_over_process.borrow_mut() = None;
                 pids_to_remove.insert(item_pid);
             }
