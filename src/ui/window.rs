@@ -6,7 +6,7 @@ use std::time::Duration;
 use adw::{prelude::*, subclass::prelude::*};
 use adw::{Toast, ToastOverlay};
 use anyhow::{Context, Result};
-use gtk::glib::{clone, timeout_future, MainContext};
+use gtk::glib::{clone, timeout_future, GString, MainContext};
 use gtk::{gio, glib, Widget};
 use log::{debug, error, warn};
 
@@ -320,6 +320,7 @@ impl MainWindow {
         self.init_gpu_pages();
 
         let main_context = MainContext::default();
+
         main_context.spawn_local(clone!(@strong self as this => async move {
             this.periodic_refresh_all().await;
         }));
@@ -520,11 +521,38 @@ impl MainWindow {
             }
         });
 
+        let mut first_refresh = true;
+
         loop {
             // gather_refresh_data()
             let refresh_data = rx_data.recv().unwrap();
 
             self.refresh_ui(refresh_data);
+
+            // if this is our first refresh, we want to set the opening view to what it was when the last session was ended
+            if first_refresh {
+                let saved_page = SETTINGS.last_viewed_page();
+
+                // yes, this is bad and O(n).
+                for page in imp.content_stack.pages().iter::<gtk::StackPage>().flatten() {
+                    let toolbar = page.child().downcast::<adw::ToolbarView>().unwrap();
+
+                    let child_id = toolbar.content().unwrap().property::<GString>("tab_id");
+
+                    if &child_id == &saved_page {
+                        imp.content_stack.set_visible_child(&toolbar);
+                        imp.resources_sidebar
+                            .set_selected_list_item_by_tab_id(&child_id);
+                        break;
+                    }
+                }
+
+                // enable the transition type only now to avoid having a transition right in the beginning
+                imp.content_stack
+                    .set_transition_type(gtk::StackTransitionType::Crossfade);
+
+                first_refresh = false;
+            }
 
             // Total time before next ui refresh
             let total_delay = SETTINGS.refresh_speed().ui_refresh_interval();

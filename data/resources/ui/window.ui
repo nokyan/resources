@@ -56,7 +56,6 @@
               <object class="GtkStack" id="content_stack">
                 <property name="vexpand">True</property>
                 <property name="vhomogeneous">False</property>
-                <property name="transition_type">crossfade</property>
                 <child>
                   <object class="GtkStackPage" id="applications_page">
                     <property name="title" translatable="yes">Applications</property>

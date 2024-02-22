@@ -78,6 +78,9 @@ mod imp {
 
         #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
         tab_usage_string: Cell<glib::GString>,
+
+        #[property(get = Self::tab_id, type = glib::GString)]
+        tab_id: Cell<glib::GString>,
     }
 
     impl ResCPU {
@@ -110,6 +113,13 @@ mod imp {
             self.tab_usage_string
                 .set(glib::GString::from(tab_usage_string));
         }
+
+        pub fn tab_id(&self) -> glib::GString {
+            let tab_id = self.tab_id.take();
+            let result = tab_id.clone();
+            self.tab_id.set(tab_id);
+            result
+        }
     }
 
     impl Default for ResCPU {
@@ -134,8 +144,9 @@ mod imp {
                 icon: RefCell::new(ThemedIcon::new("processor-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("Processor"))),
-                tab_detail_string: Cell::new(glib::GString::from("")),
-                tab_usage_string: Cell::new(glib::GString::from("")),
+                tab_detail_string: Cell::new(glib::GString::new()),
+                tab_usage_string: Cell::new(glib::GString::new()),
+                tab_id: Cell::new(glib::GString::from("cpu")),
                 old_total_usage: Cell::default(),
                 old_thread_usages: RefCell::default(),
                 logical_cpus_amount: Cell::default(),

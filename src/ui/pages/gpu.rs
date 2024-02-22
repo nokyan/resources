@@ -71,6 +71,9 @@ mod imp {
 
         #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
         tab_usage_string: Cell<glib::GString>,
+
+        #[property(get = Self::tab_id, set = Self::set_tab_id, type = glib::GString)]
+        tab_id: Cell<glib::GString>,
     }
 
     impl ResGPU {
@@ -107,6 +110,17 @@ mod imp {
             self.tab_usage_string
                 .set(glib::GString::from(tab_usage_string));
         }
+
+        pub fn tab_id(&self) -> glib::GString {
+            let tab_id = self.tab_id.take();
+            let result = tab_id.clone();
+            self.tab_id.set(tab_id);
+            result
+        }
+
+        pub fn set_tab_id(&self, tab_id: &str) {
+            self.tab_id.set(glib::GString::from(tab_id));
+        }
     }
 
     impl Default for ResGPU {
@@ -130,8 +144,9 @@ mod imp {
                 icon: RefCell::new(ThemedIcon::new("gpu-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("GPU"))),
-                tab_detail_string: Cell::new(glib::GString::from("")),
-                tab_usage_string: Cell::new(glib::GString::from("")),
+                tab_detail_string: Cell::new(glib::GString::new()),
+                tab_usage_string: Cell::new(glib::GString::new()),
+                tab_id: Cell::new(glib::GString::new()),
             }
         }
     }
@@ -186,6 +201,7 @@ glib::wrapper! {
 }
 
 impl ResGPU {
+    const ID_PREFIX: &'static str = "gpu";
     const MAIN_GRAPH_COLOR: [u8; 3] = [230, 97, 0];
 
     pub fn new() -> Self {
@@ -198,6 +214,9 @@ impl ResGPU {
 
     pub fn setup_widgets(&self, gpu: &Gpu) {
         let imp = self.imp();
+
+        let tab_id = format!("{}-{}", Self::ID_PREFIX, &gpu.pci_slot().to_string());
+        imp.set_tab_id(&tab_id);
 
         imp.gpu_usage.set_title_label(&i18n("Total Usage"));
         imp.gpu_usage.graph().set_graph_color(

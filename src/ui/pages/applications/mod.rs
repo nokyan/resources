@@ -87,6 +87,9 @@ mod imp {
 
         #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
         tab_usage_string: Cell<glib::GString>,
+
+        #[property(get = Self::tab_id, type = glib::GString)]
+        tab_id: Cell<glib::GString>,
     }
 
     impl ResApplications {
@@ -115,6 +118,13 @@ mod imp {
             self.tab_usage_string
                 .set(glib::GString::from(tab_usage_string));
         }
+
+        pub fn tab_id(&self) -> glib::GString {
+            let tab_id = self.tab_id.take();
+            let result = tab_id.clone();
+            self.tab_id.set(tab_id);
+            result
+        }
     }
 
     impl Default for ResApplications {
@@ -137,8 +147,9 @@ mod imp {
                 uses_progress_bar: Cell::new(false),
                 icon: RefCell::new(ThemedIcon::new("app-symbolic").into()),
                 tab_name: Cell::from(glib::GString::from(i18n("Applications"))),
-                tab_detail_string: Cell::new(glib::GString::from("")),
-                tab_usage_string: Cell::new(glib::GString::from("")),
+                tab_detail_string: Cell::new(glib::GString::new()),
+                tab_usage_string: Cell::new(glib::GString::new()),
+                tab_id: Cell::new(glib::GString::from("applications")),
                 popped_over_app: Default::default(),
                 columns: Default::default(),
             }

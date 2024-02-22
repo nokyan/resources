@@ -169,5 +169,9 @@
       <default>false</default>
       <summary>Sort direction for the Processes column view</summary>
     </key>
+    <key name="last-viewed-page" type="s">
+      <default>&quot;applications&quot;</default>
+      <summary>Page that was last viewed before the last session was ended</summary>
+    </key>
   </schema>
 </schemalist>
