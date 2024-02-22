@@ -264,7 +264,7 @@ impl ResMemory {
 
         self.set_property(
             "tab_detail_string",
-            &format!(
+            format!(
                 "{} {}",
                 convert_storage(total_memory, false),
                 memory_devices
@@ -374,7 +374,7 @@ impl ResMemory {
 
         self.set_property(
             "tab_detail_string",
-            &format!(
+            format!(
                 "{} {}",
                 convert_storage(total_memory, false),
                 memory_devices

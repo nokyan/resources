@@ -259,7 +259,7 @@ impl ResCPU {
         imp.max_speed.set_subtitle(
             &cpu_info
                 .max_speed
-                .map_or_else(|| i18n("N/A"), |x| convert_frequency(x)),
+                .map_or_else(|| i18n("N/A"), convert_frequency),
         );
 
         imp.logical_cpus.set_subtitle(

@@ -539,7 +539,7 @@ impl MainWindow {
 
                     let child_id = toolbar.content().unwrap().property::<GString>("tab_id");
 
-                    if &child_id == &saved_page {
+                    if child_id == saved_page {
                         imp.content_stack.set_visible_child(&toolbar);
                         imp.resources_sidebar
                             .set_selected_list_item_by_tab_id(&child_id);

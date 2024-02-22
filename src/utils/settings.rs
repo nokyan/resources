@@ -266,10 +266,7 @@ impl Settings {
     ) -> Result<(), glib::error::BoolError> {
         self.set_boolean(
             "processes-sort-by-ascending",
-            match value {
-                SortType::Ascending => true,
-                _ => false,
-            },
+            matches!(value, SortType::Ascending),
         )
     }
 
@@ -305,10 +302,7 @@ impl Settings {
     ) -> Result<(), glib::error::BoolError> {
         self.set_boolean(
             "apps-sort-by-ascending",
-            match value {
-                SortType::Ascending => true,
-                _ => false,
-            },
+            matches!(value, SortType::Ascending),
         )
     }
 
