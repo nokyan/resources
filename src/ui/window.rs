@@ -417,23 +417,19 @@ impl MainWindow {
         for ((_, page), mut gpu_data) in gpu_pages.values().zip(gpu_data) {
             let page = page.content().and_downcast::<ResGPU>().unwrap();
 
-            // non-NVIDIA GPUs unfortunately don't expose encoder/decoder stats centrally but
-            // rather expose them only per-process. since we've just refreshed our
-            // processes, we take the opportunity and collect the encoder/decoder for the
-            // current GPU and slip it into GpuData just in time
+            if !gpu_data.nvidia {
+                // for non-NVIDIA GPUs, we prefer getting the fractions from the processes because they represent the
+                // average usage during now and the last refresh, while gpu_busy_percent is a snapshot of the current
+                // usage, which might not be what we want
 
-            if gpu_data.usage_fraction.is_none() {
-                gpu_data.usage_fraction = Some(apps_context.gpu_fraction(gpu_data.pci_slot) as f64);
-            }
+                let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.pci_slot);
+                gpu_data.usage_fraction = Some(processes_gpu_fraction.into());
 
-            if gpu_data.encode_fraction.is_none() {
-                gpu_data.encode_fraction =
-                    Some(apps_context.encoder_fraction(gpu_data.pci_slot) as f64);
-            }
+                let processes_encode_fraction = apps_context.encoder_fraction(gpu_data.pci_slot);
+                gpu_data.encode_fraction = Some(processes_encode_fraction.into());
 
-            if gpu_data.decode_fraction.is_none() {
-                gpu_data.decode_fraction =
-                    Some(apps_context.decoder_fraction(gpu_data.pci_slot) as f64);
+                let processes_decode_fraction = apps_context.decoder_fraction(gpu_data.pci_slot);
+                gpu_data.decode_fraction = Some(processes_decode_fraction.into());
             }
 
             page.refresh_page(gpu_data);

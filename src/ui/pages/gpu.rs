@@ -286,6 +286,7 @@ impl ResGPU {
             power_usage,
             power_cap,
             power_cap_max,
+            nvidia: _,
         } = gpu_data;
 
         let mut usage_percentage_string = usage_fraction
