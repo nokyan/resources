@@ -47,8 +47,6 @@ mod imp {
         #[template_child]
         pub driver_used: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub current_power_cap: TemplateChild<adw::ActionRow>,
-        #[template_child]
         pub max_power_cap: TemplateChild<adw::ActionRow>,
 
         #[property(get)]
@@ -137,7 +135,6 @@ mod imp {
                 manufacturer: Default::default(),
                 pci_slot: Default::default(),
                 driver_used: Default::default(),
-                current_power_cap: Default::default(),
                 max_power_cap: Default::default(),
                 uses_progress_bar: Cell::new(true),
                 main_graph_color: glib::Bytes::from_static(&super::ResGPU::MAIN_GRAPH_COLOR),
@@ -378,8 +375,13 @@ impl ResGPU {
         imp.temperature
             .set_subtitle(&temperature_string.clone().unwrap_or_else(|| i18n("N/A")));
 
-        imp.power_usage
-            .set_subtitle(&power_usage.map_or_else(|| i18n("N/A"), convert_power));
+        let mut power_string = power_usage.map_or_else(|| i18n("N/A"), convert_power);
+
+        if let Some(power_cap) = power_cap {
+            power_string.push_str(&format!(" / {}", convert_power(power_cap)));
+        }
+
+        imp.power_usage.set_subtitle(&power_string);
 
         if let Some(gpu_clockspeed) = clock_speed {
             imp.gpu_clockspeed
@@ -394,9 +396,6 @@ impl ResGPU {
         } else {
             imp.vram_clockspeed.set_subtitle(&i18n("N/A"));
         }
-
-        imp.current_power_cap
-            .set_subtitle(&power_cap.map_or_else(|| i18n("N/A"), convert_power));
 
         imp.max_power_cap
             .set_subtitle(&power_cap_max.map_or_else(|| i18n("N/A"), convert_power));
