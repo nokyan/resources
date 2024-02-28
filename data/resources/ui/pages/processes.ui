@@ -48,10 +48,9 @@
       </menu>
     </object>
     <property name="child">
-      <object class="AdwToastOverlay" id="toast_overlay">
-        <child>
-          <object class="GtkBox">
-            <property name="orientation">vertical</property>
+      <object class="AdwToolbarView">
+        <property name="content">
+          <object class="AdwToastOverlay" id="toast_overlay">
             <child>
               <object class="GtkScrolledWindow" id="processes_scrolled_window">
                 <property name="hexpand">true</property>
@@ -59,7 +58,12 @@
                 <property name="hscrollbar_policy">automatic</property>
               </object>
             </child>
-            <child>
+          </object>
+        </property>
+        <child type="bottom">
+          <object class="GtkBox">
+          <property name="orientation">vertical</property>
+          <child>
               <object class="GtkRevealer" id="search_revealer">
                 <property name="transition_type">slide-up</property>
                 <child>
