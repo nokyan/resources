@@ -789,34 +789,7 @@ impl Default for MainWindow {
     }
 }
 
-pub fn get_action_name(action: ProcessAction, args: &[&str]) -> String {
-    match action {
-        ProcessAction::TERM => i18n_f("End {}?", args),
-        ProcessAction::STOP => i18n_f("Halt {}?", args),
-        ProcessAction::KILL => i18n_f("Kill {}?", args),
-        ProcessAction::CONT => i18n_f("Continue {}?", args),
-    }
-}
-
-pub fn get_app_action_warning(action: ProcessAction) -> String {
-    match action {
-            ProcessAction::TERM => i18n("Unsaved work might be lost."),
-            ProcessAction::STOP => i18n("Halting an application can come with serious risks such as losing data and security implications. Use with caution."),
-            ProcessAction::KILL => i18n("Killing an application can come with serious risks such as losing data and security implications. Use with caution."),
-            ProcessAction::CONT => String::new(),
-        }
-}
-
-pub fn get_app_action_description(action: ProcessAction) -> String {
-    match action {
-        ProcessAction::TERM => i18n("End application"),
-        ProcessAction::STOP => i18n("Halt application"),
-        ProcessAction::KILL => i18n("Kill application"),
-        ProcessAction::CONT => i18n("Continue application"),
-    }
-}
-
-pub fn get_action_success(action: ProcessAction, args: &[&str]) -> String {
+fn get_action_success(action: ProcessAction, args: &[&str]) -> String {
     match action {
         ProcessAction::TERM => i18n_f("Successfully ended {}", args),
         ProcessAction::STOP => i18n_f("Successfully halted {}", args),
@@ -825,7 +798,7 @@ pub fn get_action_success(action: ProcessAction, args: &[&str]) -> String {
     }
 }
 
-pub fn get_app_action_failure(action: ProcessAction, args: u32) -> String {
+fn get_app_action_failure(action: ProcessAction, args: u32) -> String {
     match action {
         ProcessAction::TERM => ni18n_f(
             "There was a problem ending a process",
