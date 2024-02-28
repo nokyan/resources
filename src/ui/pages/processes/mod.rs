@@ -375,6 +375,8 @@ impl ResProcesses {
             SETTINGS.processes_sort_by_ascending(),
         );
 
+        column_view.add_css_class("resources-columnview");
+
         *imp.store.borrow_mut() = store;
         *imp.selection_model.borrow_mut() = selection_model;
         *imp.sort_model.borrow_mut() = sort_model;
