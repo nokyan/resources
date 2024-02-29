@@ -563,10 +563,10 @@ impl ResProcesses {
             .transient_for(&MainWindow::default())
             .modal(true)
             .heading(get_action_name(action, &[&process.display_name]))
-            .body(get_app_action_warning(action))
+            .body(get_process_action_warning(action))
             .build();
 
-        dialog.add_response("yes", &get_app_action_description(action));
+        dialog.add_response("yes", &get_process_action_description(action));
         dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
 
         dialog.add_response("no", &i18n("Cancel"));
@@ -1239,7 +1239,7 @@ fn get_action_name(action: ProcessAction, args: &[&str]) -> String {
     }
 }
 
-fn get_app_action_warning(action: ProcessAction) -> String {
+fn get_process_action_warning(action: ProcessAction) -> String {
     match action {
             ProcessAction::TERM => i18n("Unsaved work might be lost."),
             ProcessAction::STOP => i18n("Halting a process can come with serious risks such as losing data and security implications. Use with caution."),
@@ -1248,7 +1248,7 @@ fn get_app_action_warning(action: ProcessAction) -> String {
         }
 }
 
-fn get_app_action_description(action: ProcessAction) -> String {
+fn get_process_action_description(action: ProcessAction) -> String {
     match action {
         ProcessAction::TERM => i18n("End process"),
         ProcessAction::STOP => i18n("Halt process"),
