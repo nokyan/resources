@@ -38,6 +38,10 @@
   <update_contact>nokyan@tuta.io</update_contact>
   <translation type="gettext">@gettext-package@</translation>
   <launchable type="desktop-id">@app-id@.desktop</launchable>
+  <branding>
+    <color type="primary" scheme_preference="light">#94c4ff</color>
+    <color type="primary" scheme_preference="dark">#2d5e9a</color>
+  </branding>
   <screenshots>
     <screenshot type="default">
       <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/1.png</image>
