@@ -208,6 +208,25 @@ impl ResStackSidebar {
         imp.populating.set(false);
     }
 
+    pub fn set_selected_list_item_by_tab_id<S: AsRef<str>>(&self, id: S) {
+        let imp = self.imp();
+        let id = id.as_ref();
+
+        for (row, page) in imp.rows.borrow().iter() {
+            let child = page
+                .child()
+                .downcast::<adw::ToolbarView>()
+                .unwrap()
+                .content()
+                .unwrap();
+
+            if child.property::<GString>("tab_id").as_str() == id {
+                imp.list_box.select_row(Some(row));
+                break;
+            }
+        }
+    }
+
     pub fn set_stack(&self, stack: &gtk::Stack) {
         let imp = self.imp();
 
@@ -226,7 +245,15 @@ impl ResStackSidebar {
                 let imp = this.imp();
                 if let Some(selected) = list_box.selected_row() {
                     if !imp.populating.get() {
-                        imp.stack.borrow().set_visible_child(&imp.rows.borrow().get(&selected).unwrap().child());
+                        let child = imp.rows.borrow().get(&selected).unwrap().child();
+
+                        imp.stack.borrow().set_visible_child(&child);
+
+                        if let Some(page) = child.downcast::<adw::ToolbarView>().ok()
+                            .and_then(|toolbar| toolbar.content()) {
+
+                            let _ = SETTINGS.set_last_viewed_page(page.property::<GString>("tab-id").as_str());
+                        }
                     }
                 }
             }),

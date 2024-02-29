@@ -106,15 +106,6 @@
                       </object>
                     </child>
                     <child>
-                      <object class="AdwActionRow" id="current_power_cap">
-                        <style>
-                          <class name="property"/>
-                        </style>
-                        <property name="subtitle-selectable">true</property>
-                        <property name="title" translatable="yes">Current Power Cap</property>
-                      </object>
-                    </child>
-                    <child>
                       <object class="AdwActionRow" id="max_power_cap">
                         <style>
                           <class name="property"/>

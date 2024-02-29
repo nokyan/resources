@@ -49,8 +49,6 @@ mod imp {
         #[template_child]
         pub toast_overlay: TemplateChild<adw::ToastOverlay>,
         #[template_child]
-        pub popover_menu: TemplateChild<gtk::PopoverMenu>,
-        #[template_child]
         pub search_revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub search_entry: TemplateChild<gtk::SearchEntry>,
@@ -92,6 +90,9 @@ mod imp {
 
         #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
         tab_usage_string: Cell<glib::GString>,
+
+        #[property(get = Self::tab_id, type = glib::GString)]
+        tab_id: Cell<glib::GString>,
     }
 
     impl ResProcesses {
@@ -124,6 +125,13 @@ mod imp {
             self.tab_usage_string
                 .set(glib::GString::from(tab_usage_string));
         }
+
+        pub fn tab_id(&self) -> glib::GString {
+            let tab_id = self.tab_id.take();
+            let result = tab_id.clone();
+            self.tab_id.set(tab_id);
+            result
+        }
     }
 
     impl Default for ResProcesses {
@@ -147,9 +155,9 @@ mod imp {
                 uses_progress_bar: Cell::new(false),
                 icon: RefCell::new(ThemedIcon::new("generic-process-symbolic").into()),
                 tab_name: Cell::new(glib::GString::from(i18n("Processes"))),
-                tab_detail_string: Cell::new(glib::GString::from("")),
-                tab_usage_string: Cell::new(glib::GString::from("")),
-                popover_menu: Default::default(),
+                tab_detail_string: Cell::new(glib::GString::new()),
+                tab_usage_string: Cell::new(glib::GString::new()),
+                tab_id: Cell::new(glib::GString::from("processes")),
                 popped_over_process: Default::default(),
                 columns: Default::default(),
             }
@@ -330,8 +338,6 @@ impl ResProcesses {
     pub fn setup_widgets(&self) {
         let imp = self.imp();
 
-        imp.popover_menu.set_parent(self);
-
         *imp.column_view.borrow_mut() = gtk::ColumnView::new(None::<gtk::SingleSelection>);
         let column_view = imp.column_view.borrow();
 
@@ -502,7 +508,6 @@ impl ResProcesses {
                         dialog_opt = &None;
                     }
                 }
-                imp.popover_menu.popdown();
                 *imp.popped_over_process.borrow_mut() = None;
                 pids_to_remove.insert(item_pid);
             }

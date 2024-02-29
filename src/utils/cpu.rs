@@ -5,9 +5,9 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use std::path::{Path, PathBuf};
 
-const KNOWN_HWMONS: &[&'static str] = &["zenpower", "coretemp", "k10temp"];
+const KNOWN_HWMONS: &[&str] = &["zenpower", "coretemp", "k10temp"];
 
-const KNOWN_THERMAL_ZONES: &[&'static str] = &["x86_pkg_temp", "acpitz"];
+const KNOWN_THERMAL_ZONES: &[&str] = &["x86_pkg_temp", "acpitz"];
 
 static RE_LSCPU_MODEL_NAME: Lazy<Regex> = Lazy::new(|| Regex::new(r"Model name:\s*(.*)").unwrap());
 

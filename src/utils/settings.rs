@@ -176,6 +176,23 @@ impl Settings {
         })
     }
 
+    pub fn last_viewed_page(&self) -> String {
+        self.string("last-viewed-page").to_string()
+    }
+
+    pub fn set_last_viewed_page<S: AsRef<str>>(
+        &self,
+        value: S,
+    ) -> Result<(), glib::error::BoolError> {
+        self.set_string("last-viewed-page", value.as_ref())
+    }
+
+    pub fn connect_last_viewed_page<F: Fn(String) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+        self.connect_changed(Some("last-viewed-page"), move |settings, _key| {
+            f(settings.string("last-viewed-page").to_string())
+        })
+    }
+
     pub fn refresh_speed(&self) -> RefreshSpeed {
         RefreshSpeed::from_str(self.string("refresh-speed").as_str()).unwrap_or_default()
     }
@@ -249,10 +266,7 @@ impl Settings {
     ) -> Result<(), glib::error::BoolError> {
         self.set_boolean(
             "processes-sort-by-ascending",
-            match value {
-                SortType::Ascending => true,
-                _ => false,
-            },
+            matches!(value, SortType::Ascending),
         )
     }
 
@@ -288,10 +302,7 @@ impl Settings {
     ) -> Result<(), glib::error::BoolError> {
         self.set_boolean(
             "apps-sort-by-ascending",
-            match value {
-                SortType::Ascending => true,
-                _ => false,
-            },
+            matches!(value, SortType::Ascending),
         )
     }
 

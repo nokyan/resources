@@ -6,7 +6,7 @@ use std::time::Duration;
 use adw::{prelude::*, subclass::prelude::*};
 use adw::{Toast, ToastOverlay};
 use anyhow::{Context, Result};
-use gtk::glib::{clone, timeout_future, MainContext};
+use gtk::glib::{clone, timeout_future, GString, MainContext};
 use gtk::{gio, glib, Widget};
 use log::{debug, error, warn};
 
@@ -285,7 +285,7 @@ impl MainWindow {
                 self.add_page(&page, &tab_name, &tab_name)
             };
 
-            page.init(gpu, i);
+            page.init(gpu);
 
             imp.gpu_pages
                 .borrow_mut()
@@ -320,6 +320,7 @@ impl MainWindow {
         self.init_gpu_pages();
 
         let main_context = MainContext::default();
+
         main_context.spawn_local(clone!(@strong self as this => async move {
             this.periodic_refresh_all().await;
         }));
@@ -416,23 +417,19 @@ impl MainWindow {
         for ((_, page), mut gpu_data) in gpu_pages.values().zip(gpu_data) {
             let page = page.content().and_downcast::<ResGPU>().unwrap();
 
-            // non-NVIDIA GPUs unfortunately don't expose encoder/decoder stats centrally but
-            // rather expose them only per-process. since we've just refreshed our
-            // processes, we take the opportunity and collect the encoder/decoder for the
-            // current GPU and slip it into GpuData just in time
+            if !gpu_data.nvidia {
+                // for non-NVIDIA GPUs, we prefer getting the fractions from the processes because they represent the
+                // average usage during now and the last refresh, while gpu_busy_percent is a snapshot of the current
+                // usage, which might not be what we want
 
-            if gpu_data.usage_fraction.is_none() {
-                gpu_data.usage_fraction = Some(apps_context.gpu_fraction(gpu_data.pci_slot) as f64);
-            }
+                let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.pci_slot);
+                gpu_data.usage_fraction = Some(processes_gpu_fraction.into());
 
-            if gpu_data.encode_fraction.is_none() {
-                gpu_data.encode_fraction =
-                    Some(apps_context.encoder_fraction(gpu_data.pci_slot) as f64);
-            }
+                let processes_encode_fraction = apps_context.encoder_fraction(gpu_data.pci_slot);
+                gpu_data.encode_fraction = Some(processes_encode_fraction.into());
 
-            if gpu_data.decode_fraction.is_none() {
-                gpu_data.decode_fraction =
-                    Some(apps_context.decoder_fraction(gpu_data.pci_slot) as f64);
+                let processes_decode_fraction = apps_context.decoder_fraction(gpu_data.pci_slot);
+                gpu_data.decode_fraction = Some(processes_decode_fraction.into());
             }
 
             page.refresh_page(gpu_data);
@@ -520,11 +517,38 @@ impl MainWindow {
             }
         });
 
+        let mut first_refresh = true;
+
         loop {
             // gather_refresh_data()
             let refresh_data = rx_data.recv().unwrap();
 
             self.refresh_ui(refresh_data);
+
+            // if this is our first refresh, we want to set the opening view to what it was when the last session was ended
+            if first_refresh {
+                let saved_page = SETTINGS.last_viewed_page();
+
+                // yes, this is bad and O(n).
+                for page in imp.content_stack.pages().iter::<gtk::StackPage>().flatten() {
+                    let toolbar = page.child().downcast::<adw::ToolbarView>().unwrap();
+
+                    let child_id = toolbar.content().unwrap().property::<GString>("tab_id");
+
+                    if child_id == saved_page {
+                        imp.content_stack.set_visible_child(&toolbar);
+                        imp.resources_sidebar
+                            .set_selected_list_item_by_tab_id(&child_id);
+                        break;
+                    }
+                }
+
+                // enable the transition type only now to avoid having a transition right in the beginning
+                imp.content_stack
+                    .set_transition_type(gtk::StackTransitionType::Crossfade);
+
+                first_refresh = false;
+            }
 
             // Total time before next ui refresh
             let total_delay = SETTINGS.refresh_speed().ui_refresh_interval();

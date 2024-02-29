@@ -45,7 +45,6 @@ mod imp {
         pub old_received_bytes: Cell<usize>,
         pub old_sent_bytes: Cell<usize>,
         pub last_timestamp: Cell<SystemTime>,
-        pub network_interface: RefCell<NetworkInterface>,
 
         #[property(get)]
         uses_progress_bar: Cell<bool>,
@@ -67,6 +66,9 @@ mod imp {
 
         #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
         tab_usage_string: Cell<glib::GString>,
+
+        #[property(get = Self::tab_id, set = Self::set_tab_id, type = glib::GString)]
+        tab_id: Cell<glib::GString>,
     }
 
     impl ResNetwork {
@@ -114,6 +116,17 @@ mod imp {
             self.tab_usage_string
                 .set(glib::GString::from(tab_usage_string));
         }
+
+        pub fn tab_id(&self) -> glib::GString {
+            let tab_id = self.tab_id.take();
+            let result = tab_id.clone();
+            self.tab_id.set(tab_id);
+            result
+        }
+
+        pub fn set_tab_id(&self, tab_id: &str) {
+            self.tab_id.set(glib::GString::from(tab_id));
+        }
     }
 
     impl Default for ResNetwork {
@@ -132,7 +145,8 @@ mod imp {
                 icon: RefCell::new(ThemedIcon::new("unknown-network-type-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("Network Interface"))),
-                tab_detail_string: Cell::new(glib::GString::from("")),
+                tab_detail_string: Cell::new(glib::GString::new()),
+                tab_id: Cell::new(glib::GString::new()),
                 old_received_bytes: Cell::default(),
                 old_sent_bytes: Cell::default(),
                 last_timestamp: Cell::new(
@@ -140,8 +154,7 @@ mod imp {
                         .checked_sub(Duration::from_secs(1))
                         .unwrap(),
                 ),
-                network_interface: RefCell::default(),
-                tab_usage_string: Cell::new(glib::GString::from("")),
+                tab_usage_string: Cell::new(glib::GString::new()),
             }
         }
     }
@@ -196,6 +209,7 @@ glib::wrapper! {
 }
 
 impl ResNetwork {
+    const ID_PREFIX: &'static str = "network";
     // TODO: this is the color for receiving, but it is also used in sidebar,
     // which graphs the sum of send+recv.
     // This does not make much sense, but we probably can't do something
@@ -213,6 +227,13 @@ impl ResNetwork {
     pub fn setup_widgets(&self, network_data: &NetworkData) {
         let imp = self.imp();
         let network_interface = &network_data.inner;
+
+        let tab_id = format!(
+            "{}-{}",
+            Self::ID_PREFIX,
+            network_interface.interface_name.to_str().unwrap()
+        );
+        imp.set_tab_id(&tab_id);
 
         self.imp().set_icon(&network_interface.icon());
 

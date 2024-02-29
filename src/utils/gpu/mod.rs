@@ -45,6 +45,8 @@ pub struct GpuData {
     pub power_usage: Option<f64>,
     pub power_cap: Option<f64>,
     pub power_cap_max: Option<f64>,
+
+    pub nvidia: bool,
 }
 
 impl GpuData {
@@ -69,6 +71,8 @@ impl GpuData {
         let power_cap = gpu.power_cap().ok();
         let power_cap_max = gpu.power_cap_max().ok();
 
+        let nvidia = matches!(gpu, Gpu::Nvidia(_));
+
         Self {
             pci_slot,
             usage_fraction,
@@ -82,6 +86,7 @@ impl GpuData {
             power_usage,
             power_cap,
             power_cap_max,
+            nvidia,
         }
     }
 }

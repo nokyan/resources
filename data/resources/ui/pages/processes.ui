@@ -17,36 +17,6 @@
     </section>
   </menu>
   <template class="ResProcesses" parent="AdwBin">
-    <object class="GtkPopoverMenu" id="popover_menu">
-      <property name="name">popover_menu</property>
-      <property name="menu-model">process_context_menu</property>
-      <menu id="process_context_menu">
-        <section>
-          <item>
-            <attribute name="label" translatable="yes">Properties</attribute>
-            <attribute name="action">processes.context-information</attribute>
-          </item>
-        </section>
-        <section>
-          <item>
-            <attribute name="label" translatable="yes">End Process</attribute>
-            <attribute name="action">processes.context-end-process</attribute>
-          </item>
-          <item>
-            <attribute name="label" translatable="yes">Kill Process</attribute>
-            <attribute name="action">processes.context-kill-process</attribute>
-          </item>
-          <item>
-            <attribute name="label" translatable="yes">Halt Process</attribute>
-            <attribute name="action">processes.context-halt-process</attribute>
-          </item>
-          <item>
-            <attribute name="label" translatable="yes">Continue Process</attribute>
-            <attribute name="action">processes.context-continue-process</attribute>
-          </item>
-        </section>
-      </menu>
-    </object>
     <property name="child">
       <object class="AdwToolbarView">
         <property name="content">

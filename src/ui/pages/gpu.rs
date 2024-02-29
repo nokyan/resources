@@ -8,10 +8,7 @@ use crate::utils::units::{convert_frequency, convert_power, convert_storage, con
 use crate::utils::NaNDefault;
 
 mod imp {
-    use std::{
-        cell::{Cell, RefCell},
-        sync::OnceLock,
-    };
+    use std::cell::{Cell, RefCell};
 
     use crate::ui::widgets::{double_graph_box::ResDoubleGraphBox, graph_box::ResGraphBox};
 
@@ -50,11 +47,7 @@ mod imp {
         #[template_child]
         pub driver_used: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub current_power_cap: TemplateChild<adw::ActionRow>,
-        #[template_child]
         pub max_power_cap: TemplateChild<adw::ActionRow>,
-
-        pub number: OnceLock<usize>,
 
         #[property(get)]
         uses_progress_bar: Cell<bool>,
@@ -76,6 +69,9 @@ mod imp {
 
         #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
         tab_usage_string: Cell<glib::GString>,
+
+        #[property(get = Self::tab_id, set = Self::set_tab_id, type = glib::GString)]
+        tab_id: Cell<glib::GString>,
     }
 
     impl ResGPU {
@@ -112,6 +108,17 @@ mod imp {
             self.tab_usage_string
                 .set(glib::GString::from(tab_usage_string));
         }
+
+        pub fn tab_id(&self) -> glib::GString {
+            let tab_id = self.tab_id.take();
+            let result = tab_id.clone();
+            self.tab_id.set(tab_id);
+            result
+        }
+
+        pub fn set_tab_id(&self, tab_id: &str) {
+            self.tab_id.set(glib::GString::from(tab_id));
+        }
     }
 
     impl Default for ResGPU {
@@ -128,16 +135,15 @@ mod imp {
                 manufacturer: Default::default(),
                 pci_slot: Default::default(),
                 driver_used: Default::default(),
-                current_power_cap: Default::default(),
                 max_power_cap: Default::default(),
-                number: Default::default(),
                 uses_progress_bar: Cell::new(true),
                 main_graph_color: glib::Bytes::from_static(&super::ResGPU::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(ThemedIcon::new("gpu-symbolic").into()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("GPU"))),
-                tab_detail_string: Cell::new(glib::GString::from("")),
-                tab_usage_string: Cell::new(glib::GString::from("")),
+                tab_detail_string: Cell::new(glib::GString::new()),
+                tab_usage_string: Cell::new(glib::GString::new()),
+                tab_id: Cell::new(glib::GString::new()),
             }
         }
     }
@@ -192,20 +198,22 @@ glib::wrapper! {
 }
 
 impl ResGPU {
+    const ID_PREFIX: &'static str = "gpu";
     const MAIN_GRAPH_COLOR: [u8; 3] = [230, 97, 0];
 
     pub fn new() -> Self {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self, gpu: &Gpu, number: usize) {
-        let imp = self.imp();
-        imp.number.set(number).unwrap_or_default();
+    pub fn init(&self, gpu: &Gpu) {
         self.setup_widgets(gpu);
     }
 
     pub fn setup_widgets(&self, gpu: &Gpu) {
         let imp = self.imp();
+
+        let tab_id = format!("{}-{}", Self::ID_PREFIX, &gpu.pci_slot().to_string());
+        imp.set_tab_id(&tab_id);
 
         imp.gpu_usage.set_title_label(&i18n("Total Usage"));
         imp.gpu_usage.graph().set_graph_color(
@@ -278,6 +286,7 @@ impl ResGPU {
             power_usage,
             power_cap,
             power_cap_max,
+            nvidia: _,
         } = gpu_data;
 
         let mut usage_percentage_string = usage_fraction
@@ -367,8 +376,13 @@ impl ResGPU {
         imp.temperature
             .set_subtitle(&temperature_string.clone().unwrap_or_else(|| i18n("N/A")));
 
-        imp.power_usage
-            .set_subtitle(&power_usage.map_or_else(|| i18n("N/A"), convert_power));
+        let mut power_string = power_usage.map_or_else(|| i18n("N/A"), convert_power);
+
+        if let Some(power_cap) = power_cap {
+            power_string.push_str(&format!(" / {}", convert_power(power_cap)));
+        }
+
+        imp.power_usage.set_subtitle(&power_string);
 
         if let Some(gpu_clockspeed) = clock_speed {
             imp.gpu_clockspeed
@@ -383,9 +397,6 @@ impl ResGPU {
         } else {
             imp.vram_clockspeed.set_subtitle(&i18n("N/A"));
         }
-
-        imp.current_power_cap
-            .set_subtitle(&power_cap.map_or_else(|| i18n("N/A"), convert_power));
 
         imp.max_power_cap
             .set_subtitle(&power_cap_max.map_or_else(|| i18n("N/A"), convert_power));

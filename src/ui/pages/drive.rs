@@ -45,7 +45,6 @@ mod imp {
         #[template_child]
         pub removable: TemplateChild<adw::ActionRow>,
         pub old_stats: RefCell<HashMap<String, usize>>,
-        pub drive: RefCell<Drive>,
         pub last_timestamp: Cell<SystemTime>,
 
         #[property(get)]
@@ -68,6 +67,9 @@ mod imp {
 
         #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
         tab_usage_string: Cell<glib::GString>,
+
+        #[property(get = Self::tab_id, set = Self::set_tab_id, type = glib::GString)]
+        tab_id: Cell<glib::GString>,
     }
 
     impl ResDrive {
@@ -115,6 +117,17 @@ mod imp {
             self.tab_usage_string
                 .set(glib::GString::from(tab_usage_string));
         }
+
+        pub fn tab_id(&self) -> glib::GString {
+            let tab_id = self.tab_id.take();
+            let result = tab_id.clone();
+            self.tab_id.set(tab_id);
+            result
+        }
+
+        pub fn set_tab_id(&self, tab_id: &str) {
+            self.tab_id.set(glib::GString::from(tab_id));
+        }
     }
 
     impl Default for ResDrive {
@@ -133,15 +146,15 @@ mod imp {
                 icon: RefCell::new(Drive::default_icon()),
                 usage: Default::default(),
                 tab_name: Cell::new(glib::GString::from(i18n("Drive"))),
-                tab_detail_string: Cell::new(glib::GString::from("")),
+                tab_detail_string: Cell::new(glib::GString::new()),
+                tab_id: Cell::new(glib::GString::new()),
                 old_stats: Default::default(),
-                drive: Default::default(),
                 last_timestamp: Cell::new(
                     SystemTime::now()
                         .checked_sub(Duration::from_secs(1))
                         .unwrap(),
                 ),
-                tab_usage_string: Cell::new(glib::GString::from("")),
+                tab_usage_string: Cell::new(glib::GString::new()),
             }
         }
     }
@@ -196,6 +209,7 @@ glib::wrapper! {
 }
 
 impl ResDrive {
+    const ID_PREFIX: &'static str = "drive";
     const MAIN_GRAPH_COLOR: [u8; 3] = [246, 211, 45];
 
     pub fn new() -> Self {
@@ -209,6 +223,16 @@ impl ResDrive {
     pub fn setup_widgets(&self, drive_data: &DriveData) {
         let imp = self.imp();
         let drive = &drive_data.inner;
+
+        let tab_id = format!(
+            "{}-{}",
+            Self::ID_PREFIX,
+            drive
+                .model
+                .as_deref()
+                .unwrap_or(drive.sysfs_path.to_str().unwrap())
+        );
+        imp.set_tab_id(&tab_id);
 
         imp.set_icon(&drive.icon());
         imp.set_tab_name(&drive.display_name(drive_data.capacity as f64));

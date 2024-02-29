@@ -17,36 +17,6 @@
     </section>
   </menu>
   <template class="ResApplications" parent="AdwBin">
-    <object class="GtkPopoverMenu" id="popover_menu">
-      <property name="name">popover_menu</property>
-      <property name="menu-model">app_context_menu</property>
-      <menu id="app_context_menu">
-        <section>
-          <item>
-            <attribute name="label" translatable="yes">Properties</attribute>
-            <attribute name="action">applications.context-information</attribute>
-          </item>
-        </section>
-        <section>
-          <item>
-            <attribute name="label" translatable="yes">End Application</attribute>
-            <attribute name="action">applications.context-end-process</attribute>
-          </item>
-          <item>
-            <attribute name="label" translatable="yes">Kill Application</attribute>
-            <attribute name="action">applications.context-kill-process</attribute>
-          </item>
-          <item>
-            <attribute name="label" translatable="yes">Halt Application</attribute>
-            <attribute name="action">applications.context-halt-process</attribute>
-          </item>
-          <item>
-            <attribute name="label" translatable="yes">Continue Application</attribute>
-            <attribute name="action">applications.context-continue-process</attribute>
-          </item>
-        </section>
-      </menu>
-    </object>
     <property name="child">
       <object class="AdwToolbarView">
         <property name="content">

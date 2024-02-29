@@ -48,8 +48,6 @@ mod imp {
         #[template_child]
         pub toast_overlay: TemplateChild<adw::ToastOverlay>,
         #[template_child]
-        pub popover_menu: TemplateChild<gtk::PopoverMenu>,
-        #[template_child]
         pub search_revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub search_entry: TemplateChild<gtk::SearchEntry>,
@@ -89,6 +87,9 @@ mod imp {
 
         #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
         tab_usage_string: Cell<glib::GString>,
+
+        #[property(get = Self::tab_id, type = glib::GString)]
+        tab_id: Cell<glib::GString>,
     }
 
     impl ResApplications {
@@ -117,6 +118,13 @@ mod imp {
             self.tab_usage_string
                 .set(glib::GString::from(tab_usage_string));
         }
+
+        pub fn tab_id(&self) -> glib::GString {
+            let tab_id = self.tab_id.take();
+            let result = tab_id.clone();
+            self.tab_id.set(tab_id);
+            result
+        }
     }
 
     impl Default for ResApplications {
@@ -139,9 +147,9 @@ mod imp {
                 uses_progress_bar: Cell::new(false),
                 icon: RefCell::new(ThemedIcon::new("app-symbolic").into()),
                 tab_name: Cell::from(glib::GString::from(i18n("Applications"))),
-                tab_detail_string: Cell::new(glib::GString::from("")),
-                tab_usage_string: Cell::new(glib::GString::from("")),
-                popover_menu: Default::default(),
+                tab_detail_string: Cell::new(glib::GString::new()),
+                tab_usage_string: Cell::new(glib::GString::new()),
+                tab_id: Cell::new(glib::GString::from("applications")),
                 popped_over_app: Default::default(),
                 columns: Default::default(),
             }
@@ -321,8 +329,6 @@ impl ResApplications {
 
     pub fn setup_widgets(&self) {
         let imp = self.imp();
-
-        imp.popover_menu.set_parent(self);
 
         *imp.column_view.borrow_mut() = gtk::ColumnView::new(None::<gtk::SingleSelection>);
         let column_view = imp.column_view.borrow();
@@ -517,7 +523,6 @@ impl ResApplications {
                             dialog_opt = &None;
                         }
                     }
-                    imp.popover_menu.popdown();
                     *imp.popped_over_app.borrow_mut() = None;
                     ids_to_remove.insert(app_id.clone());
                 }

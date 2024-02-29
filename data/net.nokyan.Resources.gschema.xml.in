@@ -46,7 +46,7 @@
       <summary>Show device description in the sidebar</summary>
     </key>
     <key name="sidebar-meter-type" type="s">
-      <default>&quot;Progress Bar&quot;</default>
+      <default>&quot;Graph&quot;</default>
       <summary>Sidebar Meter Type</summary>
     </key>
     <key name="network-bits" type="b">
@@ -168,6 +168,10 @@
     <key name="processes-sort-by-ascending" type="b">
       <default>false</default>
       <summary>Sort direction for the Processes column view</summary>
+    </key>
+    <key name="last-viewed-page" type="s">
+      <default>&quot;applications&quot;</default>
+      <summary>Page that was last viewed before the last session was ended</summary>
     </key>
   </schema>
 </schemalist>
