@@ -16,7 +16,7 @@ use log::error;
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::ui::dialogs::process_dialog::ResProcessDialog;
-use crate::ui::window::{self, Action, MainWindow};
+use crate::ui::window::{Action, MainWindow};
 use crate::utils::app::AppsContext;
 use crate::utils::process::{ProcessAction, ProcessItem};
 use crate::utils::settings::SETTINGS;
@@ -562,11 +562,11 @@ impl ResProcesses {
         let dialog = adw::MessageDialog::builder()
             .transient_for(&MainWindow::default())
             .modal(true)
-            .heading(window::get_action_name(action, &[&process.display_name]))
-            .body(window::get_app_action_warning(action))
+            .heading(get_action_name(action, &[&process.display_name]))
+            .body(get_process_action_warning(action))
             .build();
 
-        dialog.add_response("yes", &window::get_app_action_description(action));
+        dialog.add_response("yes", &get_process_action_description(action));
         dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
 
         dialog.add_response("no", &i18n("Cancel"));
@@ -1227,5 +1227,32 @@ impl ResProcesses {
         );
 
         gpu_mem_col
+    }
+}
+
+fn get_action_name(action: ProcessAction, args: &[&str]) -> String {
+    match action {
+        ProcessAction::TERM => i18n_f("End {}?", args),
+        ProcessAction::STOP => i18n_f("Halt {}?", args),
+        ProcessAction::KILL => i18n_f("Kill {}?", args),
+        ProcessAction::CONT => i18n_f("Continue {}?", args),
+    }
+}
+
+fn get_process_action_warning(action: ProcessAction) -> String {
+    match action {
+            ProcessAction::TERM => i18n("Unsaved work might be lost."),
+            ProcessAction::STOP => i18n("Halting a process can come with serious risks such as losing data and security implications. Use with caution."),
+            ProcessAction::KILL => i18n("Killing a process can come with serious risks such as losing data and security implications. Use with caution."),
+            ProcessAction::CONT => String::new(),
+        }
+}
+
+fn get_process_action_description(action: ProcessAction) -> String {
+    match action {
+        ProcessAction::TERM => i18n("End process"),
+        ProcessAction::STOP => i18n("Halt process"),
+        ProcessAction::KILL => i18n("Kill process"),
+        ProcessAction::CONT => i18n("Continue process"),
     }
 }
