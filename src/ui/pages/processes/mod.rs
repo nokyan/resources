@@ -93,6 +93,9 @@ mod imp {
 
         #[property(get = Self::tab_id, type = glib::GString)]
         tab_id: Cell<glib::GString>,
+
+        #[property(get)]
+        graph_locked_max_y: Cell<bool>,
     }
 
     impl ResProcesses {
@@ -160,6 +163,7 @@ mod imp {
                 tab_id: Cell::new(glib::GString::from("processes")),
                 popped_over_process: Default::default(),
                 columns: Default::default(),
+                graph_locked_max_y: Cell::new(true),
             }
         }
     }

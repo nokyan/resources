@@ -81,6 +81,9 @@ mod imp {
 
         #[property(get = Self::tab_id, type = glib::GString)]
         tab_id: Cell<glib::GString>,
+
+        #[property(get)]
+        graph_locked_max_y: Cell<bool>,
     }
 
     impl ResCPU {
@@ -150,6 +153,7 @@ mod imp {
                 old_total_usage: Cell::default(),
                 old_thread_usages: RefCell::default(),
                 logical_cpus_amount: Cell::default(),
+                graph_locked_max_y: Cell::new(true),
             }
         }
     }

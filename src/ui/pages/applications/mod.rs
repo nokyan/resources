@@ -90,6 +90,9 @@ mod imp {
 
         #[property(get = Self::tab_id, type = glib::GString)]
         tab_id: Cell<glib::GString>,
+
+        #[property(get)]
+        graph_locked_max_y: Cell<bool>,
     }
 
     impl ResApplications {
@@ -152,6 +155,7 @@ mod imp {
                 tab_id: Cell::new(glib::GString::from("applications")),
                 popped_over_app: Default::default(),
                 columns: Default::default(),
+                graph_locked_max_y: Cell::new(true),
             }
         }
     }

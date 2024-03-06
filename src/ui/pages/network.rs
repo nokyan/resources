@@ -7,7 +7,6 @@ use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::network::{NetworkData, NetworkInterface};
 use crate::utils::units::{convert_speed, convert_storage};
-use crate::utils::NaNDefault;
 
 mod imp {
     use std::cell::{Cell, RefCell};
@@ -69,6 +68,9 @@ mod imp {
 
         #[property(get = Self::tab_id, set = Self::set_tab_id, type = glib::GString)]
         tab_id: Cell<glib::GString>,
+
+        #[property(get)]
+        graph_locked_max_y: Cell<bool>,
     }
 
     impl ResNetwork {
@@ -155,6 +157,7 @@ mod imp {
                         .unwrap(),
                 ),
                 tab_usage_string: Cell::new(glib::GString::new()),
+                graph_locked_max_y: Cell::new(false),
             }
         }
     }
@@ -214,7 +217,7 @@ impl ResNetwork {
     // which graphs the sum of send+recv.
     // This does not make much sense, but we probably can't do something
     // like separate send/receive lines without some refactoring to ResGraph.
-    const MAIN_GRAPH_COLOR: [u8; 3] = [52, 170, 175];
+    const MAIN_GRAPH_COLOR: [u8; 3] = [127, 99, 239];
 
     pub fn new() -> Self {
         glib::Object::new::<Self>()
@@ -240,11 +243,7 @@ impl ResNetwork {
         imp.set_tab_name(&i18n(&network_interface.interface_type.to_string()));
 
         imp.receiving.set_title_label(&i18n("Receiving"));
-        imp.receiving.graph().set_graph_color(
-            Self::MAIN_GRAPH_COLOR[0],
-            Self::MAIN_GRAPH_COLOR[1],
-            Self::MAIN_GRAPH_COLOR[2],
-        );
+        imp.receiving.graph().set_graph_color(52, 170, 175);
         imp.receiving.graph().set_locked_max_y(None);
 
         imp.sending.set_title_label(&i18n("Sending"));
@@ -340,10 +339,7 @@ impl ResNetwork {
             convert_speed(highest_sent, true)
         ));
 
-        self.set_property(
-            "usage",
-            f64::max(received_delta / highest_received, sent_delta / highest_sent).nan_default(0.0),
-        );
+        self.set_property("usage", f64::max(received_delta, sent_delta));
 
         self.set_property(
             "tab_usage_string",
