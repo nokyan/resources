@@ -120,6 +120,7 @@ impl ResStackSidebar {
                 child.property("icon"),
                 child.property("tab_detail_string"),
                 child.property("tab_usage_string"),
+                child.property("graph_locked_max_y"),
             );
 
             child

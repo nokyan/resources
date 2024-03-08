@@ -72,6 +72,9 @@ mod imp {
 
         #[property(get = Self::tab_id, set = Self::set_tab_id, type = glib::GString)]
         tab_id: Cell<glib::GString>,
+
+        #[property(get)]
+        graph_locked_max_y: Cell<bool>,
     }
 
     impl ResGPU {
@@ -144,6 +147,7 @@ mod imp {
                 tab_detail_string: Cell::new(glib::GString::new()),
                 tab_usage_string: Cell::new(glib::GString::new()),
                 tab_id: Cell::new(glib::GString::new()),
+                graph_locked_max_y: Cell::new(true),
             }
         }
     }

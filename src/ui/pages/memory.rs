@@ -68,6 +68,9 @@ mod imp {
 
         #[property(get = Self::tab_id, type = glib::GString)]
         tab_id: Cell<glib::GString>,
+
+        #[property(get)]
+        graph_locked_max_y: Cell<bool>,
     }
 
     impl ResMemory {
@@ -130,6 +133,7 @@ mod imp {
                 tab_detail_string: Cell::new(glib::GString::new()),
                 tab_usage_string: Cell::new(glib::GString::new()),
                 tab_id: Cell::new(glib::GString::from("memory")),
+                graph_locked_max_y: Cell::new(true),
             }
         }
     }

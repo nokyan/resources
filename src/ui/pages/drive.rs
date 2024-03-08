@@ -70,6 +70,9 @@ mod imp {
 
         #[property(get = Self::tab_id, set = Self::set_tab_id, type = glib::GString)]
         tab_id: Cell<glib::GString>,
+
+        #[property(get)]
+        graph_locked_max_y: Cell<bool>,
     }
 
     impl ResDrive {
@@ -155,6 +158,7 @@ mod imp {
                         .unwrap(),
                 ),
                 tab_usage_string: Cell::new(glib::GString::new()),
+                graph_locked_max_y: Cell::new(true),
             }
         }
     }

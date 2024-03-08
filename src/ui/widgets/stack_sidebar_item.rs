@@ -115,7 +115,14 @@ mod imp {
 
         pub fn set_usage(&self, usage: f64) {
             self.usage.set(usage);
-            self.progress_bar.set_fraction(usage);
+
+            let mut highest_value = self.graph.get_highest_value();
+            if highest_value < 1.0 {
+                highest_value = 1.0
+            }
+
+            self.progress_bar.set_fraction(usage / highest_value);
+
             self.graph.push_data_point(usage);
         }
     }
@@ -183,7 +190,13 @@ glib::wrapper! {
 }
 
 impl ResStackSidebarItem {
-    pub fn new(name: String, icon: Icon, detail: Option<String>, usage_string: String) -> Self {
+    pub fn new(
+        name: String,
+        icon: Icon,
+        detail: Option<String>,
+        usage_string: String,
+        locked_max_y: bool,
+    ) -> Self {
         let detail = detail.unwrap_or_default();
         let this: Self = glib::Object::builder()
             .property("name", name)
@@ -191,6 +204,10 @@ impl ResStackSidebarItem {
             .property("detail", &detail)
             .property("subtitle", usage_string)
             .build();
+
+        this.imp()
+            .graph
+            .set_locked_max_y(locked_max_y.then_some(1.0));
         this.imp().graph.set_height_request(64);
 
         this.imp().detail_label.set_visible(!detail.is_empty());
