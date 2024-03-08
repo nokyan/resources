@@ -42,6 +42,9 @@
                       <object class="GtkMenuButton">
                         <property name="menu-model">primary_menu</property>
                         <property name="icon-name">open-menu-symbolic</property>
+                        <accessibility>
+                          <property name="label">Open menu</property>
+                        </accessibility>
                       </object>
                     </child>
                   </object>
