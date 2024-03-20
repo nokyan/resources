@@ -7,7 +7,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-28 20:24+0100\n"
 "PO-Revision-Date: 2024-02-28 20:27+0100\n"
-"Last-Translator: nokyan <nokyan@tuta.io>\n"
+"Last-Translator: piekay\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -43,8 +43,8 @@ msgid ""
 msgstr ""
 "Ressourcen ermöglicht es Ihnen, die Auslastung Ihrer Systemressourcen zu "
 "überwachen und Ihre laufenden Prozesse und Anwendungen zu kontrollieren. "
-"Durch die Verwendung von GNOMEs libadwaita ist Ressourcen einfach zu "
-"bedienen und fühlt sich auf einem modernen Desktop wie zu Hause an."
+"Dank GNOMEs libadwaita ist Ressourcen einfach verständlich "
+"und passt somit perfekt in einen modernen Desktop."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:21
 msgid "Resources supports monitoring the following components:"
@@ -96,7 +96,9 @@ msgstr "Probleme melden"
 #. One name per line, please do not remove previous names.
 #: src/application.rs:210
 msgid "translator-credits"
-msgstr "nokyan <nokyan@tuta.io>"
+msgstr ""
+"nokyan <nokyan@tuta.io>"
+"piekay"
 
 #: src/application.rs:211
 msgid "Icon by"
@@ -982,7 +984,7 @@ msgstr "Allgemein"
 #: data/resources/ui/shortcuts.ui:14
 msgctxt "shortcut window"
 msgid "Preferences"
-msgstr "Eigenschaften"
+msgstr "Einstellungen"
 
 #: data/resources/ui/shortcuts.ui:20
 msgctxt "shortcut window"
@@ -1026,7 +1028,7 @@ msgstr "Informationen für Anwendung/Prozess anzeigen"
 
 #: data/resources/ui/window.ui:6
 msgid "Preferences"
-msgstr "Eigenschaften"
+msgstr "Einstellungen"
 
 #: data/resources/ui/window.ui:10
 msgid "Keyboard Shortcuts"
@@ -1097,7 +1099,7 @@ msgstr "Einheiten"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:16
 msgid "Data Unit Prefix"
-msgstr "Dateneinheitenvorsatz"
+msgstr "Dezimalsystem"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:20
 msgid "Decimal"
@@ -1165,7 +1167,7 @@ msgstr "Datenpunke in Graphen"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:88
 msgid "Show Search Fields on Launch"
-msgstr "Suchfelder beim Start anzeigen"
+msgstr "Alle Suchfelder beim Start anzeigen"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:93
 msgid "Show Usage Details in Sidebar"
@@ -1282,15 +1284,15 @@ msgstr "Kapazität"
 
 #: data/resources/ui/pages/drive.ui:66
 msgid "Writable"
-msgstr "Schreibbar"
+msgstr "Beschreibbar"
 
 #: data/resources/ui/pages/drive.ui:75
 msgid "Removable"
-msgstr "Wechselbar"
+msgstr "Wechselspeicher"
 
 #: data/resources/ui/pages/gpu.ui:37
 msgid "GPU Frequency"
-msgstr "Grafiktaktfrequenz"
+msgstr "GPU-Frequenz"
 
 #: data/resources/ui/pages/gpu.ui:50
 msgid "Video Memory Frequency"
@@ -1314,7 +1316,7 @@ msgstr "Benutzter Treiber"
 
 #: data/resources/ui/pages/gpu.ui:114
 msgid "Current Power Cap"
-msgstr "Zurzeitige Leistungsbegrenzung"
+msgstr "Derzeitige Leistungsbegrenzung"
 
 #: data/resources/ui/pages/gpu.ui:123
 msgid "Max Power Cap"
@@ -1393,16 +1395,16 @@ msgstr "Prozess beenden"
 #~ msgstr "Temperatureinheit"
 
 #~ msgid "Unit Prefix Base"
-#~ msgstr "Basis für Einheitenvorsätze"
+#~ msgstr "Basiseinheit"
 
 #~ msgid "Show search field for Processes and Applications on launch"
 #~ msgstr "Suchfeld für Prozesse und Anwendungen beim Start anzeigen"
 
 #~ msgid "Show virtual block devices such as LVM containers"
-#~ msgstr "Virtuelle Datenträger wie LVM-Container anzeigen"
+#~ msgstr "Virtuelle Datenträger, wie z.B. LVM-Container anzeigen"
 
 #~ msgid "Show virtual network interfaces such as Docker interfaces"
-#~ msgstr "Virtuelle Netzwerkschnittstellen wie Docker-Schnittstellen anzeigen"
+#~ msgstr "Virtuelle Netzwerkschnittstellen, wie z.B. Docker-Schnittstellen anzeigen"
 
 #~ msgid "Show usage details in the sidebar"
 #~ msgstr "Auslastungsdetails in der Seitenleiste anzeigen"
@@ -1420,13 +1422,13 @@ msgstr "Prozess beenden"
 #~ msgstr "Prozessornutzung bei Anwendungen anzeigen"
 
 #~ msgid "Display drive read speed in Applications view"
-#~ msgstr "Lesegeschwindigkeit von Datenträgern bei Anwendungen anzeigen"
+#~ msgstr "Lesegeschwindigkeit auf den Datenträgern bei Anwendungen anzeigen"
 
 #~ msgid "Display drive read total in Applications view"
 #~ msgstr "Insgesamt gelesene Datenmenge bei Anwendungen anzeigen"
 
 #~ msgid "Display drive write speed in Applications view"
-#~ msgstr "Schreibgeschwindigkeit von Datenträgern bei Anwendungen anzeigen"
+#~ msgstr "Schreibgeschwindigkeit auf den Datenträgern bei Anwendungen anzeigen"
 
 #~ msgid "Display drive write total in Applications view"
 #~ msgstr "Insgesamt geschriebene Datenmenge bei Anwendungen anzeigen"
@@ -1456,13 +1458,13 @@ msgstr "Prozess beenden"
 #~ msgstr "Prozessornutzung bei Prozessen anzeigen"
 
 #~ msgid "Display drive read speed in Processes view"
-#~ msgstr "Lesegeschwindigkeit von Datenträgern bei Prozessen anzeigen"
+#~ msgstr "Lesegeschwindigkeit auf den Datenträgern bei Prozessen anzeigen"
 
 #~ msgid "Display drive read total in Processes view"
 #~ msgstr "Insgesamt gelesene Datenmenge bei Prozessen anzeigen"
 
 #~ msgid "Display drive write speed in Processes view"
-#~ msgstr "Schreibgeschwindigkeit von Datenträgern bei Prozessen anzeigen"
+#~ msgstr "Schreibgeschwindigkeit auf den Datenträgern bei Prozessen anzeigen"
 
 #~ msgid "Display drive write total in Processes view"
 #~ msgstr "Insgesamt geschriebene Datenmenge bei Prozessen anzeigen"
@@ -1483,13 +1485,13 @@ msgstr "Prozess beenden"
 #~ msgstr "Nutzung der logischen CPUs auf der Prozessor-Seite anzeigen"
 
 #~ msgid "Show grids in graphs"
-#~ msgstr "Raster in Graphen anzeigen"
+#~ msgstr "Graphen in einem Raster anzeigen"
 
 #~ msgid "Amount of data points that should be shown in a graph"
 #~ msgstr "Menge an Datenpunkten, die in Graphen angezeigt werden"
 
 #~ msgid "GPU Usage"
-#~ msgstr "Grafikauslastung"
+#~ msgstr "GPU-Auslastung"
 
 #~ msgid "Monitor your system resources and processes"
 #~ msgstr "Systemressourcen und Prozesse überwachen"
@@ -1503,7 +1505,7 @@ msgstr "Prozess beenden"
 #~ msgid ""
 #~ "A simple yet powerful monitor for your system resources and processes."
 #~ msgstr ""
-#~ "Ein starker und einfacher Monitor für Ihre Systemressourcen und Prozesse."
+#~ "Ein einfacher und zugleich mächtiger Monitor für Systemressourcen und Prozesse."
 
 #~ msgid "{} {}B Drive"
 #~ msgstr "{}-{}B-Datenträger"
