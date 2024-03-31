@@ -34,7 +34,7 @@
   <url type="vcs-browser">https://github.com/nokyan/resources</url>
   <url type="translate">https://github.com/nokyan/resources/tree/main/po</url>
   <content_rating type="oars-1.1"/>
-  <developer_name translatable="no">nokyan</developer_name>
+  <developer_name translate="no">nokyan</developer_name>
   <update_contact>nokyan@tuta.io</update_contact>
   <translation type="gettext">@gettext-package@</translation>
   <launchable type="desktop-id">@app-id@.desktop</launchable>
@@ -67,7 +67,7 @@
   </screenshots>
   <releases>
     <release version="1.3.0" date="2023-12-24">
-      <description translatable="no">
+      <description translate="no">
         <p>
           Resources 1.3 has been a long time in the making and brings a number of new and exciting features as well as many bug fixes. Enjoy!
         </p>
