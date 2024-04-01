@@ -5,13 +5,11 @@ use std::collections::HashSet;
 
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone, closure, Object, Sender};
+use async_std::channel::Sender;
+use gtk::glib::{self, clone, closure, MainContext, Object};
 use gtk::{
     gio, ColumnView, ColumnViewColumn, FilterChange, NumericSorter, SortType, StringSorter, Widget,
 };
-use gtk_macros::send;
-
-use log::error;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
@@ -38,7 +36,7 @@ mod imp {
 
     use gtk::{
         gio::{Icon, ThemedIcon},
-        glib::{ParamSpec, Properties, Sender, Value},
+        glib::{ParamSpec, Properties, Value},
         CompositeTemplate,
     };
 
@@ -551,19 +549,15 @@ impl ResProcesses {
     }
 
     pub fn execute_process_action_dialog(&self, process: ProcessItem, action: ProcessAction) {
-        let imp = self.imp();
-
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
-            send!(
-                imp.sender.get().unwrap(),
-                Action::ManipulateProcess(
-                    action,
-                    process.pid,
-                    process.display_name,
-                    imp.toast_overlay.get()
-                )
-            );
+            let main_context = MainContext::default();
+            main_context.spawn_local(clone!(@strong self as this => async move {
+                let imp = this.imp();
+                let _ = imp.sender.get().unwrap().send(
+                    Action::ManipulateProcess(action, process.pid, process.clone().display_name, imp.toast_overlay.get())
+                ).await;
+            }));
             return;
         }
 
@@ -585,18 +579,15 @@ impl ResProcesses {
         // Called when "yes" or "no" were clicked
         dialog.connect_response(
             None,
-            clone!(@strong self as this, @strong process => move |_, response| {
+            clone!(@strong self as this => move |_, response| {
                 if response == "yes" {
-                    let imp = this.imp();
-                    send!(
-                        imp.sender.get().unwrap(),
-                        Action::ManipulateProcess(
-                            action,
-                            process.pid,
-                            process.clone().display_name,
-                            imp.toast_overlay.get()
-                        )
-                    );
+                    let main_context = MainContext::default();
+                    main_context.spawn_local(clone!(@strong this, @strong process => async move {
+                        let imp = this.imp();
+                        let _ = imp.sender.get().unwrap().send(
+                            Action::ManipulateProcess(action, process.pid, process.clone().display_name, imp.toast_overlay.get())
+                        ).await;
+                    }));
                 }
             }),
         );
