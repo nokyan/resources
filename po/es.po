@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-06 12:37+0100\n"
-"PO-Revision-Date: 2024-03-31 23:09-0300\n"
+"PO-Revision-Date: 2024-04-01 09:31-0300\n"
 "Last-Translator: alfabravo <alfabravoteam@gmail.com>\n"
 "Language-Team: Unofficial Spanish translators\n"
 "Language: es\n"
@@ -502,7 +502,7 @@ msgstr "Unidad CD/DVD/Blu-ray"
 
 #: src/utils/drive.rs:83
 msgid "eMMC Storage"
-msgstr "memoria eMMC"
+msgstr "Memoria eMMC"
 
 #: src/utils/drive.rs:84
 msgid "Flash Storage"
@@ -586,7 +586,7 @@ msgstr "Puente de red"
 
 #: src/utils/network.rs:113
 msgid "Ethernet Connection"
-msgstr "Connexión Ethernet"
+msgstr "Conexión Ethernet"
 
 #: src/utils/network.rs:114
 msgid "InfiniBand Connection"
