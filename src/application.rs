@@ -181,16 +181,13 @@ impl Application {
     fn show_settings_dialog(&self) {
         let settings = ResSettingsDialog::new();
 
-        settings.set_transient_for(Some(&self.main_window()));
-        settings.set_modal(true);
-
         settings.init();
 
-        settings.present();
+        settings.present(&self.main_window());
     }
 
     fn show_about_dialog(&self) {
-        let about = adw::AboutWindow::builder()
+        let about = adw::AboutDialog::builder()
             .application_name(i18n("Resources"))
             .application_icon(config::APP_ID)
             .developer_name(i18n("The Nalux Team"))
@@ -210,10 +207,7 @@ impl Application {
         about.set_translator_credits(&i18n("translator-credits"));
         about.add_credit_section(Some(&i18n("Icon by")), &["Avhiren"]);
 
-        about.set_transient_for(Some(&self.main_window()));
-        about.set_modal(true);
-
-        about.present();
+        about.present(&self.main_window());
     }
 
     pub fn run(&self) {
