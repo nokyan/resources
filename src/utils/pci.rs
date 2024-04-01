@@ -98,7 +98,7 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
 
     let mut seen: BTreeMap<u16, Vendor> = BTreeMap::new();
 
-    for line in reader.lines().flatten() {
+    for line in reader.lines().map_while(Result::ok) {
         if line.starts_with('C') {
             // case 1: we've reached the classes, time to stop
             break;

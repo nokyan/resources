@@ -369,7 +369,7 @@ impl ResApplications {
         column_view.sort_by_column(
             columns
                 .get(SETTINGS.apps_sort_by() as usize)
-                .or_else(|| columns.get(0)),
+                .or_else(|| columns.first()),
             SETTINGS.apps_sort_by_ascending(),
         );
 
