@@ -585,9 +585,7 @@ impl ResApplications {
         }
 
         // Confirmation dialog & warning
-        let dialog = adw::MessageDialog::builder()
-            .transient_for(&MainWindow::default())
-            .modal(true)
+        let dialog = adw::AlertDialog::builder()
             .heading(get_action_name(action, &[&app.display_name]))
             .body(get_app_action_warning(action))
             .build();
@@ -615,7 +613,7 @@ impl ResApplications {
             }),
         );
 
-        dialog.set_visible(true);
+        dialog.present(&MainWindow::default());
     }
 
     fn add_name_column(&self, column_view: &ColumnView) -> ColumnViewColumn {

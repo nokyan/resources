@@ -562,9 +562,7 @@ impl ResProcesses {
         }
 
         // Confirmation dialog & warning
-        let dialog = adw::MessageDialog::builder()
-            .transient_for(&MainWindow::default())
-            .modal(true)
+        let dialog = adw::AlertDialog::builder()
             .heading(get_action_name(action, &[&process.display_name]))
             .body(get_process_action_warning(action))
             .build();
@@ -592,7 +590,7 @@ impl ResProcesses {
             }),
         );
 
-        dialog.set_visible(true);
+        dialog.present(&MainWindow::default());
     }
 
     fn get_user_name_by_uid(&self, uid: u32) -> String {
