@@ -469,7 +469,7 @@ impl ResProcesses {
         let imp = self.imp();
         let process_dialog = ResProcessDialog::new();
         process_dialog.init(process, self.get_user_name_by_uid(process.uid));
-        process_dialog.set_visible(true);
+        process_dialog.present(&MainWindow::default());
         *imp.open_dialog.borrow_mut() = Some((process.pid, process_dialog));
     }
 

@@ -467,7 +467,7 @@ impl ResApplications {
         let imp = self.imp();
         let app_dialog = ResAppDialog::new();
         app_dialog.init(app_item);
-        app_dialog.set_visible(true);
+        app_dialog.present(&MainWindow::default());
         *imp.open_dialog.borrow_mut() =
             Some((app_item.id.as_ref().map(|gs| gs.to_string()), app_dialog));
     }
