@@ -352,7 +352,7 @@ msgstr "{} MT/s"
 #. preferably be quite short or an abbreviation
 #: src/ui/pages/memory.rs:362
 msgid "{} / {} · Swap: {} %"
-msgstr "{} / {} · Pamięć wymiany: {} %"
+msgstr "{} / {} · p. wymiany: {} %"
 
 #: src/ui/pages/network.rs:149 src/utils/network.rs:122
 msgid "Network Interface"
