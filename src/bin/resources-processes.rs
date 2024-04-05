@@ -20,6 +20,6 @@ fn main() -> Result<()> {
 
         handle.write_all(&encoded)?;
 
-        handle.flush()?
+        handle.flush()?;
     }
 }

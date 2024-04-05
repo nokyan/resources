@@ -248,8 +248,7 @@ impl ResGPU {
 
         imp.manufacturer.set_subtitle(
             &gpu.get_vendor()
-                .map(|vendor| vendor.name().to_string())
-                .unwrap_or_else(|_| i18n("N/A")),
+                .map_or_else(|_| i18n("N/A"), |vendor| vendor.name().to_string()),
         );
 
         imp.pci_slot.set_subtitle(&gpu.pci_slot().to_string());
@@ -293,9 +292,10 @@ impl ResGPU {
             nvidia: _,
         } = gpu_data;
 
-        let mut usage_percentage_string = usage_fraction
-            .map(|fraction| format!("{} %", (fraction * 100.0).round()))
-            .unwrap_or(i18n("N/A"));
+        let mut usage_percentage_string = usage_fraction.map_or_else(
+            || i18n("N/A"),
+            |fraction| format!("{} %", (fraction * 100.0).round()),
+        );
 
         imp.gpu_usage.set_subtitle(&usage_percentage_string);
         imp.gpu_usage
@@ -351,10 +351,10 @@ impl ResGPU {
                 None
             };
 
-        let vram_percentage_string = used_vram_fraction
-            .as_ref()
-            .map(|fraction| format!("{} %", (fraction * 100.0).round()))
-            .unwrap_or(i18n("N/A"));
+        let vram_percentage_string = used_vram_fraction.as_ref().map_or_else(
+            || i18n("N/A"),
+            |fraction| format!("{} %", (fraction * 100.0).round()),
+        );
 
         let vram_subtitle = if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
             format!(
@@ -417,6 +417,6 @@ impl ResGPU {
             usage_percentage_string.push_str(&temperature_string);
         }
 
-        self.set_property("tab_usage_string", &usage_percentage_string)
+        self.set_property("tab_usage_string", &usage_percentage_string);
     }
 }

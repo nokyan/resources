@@ -70,31 +70,31 @@ fn convert_storage_decimal(bytes: f64, integer: bool) -> String {
     if integer {
         number = number.round();
         match prefix {
-            Prefix::None => i18n_f("{} B", &[&format!("{}", number)]),
-            Prefix::Kilo => i18n_f("{} kB", &[&format!("{}", number)]),
-            Prefix::Mega => i18n_f("{} MB", &[&format!("{}", number)]),
-            Prefix::Giga => i18n_f("{} GB", &[&format!("{}", number)]),
-            Prefix::Tera => i18n_f("{} TB", &[&format!("{}", number)]),
-            Prefix::Peta => i18n_f("{} PB", &[&format!("{}", number)]),
-            Prefix::Exa => i18n_f("{} EB", &[&format!("{}", number)]),
-            Prefix::Zetta => i18n_f("{} ZB", &[&format!("{}", number)]),
-            Prefix::Yotta => i18n_f("{} YB", &[&format!("{}", number)]),
-            Prefix::Ronna => i18n_f("{} RB", &[&format!("{}", number)]),
-            Prefix::Quetta => i18n_f("{} QB", &[&format!("{}", number)]),
+            Prefix::None => i18n_f("{} B", &[&number.to_string()]),
+            Prefix::Kilo => i18n_f("{} kB", &[&number.to_string()]),
+            Prefix::Mega => i18n_f("{} MB", &[&number.to_string()]),
+            Prefix::Giga => i18n_f("{} GB", &[&number.to_string()]),
+            Prefix::Tera => i18n_f("{} TB", &[&number.to_string()]),
+            Prefix::Peta => i18n_f("{} PB", &[&number.to_string()]),
+            Prefix::Exa => i18n_f("{} EB", &[&number.to_string()]),
+            Prefix::Zetta => i18n_f("{} ZB", &[&number.to_string()]),
+            Prefix::Yotta => i18n_f("{} YB", &[&number.to_string()]),
+            Prefix::Ronna => i18n_f("{} RB", &[&number.to_string()]),
+            Prefix::Quetta => i18n_f("{} QB", &[&number.to_string()]),
         }
     } else {
         match prefix {
             Prefix::None => i18n_f("{} B", &[&format!("{}", number.round())]),
-            Prefix::Kilo => i18n_f("{} kB", &[&format!("{:.2}", number)]),
-            Prefix::Mega => i18n_f("{} MB", &[&format!("{:.2}", number)]),
-            Prefix::Giga => i18n_f("{} GB", &[&format!("{:.2}", number)]),
-            Prefix::Tera => i18n_f("{} TB", &[&format!("{:.2}", number)]),
-            Prefix::Peta => i18n_f("{} PB", &[&format!("{:.2}", number)]),
-            Prefix::Exa => i18n_f("{} EB", &[&format!("{:.2}", number)]),
-            Prefix::Zetta => i18n_f("{} ZB", &[&format!("{:.2}", number)]),
-            Prefix::Yotta => i18n_f("{} YB", &[&format!("{:.2}", number)]),
-            Prefix::Ronna => i18n_f("{} RB", &[&format!("{:.2}", number)]),
-            Prefix::Quetta => i18n_f("{} QB", &[&format!("{:.2}", number)]),
+            Prefix::Kilo => i18n_f("{} kB", &[&format!("{number:.2}")]),
+            Prefix::Mega => i18n_f("{} MB", &[&format!("{number:.2}")]),
+            Prefix::Giga => i18n_f("{} GB", &[&format!("{number:.2}")]),
+            Prefix::Tera => i18n_f("{} TB", &[&format!("{number:.2}")]),
+            Prefix::Peta => i18n_f("{} PB", &[&format!("{number:.2}")]),
+            Prefix::Exa => i18n_f("{} EB", &[&format!("{number:.2}")]),
+            Prefix::Zetta => i18n_f("{} ZB", &[&format!("{number:.2}")]),
+            Prefix::Yotta => i18n_f("{} YB", &[&format!("{number:.2}")]),
+            Prefix::Ronna => i18n_f("{} RB", &[&format!("{number:.2}")]),
+            Prefix::Quetta => i18n_f("{} QB", &[&format!("{number:.2}")]),
         }
     }
 }
@@ -104,31 +104,31 @@ fn convert_storage_binary(bytes: f64, integer: bool) -> String {
     if integer {
         number = number.round();
         match prefix {
-            Prefix::None => i18n_f("{} B", &[&format!("{}", number)]),
-            Prefix::Kilo => i18n_f("{} KiB", &[&format!("{}", number)]),
-            Prefix::Mega => i18n_f("{} MiB", &[&format!("{}", number)]),
-            Prefix::Giga => i18n_f("{} GiB", &[&format!("{}", number)]),
-            Prefix::Tera => i18n_f("{} TiB", &[&format!("{}", number)]),
-            Prefix::Peta => i18n_f("{} PiB", &[&format!("{}", number)]),
-            Prefix::Exa => i18n_f("{} EiB", &[&format!("{}", number)]),
-            Prefix::Zetta => i18n_f("{} ZiB", &[&format!("{}", number)]),
-            Prefix::Yotta => i18n_f("{} YiB", &[&format!("{}", number)]),
-            Prefix::Ronna => i18n_f("{} RiB", &[&format!("{}", number)]),
-            Prefix::Quetta => i18n_f("{} QiB", &[&format!("{}", number)]),
+            Prefix::None => i18n_f("{} B", &[&number.to_string()]),
+            Prefix::Kilo => i18n_f("{} KiB", &[&number.to_string()]),
+            Prefix::Mega => i18n_f("{} MiB", &[&number.to_string()]),
+            Prefix::Giga => i18n_f("{} GiB", &[&number.to_string()]),
+            Prefix::Tera => i18n_f("{} TiB", &[&number.to_string()]),
+            Prefix::Peta => i18n_f("{} PiB", &[&number.to_string()]),
+            Prefix::Exa => i18n_f("{} EiB", &[&number.to_string()]),
+            Prefix::Zetta => i18n_f("{} ZiB", &[&number.to_string()]),
+            Prefix::Yotta => i18n_f("{} YiB", &[&number.to_string()]),
+            Prefix::Ronna => i18n_f("{} RiB", &[&number.to_string()]),
+            Prefix::Quetta => i18n_f("{} QiB", &[&number.to_string()]),
         }
     } else {
         match prefix {
             Prefix::None => i18n_f("{} B", &[&format!("{}", number.round())]),
-            Prefix::Kilo => i18n_f("{} KiB", &[&format!("{:.2}", number)]),
-            Prefix::Mega => i18n_f("{} MiB", &[&format!("{:.2}", number)]),
-            Prefix::Giga => i18n_f("{} GiB", &[&format!("{:.2}", number)]),
-            Prefix::Tera => i18n_f("{} TiB", &[&format!("{:.2}", number)]),
-            Prefix::Peta => i18n_f("{} PiB", &[&format!("{:.2}", number)]),
-            Prefix::Exa => i18n_f("{} EiB", &[&format!("{:.2}", number)]),
-            Prefix::Zetta => i18n_f("{} ZiB", &[&format!("{:.2}", number)]),
-            Prefix::Yotta => i18n_f("{} YiB", &[&format!("{:.2}", number)]),
-            Prefix::Ronna => i18n_f("{} RiB", &[&format!("{:.2}", number)]),
-            Prefix::Quetta => i18n_f("{} QiB", &[&format!("{:.2}", number)]),
+            Prefix::Kilo => i18n_f("{} KiB", &[&format!("{number:.2}")]),
+            Prefix::Mega => i18n_f("{} MiB", &[&format!("{number:.2}")]),
+            Prefix::Giga => i18n_f("{} GiB", &[&format!("{number:.2}")]),
+            Prefix::Tera => i18n_f("{} TiB", &[&format!("{number:.2}")]),
+            Prefix::Peta => i18n_f("{} PiB", &[&format!("{number:.2}")]),
+            Prefix::Exa => i18n_f("{} EiB", &[&format!("{number:.2}")]),
+            Prefix::Zetta => i18n_f("{} ZiB", &[&format!("{number:.2}")]),
+            Prefix::Yotta => i18n_f("{} YiB", &[&format!("{number:.2}")]),
+            Prefix::Ronna => i18n_f("{} RiB", &[&format!("{number:.2}")]),
+            Prefix::Quetta => i18n_f("{} QiB", &[&format!("{number:.2}")]),
         }
     }
 }
@@ -156,16 +156,16 @@ fn convert_speed_decimal(bytes_per_second: f64) -> String {
     let (number, prefix) = to_largest_prefix(bytes_per_second, Base::Decimal);
     match prefix {
         Prefix::None => i18n_f("{} B/s", &[&format!("{}", number.round())]),
-        Prefix::Kilo => i18n_f("{} kB/s", &[&format!("{:.2}", number)]),
-        Prefix::Mega => i18n_f("{} MB/s", &[&format!("{:.2}", number)]),
-        Prefix::Giga => i18n_f("{} GB/s", &[&format!("{:.2}", number)]),
-        Prefix::Tera => i18n_f("{} TB/s", &[&format!("{:.2}", number)]),
-        Prefix::Peta => i18n_f("{} PB/s", &[&format!("{:.2}", number)]),
-        Prefix::Exa => i18n_f("{} EB/s", &[&format!("{:.2}", number)]),
-        Prefix::Zetta => i18n_f("{} ZB/s", &[&format!("{:.2}", number)]),
-        Prefix::Yotta => i18n_f("{} YB/s", &[&format!("{:.2}", number)]),
-        Prefix::Ronna => i18n_f("{} RB/s", &[&format!("{:.2}", number)]),
-        Prefix::Quetta => i18n_f("{} QB/s", &[&format!("{:.2}", number)]),
+        Prefix::Kilo => i18n_f("{} kB/s", &[&format!("{number:.2}")]),
+        Prefix::Mega => i18n_f("{} MB/s", &[&format!("{number:.2}")]),
+        Prefix::Giga => i18n_f("{} GB/s", &[&format!("{number:.2}")]),
+        Prefix::Tera => i18n_f("{} TB/s", &[&format!("{number:.2}")]),
+        Prefix::Peta => i18n_f("{} PB/s", &[&format!("{number:.2}")]),
+        Prefix::Exa => i18n_f("{} EB/s", &[&format!("{number:.2}")]),
+        Prefix::Zetta => i18n_f("{} ZB/s", &[&format!("{number:.2}")]),
+        Prefix::Yotta => i18n_f("{} YB/s", &[&format!("{number:.2}")]),
+        Prefix::Ronna => i18n_f("{} RB/s", &[&format!("{number:.2}")]),
+        Prefix::Quetta => i18n_f("{} QB/s", &[&format!("{number:.2}")]),
     }
 }
 
@@ -173,16 +173,16 @@ fn convert_speed_binary(bytes_per_second: f64) -> String {
     let (number, prefix) = to_largest_prefix(bytes_per_second, Base::Binary);
     match prefix {
         Prefix::None => i18n_f("{} B/s", &[&format!("{}", number.round())]),
-        Prefix::Kilo => i18n_f("{} KiB/s", &[&format!("{:.2}", number)]),
-        Prefix::Mega => i18n_f("{} MiB/s", &[&format!("{:.2}", number)]),
-        Prefix::Giga => i18n_f("{} GiB/s", &[&format!("{:.2}", number)]),
-        Prefix::Tera => i18n_f("{} TiB/s", &[&format!("{:.2}", number)]),
-        Prefix::Peta => i18n_f("{} PiB/s", &[&format!("{:.2}", number)]),
-        Prefix::Exa => i18n_f("{} EiB/s", &[&format!("{:.2}", number)]),
-        Prefix::Zetta => i18n_f("{} ZiB/s", &[&format!("{:.2}", number)]),
-        Prefix::Yotta => i18n_f("{} YiB/s", &[&format!("{:.2}", number)]),
-        Prefix::Ronna => i18n_f("{} RiB/s", &[&format!("{:.2}", number)]),
-        Prefix::Quetta => i18n_f("{} QiB/s", &[&format!("{:.2}", number)]),
+        Prefix::Kilo => i18n_f("{} KiB/s", &[&format!("{number:.2}")]),
+        Prefix::Mega => i18n_f("{} MiB/s", &[&format!("{number:.2}")]),
+        Prefix::Giga => i18n_f("{} GiB/s", &[&format!("{number:.2}")]),
+        Prefix::Tera => i18n_f("{} TiB/s", &[&format!("{number:.2}")]),
+        Prefix::Peta => i18n_f("{} PiB/s", &[&format!("{number:.2}")]),
+        Prefix::Exa => i18n_f("{} EiB/s", &[&format!("{number:.2}")]),
+        Prefix::Zetta => i18n_f("{} ZiB/s", &[&format!("{number:.2}")]),
+        Prefix::Yotta => i18n_f("{} YiB/s", &[&format!("{number:.2}")]),
+        Prefix::Ronna => i18n_f("{} RiB/s", &[&format!("{number:.2}")]),
+        Prefix::Quetta => i18n_f("{} QiB/s", &[&format!("{number:.2}")]),
     }
 }
 
@@ -190,16 +190,16 @@ fn convert_speed_bits_decimal(bits_per_second: f64) -> String {
     let (number, prefix) = to_largest_prefix(bits_per_second, Base::Decimal);
     match prefix {
         Prefix::None => i18n_f("{} b/s", &[&format!("{}", number.round())]),
-        Prefix::Kilo => i18n_f("{} kb/s", &[&format!("{:.2}", number)]),
-        Prefix::Mega => i18n_f("{} Mb/s", &[&format!("{:.2}", number)]),
-        Prefix::Giga => i18n_f("{} Gb/s", &[&format!("{:.2}", number)]),
-        Prefix::Tera => i18n_f("{} Tb/s", &[&format!("{:.2}", number)]),
-        Prefix::Peta => i18n_f("{} Pb/s", &[&format!("{:.2}", number)]),
-        Prefix::Exa => i18n_f("{} Eb/s", &[&format!("{:.2}", number)]),
-        Prefix::Zetta => i18n_f("{} Zb/s", &[&format!("{:.2}", number)]),
-        Prefix::Yotta => i18n_f("{} Yb/s", &[&format!("{:.2}", number)]),
-        Prefix::Ronna => i18n_f("{} Rb/s", &[&format!("{:.2}", number)]),
-        Prefix::Quetta => i18n_f("{} Qb/s", &[&format!("{:.2}", number)]),
+        Prefix::Kilo => i18n_f("{} kb/s", &[&format!("{number:.2}")]),
+        Prefix::Mega => i18n_f("{} Mb/s", &[&format!("{number:.2}")]),
+        Prefix::Giga => i18n_f("{} Gb/s", &[&format!("{number:.2}")]),
+        Prefix::Tera => i18n_f("{} Tb/s", &[&format!("{number:.2}")]),
+        Prefix::Peta => i18n_f("{} Pb/s", &[&format!("{number:.2}")]),
+        Prefix::Exa => i18n_f("{} Eb/s", &[&format!("{number:.2}")]),
+        Prefix::Zetta => i18n_f("{} Zb/s", &[&format!("{number:.2}")]),
+        Prefix::Yotta => i18n_f("{} Yb/s", &[&format!("{number:.2}")]),
+        Prefix::Ronna => i18n_f("{} Rb/s", &[&format!("{number:.2}")]),
+        Prefix::Quetta => i18n_f("{} Qb/s", &[&format!("{number:.2}")]),
     }
 }
 
@@ -207,49 +207,49 @@ fn convert_speed_bits_binary(bits_per_second: f64) -> String {
     let (number, prefix) = to_largest_prefix(bits_per_second, Base::Binary);
     match prefix {
         Prefix::None => i18n_f("{} b/s", &[&format!("{}", number.round())]),
-        Prefix::Kilo => i18n_f("{} Kib/s", &[&format!("{:.2}", number)]),
-        Prefix::Mega => i18n_f("{} Mib/s", &[&format!("{:.2}", number)]),
-        Prefix::Giga => i18n_f("{} Gib/s", &[&format!("{:.2}", number)]),
-        Prefix::Tera => i18n_f("{} Tib/s", &[&format!("{:.2}", number)]),
-        Prefix::Peta => i18n_f("{} Pib/s", &[&format!("{:.2}", number)]),
-        Prefix::Exa => i18n_f("{} Eib/s", &[&format!("{:.2}", number)]),
-        Prefix::Zetta => i18n_f("{} Zib/s", &[&format!("{:.2}", number)]),
-        Prefix::Yotta => i18n_f("{} Yib/s", &[&format!("{:.2}", number)]),
-        Prefix::Ronna => i18n_f("{} Rib/s", &[&format!("{:.2}", number)]),
-        Prefix::Quetta => i18n_f("{} Qib/s", &[&format!("{:.2}", number)]),
+        Prefix::Kilo => i18n_f("{} Kib/s", &[&format!("{number:.2}")]),
+        Prefix::Mega => i18n_f("{} Mib/s", &[&format!("{number:.2}")]),
+        Prefix::Giga => i18n_f("{} Gib/s", &[&format!("{number:.2}")]),
+        Prefix::Tera => i18n_f("{} Tib/s", &[&format!("{number:.2}")]),
+        Prefix::Peta => i18n_f("{} Pib/s", &[&format!("{number:.2}")]),
+        Prefix::Exa => i18n_f("{} Eib/s", &[&format!("{number:.2}")]),
+        Prefix::Zetta => i18n_f("{} Zib/s", &[&format!("{number:.2}")]),
+        Prefix::Yotta => i18n_f("{} Yib/s", &[&format!("{number:.2}")]),
+        Prefix::Ronna => i18n_f("{} Rib/s", &[&format!("{number:.2}")]),
+        Prefix::Quetta => i18n_f("{} Qib/s", &[&format!("{number:.2}")]),
     }
 }
 
 pub fn convert_frequency(hertz: f64) -> String {
     let (number, prefix) = to_largest_prefix(hertz, Base::Decimal);
     match prefix {
-        Prefix::None => i18n_f("{} Hz", &[&format!("{:.2}", number)]),
-        Prefix::Kilo => i18n_f("{} kHz", &[&format!("{:.2}", number)]),
-        Prefix::Mega => i18n_f("{} MHz", &[&format!("{:.2}", number)]),
-        Prefix::Giga => i18n_f("{} GHz", &[&format!("{:.2}", number)]),
-        Prefix::Tera => i18n_f("{} THz", &[&format!("{:.2}", number)]),
-        Prefix::Peta => i18n_f("{} PHz", &[&format!("{:.2}", number)]),
-        Prefix::Exa => i18n_f("{} EHz", &[&format!("{:.2}", number)]),
-        Prefix::Zetta => i18n_f("{} ZHz", &[&format!("{:.2}", number)]),
-        Prefix::Yotta => i18n_f("{} YHz", &[&format!("{:.2}", number)]),
-        Prefix::Ronna => i18n_f("{} RHz", &[&format!("{:.2}", number)]),
-        Prefix::Quetta => i18n_f("{} QHz", &[&format!("{:.2}", number)]),
+        Prefix::None => i18n_f("{} Hz", &[&format!("{number:.2}")]),
+        Prefix::Kilo => i18n_f("{} kHz", &[&format!("{number:.2}")]),
+        Prefix::Mega => i18n_f("{} MHz", &[&format!("{number:.2}")]),
+        Prefix::Giga => i18n_f("{} GHz", &[&format!("{number:.2}")]),
+        Prefix::Tera => i18n_f("{} THz", &[&format!("{number:.2}")]),
+        Prefix::Peta => i18n_f("{} PHz", &[&format!("{number:.2}")]),
+        Prefix::Exa => i18n_f("{} EHz", &[&format!("{number:.2}")]),
+        Prefix::Zetta => i18n_f("{} ZHz", &[&format!("{number:.2}")]),
+        Prefix::Yotta => i18n_f("{} YHz", &[&format!("{number:.2}")]),
+        Prefix::Ronna => i18n_f("{} RHz", &[&format!("{number:.2}")]),
+        Prefix::Quetta => i18n_f("{} QHz", &[&format!("{number:.2}")]),
     }
 }
 
 pub fn convert_power(watts: f64) -> String {
     let (number, prefix) = to_largest_prefix(watts, Base::Decimal);
     match prefix {
-        Prefix::None => i18n_f("{} W", &[&format!("{:.1}", number)]),
-        Prefix::Kilo => i18n_f("{} kW", &[&format!("{:.2}", number)]),
-        Prefix::Mega => i18n_f("{} MW", &[&format!("{:.2}", number)]),
-        Prefix::Giga => i18n_f("{} GW", &[&format!("{:.2}", number)]),
-        Prefix::Tera => i18n_f("{} TW", &[&format!("{:.2}", number)]),
-        Prefix::Peta => i18n_f("{} PW", &[&format!("{:.2}", number)]),
-        Prefix::Exa => i18n_f("{} EW", &[&format!("{:.2}", number)]),
-        Prefix::Zetta => i18n_f("{} ZW", &[&format!("{:.2}", number)]),
-        Prefix::Yotta => i18n_f("{} YW", &[&format!("{:.2}", number)]),
-        Prefix::Ronna => i18n_f("{} RW", &[&format!("{:.2}", number)]),
-        Prefix::Quetta => i18n_f("{} QW", &[&format!("{:.2}", number)]),
+        Prefix::None => i18n_f("{} W", &[&format!("{number:.1}")]),
+        Prefix::Kilo => i18n_f("{} kW", &[&format!("{number:.2}")]),
+        Prefix::Mega => i18n_f("{} MW", &[&format!("{number:.2}")]),
+        Prefix::Giga => i18n_f("{} GW", &[&format!("{number:.2}")]),
+        Prefix::Tera => i18n_f("{} TW", &[&format!("{number:.2}")]),
+        Prefix::Peta => i18n_f("{} PW", &[&format!("{number:.2}")]),
+        Prefix::Exa => i18n_f("{} EW", &[&format!("{number:.2}")]),
+        Prefix::Zetta => i18n_f("{} ZW", &[&format!("{number:.2}")]),
+        Prefix::Yotta => i18n_f("{} YW", &[&format!("{number:.2}")]),
+        Prefix::Ronna => i18n_f("{} RW", &[&format!("{number:.2}")]),
+        Prefix::Quetta => i18n_f("{} QW", &[&format!("{number:.2}")]),
     }
 }

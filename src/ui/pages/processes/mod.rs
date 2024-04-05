@@ -451,7 +451,7 @@ impl ResProcesses {
                 if let Some(sorter) = sorter.downcast_ref::<gtk::ColumnViewSorter>() {
                     let current_column = sorter.primary_sort_column().map(|column| column.as_ptr() as usize).unwrap_or_default();
 
-                    let current_column_number = this.imp().columns.borrow().iter().enumerate().find(|(_, column)| column.as_ptr() as usize == current_column).map(|(i, _)| i as u32).unwrap_or(3); // 3 corresponds to the memory column
+                    let current_column_number = this.imp().columns.borrow().iter().enumerate().find(|(_, column)| column.as_ptr() as usize == current_column).map_or(3, |(i, _)| i as u32); // 3 corresponds to the memory column
 
                     if SETTINGS.processes_sort_by() != current_column_number {
                         let _ = SETTINGS.set_processes_sort_by(current_column_number);
@@ -539,7 +539,7 @@ impl ResProcesses {
         store.extend_from_slice(&items);
 
         if let Some(sorter) = imp.column_view.borrow().sorter() {
-            sorter.changed(gtk::SorterChange::Different)
+            sorter.changed(gtk::SorterChange::Different);
         }
 
         self.set_property(
@@ -877,7 +877,7 @@ impl ResProcesses {
 
         SETTINGS.connect_processes_show_drive_read_speed(
             clone!(@strong read_speed_col => move  |visible| {
-                read_speed_col.set_visible(visible)
+                read_speed_col.set_visible(visible);
             }),
         );
 
@@ -930,7 +930,7 @@ impl ResProcesses {
 
         SETTINGS.connect_processes_show_drive_read_total(
             clone!(@strong read_total_col => move |visible| {
-                read_total_col.set_visible(visible)
+                read_total_col.set_visible(visible);
             }),
         );
 
@@ -983,7 +983,7 @@ impl ResProcesses {
 
         SETTINGS.connect_processes_show_drive_write_speed(
             clone!(@strong write_speed_col => move |visible| {
-                write_speed_col.set_visible(visible)
+                write_speed_col.set_visible(visible);
             }),
         );
 

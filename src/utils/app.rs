@@ -37,11 +37,11 @@ static RE_FLATPAK_FILTER: Lazy<Regex> =
 static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
     let home = std::env::var("HOME").unwrap_or_else(|_| "/".to_string());
     let mut data_dirs: Vec<PathBuf> = std::env::var("XDG_DATA_DIRS")
-        .unwrap_or_else(|_| format!("/usr/share:{}/.local/share", home))
+        .unwrap_or_else(|_| format!("/usr/share:{home}/.local/share"))
         .split(':')
         .map(PathBuf::from)
         .collect();
-    data_dirs.push(PathBuf::from(format!("{}/.local/share", home)));
+    data_dirs.push(PathBuf::from(format!("{home}/.local/share")));
     data_dirs
 });
 
@@ -152,7 +152,7 @@ impl App {
 
         let apps: Vec<App> = DATA_DIRS
             .iter()
-            .flat_map(|path| {
+            .filter_map(|path| {
                 let applications_path = path.join("applications");
                 let expanded_path = expanduser::expanduser(applications_path.to_string_lossy())
                     .unwrap_or(applications_path);
@@ -251,14 +251,14 @@ impl App {
         let mut description_opt = None;
 
         for locale in MESSAGE_LOCALES.iter() {
-            if let Some(name) = desktop_entry.get(format!("Name[{}]", locale)) {
+            if let Some(name) = desktop_entry.get(format!("Name[{locale}]")) {
                 display_name_opt = Some(name);
                 break;
             }
         }
 
         for locale in MESSAGE_LOCALES.iter() {
-            if let Some(comment) = desktop_entry.get(format!("Comment[{}]", locale)) {
+            if let Some(comment) = desktop_entry.get(format!("Comment[{locale}]")) {
                 description_opt = Some(comment);
                 break;
             }
@@ -552,14 +552,12 @@ impl AppsContext {
                     let commandline_match = app
                         .commandline
                         .as_ref()
-                        .map(|commandline| commandline == &process.executable_path)
-                        .unwrap_or(false);
+                        .is_some_and(|commandline| commandline == &process.executable_path);
 
                     let executable_name_match = app
                         .executable_name
                         .as_ref()
-                        .map(|executable_name| executable_name == &process.executable_name)
-                        .unwrap_or(false);
+                        .is_some_and(|executable_name| executable_name == &process.executable_name);
 
                     let known_exception_match = app
                         .executable_name
@@ -722,7 +720,7 @@ impl AppsContext {
 
         let system_read_speed = self
             .system_processes_iter()
-            .filter_map(|process| process.read_speed())
+            .filter_map(Process::read_speed)
             .sum();
 
         let system_read_total = self.read_bytes_from_dead_system_processes
@@ -733,7 +731,7 @@ impl AppsContext {
 
         let system_write_speed = self
             .system_processes_iter()
-            .filter_map(|process| process.write_speed())
+            .filter_map(Process::write_speed)
             .sum();
 
         let system_write_total = self.write_bytes_from_dead_system_processes

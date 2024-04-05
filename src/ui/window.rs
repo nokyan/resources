@@ -350,7 +350,7 @@ impl MainWindow {
                 warn!(
                     "Unable to update drive at {}, reason: {error}",
                     path.display()
-                )
+                );
             }
         }
 
@@ -365,7 +365,7 @@ impl MainWindow {
                 warn!(
                     "Unable to update network interface at {}, reason: {error}",
                     path.display()
-                )
+                );
             }
         }
 
@@ -449,7 +449,7 @@ impl MainWindow {
         if let Ok(mem_data) = mem_data {
             imp.memory.refresh_page(mem_data);
         } else if let Err(error) = mem_data {
-            warn!("Unable to update memory data, reason: {error}")
+            warn!("Unable to update memory data, reason: {error}");
         }
 
         /*

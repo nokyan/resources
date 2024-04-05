@@ -158,7 +158,7 @@ impl Settings {
             f(
                 TemperatureUnit::from_str(settings.string("temperature-unit").as_str())
                     .unwrap_or_default(),
-            )
+            );
         })
     }
 
@@ -172,7 +172,7 @@ impl Settings {
 
     pub fn connect_base<F: Fn(Base) + 'static>(&self, f: F) -> glib::SignalHandlerId {
         self.connect_changed(Some("base"), move |settings, _key| {
-            f(Base::from_str(settings.string("base").as_str()).unwrap_or_default())
+            f(Base::from_str(settings.string("base").as_str()).unwrap_or_default());
         })
     }
 
@@ -189,7 +189,7 @@ impl Settings {
 
     pub fn connect_last_viewed_page<F: Fn(String) + 'static>(&self, f: F) -> glib::SignalHandlerId {
         self.connect_changed(Some("last-viewed-page"), move |settings, _key| {
-            f(settings.string("last-viewed-page").to_string())
+            f(settings.string("last-viewed-page").to_string());
         })
     }
 
@@ -209,7 +209,7 @@ impl Settings {
             f(
                 RefreshSpeed::from_str(settings.string("refresh-speed").as_str())
                     .unwrap_or_default(),
-            )
+            );
         })
     }
 
@@ -232,7 +232,7 @@ impl Settings {
             f(
                 SidebarMeterType::from_str(settings.string("sidebar-meter-type").as_str())
                     .unwrap_or_default(),
-            )
+            );
         })
     }
 

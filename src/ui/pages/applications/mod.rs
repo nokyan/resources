@@ -449,7 +449,7 @@ impl ResApplications {
                 if let Some(sorter) = sorter.downcast_ref::<gtk::ColumnViewSorter>() {
                     let current_column = sorter.primary_sort_column().map(|column| column.as_ptr() as usize).unwrap_or_default();
 
-                    let current_column_number = this.imp().columns.borrow().iter().enumerate().find(|(_, column)| column.as_ptr() as usize == current_column).map(|(i, _)| i as u32).unwrap_or(0); // 0 corresponds to the name column
+                    let current_column_number = this.imp().columns.borrow().iter().enumerate().find(|(_, column)| column.as_ptr() as usize == current_column).map_or(0, |(i, _)| i as u32); // 0 corresponds to the name column
 
                     if SETTINGS.apps_sort_by() != current_column_number {
                         let _ = SETTINGS.set_apps_sort_by(current_column_number);
@@ -480,8 +480,7 @@ impl ResApplications {
             || item.name().to_lowercase().contains(&search_string)
             || item
                 .id()
-                .map(|id| id.to_lowercase().contains(&search_string))
-                .unwrap_or_default()
+                .is_some_and(|id| id.to_lowercase().contains(&search_string))
             || item
                 .description()
                 .unwrap_or_default()
@@ -558,7 +557,7 @@ impl ResApplications {
         store.extend_from_slice(&items);
 
         if let Some(sorter) = imp.column_view.borrow().sorter() {
-            sorter.changed(gtk::SorterChange::Different)
+            sorter.changed(gtk::SorterChange::Different);
         }
 
         // -1 because we don't want to count System Processes
@@ -893,7 +892,7 @@ impl ResApplications {
 
         SETTINGS.connect_apps_show_drive_write_speed(
             clone!(@strong write_speed_col => move |visible| {
-                write_speed_col.set_visible(visible)
+                write_speed_col.set_visible(visible);
             }),
         );
 
