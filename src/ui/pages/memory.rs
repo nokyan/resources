@@ -238,27 +238,17 @@ impl ResMemory {
 
         let form_factor = memory_devices.iter().find(|md| md.installed).map_or_else(
             || i18n("N/A"),
-            |md| {
-                md.form_factor
-                    .as_ref()
-                    .cloned()
-                    .unwrap_or_else(|| i18n("N/A"))
-            },
+            |md| md.form_factor.clone().unwrap_or_else(|| i18n("N/A")),
         );
 
         let r#type = memory_devices.iter().find(|md| md.installed).map_or_else(
             || i18n("N/A"),
-            |md| md.r#type.as_ref().cloned().unwrap_or_else(|| i18n("N/A")),
+            |md| md.r#type.clone().unwrap_or_else(|| i18n("N/A")),
         );
 
         let type_detail = memory_devices.iter().find(|md| md.installed).map_or_else(
             || i18n("N/A"),
-            |md| {
-                md.type_detail
-                    .as_ref()
-                    .cloned()
-                    .unwrap_or_else(|| i18n("N/A"))
-            },
+            |md| md.type_detail.clone().unwrap_or_else(|| i18n("N/A")),
         );
 
         let total_memory = memory_devices
@@ -306,7 +296,7 @@ impl ResMemory {
                     this.setup_properties(memory_devices);
                     imp.properties.set_visible(true);
                 }
-                imp.authentication_banner.set_revealed(false)
+                imp.authentication_banner.set_revealed(false);
             }));
     }
 

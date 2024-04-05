@@ -253,16 +253,14 @@ impl ResNetwork {
         imp.manufacturer.set_subtitle(
             &network_interface
                 .vendor
-                .as_ref()
-                .cloned()
+                .clone()
                 .unwrap_or_else(|| i18n("N/A")),
         );
 
         imp.driver.set_subtitle(
             &network_interface
                 .driver_name
-                .as_ref()
-                .cloned()
+                .clone()
                 .unwrap_or_else(|| i18n("N/A")),
         );
 
@@ -275,8 +273,7 @@ impl ResNetwork {
 
         let hw_address = network_interface
             .hw_address
-            .as_ref()
-            .cloned()
+            .clone()
             .unwrap_or_else(|| i18n("N/A"));
 
         if hw_address.is_empty() {
