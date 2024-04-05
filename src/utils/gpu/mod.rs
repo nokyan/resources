@@ -219,7 +219,7 @@ impl Gpu {
         let mut uevent_contents: HashMap<String, String> = HashMap::new();
         let uevent_raw = std::fs::read_to_string(sysfs_device_path.join("uevent"))?;
 
-        for line in uevent_raw.trim().split('\n') {
+        for line in uevent_raw.lines() {
             let (k, v) = line
                 .split_once('=')
                 .context("unable to correctly read uevent file")?;

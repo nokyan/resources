@@ -93,7 +93,7 @@ mod imp {
     impl ObjectSubclass for ResSettingsDialog {
         const NAME: &'static str = "ResSettingsDialog";
         type Type = super::ResSettingsDialog;
-        type ParentType = adw::PreferencesWindow;
+        type ParentType = adw::PreferencesDialog;
 
         fn class_init(klass: &mut Self::Class) {
             Self::bind_template(klass);
@@ -121,14 +121,14 @@ mod imp {
 
     impl WindowImpl for ResSettingsDialog {}
 
-    impl AdwWindowImpl for ResSettingsDialog {}
+    impl AdwDialogImpl for ResSettingsDialog {}
 
-    impl PreferencesWindowImpl for ResSettingsDialog {}
+    impl PreferencesDialogImpl for ResSettingsDialog {}
 }
 
 glib::wrapper! {
     pub struct ResSettingsDialog(ObjectSubclass<imp::ResSettingsDialog>)
-        @extends adw::PreferencesWindow, gtk::Window, gtk::Widget, adw::Window;
+        @extends adw::PreferencesDialog, gtk::Widget, adw::Dialog;
 }
 
 impl ResSettingsDialog {

@@ -4,7 +4,6 @@ use process_data::Containerization;
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
-use crate::ui::window::MainWindow;
 use crate::utils::app::AppItem;
 use crate::utils::units::{convert_speed, convert_storage};
 
@@ -57,7 +56,7 @@ mod imp {
     impl ObjectSubclass for ResAppDialog {
         const NAME: &'static str = "ResAppDialog";
         type Type = super::ResAppDialog;
-        type ParentType = adw::Window;
+        type ParentType = adw::Dialog;
 
         fn class_init(klass: &mut Self::Class) {
             Self::bind_template(klass);
@@ -83,12 +82,12 @@ mod imp {
 
     impl WidgetImpl for ResAppDialog {}
     impl WindowImpl for ResAppDialog {}
-    impl AdwWindowImpl for ResAppDialog {}
+    impl AdwDialogImpl for ResAppDialog {}
 }
 
 glib::wrapper! {
     pub struct ResAppDialog(ObjectSubclass<imp::ResAppDialog>)
-        @extends gtk::Widget, gtk::Window, adw::Window;
+        @extends gtk::Widget, adw::Dialog;
 }
 
 impl ResAppDialog {
@@ -97,7 +96,6 @@ impl ResAppDialog {
     }
 
     pub fn init(&self, app: &AppItem) {
-        self.set_transient_for(Some(&MainWindow::default()));
         self.setup_widgets(app);
     }
 

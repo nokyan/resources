@@ -118,7 +118,7 @@ mod imp {
 
             let mut highest_value = self.graph.get_highest_value();
             if highest_value < 1.0 {
-                highest_value = 1.0
+                highest_value = 1.0;
             }
 
             self.progress_bar.set_fraction(usage / highest_value);

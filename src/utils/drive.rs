@@ -315,12 +315,12 @@ impl Drive {
 
     pub fn is_virtual(&self) -> bool {
         match self.drive_type {
-            DriveType::LoopDevice => true,
-            DriveType::MappedDevice => true,
-            DriveType::Raid => true,
-            DriveType::RamDisk => true,
-            DriveType::ZfsVolume => true,
-            DriveType::Zram => true,
+            DriveType::LoopDevice
+            | DriveType::MappedDevice
+            | DriveType::Raid
+            | DriveType::RamDisk
+            | DriveType::ZfsVolume
+            | DriveType::Zram => true,
             _ => self.capacity().unwrap_or(0) == 0,
         }
     }

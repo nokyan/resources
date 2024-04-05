@@ -5,13 +5,11 @@ use std::collections::HashSet;
 
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone, closure, Object, Sender};
+use async_std::channel::Sender;
+use gtk::glib::{self, clone, closure, MainContext, Object};
 use gtk::{
     gio, ColumnView, ColumnViewColumn, FilterChange, NumericSorter, SortType, StringSorter, Widget,
 };
-use gtk_macros::send;
-
-use log::error;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
@@ -38,7 +36,7 @@ mod imp {
 
     use gtk::{
         gio::{Icon, ThemedIcon},
-        glib::{ParamSpec, Properties, Sender, Value},
+        glib::{ParamSpec, Properties, Value},
         CompositeTemplate,
     };
 
@@ -453,7 +451,7 @@ impl ResProcesses {
                 if let Some(sorter) = sorter.downcast_ref::<gtk::ColumnViewSorter>() {
                     let current_column = sorter.primary_sort_column().map(|column| column.as_ptr() as usize).unwrap_or_default();
 
-                    let current_column_number = this.imp().columns.borrow().iter().enumerate().find(|(_, column)| column.as_ptr() as usize == current_column).map(|(i, _)| i as u32).unwrap_or(3); // 3 corresponds to the memory column
+                    let current_column_number = this.imp().columns.borrow().iter().enumerate().find(|(_, column)| column.as_ptr() as usize == current_column).map_or(3, |(i, _)| i as u32); // 3 corresponds to the memory column
 
                     if SETTINGS.processes_sort_by() != current_column_number {
                         let _ = SETTINGS.set_processes_sort_by(current_column_number);
@@ -471,7 +469,7 @@ impl ResProcesses {
         let imp = self.imp();
         let process_dialog = ResProcessDialog::new();
         process_dialog.init(process, self.get_user_name_by_uid(process.uid));
-        process_dialog.set_visible(true);
+        process_dialog.present(&MainWindow::default());
         *imp.open_dialog.borrow_mut() = Some((process.pid, process_dialog));
     }
 
@@ -541,7 +539,7 @@ impl ResProcesses {
         store.extend_from_slice(&items);
 
         if let Some(sorter) = imp.column_view.borrow().sorter() {
-            sorter.changed(gtk::SorterChange::Different)
+            sorter.changed(gtk::SorterChange::Different);
         }
 
         self.set_property(
@@ -551,26 +549,20 @@ impl ResProcesses {
     }
 
     pub fn execute_process_action_dialog(&self, process: ProcessItem, action: ProcessAction) {
-        let imp = self.imp();
-
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
-            send!(
-                imp.sender.get().unwrap(),
-                Action::ManipulateProcess(
-                    action,
-                    process.pid,
-                    process.display_name,
-                    imp.toast_overlay.get()
-                )
-            );
+            let main_context = MainContext::default();
+            main_context.spawn_local(clone!(@strong self as this => async move {
+                let imp = this.imp();
+                let _ = imp.sender.get().unwrap().send(
+                    Action::ManipulateProcess(action, process.pid, process.clone().display_name, imp.toast_overlay.get())
+                ).await;
+            }));
             return;
         }
 
         // Confirmation dialog & warning
-        let dialog = adw::MessageDialog::builder()
-            .transient_for(&MainWindow::default())
-            .modal(true)
+        let dialog = adw::AlertDialog::builder()
             .heading(get_action_name(action, &[&process.display_name]))
             .body(get_process_action_warning(action))
             .build();
@@ -585,23 +577,20 @@ impl ResProcesses {
         // Called when "yes" or "no" were clicked
         dialog.connect_response(
             None,
-            clone!(@strong self as this, @strong process => move |_, response| {
+            clone!(@strong self as this => move |_, response| {
                 if response == "yes" {
-                    let imp = this.imp();
-                    send!(
-                        imp.sender.get().unwrap(),
-                        Action::ManipulateProcess(
-                            action,
-                            process.pid,
-                            process.clone().display_name,
-                            imp.toast_overlay.get()
-                        )
-                    );
+                    let main_context = MainContext::default();
+                    main_context.spawn_local(clone!(@strong this, @strong process => async move {
+                        let imp = this.imp();
+                        let _ = imp.sender.get().unwrap().send(
+                            Action::ManipulateProcess(action, process.pid, process.clone().display_name, imp.toast_overlay.get())
+                        ).await;
+                    }));
                 }
             }),
         );
 
-        dialog.set_visible(true);
+        dialog.present(&MainWindow::default());
     }
 
     fn get_user_name_by_uid(&self, uid: u32) -> String {
@@ -888,7 +877,7 @@ impl ResProcesses {
 
         SETTINGS.connect_processes_show_drive_read_speed(
             clone!(@strong read_speed_col => move  |visible| {
-                read_speed_col.set_visible(visible)
+                read_speed_col.set_visible(visible);
             }),
         );
 
@@ -941,7 +930,7 @@ impl ResProcesses {
 
         SETTINGS.connect_processes_show_drive_read_total(
             clone!(@strong read_total_col => move |visible| {
-                read_total_col.set_visible(visible)
+                read_total_col.set_visible(visible);
             }),
         );
 
@@ -994,7 +983,7 @@ impl ResProcesses {
 
         SETTINGS.connect_processes_show_drive_write_speed(
             clone!(@strong write_speed_col => move |visible| {
-                write_speed_col.set_visible(visible)
+                write_speed_col.set_visible(visible);
             }),
         );
 

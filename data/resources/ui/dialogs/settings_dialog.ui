@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template class="ResSettingsDialog" parent="AdwPreferencesWindow">
-    <property name="default-width">550</property>
-    <property name="default-height">570</property>
-    <property name="can-navigate-back">True</property>
+  <template class="ResSettingsDialog" parent="AdwPreferencesDialog">
     <child>
       <object class="AdwPreferencesPage">
         <property name="icon-name">generic-settings-symbolic</property>

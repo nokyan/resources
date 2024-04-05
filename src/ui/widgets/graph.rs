@@ -1,6 +1,6 @@
+use adw::prelude::WidgetExt;
 use gtk::glib::{self};
 use gtk::subclass::prelude::*;
-use gtk::traits::WidgetExt;
 use plotters::style::RGBColor;
 
 use std::f64;
@@ -16,13 +16,14 @@ mod imp {
         error::Error,
     };
 
+    use adw::prelude::SnapshotExt;
+    use adw::prelude::WidgetExt;
     use gtk::{
         glib,
         subclass::{
             prelude::{ObjectImpl, ObjectSubclass, ObjectSubclassExt},
             widget::WidgetImpl,
         },
-        traits::{SnapshotExt, WidgetExt},
     };
     use plotters::{
         prelude::*,

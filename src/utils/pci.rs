@@ -8,9 +8,9 @@ static VENDORS: Lazy<BTreeMap<u16, Vendor>> = Lazy::new(|| {
     let res = parse_pci_ids();
 
     if let Err(error) = res.as_ref() {
-        warn!("Unable to read pci.ids, reason: {error}")
+        warn!("Unable to read pci.ids, reason: {error}");
     } else {
-        debug!("Successfully parsed pci.ids")
+        debug!("Successfully parsed pci.ids");
     }
 
     res.unwrap_or_default()
@@ -98,7 +98,7 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
 
     let mut seen: BTreeMap<u16, Vendor> = BTreeMap::new();
 
-    for line in reader.lines().flatten() {
+    for line in reader.lines().map_while(Result::ok) {
         if line.starts_with('C') {
             // case 1: we've reached the classes, time to stop
             break;

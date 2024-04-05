@@ -324,7 +324,7 @@ impl Process {
     #[must_use]
     pub fn gpu_usage(&self) -> f32 {
         let mut returned_gpu_usage = 0.0;
-        for (gpu, usage) in self.data.gpu_usage_stats.iter() {
+        for (gpu, usage) in &self.data.gpu_usage_stats {
             if let Some(old_usage) = self.gpu_usage_stats_last.get(gpu) {
                 let this_gpu_usage = if usage.nvidia {
                     usage.gfx as f32 / 100.0
@@ -349,7 +349,7 @@ impl Process {
     #[must_use]
     pub fn enc_usage(&self) -> f32 {
         let mut returned_gpu_usage = 0.0;
-        for (gpu, usage) in self.data.gpu_usage_stats.iter() {
+        for (gpu, usage) in &self.data.gpu_usage_stats {
             if let Some(old_usage) = self.gpu_usage_stats_last.get(gpu) {
                 let this_gpu_usage = if usage.nvidia {
                     usage.enc as f32 / 100.0
@@ -374,7 +374,7 @@ impl Process {
     #[must_use]
     pub fn dec_usage(&self) -> f32 {
         let mut returned_gpu_usage = 0.0;
-        for (gpu, usage) in self.data.gpu_usage_stats.iter() {
+        for (gpu, usage) in &self.data.gpu_usage_stats {
             if let Some(old_usage) = self.gpu_usage_stats_last.get(gpu) {
                 let this_gpu_usage = if usage.nvidia {
                     usage.dec as f32 / 100.0

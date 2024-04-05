@@ -48,9 +48,9 @@ static IS_FLATPAK: Lazy<bool> = Lazy::new(|| {
     let is_flatpak = std::path::Path::new("/.flatpak-info").exists();
 
     if is_flatpak {
-        debug!("Running as Flatpak")
+        debug!("Running as Flatpak");
     } else {
-        debug!("Not running as Flatpak")
+        debug!("Not running as Flatpak");
     }
 
     is_flatpak

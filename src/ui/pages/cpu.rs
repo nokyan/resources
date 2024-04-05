@@ -364,7 +364,7 @@ impl ResCPU {
                         &convert_frequency(frequency as f64)
                     ));
                 } else {
-                    curr_threadbox.set_title_label(&i18n_f("CPU {}", &[&(i + 1).to_string()]))
+                    curr_threadbox.set_title_label(&i18n_f("CPU {}", &[&(i + 1).to_string()]));
                 }
                 *old_thread_usage = new_thread_usage;
             }

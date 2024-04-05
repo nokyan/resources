@@ -50,10 +50,8 @@ mod imp {
 
     use super::*;
 
-    use gtk::{
-        glib::{Receiver, Sender},
-        CompositeTemplate,
-    };
+    use async_std::channel::{unbounded, Receiver, Sender};
+    use gtk::CompositeTemplate;
     use process_data::pci_slot::PciSlot;
 
     #[derive(Debug, CompositeTemplate)]
@@ -98,7 +96,7 @@ mod imp {
 
     impl Default for MainWindow {
         fn default() -> Self {
-            let (sender, r) = glib::MainContext::channel(glib::Priority::default());
+            let (sender, r) = unbounded();
             let receiver = RefCell::new(Some(r));
 
             Self {
@@ -197,13 +195,16 @@ impl MainWindow {
             .property("application", app)
             .build();
 
-        let imp = window.imp();
-
-        imp.receiver.borrow_mut().take().unwrap().attach(
-            None,
-            clone!(@strong window => move |action| window.process_action(action)),
-        );
-
+        if let Some(receiver) = &*window.imp().receiver.borrow() {
+            let main_context = MainContext::default();
+            main_context.spawn_local(
+                clone!(@strong receiver as receiver, @weak window as window => async move {
+                    while let Ok(action) = receiver.recv().await {
+                        window.process_action(action);
+                    }
+                }),
+            );
+        }
         window.setup_widgets();
         window
     }
@@ -349,7 +350,7 @@ impl MainWindow {
                 warn!(
                     "Unable to update drive at {}, reason: {error}",
                     path.display()
-                )
+                );
             }
         }
 
@@ -364,7 +365,7 @@ impl MainWindow {
                 warn!(
                     "Unable to update network interface at {}, reason: {error}",
                     path.display()
-                )
+                );
             }
         }
 
@@ -448,7 +449,7 @@ impl MainWindow {
         if let Ok(mem_data) = mem_data {
             imp.memory.refresh_page(mem_data);
         } else if let Err(error) = mem_data {
-            warn!("Unable to update memory data, reason: {error}")
+            warn!("Unable to update memory data, reason: {error}");
         }
 
         /*
@@ -696,51 +697,45 @@ impl MainWindow {
         }
     }
 
-    fn process_action(&self, action: Action) -> glib::ControlFlow {
-        let main_context = MainContext::default();
-        main_context.spawn_local(clone!(@strong self as this => async move {
-            let imp = this.imp();
-            let apps_context = imp.apps_context.borrow();
-            match action {
-                Action::ManipulateProcess(action, pid, display_name, toast_overlay) => {
-                    if let Some(process) = apps_context.get_process(pid) {
-                        let toast_message = match process.execute_process_action(action) {
-                            Ok(()) => get_action_success(action, &[&display_name]),
-                            Err(e) => {
-                                error!("Unable to kill process {pid}: {e}");
-                                get_process_action_failure(action, &[&display_name])
-                            }
-                        };
-                        toast_overlay.add_toast(Toast::new(&toast_message));
-                    }
-                }
-
-                Action::ManipulateApp(action, id, toast_overlay) => {
-                    let app = apps_context.get_app(&id).unwrap();
-                    let res = app.execute_process_action(&apps_context, action);
-
-                    for r in &res {
-                        if let Err(e) = r {
-                            error!("Unable to kill a process of app {id}: {e}");
+    fn process_action(&self, action: Action) {
+        let apps_context = self.imp().apps_context.borrow();
+        match action {
+            Action::ManipulateProcess(action, pid, display_name, toast_overlay) => {
+                if let Some(process) = apps_context.get_process(pid) {
+                    let toast_message = match process.execute_process_action(action) {
+                        Ok(()) => get_action_success(action, &[&display_name]),
+                        Err(e) => {
+                            error!("Unable to kill process {pid}: {e}");
+                            get_process_action_failure(action, &[&display_name])
                         }
-                    }
-
-                    let processes_tried = res.len();
-                    let processes_successful = res.iter().flatten().count();
-                    let processes_unsuccessful = processes_tried - processes_successful;
-
-                    let toast_message = if processes_unsuccessful > 0 {
-                        get_app_action_failure(action, processes_unsuccessful as u32)
-                    } else {
-                        get_action_success(action, &[&app.display_name])
                     };
-
                     toast_overlay.add_toast(Toast::new(&toast_message));
                 }
-            };
-        }));
+            }
 
-        glib::ControlFlow::Continue
+            Action::ManipulateApp(action, id, toast_overlay) => {
+                let app = apps_context.get_app(&id).unwrap();
+                let res = app.execute_process_action(&apps_context, action);
+
+                for r in &res {
+                    if let Err(e) = r {
+                        error!("Unable to kill a process of app {id}: {e}");
+                    }
+                }
+
+                let processes_tried = res.len();
+                let processes_successful = res.iter().flatten().count();
+                let processes_unsuccessful = processes_tried - processes_successful;
+
+                let toast_message = if processes_unsuccessful > 0 {
+                    get_app_action_failure(action, processes_unsuccessful as u32)
+                } else {
+                    get_action_success(action, &[&app.display_name])
+                };
+
+                toast_overlay.add_toast(Toast::new(&toast_message));
+            }
+        };
     }
 
     fn save_window_size(&self) -> Result<(), glib::BoolError> {

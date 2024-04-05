@@ -5,7 +5,6 @@ use process_data::Containerization;
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
-use crate::ui::window::MainWindow;
 use crate::utils::boot_time;
 use crate::utils::process::ProcessItem;
 use crate::utils::units::{convert_speed, convert_storage};
@@ -59,7 +58,7 @@ mod imp {
     impl ObjectSubclass for ResProcessDialog {
         const NAME: &'static str = "ResProcessDialog";
         type Type = super::ResProcessDialog;
-        type ParentType = adw::Window;
+        type ParentType = adw::Dialog;
 
         fn class_init(klass: &mut Self::Class) {
             Self::bind_template(klass);
@@ -85,12 +84,12 @@ mod imp {
 
     impl WidgetImpl for ResProcessDialog {}
     impl WindowImpl for ResProcessDialog {}
-    impl AdwWindowImpl for ResProcessDialog {}
+    impl AdwDialogImpl for ResProcessDialog {}
 }
 
 glib::wrapper! {
     pub struct ResProcessDialog(ObjectSubclass<imp::ResProcessDialog>)
-        @extends gtk::Widget, gtk::Window, adw::Window;
+        @extends gtk::Widget, adw::Dialog;
 }
 
 impl ResProcessDialog {
@@ -99,7 +98,6 @@ impl ResProcessDialog {
     }
 
     pub fn init<S: AsRef<str>>(&self, process: &ProcessItem, user: S) {
-        self.set_transient_for(Some(&MainWindow::default()));
         self.setup_widgets(process, user.as_ref());
     }
 

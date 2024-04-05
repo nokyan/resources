@@ -262,8 +262,7 @@ fn parse_virtual_dmi<S: AsRef<str>>(dmi: S) -> Vec<MemoryDevice> {
             .and_then(|regex| regex.captures(dmi))
             .and_then(|captures| captures.get(1))
             .and_then(|capture| capture.as_str().parse::<usize>().ok())
-            .map(|int| int != 0)
-            .unwrap_or(true);
+            .map_or(true, |int| int != 0);
 
         devices.push(MemoryDevice {
             speed_mts: speed,
@@ -272,7 +271,7 @@ fn parse_virtual_dmi<S: AsRef<str>>(dmi: S) -> Vec<MemoryDevice> {
             type_detail,
             size,
             installed,
-        })
+        });
     }
 
     devices
@@ -280,10 +279,7 @@ fn parse_virtual_dmi<S: AsRef<str>>(dmi: S) -> Vec<MemoryDevice> {
 
 pub fn get_memory_devices() -> Result<Vec<MemoryDevice>> {
     let virtual_dmi = virtual_dmi();
-    if !virtual_dmi.is_empty() {
-        debug!("Memory information obtained using udevadm");
-        Ok(virtual_dmi)
-    } else {
+    if virtual_dmi.is_empty() {
         let output = Command::new("dmidecode")
             .args(["-t", "17", "-q"])
             .output()?;
@@ -293,6 +289,9 @@ pub fn get_memory_devices() -> Result<Vec<MemoryDevice>> {
         }
         debug!("Memory information obtained using dmidecode (unprivileged)");
         Ok(parse_dmidecode(String::from_utf8(output.stdout)?))
+    } else {
+        debug!("Memory information obtained using udevadm");
+        Ok(virtual_dmi)
     }
 }
 

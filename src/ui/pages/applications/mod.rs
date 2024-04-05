@@ -5,13 +5,11 @@ use std::collections::HashSet;
 
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone, closure, Object, Sender};
+use async_std::channel::Sender;
+use gtk::glib::{self, clone, closure, MainContext, Object};
 use gtk::{
     gio, ColumnView, ColumnViewColumn, FilterChange, NumericSorter, SortType, StringSorter, Widget,
 };
-use gtk_macros::send;
-
-use log::error;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
@@ -37,7 +35,7 @@ mod imp {
 
     use gtk::{
         gio::{Icon, ThemedIcon},
-        glib::{ParamSpec, Properties, Sender, Value},
+        glib::{ParamSpec, Properties, Value},
         ColumnViewColumn, CompositeTemplate,
     };
 
@@ -371,7 +369,7 @@ impl ResApplications {
         column_view.sort_by_column(
             columns
                 .get(SETTINGS.apps_sort_by() as usize)
-                .or_else(|| columns.get(0)),
+                .or_else(|| columns.first()),
             SETTINGS.apps_sort_by_ascending(),
         );
 
@@ -451,7 +449,7 @@ impl ResApplications {
                 if let Some(sorter) = sorter.downcast_ref::<gtk::ColumnViewSorter>() {
                     let current_column = sorter.primary_sort_column().map(|column| column.as_ptr() as usize).unwrap_or_default();
 
-                    let current_column_number = this.imp().columns.borrow().iter().enumerate().find(|(_, column)| column.as_ptr() as usize == current_column).map(|(i, _)| i as u32).unwrap_or(0); // 0 corresponds to the name column
+                    let current_column_number = this.imp().columns.borrow().iter().enumerate().find(|(_, column)| column.as_ptr() as usize == current_column).map_or(0, |(i, _)| i as u32); // 0 corresponds to the name column
 
                     if SETTINGS.apps_sort_by() != current_column_number {
                         let _ = SETTINGS.set_apps_sort_by(current_column_number);
@@ -469,7 +467,7 @@ impl ResApplications {
         let imp = self.imp();
         let app_dialog = ResAppDialog::new();
         app_dialog.init(app_item);
-        app_dialog.set_visible(true);
+        app_dialog.present(&MainWindow::default());
         *imp.open_dialog.borrow_mut() =
             Some((app_item.id.as_ref().map(|gs| gs.to_string()), app_dialog));
     }
@@ -482,8 +480,7 @@ impl ResApplications {
             || item.name().to_lowercase().contains(&search_string)
             || item
                 .id()
-                .map(|id| id.to_lowercase().contains(&search_string))
-                .unwrap_or_default()
+                .is_some_and(|id| id.to_lowercase().contains(&search_string))
             || item
                 .description()
                 .unwrap_or_default()
@@ -560,7 +557,7 @@ impl ResApplications {
         store.extend_from_slice(&items);
 
         if let Some(sorter) = imp.column_view.borrow().sorter() {
-            sorter.changed(gtk::SorterChange::Different)
+            sorter.changed(gtk::SorterChange::Different);
         }
 
         // -1 because we don't want to count System Processes
@@ -574,21 +571,20 @@ impl ResApplications {
     }
 
     pub fn execute_process_action_dialog(&self, app: AppItem, action: ProcessAction) {
-        let imp = self.imp();
-
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
-            send!(
-                imp.sender.get().unwrap(),
-                Action::ManipulateApp(action, app.id.unwrap(), self.imp().toast_overlay.get())
-            );
+            let main_context = MainContext::default();
+            main_context.spawn_local(clone!(@strong self as this => async move {
+                let imp = this.imp();
+                let _ = imp.sender.get().unwrap().send(
+                    Action::ManipulateApp(action, app.id.unwrap(), imp.toast_overlay.get())
+                ).await;
+            }));
             return;
         }
 
         // Confirmation dialog & warning
-        let dialog = adw::MessageDialog::builder()
-            .transient_for(&MainWindow::default())
-            .modal(true)
+        let dialog = adw::AlertDialog::builder()
             .heading(get_action_name(action, &[&app.display_name]))
             .body(get_app_action_warning(action))
             .build();
@@ -603,18 +599,20 @@ impl ResApplications {
         // Called when "yes" or "no" were clicked
         dialog.connect_response(
             None,
-            clone!(@strong self as this, @strong app => move |_, response| {
+            clone!(@strong self as this => move |_, response| {
                 if response == "yes" {
-                    let imp = this.imp();
-                    send!(
-                        imp.sender.get().unwrap(),
-                        Action::ManipulateApp(action, app.id.clone().unwrap(), imp.toast_overlay.get())
-                    );
+                    let main_context = MainContext::default();
+                    main_context.spawn_local(clone!(@strong this, @strong app => async move {
+                        let imp = this.imp();
+                        let _ = imp.sender.get().unwrap().send(
+                            Action::ManipulateApp(action, app.id.clone().unwrap(), imp.toast_overlay.get())
+                        ).await;
+                    }));
                 }
             }),
         );
 
-        dialog.set_visible(true);
+        dialog.present(&MainWindow::default());
     }
 
     fn add_name_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
@@ -894,7 +892,7 @@ impl ResApplications {
 
         SETTINGS.connect_apps_show_drive_write_speed(
             clone!(@strong write_speed_col => move |visible| {
-                write_speed_col.set_visible(visible)
+                write_speed_col.set_visible(visible);
             }),
         );
 

@@ -94,14 +94,11 @@ impl GpuImpl for AmdGpu {
         let revision =
             u8::from_str_radix(&self.read_device_file("revision")?.replace("0x", ""), 16)?;
         Ok(AMDGPU_IDS
-            .get(&(
-                self.device().map(|device| device.pid()).unwrap_or(0),
-                revision,
-            ))
+            .get(&(self.device().map_or(0, |device| device.pid()), revision))
             .cloned()
             .unwrap_or_else(|| {
                 if let Ok(drm_name) = self.drm_name() {
-                    format!("AMD Radeon Graphics ({})", drm_name)
+                    format!("AMD Radeon Graphics ({drm_name})")
                 } else {
                     "AMD Radeon Graphics".into()
                 }
