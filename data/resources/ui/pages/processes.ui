@@ -32,8 +32,8 @@
         </property>
         <child type="bottom">
           <object class="GtkBox">
-          <property name="orientation">vertical</property>
-          <child>
+            <property name="orientation">vertical</property>
+            <child>
               <object class="GtkRevealer" id="search_revealer">
                 <property name="transition_type">slide-up</property>
                 <child>
@@ -45,7 +45,11 @@
                     <property name="tightening-threshold">300</property>
                     <property name="maximum-size">400</property>
                     <child>
-                      <object class="GtkSearchEntry" id="search_entry"/>
+                      <object class="GtkSearchEntry" id="search_entry">
+                        <accessibility>
+                          <property name="label">Search processes</property>
+                        </accessibility>
+                      </object>
                     </child>
                   </object>
                 </child>
@@ -61,6 +65,9 @@
                 <child>
                   <object class="GtkToggleButton" id="search_button">
                     <property name="icon-name">search-symbolic</property>
+                    <accessibility>
+                      <property name="label">Toggle search field</property>
+                    </accessibility>
                     <style>
                       <class name="circular"/>
                     </style>
@@ -75,6 +82,9 @@
                       <object class="GtkButton" id="information_button">
                         <property name="icon-name">info-symbolic</property>
                         <property name="sensitive">false</property>
+                        <accessibility>
+                          <property name="label">Show process information</property>
+                        </accessibility>
                         <style>
                           <class name="circular"/>
                         </style>

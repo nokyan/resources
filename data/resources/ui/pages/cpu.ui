@@ -26,6 +26,9 @@
                         <property name="title" translatable="yes">Show Usages of Logical CPUs</property>
                         <child type="suffix">
                           <object class="GtkSwitch" id="logical_switch">
+                            <accessibility>
+                              <property name="label">Logical CPU switch</property>
+                            </accessibility>
                             <property name="valign">3</property>
                             <property name="sensitive">false</property>
                           </object>
@@ -62,6 +65,9 @@
                         </child>
                         <child>
                           <object class="GtkFlowBox" id="thread_box">
+                            <accessibility>
+                              <property name="label">CPU usage by logical processors</property>
+                            </accessibility>
                             <property name="row_spacing">6</property>
                             <property name="column_spacing">6</property>
                             <property name="homogeneous">true</property>
