@@ -613,6 +613,7 @@ impl AppsContext {
             };
             ProcessItem {
                 pid: process.data.pid,
+                user: process.data.user.clone(),
                 display_name: full_comm.clone(),
                 icon: process.icon.clone(),
                 memory_usage: process.data.memory_usage,
@@ -622,7 +623,6 @@ impl AppsContext {
                 containerization: process.data.containerization,
                 starttime: process.starttime(),
                 cgroup: process.data.cgroup.clone(),
-                uid: process.data.uid,
                 read_speed: process.read_speed(),
                 read_total: process.data.read_bytes,
                 write_speed: process.write_speed(),

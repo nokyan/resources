@@ -26,7 +26,6 @@ use self::process_name_cell::ResProcessNameCell;
 mod imp {
     use std::{
         cell::{Cell, RefCell},
-        collections::HashMap,
         sync::OnceLock,
     };
 
@@ -65,8 +64,6 @@ mod imp {
         pub sort_model: RefCell<gtk::SortListModel>,
         pub column_view: RefCell<gtk::ColumnView>,
         pub open_dialog: RefCell<Option<(i32, ResProcessDialog)>>,
-
-        pub username_cache: RefCell<HashMap<u32, String>>,
 
         pub sender: OnceLock<Sender<Action>>,
 
@@ -151,7 +148,6 @@ mod imp {
                 sort_model: Default::default(),
                 column_view: Default::default(),
                 open_dialog: Default::default(),
-                username_cache: Default::default(),
                 sender: Default::default(),
                 uses_progress_bar: Cell::new(false),
                 icon: RefCell::new(ThemedIcon::new("generic-process-symbolic").into()),
@@ -468,7 +464,7 @@ impl ResProcesses {
     pub fn open_information_dialog(&self, process: &ProcessItem) {
         let imp = self.imp();
         let process_dialog = ResProcessDialog::new();
-        process_dialog.init(process, self.get_user_name_by_uid(process.uid));
+        process_dialog.init(process, &process.user);
         process_dialog.present(&MainWindow::default());
         *imp.open_dialog.borrow_mut() = Some((process.pid, process_dialog));
     }
@@ -531,10 +527,7 @@ impl ResProcesses {
         // add the newly started process to the store
         let items: Vec<ProcessEntry> = new_items
             .drain()
-            .map(|(_, new_item)| {
-                let user_name = self.get_user_name_by_uid(new_item.uid);
-                ProcessEntry::new(new_item, &user_name)
-            })
+            .map(|(_, new_item)| ProcessEntry::new(new_item))
             .collect();
         store.extend_from_slice(&items);
 
@@ -591,27 +584,6 @@ impl ResProcesses {
         );
 
         dialog.present(&MainWindow::default());
-    }
-
-    fn get_user_name_by_uid(&self, uid: u32) -> String {
-        let imp = self.imp();
-
-        // we do this to avoid mut-borrows when possible
-        let cached = {
-            let borrow = imp.username_cache.borrow();
-            borrow.get(&uid).cloned()
-        };
-
-        if let Some(cached) = cached {
-            cached
-        } else {
-            let name = uzers::get_user_by_uid(uid).map_or_else(
-                || i18n("root"),
-                |user| user.name().to_string_lossy().to_string(),
-            );
-            imp.username_cache.borrow_mut().insert(uid, name.clone());
-            name
-        }
     }
 
     fn add_name_column(&self, column_view: &ColumnView) -> ColumnViewColumn {

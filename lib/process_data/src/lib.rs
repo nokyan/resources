@@ -18,6 +18,12 @@ use std::str::FromStr;
 use std::sync::RwLock;
 use std::{path::PathBuf, time::SystemTime};
 
+static USERS_CACHE: Lazy<HashMap<u32, String>> = Lazy::new(|| unsafe {
+    uzers::all_users()
+        .map(|user| (user.uid(), user.name().to_string_lossy().to_string()))
+        .collect()
+});
+
 static PAGESIZE: Lazy<usize> = Lazy::new(sysconf::pagesize);
 
 static RE_UID: Lazy<Regex> = Lazy::new(|| Regex::new(r"Uid:\s*(\d+)").unwrap());
@@ -122,7 +128,7 @@ pub struct GpuUsageStats {
 #[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ProcessData {
     pub pid: i32,
-    pub uid: u32,
+    pub user: String,
     proc_path: PathBuf,
     pub comm: String,
     pub commandline: String,
@@ -229,7 +235,10 @@ impl ProcessData {
             .context("can't turn OsStr to str")?
             .parse()?;
 
-        let uid = Self::get_uid(&proc_path)?;
+        let user = USERS_CACHE
+            .get(&Self::get_uid(&proc_path)?)
+            .cloned()
+            .unwrap_or(String::from("root"));
 
         let stat = stat
             .split(')') // since we don't care about the pid or the executable name, split after the executable name to make our life easier
@@ -282,7 +291,7 @@ impl ProcessData {
 
         Ok(Self {
             pid,
-            uid,
+            user,
             comm,
             commandline,
             cpu_time,
