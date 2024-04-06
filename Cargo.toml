@@ -26,7 +26,6 @@ sysconf = "0.3.4"
 nvml-wrapper = "0.10.0"
 unescape = "0.1.0"
 nix = { version = "0.28", features = ["signal"] }
-uzers = "0.11.3"
 plotters = { version = "0.3.5", default_features = false, features = [
     "area_series",
 ] }
