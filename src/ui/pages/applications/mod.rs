@@ -5,7 +5,7 @@ use std::collections::HashSet;
 
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
-use async_std::channel::Sender;
+use async_channel::Sender;
 use gtk::glib::{self, clone, closure, MainContext, Object};
 use gtk::{
     gio, ColumnView, ColumnViewColumn, FilterChange, NumericSorter, SortType, StringSorter, Widget,

@@ -50,7 +50,7 @@ mod imp {
 
     use super::*;
 
-    use async_std::channel::{unbounded, Receiver, Sender};
+    use async_channel::{unbounded, Receiver, Sender};
     use gtk::CompositeTemplate;
     use process_data::pci_slot::PciSlot;
 
