@@ -42,4 +42,4 @@ hashbrown = "0.14.3"
 expanduser = "1.2.2"
 paste = "1.0.14"
 num_cpus = "1.16.0"
-async-std = { version = "1.12.0", features = ["async-channel"] }
+async-channel = "2.2.0"
