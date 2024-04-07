@@ -141,6 +141,18 @@
       <default>false</default>
       <summary>Display GPU memory usage in Processes view</summary>
     </key>
+    <key name="processes-show-total-cpu-time" type="b">
+      <default>false</default>
+      <summary>Display total CPU time in Processes view</summary>
+    </key>
+    <key name="processes-show-user-cpu-time" type="b">
+      <default>false</default>
+      <summary>Display user CPU time in Processes view</summary>
+    </key>
+    <key name="processes-show-system-cpu-time" type="b">
+      <default>false</default>
+      <summary>Display system CPU time in Processes view</summary>
+    </key>
     <key name="show-logical-cpus" type="b">
       <default>false</default>
       <summary>Display logical CPU graphs in Processor view</summary>

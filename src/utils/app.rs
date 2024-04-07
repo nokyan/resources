@@ -16,7 +16,7 @@ use crate::i18n::i18n;
 use super::{
     boot_time,
     process::{Process, ProcessAction, ProcessItem},
-    NaNDefault,
+    NaNDefault, TICK_RATE,
 };
 
 // This contains executable names that are blacklisted from being recognized as applications
@@ -617,6 +617,8 @@ impl AppsContext {
                 icon: process.icon.clone(),
                 memory_usage: process.data.memory_usage,
                 cpu_time_ratio: process.cpu_time_ratio(),
+                user_cpu_time: ((process.data.user_cpu_time) as f64 / (*TICK_RATE) as f64),
+                system_cpu_time: ((process.data.system_cpu_time) as f64 / (*TICK_RATE) as f64),
                 commandline: Process::sanitize_cmdline(process.data.commandline.clone())
                     .unwrap_or(full_comm),
                 containerization: process.data.containerization,
@@ -796,7 +798,10 @@ impl AppsContext {
             updated_processes.insert(process_data.pid);
             // refresh our old processes
             if let Some(old_process) = self.processes.get_mut(&process_data.pid) {
-                old_process.cpu_time_last = old_process.data.cpu_time;
+                old_process.cpu_time_last = old_process
+                    .data
+                    .user_cpu_time
+                    .saturating_add(old_process.data.system_cpu_time);
                 old_process.timestamp_last = old_process.data.timestamp;
                 old_process.read_bytes_last = old_process.data.read_bytes;
                 old_process.write_bytes_last = old_process.data.write_bytes;

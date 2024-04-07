@@ -18,7 +18,7 @@ use crate::ui::window::{Action, MainWindow};
 use crate::utils::app::AppsContext;
 use crate::utils::process::{ProcessAction, ProcessItem};
 use crate::utils::settings::SETTINGS;
-use crate::utils::units::{convert_speed, convert_storage};
+use crate::utils::units::{convert_speed, convert_storage, format_time};
 
 use self::process_entry::ProcessEntry;
 use self::process_name_cell::ResProcessNameCell;
@@ -358,6 +358,9 @@ impl ResProcesses {
         columns.push(self.add_gpu_mem_column(&column_view));
         columns.push(self.add_encoder_column(&column_view));
         columns.push(self.add_decoder_column(&column_view));
+        columns.push(self.add_total_cpu_time_column(&column_view));
+        columns.push(self.add_user_cpu_time_column(&column_view));
+        columns.push(self.add_system_cpu_time_column(&column_view));
 
         let store = gio::ListStore::new::<ProcessEntry>();
 
@@ -876,7 +879,7 @@ impl ResProcesses {
         column_view.append_column(&read_speed_col);
 
         SETTINGS.connect_processes_show_drive_read_speed(
-            clone!(@strong read_speed_col => move  |visible| {
+            clone!(@strong read_speed_col => move |visible| {
                 read_speed_col.set_visible(visible);
             }),
         );
@@ -1035,7 +1038,7 @@ impl ResProcesses {
         column_view.append_column(&write_total_col);
 
         SETTINGS.connect_processes_show_drive_write_total(
-            clone!(@strong write_total_col => move  |visible| {
+            clone!(@strong write_total_col => move |visible| {
                 write_total_col.set_visible(visible)
             }),
         );
@@ -1081,7 +1084,7 @@ impl ResProcesses {
         column_view.append_column(&gpu_col);
 
         SETTINGS.connect_processes_show_gpu(
-            clone!(@strong gpu_col => move  |visible| gpu_col.set_visible(visible)),
+            clone!(@strong gpu_col => move |visible| gpu_col.set_visible(visible)),
         );
 
         gpu_col
@@ -1128,7 +1131,7 @@ impl ResProcesses {
         column_view.append_column(&encoder_col);
 
         SETTINGS.connect_processes_show_encoder(
-            clone!(@strong encoder_col => move  |visible| encoder_col.set_visible(visible)),
+            clone!(@strong encoder_col => move |visible| encoder_col.set_visible(visible)),
         );
 
         encoder_col
@@ -1175,7 +1178,7 @@ impl ResProcesses {
         column_view.append_column(&decoder_col);
 
         SETTINGS.connect_processes_show_decoder(
-            clone!(@strong decoder_col => move  |visible| decoder_col.set_visible(visible)),
+            clone!(@strong decoder_col => move |visible| decoder_col.set_visible(visible)),
         );
 
         decoder_col
@@ -1221,10 +1224,148 @@ impl ResProcesses {
         column_view.append_column(&gpu_mem_col);
 
         SETTINGS.connect_processes_show_gpu_memory(
-            clone!(@strong gpu_mem_col => move  |visible| gpu_mem_col.set_visible(visible)),
+            clone!(@strong gpu_mem_col => move |visible| gpu_mem_col.set_visible(visible)),
         );
 
         gpu_mem_col
+    }
+
+    fn add_total_cpu_time_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+        let total_cpu_time_col_factory = gtk::SignalListItemFactory::new();
+
+        let total_cpu_time_col = gtk::ColumnViewColumn::new(
+            Some(&i18n("Total CPU Time")),
+            Some(total_cpu_time_col_factory.clone()),
+        );
+
+        total_cpu_time_col.set_resizable(true);
+
+        total_cpu_time_col_factory.connect_setup(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+            let row = gtk::Inscription::new(None);
+            row.set_min_chars(9);
+
+            item.set_child(Some(&row));
+            item.property_expression("item")
+                .chain_property::<ProcessEntry>("total_cpu_time")
+                .chain_closure::<String>(closure!(|_: Option<Object>, total_cpu_time: f64| {
+                    format_time(total_cpu_time)
+                }))
+                .bind(&row, "text", Widget::NONE);
+        });
+
+        let total_cpu_time_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "total_cpu_time",
+            ))
+            .build();
+
+        total_cpu_time_col.set_sorter(Some(&total_cpu_time_col_sorter));
+        total_cpu_time_col.set_visible(SETTINGS.processes_show_total_cpu_time());
+
+        column_view.append_column(&total_cpu_time_col);
+
+        SETTINGS.connect_processes_show_total_cpu_time(
+            clone!(@strong total_cpu_time_col => move |visible| total_cpu_time_col.set_visible(visible)),
+        );
+
+        total_cpu_time_col
+    }
+
+    fn add_user_cpu_time_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+        let user_cpu_time_col_factory = gtk::SignalListItemFactory::new();
+
+        let user_cpu_time_col = gtk::ColumnViewColumn::new(
+            Some(&i18n("User CPU Time")),
+            Some(user_cpu_time_col_factory.clone()),
+        );
+
+        user_cpu_time_col.set_resizable(true);
+
+        user_cpu_time_col_factory.connect_setup(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+            let row = gtk::Inscription::new(None);
+            row.set_min_chars(9);
+
+            item.set_child(Some(&row));
+            item.property_expression("item")
+                .chain_property::<ProcessEntry>("user_cpu_time")
+                .chain_closure::<String>(closure!(|_: Option<Object>, user_cpu_time: f64| {
+                    format_time(user_cpu_time)
+                }))
+                .bind(&row, "text", Widget::NONE);
+        });
+
+        let user_cpu_time_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "user_cpu_time",
+            ))
+            .build();
+
+        user_cpu_time_col.set_sorter(Some(&user_cpu_time_col_sorter));
+        user_cpu_time_col.set_visible(SETTINGS.processes_show_user_cpu_time());
+
+        column_view.append_column(&user_cpu_time_col);
+
+        SETTINGS.connect_processes_show_user_cpu_time(
+            clone!(@strong user_cpu_time_col => move |visible| user_cpu_time_col.set_visible(visible)),
+        );
+
+        user_cpu_time_col
+    }
+
+    fn add_system_cpu_time_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+        let system_cpu_time_col_factory = gtk::SignalListItemFactory::new();
+
+        let system_cpu_time_col = gtk::ColumnViewColumn::new(
+            Some(&i18n("System CPU Time")),
+            Some(system_cpu_time_col_factory.clone()),
+        );
+
+        system_cpu_time_col.set_resizable(true);
+
+        system_cpu_time_col_factory.connect_setup(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+            let row = gtk::Inscription::new(None);
+            row.set_min_chars(9);
+
+            item.set_child(Some(&row));
+            item.property_expression("item")
+                .chain_property::<ProcessEntry>("system_cpu_time")
+                .chain_closure::<String>(closure!(|_: Option<Object>, system_cpu_time: f64| {
+                    format_time(system_cpu_time)
+                }))
+                .bind(&row, "text", Widget::NONE);
+        });
+
+        let system_cpu_time_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "system_cpu_time",
+            ))
+            .build();
+
+        system_cpu_time_col.set_sorter(Some(&system_cpu_time_col_sorter));
+        system_cpu_time_col.set_visible(SETTINGS.processes_show_system_cpu_time());
+
+        column_view.append_column(&system_cpu_time_col);
+
+        SETTINGS.connect_processes_show_system_cpu_time(
+            clone!(@strong system_cpu_time_col => move |visible| system_cpu_time_col.set_visible(visible)),
+        );
+
+        system_cpu_time_col
     }
 }
 

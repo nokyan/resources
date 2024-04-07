@@ -7,7 +7,7 @@ use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::utils::boot_time;
 use crate::utils::process::ProcessItem;
-use crate::utils::units::{convert_speed, convert_storage};
+use crate::utils::units::{convert_speed, convert_storage, format_time};
 
 mod imp {
 
@@ -40,6 +40,12 @@ mod imp {
         pub encoder_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub decoder_usage: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub total_cpu_time: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub user_cpu_time: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub system_cpu_time: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub pid: TemplateChild<adw::ActionRow>,
         #[template_child]
@@ -159,6 +165,16 @@ impl ResProcessDialog {
 
         imp.decoder_usage
             .set_subtitle(&format!("{:.1} %", process.dec_usage * 100.0));
+
+        imp.total_cpu_time.set_subtitle(&format_time(
+            process.user_cpu_time + process.system_cpu_time,
+        ));
+
+        imp.user_cpu_time
+            .set_subtitle(&format_time(process.user_cpu_time));
+
+        imp.system_cpu_time
+            .set_subtitle(&format_time(process.system_cpu_time));
 
         imp.pid.set_subtitle(&process.pid.to_string());
 

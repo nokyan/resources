@@ -65,6 +65,15 @@ mod imp {
         #[property(get, set)]
         gpu_mem_usage: Cell<u64>,
 
+        #[property(get, set)]
+        total_cpu_time: Cell<f64>,
+
+        #[property(get, set)]
+        user_cpu_time: Cell<f64>,
+
+        #[property(get, set)]
+        system_cpu_time: Cell<f64>,
+
         pub process_item: RefCell<Option<ProcessItem>>,
     }
 
@@ -87,6 +96,9 @@ mod imp {
                 enc_usage: Cell::new(0.0),
                 dec_usage: Cell::new(0.0),
                 gpu_mem_usage: Cell::new(0),
+                total_cpu_time: Cell::new(0.0),
+                user_cpu_time: Cell::new(0.0),
+                system_cpu_time: Cell::new(0.0),
             }
         }
     }
@@ -198,6 +210,9 @@ impl ProcessEntry {
         self.set_enc_usage(process_item.enc_usage);
         self.set_dec_usage(process_item.dec_usage);
         self.set_gpu_mem_usage(process_item.gpu_mem_usage);
+        self.set_total_cpu_time(process_item.user_cpu_time + process_item.system_cpu_time);
+        self.set_user_cpu_time(process_item.user_cpu_time);
+        self.set_system_cpu_time(process_item.system_cpu_time);
 
         self.imp().process_item.replace(Some(process_item));
     }

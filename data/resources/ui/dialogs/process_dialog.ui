@@ -140,6 +140,33 @@
                             <property name="title" translatable="yes">Video Decoder</property>
                           </object>
                         </child>
+                        <child>
+                          <object class="AdwActionRow" id="total_cpu_time">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
+                            <property name="title" translatable="yes">Total CPU Time</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="user_cpu_time">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
+                            <property name="title" translatable="yes">User CPU Time</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="system_cpu_time">
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
+                            <property name="title" translatable="yes">System CPU Time</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child>
