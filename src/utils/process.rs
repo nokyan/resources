@@ -81,6 +81,8 @@ pub struct ProcessItem {
     pub icon: Icon,
     pub memory_usage: usize,
     pub cpu_time_ratio: f32,
+    pub user_cpu_time: f64,
+    pub system_cpu_time: f64,
     pub commandline: String,
     pub containerization: Containerization,
     pub starttime: f64,
@@ -279,8 +281,12 @@ impl Process {
         if self.cpu_time_last == 0 {
             0.0
         } else {
-            let delta_cpu_time =
-                self.data.cpu_time.saturating_sub(self.cpu_time_last) as f32 * 1000.0;
+            let delta_cpu_time = (self
+                .data
+                .user_cpu_time
+                .saturating_add(self.data.system_cpu_time))
+            .saturating_sub(self.cpu_time_last) as f32
+                * 1000.0;
             let delta_time = self.data.timestamp.saturating_sub(self.timestamp_last);
 
             delta_cpu_time / (delta_time * *TICK_RATE as u64 * *NUM_CPUS as u64) as f32

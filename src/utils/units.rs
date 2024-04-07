@@ -22,6 +22,14 @@ enum Prefix {
     Quetta,
 }
 
+pub fn format_time(time_in_seconds: f64) -> String {
+    let millis = ((time_in_seconds - time_in_seconds.floor()) * 100.0) as u8;
+    let seconds = (time_in_seconds % 60.0) as u8;
+    let minutes = ((time_in_seconds / 60.0) % 60.0) as u8;
+    let hours = (time_in_seconds / (60.0 * 60.0)) as usize;
+    format!("{hours}∶{minutes:02}∶{seconds:02}.{millis:02}")
+}
+
 fn to_largest_prefix(amount: f64, prefix_base: Base) -> (f64, Prefix) {
     let mut x = amount;
     let base = match prefix_base {

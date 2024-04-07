@@ -240,6 +240,21 @@
                 <property name="title" translatable="yes">Video Decoder</property>
               </object>
             </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_total_cpu_time_row">
+                <property name="title" translatable="yes">Total CPU Time</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_user_cpu_time_row">
+                <property name="title" translatable="yes">User CPU Time</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_system_cpu_time_row">
+                <property name="title" translatable="yes">System CPU Time</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>

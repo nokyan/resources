@@ -354,6 +354,9 @@ impl Settings {
         processes_show_gpu_memory,
         processes_show_encoder,
         processes_show_decoder,
+        processes_show_total_cpu_time,
+        processes_show_user_cpu_time,
+        processes_show_system_cpu_time,
         show_logical_cpus,
         show_graph_grids
     );

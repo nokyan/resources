@@ -126,7 +126,8 @@ pub struct ProcessData {
     proc_path: PathBuf,
     pub comm: String,
     pub commandline: String,
-    pub cpu_time: u64,
+    pub user_cpu_time: u64,
+    pub system_cpu_time: u64,
     pub cpu_time_timestamp: u64,
     pub memory_usage: usize,
     pub starttime: u64, // in clock ticks, see man proc(5)!
@@ -244,7 +245,8 @@ impl ProcessData {
         let comm = comm.replace('\n', "");
 
         // -2 to accommodate for only collecting after the second item (which is the executable name as mentioned above)
-        let cpu_time = stat[13 - 2].parse::<u64>()? + stat[14 - 2].parse::<u64>()?;
+        let user_cpu_time = stat[13 - 2].parse::<u64>()?;
+        let system_cpu_time = stat[14 - 2].parse::<u64>()?;
 
         let cpu_time_timestamp = unix_as_millis();
 
@@ -285,7 +287,8 @@ impl ProcessData {
             uid,
             comm,
             commandline,
-            cpu_time,
+            user_cpu_time,
+            system_cpu_time,
             cpu_time_timestamp,
             memory_usage,
             starttime,
