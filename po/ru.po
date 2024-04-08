@@ -404,6 +404,24 @@ msgstr "ИД процесса"
 msgid "User"
 msgstr "Пользователь"
 
+#: src/ui/pages/processes/mod.rs:1237
+#: data/resources/ui/dialogs/process_dialog.ui:149
+#: data/resources/ui/dialogs/settings_dialog.ui:245
+msgid "Total CPU Time"
+msgstr "Общее время ЦП"
+
+#: src/ui/pages/processes/mod.rs:1283
+#: data/resources/ui/dialogs/process_dialog.ui:158
+#: data/resources/ui/dialogs/settings_dialog.ui:250
+msgid "User CPU Time"
+msgstr "Пользовательское время ЦП"
+
+#: src/ui/pages/processes/mod.rs:1329
+#: data/resources/ui/dialogs/process_dialog.ui:167
+#: data/resources/ui/dialogs/settings_dialog.ui:255
+msgid "System CPU Time"
+msgstr "Системное время ЦП"
+
 #: src/ui/pages/processes/mod.rs:1245
 msgid ""
 "Halting a process can come with serious risks such as losing data and "
