@@ -179,11 +179,11 @@ glib::wrapper! {
 }
 
 impl ProcessEntry {
-    pub fn new(process_item: ProcessItem, user: &str) -> Self {
+    pub fn new(process_item: ProcessItem) -> Self {
         let this: Self = glib::Object::builder()
             .property("name", &process_item.display_name)
             .property("commandline", &process_item.commandline)
-            .property("user", user)
+            .property("user", &process_item.user)
             .property("icon", &process_item.icon)
             .property("pid", process_item.pid)
             .build();

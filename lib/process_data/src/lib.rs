@@ -14,9 +14,16 @@ use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs::File;
 use std::io::{Read, Write};
 use std::os::linux::fs::MetadataExt;
+use std::path::Path;
 use std::str::FromStr;
 use std::sync::RwLock;
 use std::{path::PathBuf, time::SystemTime};
+
+static USERS_CACHE: Lazy<HashMap<u32, String>> = Lazy::new(|| unsafe {
+    uzers::all_users()
+        .map(|user| (user.uid(), user.name().to_string_lossy().to_string()))
+        .collect()
+});
 
 static PAGESIZE: Lazy<usize> = Lazy::new(sysconf::pagesize);
 
@@ -122,7 +129,7 @@ pub struct GpuUsageStats {
 #[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ProcessData {
     pub pid: i32,
-    pub uid: u32,
+    pub user: String,
     proc_path: PathBuf,
     pub comm: String,
     pub commandline: String,
@@ -174,7 +181,7 @@ impl ProcessData {
         }
     }
 
-    fn get_uid(proc_path: &PathBuf) -> Result<u32> {
+    fn get_uid(proc_path: &Path) -> Result<u32> {
         let status = std::fs::read_to_string(proc_path.join("status"))?;
         if let Some(captures) = RE_UID.captures(&status) {
             let first_num_str = captures.get(1).context("no uid found")?;
@@ -216,12 +223,12 @@ impl ProcessData {
     }
 
     pub fn try_from_path(proc_path: PathBuf) -> Result<Self> {
-        let stat = std::fs::read_to_string(&proc_path.join("stat"))?;
-        let statm = std::fs::read_to_string(&proc_path.join("statm"))?;
-        let comm = std::fs::read_to_string(&proc_path.join("comm"))?;
-        let commandline = std::fs::read_to_string(&proc_path.join("cmdline"))?;
-        let cgroup = std::fs::read_to_string(&proc_path.join("cgroup"))?;
-        let io = std::fs::read_to_string(&proc_path.join("io")).ok();
+        let stat = std::fs::read_to_string(proc_path.join("stat"))?;
+        let statm = std::fs::read_to_string(proc_path.join("statm"))?;
+        let comm = std::fs::read_to_string(proc_path.join("comm"))?;
+        let commandline = std::fs::read_to_string(proc_path.join("cmdline"))?;
+        let cgroup = std::fs::read_to_string(proc_path.join("cgroup"))?;
+        let io = std::fs::read_to_string(proc_path.join("io")).ok();
 
         let pid = proc_path
             .file_name()
@@ -230,7 +237,10 @@ impl ProcessData {
             .context("can't turn OsStr to str")?
             .parse()?;
 
-        let uid = Self::get_uid(&proc_path)?;
+        let user = USERS_CACHE
+            .get(&Self::get_uid(&proc_path)?)
+            .cloned()
+            .unwrap_or(String::from("root"));
 
         let stat = stat
             .split(')') // since we don't care about the pid or the executable name, split after the executable name to make our life easier
@@ -284,7 +294,7 @@ impl ProcessData {
 
         Ok(Self {
             pid,
-            uid,
+            user,
             comm,
             commandline,
             user_cpu_time,
@@ -305,12 +315,12 @@ impl ProcessData {
     fn gpu_usage_stats(proc_path: &PathBuf, pid: i32) -> BTreeMap<PciSlot, GpuUsageStats> {
         let nvidia_stats = Self::nvidia_gpu_stats_all(pid).unwrap_or_default();
         let mut other_stats = Self::other_gpu_usage_stats(proc_path, pid).unwrap_or_default();
-        other_stats.extend(nvidia_stats.into_iter());
+        other_stats.extend(nvidia_stats);
         other_stats
     }
 
     fn other_gpu_usage_stats(
-        proc_path: &PathBuf,
+        proc_path: &Path,
         pid: i32,
     ) -> Result<BTreeMap<PciSlot, GpuUsageStats>> {
         let fdinfo_dir = proc_path.join("fdinfo");

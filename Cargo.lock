@@ -1203,6 +1203,7 @@ dependencies = [
  "syscalls",
  "sysconf",
  "unescape",
+ "uzers",
 ]
 
 [[package]]
@@ -1301,7 +1302,6 @@ dependencies = [
  "strum_macros",
  "sysconf",
  "unescape",
- "uzers",
 ]
 
 [[package]]

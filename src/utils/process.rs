@@ -76,7 +76,7 @@ pub enum ProcessAction {
 #[derive(Debug, Clone)]
 pub struct ProcessItem {
     pub pid: i32,
-    pub uid: u32,
+    pub user: String,
     pub display_name: String,
     pub icon: Icon,
     pub memory_usage: usize,
