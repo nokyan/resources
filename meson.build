@@ -1,7 +1,7 @@
 project(
   'resources',
   'rust',
-  version: '1.3.0',
+  version: '1.4.0',
   meson_version: '>= 0.59',
 )
 
@@ -12,8 +12,8 @@ base_id = 'net.nokyan.Resources'
 
 dependency('glib-2.0', version: '>= 2.66')
 dependency('gio-2.0', version: '>= 2.66')
-dependency('gtk4', version: '>= 4.8.0')
-dependency('libadwaita-1', version: '>= 1.4.0')
+dependency('gtk4', version: '>= 4.10.0')
+dependency('libadwaita-1', version: '>= 1.5.0')
 
 glib_compile_resources = find_program('glib-compile-resources', required: true)
 glib_compile_schemas = find_program('glib-compile-schemas', required: true)
@@ -52,7 +52,7 @@ endif
 meson.add_dist_script(
   'build-aux/dist-vendor.sh',
   meson.project_build_root() / 'meson-dist' / meson.project_name() + '-' + version,
-  meson.project_source_root()
+  meson.project_source_root(),
 )
 
 if get_option('profile') == 'development'
