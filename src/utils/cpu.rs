@@ -166,19 +166,16 @@ pub fn cpu_info() -> Result<CpuInfo> {
         });
 
     let logical_cpus = RE_LSCPU_CPUS.captures(&lscpu_output).and_then(|captures| {
-        captures.get(1).and_then(|capture| {
-            capture
-                .as_str()
-                .parse::<usize>()
-                .ok()
-                .map(|int| int * sockets.unwrap_or(1))
-        })
+        captures
+            .get(1)
+            .and_then(|capture| capture.as_str().parse().ok())
     });
 
     let physical_cpus = RE_LSCPU_CORES.captures(&lscpu_output).and_then(|captures| {
         captures
             .get(1)
-            .and_then(|capture| capture.as_str().parse().ok())
+            .and_then(|capture| capture.as_str().parse::<usize>().ok())
+            .map(|int| int * sockets.unwrap_or(1))
     });
 
     let virtualization = RE_LSCPU_VIRTUALIZATION
