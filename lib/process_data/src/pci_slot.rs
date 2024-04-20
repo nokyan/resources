@@ -24,6 +24,7 @@ impl PciSlot {
 }
 
 #[derive(Debug)]
+#[allow(dead_code)]
 pub struct ParseError(String);
 
 impl Error for ParseError {
