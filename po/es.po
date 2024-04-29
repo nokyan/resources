@@ -108,11 +108,11 @@ msgstr "No"
 
 #: src/ui/dialogs/app_dialog.rs:164 src/ui/dialogs/process_dialog.rs:189
 msgid "Yes (Flatpak)"
-msgstr "Si (Flatpak)"
+msgstr "Sí (Flatpak)"
 
 #: src/ui/dialogs/app_dialog.rs:165 src/ui/dialogs/process_dialog.rs:190
 msgid "Yes (Snap)"
-msgstr "Si (Snap)"
+msgstr "Sí (Snap)"
 
 #: src/ui/dialogs/process_dialog.rs:129 src/ui/dialogs/process_dialog.rs:136
 #: src/ui/dialogs/process_dialog.rs:143 src/ui/dialogs/process_dialog.rs:150
@@ -1220,7 +1220,7 @@ msgstr "Reanudar aplicación"
 
 #: data/resources/ui/pages/applications.ui:85
 msgid "End Application"
-msgstr "Terminar applicazione"
+msgstr "Terminar aplicación"
 
 #: data/resources/ui/pages/cpu.ui:22
 msgid "Options"
