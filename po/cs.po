@@ -1,0 +1,1389 @@
+#
+#  <>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Resources\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-04-07 13:57+0200\n"
+"PO-Revision-Date: 2024-05-01 20:55+0200\n"
+"Last-Translator: lorduskordus <lorduskordus@gmail.com>\n"
+"Language-Team: Czech\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Poedit 3.4.2\n"
+
+#: data/net.nokyan.Resources.desktop.in.in:3
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:191
+msgid "Resources"
+msgstr "Zdroje"
+
+#. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
+#: data/net.nokyan.Resources.desktop.in.in:4
+#: data/net.nokyan.Resources.metainfo.xml.in.in:6
+msgid "Keep an eye on system resources"
+msgstr "Udržujte kontrolu nad systémovými zdroji"
+
+#: data/net.nokyan.Resources.desktop.in.in:10
+msgid ""
+"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
+msgstr ""
+"Systém;Zdroje;Sledovat;Procesy;Využití;Úloha;Manažer;CPU;RAM;Paměť;GPU;"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:18
+msgid ""
+"Resources allows you to check the utilization of your system resources and "
+"control your running processes and applications. It’s designed to be user-"
+"friendly and feel right at home on a modern desktop by using GNOME’s "
+"libadwaita."
+msgstr ""
+"Aplikace Zdroje umožňuje sledovat využití vašich systémových zdrojů a "
+"ovládat běžící procesy a aplikace. Je navržena tak, aby byla uživatelsky "
+"přívětivá a zapadala do prostředí moderního desktopu, s využitím "
+"libadwaita od GNOME."
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:21
+msgid "Resources supports monitoring the following components:"
+msgstr "Aplikace Zdroje podporuje sledování následujících komponent:"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+msgid "CPU"
+msgstr "CPU"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:26
+#: src/ui/pages/applications/mod.rs:664 src/ui/pages/memory.rs:132
+#: src/ui/pages/memory.rs:205 src/ui/pages/processes/mod.rs:751
+#: data/resources/ui/window.ui:158 data/resources/ui/window.ui:165
+#: data/resources/ui/dialogs/app_dialog.ui:81
+#: data/resources/ui/dialogs/process_dialog.ui:68
+#: data/resources/ui/dialogs/settings_dialog.ui:124
+#: data/resources/ui/dialogs/settings_dialog.ui:195
+msgid "Memory"
+msgstr "Paměť"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:27
+#: src/ui/pages/applications/mod.rs:954 src/ui/pages/gpu.rs:146
+#: src/ui/pages/processes/mod.rs:1052 src/ui/window.rs:278
+#: data/resources/ui/dialogs/app_dialog.ui:130
+#: data/resources/ui/dialogs/process_dialog.ui:113
+#: data/resources/ui/dialogs/settings_dialog.ui:154
+#: data/resources/ui/dialogs/settings_dialog.ui:225
+msgid "GPU"
+msgstr "GPU"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:28
+#: data/resources/ui/dialogs/settings_dialog.ui:278
+msgid "Network Interfaces"
+msgstr "Síťová Rozhraní"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:29
+msgid "Storage Devices"
+msgstr "Zařízení Úložiště"
+
+#: src/application.rs:193
+msgid "The Nalux Team"
+msgstr "Tým Nalux"
+
+#: src/application.rs:201
+msgid "Report Issues"
+msgstr "Oznámit chyby"
+
+#. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
+#. One name per line, please do not remove previous names.
+#: src/application.rs:207
+msgid "translator-credits"
+msgstr "lorduskordus <lorduskordus@gmail.com>"
+
+#: src/application.rs:208
+msgid "Icon by"
+msgstr "Ikonu vytvořil"
+
+#: src/ui/dialogs/app_dialog.rs:161 src/ui/dialogs/process_dialog.rs:202
+#: src/ui/pages/drive.rs:295 src/ui/pages/drive.rs:301
+msgid "No"
+msgstr "Ne"
+
+#: src/ui/dialogs/app_dialog.rs:162 src/ui/dialogs/process_dialog.rs:203
+msgid "Yes (Flatpak)"
+msgstr "Ano (Flatpak)"
+
+#: src/ui/dialogs/app_dialog.rs:163 src/ui/dialogs/process_dialog.rs:204
+msgid "Yes (Snap)"
+msgstr "Ano (Snap)"
+
+#: src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:140
+#: src/ui/dialogs/process_dialog.rs:147 src/ui/dialogs/process_dialog.rs:154
+#: src/ui/dialogs/process_dialog.rs:190 src/ui/dialogs/process_dialog.rs:197
+#: src/ui/dialogs/process_dialog.rs:199 src/ui/pages/applications/mod.rs:773
+#: src/ui/pages/applications/mod.rs:871 src/ui/pages/cpu.rs:237
+#: src/ui/pages/cpu.rs:252 src/ui/pages/cpu.rs:266 src/ui/pages/cpu.rs:272
+#: src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:288
+#: src/ui/pages/cpu.rs:291 src/ui/pages/cpu.rs:379 src/ui/pages/gpu.rs:251
+#: src/ui/pages/gpu.rs:296 src/ui/pages/gpu.rs:321 src/ui/pages/gpu.rs:324
+#: src/ui/pages/gpu.rs:335 src/ui/pages/gpu.rs:355 src/ui/pages/gpu.rs:367
+#: src/ui/pages/gpu.rs:381 src/ui/pages/gpu.rs:383 src/ui/pages/gpu.rs:395
+#: src/ui/pages/gpu.rs:402 src/ui/pages/gpu.rs:406 src/ui/pages/memory.rs:240
+#: src/ui/pages/memory.rs:241 src/ui/pages/memory.rs:245
+#: src/ui/pages/memory.rs:246 src/ui/pages/memory.rs:250
+#: src/ui/pages/memory.rs:251 src/ui/pages/memory.rs:279
+#: src/ui/pages/memory.rs:333 src/ui/pages/network.rs:257
+#: src/ui/pages/network.rs:264 src/ui/pages/network.rs:271
+#: src/ui/pages/network.rs:277 src/ui/pages/network.rs:280
+#: src/ui/pages/processes/mod.rs:859 src/ui/pages/processes/mod.rs:912
+#: src/ui/pages/processes/mod.rs:965 src/ui/pages/processes/mod.rs:1018
+#: src/utils/app.rs:686 src/utils/app.rs:762 src/utils/drive.rs:90
+#: src/utils/gpu/mod.rs:255 src/utils/gpu/mod.rs:261
+msgid "N/A"
+msgstr "N/A"
+
+#: src/ui/pages/applications/mod.rs:150 data/resources/ui/window.ui:65
+#: data/resources/ui/window.ui:72
+#: data/resources/ui/dialogs/settings_dialog.ui:118
+msgid "Applications"
+msgstr "Aplikace"
+
+#: src/ui/pages/applications/mod.rs:567
+msgid "Running Applications: {}"
+msgstr "Běžící Aplikace: {}"
+
+#: src/ui/pages/applications/mod.rs:595 src/ui/pages/processes/mod.rs:576
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: src/ui/pages/applications/mod.rs:622
+msgid "Application"
+msgstr "Aplikace"
+
+#: src/ui/pages/applications/mod.rs:710 src/ui/pages/cpu.rs:149
+#: src/ui/pages/processes/mod.rs:796 src/ui/window.rs:317
+#: data/resources/ui/window.ui:127 data/resources/ui/window.ui:134
+#: data/resources/ui/dialogs/app_dialog.ui:72
+#: data/resources/ui/dialogs/process_dialog.ui:59
+#: data/resources/ui/dialogs/settings_dialog.ui:129
+#: data/resources/ui/dialogs/settings_dialog.ui:200
+msgid "Processor"
+msgstr "Procesor"
+
+#: src/ui/pages/applications/mod.rs:755 src/ui/pages/processes/mod.rs:841
+#: data/resources/ui/dialogs/app_dialog.ui:90
+#: data/resources/ui/dialogs/process_dialog.ui:73
+#: data/resources/ui/dialogs/settings_dialog.ui:134
+#: data/resources/ui/dialogs/settings_dialog.ui:205
+msgid "Drive Read"
+msgstr "Diskové Čtení"
+
+#: src/ui/pages/applications/mod.rs:806 src/ui/pages/processes/mod.rs:894
+#: data/resources/ui/dialogs/app_dialog.ui:99
+#: data/resources/ui/dialogs/process_dialog.ui:82
+#: data/resources/ui/dialogs/settings_dialog.ui:139
+#: data/resources/ui/dialogs/settings_dialog.ui:210
+msgid "Drive Read Total"
+msgstr "Diskové Čtení Celkem"
+
+#: src/ui/pages/applications/mod.rs:853 src/ui/pages/processes/mod.rs:947
+#: data/resources/ui/dialogs/app_dialog.ui:108
+#: data/resources/ui/dialogs/process_dialog.ui:91
+#: data/resources/ui/dialogs/settings_dialog.ui:144
+#: data/resources/ui/dialogs/settings_dialog.ui:215
+msgid "Drive Write"
+msgstr "Diskový Zápis"
+
+#: src/ui/pages/applications/mod.rs:906 src/ui/pages/processes/mod.rs:1000
+#: data/resources/ui/dialogs/app_dialog.ui:117
+#: data/resources/ui/dialogs/process_dialog.ui:100
+#: data/resources/ui/dialogs/settings_dialog.ui:149
+#: data/resources/ui/dialogs/settings_dialog.ui:220
+msgid "Drive Write Total"
+msgstr "Diskový Zápis Celkem"
+
+#: src/ui/pages/applications/mod.rs:999 src/ui/pages/processes/mod.rs:1097
+#: data/resources/ui/dialogs/app_dialog.ui:148
+#: data/resources/ui/dialogs/process_dialog.ui:131
+#: data/resources/ui/dialogs/settings_dialog.ui:164
+#: data/resources/ui/dialogs/settings_dialog.ui:235
+msgid "Video Encoder"
+msgstr "Video Enkodér"
+
+#: src/ui/pages/applications/mod.rs:1046 src/ui/pages/processes/mod.rs:1144
+#: data/resources/ui/dialogs/app_dialog.ui:157
+#: data/resources/ui/dialogs/process_dialog.ui:140
+#: data/resources/ui/dialogs/settings_dialog.ui:169
+#: data/resources/ui/dialogs/settings_dialog.ui:240
+msgid "Video Decoder"
+msgstr "Video Dekodér"
+
+#: src/ui/pages/applications/mod.rs:1092 src/ui/pages/processes/mod.rs:1191
+#: data/resources/ui/dialogs/app_dialog.ui:139
+#: data/resources/ui/dialogs/process_dialog.ui:122
+#: data/resources/ui/dialogs/settings_dialog.ui:159
+#: data/resources/ui/dialogs/settings_dialog.ui:230
+msgid "Video Memory"
+msgstr "Videopaměť"
+
+#: src/ui/pages/applications/mod.rs:1136 src/ui/pages/processes/mod.rs:1374
+msgid "End {}?"
+msgstr "Ukončit {}?"
+
+#: src/ui/pages/applications/mod.rs:1137 src/ui/pages/processes/mod.rs:1375
+msgid "Halt {}?"
+msgstr "Zastavit {}?"
+
+#: src/ui/pages/applications/mod.rs:1138 src/ui/pages/processes/mod.rs:1376
+msgid "Kill {}?"
+msgstr "Zabít {}?"
+
+#: src/ui/pages/applications/mod.rs:1139 src/ui/pages/processes/mod.rs:1377
+msgid "Continue {}?"
+msgstr "Obnovit {}?"
+
+#: src/ui/pages/applications/mod.rs:1145 src/ui/pages/processes/mod.rs:1383
+msgid "Unsaved work might be lost."
+msgstr "Neuložená práce může být ztracena."
+
+#: src/ui/pages/applications/mod.rs:1146
+msgid ""
+"Halting an application can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"Zastavení aplikace může způsobit ztrátu dat a ovlivnit bezpečnost. "
+"Použijte obezřetně."
+
+#: src/ui/pages/applications/mod.rs:1147
+msgid ""
+"Killing an application can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"Zabití aplikace může způsobit ztrátu dat a ovlivnit bezpečnost. Použijte "
+"obezřetně."
+
+#: src/ui/pages/applications/mod.rs:1154
+msgid "End application"
+msgstr "Ukončit aplikaci"
+
+#: src/ui/pages/applications/mod.rs:1155
+msgid "Halt application"
+msgstr "Zastavit aplikaci"
+
+#: src/ui/pages/applications/mod.rs:1156
+msgid "Kill application"
+msgstr "Zabít aplikaci"
+
+#: src/ui/pages/applications/mod.rs:1157
+msgid "Continue application"
+msgstr "Obnovit aplikaci"
+
+#: src/ui/pages/cpu.rs:236 src/ui/pages/gpu.rs:222
+msgid "Total Usage"
+msgstr "Celkové Využití"
+
+#: src/ui/pages/cpu.rs:251 src/ui/pages/cpu.rs:363 src/ui/pages/cpu.rs:367
+msgid "CPU {}"
+msgstr "CPU {}"
+
+#: src/ui/pages/drive.rs:151
+msgid "Drive"
+msgstr "Disk"
+
+#: src/ui/pages/drive.rs:244
+msgid "Drive Activity"
+msgstr "Aktivita Disku"
+
+#: src/ui/pages/drive.rs:251
+msgid "Read Speed"
+msgstr "Rychlost Čtení"
+
+#: src/ui/pages/drive.rs:255
+msgid "Write Speed"
+msgstr "Rychlost Zápisu"
+
+#: src/ui/pages/drive.rs:293 src/ui/pages/drive.rs:299
+msgid "Yes"
+msgstr "Ano"
+
+#: src/ui/pages/drive.rs:367 src/ui/pages/drive.rs:372
+#: src/ui/pages/network.rs:326 src/ui/pages/network.rs:335
+msgid "Highest:"
+msgstr "Nejvyšší:"
+
+#. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
+#. translation should preferably be quite short or an abbreviation
+#: src/ui/pages/drive.rs:380
+msgid "R: {} · W: {}"
+msgstr "Č: {} · Z: {}"
+
+#: src/ui/pages/gpu.rs:230
+msgid "Video Encoder/Decoder Usage"
+msgstr "Využití Video Enkodéru/Dekodéru"
+
+#: src/ui/pages/gpu.rs:236
+msgid "Video Encoder Usage"
+msgstr "Využití Video Enkodéru"
+
+#: src/ui/pages/gpu.rs:241
+msgid "Video Decoder Usage"
+msgstr "Využití Video Dekodéru"
+
+#: src/ui/pages/gpu.rs:246
+msgid "Video Memory Usage"
+msgstr "Využití Videopaměti"
+
+#: src/ui/pages/gpu.rs:412
+msgid "VRAM: {}"
+msgstr "VRAM: {}"
+
+#: src/ui/pages/memory.rs:211
+msgid "Swap"
+msgstr "Swap"
+
+#: src/ui/pages/memory.rs:275
+msgid "{} of {}"
+msgstr "{} z {}"
+
+#: src/ui/pages/memory.rs:278
+msgid "{} MT/s"
+msgstr "{} MT/s"
+
+#. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
+#. preferably be quite short or an abbreviation
+#: src/ui/pages/memory.rs:352
+msgid "{} / {} · Swap: {} %"
+msgstr "{} / {} · Swap: {} %"
+
+#: src/ui/pages/network.rs:149 src/utils/network.rs:122
+msgid "Network Interface"
+msgstr "Síťové Rozhraní"
+
+#: src/ui/pages/network.rs:245
+msgid "Receiving"
+msgstr "Přijímání"
+
+#: src/ui/pages/network.rs:249
+msgid "Sending"
+msgstr "Odesílání"
+
+#. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
+#. your translation should preferably be quite short or an abbreviation
+#: src/ui/pages/network.rs:346
+msgid "R: {} · S: {}"
+msgstr "P: {} · O: {}"
+
+#: src/ui/pages/processes/mod.rs:158 data/resources/ui/window.ui:96
+#: data/resources/ui/window.ui:103
+#: data/resources/ui/dialogs/settings_dialog.ui:179
+msgid "Processes"
+msgstr "Procesy"
+
+#: src/ui/pages/processes/mod.rs:550
+msgid "Running Processes: {}"
+msgstr "Běžící Procesy"
+
+#: src/ui/pages/processes/mod.rs:612
+msgid "root"
+msgstr "root"
+
+#: src/ui/pages/processes/mod.rs:624
+msgid "Process"
+msgstr "Proces"
+
+#: src/ui/pages/processes/mod.rs:670
+#: data/resources/ui/dialogs/process_dialog.ui:181
+#: data/resources/ui/dialogs/settings_dialog.ui:185
+msgid "Process ID"
+msgstr "ID Procesu"
+
+#: src/ui/pages/processes/mod.rs:710
+#: data/resources/ui/dialogs/process_dialog.ui:208
+#: data/resources/ui/dialogs/settings_dialog.ui:190
+msgid "User"
+msgstr "Uživatel"
+
+#: src/ui/pages/processes/mod.rs:1237
+#: data/resources/ui/dialogs/process_dialog.ui:149
+#: data/resources/ui/dialogs/settings_dialog.ui:245
+msgid "Total CPU Time"
+msgstr "Celkový Čas CPU"
+
+#: src/ui/pages/processes/mod.rs:1283
+#: data/resources/ui/dialogs/process_dialog.ui:158
+#: data/resources/ui/dialogs/settings_dialog.ui:250
+msgid "User CPU Time"
+msgstr "Uživatelský Čas CPU"
+
+#: src/ui/pages/processes/mod.rs:1329
+#: data/resources/ui/dialogs/process_dialog.ui:167
+#: data/resources/ui/dialogs/settings_dialog.ui:255
+msgid "System CPU Time"
+msgstr "Systémový Čas CPU"
+
+#: src/ui/pages/processes/mod.rs:1384
+msgid ""
+"Halting a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"Zastavení procesu může způsobit ztrátu dat a ovlivnit bezpečnost. Použijte "
+"obezřetně."
+
+#: src/ui/pages/processes/mod.rs:1385
+msgid ""
+"Killing a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"Zabití procesu může způsobit ztrátu dat a ovlivnit bezpečnost. Použijte "
+"obezřetně."
+
+#: src/ui/pages/processes/mod.rs:1392
+msgid "End process"
+msgstr "Ukončit proces"
+
+#: src/ui/pages/processes/mod.rs:1393
+msgid "Halt process"
+msgstr "Zastavit proces"
+
+#: src/ui/pages/processes/mod.rs:1394
+msgid "Kill process"
+msgstr "Zabít proces"
+
+#: src/ui/pages/processes/mod.rs:1395
+msgid "Continue process"
+msgstr "Obnovit proces"
+
+#: src/ui/window.rs:276
+msgid "GPU {}"
+msgstr "GPU {}"
+
+#: src/ui/window.rs:813
+msgid "Successfully ended {}"
+msgstr "Úspěšně ukončen {}"
+
+#: src/ui/window.rs:814
+msgid "Successfully halted {}"
+msgstr "Úspěšně zastaven {}"
+
+#: src/ui/window.rs:815
+msgid "Successfully killed {}"
+msgstr "Úspěšně zabit {}"
+
+#: src/ui/window.rs:816
+msgid "Successfully continued {}"
+msgstr "Úspěšně obnoven {}"
+
+#: src/ui/window.rs:823
+msgid "There was a problem ending a process"
+msgid_plural "There were problems ending {} processes"
+msgstr[0] "Nastal problém při ukončování procesu"
+msgstr[1] "Nastaly problémy při ukončování {} procesů"
+msgstr[2] "Nastaly problémy při ukončování {} procesů"
+
+#: src/ui/window.rs:829
+msgid "There was a problem halting a process"
+msgid_plural "There were problems halting {} processes"
+msgstr[0] "Nastal problém při zastavování procesu"
+msgstr[1] "Nastaly problémy při zastavování {} procesů"
+msgstr[2] "Nastaly problémy při zastavování {} procesů"
+
+#: src/ui/window.rs:835
+msgid "There was a problem killing a process"
+msgid_plural "There were problems killing {} processes"
+msgstr[0] "Nastal problém při zabíjení procesu"
+msgstr[1] "Nastaly problémy při zabíjení {} procesů"
+msgstr[2] "Nastaly problémy při zabíjení {} procesů"
+
+#: src/ui/window.rs:841
+msgid "There was a problem continuing a process"
+msgid_plural "There were problems continuing {} processes"
+msgstr[0] "Nastal problém při obnově procesu"
+msgstr[1] "Nastaly problémy při obnovování {} procesů"
+msgstr[2] "Nastaly problémy při obnovování {} procesů"
+
+#: src/ui/window.rs:851
+msgid "There was a problem ending {}"
+msgstr "Nastal problém při ukončování {}"
+
+#: src/ui/window.rs:852
+msgid "There was a problem halting {}"
+msgstr "Nastal problém při zastavování {}"
+
+#: src/ui/window.rs:853
+msgid "There was a problem killing {}"
+msgstr "Nastal problém při zabíjení {}"
+
+#: src/ui/window.rs:854
+msgid "There was a problem continuing {}"
+msgstr "Nastal problém při obnově {}"
+
+#: src/utils/app.rs:768
+msgid "System Processes"
+msgstr "Systémové Procesy"
+
+#: src/utils/drive.rs:82 src/utils/drive.rs:153
+msgid "CD/DVD/Blu-ray Drive"
+msgstr "CD/DVD/Blu-ray Disk"
+
+#: src/utils/drive.rs:83
+msgid "eMMC Storage"
+msgstr "eMMC Úložiště"
+
+#: src/utils/drive.rs:84
+msgid "Flash Storage"
+msgstr "Flash Úložiště"
+
+#: src/utils/drive.rs:85 src/utils/drive.rs:154
+msgid "Floppy Drive"
+msgstr "Disketa"
+
+#: src/utils/drive.rs:86
+msgid "Hard Disk Drive"
+msgstr "Pevný Disk"
+
+#: src/utils/drive.rs:87
+msgid "Loop Device"
+msgstr "Smyčkové Zařízení"
+
+#: src/utils/drive.rs:88
+msgid "Mapped Device"
+msgstr "Namapované Zařízení"
+
+#: src/utils/drive.rs:89
+msgid "NVMe Drive"
+msgstr "NVMe Disk"
+
+#: src/utils/drive.rs:91
+msgid "Software Raid"
+msgstr "Softwarový Raid"
+
+#: src/utils/drive.rs:92
+msgid "RAM Disk"
+msgstr "RAM Disk"
+
+#: src/utils/drive.rs:93
+msgid "Solid State Drive"
+msgstr "Solid State Disk"
+
+#: src/utils/drive.rs:94
+msgid "ZFS Volume"
+msgstr "ZFS Svazek"
+
+#: src/utils/drive.rs:95
+msgid "Compressed RAM Disk (zram)"
+msgstr "Komprimovaný RAM Disk (zram)"
+
+#: src/utils/drive.rs:155
+msgid "{} Loop Device"
+msgstr "{} Smyčkové Zařízení"
+
+#: src/utils/drive.rs:156
+msgid "{} Mapped Device"
+msgstr "{} Namapované Zařízení"
+
+#: src/utils/drive.rs:157
+msgid "{} RAID"
+msgstr "{} RAID"
+
+#: src/utils/drive.rs:158
+msgid "{} RAM Disk"
+msgstr "{} RAM Disk"
+
+#: src/utils/drive.rs:159
+msgid "{} zram Device"
+msgstr "{} zram Zařízení"
+
+#: src/utils/drive.rs:160
+msgid "{} ZFS Volume"
+msgstr "{} ZFS Svazek"
+
+#: src/utils/drive.rs:161
+msgid "{} Drive"
+msgstr "{} Disk"
+
+#: src/utils/network.rs:111
+msgid "Bluetooth Tether"
+msgstr "Bluetooth Tether"
+
+#: src/utils/network.rs:112
+msgid "Network Bridge"
+msgstr "Síťový Most"
+
+#: src/utils/network.rs:113
+msgid "Ethernet Connection"
+msgstr "Ethernet Připojení"
+
+#: src/utils/network.rs:114
+msgid "InfiniBand Connection"
+msgstr "InfiniBand Připojení"
+
+#: src/utils/network.rs:115
+msgid "Serial Line IP Connection"
+msgstr "Připojení IP Sériové Linky"
+
+#: src/utils/network.rs:116
+msgid "Virtual Ethernet Device"
+msgstr "Virtuální Ethernet Zařízení"
+
+#: src/utils/network.rs:117
+msgid "VM Network Bridge"
+msgstr "Síťový Most VM"
+
+#: src/utils/network.rs:118
+msgid "VPN Tunnel"
+msgstr "VPN Tunel"
+
+#: src/utils/network.rs:119
+msgid "VPN Tunnel (WireGuard)"
+msgstr "VPN Tunel (WireGuard)"
+
+#: src/utils/network.rs:120
+msgid "Wi-Fi Connection"
+msgstr "Wi-Fi Připojení"
+
+#: src/utils/network.rs:121
+msgid "WWAN Connection"
+msgstr "WWAN Připojení"
+
+#: src/utils/units.rs:59
+msgid "{} K"
+msgstr "{} K"
+
+#: src/utils/units.rs:61
+msgid "{} °C"
+msgstr "{} °C"
+
+#: src/utils/units.rs:63
+msgid "{} °F"
+msgstr "{} °F"
+
+#: src/utils/units.rs:81 src/utils/units.rs:95 src/utils/units.rs:115
+#: src/utils/units.rs:129
+msgid "{} B"
+msgstr "{} B"
+
+#: src/utils/units.rs:82 src/utils/units.rs:96
+msgid "{} kB"
+msgstr "{} kB"
+
+#: src/utils/units.rs:83 src/utils/units.rs:97
+msgid "{} MB"
+msgstr "{} MB"
+
+#: src/utils/units.rs:84 src/utils/units.rs:98
+msgid "{} GB"
+msgstr "{} GB"
+
+#: src/utils/units.rs:85 src/utils/units.rs:99
+msgid "{} TB"
+msgstr "{} TB"
+
+#: src/utils/units.rs:86 src/utils/units.rs:100
+msgid "{} PB"
+msgstr "{} PB"
+
+#: src/utils/units.rs:87 src/utils/units.rs:101
+msgid "{} EB"
+msgstr "{} EB"
+
+#: src/utils/units.rs:88 src/utils/units.rs:102
+msgid "{} ZB"
+msgstr "{} ZB"
+
+#: src/utils/units.rs:89 src/utils/units.rs:103
+msgid "{} YB"
+msgstr "{} YB"
+
+#: src/utils/units.rs:90 src/utils/units.rs:104
+msgid "{} RB"
+msgstr "{} RB"
+
+#: src/utils/units.rs:91 src/utils/units.rs:105
+msgid "{} QB"
+msgstr "{} QB"
+
+#: src/utils/units.rs:116 src/utils/units.rs:130
+msgid "{} KiB"
+msgstr "{} KiB"
+
+#: src/utils/units.rs:117 src/utils/units.rs:131
+msgid "{} MiB"
+msgstr "{} MiB"
+
+#: src/utils/units.rs:118 src/utils/units.rs:132
+msgid "{} GiB"
+msgstr "{} GiB"
+
+#: src/utils/units.rs:119 src/utils/units.rs:133
+msgid "{} TiB"
+msgstr "{} TiB"
+
+#: src/utils/units.rs:120 src/utils/units.rs:134
+msgid "{} PiB"
+msgstr "{} PiB"
+
+#: src/utils/units.rs:121 src/utils/units.rs:135
+msgid "{} EiB"
+msgstr "{} EiB"
+
+#: src/utils/units.rs:122 src/utils/units.rs:136
+msgid "{} ZiB"
+msgstr "{} ZiB"
+
+#: src/utils/units.rs:123 src/utils/units.rs:137
+msgid "{} YiB"
+msgstr "{} YiB"
+
+#: src/utils/units.rs:124 src/utils/units.rs:138
+msgid "{} RiB"
+msgstr "{} RiB"
+
+#: src/utils/units.rs:125 src/utils/units.rs:139
+msgid "{} QiB"
+msgstr "{} QiB"
+
+#: src/utils/units.rs:166 src/utils/units.rs:183
+msgid "{} B/s"
+msgstr "{} B/s"
+
+#: src/utils/units.rs:167
+msgid "{} kB/s"
+msgstr "{} kB/s"
+
+#: src/utils/units.rs:168
+msgid "{} MB/s"
+msgstr "{} MB/s"
+
+#: src/utils/units.rs:169
+msgid "{} GB/s"
+msgstr "{} GB/s"
+
+#: src/utils/units.rs:170
+msgid "{} TB/s"
+msgstr "{} TB/s"
+
+#: src/utils/units.rs:171
+msgid "{} PB/s"
+msgstr "{} PB/s"
+
+#: src/utils/units.rs:172
+msgid "{} EB/s"
+msgstr "{} EB/s"
+
+#: src/utils/units.rs:173
+msgid "{} ZB/s"
+msgstr "{} ZB/s"
+
+#: src/utils/units.rs:174
+msgid "{} YB/s"
+msgstr "{} YB/s"
+
+#: src/utils/units.rs:175
+msgid "{} RB/s"
+msgstr "{} RB/s"
+
+#: src/utils/units.rs:176
+msgid "{} QB/s"
+msgstr "{} QB/s"
+
+#: src/utils/units.rs:184
+msgid "{} KiB/s"
+msgstr "{} KiB/s"
+
+#: src/utils/units.rs:185
+msgid "{} MiB/s"
+msgstr "{} MiB/s"
+
+#: src/utils/units.rs:186
+msgid "{} GiB/s"
+msgstr "{} GiB/s"
+
+#: src/utils/units.rs:187
+msgid "{} TiB/s"
+msgstr "{} TiB/s"
+
+#: src/utils/units.rs:188
+msgid "{} PiB/s"
+msgstr "{} PiB/s"
+
+#: src/utils/units.rs:189
+msgid "{} EiB/s"
+msgstr "{} EiB/s"
+
+#: src/utils/units.rs:190
+msgid "{} ZiB/s"
+msgstr "{} ZiB/s"
+
+#: src/utils/units.rs:191
+msgid "{} YiB/s"
+msgstr "{} YiB/s"
+
+#: src/utils/units.rs:192
+msgid "{} RiB/s"
+msgstr "{} RiB/s"
+
+#: src/utils/units.rs:193
+msgid "{} QiB/s"
+msgstr "{} QiB/s"
+
+#: src/utils/units.rs:200 src/utils/units.rs:217
+msgid "{} b/s"
+msgstr "{} b/s"
+
+#: src/utils/units.rs:201
+msgid "{} kb/s"
+msgstr "{} kb/s"
+
+#: src/utils/units.rs:202
+msgid "{} Mb/s"
+msgstr "{} Mb/s"
+
+#: src/utils/units.rs:203
+msgid "{} Gb/s"
+msgstr "{} Gb/s"
+
+#: src/utils/units.rs:204
+msgid "{} Tb/s"
+msgstr "{} Tb/s"
+
+#: src/utils/units.rs:205
+msgid "{} Pb/s"
+msgstr "{} Pb/s"
+
+#: src/utils/units.rs:206
+msgid "{} Eb/s"
+msgstr "{} Eb/s"
+
+#: src/utils/units.rs:207
+msgid "{} Zb/s"
+msgstr "{} Zb/s"
+
+#: src/utils/units.rs:208
+msgid "{} Yb/s"
+msgstr "{} Yb/s"
+
+#: src/utils/units.rs:209
+msgid "{} Rb/s"
+msgstr "{} Rb/s"
+
+#: src/utils/units.rs:210
+msgid "{} Qb/s"
+msgstr "{} Qb/s"
+
+#: src/utils/units.rs:218
+msgid "{} Kib/s"
+msgstr "{} Kib/s"
+
+#: src/utils/units.rs:219
+msgid "{} Mib/s"
+msgstr "{} Mib/s"
+
+#: src/utils/units.rs:220
+msgid "{} Gib/s"
+msgstr "{} Gib/s"
+
+#: src/utils/units.rs:221
+msgid "{} Tib/s"
+msgstr "{} Tib/s"
+
+#: src/utils/units.rs:222
+msgid "{} Pib/s"
+msgstr "{} Pib/s"
+
+#: src/utils/units.rs:223
+msgid "{} Eib/s"
+msgstr "{} Eib/s"
+
+#: src/utils/units.rs:224
+msgid "{} Zib/s"
+msgstr "{} Zib/s"
+
+#: src/utils/units.rs:225
+msgid "{} Yib/s"
+msgstr "{} Yib/s"
+
+#: src/utils/units.rs:226
+msgid "{} Rib/s"
+msgstr "{} Rib/s"
+
+#: src/utils/units.rs:227
+msgid "{} Qib/s"
+msgstr "{} Qib/s"
+
+#: src/utils/units.rs:234
+msgid "{} Hz"
+msgstr "{} Hz"
+
+#: src/utils/units.rs:235
+msgid "{} kHz"
+msgstr "{} kHz"
+
+#: src/utils/units.rs:236
+msgid "{} MHz"
+msgstr "{} MHz"
+
+#: src/utils/units.rs:237
+msgid "{} GHz"
+msgstr "{} GHz"
+
+#: src/utils/units.rs:238
+msgid "{} THz"
+msgstr "{} THz"
+
+#: src/utils/units.rs:239
+msgid "{} PHz"
+msgstr "{} PHz"
+
+#: src/utils/units.rs:240
+msgid "{} EHz"
+msgstr "{} EHz"
+
+#: src/utils/units.rs:241
+msgid "{} ZHz"
+msgstr "{} ZHz"
+
+#: src/utils/units.rs:242
+msgid "{} YHz"
+msgstr "{} YHz"
+
+#: src/utils/units.rs:243
+msgid "{} RHz"
+msgstr "{} RHz"
+
+#: src/utils/units.rs:244
+msgid "{} QHz"
+msgstr "{} QHz"
+
+#: src/utils/units.rs:251
+msgid "{} W"
+msgstr "{} W"
+
+#: src/utils/units.rs:252
+msgid "{} kW"
+msgstr "{} kW"
+
+#: src/utils/units.rs:253
+msgid "{} MW"
+msgstr "{} MW"
+
+#: src/utils/units.rs:254
+msgid "{} GW"
+msgstr "{} GW"
+
+#: src/utils/units.rs:255
+msgid "{} TW"
+msgstr "{} TW"
+
+#: src/utils/units.rs:256
+msgid "{} PW"
+msgstr "{} PW"
+
+#: src/utils/units.rs:257
+msgid "{} EW"
+msgstr "{} EW"
+
+#: src/utils/units.rs:258
+msgid "{} ZW"
+msgstr "{} ZW"
+
+#: src/utils/units.rs:259
+msgid "{} YW"
+msgstr "{} YW"
+
+#: src/utils/units.rs:260
+msgid "{} RW"
+msgstr "{} RW"
+
+#: src/utils/units.rs:261
+msgid "{} QW"
+msgstr "{} QW"
+
+#: data/resources/ui/shortcuts.ui:11
+msgctxt "shortcut window"
+msgid "General"
+msgstr "Obecné"
+
+#: data/resources/ui/shortcuts.ui:14
+msgctxt "shortcut window"
+msgid "Preferences"
+msgstr "Předvolby"
+
+#: data/resources/ui/shortcuts.ui:20
+msgctxt "shortcut window"
+msgid "Show Shortcuts"
+msgstr "Zobrazit Zkratky"
+
+#: data/resources/ui/shortcuts.ui:26
+msgctxt "shortcut window"
+msgid "Quit"
+msgstr "Ukončit"
+
+#: data/resources/ui/shortcuts.ui:32
+msgctxt "shortcut window"
+msgid "Toggle Search Field"
+msgstr "Přepnout Vyhledávací Pole"
+
+#: data/resources/ui/shortcuts.ui:38
+msgctxt "shortcut window"
+msgid "End Application/Process"
+msgstr "Ukončit Aplikaci/Proces"
+
+#: data/resources/ui/shortcuts.ui:44
+msgctxt "shortcut window"
+msgid "Kill Application/Process"
+msgstr "Zabít Aplikaci/Proces"
+
+#: data/resources/ui/shortcuts.ui:50
+msgctxt "shortcut window"
+msgid "Halt Application/Process"
+msgstr "Zastavit Aplikaci/Proces"
+
+#: data/resources/ui/shortcuts.ui:56
+msgctxt "shortcut window"
+msgid "Continue Application/Process"
+msgstr "Obnovit Aplikaci/Proces"
+
+#: data/resources/ui/shortcuts.ui:62
+msgctxt "shortcut window"
+msgid "Show Information for Application/Process"
+msgstr "Zobrazit Informace o Aplikaci/Procesu"
+
+#: data/resources/ui/window.ui:6
+msgid "Preferences"
+msgstr "Předvolby"
+
+#: data/resources/ui/window.ui:10
+msgid "Keyboard Shortcuts"
+msgstr "Klávesové Zkratky"
+
+#: data/resources/ui/window.ui:14
+msgid "About Resources"
+msgstr "O aplikaci Zdroje"
+
+#: data/resources/ui/dialogs/app_dialog.ui:7
+msgid "Application Information"
+msgstr "Informace o Aplikaci"
+
+#: data/resources/ui/dialogs/app_dialog.ui:69
+#: data/resources/ui/dialogs/process_dialog.ui:52
+#: data/resources/ui/pages/cpu.ui:45 data/resources/ui/pages/cpu.ui:58
+#: data/resources/ui/pages/drive.ui:22 data/resources/ui/pages/gpu.ui:22
+#: data/resources/ui/pages/memory.ui:31 data/resources/ui/pages/network.ui:22
+msgid "Usage"
+msgstr "Využití"
+
+#: data/resources/ui/dialogs/app_dialog.ui:164
+#: data/resources/ui/dialogs/process_dialog.ui:174
+#: data/resources/ui/pages/cpu.ui:97 data/resources/ui/pages/drive.ui:36
+#: data/resources/ui/pages/gpu.ui:80 data/resources/ui/pages/memory.ui:42
+#: data/resources/ui/pages/network.ui:51
+msgid "Properties"
+msgstr "Vlastnosti"
+
+#: data/resources/ui/dialogs/app_dialog.ui:170
+msgid "ID"
+msgstr "ID"
+
+#: data/resources/ui/dialogs/app_dialog.ui:180
+#: data/resources/ui/dialogs/process_dialog.ui:190
+msgid "Running Since"
+msgstr "Běží Od"
+
+#: data/resources/ui/dialogs/app_dialog.ui:188
+msgid "Running Processes"
+msgstr "Běžící Procesy"
+
+#: data/resources/ui/dialogs/app_dialog.ui:197
+#: data/resources/ui/dialogs/process_dialog.ui:226
+msgid "Containerized"
+msgstr "Kontejnerizováno"
+
+#: data/resources/ui/dialogs/process_dialog.ui:7
+msgid "Process Information"
+msgstr "Informace o Procesu"
+
+#: data/resources/ui/dialogs/process_dialog.ui:199
+msgid "Commandline"
+msgstr "Příkazový Řádek"
+
+#: data/resources/ui/dialogs/process_dialog.ui:217
+msgid "Control Group"
+msgstr "Kontrolní Skupina"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:7
+msgid "General"
+msgstr "Obecné"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:10
+msgid "Units"
+msgstr "Jednotky"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:13
+msgid "Data Unit Prefix"
+msgstr "Předpona Datové Jednotky"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:17
+msgid "Decimal"
+msgstr "Decimální"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:18
+msgid "Binary"
+msgstr "Binární"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:26
+msgid "Show Network Speeds in Bits per Second"
+msgstr "Zobrazit Rychlost Sítě v Bitech za Sekundu"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:31
+msgid "Temperature Unit"
+msgstr "Jednotka Teploty"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:35
+msgid "Celsius"
+msgstr "Celsius"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:36
+msgid "Kelvin"
+msgstr "Kelvin"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:37
+msgid "Fahrenheit"
+msgstr "Fahrenheit"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:47
+msgid "User Interface"
+msgstr "Uživatelské Rozhraní"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:50
+msgid "Refresh Speed"
+msgstr "Rychlost Obnovení"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:54
+msgid "Very Slow"
+msgstr "Velmi Pomalá"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:55
+msgid "Slow"
+msgstr "Pomalá"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:56
+msgid "Normal"
+msgstr "Normální"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:57
+msgid "Fast"
+msgstr "Rychlá"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:58
+msgid "Very Fast"
+msgstr "Velmi Rychlá"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:66
+msgid "Show Graph Grids"
+msgstr "Zobrazit Mřížky Grafů"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:71
+msgid "Graph Data Points"
+msgstr "Body Dat Grafu"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:85
+msgid "Show Search Fields on Launch"
+msgstr "Zobrazit Vyhledávací Pole při Startu"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:90
+msgid "Show Usage Details in Sidebar"
+msgstr "Zobrazit Detaily Využití v Bočním Panelu"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:95
+msgid "Show Device Descriptions in Sidebar"
+msgstr "Zobrazit Popisky Zařízení v Bočním Panelu"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:100
+msgid "Sidebar Meter Type"
+msgstr "Typ Měřidla v Bočním Panelu"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:104
+msgid "Bar"
+msgstr "Pruh"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:105
+msgid "Graph"
+msgstr "Graf"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:121
+#: data/resources/ui/dialogs/settings_dialog.ui:182
+msgid "Information Columns"
+msgstr "Informační Sloupce"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:265
+msgid "Devices"
+msgstr "Zařízení"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:268
+msgid "Drives"
+msgstr "Disky"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:271
+msgid "Show Virtual Drives"
+msgstr "Zobrazit Virtuální Disky"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:281
+msgid "Show Virtual Network Interfaces"
+msgstr "Zobrazit Virtuální Síťová Rozhraní"
+
+#: data/resources/ui/pages/applications.ui:6
+msgid "Kill Application"
+msgstr "Zabít Aplikaci"
+
+#: data/resources/ui/pages/applications.ui:10
+msgid "Halt Application"
+msgstr "Zastavit Aplikaci"
+
+#: data/resources/ui/pages/applications.ui:14
+msgid "Continue Application"
+msgstr "Obnovit Aplikaci"
+
+#: data/resources/ui/pages/applications.ui:95
+msgid "End Application"
+msgstr "Ukončit Aplikaci"
+
+#: data/resources/ui/pages/cpu.ui:22
+msgid "Options"
+msgstr "Možnosti"
+
+#: data/resources/ui/pages/cpu.ui:26
+msgid "Show Usages of Logical CPUs"
+msgstr "Zobrazit Využití Logických CPU"
+
+#: data/resources/ui/pages/cpu.ui:83 data/resources/ui/pages/gpu.ui:66
+msgid "Sensors"
+msgstr "Senzory"
+
+#: data/resources/ui/pages/cpu.ui:90 data/resources/ui/pages/gpu.ui:69
+msgid "Temperature"
+msgstr "Teplota"
+
+#: data/resources/ui/pages/cpu.ui:104
+msgid "Max Frequency"
+msgstr "Maximální Frekvence"
+
+#: data/resources/ui/pages/cpu.ui:113
+msgid "Logical Cores"
+msgstr "Logická Jádra"
+
+#: data/resources/ui/pages/cpu.ui:122
+msgid "Physical Cores"
+msgstr "Fyzická Jádra"
+
+#: data/resources/ui/pages/cpu.ui:131
+msgid "Sockets"
+msgstr "Patice"
+
+#: data/resources/ui/pages/cpu.ui:140
+msgid "Virtualization"
+msgstr "Virtualizace"
+
+#: data/resources/ui/pages/cpu.ui:149
+msgid "Architecture"
+msgstr "Architektura"
+
+#: data/resources/ui/pages/drive.ui:39 data/resources/ui/pages/memory.ui:72
+msgid "Type"
+msgstr "Typ"
+
+#: data/resources/ui/pages/drive.ui:48
+msgid "Device"
+msgstr "Zařízení"
+
+#: data/resources/ui/pages/drive.ui:57
+msgid "Capacity"
+msgstr "Kapacita"
+
+#: data/resources/ui/pages/drive.ui:66
+msgid "Writable"
+msgstr "Zapisovatelné"
+
+#: data/resources/ui/pages/drive.ui:75
+msgid "Removable"
+msgstr "Odstranitelné"
+
+#: data/resources/ui/pages/gpu.ui:37
+msgid "GPU Frequency"
+msgstr "Frekvence GPU"
+
+#: data/resources/ui/pages/gpu.ui:50
+msgid "Video Memory Frequency"
+msgstr "Frekvence Videopaměti"
+
+#: data/resources/ui/pages/gpu.ui:55
+msgid "Power Usage"
+msgstr "Spotřeba"
+
+#: data/resources/ui/pages/gpu.ui:87 data/resources/ui/pages/network.ui:58
+msgid "Manufacturer"
+msgstr "Výrobce"
+
+#: data/resources/ui/pages/gpu.ui:96
+msgid "PCI Slot"
+msgstr "PCI Slot"
+
+#: data/resources/ui/pages/gpu.ui:105 data/resources/ui/pages/network.ui:67
+msgid "Driver Used"
+msgstr "Použitý Ovladač"
+
+#: data/resources/ui/pages/gpu.ui:114
+msgid "Max Power Cap"
+msgstr "Max Limit Spotřeby"
+
+#: data/resources/ui/pages/memory.ui:9
+msgid "You need to authenticate to see memory properties"
+msgstr "Pro zobrazení vlastností paměti se musíte autentizovat"
+
+#: data/resources/ui/pages/memory.ui:10
+msgid "Authenticate"
+msgstr "Autentizovat"
+
+#: data/resources/ui/pages/memory.ui:45
+msgid "Slots Used"
+msgstr "Použité Sloty"
+
+#: data/resources/ui/pages/memory.ui:54
+msgid "Speed"
+msgstr "Rychlost"
+
+#: data/resources/ui/pages/memory.ui:63
+msgid "Form Factor"
+msgstr "Formát"
+
+#: data/resources/ui/pages/memory.ui:81
+msgid "Type Detail"
+msgstr "Detail Typu"
+
+#: data/resources/ui/pages/network.ui:35
+msgid "Total Received"
+msgstr "Celkem Přijato"
+
+#: data/resources/ui/pages/network.ui:44
+msgid "Total Sent"
+msgstr "Celkem Odesláno"
+
+#: data/resources/ui/pages/network.ui:76
+msgid "Interface"
+msgstr "Rozhraní"
+
+#: data/resources/ui/pages/network.ui:85
+msgid "Hardware Address"
+msgstr "Hardwarová Adresa"
+
+#: data/resources/ui/pages/processes.ui:6
+msgid "Kill Process"
+msgstr "Zabít Proces"
+
+#: data/resources/ui/pages/processes.ui:10
+msgid "Halt Process"
+msgstr "Zastavit Proces"
+
+#: data/resources/ui/pages/processes.ui:14
+msgid "Continue Process"
+msgstr "Obnovit Proces"
+
+#: data/resources/ui/pages/processes.ui:95
+msgid "End Process"
+msgstr "Ukončit Proces"
