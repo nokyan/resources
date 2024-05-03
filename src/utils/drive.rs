@@ -298,7 +298,7 @@ impl Drive {
         match self.drive_type {
             DriveType::CdDvdBluray => ThemedIcon::new("cd-dvd-bluray-symbolic").into(),
             DriveType::Emmc => ThemedIcon::new("emmc-symbolic").into(),
-            DriveType::Flash => ThemedIcon::new("flash-memory-symbolic").into(),
+            DriveType::Flash => ThemedIcon::new("flash-storage-symbolic").into(),
             DriveType::Floppy => ThemedIcon::new("floppy-symbolic").into(),
             DriveType::Hdd => ThemedIcon::new("hdd-symbolic").into(),
             DriveType::LoopDevice => ThemedIcon::new("loop-device-symbolic").into(),
