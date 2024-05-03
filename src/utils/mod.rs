@@ -44,7 +44,7 @@ static TICK_RATE: Lazy<usize> =
     Lazy::new(|| sysconf::sysconf(sysconf::SysconfVariable::ScClkTck).unwrap_or(100) as usize);
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
-static IS_FLATPAK: Lazy<bool> = Lazy::new(|| {
+pub static IS_FLATPAK: Lazy<bool> = Lazy::new(|| {
     let is_flatpak = std::path::Path::new("/.flatpak-info").exists();
 
     if is_flatpak {
