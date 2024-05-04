@@ -24,7 +24,6 @@ adw = { version = "0.6.0", features = ["v1_5"], package = "libadwaita" }
 regex = "1.10.4"
 sysconf = "0.3.4"
 nvml-wrapper = "0.10.0"
-unescape = "0.1.0"
 nix = { version = "0.28", default_features = false, features = ["signal"] }
 plotters = { version = "0.3.5", default_features = false, features = [
     "area_series",
