@@ -162,7 +162,7 @@ impl Application {
         self.set_accels_for_action("app.end-app-process", &["<Control>E", "Delete"]);
         self.set_accels_for_action("app.kill-app-process", &["<Control>K", "<Shift>Delete"]);
         self.set_accels_for_action("app.halt-app-process", &["<Control>H"]);
-        self.set_accels_for_action("app.continue-app-process", &["<Control>C"]);
+        self.set_accels_for_action("app.continue-app-process", &["<Control>O"]);
         self.set_accels_for_action("app.information-app-process", &["<Control>I", "Return"]);
     }
 
