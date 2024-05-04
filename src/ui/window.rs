@@ -624,7 +624,7 @@ impl MainWindow {
                 let toolbar = if let Some(model) = &drive.inner.model {
                     self.add_page(&page, model, &display_name)
                 } else {
-                    self.add_page(&page, &display_name, "")
+                    self.add_page(&page, &drive.inner.block_device, &display_name)
                 };
 
                 drive_pages.insert(path, toolbar);
