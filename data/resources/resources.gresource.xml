@@ -6,6 +6,7 @@
     <file preprocess="xml-stripblanks" alias="bridge-symbolic.svg">icons/bridge-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="cd-dvd-bluray-symbolic.svg">icons/cd-dvd-bluray-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="device-settings-symbolic.svg">icons/device-settings-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="docker-bridge-symbolic.svg">icons/docker-bridge-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="emmc-symbolic.svg">icons/emmc-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="ethernet-symbolic.svg">icons/ethernet-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="flash-storage-symbolic.svg">icons/flash-storage-symbolic.svg</file>

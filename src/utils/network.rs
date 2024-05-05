@@ -43,6 +43,7 @@ impl NetworkData {
 pub enum InterfaceType {
     Bluetooth,
     Bridge,
+    Docker,
     Ethernet,
     InfiniBand,
     Slip,
@@ -62,6 +63,10 @@ impl InterfaceType {
 
         if interface_name.starts_with("bn") {
             Self::Bluetooth
+        } else if interface_name.starts_with("br") {
+            Self::Bridge
+        } else if interface_name.starts_with("docker") {
+            Self::Docker
         } else if interface_name.starts_with("eth") || interface_name.starts_with("en") {
             Self::Ethernet
         } else if interface_name.starts_with("ib") {
@@ -111,6 +116,7 @@ impl Display for InterfaceType {
                 InterfaceType::Bluetooth => i18n("Bluetooth Tether"),
                 InterfaceType::Bridge => i18n("Network Bridge"),
                 InterfaceType::Ethernet => i18n("Ethernet Connection"),
+                InterfaceType::Docker => i18n("Docker Bridge"),
                 InterfaceType::InfiniBand => i18n("InfiniBand Connection"),
                 InterfaceType::Slip => i18n("Serial Line IP Connection"),
                 InterfaceType::VirtualEthernet => i18n("Virtual Ethernet Device"),
@@ -262,6 +268,7 @@ impl NetworkInterface {
         match self.interface_type {
             InterfaceType::Bluetooth => ThemedIcon::new("bluetooth-symbolic").into(),
             InterfaceType::Bridge => ThemedIcon::new("bridge-symbolic").into(),
+            InterfaceType::Docker => ThemedIcon::new("docker-bridge-symbolic").into(),
             InterfaceType::Ethernet => ThemedIcon::new("ethernet-symbolic").into(),
             InterfaceType::InfiniBand => ThemedIcon::new("infiniband-symbolic").into(),
             InterfaceType::Slip => ThemedIcon::new("slip-symbolic").into(),
@@ -278,6 +285,7 @@ impl NetworkInterface {
         matches!(
             self.interface_type,
             InterfaceType::Bridge
+                | InterfaceType::Docker
                 | InterfaceType::VirtualEthernet
                 | InterfaceType::Vpn
                 | InterfaceType::VmBridge
