@@ -26,6 +26,7 @@ const DESKTOP_EXEC_BLOCKLIST: &[&str] = &["bash", "zsh", "fish", "sh", "ksh", "f
 const APP_ID_BLOCKLIST: &[&str] = &[
     "org.gnome.Terminal.Preferences", // Prevents the actual Terminal app "org.gnome.Terminal" from being shown
     "org.freedesktop.IBus.Panel.Extension.Gtk3", // Technical application
+    "org.gnome.RemoteDesktop.Handover", // Technical application
 ];
 
 static RE_ENV_FILTER: Lazy<Regex> = Lazy::new(|| Regex::new(r"env\s*\S*=\S*\s*(.*)").unwrap());
@@ -34,11 +35,12 @@ static RE_FLATPAK_FILTER: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"flatpak run .* --command=(\S*)").unwrap());
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
-static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
+pub static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
     let home = std::env::var("HOME").unwrap_or_else(|_| "/".to_string());
     let mut data_dirs: Vec<PathBuf> = std::env::var("XDG_DATA_DIRS")
         .unwrap_or_else(|_| format!("/usr/share:{home}/.local/share"))
         .split(':')
+        .map(|s| s.replace('~', &home))
         .map(PathBuf::from)
         .collect();
     data_dirs.push(PathBuf::from(format!("{home}/.local/share")));
@@ -154,9 +156,7 @@ impl App {
             .iter()
             .filter_map(|path| {
                 let applications_path = path.join("applications");
-                let expanded_path = expanduser::expanduser(applications_path.to_string_lossy())
-                    .unwrap_or(applications_path);
-                expanded_path.read_dir().ok().map(|read| {
+                applications_path.read_dir().ok().map(|read| {
                     read.filter_map(|file_res| {
                         file_res
                             .ok()
