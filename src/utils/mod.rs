@@ -38,10 +38,13 @@ static BOOT_TIMESTAMP: Lazy<Option<i64>> = Lazy::new(|| {
         .ok()
 });
 
-static NUM_CPUS: Lazy<usize> = Lazy::new(num_cpus::get);
-
 static TICK_RATE: Lazy<usize> =
     Lazy::new(|| sysconf::sysconf(sysconf::SysconfVariable::ScClkTck).unwrap_or(100) as usize);
+
+static FLATPAK_APP_PATH: Lazy<String> =
+    Lazy::new(|| flatpak_app_path().unwrap_or_else(|_| String::new()));
+
+pub static NUM_CPUS: Lazy<usize> = Lazy::new(num_cpus::get);
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 pub static IS_FLATPAK: Lazy<bool> = Lazy::new(|| {
@@ -55,9 +58,6 @@ pub static IS_FLATPAK: Lazy<bool> = Lazy::new(|| {
 
     is_flatpak
 });
-
-static FLATPAK_APP_PATH: Lazy<String> =
-    Lazy::new(|| flatpak_app_path().unwrap_or_else(|_| String::new()));
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 pub fn flatpak_app_path() -> Result<String> {

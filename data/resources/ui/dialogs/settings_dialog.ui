@@ -48,6 +48,7 @@
             <child>
               <object class="AdwComboRow" id="refresh_speed_combo_row">
                 <property name="title" translatable="yes">Refresh Speed</property>
+                <property name="subtitle" translatable="yes">Higher refresh speeds can lead to higher processor usage</property>
                 <property name="model">
                   <object class="GtkStringList">
                     <items>
@@ -88,11 +89,13 @@
             <child>
               <object class="AdwSwitchRow" id="sidebar_details_row">
                 <property name="title" translatable="yes">Show Usage Details in Sidebar</property>
+                <property name="subtitle" translatable="yes">If enabled, the usage along with other information will be displayed</property>
               </object>
             </child>
             <child>
               <object class="AdwSwitchRow" id="sidebar_description_row">
                 <property name="title" translatable="yes">Show Device Descriptions in Sidebar</property>
+                <property name="subtitle" translatable="yes">If enabled, a device identifier like its name or device type will be displayed</property>
               </object>
             </child>
             <child>
@@ -106,6 +109,12 @@
                     </items>
                   </object>
                 </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="normalize_cpu_usage_row">
+                <property name="title" translatable="yes">Normalize Processor Usage</property>
+                <property name="subtitle" translatable="yes">If enabled, the total usage of all cores will be divided by the amount of cores</property>
               </object>
             </child>
           </object>
@@ -269,6 +278,7 @@
             <child>
               <object class="AdwSwitchRow" id="show_virtual_drives_row">
                 <property name="title" translatable="yes">Show Virtual Drives</property>
+                <property name="subtitle" translatable="yes">Virtual drives are for example ZFS volumes or mapped devices</property>
               </object>
             </child>
           </object>
@@ -279,6 +289,7 @@
             <child>
               <object class="AdwSwitchRow" id="show_virtual_network_interfaces_row">
                 <property name="title" translatable="yes">Show Virtual Network Interfaces</property>
+                <property name="subtitle" translatable="yes">Virtual network interfaces are for example bridges or VPN tunnels</property>
               </object>
             </child>
           </object>

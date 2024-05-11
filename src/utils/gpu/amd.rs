@@ -6,7 +6,10 @@ use regex::Regex;
 
 use std::path::PathBuf;
 
-use crate::utils::{pci::Device, IS_FLATPAK};
+use crate::utils::{
+    pci::{self, Device},
+    IS_FLATPAK,
+};
 
 use super::GpuImpl;
 
@@ -94,7 +97,7 @@ impl GpuImpl for AmdGpu {
         let revision =
             u8::from_str_radix(&self.read_device_file("revision")?.replace("0x", ""), 16)?;
         Ok(AMDGPU_IDS
-            .get(&(self.device().map_or(0, |device| device.pid()), revision))
+            .get(&(self.device().map_or(0, pci::Device::pid), revision))
             .cloned()
             .unwrap_or_else(|| {
                 if let Ok(drm_name) = self.drm_name() {

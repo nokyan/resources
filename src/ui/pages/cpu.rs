@@ -8,7 +8,7 @@ use crate::ui::widgets::graph_box::ResGraphBox;
 use crate::utils::cpu::{CpuData, CpuInfo};
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_frequency, convert_temperature};
-use crate::utils::{cpu, NaNDefault};
+use crate::utils::{cpu, NaNDefault, NUM_CPUS};
 
 mod imp {
     use std::cell::{Cell, RefCell};
@@ -333,7 +333,12 @@ impl ResCPU {
 
         imp.total_cpu.graph().push_data_point(total_fraction);
 
-        let mut percentage_string = format!("{} %", (total_fraction * 100.0).round());
+        let mut percentage = total_fraction * 100.0;
+        if !SETTINGS.normalize_cpu_usage() {
+            percentage *= *NUM_CPUS as f64;
+        }
+
+        let mut percentage_string = format!("{} %", percentage.round());
         imp.total_cpu.set_subtitle(&percentage_string);
 
         imp.old_total_usage.set(*new_total_usage);
