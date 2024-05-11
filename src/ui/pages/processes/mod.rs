@@ -19,6 +19,7 @@ use crate::utils::app::AppsContext;
 use crate::utils::process::{ProcessAction, ProcessItem};
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_speed, convert_storage, format_time};
+use crate::utils::NUM_CPUS;
 
 use self::process_entry::ProcessEntry;
 use self::process_name_cell::ResProcessNameCell;
@@ -341,22 +342,22 @@ impl ResProcesses {
 
         let mut columns = imp.columns.borrow_mut();
 
-        columns.push(self.add_name_column(&column_view));
-        columns.push(self.add_pid_column(&column_view));
-        columns.push(self.add_user_column(&column_view));
-        columns.push(self.add_memory_column(&column_view));
-        columns.push(self.add_cpu_column(&column_view));
-        columns.push(self.add_read_speed_column(&column_view));
-        columns.push(self.add_read_total_column(&column_view));
-        columns.push(self.add_write_speed_column(&column_view));
-        columns.push(self.add_write_total_column(&column_view));
-        columns.push(self.add_gpu_column(&column_view));
-        columns.push(self.add_gpu_mem_column(&column_view));
-        columns.push(self.add_encoder_column(&column_view));
-        columns.push(self.add_decoder_column(&column_view));
-        columns.push(self.add_total_cpu_time_column(&column_view));
-        columns.push(self.add_user_cpu_time_column(&column_view));
-        columns.push(self.add_system_cpu_time_column(&column_view));
+        columns.push(Self::add_name_column(&column_view));
+        columns.push(Self::add_pid_column(&column_view));
+        columns.push(Self::add_user_column(&column_view));
+        columns.push(Self::add_memory_column(&column_view));
+        columns.push(Self::add_cpu_column(&column_view));
+        columns.push(Self::add_read_speed_column(&column_view));
+        columns.push(Self::add_read_total_column(&column_view));
+        columns.push(Self::add_write_speed_column(&column_view));
+        columns.push(Self::add_write_total_column(&column_view));
+        columns.push(Self::add_gpu_column(&column_view));
+        columns.push(Self::add_gpu_mem_column(&column_view));
+        columns.push(Self::add_encoder_column(&column_view));
+        columns.push(Self::add_decoder_column(&column_view));
+        columns.push(Self::add_total_cpu_time_column(&column_view));
+        columns.push(Self::add_user_cpu_time_column(&column_view));
+        columns.push(Self::add_system_cpu_time_column(&column_view));
 
         let store = gio::ListStore::new::<ProcessEntry>();
 
@@ -589,7 +590,7 @@ impl ResProcesses {
         dialog.present(&MainWindow::default());
     }
 
-    fn add_name_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_name_column(column_view: &ColumnView) -> ColumnViewColumn {
         let name_col_factory = gtk::SignalListItemFactory::new();
 
         let name_col =
@@ -635,7 +636,7 @@ impl ResProcesses {
         name_col
     }
 
-    fn add_pid_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_pid_column(column_view: &ColumnView) -> ColumnViewColumn {
         let pid_col_factory = gtk::SignalListItemFactory::new();
 
         let pid_col =
@@ -643,7 +644,7 @@ impl ResProcesses {
 
         pid_col.set_resizable(true);
 
-        pid_col_factory.connect_setup(clone!(@strong self as this => move |_factory, item| {
+        pid_col_factory.connect_setup(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
             let row = gtk::Inscription::new(None);
@@ -652,7 +653,7 @@ impl ResProcesses {
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("pid")
                 .bind(&row, "text", Widget::NONE);
-        }));
+        });
 
         let pid_col_sorter = NumericSorter::builder()
             .sort_order(SortType::Ascending)
@@ -675,7 +676,7 @@ impl ResProcesses {
         pid_col
     }
 
-    fn add_user_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_user_column(column_view: &ColumnView) -> ColumnViewColumn {
         let user_col_factory = gtk::SignalListItemFactory::new();
 
         let user_col =
@@ -716,7 +717,7 @@ impl ResProcesses {
         user_col
     }
 
-    fn add_memory_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_memory_column(column_view: &ColumnView) -> ColumnViewColumn {
         let memory_col_factory = gtk::SignalListItemFactory::new();
 
         let memory_col =
@@ -761,7 +762,7 @@ impl ResProcesses {
         memory_col
     }
 
-    fn add_cpu_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_cpu_column(column_view: &ColumnView) -> ColumnViewColumn {
         let cpu_col_factory = gtk::SignalListItemFactory::new();
 
         let cpu_col =
@@ -780,7 +781,12 @@ impl ResProcesses {
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("cpu_usage")
                 .chain_closure::<String>(closure!(|_: Option<Object>, cpu_usage: f32| {
-                    format!("{:.1} %", cpu_usage * 100.0)
+                    let mut percentage = cpu_usage * 100.0;
+                    if !SETTINGS.normalize_cpu_usage() {
+                        percentage *= *NUM_CPUS as f32;
+                    }
+
+                    format!("{percentage:.1} %")
                 }))
                 .bind(&row, "text", Widget::NONE);
         });
@@ -806,7 +812,7 @@ impl ResProcesses {
         cpu_col
     }
 
-    fn add_read_speed_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_read_speed_column(column_view: &ColumnView) -> ColumnViewColumn {
         let read_speed_col_factory = gtk::SignalListItemFactory::new();
 
         let read_speed_col = gtk::ColumnViewColumn::new(
@@ -859,7 +865,7 @@ impl ResProcesses {
         read_speed_col
     }
 
-    fn add_read_total_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_read_total_column(column_view: &ColumnView) -> ColumnViewColumn {
         let read_total_col_factory = gtk::SignalListItemFactory::new();
 
         let read_total_col = gtk::ColumnViewColumn::new(
@@ -912,7 +918,7 @@ impl ResProcesses {
         read_total_col
     }
 
-    fn add_write_speed_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_write_speed_column(column_view: &ColumnView) -> ColumnViewColumn {
         let write_speed_col_factory = gtk::SignalListItemFactory::new();
 
         let write_speed_col = gtk::ColumnViewColumn::new(
@@ -965,7 +971,7 @@ impl ResProcesses {
         write_speed_col
     }
 
-    fn add_write_total_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_write_total_column(column_view: &ColumnView) -> ColumnViewColumn {
         let write_total_col_factory = gtk::SignalListItemFactory::new();
 
         let write_total_col = gtk::ColumnViewColumn::new(
@@ -1011,14 +1017,14 @@ impl ResProcesses {
 
         SETTINGS.connect_processes_show_drive_write_total(
             clone!(@strong write_total_col => move |visible| {
-                write_total_col.set_visible(visible)
+                write_total_col.set_visible(visible);
             }),
         );
 
         write_total_col
     }
 
-    fn add_gpu_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_gpu_column(column_view: &ColumnView) -> ColumnViewColumn {
         let gpu_col_factory = gtk::SignalListItemFactory::new();
 
         let gpu_col = gtk::ColumnViewColumn::new(Some(&i18n("GPU")), Some(gpu_col_factory.clone()));
@@ -1062,7 +1068,7 @@ impl ResProcesses {
         gpu_col
     }
 
-    fn add_encoder_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_encoder_column(column_view: &ColumnView) -> ColumnViewColumn {
         let encoder_col_factory = gtk::SignalListItemFactory::new();
 
         let encoder_col = gtk::ColumnViewColumn::new(
@@ -1109,7 +1115,7 @@ impl ResProcesses {
         encoder_col
     }
 
-    fn add_decoder_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_decoder_column(column_view: &ColumnView) -> ColumnViewColumn {
         let decoder_col_factory = gtk::SignalListItemFactory::new();
 
         let decoder_col = gtk::ColumnViewColumn::new(
@@ -1156,7 +1162,7 @@ impl ResProcesses {
         decoder_col
     }
 
-    fn add_gpu_mem_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_gpu_mem_column(column_view: &ColumnView) -> ColumnViewColumn {
         let gpu_mem_col_factory = gtk::SignalListItemFactory::new();
 
         let gpu_mem_col = gtk::ColumnViewColumn::new(
@@ -1202,7 +1208,7 @@ impl ResProcesses {
         gpu_mem_col
     }
 
-    fn add_total_cpu_time_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_total_cpu_time_column(column_view: &ColumnView) -> ColumnViewColumn {
         let total_cpu_time_col_factory = gtk::SignalListItemFactory::new();
 
         let total_cpu_time_col = gtk::ColumnViewColumn::new(
@@ -1248,7 +1254,7 @@ impl ResProcesses {
         total_cpu_time_col
     }
 
-    fn add_user_cpu_time_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_user_cpu_time_column(column_view: &ColumnView) -> ColumnViewColumn {
         let user_cpu_time_col_factory = gtk::SignalListItemFactory::new();
 
         let user_cpu_time_col = gtk::ColumnViewColumn::new(
@@ -1294,7 +1300,7 @@ impl ResProcesses {
         user_cpu_time_col
     }
 
-    fn add_system_cpu_time_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_system_cpu_time_column(column_view: &ColumnView) -> ColumnViewColumn {
         let system_cpu_time_col_factory = gtk::SignalListItemFactory::new();
 
         let system_cpu_time_col = gtk::ColumnViewColumn::new(

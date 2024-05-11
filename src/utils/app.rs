@@ -66,7 +66,7 @@ static MESSAGE_LOCALES: Lazy<Vec<String>> = Lazy::new(|| {
     let envs = ["LC_MESSAGES", "LANGUAGE", "LANG", "LC_ALL"];
     let mut return_vec: Vec<String> = Vec::new();
 
-    for env in envs.iter() {
+    for env in &envs {
         if let Ok(locales) = std::env::var(env) {
             // split because LANGUAGE may contain multiple languages
             for locale in locales.split(':') {

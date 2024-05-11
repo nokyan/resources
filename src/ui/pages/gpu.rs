@@ -5,7 +5,7 @@ use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::gpu::{Gpu, GpuData};
 use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
-use crate::utils::NaNDefault;
+use crate::utils::{pci, NaNDefault};
 
 mod imp {
     use std::cell::{Cell, RefCell};
@@ -255,10 +255,7 @@ impl ResGPU {
 
         imp.driver_used.set_subtitle(&gpu.driver());
 
-        if gpu
-            .get_vendor()
-            .map(|vendor| vendor.vid())
-            .unwrap_or_default()
+        if gpu.get_vendor().map(pci::Vendor::vid).unwrap_or_default()
             == crate::utils::gpu::VID_INTEL
         {
             imp.encode_decode_combined_usage.set_visible(true);

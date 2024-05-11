@@ -19,6 +19,7 @@ use crate::utils::app::{AppItem, AppsContext};
 use crate::utils::process::ProcessAction;
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_speed, convert_storage};
+use crate::utils::NUM_CPUS;
 
 use self::application_entry::ApplicationEntry;
 use self::application_name_cell::ResApplicationNameCell;
@@ -337,17 +338,17 @@ impl ResApplications {
 
         let mut columns = imp.columns.borrow_mut();
 
-        columns.push(self.add_name_column(&column_view));
-        columns.push(self.add_memory_column(&column_view));
-        columns.push(self.add_cpu_column(&column_view));
-        columns.push(self.add_read_speed_column(&column_view));
-        columns.push(self.add_read_total_column(&column_view));
-        columns.push(self.add_write_speed_column(&column_view));
-        columns.push(self.add_write_total_column(&column_view));
-        columns.push(self.add_gpu_column(&column_view));
-        columns.push(self.add_gpu_mem_column(&column_view));
-        columns.push(self.add_encoder_column(&column_view));
-        columns.push(self.add_decoder_column(&column_view));
+        columns.push(Self::add_name_column(&column_view));
+        columns.push(Self::add_memory_column(&column_view));
+        columns.push(Self::add_cpu_column(&column_view));
+        columns.push(Self::add_read_speed_column(&column_view));
+        columns.push(Self::add_read_total_column(&column_view));
+        columns.push(Self::add_write_speed_column(&column_view));
+        columns.push(Self::add_write_total_column(&column_view));
+        columns.push(Self::add_gpu_column(&column_view));
+        columns.push(Self::add_gpu_mem_column(&column_view));
+        columns.push(Self::add_encoder_column(&column_view));
+        columns.push(Self::add_decoder_column(&column_view));
 
         let store = gio::ListStore::new::<ApplicationEntry>();
 
@@ -468,8 +469,10 @@ impl ResApplications {
         let app_dialog = ResAppDialog::new();
         app_dialog.init(app_item);
         app_dialog.present(&MainWindow::default());
-        *imp.open_dialog.borrow_mut() =
-            Some((app_item.id.as_ref().map(|gs| gs.to_string()), app_dialog));
+        *imp.open_dialog.borrow_mut() = Some((
+            app_item.id.as_ref().map(std::string::ToString::to_string),
+            app_dialog,
+        ));
     }
 
     fn search_filter(&self, obj: &Object) -> bool {
@@ -615,7 +618,7 @@ impl ResApplications {
         dialog.present(&MainWindow::default());
     }
 
-    fn add_name_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_name_column(column_view: &ColumnView) -> ColumnViewColumn {
         let name_col_factory = gtk::SignalListItemFactory::new();
 
         let name_col =
@@ -657,7 +660,7 @@ impl ResApplications {
         name_col
     }
 
-    fn add_memory_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_memory_column(column_view: &ColumnView) -> ColumnViewColumn {
         let memory_col_factory = gtk::SignalListItemFactory::new();
 
         let memory_col =
@@ -703,7 +706,7 @@ impl ResApplications {
         memory_col
     }
 
-    fn add_cpu_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_cpu_column(column_view: &ColumnView) -> ColumnViewColumn {
         let cpu_col_factory = gtk::SignalListItemFactory::new();
 
         let cpu_col =
@@ -722,7 +725,12 @@ impl ResApplications {
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("cpu_usage")
                 .chain_closure::<String>(closure!(|_: Option<Object>, cpu_usage: f32| {
-                    format!("{:.1} %", cpu_usage * 100.0)
+                    let mut percentage = cpu_usage * 100.0;
+                    if !SETTINGS.normalize_cpu_usage() {
+                        percentage *= *NUM_CPUS as f32;
+                    }
+
+                    format!("{percentage:.1} %")
                 }))
                 .bind(&row, "text", Widget::NONE);
         });
@@ -748,7 +756,7 @@ impl ResApplications {
         cpu_col
     }
 
-    fn add_read_speed_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_read_speed_column(column_view: &ColumnView) -> ColumnViewColumn {
         let read_speed_col_factory = gtk::SignalListItemFactory::new();
 
         let read_speed_col = gtk::ColumnViewColumn::new(
@@ -799,7 +807,7 @@ impl ResApplications {
         read_speed_col
     }
 
-    fn add_read_total_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_read_total_column(column_view: &ColumnView) -> ColumnViewColumn {
         let read_total_col_factory = gtk::SignalListItemFactory::new();
 
         let read_total_col = gtk::ColumnViewColumn::new(
@@ -846,7 +854,7 @@ impl ResApplications {
         read_total_col
     }
 
-    fn add_write_speed_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_write_speed_column(column_view: &ColumnView) -> ColumnViewColumn {
         let write_speed_col_factory = gtk::SignalListItemFactory::new();
 
         let write_speed_col = gtk::ColumnViewColumn::new(
@@ -899,7 +907,7 @@ impl ResApplications {
         write_speed_col
     }
 
-    fn add_write_total_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_write_total_column(column_view: &ColumnView) -> ColumnViewColumn {
         let write_total_col_factory = gtk::SignalListItemFactory::new();
 
         let write_total_col = gtk::ColumnViewColumn::new(
@@ -941,14 +949,14 @@ impl ResApplications {
 
         SETTINGS.connect_apps_show_drive_write_total(
             clone!(@strong write_total_col => move |visible| {
-                write_total_col.set_visible(visible)
+                write_total_col.set_visible(visible);
             }),
         );
 
         write_total_col
     }
 
-    fn add_gpu_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_gpu_column(column_view: &ColumnView) -> ColumnViewColumn {
         let gpu_col_factory = gtk::SignalListItemFactory::new();
 
         let gpu_col = gtk::ColumnViewColumn::new(Some(&i18n("GPU")), Some(gpu_col_factory.clone()));
@@ -992,7 +1000,7 @@ impl ResApplications {
         gpu_col
     }
 
-    fn add_encoder_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_encoder_column(column_view: &ColumnView) -> ColumnViewColumn {
         let encoder_col_factory = gtk::SignalListItemFactory::new();
 
         let encoder_col = gtk::ColumnViewColumn::new(
@@ -1039,7 +1047,7 @@ impl ResApplications {
         encoder_col
     }
 
-    fn add_decoder_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_decoder_column(column_view: &ColumnView) -> ColumnViewColumn {
         let decoder_col_factory = gtk::SignalListItemFactory::new();
 
         let decoder_col = gtk::ColumnViewColumn::new(
@@ -1086,7 +1094,7 @@ impl ResApplications {
         decoder_col
     }
 
-    fn add_gpu_mem_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_gpu_mem_column(column_view: &ColumnView) -> ColumnViewColumn {
         let gpu_mem_col_factory = gtk::SignalListItemFactory::new();
         let gpu_mem_col = gtk::ColumnViewColumn::new(
             Some(&i18n("Video Memory")),

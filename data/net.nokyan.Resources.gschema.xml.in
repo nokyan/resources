@@ -185,5 +185,9 @@
       <default>&quot;applications&quot;</default>
       <summary>Page that was last viewed before the last session was ended</summary>
     </key>
+    <key name="normalize-cpu-usage" type="b">
+      <default>true</default>
+      <summary>Whether the CPU usage should be normalized (divided by the number of threads)</summary>
+    </key>
   </schema>
 </schemalist>

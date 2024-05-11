@@ -21,7 +21,7 @@ const TEMPLATE_RE_TYPE_DETAIL: &str = r"MEMORY_DEVICE_%_TYPE_DETAIL=(.*)";
 
 const TEMPLATE_RE_SIZE: &str = r"MEMORY_DEVICE_%_SIZE=(\d*)";
 
-const BYTES_IN_GIB: u64 = 1073741824; // 1024 * 1024 * 1024
+const BYTES_IN_GIB: u64 = 1_073_741_824; // 1024 * 1024 * 1024
 
 static RE_CONFIGURED_SPEED: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"Configured Memory Speed: (\d+) MT/s").unwrap());
@@ -48,7 +48,7 @@ static RE_SWAP_FREE: Lazy<Regex> = Lazy::new(|| Regex::new(r"SwapFree:\s*(\d*) k
 static RE_NUM_MEMORY_DEVICES: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"MEMORY_ARRAY_NUM_DEVICES=(\d*)").unwrap());
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct MemoryData {
     pub total_mem: usize,
     pub available_mem: usize,
