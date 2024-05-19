@@ -181,4 +181,24 @@ impl ResGraph {
         data_points.push_back(data);
         imp.obj().queue_draw();
     }
+
+    pub fn data_points(&self) -> Vec<f64> {
+        self.imp().data_points.borrow().iter().copied().collect()
+    }
+
+    pub fn push_data_points(&self, data: &[f64]) {
+        let imp = self.imp();
+        let mut data_points = imp.data_points.borrow_mut();
+        for data_point in data {
+            if data_points.len() >= MAX_DATA_POINTS as usize {
+                data_points.pop_front();
+            }
+            data_points.push_back(*data_point);
+        }
+        imp.obj().queue_draw();
+    }
+
+    pub fn clear_data_points(&self) {
+        self.imp().data_points.borrow_mut().clear();
+    }
 }

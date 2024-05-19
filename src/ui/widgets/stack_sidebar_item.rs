@@ -4,6 +4,8 @@ use gtk::{
     glib::{self},
 };
 
+use super::graph::ResGraph;
+
 mod imp {
     use std::cell::{Cell, RefCell};
 
@@ -44,6 +46,8 @@ mod imp {
         icon: RefCell<Icon>,
         #[property(get, set = Self::set_usage)]
         usage: Cell<f64>,
+        #[property(get = Self::tab_id, set = Self::set_tab_id, type = glib::GString)]
+        tab_id: Cell<glib::GString>,
     }
 
     impl ResStackSidebarItem {
@@ -125,6 +129,23 @@ mod imp {
 
             self.graph.push_data_point(usage);
         }
+
+        pub fn tab_id(&self) -> glib::GString {
+            let tab_id = self.tab_id.take();
+            let result = tab_id.clone();
+            self.tab_id.set(tab_id);
+
+            result
+        }
+
+        pub fn set_tab_id(&self, tab_id: &str) {
+            let current_tab_id = self.tab_id.take();
+            if current_tab_id.as_str() == tab_id {
+                self.tab_id.set(current_tab_id);
+                return;
+            }
+            self.tab_id.set(glib::GString::from(tab_id));
+        }
     }
 
     impl Default for ResStackSidebarItem {
@@ -141,6 +162,7 @@ mod imp {
                 subtitle: Default::default(),
                 icon: RefCell::new(ThemedIcon::new("generic-process").into()),
                 usage: Default::default(),
+                tab_id: Default::default(),
             }
         }
     }
@@ -196,6 +218,7 @@ impl ResStackSidebarItem {
         detail: Option<String>,
         usage_string: String,
         locked_max_y: bool,
+        tab_id: String,
     ) -> Self {
         let detail = detail.unwrap_or_default();
         let this: Self = glib::Object::builder()
@@ -212,6 +235,8 @@ impl ResStackSidebarItem {
 
         this.imp().detail_label.set_visible(!detail.is_empty());
 
+        this.imp().set_tab_id(&tab_id);
+
         this
     }
 
@@ -219,12 +244,8 @@ impl ResStackSidebarItem {
         self.imp().progress_bar.set_visible(visible);
     }
 
-    pub fn set_graph_visible(&self, visible: bool) {
-        self.imp().graph.set_visible(visible);
-    }
-
-    pub fn set_graph_color(&self, r: u8, g: u8, b: u8) {
-        self.imp().graph.set_graph_color(r, g, b);
+    pub fn graph(&self) -> ResGraph {
+        self.imp().graph.get()
     }
 
     pub fn set_usage_label_visible(&self, visible: bool) {

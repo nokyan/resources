@@ -2,6 +2,7 @@ use std::rc::Rc;
 
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, GString};
+use std::collections::HashMap;
 
 use crate::utils::settings::{SidebarMeterType, SETTINGS};
 
@@ -89,15 +90,28 @@ impl ResStackSidebar {
         self.imp().stack.borrow().clone()
     }
 
-    fn clear(&self) {
+    fn clear(&self) -> HashMap<String, Vec<f64>> {
         let imp = self.imp();
+        let mut return_map = HashMap::with_capacity(imp.rows.borrow().len());
+
         for item in imp.rows.borrow().keys() {
+            let child = item.child().and_downcast::<ResStackSidebarItem>();
+
+            if let Some(child) = child {
+                return_map.insert(child.property("tab_id"), child.graph().data_points());
+            }
+
             imp.list_box.remove(item);
         }
+
         imp.rows.borrow_mut().clear();
+
+        return_map.keys();
+
+        return_map
     }
 
-    fn populate_list(&self) {
+    fn populate_list(&self, last_data_points: HashMap<String, Vec<f64>>) {
         let imp = self.imp();
         imp.populating.set(true);
 
@@ -121,6 +135,7 @@ impl ResStackSidebar {
                 child.property("tab_detail_string"),
                 child.property("tab_usage_string"),
                 child.property("graph_locked_max_y"),
+                child.property("tab_id"),
             );
 
             child
@@ -165,27 +180,33 @@ impl ResStackSidebar {
             if child.property::<bool>("uses_progress_bar") {
                 if child.has_property("main_graph_color", Some(glib::Bytes::static_type())) {
                     let b = child.property::<glib::Bytes>("main_graph_color");
-                    sidebar_item.set_graph_color(b[0], b[1], b[2]);
+                    sidebar_item.graph().set_graph_color(b[0], b[1], b[2]);
                 }
 
                 sidebar_item.set_progress_bar_visible(
                     SETTINGS.sidebar_meter_type() == SidebarMeterType::ProgressBar,
                 );
                 sidebar_item
-                    .set_graph_visible(SETTINGS.sidebar_meter_type() == SidebarMeterType::Graph);
+                    .graph()
+                    .set_visible(SETTINGS.sidebar_meter_type() == SidebarMeterType::Graph);
                 SETTINGS.connect_sidebar_meter_type(
                     clone!(@strong sidebar_item as item => move |sidebar_meter_type| {
                         item.set_progress_bar_visible(sidebar_meter_type == SidebarMeterType::ProgressBar);
-                        item.set_graph_visible(sidebar_meter_type == SidebarMeterType::Graph);
+                        item.graph().set_visible(sidebar_meter_type == SidebarMeterType::Graph);
                     }),
                 );
                 child
                     .bind_property("usage", &sidebar_item, "usage")
                     .sync_create()
                     .build();
+
+                if let Some(data) = last_data_points.get(&child.property::<String>("tab_id")) {
+                    sidebar_item.graph().clear_data_points();
+                    sidebar_item.graph().push_data_points(data);
+                }
             } else {
                 sidebar_item.set_progress_bar_visible(false);
-                sidebar_item.set_graph_visible(false);
+                sidebar_item.graph().set_visible(false);
             }
 
             let row = gtk::ListBoxRow::builder()
@@ -236,8 +257,7 @@ impl ResStackSidebar {
 
         imp.pages.borrow().connect_items_changed(
             clone!(@strong self as this => move |_, _, _, _| {
-                this.clear();
-                this.populate_list();
+                this.populate_list(this.clear());
             }),
         );
 
