@@ -120,7 +120,7 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
             let sub_pid = u16::from_str_radix(
                 split
                     .next()
-                    .with_context(|| format!("this subdevice has no üid (line: {line})"))?,
+                    .with_context(|| format!("this subdevice has no pid (line: {line})"))?,
                 16,
             )?;
 
