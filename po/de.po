@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-11 14:47+0200\n"
-"PO-Revision-Date: 2024-05-11 14:27+0200\n"
+"POT-Creation-Date: 2024-05-25 19:54+0200\n"
+"PO-Revision-Date: 2024-05-25 19:47+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: de\n"
@@ -104,7 +104,7 @@ msgid "Icon by"
 msgstr "Icon von"
 
 #: src/ui/dialogs/app_dialog.rs:161 src/ui/dialogs/process_dialog.rs:202
-#: src/ui/pages/drive.rs:295 src/ui/pages/drive.rs:301
+#: src/ui/pages/drive.rs:302 src/ui/pages/drive.rs:308
 msgid "No"
 msgstr "Nein"
 
@@ -285,34 +285,34 @@ msgstr "Gesamtauslastung"
 msgid "CPU {}"
 msgstr "CPU {}"
 
-#: src/ui/pages/drive.rs:151
+#: src/ui/pages/drive.rs:157
 msgid "Drive"
 msgstr "Speicher"
 
-#: src/ui/pages/drive.rs:244
+#: src/ui/pages/drive.rs:251
 msgid "Drive Activity"
 msgstr "Speicheraktivität"
 
-#: src/ui/pages/drive.rs:251
+#: src/ui/pages/drive.rs:258
 msgid "Read Speed"
 msgstr "Lesegeschwindigkeit"
 
-#: src/ui/pages/drive.rs:255
+#: src/ui/pages/drive.rs:262
 msgid "Write Speed"
 msgstr "Schreibgeschwindigkeit"
 
-#: src/ui/pages/drive.rs:293 src/ui/pages/drive.rs:299
+#: src/ui/pages/drive.rs:300 src/ui/pages/drive.rs:306
 msgid "Yes"
 msgstr "Ja"
 
-#: src/ui/pages/drive.rs:367 src/ui/pages/drive.rs:372
+#: src/ui/pages/drive.rs:374 src/ui/pages/drive.rs:379
 #: src/ui/pages/network.rs:326 src/ui/pages/network.rs:335
 msgid "Highest:"
 msgstr "Höchste:"
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
-#: src/ui/pages/drive.rs:380
+#: src/ui/pages/drive.rs:401
 msgid "R: {} · W: {}"
 msgstr "L: {} · S: {}"
 
@@ -1069,7 +1069,7 @@ msgstr "Auslastung"
 
 #: data/resources/ui/dialogs/app_dialog.ui:164
 #: data/resources/ui/dialogs/process_dialog.ui:174
-#: data/resources/ui/pages/cpu.ui:97 data/resources/ui/pages/drive.ui:36
+#: data/resources/ui/pages/cpu.ui:97 data/resources/ui/pages/drive.ui:54
 #: data/resources/ui/pages/gpu.ui:80 data/resources/ui/pages/memory.ui:42
 #: data/resources/ui/pages/network.ui:51
 msgid "Properties"
@@ -1319,23 +1319,31 @@ msgstr "Virtualisierung"
 msgid "Architecture"
 msgstr "Architektur"
 
-#: data/resources/ui/pages/drive.ui:39 data/resources/ui/pages/memory.ui:72
+#: data/resources/ui/pages/drive.ui:38
+msgid "Total Read"
+msgstr "Insgesamt gelesen"
+
+#: data/resources/ui/pages/drive.ui:47
+msgid "Total Written"
+msgstr "Insgesamt geschrieben"
+
+#: data/resources/ui/pages/drive.ui:57 data/resources/ui/pages/memory.ui:72
 msgid "Type"
 msgstr "Typ"
 
-#: data/resources/ui/pages/drive.ui:48
+#: data/resources/ui/pages/drive.ui:66
 msgid "Device"
 msgstr "Gerät"
 
-#: data/resources/ui/pages/drive.ui:57
+#: data/resources/ui/pages/drive.ui:75
 msgid "Capacity"
 msgstr "Kapazität"
 
-#: data/resources/ui/pages/drive.ui:66
+#: data/resources/ui/pages/drive.ui:84
 msgid "Writable"
 msgstr "Beschreibbar"
 
-#: data/resources/ui/pages/drive.ui:75
+#: data/resources/ui/pages/drive.ui:93
 msgid "Removable"
 msgstr "Wechselspeicher"
 

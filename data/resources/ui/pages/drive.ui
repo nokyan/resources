@@ -29,6 +29,24 @@
                     <child>
                       <object class="ResGraphBox" id="write_speed"/>
                     </child>
+                    <child>
+                      <object class="AdwActionRow" id="total_read">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
+                        <property name="title" translatable="yes">Total Read</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow" id="total_written">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
+                        <property name="title" translatable="yes">Total Written</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
