@@ -35,6 +35,10 @@ mod imp {
         #[template_child]
         pub write_speed: TemplateChild<ResGraphBox>,
         #[template_child]
+        pub total_read: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub total_written: TemplateChild<adw::ActionRow>,
+        #[template_child]
         pub drive_type: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub device: TemplateChild<adw::ActionRow>,
@@ -140,6 +144,8 @@ mod imp {
                 read_speed: Default::default(),
                 write_speed: Default::default(),
                 drive_type: Default::default(),
+                total_read: Default::default(),
+                total_written: Default::default(),
                 device: Default::default(),
                 capacity: Default::default(),
                 writable: Default::default(),
@@ -215,6 +221,7 @@ glib::wrapper! {
 impl ResDrive {
     const ID_PREFIX: &'static str = "drive";
     const MAIN_GRAPH_COLOR: [u8; 3] = [246, 211, 45];
+    const SECTOR_SIZE: usize = 512;
 
     pub fn new() -> Self {
         glib::Object::new::<Self>()
@@ -343,8 +350,8 @@ impl ResDrive {
             let delta_read_sectors = read_sectors.saturating_sub(*old_read_sectors);
             let delta_write_sectors = write_sectors.saturating_sub(*old_write_sectors);
             (
-                (delta_read_sectors * 512) as f64 / time_passed,
-                (delta_write_sectors * 512) as f64 / time_passed,
+                (delta_read_sectors * Self::SECTOR_SIZE) as f64 / time_passed,
+                (delta_write_sectors * Self::SECTOR_SIZE) as f64 / time_passed,
             )
         } else {
             (0.0, 0.0)
@@ -371,6 +378,20 @@ impl ResDrive {
             "{formatted_write_speed} · {} {formatted_highest_write_speed}",
             i18n("Highest:")
         ));
+
+        if let (Some(read_sectors), Some(write_sectors)) = (
+            disk_stats.get("read_sectors"),
+            disk_stats.get("write_sectors"),
+        ) {
+            imp.total_read.set_subtitle(&convert_storage(
+                (read_sectors * Self::SECTOR_SIZE) as f64,
+                false,
+            ));
+            imp.total_written.set_subtitle(&convert_storage(
+                (write_sectors * Self::SECTOR_SIZE) as f64,
+                false,
+            ));
+        }
 
         self.set_property(
             "tab_usage_string",
