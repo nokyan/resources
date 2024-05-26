@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-11 14:47+0200\n"
-"PO-Revision-Date: 2024-05-18 16:38+0300\n"
+"POT-Creation-Date: 2024-05-25 19:54+0200\n"
+"PO-Revision-Date: 2024-05-26 14:53+0300\n"
 "Last-Translator: Aleksandr Melman <Alexmelman88@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -106,7 +106,7 @@ msgid "Icon by"
 msgstr "Иконка от"
 
 #: src/ui/dialogs/app_dialog.rs:161 src/ui/dialogs/process_dialog.rs:202
-#: src/ui/pages/drive.rs:295 src/ui/pages/drive.rs:301
+#: src/ui/pages/drive.rs:302 src/ui/pages/drive.rs:308
 msgid "No"
 msgstr "Нет"
 
@@ -287,34 +287,34 @@ msgstr "Общее использование"
 msgid "CPU {}"
 msgstr "ЦП {}"
 
-#: src/ui/pages/drive.rs:151
+#: src/ui/pages/drive.rs:157
 msgid "Drive"
 msgstr "Диск"
 
-#: src/ui/pages/drive.rs:244
+#: src/ui/pages/drive.rs:251
 msgid "Drive Activity"
 msgstr "Активность диска"
 
-#: src/ui/pages/drive.rs:251
+#: src/ui/pages/drive.rs:258
 msgid "Read Speed"
 msgstr "Скорость чтения"
 
-#: src/ui/pages/drive.rs:255
+#: src/ui/pages/drive.rs:262
 msgid "Write Speed"
 msgstr "Скорость записи"
 
-#: src/ui/pages/drive.rs:293 src/ui/pages/drive.rs:299
+#: src/ui/pages/drive.rs:300 src/ui/pages/drive.rs:306
 msgid "Yes"
 msgstr "Да"
 
-#: src/ui/pages/drive.rs:367 src/ui/pages/drive.rs:372
+#: src/ui/pages/drive.rs:374 src/ui/pages/drive.rs:379
 #: src/ui/pages/network.rs:326 src/ui/pages/network.rs:335
 msgid "Highest:"
 msgstr "Наибольшее:"
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
-#: src/ui/pages/drive.rs:380
+#: src/ui/pages/drive.rs:401
 msgid "R: {} · W: {}"
 msgstr "Ч: {} · З: {}"
 
@@ -1075,7 +1075,7 @@ msgstr "Использование"
 
 #: data/resources/ui/dialogs/app_dialog.ui:164
 #: data/resources/ui/dialogs/process_dialog.ui:174
-#: data/resources/ui/pages/cpu.ui:97 data/resources/ui/pages/drive.ui:36
+#: data/resources/ui/pages/cpu.ui:97 data/resources/ui/pages/drive.ui:54
 #: data/resources/ui/pages/gpu.ui:80 data/resources/ui/pages/memory.ui:42
 #: data/resources/ui/pages/network.ui:51
 msgid "Properties"
@@ -1329,23 +1329,31 @@ msgstr "Виртуализация"
 msgid "Architecture"
 msgstr "Архитектура"
 
-#: data/resources/ui/pages/drive.ui:39 data/resources/ui/pages/memory.ui:72
+#: data/resources/ui/pages/drive.ui:38
+msgid "Total Read"
+msgstr "Всего прочитано"
+
+#: data/resources/ui/pages/drive.ui:47
+msgid "Total Written"
+msgstr "Всего записано"
+
+#: data/resources/ui/pages/drive.ui:57 data/resources/ui/pages/memory.ui:72
 msgid "Type"
 msgstr "Тип"
 
-#: data/resources/ui/pages/drive.ui:48
+#: data/resources/ui/pages/drive.ui:66
 msgid "Device"
 msgstr "Устройство"
 
-#: data/resources/ui/pages/drive.ui:57
+#: data/resources/ui/pages/drive.ui:75
 msgid "Capacity"
 msgstr "Емкость"
 
-#: data/resources/ui/pages/drive.ui:66
+#: data/resources/ui/pages/drive.ui:84
 msgid "Writable"
 msgstr "Записываемый"
 
-#: data/resources/ui/pages/drive.ui:75
+#: data/resources/ui/pages/drive.ui:93
 msgid "Removable"
 msgstr "Съемный"
 
