@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-11 14:47+0200\n"
-"PO-Revision-Date: 2024-05-12 20:50+0200\n"
+"POT-Creation-Date: 2024-05-25 19:54+0200\n"
+"PO-Revision-Date: 2024-05-27 20:38+0200\n"
 "Last-Translator: lorduskordus <lorduskordus@gmail.com>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:3
 #: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:191
@@ -102,7 +102,7 @@ msgid "Icon by"
 msgstr "Ikonu vytvořil"
 
 #: src/ui/dialogs/app_dialog.rs:161 src/ui/dialogs/process_dialog.rs:202
-#: src/ui/pages/drive.rs:295 src/ui/pages/drive.rs:301
+#: src/ui/pages/drive.rs:302 src/ui/pages/drive.rs:308
 msgid "No"
 msgstr "Ne"
 
@@ -283,34 +283,34 @@ msgstr "Celkové Využití"
 msgid "CPU {}"
 msgstr "CPU {}"
 
-#: src/ui/pages/drive.rs:151
+#: src/ui/pages/drive.rs:157
 msgid "Drive"
 msgstr "Disk"
 
-#: src/ui/pages/drive.rs:244
+#: src/ui/pages/drive.rs:251
 msgid "Drive Activity"
 msgstr "Aktivita Disku"
 
-#: src/ui/pages/drive.rs:251
+#: src/ui/pages/drive.rs:258
 msgid "Read Speed"
 msgstr "Rychlost Čtení"
 
-#: src/ui/pages/drive.rs:255
+#: src/ui/pages/drive.rs:262
 msgid "Write Speed"
 msgstr "Rychlost Zápisu"
 
-#: src/ui/pages/drive.rs:293 src/ui/pages/drive.rs:299
+#: src/ui/pages/drive.rs:300 src/ui/pages/drive.rs:306
 msgid "Yes"
 msgstr "Ano"
 
-#: src/ui/pages/drive.rs:367 src/ui/pages/drive.rs:372
+#: src/ui/pages/drive.rs:374 src/ui/pages/drive.rs:379
 #: src/ui/pages/network.rs:326 src/ui/pages/network.rs:335
 msgid "Highest:"
 msgstr "Nejvyšší:"
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
-#: src/ui/pages/drive.rs:380
+#: src/ui/pages/drive.rs:401
 msgid "R: {} · W: {}"
 msgstr "Č: {} · Z: {}"
 
@@ -1071,7 +1071,7 @@ msgstr "Využití"
 
 #: data/resources/ui/dialogs/app_dialog.ui:164
 #: data/resources/ui/dialogs/process_dialog.ui:174
-#: data/resources/ui/pages/cpu.ui:97 data/resources/ui/pages/drive.ui:36
+#: data/resources/ui/pages/cpu.ui:97 data/resources/ui/pages/drive.ui:54
 #: data/resources/ui/pages/gpu.ui:80 data/resources/ui/pages/memory.ui:42
 #: data/resources/ui/pages/network.ui:51
 msgid "Properties"
@@ -1209,8 +1209,7 @@ msgid ""
 "If enabled, a device identifier like its name or device type will be "
 "displayed"
 msgstr ""
-"Pokud zapnuto, bude zobrazen identifikátor zařízení, jako jeho jméno nebo "
-"typ"
+"Pokud zapnuto, bude zobrazen identifikátor zařízení, jako jeho jméno nebo typ"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:103
 msgid "Sidebar Meter Type"
@@ -1319,23 +1318,31 @@ msgstr "Virtualizace"
 msgid "Architecture"
 msgstr "Architektura"
 
-#: data/resources/ui/pages/drive.ui:39 data/resources/ui/pages/memory.ui:72
+#: data/resources/ui/pages/drive.ui:38
+msgid "Total Read"
+msgstr "Celkem Přečteno"
+
+#: data/resources/ui/pages/drive.ui:47
+msgid "Total Written"
+msgstr "Celkem Zapsáno"
+
+#: data/resources/ui/pages/drive.ui:57 data/resources/ui/pages/memory.ui:72
 msgid "Type"
 msgstr "Typ"
 
-#: data/resources/ui/pages/drive.ui:48
+#: data/resources/ui/pages/drive.ui:66
 msgid "Device"
 msgstr "Zařízení"
 
-#: data/resources/ui/pages/drive.ui:57
+#: data/resources/ui/pages/drive.ui:75
 msgid "Capacity"
 msgstr "Kapacita"
 
-#: data/resources/ui/pages/drive.ui:66
+#: data/resources/ui/pages/drive.ui:84
 msgid "Writable"
 msgstr "Zapisovatelné"
 
-#: data/resources/ui/pages/drive.ui:75
+#: data/resources/ui/pages/drive.ui:93
 msgid "Removable"
 msgstr "Odstranitelné"
 
