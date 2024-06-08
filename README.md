@@ -76,13 +76,6 @@ Running Resources is as simple as typing `flatpak run net.nokyan.Resources` into
 If you've built Resources natively or installed it from a traditional package manager such as `apt` or `dnf`, or if you've built Resources yourself, typing `resources` in a terminal will start Resources.
 If you've built Resources as a Flatpak, type `flatpak-builder --run flatpak_app build-aux/net.nokyan.Resources.Devel.json resources` into your terminal or use one of the aforementioned IDEs to do that automatically.
 
-## To-do
-
-The following list is *roughly* in order of their importance with the most important item being first in the list.
-
-- Translations
-- Battery usage and details
-
 ## Contributing
 
 If you have an idea, bug report, question or something else, don't hesitate to [open an issue](https://github.com/nokyan/resources/issues)! Translations are always welcome.

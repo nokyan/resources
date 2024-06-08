@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ResBattery" parent="AdwBin">
+    <property name="child">
+      <object class="GtkScrolledWindow">
+        <child>
+          <object class="AdwClamp">
+            <property name="maximum-size">768</property>
+            <child>
+              <object class="GtkBox">
+                <property name="margin-top">24</property>
+                <property name="margin-bottom">24</property>
+                <property name="margin-start">16</property>
+                <property name="margin-end">16</property>
+                <property name="spacing">24</property>
+                <property name="orientation">vertical</property>
+                <property name="hexpand">true</property>
+                <property name="valign">start</property>
+                <property name="vexpand">true</property>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title" translatable="yes">Usage</property>
+                    <child>
+                      <object class="ResGraphBox" id="charge"/>
+                    </child>
+                    <child>
+                      <object class="ResGraphBox" id="power_usage"/>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup" id="modules">
+                    <property name="title" translatable="yes">Properties</property>
+                    <child>
+                      <object class="AdwActionRow" id="health">
+                        <property name="title" translatable="yes">Battery Health</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow" id="design_capacity">
+                        <property name="title" translatable="yes">Design Capacity</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow" id="charge_cycles">
+                        <property name="title" translatable="yes">Charge Cycles</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow" id="technology">
+                        <property name="title" translatable="yes">Technology</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow" id="manufacturer">
+                        <property name="title" translatable="yes">Manufacturer</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow" id="model_name">
+                        <property name="title" translatable="yes">Model Name</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow" id="device">
+                        <property name="title" translatable="yes">Device</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

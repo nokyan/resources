@@ -14,9 +14,11 @@ use crate::application::Application;
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f, ni18n_f};
 use crate::ui::pages::applications::ResApplications;
+use crate::ui::pages::battery::ResBattery;
 use crate::ui::pages::drive::ResDrive;
 use crate::ui::pages::processes::ResProcesses;
 use crate::utils::app::AppsContext;
+use crate::utils::battery::{Battery, BatteryData};
 use crate::utils::cpu::{self, CpuData};
 use crate::utils::drive::{Drive, DriveData};
 use crate::utils::gpu::{Gpu, GpuData};
@@ -86,6 +88,8 @@ mod imp {
 
         pub network_pages: RefCell<HashMap<PathBuf, adw::ToolbarView>>,
 
+        pub battery_pages: RefCell<HashMap<PathBuf, adw::ToolbarView>>,
+
         pub gpu_pages: RefCell<HashMap<PciSlot, (Gpu, adw::ToolbarView)>>,
 
         pub apps_context: RefCell<AppsContext>,
@@ -102,6 +106,7 @@ mod imp {
             Self {
                 drive_pages: RefCell::default(),
                 network_pages: RefCell::default(),
+                battery_pages: RefCell::default(),
                 split_view: TemplateChild::default(),
                 resources_sidebar: TemplateChild::default(),
                 content_stack: TemplateChild::default(),
@@ -186,6 +191,8 @@ struct RefreshData {
     drive_data: Vec<DriveData>,
     network_paths: Vec<PathBuf>,
     network_data: Vec<NetworkData>,
+    battery_paths: Vec<PathBuf>,
+    battery_data: Vec<BatteryData>,
     process_data: Vec<ProcessData>,
 }
 
@@ -332,15 +339,15 @@ impl MainWindow {
 
         let mem_data = MemoryData::new();
 
-        let mut gpu_data = vec![];
+        let mut gpu_data = Vec::with_capacity(gpus.len());
         for gpu in gpus {
             let data = GpuData::new(gpu);
 
             gpu_data.push(data);
         }
 
-        let mut drive_data = vec![];
-        let drive_paths = Drive::get_sysfs_paths().unwrap();
+        let drive_paths = Drive::get_sysfs_paths().unwrap_or_default();
+        let mut drive_data = Vec::with_capacity(drive_paths.len());
         for path in &drive_paths {
             let data = DriveData::new(path);
 
@@ -354,8 +361,8 @@ impl MainWindow {
             }
         }
 
-        let mut network_data = vec![];
-        let network_paths = NetworkInterface::get_sysfs_paths().unwrap();
+        let network_paths = NetworkInterface::get_sysfs_paths().unwrap_or_default();
+        let mut network_data = Vec::with_capacity(network_paths.len());
         for path in &network_paths {
             let data = NetworkData::new(path);
 
@@ -364,6 +371,21 @@ impl MainWindow {
             } else if let Err(error) = data {
                 warn!(
                     "Unable to update network interface at {}, reason: {error}",
+                    path.display()
+                );
+            }
+        }
+
+        let battery_paths = Battery::get_sysfs_paths().unwrap_or_default();
+        let mut battery_data = Vec::with_capacity(battery_paths.len());
+        for path in &battery_paths {
+            let data = BatteryData::new(path);
+
+            if let Ok(data) = data {
+                battery_data.push(data);
+            } else if let Err(error) = data {
+                warn!(
+                    "Unable to update battery at {}, reason: {error}",
                     path.display()
                 );
             }
@@ -383,6 +405,8 @@ impl MainWindow {
             drive_data,
             network_paths,
             network_data,
+            battery_paths,
+            battery_data,
             process_data,
         }
     }
@@ -398,6 +422,8 @@ impl MainWindow {
             drive_data,
             network_paths,
             network_data,
+            battery_paths,
+            battery_data,
             process_data,
         } = refresh_data;
 
@@ -488,6 +514,21 @@ impl MainWindow {
             let page = page.content().and_downcast::<ResNetwork>().unwrap();
 
             page.refresh_page(network_data);
+        }
+
+        /*
+         *  Batteries
+         */
+        // Make sure there is a page for every battery that is shown
+        self.refresh_battery_pages(battery_paths, &battery_data);
+
+        // Update network pages
+        for battery_data in battery_data.into_iter() {
+            let battery_pages = imp.battery_pages.borrow();
+            let page = battery_pages.get(&battery_data.inner.sysfs_path).unwrap();
+            let page = page.content().and_downcast::<ResBattery>().unwrap();
+
+            page.refresh_page(battery_data);
         }
     }
 
@@ -693,6 +734,59 @@ impl MainWindow {
                 );
 
                 network_pages.insert(path.clone(), toolbar);
+            }
+        }
+    }
+
+    /// Create page for every battery that is shown
+    fn refresh_battery_pages(&self, paths: Vec<PathBuf>, battery_data: &[BatteryData]) {
+        let imp = self.imp();
+
+        let mut battery_pages = imp.battery_pages.borrow_mut();
+
+        let old_page_paths: Vec<PathBuf> = battery_pages
+            .iter()
+            .map(|(path, _)| path.to_owned())
+            .collect();
+
+        // Delete hidden old network pages
+        for page_path in &old_page_paths {
+            if !paths.contains(page_path) {
+                // A network interface has been removed
+                debug!("A battery has been removed: {}", page_path.display());
+
+                let page = battery_pages.remove(page_path).unwrap();
+                imp.content_stack.remove(&page);
+            }
+        }
+
+        // Add new network pages
+        for path in paths {
+            if !battery_pages.contains_key(&path) {
+                // A network interface has been added
+                debug!("A battery has been added: {}", path.display());
+
+                let battery = battery_data
+                    .iter()
+                    .find(|d| d.inner.sysfs_path == path)
+                    .unwrap();
+
+                // Insert stub page, values will be updated in refresh_page()
+                let page = ResBattery::new();
+                page.init(battery);
+
+                let toolbar = self.add_page(
+                    &page,
+                    &battery
+                        .inner
+                        .sysfs_path
+                        .file_name()
+                        .unwrap()
+                        .to_string_lossy(),
+                    &battery.inner.display_name(),
+                );
+
+                battery_pages.insert(path.clone(), toolbar);
             }
         }
     }
