@@ -263,8 +263,9 @@ pub fn convert_power(watts: f64) -> String {
 }
 
 pub fn convert_energy(watthours: f64, integer: bool) -> String {
-    let (number, prefix) = to_largest_prefix(watthours, Base::Decimal);
+    let (mut number, prefix) = to_largest_prefix(watthours, Base::Decimal);
     if integer {
+        number = number.round();
         match prefix {
             Prefix::None => i18n_f("{} Wh", &[&number.to_string()]),
             Prefix::Kilo => i18n_f("{} kWh", &[&number.to_string()]),
