@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-25 19:54+0200\n"
-"PO-Revision-Date: 2024-05-25 19:47+0200\n"
+"POT-Creation-Date: 2024-06-08 17:03+0200\n"
+"PO-Revision-Date: 2024-06-08 17:11+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: de\n"
@@ -68,7 +68,7 @@ msgstr "Arbeitsspeicher"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:27
 #: src/ui/pages/applications/mod.rs:962 src/ui/pages/gpu.rs:146
-#: src/ui/pages/processes/mod.rs:1030 src/ui/window.rs:278
+#: src/ui/pages/processes/mod.rs:1030 src/ui/window.rs:285
 #: data/resources/ui/dialogs/app_dialog.ui:130
 #: data/resources/ui/dialogs/process_dialog.ui:113
 #: data/resources/ui/dialogs/settings_dialog.ui:163
@@ -120,14 +120,18 @@ msgstr "Ja (Snap)"
 #: src/ui/dialogs/process_dialog.rs:147 src/ui/dialogs/process_dialog.rs:154
 #: src/ui/dialogs/process_dialog.rs:190 src/ui/dialogs/process_dialog.rs:197
 #: src/ui/dialogs/process_dialog.rs:199 src/ui/pages/applications/mod.rs:781
-#: src/ui/pages/applications/mod.rs:879 src/ui/pages/cpu.rs:237
-#: src/ui/pages/cpu.rs:252 src/ui/pages/cpu.rs:266 src/ui/pages/cpu.rs:272
-#: src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:288
-#: src/ui/pages/cpu.rs:291 src/ui/pages/cpu.rs:384 src/ui/pages/gpu.rs:251
-#: src/ui/pages/gpu.rs:293 src/ui/pages/gpu.rs:318 src/ui/pages/gpu.rs:321
-#: src/ui/pages/gpu.rs:332 src/ui/pages/gpu.rs:352 src/ui/pages/gpu.rs:364
-#: src/ui/pages/gpu.rs:378 src/ui/pages/gpu.rs:380 src/ui/pages/gpu.rs:392
-#: src/ui/pages/gpu.rs:399 src/ui/pages/gpu.rs:403 src/ui/pages/memory.rs:240
+#: src/ui/pages/applications/mod.rs:879 src/ui/pages/battery.rs:223
+#: src/ui/pages/battery.rs:244 src/ui/pages/battery.rs:250
+#: src/ui/pages/battery.rs:253 src/ui/pages/battery.rs:279
+#: src/ui/pages/battery.rs:303 src/ui/pages/battery.rs:305
+#: src/ui/pages/battery.rs:315 src/ui/pages/cpu.rs:237 src/ui/pages/cpu.rs:252
+#: src/ui/pages/cpu.rs:266 src/ui/pages/cpu.rs:272 src/ui/pages/cpu.rs:278
+#: src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:288 src/ui/pages/cpu.rs:291
+#: src/ui/pages/cpu.rs:384 src/ui/pages/gpu.rs:251 src/ui/pages/gpu.rs:293
+#: src/ui/pages/gpu.rs:318 src/ui/pages/gpu.rs:321 src/ui/pages/gpu.rs:332
+#: src/ui/pages/gpu.rs:352 src/ui/pages/gpu.rs:364 src/ui/pages/gpu.rs:378
+#: src/ui/pages/gpu.rs:380 src/ui/pages/gpu.rs:392 src/ui/pages/gpu.rs:399
+#: src/ui/pages/gpu.rs:403 src/ui/pages/memory.rs:240
 #: src/ui/pages/memory.rs:241 src/ui/pages/memory.rs:245
 #: src/ui/pages/memory.rs:246 src/ui/pages/memory.rs:250
 #: src/ui/pages/memory.rs:251 src/ui/pages/memory.rs:279
@@ -136,8 +140,8 @@ msgstr "Ja (Snap)"
 #: src/ui/pages/network.rs:277 src/ui/pages/network.rs:280
 #: src/ui/pages/processes/mod.rs:837 src/ui/pages/processes/mod.rs:890
 #: src/ui/pages/processes/mod.rs:943 src/ui/pages/processes/mod.rs:996
-#: src/utils/app.rs:686 src/utils/app.rs:762 src/utils/drive.rs:90
-#: src/utils/gpu/mod.rs:255 src/utils/gpu/mod.rs:261
+#: src/utils/app.rs:686 src/utils/app.rs:762 src/utils/battery.rs:138
+#: src/utils/drive.rs:90 src/utils/gpu/mod.rs:255 src/utils/gpu/mod.rs:261
 msgid "N/A"
 msgstr "n. v."
 
@@ -160,7 +164,7 @@ msgid "Application"
 msgstr "Anwendung"
 
 #: src/ui/pages/applications/mod.rs:713 src/ui/pages/cpu.rs:149
-#: src/ui/pages/processes/mod.rs:769 src/ui/window.rs:317
+#: src/ui/pages/processes/mod.rs:769 src/ui/window.rs:324
 #: data/resources/ui/window.ui:127 data/resources/ui/window.ui:134
 #: data/resources/ui/dialogs/app_dialog.ui:72
 #: data/resources/ui/dialogs/process_dialog.ui:59
@@ -277,6 +281,24 @@ msgstr "Anwendung abwürgen"
 msgid "Continue application"
 msgstr "Anwendung fortfahren"
 
+#: src/ui/pages/battery.rs:136 src/ui/pages/drive.rs:157
+msgid "Drive"
+msgstr "Speicher"
+
+#: src/ui/pages/battery.rs:228
+msgid "Battery Charge"
+msgstr "Akkuladung"
+
+#: src/ui/pages/battery.rs:235 data/resources/ui/pages/gpu.ui:55
+msgid "Power Usage"
+msgstr "Leistungsaufnahme"
+
+#: src/ui/pages/battery.rs:293 src/ui/pages/drive.rs:374
+#: src/ui/pages/drive.rs:379 src/ui/pages/network.rs:326
+#: src/ui/pages/network.rs:335
+msgid "Highest:"
+msgstr "Höchste:"
+
 #: src/ui/pages/cpu.rs:236 src/ui/pages/gpu.rs:222
 msgid "Total Usage"
 msgstr "Gesamtauslastung"
@@ -284,10 +306,6 @@ msgstr "Gesamtauslastung"
 #: src/ui/pages/cpu.rs:251 src/ui/pages/cpu.rs:368 src/ui/pages/cpu.rs:372
 msgid "CPU {}"
 msgstr "CPU {}"
-
-#: src/ui/pages/drive.rs:157
-msgid "Drive"
-msgstr "Speicher"
 
 #: src/ui/pages/drive.rs:251
 msgid "Drive Activity"
@@ -304,11 +322,6 @@ msgstr "Schreibgeschwindigkeit"
 #: src/ui/pages/drive.rs:300 src/ui/pages/drive.rs:306
 msgid "Yes"
 msgstr "Ja"
-
-#: src/ui/pages/drive.rs:374 src/ui/pages/drive.rs:379
-#: src/ui/pages/network.rs:326 src/ui/pages/network.rs:335
-msgid "Highest:"
-msgstr "Höchste:"
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
@@ -448,69 +461,129 @@ msgstr "Prozess abwürgen"
 msgid "Continue process"
 msgstr "Prozess fortsetzen"
 
-#: src/ui/window.rs:276
+#: src/ui/window.rs:283
 msgid "GPU {}"
 msgstr "GPU {}"
 
-#: src/ui/window.rs:813
+#: src/ui/window.rs:907
 msgid "Successfully ended {}"
 msgstr "{} wurde erfolgreich beendet"
 
-#: src/ui/window.rs:814
+#: src/ui/window.rs:908
 msgid "Successfully halted {}"
 msgstr "{} wurde erfolgreich angehalten"
 
-#: src/ui/window.rs:815
+#: src/ui/window.rs:909
 msgid "Successfully killed {}"
 msgstr "{} wurde erfolgreich abgewürgt"
 
-#: src/ui/window.rs:816
+#: src/ui/window.rs:910
 msgid "Successfully continued {}"
 msgstr "{} wurde erfolgreich fortgesetzt"
 
-#: src/ui/window.rs:823
+#: src/ui/window.rs:917
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] "Es gab ein Problem beim Beenden von {} Prozessen"
 msgstr[1] "Es gab ein Problem beim Beenden eines Prozesses"
 
-#: src/ui/window.rs:829
+#: src/ui/window.rs:923
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "Es gab ein Problem beim Anhalten von {} Prozessen"
 msgstr[1] "Es gab ein Problem beim Anhalten eines Prozesses"
 
-#: src/ui/window.rs:835
+#: src/ui/window.rs:929
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "Es gab ein Problem beim Abwürgen von {} Prozessen"
 msgstr[1] "Es gab ein Problem beim Abwürgen eines Prozesses"
 
-#: src/ui/window.rs:841
+#: src/ui/window.rs:935
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "Es gab ein Problem beim Fortsetzen von {} Prozessen"
 msgstr[1] "Es gab ein Problem beim Fortsetzen eines Prozesses"
 
-#: src/ui/window.rs:851
+#: src/ui/window.rs:945
 msgid "There was a problem ending {}"
 msgstr "Es gab ein Problem beim Beenden von {}"
 
-#: src/ui/window.rs:852
+#: src/ui/window.rs:946
 msgid "There was a problem halting {}"
 msgstr "Es gab ein Problem beim Anhalten von {}"
 
-#: src/ui/window.rs:853
+#: src/ui/window.rs:947
 msgid "There was a problem killing {}"
 msgstr "Es gab ein Problem beim Abwürgen von {}"
 
-#: src/ui/window.rs:854
+#: src/ui/window.rs:948
 msgid "There was a problem continuing {}"
 msgstr "Es gab ein Problem beim Fortsetzen von {}"
 
 #: src/utils/app.rs:768
 msgid "System Processes"
 msgstr "Systemprozesse"
+
+#: src/utils/battery.rs:74
+msgid "Charging"
+msgstr "Lädt"
+
+#: src/utils/battery.rs:75
+msgid "Discharging"
+msgstr "Entlädt"
+
+#: src/utils/battery.rs:76
+msgid "Empty"
+msgstr "Leer"
+
+#: src/utils/battery.rs:77
+msgid "Full"
+msgstr "Voll"
+
+#: src/utils/battery.rs:78
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#: src/utils/battery.rs:129
+msgid "Nickel-Metal Hydride"
+msgstr "Nickel-Metallhydrid"
+
+#: src/utils/battery.rs:130
+msgid "Nickel-Cadmium"
+msgstr "Nickel-Cadmium"
+
+#: src/utils/battery.rs:131
+msgid "Nickel-Zinc"
+msgstr "Nickel-Zink"
+
+#: src/utils/battery.rs:132
+msgid "Lead-Acid"
+msgstr "Blei"
+
+#: src/utils/battery.rs:133
+msgid "Lithium-Ion"
+msgstr "Lithium-Ionen"
+
+#: src/utils/battery.rs:134
+msgid "Lithium Iron Phosphate"
+msgstr "Lithium-Eisenphosphat"
+
+#: src/utils/battery.rs:135
+msgid "Lithium Polymer"
+msgstr "Lithium-Polymer"
+
+#: src/utils/battery.rs:137
+msgid "Rechargeable Alkaline Managanese"
+msgstr "Wiederaufladbares Alkali-Mangan"
+
+#: src/utils/battery.rs:209
+msgid "{} Battery"
+msgstr "{}-Akku"
+
+#: src/utils/battery.rs:211
+msgid "Battery"
+msgstr "Akku"
 
 #: src/utils/drive.rs:82 src/utils/drive.rs:153
 msgid "CD/DVD/Blu-ray Drive"
@@ -993,6 +1066,50 @@ msgstr "{} RW"
 msgid "{} QW"
 msgstr "{} QW"
 
+#: src/utils/units.rs:269 src/utils/units.rs:283
+msgid "{} Wh"
+msgstr "{} Wh"
+
+#: src/utils/units.rs:270 src/utils/units.rs:284
+msgid "{} kWh"
+msgstr "{} kWh"
+
+#: src/utils/units.rs:271 src/utils/units.rs:285
+msgid "{} MWh"
+msgstr "{} MWh"
+
+#: src/utils/units.rs:272 src/utils/units.rs:286
+msgid "{} GWh"
+msgstr "{} GWh"
+
+#: src/utils/units.rs:273 src/utils/units.rs:287
+msgid "{} TWh"
+msgstr "{} TWh"
+
+#: src/utils/units.rs:274 src/utils/units.rs:288
+msgid "{} PWh"
+msgstr "{} PWh"
+
+#: src/utils/units.rs:275 src/utils/units.rs:289
+msgid "{} EWh"
+msgstr "{} EWh"
+
+#: src/utils/units.rs:276 src/utils/units.rs:290
+msgid "{} ZWh"
+msgstr "{} ZWh"
+
+#: src/utils/units.rs:277 src/utils/units.rs:291
+msgid "{} YWh"
+msgstr "{} YWh"
+
+#: src/utils/units.rs:278 src/utils/units.rs:292
+msgid "{} RWh"
+msgstr "{} RWh"
+
+#: src/utils/units.rs:279 src/utils/units.rs:293
+msgid "{} QWh"
+msgstr "{} QWh"
+
 #: data/resources/ui/shortcuts.ui:11
 msgctxt "shortcut window"
 msgid "General"
@@ -1061,17 +1178,18 @@ msgstr "Anwendungsinformationen"
 
 #: data/resources/ui/dialogs/app_dialog.ui:69
 #: data/resources/ui/dialogs/process_dialog.ui:52
-#: data/resources/ui/pages/cpu.ui:45 data/resources/ui/pages/cpu.ui:58
-#: data/resources/ui/pages/drive.ui:22 data/resources/ui/pages/gpu.ui:22
-#: data/resources/ui/pages/memory.ui:31 data/resources/ui/pages/network.ui:22
+#: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:45
+#: data/resources/ui/pages/cpu.ui:58 data/resources/ui/pages/drive.ui:22
+#: data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31
+#: data/resources/ui/pages/network.ui:22
 msgid "Usage"
 msgstr "Auslastung"
 
 #: data/resources/ui/dialogs/app_dialog.ui:164
 #: data/resources/ui/dialogs/process_dialog.ui:174
-#: data/resources/ui/pages/cpu.ui:97 data/resources/ui/pages/drive.ui:54
-#: data/resources/ui/pages/gpu.ui:80 data/resources/ui/pages/memory.ui:42
-#: data/resources/ui/pages/network.ui:51
+#: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:97
+#: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:80
+#: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
 msgid "Properties"
 msgstr "Eigenschaften"
 
@@ -1279,6 +1397,35 @@ msgstr "Anwendung fortsetzen"
 msgid "End Application"
 msgstr "Anwendung beenden"
 
+#: data/resources/ui/pages/battery.ui:36
+msgid "Battery Health"
+msgstr "Batteriezusatnd"
+
+#: data/resources/ui/pages/battery.ui:45
+msgid "Design Capacity"
+msgstr "Nennkapazität"
+
+#: data/resources/ui/pages/battery.ui:54
+msgid "Charge Cycles"
+msgstr "Ladezyklen"
+
+#: data/resources/ui/pages/battery.ui:63
+msgid "Technology"
+msgstr "Technologie"
+
+#: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:87
+#: data/resources/ui/pages/network.ui:58
+msgid "Manufacturer"
+msgstr "Hersteller"
+
+#: data/resources/ui/pages/battery.ui:81
+msgid "Model Name"
+msgstr "Modellname"
+
+#: data/resources/ui/pages/battery.ui:90 data/resources/ui/pages/drive.ui:66
+msgid "Device"
+msgstr "Gerät"
+
 #: data/resources/ui/pages/cpu.ui:22
 msgid "Options"
 msgstr "Optionen"
@@ -1331,10 +1478,6 @@ msgstr "Insgesamt geschrieben"
 msgid "Type"
 msgstr "Typ"
 
-#: data/resources/ui/pages/drive.ui:66
-msgid "Device"
-msgstr "Gerät"
-
 #: data/resources/ui/pages/drive.ui:75
 msgid "Capacity"
 msgstr "Kapazität"
@@ -1354,14 +1497,6 @@ msgstr "GPU-Frequenz"
 #: data/resources/ui/pages/gpu.ui:50
 msgid "Video Memory Frequency"
 msgstr "Grafikspeichertaktfrequenz"
-
-#: data/resources/ui/pages/gpu.ui:55
-msgid "Power Usage"
-msgstr "Leistungsaufnahme"
-
-#: data/resources/ui/pages/gpu.ui:87 data/resources/ui/pages/network.ui:58
-msgid "Manufacturer"
-msgstr "Hersteller"
 
 #: data/resources/ui/pages/gpu.ui:96
 msgid "PCI Slot"
