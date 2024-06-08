@@ -28,7 +28,7 @@ mod imp {
     #[properties(wrapper_type = super::ResCPU)]
     pub struct ResCPU {
         #[template_child]
-        pub logical_switch: TemplateChild<gtk::Switch>,
+        pub logical_switch: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
         #[template_child]
