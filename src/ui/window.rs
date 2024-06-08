@@ -381,14 +381,7 @@ impl MainWindow {
         for path in &battery_paths {
             let data = BatteryData::new(path);
 
-            if let Ok(data) = data {
-                battery_data.push(data);
-            } else if let Err(error) = data {
-                warn!(
-                    "Unable to update battery at {}, reason: {error}",
-                    path.display()
-                );
-            }
+            battery_data.push(data);
         }
 
         let _process_data = Process::all_data();
@@ -522,7 +515,7 @@ impl MainWindow {
         // Make sure there is a page for every battery that is shown
         self.refresh_battery_pages(battery_paths, &battery_data);
 
-        // Update network pages
+        // Update battery pages
         for battery_data in battery_data.into_iter() {
             let battery_pages = imp.battery_pages.borrow();
             let page = battery_pages.get(&battery_data.inner.sysfs_path).unwrap();

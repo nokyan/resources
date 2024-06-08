@@ -4,7 +4,7 @@ use std::{
     str::{self, FromStr},
 };
 
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 
 use crate::i18n::{i18n, i18n_f};
 
@@ -20,22 +20,22 @@ pub struct BatteryData {
 }
 
 impl BatteryData {
-    pub fn new<P: AsRef<Path>>(path: P) -> Result<Self> {
-        let inner = Battery::from_sysfs(path.as_ref())?;
+    pub fn new<P: AsRef<Path>>(path: P) -> Self {
+        let inner = Battery::from_sysfs(path.as_ref());
         let charge = inner.charge();
         let power_usage = inner.power_usage();
         let health = inner.health();
         let state = inner.state();
         let charge_cycles = inner.charge_cycles();
 
-        Ok(Self {
+        Self {
             inner,
             charge,
             power_usage,
             health,
             state,
             charge_cycles,
-        })
+        }
     }
 }
 
@@ -169,7 +169,7 @@ impl Battery {
         Ok(list)
     }
 
-    pub fn from_sysfs<P: AsRef<Path>>(sysfs_path: P) -> Result<Battery> {
+    pub fn from_sysfs<P: AsRef<Path>>(sysfs_path: P) -> Battery {
         let sysfs_path = sysfs_path.as_ref().to_path_buf();
 
         let manufacturer = std::fs::read_to_string(sysfs_path.join("manufacturer"))
@@ -187,20 +187,24 @@ impl Battery {
         )
         .unwrap_or_default();
 
-        let design_capacity = std::fs::read_to_string(sysfs_path.join("energy_full_design"))?
-            .trim()
-            .parse::<usize>()
-            .map(|int| int as f64 / 1_000_000.0)
-            .context("unable to parse energiy_full_design sysfs file")
+        let design_capacity = std::fs::read_to_string(sysfs_path.join("energy_full_design"))
+            .context("unable to find any energy_full_design")
+            .and_then(|capacity| {
+                capacity
+                    .trim()
+                    .parse::<usize>()
+                    .map(|int| int as f64 / 1_000_000.0)
+                    .context("can't parse energy_full_design")
+            })
             .ok();
 
-        Ok(Battery {
+        Battery {
             sysfs_path,
             manufacturer,
             model_name,
             design_capacity,
             technology,
-        })
+        }
     }
 
     pub fn display_name(&self) -> String {
@@ -221,18 +225,49 @@ impl Battery {
     }
 
     pub fn health(&self) -> Result<f64> {
-        let energy_full: usize = std::fs::read_to_string(self.sysfs_path.join("energy_full"))?
-            .trim()
-            .parse()
-            .context("unable to parse energiy_full sysfs file")?;
+        let energy_full = std::fs::read_to_string(self.sysfs_path.join("energy_full"))
+            .context("unable to read energy_full sysfs file")
+            .and_then(|x| {
+                x.trim()
+                    .parse::<usize>()
+                    .context("unable to parse energiy_full sysfs file")
+            });
 
-        let energy_full_design: usize =
-            std::fs::read_to_string(self.sysfs_path.join("energy_full_design"))?
-                .trim()
-                .parse()
-                .context("unable to parse energy_full_design sysfs file")?;
+        let energy_full_design =
+            std::fs::read_to_string(self.sysfs_path.join("energy_full_design"))
+                .context("unable to read energy_full_design sysfs file")
+                .and_then(|x| {
+                    x.trim()
+                        .parse::<usize>()
+                        .context("unable to parse energy_full_design sysfs file")
+                });
 
-        Ok(energy_full as f64 / energy_full_design as f64)
+        if let (Ok(energy_full), Ok(energy_full_design)) = (energy_full, energy_full_design) {
+            Ok(energy_full as f64 / energy_full_design as f64)
+        } else {
+            let charge_full = std::fs::read_to_string(self.sysfs_path.join("charge_full"))
+                .context("unable to read charge_full sysfs file")
+                .and_then(|x| {
+                    x.trim()
+                        .parse::<usize>()
+                        .context("unable to parse charge_full sysfs file")
+                });
+
+            let charge_full_design =
+                std::fs::read_to_string(self.sysfs_path.join("charge_full_design"))
+                    .context("unable to read charge_full_design sysfs file")
+                    .and_then(|x| {
+                        x.trim()
+                            .parse::<usize>()
+                            .context("unable to parse charge_full_design sysfs file")
+                    });
+
+            if let (Ok(charge_full), Ok(charge_full_design)) = (charge_full, charge_full_design) {
+                Ok(charge_full as f64 / charge_full_design as f64)
+            } else {
+                bail!("no health information found")
+            }
+        }
     }
 
     pub fn power_usage(&self) -> Result<f64> {
