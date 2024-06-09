@@ -349,39 +349,19 @@ impl MainWindow {
         let drive_paths = Drive::get_sysfs_paths().unwrap_or_default();
         let mut drive_data = Vec::with_capacity(drive_paths.len());
         for path in &drive_paths {
-            let data = DriveData::new(path);
-
-            if let Ok(data) = data {
-                drive_data.push(data);
-            } else if let Err(error) = data {
-                warn!(
-                    "Unable to update drive at {}, reason: {error}",
-                    path.display()
-                );
-            }
+            drive_data.push(DriveData::new(path));
         }
 
         let network_paths = NetworkInterface::get_sysfs_paths().unwrap_or_default();
         let mut network_data = Vec::with_capacity(network_paths.len());
         for path in &network_paths {
-            let data = NetworkData::new(path);
-
-            if let Ok(data) = data {
-                network_data.push(data);
-            } else if let Err(error) = data {
-                warn!(
-                    "Unable to update network interface at {}, reason: {error}",
-                    path.display()
-                );
-            }
+            network_data.push(NetworkData::new(path));
         }
 
         let battery_paths = Battery::get_sysfs_paths().unwrap_or_default();
         let mut battery_data = Vec::with_capacity(battery_paths.len());
         for path in &battery_paths {
-            let data = BatteryData::new(path);
-
-            battery_data.push(data);
+            battery_data.push(BatteryData::new(path));
         }
 
         let _process_data = Process::all_data();
@@ -650,7 +630,7 @@ impl MainWindow {
                     .find(|d| d.inner.sysfs_path == path)
                     .unwrap();
 
-                let display_name = drive.inner.display_name(drive.capacity as f64);
+                let display_name = drive.inner.display_name();
 
                 let page = ResDrive::new();
                 page.init(drive);

@@ -246,7 +246,7 @@ impl ResDrive {
         imp.set_tab_id(&tab_id);
 
         imp.set_icon(&drive.icon());
-        imp.set_tab_name(&drive.display_name(drive_data.capacity as f64));
+        imp.set_tab_name(&drive.display_name());
 
         imp.total_usage.set_title_label(&i18n("Drive Activity"));
         imp.total_usage.graph().set_graph_color(
@@ -278,6 +278,8 @@ impl ResDrive {
         } else {
             imp.set_tab_detail(&drive_data.inner.block_device);
         }
+
+        *imp.old_stats.borrow_mut() = drive_data.disk_stats.clone();
     }
 
     pub fn refresh_page(&self, drive_data: DriveData) {
@@ -296,24 +298,7 @@ impl ResDrive {
             .duration_since(imp.last_timestamp.get())
             .map_or(1.0f64, |timestamp| timestamp.as_secs_f64());
 
-        if writable {
-            imp.writable.set_subtitle(&i18n("Yes"));
-        } else {
-            imp.writable.set_subtitle(&i18n("No"));
-        }
-
-        if removable {
-            imp.removable.set_subtitle(&i18n("Yes"));
-        } else {
-            imp.removable.set_subtitle(&i18n("No"));
-        }
-
-        let total_usage = if let (
-            Some(read_ticks),
-            Some(write_ticks),
-            Some(old_read_ticks),
-            Some(old_write_ticks),
-        ) = (
+        if let (Some(read_ticks), Some(write_ticks), Some(old_read_ticks), Some(old_write_ticks)) = (
             disk_stats.get("read_ticks"),
             disk_stats.get("write_ticks"),
             imp.old_stats.borrow().get("read_ticks"),
@@ -324,60 +309,81 @@ impl ResDrive {
             let read_ratio = delta_read_ticks as f64 / (time_passed * 1000.0);
             let write_ratio = delta_write_ticks as f64 / (time_passed * 1000.0);
 
-            Some(f64::max(read_ratio, write_ratio).clamp(0.0, 1.0))
+            let total_usage = f64::max(read_ratio, write_ratio).clamp(0.0, 1.0);
+
+            let percentage_string = format!("{} %", (total_usage * 100.0).round());
+
+            imp.total_usage.graph().set_visible(true);
+            imp.total_usage.graph().push_data_point(total_usage);
+            imp.total_usage.set_subtitle(&percentage_string);
+
+            self.set_property("usage", total_usage);
         } else {
-            None
-        };
+            imp.total_usage.graph().set_visible(false);
+            imp.total_usage.set_subtitle(&i18n("N/A"));
 
-        let percentage_string = format!("{} %", (total_usage.unwrap_or(0.0) * 100.0).round());
-        imp.total_usage
-            .graph()
-            .push_data_point(total_usage.unwrap_or(0.0));
-        imp.total_usage.set_subtitle(&percentage_string);
-        self.set_property("usage", total_usage.unwrap_or(0.0));
+            self.set_property("usage", 0.0);
+        }
 
-        let (read_speed, write_speed) = if let (
-            Some(read_sectors),
-            Some(write_sectors),
-            Some(old_read_sectors),
-            Some(old_write_sectors),
-        ) = (
+        let read_string = if let (Some(read_sectors), Some(old_read_sectors)) = (
             disk_stats.get("read_sectors"),
-            disk_stats.get("write_sectors"),
             imp.old_stats.borrow().get("read_sectors"),
-            imp.old_stats.borrow().get("write_sectors"),
         ) {
             let delta_read_sectors = read_sectors.saturating_sub(*old_read_sectors);
-            let delta_write_sectors = write_sectors.saturating_sub(*old_write_sectors);
-            (
-                (delta_read_sectors * Self::SECTOR_SIZE) as f64 / time_passed,
-                (delta_write_sectors * Self::SECTOR_SIZE) as f64 / time_passed,
-            )
+
+            let read_speed = (delta_read_sectors * Self::SECTOR_SIZE) as f64 / time_passed;
+
+            imp.read_speed.graph().set_visible(true);
+            imp.read_speed.graph().push_data_point(read_speed);
+
+            let highest_read_speed = imp.read_speed.graph().get_highest_value();
+
+            let formatted_read_speed = convert_speed(read_speed, false);
+
+            let formatted_highest_read_speed = convert_speed(highest_read_speed, false);
+
+            imp.read_speed.set_subtitle(&format!(
+                "{formatted_read_speed} · {} {formatted_highest_read_speed}",
+                i18n("Highest:")
+            ));
+
+            formatted_read_speed
         } else {
-            (0.0, 0.0)
+            imp.read_speed.graph().set_visible(false);
+            imp.read_speed.set_subtitle(&i18n("N/A"));
+
+            i18n("N/A")
         };
 
-        imp.read_speed.graph().push_data_point(read_speed);
-        imp.write_speed.graph().push_data_point(write_speed);
+        let write_string = if let (Some(write_sectors), Some(old_write_sectors)) = (
+            disk_stats.get("write_sectors"),
+            imp.old_stats.borrow().get("write_sectors"),
+        ) {
+            let delta_write_sectors = write_sectors.saturating_sub(*old_write_sectors);
 
-        let highest_read_speed = imp.read_speed.graph().get_highest_value();
-        let highest_write_speed = imp.write_speed.graph().get_highest_value();
+            let write_speed = (delta_write_sectors * Self::SECTOR_SIZE) as f64 / time_passed;
 
-        let formatted_read_speed = convert_speed(read_speed, false);
-        let formatted_write_speed = convert_speed(write_speed, false);
+            imp.read_speed.graph().set_visible(true);
+            imp.write_speed.graph().push_data_point(write_speed);
 
-        let formatted_highest_read_speed = convert_speed(highest_read_speed, false);
-        let formatted_highest_write_speed = convert_speed(highest_write_speed, false);
+            let highest_write_speed = imp.write_speed.graph().get_highest_value();
 
-        imp.read_speed.set_subtitle(&format!(
-            "{formatted_read_speed} · {} {formatted_highest_read_speed}",
-            i18n("Highest:")
-        ));
+            let formatted_write_speed = convert_speed(write_speed, false);
 
-        imp.write_speed.set_subtitle(&format!(
-            "{formatted_write_speed} · {} {formatted_highest_write_speed}",
-            i18n("Highest:")
-        ));
+            let formatted_highest_write_speed = convert_speed(highest_write_speed, false);
+
+            imp.write_speed.set_subtitle(&format!(
+                "{formatted_write_speed} · {} {formatted_highest_write_speed}",
+                i18n("Highest:")
+            ));
+
+            formatted_write_speed
+        } else {
+            imp.write_speed.graph().set_visible(false);
+            imp.write_speed.set_subtitle(&i18n("N/A"));
+
+            i18n("N/A")
+        };
 
         if let (Some(read_sectors), Some(write_sectors)) = (
             disk_stats.get("read_sectors"),
@@ -391,20 +397,44 @@ impl ResDrive {
                 (write_sectors * Self::SECTOR_SIZE) as f64,
                 false,
             ));
+        } else {
+            imp.total_read.set_subtitle(&i18n("N/A"));
+            imp.total_written.set_subtitle(&i18n("N/A"));
+        }
+
+        if let Ok(capacity) = capacity {
+            imp.capacity
+                .set_subtitle(&convert_storage(capacity as f64, false));
+        } else {
+            imp.capacity.set_subtitle(&i18n("N/A"));
+        }
+
+        if let Ok(writable) = writable {
+            if writable {
+                imp.writable.set_subtitle(&i18n("Yes"));
+            } else {
+                imp.writable.set_subtitle(&i18n("No"));
+            }
+        } else {
+            imp.writable.set_subtitle(&i18n("N/A"));
+        }
+
+        if let Ok(removable) = removable {
+            if removable {
+                imp.removable.set_subtitle(&i18n("Yes"));
+            } else {
+                imp.removable.set_subtitle(&i18n("No"));
+            }
+        } else {
+            imp.removable.set_subtitle(&i18n("N/A"));
         }
 
         self.set_property(
             "tab_usage_string",
             // Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
             // translation should preferably be quite short or an abbreviation
-            i18n_f(
-                "R: {} · W: {}",
-                &[&formatted_read_speed, &formatted_write_speed],
-            ),
+            i18n_f("R: {} · W: {}", &[&read_string, &write_string]),
         );
-
-        imp.capacity
-            .set_subtitle(&convert_storage(capacity as f64, false));
 
         *imp.old_stats.borrow_mut() = disk_stats;
         imp.last_timestamp.set(SystemTime::now());

@@ -20,29 +20,29 @@ static RE_DRIVE: Lazy<Regex> = Lazy::new(|| Regex::new(SYS_STATS).unwrap());
 pub struct DriveData {
     pub inner: Drive,
     pub is_virtual: bool,
-    pub writable: bool,
-    pub removable: bool,
+    pub writable: Result<bool>,
+    pub removable: Result<bool>,
     pub disk_stats: HashMap<String, usize>,
-    pub capacity: u64,
+    pub capacity: Result<u64>,
 }
 
 impl DriveData {
-    pub fn new(path: &Path) -> Result<Self> {
-        let inner = Drive::from_sysfs(path)?;
+    pub fn new(path: &Path) -> Self {
+        let inner = Drive::from_sysfs(path);
         let is_virtual = inner.is_virtual();
-        let writable = inner.writable()?;
-        let removable = inner.removable()?;
-        let disk_stats = inner.sys_stats()?;
-        let capacity = inner.capacity()?;
+        let writable = inner.writable();
+        let removable = inner.removable();
+        let disk_stats = inner.sys_stats().unwrap_or_default();
+        let capacity = inner.capacity();
 
-        Ok(Self {
+        Self {
             inner,
             is_virtual,
             writable,
             removable,
             disk_stats,
             capacity,
-        })
+        }
     }
 }
 
@@ -111,7 +111,7 @@ impl Drive {
     ///
     /// Will return `Err` if the are errors during
     /// reading or parsing
-    pub fn from_sysfs<P: AsRef<Path>>(sysfs_path: P) -> Result<Drive> {
+    pub fn from_sysfs<P: AsRef<Path>>(sysfs_path: P) -> Drive {
         let path = sysfs_path.as_ref().to_path_buf();
         let block_device = path
             .file_name()
@@ -124,7 +124,7 @@ impl Drive {
         drive.block_device = block_device;
         drive.model = drive.model().ok().map(|model| model.trim().to_string());
         drive.drive_type = drive.drive_type().unwrap_or_default();
-        Ok(drive)
+        drive
     }
 
     /// Returns the SysFS Paths of possible drives
@@ -147,8 +147,8 @@ impl Drive {
         Ok(list)
     }
 
-    pub fn display_name(&self, capacity: f64) -> String {
-        let capacity_formatted = convert_storage(capacity, true);
+    pub fn display_name(&self) -> String {
+        let capacity_formatted = convert_storage(self.capacity().unwrap_or_default() as f64, true);
         match self.drive_type {
             DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),
             DriveType::Floppy => i18n("Floppy Drive"),

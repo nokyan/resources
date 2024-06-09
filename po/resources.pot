@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-08 17:03+0200\n"
+"POT-Creation-Date: 2024-06-09 19:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,7 +99,7 @@ msgid "Icon by"
 msgstr ""
 
 #: src/ui/dialogs/app_dialog.rs:161 src/ui/dialogs/process_dialog.rs:202
-#: src/ui/pages/drive.rs:302 src/ui/pages/drive.rs:308
+#: src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426
 msgid "No"
 msgstr ""
 
@@ -122,17 +122,24 @@ msgstr ""
 #: src/ui/pages/battery.rs:315 src/ui/pages/cpu.rs:237 src/ui/pages/cpu.rs:252
 #: src/ui/pages/cpu.rs:266 src/ui/pages/cpu.rs:272 src/ui/pages/cpu.rs:278
 #: src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:288 src/ui/pages/cpu.rs:291
-#: src/ui/pages/cpu.rs:384 src/ui/pages/gpu.rs:251 src/ui/pages/gpu.rs:293
-#: src/ui/pages/gpu.rs:318 src/ui/pages/gpu.rs:321 src/ui/pages/gpu.rs:332
-#: src/ui/pages/gpu.rs:352 src/ui/pages/gpu.rs:364 src/ui/pages/gpu.rs:378
-#: src/ui/pages/gpu.rs:380 src/ui/pages/gpu.rs:392 src/ui/pages/gpu.rs:399
-#: src/ui/pages/gpu.rs:403 src/ui/pages/memory.rs:240
+#: src/ui/pages/cpu.rs:384 src/ui/pages/drive.rs:323 src/ui/pages/drive.rs:353
+#: src/ui/pages/drive.rs:355 src/ui/pages/drive.rs:383
+#: src/ui/pages/drive.rs:385 src/ui/pages/drive.rs:401
+#: src/ui/pages/drive.rs:402 src/ui/pages/drive.rs:409
+#: src/ui/pages/drive.rs:419 src/ui/pages/drive.rs:429 src/ui/pages/gpu.rs:251
+#: src/ui/pages/gpu.rs:293 src/ui/pages/gpu.rs:318 src/ui/pages/gpu.rs:321
+#: src/ui/pages/gpu.rs:332 src/ui/pages/gpu.rs:352 src/ui/pages/gpu.rs:364
+#: src/ui/pages/gpu.rs:378 src/ui/pages/gpu.rs:380 src/ui/pages/gpu.rs:392
+#: src/ui/pages/gpu.rs:399 src/ui/pages/gpu.rs:403 src/ui/pages/memory.rs:240
 #: src/ui/pages/memory.rs:241 src/ui/pages/memory.rs:245
 #: src/ui/pages/memory.rs:246 src/ui/pages/memory.rs:250
 #: src/ui/pages/memory.rs:251 src/ui/pages/memory.rs:279
 #: src/ui/pages/memory.rs:333 src/ui/pages/network.rs:257
 #: src/ui/pages/network.rs:264 src/ui/pages/network.rs:271
 #: src/ui/pages/network.rs:277 src/ui/pages/network.rs:280
+#: src/ui/pages/network.rs:341 src/ui/pages/network.rs:344
+#: src/ui/pages/network.rs:346 src/ui/pages/network.rs:375
+#: src/ui/pages/network.rs:378 src/ui/pages/network.rs:380
 #: src/ui/pages/processes/mod.rs:837 src/ui/pages/processes/mod.rs:890
 #: src/ui/pages/processes/mod.rs:943 src/ui/pages/processes/mod.rs:996
 #: src/utils/app.rs:686 src/utils/app.rs:762 src/utils/battery.rs:138
@@ -284,9 +291,9 @@ msgstr ""
 msgid "Power Usage"
 msgstr ""
 
-#: src/ui/pages/battery.rs:293 src/ui/pages/drive.rs:374
-#: src/ui/pages/drive.rs:379 src/ui/pages/network.rs:326
-#: src/ui/pages/network.rs:335
+#: src/ui/pages/battery.rs:293 src/ui/pages/drive.rs:347
+#: src/ui/pages/drive.rs:377 src/ui/pages/network.rs:333
+#: src/ui/pages/network.rs:367
 msgid "Highest:"
 msgstr ""
 
@@ -310,13 +317,13 @@ msgstr ""
 msgid "Write Speed"
 msgstr ""
 
-#: src/ui/pages/drive.rs:300 src/ui/pages/drive.rs:306
+#: src/ui/pages/drive.rs:414 src/ui/pages/drive.rs:424
 msgid "Yes"
 msgstr ""
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
-#: src/ui/pages/drive.rs:401
+#: src/ui/pages/drive.rs:436
 msgid "R: {} · W: {}"
 msgstr ""
 
@@ -372,7 +379,7 @@ msgstr ""
 
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
-#: src/ui/pages/network.rs:346
+#: src/ui/pages/network.rs:390
 msgid "R: {} · S: {}"
 msgstr ""
 
@@ -452,59 +459,59 @@ msgstr ""
 msgid "GPU {}"
 msgstr ""
 
-#: src/ui/window.rs:907
+#: src/ui/window.rs:880
 msgid "Successfully ended {}"
 msgstr ""
 
-#: src/ui/window.rs:908
+#: src/ui/window.rs:881
 msgid "Successfully halted {}"
 msgstr ""
 
-#: src/ui/window.rs:909
+#: src/ui/window.rs:882
 msgid "Successfully killed {}"
 msgstr ""
 
-#: src/ui/window.rs:910
+#: src/ui/window.rs:883
 msgid "Successfully continued {}"
 msgstr ""
 
-#: src/ui/window.rs:917
+#: src/ui/window.rs:890
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:923
+#: src/ui/window.rs:896
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:929
+#: src/ui/window.rs:902
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:935
+#: src/ui/window.rs:908
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/window.rs:945
+#: src/ui/window.rs:918
 msgid "There was a problem ending {}"
 msgstr ""
 
-#: src/ui/window.rs:946
+#: src/ui/window.rs:919
 msgid "There was a problem halting {}"
 msgstr ""
 
-#: src/ui/window.rs:947
+#: src/ui/window.rs:920
 msgid "There was a problem killing {}"
 msgstr ""
 
-#: src/ui/window.rs:948
+#: src/ui/window.rs:921
 msgid "There was a problem continuing {}"
 msgstr ""
 
@@ -564,11 +571,11 @@ msgstr ""
 msgid "Rechargeable Alkaline Managanese"
 msgstr ""
 
-#: src/utils/battery.rs:209
+#: src/utils/battery.rs:213
 msgid "{} Battery"
 msgstr ""
 
-#: src/utils/battery.rs:211
+#: src/utils/battery.rs:215
 msgid "Battery"
 msgstr ""
 
@@ -1053,47 +1060,47 @@ msgstr ""
 msgid "{} QW"
 msgstr ""
 
-#: src/utils/units.rs:269 src/utils/units.rs:283
+#: src/utils/units.rs:270 src/utils/units.rs:284
 msgid "{} Wh"
 msgstr ""
 
-#: src/utils/units.rs:270 src/utils/units.rs:284
+#: src/utils/units.rs:271 src/utils/units.rs:285
 msgid "{} kWh"
 msgstr ""
 
-#: src/utils/units.rs:271 src/utils/units.rs:285
+#: src/utils/units.rs:272 src/utils/units.rs:286
 msgid "{} MWh"
 msgstr ""
 
-#: src/utils/units.rs:272 src/utils/units.rs:286
+#: src/utils/units.rs:273 src/utils/units.rs:287
 msgid "{} GWh"
 msgstr ""
 
-#: src/utils/units.rs:273 src/utils/units.rs:287
+#: src/utils/units.rs:274 src/utils/units.rs:288
 msgid "{} TWh"
 msgstr ""
 
-#: src/utils/units.rs:274 src/utils/units.rs:288
+#: src/utils/units.rs:275 src/utils/units.rs:289
 msgid "{} PWh"
 msgstr ""
 
-#: src/utils/units.rs:275 src/utils/units.rs:289
+#: src/utils/units.rs:276 src/utils/units.rs:290
 msgid "{} EWh"
 msgstr ""
 
-#: src/utils/units.rs:276 src/utils/units.rs:290
+#: src/utils/units.rs:277 src/utils/units.rs:291
 msgid "{} ZWh"
 msgstr ""
 
-#: src/utils/units.rs:277 src/utils/units.rs:291
+#: src/utils/units.rs:278 src/utils/units.rs:292
 msgid "{} YWh"
 msgstr ""
 
-#: src/utils/units.rs:278 src/utils/units.rs:292
+#: src/utils/units.rs:279 src/utils/units.rs:293
 msgid "{} RWh"
 msgstr ""
 
-#: src/utils/units.rs:279 src/utils/units.rs:293
+#: src/utils/units.rs:280 src/utils/units.rs:294
 msgid "{} QWh"
 msgstr ""
 
