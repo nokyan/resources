@@ -45,6 +45,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/dialogs/process_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/dialogs/settings_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/applications.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/pages/battery.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/cpu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/drive.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/gpu.ui</file>

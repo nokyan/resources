@@ -16,26 +16,26 @@ use super::pci::{Device, Vendor};
 pub struct NetworkData {
     pub inner: NetworkInterface,
     pub is_virtual: bool,
-    pub received_bytes: usize,
-    pub sent_bytes: usize,
+    pub received_bytes: Result<usize>,
+    pub sent_bytes: Result<usize>,
     pub display_name: String,
 }
 
 impl NetworkData {
-    pub fn new(path: &Path) -> Result<Self> {
-        let inner = NetworkInterface::from_sysfs(path)?;
+    pub fn new(path: &Path) -> Self {
+        let inner = NetworkInterface::from_sysfs(path);
         let is_virtual = inner.is_virtual();
-        let received_bytes = inner.received_bytes()?;
-        let sent_bytes = inner.sent_bytes()?;
+        let received_bytes = inner.received_bytes();
+        let sent_bytes = inner.sent_bytes();
         let display_name = inner.display_name();
 
-        Ok(Self {
+        Self {
             inner,
             is_virtual,
             received_bytes,
             sent_bytes,
             display_name,
-        })
+        }
     }
 }
 
@@ -177,22 +177,33 @@ impl NetworkInterface {
     /// Will return `Err` if an invalid sysfs Path has
     /// been passed or if there has been problems parsing
     /// information
-    pub fn from_sysfs(sysfs_path: &Path) -> Result<NetworkInterface> {
+    pub fn from_sysfs(sysfs_path: &Path) -> NetworkInterface {
         let dev_uevent = Self::read_uevent(sysfs_path.join("device/uevent")).unwrap_or_default();
+
         let interface_name = sysfs_path
             .file_name()
-            .context("invalid sysfs path")?
+            .expect("invalid sysfs path")
             .to_owned();
-        let mut vid_pid = (0, 0);
+
+        let mut vid_pid = (None, None);
         if let Some(dev) = dev_uevent.get("PCI_ID") {
             let id_vec: Vec<&str> = dev.split(':').collect();
             if id_vec.len() == 2 {
                 vid_pid = (
-                    u16::from_str_radix(id_vec[0], 16)?,
-                    u16::from_str_radix(id_vec[1], 16)?,
+                    u16::from_str_radix(id_vec[0], 16).ok(),
+                    u16::from_str_radix(id_vec[1], 16).ok(),
                 );
             }
         }
+
+        let vendor = vid_pid
+            .0
+            .and_then(|vid| Vendor::from_vid(vid).map(|x| x.name().to_string()));
+
+        let pid_name = vid_pid
+            .0
+            .zip(vid_pid.1)
+            .and_then(|(vid, pid)| Device::from_vid_pid(vid, pid).map(|x| x.name().to_string()));
 
         let sysfs_path_clone = sysfs_path.to_owned();
         let speed = std::fs::read_to_string(sysfs_path_clone.join("speed"))
@@ -209,19 +220,19 @@ impl NetworkInterface {
             .map(|x| x.replace('\n', ""))
             .ok();
 
-        Ok(NetworkInterface {
+        NetworkInterface {
             interface_name: interface_name.clone(),
             driver_name: dev_uevent.get("DRIVER").cloned(),
             interface_type: InterfaceType::from_interface_name(interface_name.to_string_lossy()),
             speed,
-            vendor: Vendor::from_vid(vid_pid.0).map(|x| x.name().to_string()),
-            pid_name: Device::from_vid_pid(vid_pid.0, vid_pid.1).map(|x| x.name().to_string()),
+            vendor,
+            pid_name,
             device_name,
             hw_address,
             sysfs_path: sysfs_path.to_path_buf(),
             received_bytes_path: sysfs_path.join(PathBuf::from("statistics/rx_bytes")),
             sent_bytes_path: sysfs_path.join(PathBuf::from("statistics/tx_bytes")),
-        })
+        }
     }
 
     /// Returns a display name for this Network Interface.

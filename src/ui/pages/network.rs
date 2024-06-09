@@ -41,8 +41,8 @@ mod imp {
         pub interface: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub hw_address: TemplateChild<adw::ActionRow>,
-        pub old_received_bytes: Cell<usize>,
-        pub old_sent_bytes: Cell<usize>,
+        pub old_received_bytes: Cell<Option<usize>>,
+        pub old_sent_bytes: Cell<Option<usize>>,
         pub last_timestamp: Cell<SystemTime>,
 
         #[property(get)]
@@ -288,8 +288,10 @@ impl ResNetwork {
                 .unwrap(),
         );
 
-        imp.old_received_bytes.set(network_data.received_bytes);
-        imp.old_sent_bytes.set(network_data.sent_bytes);
+        imp.old_received_bytes
+            .set(network_data.received_bytes.as_ref().ok().copied());
+        imp.old_sent_bytes
+            .set(network_data.sent_bytes.as_ref().ok().copied());
 
         imp.set_tab_detail(&network_data.display_name);
     }
@@ -298,7 +300,6 @@ impl ResNetwork {
         let NetworkData {
             received_bytes,
             sent_bytes,
-
             inner: _,
             is_virtual: _,
             display_name: _,
@@ -309,32 +310,75 @@ impl ResNetwork {
             .duration_since(imp.last_timestamp.get())
             .map_or(1.0f64, |timestamp| timestamp.as_secs_f64());
 
-        let received_delta =
-            (received_bytes.saturating_sub(imp.old_received_bytes.get())) as f64 / time_passed;
-        let sent_delta = (sent_bytes.saturating_sub(imp.old_sent_bytes.get())) as f64 / time_passed;
+        let (received_delta, received_string) =
+            if let (Ok(received_bytes), Some(old_received_bytes)) =
+                (received_bytes, imp.old_received_bytes.get())
+            {
+                let received_delta =
+                    (received_bytes.saturating_sub(old_received_bytes)) as f64 / time_passed;
 
-        imp.total_received
-            .set_subtitle(&convert_storage(received_bytes as f64, false));
-        imp.total_sent
-            .set_subtitle(&convert_storage(sent_bytes as f64, false));
+                imp.total_received
+                    .set_subtitle(&convert_storage(received_bytes as f64, false));
 
-        imp.receiving.graph().push_data_point(received_delta);
-        let highest_received = imp.receiving.graph().get_highest_value();
-        imp.receiving.set_subtitle(&format!(
-            "{} · {} {}",
-            convert_speed(received_delta, true),
-            i18n("Highest:"),
-            convert_speed(highest_received, true)
-        ));
+                imp.receiving.graph().set_visible(true);
+                imp.receiving.graph().push_data_point(received_delta);
 
-        imp.sending.graph().push_data_point(sent_delta);
-        let highest_sent = imp.sending.graph().get_highest_value();
-        imp.sending.set_subtitle(&format!(
-            "{} · {} {}",
-            convert_speed(sent_delta, true),
-            i18n("Highest:"),
-            convert_speed(highest_sent, true)
-        ));
+                let highest_received = imp.receiving.graph().get_highest_value();
+
+                let formatted_delta = convert_speed(received_delta, true);
+
+                imp.receiving.set_subtitle(&format!(
+                    "{} · {} {}",
+                    &formatted_delta,
+                    i18n("Highest:"),
+                    convert_speed(highest_received, true)
+                ));
+
+                imp.old_received_bytes.set(Some(received_bytes));
+
+                (received_delta, formatted_delta)
+            } else {
+                imp.total_received.set_subtitle(&i18n("N/A"));
+
+                imp.receiving.graph().set_visible(false);
+                imp.receiving.set_subtitle(&i18n("N/A"));
+
+                (0.0, i18n("N/A"))
+            };
+
+        let (sent_delta, sent_string) = if let (Ok(sent_bytes), Some(old_sent_bytes)) =
+            (sent_bytes, imp.old_sent_bytes.get())
+        {
+            let sent_delta = (sent_bytes.saturating_sub(old_sent_bytes)) as f64 / time_passed;
+
+            imp.total_sent
+                .set_subtitle(&convert_storage(sent_bytes as f64, false));
+
+            imp.sending.graph().set_visible(true);
+            imp.sending.graph().push_data_point(sent_delta);
+
+            let highest_sent = imp.sending.graph().get_highest_value();
+
+            let formatted_delta = convert_speed(sent_delta, true);
+
+            imp.sending.set_subtitle(&format!(
+                "{} · {} {}",
+                &formatted_delta,
+                i18n("Highest:"),
+                convert_speed(highest_sent, true)
+            ));
+
+            imp.old_sent_bytes.set(Some(sent_bytes));
+
+            (sent_delta, formatted_delta)
+        } else {
+            imp.total_sent.set_subtitle(&i18n("N/A"));
+
+            imp.sending.graph().set_visible(false);
+            imp.sending.set_subtitle(&i18n("N/A"));
+
+            (0.0, i18n("N/A"))
+        };
 
         self.set_property("usage", f64::max(received_delta, sent_delta));
 
@@ -344,15 +388,10 @@ impl ResNetwork {
                 // Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
                 // your translation should preferably be quite short or an abbreviation
                 "R: {} · S: {}",
-                &[
-                    &convert_speed(received_delta, true),
-                    &convert_speed(sent_delta, true),
-                ],
+                &[&received_string, &sent_string],
             ),
         );
 
-        imp.old_received_bytes.set(received_bytes);
-        imp.old_sent_bytes.set(sent_bytes);
         imp.last_timestamp.set(SystemTime::now());
     }
 }

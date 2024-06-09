@@ -6,6 +6,7 @@ use once_cell::sync::Lazy;
 use process_data::unix_as_millis;
 
 pub mod app;
+pub mod battery;
 pub mod cpu;
 pub mod drive;
 pub mod gpu;

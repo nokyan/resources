@@ -261,3 +261,37 @@ pub fn convert_power(watts: f64) -> String {
         Prefix::Quetta => i18n_f("{} QW", &[&format!("{number:.2}")]),
     }
 }
+
+pub fn convert_energy(watthours: f64, integer: bool) -> String {
+    let (mut number, prefix) = to_largest_prefix(watthours, Base::Decimal);
+    if integer {
+        number = number.round();
+        match prefix {
+            Prefix::None => i18n_f("{} Wh", &[&number.to_string()]),
+            Prefix::Kilo => i18n_f("{} kWh", &[&number.to_string()]),
+            Prefix::Mega => i18n_f("{} MWh", &[&number.to_string()]),
+            Prefix::Giga => i18n_f("{} GWh", &[&number.to_string()]),
+            Prefix::Tera => i18n_f("{} TWh", &[&number.to_string()]),
+            Prefix::Peta => i18n_f("{} PWh", &[&number.to_string()]),
+            Prefix::Exa => i18n_f("{} EWh", &[&number.to_string()]),
+            Prefix::Zetta => i18n_f("{} ZWh", &[&number.to_string()]),
+            Prefix::Yotta => i18n_f("{} YWh", &[&number.to_string()]),
+            Prefix::Ronna => i18n_f("{} RWh", &[&number.to_string()]),
+            Prefix::Quetta => i18n_f("{} QWh", &[&number.to_string()]),
+        }
+    } else {
+        match prefix {
+            Prefix::None => i18n_f("{} Wh", &[&format!("{number:.1}")]),
+            Prefix::Kilo => i18n_f("{} kWh", &[&format!("{number:.2}")]),
+            Prefix::Mega => i18n_f("{} MWh", &[&format!("{number:.2}")]),
+            Prefix::Giga => i18n_f("{} GWh", &[&format!("{number:.2}")]),
+            Prefix::Tera => i18n_f("{} TWh", &[&format!("{number:.2}")]),
+            Prefix::Peta => i18n_f("{} PWh", &[&format!("{number:.2}")]),
+            Prefix::Exa => i18n_f("{} EWh", &[&format!("{number:.2}")]),
+            Prefix::Zetta => i18n_f("{} ZWh", &[&format!("{number:.2}")]),
+            Prefix::Yotta => i18n_f("{} YWh", &[&format!("{number:.2}")]),
+            Prefix::Ronna => i18n_f("{} RWh", &[&format!("{number:.2}")]),
+            Prefix::Quetta => i18n_f("{} QWh", &[&format!("{number:.2}")]),
+        }
+    }
+}
