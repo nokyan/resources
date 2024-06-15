@@ -156,14 +156,14 @@ impl Application {
 
     // Sets up keyboard shortcuts
     fn setup_accels(&self) {
-        self.set_accels_for_action("app.quit", &["<Control>q"]);
+        self.set_accels_for_action("app.quit", &["<Control>q", "<Control>w"]);
         self.set_accels_for_action("app.settings", &["<Control>comma"]);
         self.set_accels_for_action("app.toggle-search", &["<Control>f", "F3"]);
         self.set_accels_for_action("app.end-app-process", &["<Control>E", "Delete"]);
         self.set_accels_for_action("app.kill-app-process", &["<Control>K", "<Shift>Delete"]);
         self.set_accels_for_action("app.halt-app-process", &["<Control>H"]);
         self.set_accels_for_action("app.continue-app-process", &["<Control>O"]);
-        self.set_accels_for_action("app.information-app-process", &["<Control>I", "Return"]);
+        self.set_accels_for_action("app.information-app-process", &["<Control>I"]);
     }
 
     fn setup_css(&self) {
