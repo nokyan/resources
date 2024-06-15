@@ -2,6 +2,7 @@
 <gresources>
   <gresource prefix="/net/nokyan/Resources/icons/scalable/actions/">
     <file preprocess="xml-stripblanks" alias="app-symbolic.svg">icons/app-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="battery-symbolic.svg">icons/battery-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="bluetooth-symbolic.svg">icons/bluetooth-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="bridge-symbolic.svg">icons/bridge-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="cd-dvd-bluray-symbolic.svg">icons/cd-dvd-bluray-symbolic.svg</file>
