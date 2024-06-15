@@ -279,7 +279,9 @@ impl ResDrive {
             imp.set_tab_detail(&drive_data.inner.block_device);
         }
 
-        *imp.old_stats.borrow_mut() = drive_data.disk_stats.clone();
+        imp.old_stats
+            .borrow_mut()
+            .clone_from(&drive_data.disk_stats);
     }
 
     pub fn refresh_page(&self, drive_data: DriveData) {

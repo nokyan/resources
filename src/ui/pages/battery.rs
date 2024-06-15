@@ -268,7 +268,7 @@ impl ResBattery {
             usage_string.push_str(&percentage_string);
 
             if let Ok(state) = battery_data.state {
-                percentage_string.push_str(&format!(" ({})", state.to_string()));
+                percentage_string.push_str(&format!(" ({})", state));
             }
 
             imp.charge.graph().set_visible(true);
