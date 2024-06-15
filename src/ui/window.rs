@@ -29,6 +29,7 @@ use crate::utils::settings::SETTINGS;
 
 use super::pages::gpu::ResGPU;
 use super::pages::network::ResNetwork;
+use super::pages::{applications, processes};
 
 #[derive(Debug, Clone)]
 pub enum Action {
@@ -312,8 +313,15 @@ impl MainWindow {
         imp.memory.init();
 
         if SETTINGS.show_search_on_start() {
-            imp.processes.toggle_search();
-            imp.applications.toggle_search();
+            // we want the search bar to show up for both but also let the last viewed page grab the focus, so order is
+            // important here
+            if SETTINGS.last_viewed_page() == applications::TAB_ID {
+                imp.processes.toggle_search();
+                imp.applications.toggle_search();
+            } else if SETTINGS.last_viewed_page() == processes::TAB_ID {
+                imp.applications.toggle_search();
+                imp.processes.toggle_search();
+            }
         }
 
         *self.imp().apps_context.borrow_mut() = AppsContext::new();

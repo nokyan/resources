@@ -24,6 +24,8 @@ use crate::utils::NUM_CPUS;
 use self::application_entry::ApplicationEntry;
 use self::application_name_cell::ResApplicationNameCell;
 
+pub const TAB_ID: &'static str = "applications";
+
 mod imp {
     use std::{
         cell::{Cell, RefCell},
@@ -151,7 +153,7 @@ mod imp {
                 tab_name: Cell::from(glib::GString::from(i18n("Apps"))),
                 tab_detail_string: Cell::new(glib::GString::new()),
                 tab_usage_string: Cell::new(glib::GString::new()),
-                tab_id: Cell::new(glib::GString::from("applications")),
+                tab_id: Cell::new(glib::GString::from(TAB_ID)),
                 popped_over_app: Default::default(),
                 columns: Default::default(),
                 graph_locked_max_y: Cell::new(true),

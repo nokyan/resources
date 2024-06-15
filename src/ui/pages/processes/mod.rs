@@ -24,6 +24,8 @@ use crate::utils::NUM_CPUS;
 use self::process_entry::ProcessEntry;
 use self::process_name_cell::ResProcessNameCell;
 
+pub const TAB_ID: &'static str = "processes";
+
 mod imp {
     use std::{
         cell::{Cell, RefCell},
@@ -155,7 +157,7 @@ mod imp {
                 tab_name: Cell::new(glib::GString::from(i18n("Processes"))),
                 tab_detail_string: Cell::new(glib::GString::new()),
                 tab_usage_string: Cell::new(glib::GString::new()),
-                tab_id: Cell::new(glib::GString::from("processes")),
+                tab_id: Cell::new(glib::GString::from(TAB_ID)),
                 popped_over_process: Default::default(),
                 columns: Default::default(),
                 graph_locked_max_y: Cell::new(true),
