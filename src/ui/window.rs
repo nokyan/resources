@@ -366,7 +366,7 @@ impl MainWindow {
 
         let _process_data = Process::all_data();
         if let Err(error) = &_process_data {
-            warn!("Unable to update process and application data, reason: {error}");
+            warn!("Unable to update process and app data, reason: {error}");
         }
         let process_data = _process_data.unwrap_or_default();
 

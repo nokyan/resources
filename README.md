@@ -9,19 +9,19 @@ Resources is a simple yet powerful monitor for your system resources and process
 <details>
   <summary><b>Click me for screenshots!</b></summary>
 
-  ![Applications View of Resources](data/resources/screenshots/1.png?raw=true "Applications View of Resources")
+  ![Apps View of Resources](data/resources/screenshots/1.png?raw=true "Apps View of Resources")
 
-  ![Applications View of Resources](data/resources/screenshots/2.png?raw=true "Processes View of Resources")
+  ![Processes View of Resources](data/resources/screenshots/2.png?raw=true "Processes View of Resources")
 
-  ![Applications View of Resources](data/resources/screenshots/3.png?raw=true "Processor View of Resources")
+  ![Processor View of Resources](data/resources/screenshots/3.png?raw=true "Processor View of Resources")
 
-  ![Applications View of Resources](data/resources/screenshots/4.png?raw=true "Memory View of Resources")
+  ![Memory View of Resources](data/resources/screenshots/4.png?raw=true "Memory View of Resources")
 
-  ![Applications View of Resources](data/resources/screenshots/5.png?raw=true "GPU View of Resources")
+  ![GPU View of Resources](data/resources/screenshots/5.png?raw=true "GPU View of Resources")
 
-  ![Applications View of Resources](data/resources/screenshots/6.png?raw=true "Disk View of Resources")
+  ![Drive View of Resources](data/resources/screenshots/6.png?raw=true "Drive View of Resources")
 
-  ![Applications View of Resources](data/resources/screenshots/7.png?raw=true "Network Interface View of Resources")
+  ![Network Interface View of Resources](data/resources/screenshots/7.png?raw=true "Network Interface View of Resources")
   
 </details>
 
@@ -72,7 +72,7 @@ If you use [GNOME Builder](https://apps.gnome.org/app/org.gnome.Builder/) or Vis
 
 ## Running
 
-Running Resources is as simple as typing `flatpak run net.nokyan.Resources` into a terminal or running it from your application launcher.
+Running Resources is as simple as typing `flatpak run net.nokyan.Resources` into a terminal or running it from your app launcher.
 If you've built Resources natively or installed it from a traditional package manager such as `apt` or `dnf`, or if you've built Resources yourself, typing `resources` in a terminal will start Resources.
 If you've built Resources as a Flatpak, type `flatpak-builder --run flatpak_app build-aux/net.nokyan.Resources.Devel.json resources` into your terminal or use one of the aforementioned IDEs to do that automatically.
 

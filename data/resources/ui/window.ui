@@ -62,14 +62,14 @@
                 <property name="vhomogeneous">False</property>
                 <child>
                   <object class="GtkStackPage" id="applications_page">
-                    <property name="title" translatable="yes">Applications</property>
+                    <property name="title" translatable="yes">Apps</property>
                     <property name="child">
                       <object class="AdwToolbarView">
                         <child type="top">
                           <object class="AdwHeaderBar">
                             <property name="title-widget">
                               <object class="AdwWindowTitle">
-                                <property name="title" translatable="yes">Applications</property>
+                                <property name="title" translatable="yes">Apps</property>
                               </object>
                             </property>
                             <style>
