@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 07:53+0200\n"
-"PO-Revision-Date: 2024-06-08 17:11+0200\n"
+"PO-Revision-Date: 2024-06-15 07:58+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: de\n"
@@ -41,6 +41,10 @@ msgid ""
 "control your running processes and apps. It’s designed to be user-friendly "
 "and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
+"Ressourcen ermöglicht es Ihnen, die Auslastung Ihrer Systemressourcen zu "
+"überwachen und Ihre laufenden Prozesse und Anwendungen zu kontrollieren. "
+"Dank GNOMEs libadwaita ist Ressourcen einfach verständlich und passt somit "
+"perfekt in einen modernen Desktop."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
@@ -151,11 +155,11 @@ msgstr "n. v."
 #: data/resources/ui/window.ui:72
 #: data/resources/ui/dialogs/settings_dialog.ui:127
 msgid "Apps"
-msgstr ""
+msgstr "Anwendungen"
 
 #: src/ui/pages/applications/mod.rs:569
 msgid "Running Apps: {}"
-msgstr ""
+msgstr "Laufende Anwendungen: {}"
 
 #: src/ui/pages/applications/mod.rs:595 src/ui/pages/processes/mod.rs:570
 msgid "Cancel"
@@ -256,28 +260,32 @@ msgid ""
 "Halting an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
 msgstr ""
+"Das Anhalten einer Anwendung ist mit Risiken wie dem Verlust von Daten sowie "
+"Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
 
 #: src/ui/pages/applications/mod.rs:1152
 msgid ""
 "Killing an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
 msgstr ""
+"Das Abwürgen einer Anwendung ist mit Risiken wie dem Verlust von Daten sowie "
+"Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
 
 #: src/ui/pages/applications/mod.rs:1159
 msgid "End app"
-msgstr ""
+msgstr "Anwendung beenden"
 
 #: src/ui/pages/applications/mod.rs:1160
 msgid "Halt app"
-msgstr ""
+msgstr "Anwendung anhalten"
 
 #: src/ui/pages/applications/mod.rs:1161
 msgid "Kill app"
-msgstr ""
+msgstr "Anwendung abwürgen"
 
 #: src/ui/pages/applications/mod.rs:1162
 msgid "Continue app"
-msgstr ""
+msgstr "Anwendung fortfahren"
 
 #: src/ui/pages/battery.rs:136 src/ui/pages/drive.rs:157
 msgid "Drive"
@@ -1136,27 +1144,27 @@ msgstr "Suchfeld anzeigen/ausblenden"
 #: data/resources/ui/shortcuts.ui:38
 msgctxt "shortcut window"
 msgid "End App/Process"
-msgstr ""
+msgstr "Anwendung/Prozess beenden"
 
 #: data/resources/ui/shortcuts.ui:44
 msgctxt "shortcut window"
 msgid "Kill App/Process"
-msgstr ""
+msgstr "Anwendung/Prozess abwürgen"
 
 #: data/resources/ui/shortcuts.ui:50
 msgctxt "shortcut window"
 msgid "Halt App/Process"
-msgstr ""
+msgstr "Anwendung/Prozess anhalten"
 
 #: data/resources/ui/shortcuts.ui:56
 msgctxt "shortcut window"
 msgid "Continue App/Process"
-msgstr ""
+msgstr "Anwendung/Prozess fortsetzen"
 
 #: data/resources/ui/shortcuts.ui:62
 msgctxt "shortcut window"
 msgid "Show Information for App/Process"
-msgstr ""
+msgstr "Informationen für Anwendung/Prozess anzeigen"
 
 #: data/resources/ui/window.ui:6
 msgid "Preferences"
@@ -1172,7 +1180,7 @@ msgstr "Über Ressourcen"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
 msgid "App Information"
-msgstr ""
+msgstr "Anwendungsinformationen"
 
 #: data/resources/ui/dialogs/app_dialog.ui:69
 #: data/resources/ui/dialogs/process_dialog.ui:52
@@ -1381,19 +1389,19 @@ msgstr ""
 
 #: data/resources/ui/pages/applications.ui:6
 msgid "Kill App"
-msgstr ""
+msgstr "Anwendung abwürgen"
 
 #: data/resources/ui/pages/applications.ui:10
 msgid "Halt App"
-msgstr ""
+msgstr "Anwendung anhalten"
 
 #: data/resources/ui/pages/applications.ui:14
 msgid "Continue App"
-msgstr ""
+msgstr "Anwendung fortsetzen"
 
 #: data/resources/ui/pages/applications.ui:95
 msgid "End App"
-msgstr ""
+msgstr "Anwendung beenden"
 
 #: data/resources/ui/pages/battery.ui:36
 msgid "Battery Health"
