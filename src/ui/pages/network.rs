@@ -217,7 +217,7 @@ impl ResNetwork {
     // which graphs the sum of send+recv.
     // This does not make much sense, but we probably can't do something
     // like separate send/receive lines without some refactoring to ResGraph.
-    const MAIN_GRAPH_COLOR: [u8; 3] = [127, 99, 239];
+    const MAIN_GRAPH_COLOR: [u8; 3] = [0x25, 0x9a, 0xab];
 
     pub fn new() -> Self {
         glib::Object::new::<Self>()
@@ -243,11 +243,11 @@ impl ResNetwork {
         imp.set_tab_name(&i18n(&network_interface.interface_type.to_string()));
 
         imp.receiving.set_title_label(&i18n("Receiving"));
-        imp.receiving.graph().set_graph_color(52, 170, 175);
+        imp.receiving.graph().set_graph_color(0x34, 0xab, 0xaf);
         imp.receiving.graph().set_locked_max_y(None);
 
         imp.sending.set_title_label(&i18n("Sending"));
-        imp.sending.graph().set_graph_color(222, 77, 119);
+        imp.sending.graph().set_graph_color(0x20, 0x81, 0x8f);
         imp.sending.graph().set_locked_max_y(None);
 
         imp.manufacturer.set_subtitle(

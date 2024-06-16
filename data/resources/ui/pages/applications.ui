@@ -3,15 +3,15 @@
   <menu id="end_app_menu">
     <section>
       <item>
-        <attribute name="label" translatable="yes">Kill Application</attribute>
+        <attribute name="label" translatable="yes">Kill App</attribute>
         <attribute name="action">applications.kill-application</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">Halt Application</attribute>
+        <attribute name="label" translatable="yes">Halt App</attribute>
         <attribute name="action">applications.halt-application</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">Continue Application</attribute>
+        <attribute name="label" translatable="yes">Continue App</attribute>
         <attribute name="action">applications.continue-application</attribute>
       </item>
     </section>
@@ -83,7 +83,7 @@
                         <property name="icon-name">info-symbolic</property>
                         <property name="sensitive">false</property>
                         <accessibility>
-                          <property name="label">Display application information</property>
+                          <property name="label">Display app information</property>
                         </accessibility>
                         <style>
                           <class name="circular"/>
@@ -92,7 +92,7 @@
                     </child>
                     <child>
                       <object class="AdwSplitButton" id="end_application_button">
-                        <property name="label" translatable="yes">End Application</property>
+                        <property name="label" translatable="yes">End App</property>
                         <property name="menu-model">end_app_menu</property>
                         <property name="sensitive">false</property>
                         <style>

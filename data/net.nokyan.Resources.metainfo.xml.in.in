@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
   <id>@app-id@</id>
-  <name>Resources</name>
-  <!--Translators: The summary should be 35 characters or less according to Flathub appstream guidelines-->
+  <name>Resources</name><!--Translators: The summary should be 35 characters or less according to Flathub appstream guidelines-->
   <summary>Keep an eye on system resources</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
@@ -16,7 +15,7 @@
   </recommends>
   <description>
     <p>
-      Resources allows you to check the utilization of your system resources and control your running processes and applications. It’s designed to be user-friendly and feel right at home on a modern desktop by using GNOME’s libadwaita.
+      Resources allows you to check the utilization of your system resources and control your running processes and apps. It’s designed to be user-friendly and feel right at home on a modern desktop by using GNOME’s libadwaita.
     </p>
     <p>
       Resources supports monitoring the following components:

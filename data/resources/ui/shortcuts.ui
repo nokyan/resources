@@ -35,31 +35,31 @@
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">End Application/Process</property>
+                <property name="title" translatable="yes" context="shortcut window">End App/Process</property>
                 <property name="action-name">app.end-app-process</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Kill Application/Process</property>
+                <property name="title" translatable="yes" context="shortcut window">Kill App/Process</property>
                 <property name="action-name">app.kill-app-process</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Halt Application/Process</property>
+                <property name="title" translatable="yes" context="shortcut window">Halt App/Process</property>
                 <property name="action-name">app.halt-app-process</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Continue Application/Process</property>
+                <property name="title" translatable="yes" context="shortcut window">Continue App/Process</property>
                 <property name="action-name">app.continue-app-process</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Show Information for Application/Process</property>
+                <property name="title" translatable="yes" context="shortcut window">Show Information for App/Process</property>
                 <property name="action-name">app.information-app-process</property>
               </object>
             </child>

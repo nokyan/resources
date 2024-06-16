@@ -24,6 +24,8 @@ use crate::utils::NUM_CPUS;
 use self::application_entry::ApplicationEntry;
 use self::application_name_cell::ResApplicationNameCell;
 
+pub const TAB_ID: &'static str = "applications";
+
 mod imp {
     use std::{
         cell::{Cell, RefCell},
@@ -148,10 +150,10 @@ mod imp {
                 end_application_button: Default::default(),
                 uses_progress_bar: Cell::new(false),
                 icon: RefCell::new(ThemedIcon::new("app-symbolic").into()),
-                tab_name: Cell::from(glib::GString::from(i18n("Applications"))),
+                tab_name: Cell::from(glib::GString::from(i18n("Apps"))),
                 tab_detail_string: Cell::new(glib::GString::new()),
                 tab_usage_string: Cell::new(glib::GString::new()),
-                tab_id: Cell::new(glib::GString::from("applications")),
+                tab_id: Cell::new(glib::GString::from(TAB_ID)),
                 popped_over_app: Default::default(),
                 columns: Default::default(),
                 graph_locked_max_y: Cell::new(true),
@@ -566,10 +568,7 @@ impl ResApplications {
         // -1 because we don't want to count System Processes
         self.set_property(
             "tab_usage_string",
-            i18n_f(
-                "Running Applications: {}",
-                &[&(store.n_items() - 1).to_string()],
-            ),
+            i18n_f("Running Apps: {}", &[&(store.n_items() - 1).to_string()]),
         );
     }
 
@@ -622,7 +621,7 @@ impl ResApplications {
         let name_col_factory = gtk::SignalListItemFactory::new();
 
         let name_col =
-            gtk::ColumnViewColumn::new(Some(&i18n("Application")), Some(name_col_factory.clone()));
+            gtk::ColumnViewColumn::new(Some(&i18n("App")), Some(name_col_factory.clone()));
 
         name_col.set_resizable(true);
 
@@ -1151,17 +1150,17 @@ fn get_action_name(action: ProcessAction, args: &[&str]) -> String {
 fn get_app_action_warning(action: ProcessAction) -> String {
     match action {
             ProcessAction::TERM => i18n("Unsaved work might be lost."),
-            ProcessAction::STOP => i18n("Halting an application can come with serious risks such as losing data and security implications. Use with caution."),
-            ProcessAction::KILL => i18n("Killing an application can come with serious risks such as losing data and security implications. Use with caution."),
+            ProcessAction::STOP => i18n("Halting an app can come with serious risks such as losing data and security implications. Use with caution."),
+            ProcessAction::KILL => i18n("Killing an app can come with serious risks such as losing data and security implications. Use with caution."),
             ProcessAction::CONT => String::new(),
         }
 }
 
 fn get_app_action_description(action: ProcessAction) -> String {
     match action {
-        ProcessAction::TERM => i18n("End application"),
-        ProcessAction::STOP => i18n("Halt application"),
-        ProcessAction::KILL => i18n("Kill application"),
-        ProcessAction::CONT => i18n("Continue application"),
+        ProcessAction::TERM => i18n("End app"),
+        ProcessAction::STOP => i18n("Halt app"),
+        ProcessAction::KILL => i18n("Kill app"),
+        ProcessAction::CONT => i18n("Continue app"),
     }
 }

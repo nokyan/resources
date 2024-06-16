@@ -220,7 +220,7 @@ glib::wrapper! {
 
 impl ResDrive {
     const ID_PREFIX: &'static str = "drive";
-    const MAIN_GRAPH_COLOR: [u8; 3] = [246, 211, 45];
+    const MAIN_GRAPH_COLOR: [u8; 3] = [0xff, 0x78, 0x00];
     const SECTOR_SIZE: usize = 512;
 
     pub fn new() -> Self {
@@ -256,11 +256,11 @@ impl ResDrive {
         );
 
         imp.read_speed.set_title_label(&i18n("Read Speed"));
-        imp.read_speed.graph().set_graph_color(229, 165, 10);
+        imp.read_speed.graph().set_graph_color(0xe6, 0x61, 0x00);
         imp.read_speed.graph().set_locked_max_y(None);
 
         imp.write_speed.set_title_label(&i18n("Write Speed"));
-        imp.write_speed.graph().set_graph_color(229, 165, 10);
+        imp.write_speed.graph().set_graph_color(0xc6, 0x46, 0x00);
         imp.write_speed.graph().set_locked_max_y(None);
 
         imp.drive_type.set_subtitle(&drive.drive_type.to_string());
@@ -279,7 +279,9 @@ impl ResDrive {
             imp.set_tab_detail(&drive_data.inner.block_device);
         }
 
-        *imp.old_stats.borrow_mut() = drive_data.disk_stats.clone();
+        imp.old_stats
+            .borrow_mut()
+            .clone_from(&drive_data.disk_stats);
     }
 
     pub fn refresh_page(&self, drive_data: DriveData) {

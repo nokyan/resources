@@ -4,7 +4,7 @@
     <property name="width_request">360</property>
     <property name="height_request">600</property>
     <property name="content_width">480</property>
-    <property name="title" translatable="yes">Application Information</property>
+    <property name="title" translatable="yes">App Information</property>
     <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>

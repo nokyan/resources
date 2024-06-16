@@ -124,7 +124,7 @@
     <child>
       <object class="AdwPreferencesPage">
         <property name="icon-name">app-symbolic</property>
-        <property name="title" translatable="yes">Applications</property>
+        <property name="title" translatable="yes">Apps</property>
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Information Columns</property>

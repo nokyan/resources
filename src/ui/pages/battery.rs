@@ -193,7 +193,7 @@ glib::wrapper! {
 
 impl ResBattery {
     const ID_PREFIX: &'static str = "battery";
-    const MAIN_GRAPH_COLOR: [u8; 3] = [146, 195, 70];
+    const MAIN_GRAPH_COLOR: [u8; 3] = [0x33, 0xd1, 0x7a];
 
     pub fn new() -> Self {
         glib::Object::new::<Self>()
@@ -233,7 +233,7 @@ impl ResBattery {
         );
 
         imp.power_usage.set_title_label(&i18n("Power Usage"));
-        imp.power_usage.graph().set_graph_color(165, 195, 59);
+        imp.power_usage.graph().set_graph_color(0x26, 0xa2, 0x69);
         imp.power_usage.graph().set_locked_max_y(None);
 
         imp.charge_cycles.set_subtitle(
@@ -268,7 +268,7 @@ impl ResBattery {
             usage_string.push_str(&percentage_string);
 
             if let Ok(state) = battery_data.state {
-                percentage_string.push_str(&format!(" ({})", state.to_string()));
+                percentage_string.push_str(&format!(" ({})", state));
             }
 
             imp.charge.graph().set_visible(true);
