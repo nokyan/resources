@@ -208,7 +208,7 @@ glib::wrapper! {
 }
 
 impl ResCPU {
-    const MAIN_GRAPH_COLOR: [u8; 3] = [28, 113, 216];
+    const MAIN_GRAPH_COLOR: [u8; 3] = [0x35, 0x84, 0xe4];
 
     pub fn new() -> Self {
         glib::Object::new::<Self>()

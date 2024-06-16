@@ -188,7 +188,7 @@ glib::wrapper! {
 }
 
 impl ResMemory {
-    const MAIN_GRAPH_COLOR: [u8; 3] = [129, 61, 156];
+    const MAIN_GRAPH_COLOR: [u8; 3] = [0xc5, 0x2f, 0x90];
 
     pub fn new() -> Self {
         glib::Object::new::<Self>()
@@ -209,7 +209,7 @@ impl ResMemory {
             Self::MAIN_GRAPH_COLOR[2],
         );
         imp.swap.set_title_label(&i18n("Swap"));
-        imp.swap.graph().set_graph_color(46, 194, 126);
+        imp.swap.graph().set_graph_color(0x94, 0x29, 0x7c);
 
         if let Ok(memory_devices) = memory::get_memory_devices() {
             self.setup_properties(memory_devices);

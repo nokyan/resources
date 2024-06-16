@@ -203,7 +203,7 @@ glib::wrapper! {
 
 impl ResGPU {
     const ID_PREFIX: &'static str = "gpu";
-    const MAIN_GRAPH_COLOR: [u8; 3] = [230, 97, 0];
+    const MAIN_GRAPH_COLOR: [u8; 3] = [0xe0, 0x1b, 0x24];
 
     pub fn new() -> Self {
         glib::Object::new::<Self>()
@@ -230,21 +230,21 @@ impl ResGPU {
             .set_title_label(&i18n("Video Encoder/Decoder Usage"));
         imp.encode_decode_combined_usage
             .graph()
-            .set_graph_color(230, 97, 0);
+            .set_graph_color(0xc0, 0x1c, 0x28);
 
         imp.encode_decode_usage
             .set_start_title_label(&i18n("Video Encoder Usage"));
         imp.encode_decode_usage
             .start_graph()
-            .set_graph_color(211, 49, 14);
+            .set_graph_color(0xc0, 0x1c, 0x28);
         imp.encode_decode_usage
             .set_end_title_label(&i18n("Video Decoder Usage"));
         imp.encode_decode_usage
             .end_graph()
-            .set_graph_color(211, 49, 14);
+            .set_graph_color(0xc0, 0x1c, 0x28);
 
         imp.vram_usage.set_title_label(&i18n("Video Memory Usage"));
-        imp.vram_usage.graph().set_graph_color(192, 28, 40);
+        imp.vram_usage.graph().set_graph_color(0xa5, 0x1d, 0x2d);
 
         imp.manufacturer.set_subtitle(
             &gpu.get_vendor()
