@@ -1162,7 +1162,6 @@ msgid "Continue App/Process"
 msgstr "ऐप/प्रक्रिया जारी रखें"
 
 #: data/resources/ui/shortcuts.ui:62
-#| msgctxt "shortcut window"
 msgctxt "shortcut window"
 msgid "Show Information for App/Process"
 msgstr "ऐप/प्रक्रिया के लिए जानकारी दिखाएं"
