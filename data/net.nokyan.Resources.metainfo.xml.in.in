@@ -89,17 +89,17 @@
           <li>Resources can now monitor connected batteries</li>
           <li>CPU usage normalization can now be toggled off</li>
           <li>Total read and write stats for drives</li>
-          <p>
+        </ul>
+        <p>
           📈 Improvements
         </p>
-          <ul>
-            <li>Graph colors have been revamped to avoid low contrast situations and improve consistency within views</li>
-            <li>Some keyboard shortcuts were changed to avoid clashes with standard shortcuts</li>
-            <li>More stability when performance statistics could not be determined</li>
-            <li>Some entries in the settings dialog now have subtitles</li>
-            <li>If a drive has no model name, its block device name will now be shown in the titlebar</li>
-            <li>Small accessibility improvements</li>
-          </ul>
+        <ul>
+          <li>Graph colors have been revamped to avoid low contrast situations and improve consistency within views</li>
+          <li>Some keyboard shortcuts were changed to avoid clashes with standard shortcuts</li>
+          <li>More stability when performance statistics could not be determined</li>
+          <li>Some entries in the settings dialog now have subtitles</li>
+          <li>If a drive has no model name, its block device name will now be shown in the titlebar</li>
+          <li>Small accessibility improvements</li>
         </ul>
       </description>
     </release>
