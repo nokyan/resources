@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-16 11:25+0200\n"
-"PO-Revision-Date: 2024-06-16 13:26+0200\n"
+"PO-Revision-Date: 2024-06-23 14:46+0200\n"
 "Last-Translator: lorduskordus <lorduskordus@gmail.com>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -397,7 +397,7 @@ msgstr "Procesy"
 
 #: src/ui/pages/processes/mod.rs:546
 msgid "Running Processes: {}"
-msgstr "Běžící Procesy"
+msgstr "Běžící Procesy: {}"
 
 #: src/ui/pages/processes/mod.rs:599
 msgid "Process"
