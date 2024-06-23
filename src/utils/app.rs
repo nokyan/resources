@@ -452,7 +452,8 @@ impl AppsContext {
                         / 1_000_000.0
                 }
             })
-            .sum()
+            .sum::<f32>()
+            .clamp(0.0, 1.0)
     }
 
     pub fn encoder_fraction(&self, pci_slot: PciSlot) -> f32 {
@@ -489,7 +490,8 @@ impl AppsContext {
                         / 1_000_000.0
                 }
             })
-            .sum()
+            .sum::<f32>()
+            .clamp(0.0, 1.0)
     }
 
     pub fn decoder_fraction(&self, pci_slot: PciSlot) -> f32 {
@@ -526,7 +528,8 @@ impl AppsContext {
                         / 1_000_000.0
                 }
             })
-            .sum()
+            .sum::<f32>()
+            .clamp(0.0, 1.0)
     }
 
     fn app_associated_with_process(&self, process: &Process) -> Option<String> {

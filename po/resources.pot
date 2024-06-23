@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-16 11:25+0200\n"
+"POT-Creation-Date: 2024-06-23 19:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -141,7 +141,7 @@ msgstr ""
 #: src/ui/pages/network.rs:378 src/ui/pages/network.rs:380
 #: src/ui/pages/processes/mod.rs:839 src/ui/pages/processes/mod.rs:892
 #: src/ui/pages/processes/mod.rs:945 src/ui/pages/processes/mod.rs:998
-#: src/utils/app.rs:686 src/utils/app.rs:762 src/utils/battery.rs:138
+#: src/utils/app.rs:689 src/utils/app.rs:765 src/utils/battery.rs:138
 #: src/utils/drive.rs:90 src/utils/gpu/mod.rs:255 src/utils/gpu/mod.rs:261
 msgid "N/A"
 msgstr ""
@@ -514,7 +514,7 @@ msgstr ""
 msgid "There was a problem continuing {}"
 msgstr ""
 
-#: src/utils/app.rs:768
+#: src/utils/app.rs:771
 msgid "System Processes"
 msgstr ""
 
@@ -1381,7 +1381,7 @@ msgstr ""
 msgid "Continue App"
 msgstr ""
 
-#: data/resources/ui/pages/applications.ui:95
+#: data/resources/ui/pages/applications.ui:97
 msgid "End App"
 msgstr ""
 
@@ -1550,6 +1550,6 @@ msgstr ""
 msgid "Continue Process"
 msgstr ""
 
-#: data/resources/ui/pages/processes.ui:95
+#: data/resources/ui/pages/processes.ui:97
 msgid "End Process"
 msgstr ""
