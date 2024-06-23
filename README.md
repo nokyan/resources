@@ -22,6 +22,8 @@ Resources is a simple yet powerful monitor for your system resources and process
   ![Drive View of Resources](data/resources/screenshots/6.png?raw=true "Drive View of Resources")
 
   ![Network Interface View of Resources](data/resources/screenshots/7.png?raw=true "Network Interface View of Resources")
+
+  ![Battery View of Resources](data/resources/screenshots/8.png?raw=true "Battery View of Resources")
   
 </details>
 

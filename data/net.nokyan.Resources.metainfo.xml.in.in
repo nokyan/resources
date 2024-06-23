@@ -63,8 +63,46 @@
     <screenshot>
       <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/7.png</image>
     </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/8.png</image>
+    </screenshot>
   </screenshots>
   <releases>
+    <release version="1.5.0" date="2024-06-23">
+      <description translate="no">
+        <p>
+          Resources 1.5 has landed and brings with it monitoring for batteries along with the usual bug fixes and improvements. Enjoy!
+        </p>
+        <p>
+          🐛 Bug fixes
+        </p>
+        <ul>
+          <li>If the Processes view was the last opened view and the “Show search fields on launch” setting was enabled, the search bar was not automatically focused</li>
+          <li>Graphs in the sidebar were reset when a drive or network interface was added or removed</li>
+          <li>App icons were not shown for user-wide installed Flatpaks</li>
+          <li>The calculated amount of logical CPUs was wrong for systems with multiple CPU sockets</li>
+        </ul>
+        <p>
+          ✨ New features
+        </p>
+        <ul>
+          <li>Resources can now monitor connected batteries</li>
+          <li>CPU usage normalization can now be toggled off</li>
+          <li>Total read and write stats for drives</li>
+        </ul>
+        <p>
+          📈 Improvements
+        </p>
+        <ul>
+          <li>Graph colors have been revamped to avoid low contrast situations and improve consistency within views</li>
+          <li>Some keyboard shortcuts were changed to avoid clashes with standard shortcuts</li>
+          <li>More stability when performance statistics could not be determined</li>
+          <li>Some entries in the settings dialog now have subtitles</li>
+          <li>If a drive has no model name, its block device name will now be shown in the titlebar</li>
+          <li>Small accessibility improvements</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.4.0" date="2024-04-14">
       <description translate="no">
         <p>
