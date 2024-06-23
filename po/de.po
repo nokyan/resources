@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-16 11:25+0200\n"
-"PO-Revision-Date: 2024-06-16 11:26+0200\n"
+"POT-Creation-Date: 2024-06-23 19:41+0200\n"
+"PO-Revision-Date: 2024-06-23 19:43+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: de\n"
@@ -146,7 +146,7 @@ msgstr "Ja (Snap)"
 #: src/ui/pages/network.rs:378 src/ui/pages/network.rs:380
 #: src/ui/pages/processes/mod.rs:839 src/ui/pages/processes/mod.rs:892
 #: src/ui/pages/processes/mod.rs:945 src/ui/pages/processes/mod.rs:998
-#: src/utils/app.rs:686 src/utils/app.rs:762 src/utils/battery.rs:138
+#: src/utils/app.rs:689 src/utils/app.rs:765 src/utils/battery.rs:138
 #: src/utils/drive.rs:90 src/utils/gpu/mod.rs:255 src/utils/gpu/mod.rs:261
 msgid "N/A"
 msgstr "n. v."
@@ -527,7 +527,7 @@ msgstr "Es gab ein Problem beim Abwürgen von {}"
 msgid "There was a problem continuing {}"
 msgstr "Es gab ein Problem beim Fortsetzen von {}"
 
-#: src/utils/app.rs:768
+#: src/utils/app.rs:771
 msgid "System Processes"
 msgstr "Systemprozesse"
 
@@ -1399,13 +1399,13 @@ msgstr "Anwendung anhalten"
 msgid "Continue App"
 msgstr "Anwendung fortsetzen"
 
-#: data/resources/ui/pages/applications.ui:95
+#: data/resources/ui/pages/applications.ui:97
 msgid "End App"
 msgstr "Anwendung beenden"
 
 #: data/resources/ui/pages/battery.ui:36
 msgid "Battery Health"
-msgstr "Batteriezusatnd"
+msgstr "Batteriezustand"
 
 #: data/resources/ui/pages/battery.ui:45
 msgid "Design Capacity"
@@ -1568,7 +1568,7 @@ msgstr "Prozess anhalten"
 msgid "Continue Process"
 msgstr "Prozess fortsetzen"
 
-#: data/resources/ui/pages/processes.ui:95
+#: data/resources/ui/pages/processes.ui:97
 msgid "End Process"
 msgstr "Prozess beenden"
 
