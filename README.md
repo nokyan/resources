@@ -79,3 +79,8 @@ If you've built Resources as a Flatpak, type `flatpak-builder --run flatpak_app 
 ## Contributing
 
 If you have an idea, bug report, question or something else, don't hesitate to [open an issue](https://github.com/nokyan/resources/issues)! Translations are always welcome.
+
+## Code of Conduct
+
+Resources follows the [GNOME Code of Conduct](/CODE_OF_CONDUCT.md).
+All communications in project spaces are expected to follow it.
