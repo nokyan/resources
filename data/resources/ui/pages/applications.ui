@@ -65,6 +65,7 @@
                 <child>
                   <object class="GtkToggleButton" id="search_button">
                     <property name="icon-name">search-symbolic</property>
+                    <property name="tooltip-text">Toggle search field</property>
                     <accessibility>
                       <property name="label">Toggle search field</property>
                     </accessibility>
@@ -82,8 +83,9 @@
                       <object class="GtkButton" id="information_button">
                         <property name="icon-name">info-symbolic</property>
                         <property name="sensitive">false</property>
+                        <property name="tooltip-text">Show app information</property>
                         <accessibility>
-                          <property name="label">Display app information</property>
+                          <property name="label">Show app information</property>
                         </accessibility>
                         <style>
                           <class name="circular"/>
