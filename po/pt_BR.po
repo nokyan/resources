@@ -163,7 +163,7 @@ msgstr "Aplicativos"
 
 #: src/ui/pages/applications/mod.rs:571
 msgid "Running Apps: {}"
-msgstr "Aplicativos em Execução: {]"
+msgstr "Aplicativos em Execução: {}"
 
 #: src/ui/pages/applications/mod.rs:597 src/ui/pages/processes/mod.rs:572
 msgid "Cancel"
