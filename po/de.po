@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-23 19:41+0200\n"
+"POT-Creation-Date: 2024-07-02 23:02+0200\n"
 "PO-Revision-Date: 2024-06-23 19:43+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
@@ -55,7 +55,7 @@ msgid "CPU"
 msgstr "CPU"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:25
-#: src/ui/pages/applications/mod.rs:666 src/ui/pages/memory.rs:132
+#: src/ui/pages/applications/mod.rs:670 src/ui/pages/memory.rs:132
 #: src/ui/pages/memory.rs:205 src/ui/pages/processes/mod.rs:726
 #: data/resources/ui/window.ui:158 data/resources/ui/window.ui:165
 #: data/resources/ui/dialogs/app_dialog.ui:81
@@ -66,7 +66,7 @@ msgid "Memory"
 msgstr "Arbeitsspeicher"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:26
-#: src/ui/pages/applications/mod.rs:961 src/ui/pages/gpu.rs:146
+#: src/ui/pages/applications/mod.rs:965 src/ui/pages/gpu.rs:146
 #: src/ui/pages/processes/mod.rs:1032 src/ui/window.rs:286
 #: data/resources/ui/dialogs/app_dialog.ui:130
 #: data/resources/ui/dialogs/process_dialog.ui:113
@@ -118,8 +118,8 @@ msgstr "Ja (Snap)"
 #: src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:140
 #: src/ui/dialogs/process_dialog.rs:147 src/ui/dialogs/process_dialog.rs:154
 #: src/ui/dialogs/process_dialog.rs:190 src/ui/dialogs/process_dialog.rs:197
-#: src/ui/dialogs/process_dialog.rs:199 src/ui/pages/applications/mod.rs:780
-#: src/ui/pages/applications/mod.rs:878 src/ui/pages/battery.rs:223
+#: src/ui/dialogs/process_dialog.rs:199 src/ui/pages/applications/mod.rs:784
+#: src/ui/pages/applications/mod.rs:882 src/ui/pages/battery.rs:223
 #: src/ui/pages/battery.rs:244 src/ui/pages/battery.rs:250
 #: src/ui/pages/battery.rs:253 src/ui/pages/battery.rs:279
 #: src/ui/pages/battery.rs:303 src/ui/pages/battery.rs:305
@@ -169,7 +169,7 @@ msgstr "Abbrechen"
 msgid "App"
 msgstr "Anwendung"
 
-#: src/ui/pages/applications/mod.rs:712 src/ui/pages/cpu.rs:149
+#: src/ui/pages/applications/mod.rs:716 src/ui/pages/cpu.rs:149
 #: src/ui/pages/processes/mod.rs:771 src/ui/window.rs:332
 #: data/resources/ui/window.ui:127 data/resources/ui/window.ui:134
 #: data/resources/ui/dialogs/app_dialog.ui:72
@@ -179,7 +179,7 @@ msgstr "Anwendung"
 msgid "Processor"
 msgstr "Prozessor"
 
-#: src/ui/pages/applications/mod.rs:762 src/ui/pages/processes/mod.rs:821
+#: src/ui/pages/applications/mod.rs:766 src/ui/pages/processes/mod.rs:821
 #: data/resources/ui/dialogs/app_dialog.ui:90
 #: data/resources/ui/dialogs/process_dialog.ui:73
 #: data/resources/ui/dialogs/settings_dialog.ui:143
@@ -187,7 +187,7 @@ msgstr "Prozessor"
 msgid "Drive Read"
 msgstr "Lesevorgänge"
 
-#: src/ui/pages/applications/mod.rs:813 src/ui/pages/processes/mod.rs:874
+#: src/ui/pages/applications/mod.rs:817 src/ui/pages/processes/mod.rs:874
 #: data/resources/ui/dialogs/app_dialog.ui:99
 #: data/resources/ui/dialogs/process_dialog.ui:82
 #: data/resources/ui/dialogs/settings_dialog.ui:148
@@ -195,7 +195,7 @@ msgstr "Lesevorgänge"
 msgid "Drive Read Total"
 msgstr "Lesevorgänge insgesamt"
 
-#: src/ui/pages/applications/mod.rs:860 src/ui/pages/processes/mod.rs:927
+#: src/ui/pages/applications/mod.rs:864 src/ui/pages/processes/mod.rs:927
 #: data/resources/ui/dialogs/app_dialog.ui:108
 #: data/resources/ui/dialogs/process_dialog.ui:91
 #: data/resources/ui/dialogs/settings_dialog.ui:153
@@ -203,7 +203,7 @@ msgstr "Lesevorgänge insgesamt"
 msgid "Drive Write"
 msgstr "Schreibvorgänge"
 
-#: src/ui/pages/applications/mod.rs:913 src/ui/pages/processes/mod.rs:980
+#: src/ui/pages/applications/mod.rs:917 src/ui/pages/processes/mod.rs:980
 #: data/resources/ui/dialogs/app_dialog.ui:117
 #: data/resources/ui/dialogs/process_dialog.ui:100
 #: data/resources/ui/dialogs/settings_dialog.ui:158
@@ -211,7 +211,7 @@ msgstr "Schreibvorgänge"
 msgid "Drive Write Total"
 msgstr "Schreibvorgänge insgesamt"
 
-#: src/ui/pages/applications/mod.rs:1006 src/ui/pages/processes/mod.rs:1077
+#: src/ui/pages/applications/mod.rs:1010 src/ui/pages/processes/mod.rs:1077
 #: data/resources/ui/dialogs/app_dialog.ui:148
 #: data/resources/ui/dialogs/process_dialog.ui:131
 #: data/resources/ui/dialogs/settings_dialog.ui:173
@@ -219,7 +219,7 @@ msgstr "Schreibvorgänge insgesamt"
 msgid "Video Encoder"
 msgstr "Videokodierer"
 
-#: src/ui/pages/applications/mod.rs:1053 src/ui/pages/processes/mod.rs:1124
+#: src/ui/pages/applications/mod.rs:1057 src/ui/pages/processes/mod.rs:1124
 #: data/resources/ui/dialogs/app_dialog.ui:157
 #: data/resources/ui/dialogs/process_dialog.ui:140
 #: data/resources/ui/dialogs/settings_dialog.ui:178
@@ -227,7 +227,7 @@ msgstr "Videokodierer"
 msgid "Video Decoder"
 msgstr "Videodekodierer"
 
-#: src/ui/pages/applications/mod.rs:1099 src/ui/pages/processes/mod.rs:1171
+#: src/ui/pages/applications/mod.rs:1103 src/ui/pages/processes/mod.rs:1171
 #: data/resources/ui/dialogs/app_dialog.ui:139
 #: data/resources/ui/dialogs/process_dialog.ui:122
 #: data/resources/ui/dialogs/settings_dialog.ui:168
@@ -235,27 +235,27 @@ msgstr "Videodekodierer"
 msgid "Video Memory"
 msgstr "Grafikspeicher"
 
-#: src/ui/pages/applications/mod.rs:1143 src/ui/pages/processes/mod.rs:1354
+#: src/ui/pages/applications/mod.rs:1147 src/ui/pages/processes/mod.rs:1354
 msgid "End {}?"
 msgstr "{} beenden?"
 
-#: src/ui/pages/applications/mod.rs:1144 src/ui/pages/processes/mod.rs:1355
+#: src/ui/pages/applications/mod.rs:1148 src/ui/pages/processes/mod.rs:1355
 msgid "Halt {}?"
 msgstr "{} anhalten?"
 
-#: src/ui/pages/applications/mod.rs:1145 src/ui/pages/processes/mod.rs:1356
+#: src/ui/pages/applications/mod.rs:1149 src/ui/pages/processes/mod.rs:1356
 msgid "Kill {}?"
 msgstr "{} abwürgen?"
 
-#: src/ui/pages/applications/mod.rs:1146 src/ui/pages/processes/mod.rs:1357
+#: src/ui/pages/applications/mod.rs:1150 src/ui/pages/processes/mod.rs:1357
 msgid "Continue {}?"
 msgstr "{} fortsetzen?"
 
-#: src/ui/pages/applications/mod.rs:1152 src/ui/pages/processes/mod.rs:1363
+#: src/ui/pages/applications/mod.rs:1156 src/ui/pages/processes/mod.rs:1363
 msgid "Unsaved work might be lost."
 msgstr "Ungespeicherte Daten könnten verloren gehen."
 
-#: src/ui/pages/applications/mod.rs:1153
+#: src/ui/pages/applications/mod.rs:1157
 msgid ""
 "Halting an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
@@ -263,7 +263,7 @@ msgstr ""
 "Das Anhalten einer Anwendung ist mit Risiken wie dem Verlust von Daten sowie "
 "Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
 
-#: src/ui/pages/applications/mod.rs:1154
+#: src/ui/pages/applications/mod.rs:1158
 msgid ""
 "Killing an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
@@ -271,21 +271,25 @@ msgstr ""
 "Das Abwürgen einer Anwendung ist mit Risiken wie dem Verlust von Daten sowie "
 "Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
 
-#: src/ui/pages/applications/mod.rs:1161
-msgid "End app"
+#: src/ui/pages/applications/mod.rs:1165
+#: data/resources/ui/pages/applications.ui:97
+msgid "End App"
 msgstr "Anwendung beenden"
 
-#: src/ui/pages/applications/mod.rs:1162
-msgid "Halt app"
+#: src/ui/pages/applications/mod.rs:1166
+#: data/resources/ui/pages/applications.ui:10
+msgid "Halt App"
 msgstr "Anwendung anhalten"
 
-#: src/ui/pages/applications/mod.rs:1163
-msgid "Kill app"
+#: src/ui/pages/applications/mod.rs:1167
+#: data/resources/ui/pages/applications.ui:6
+msgid "Kill App"
 msgstr "Anwendung abwürgen"
 
-#: src/ui/pages/applications/mod.rs:1164
-msgid "Continue app"
-msgstr "Anwendung fortfahren"
+#: src/ui/pages/applications/mod.rs:1168
+#: data/resources/ui/pages/applications.ui:14
+msgid "Continue App"
+msgstr "Anwendung fortsetzen"
 
 #: src/ui/pages/battery.rs:136 src/ui/pages/drive.rs:157
 msgid "Drive"
@@ -451,79 +455,79 @@ msgstr ""
 "Das Abwürgen eines Prozesses ist mit Risiken wie dem Verlust von Daten sowie "
 "Sicherheitsproblemen verbunden. Sie sollten vorsichtig sein."
 
-#: src/ui/pages/processes/mod.rs:1372
-msgid "End process"
+#: src/ui/pages/processes/mod.rs:1372 data/resources/ui/pages/processes.ui:97
+msgid "End Process"
 msgstr "Prozess beenden"
 
-#: src/ui/pages/processes/mod.rs:1373
-msgid "Halt process"
+#: src/ui/pages/processes/mod.rs:1373 data/resources/ui/pages/processes.ui:10
+msgid "Halt Process"
 msgstr "Prozess anhalten"
 
-#: src/ui/pages/processes/mod.rs:1374
-msgid "Kill process"
+#: src/ui/pages/processes/mod.rs:1374 data/resources/ui/pages/processes.ui:6
+msgid "Kill Process"
 msgstr "Prozess abwürgen"
 
-#: src/ui/pages/processes/mod.rs:1375
-msgid "Continue process"
+#: src/ui/pages/processes/mod.rs:1375 data/resources/ui/pages/processes.ui:14
+msgid "Continue Process"
 msgstr "Prozess fortsetzen"
 
 #: src/ui/window.rs:284
 msgid "GPU {}"
 msgstr "GPU {}"
 
-#: src/ui/window.rs:888
+#: src/ui/window.rs:884
 msgid "Successfully ended {}"
 msgstr "{} wurde erfolgreich beendet"
 
-#: src/ui/window.rs:889
+#: src/ui/window.rs:885
 msgid "Successfully halted {}"
 msgstr "{} wurde erfolgreich angehalten"
 
-#: src/ui/window.rs:890
+#: src/ui/window.rs:886
 msgid "Successfully killed {}"
 msgstr "{} wurde erfolgreich abgewürgt"
 
-#: src/ui/window.rs:891
+#: src/ui/window.rs:887
 msgid "Successfully continued {}"
 msgstr "{} wurde erfolgreich fortgesetzt"
 
-#: src/ui/window.rs:898
+#: src/ui/window.rs:894
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] "Es gab ein Problem beim Beenden von {} Prozessen"
 msgstr[1] "Es gab ein Problem beim Beenden eines Prozesses"
 
-#: src/ui/window.rs:904
+#: src/ui/window.rs:900
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "Es gab ein Problem beim Anhalten von {} Prozessen"
 msgstr[1] "Es gab ein Problem beim Anhalten eines Prozesses"
 
-#: src/ui/window.rs:910
+#: src/ui/window.rs:906
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "Es gab ein Problem beim Abwürgen von {} Prozessen"
 msgstr[1] "Es gab ein Problem beim Abwürgen eines Prozesses"
 
-#: src/ui/window.rs:916
+#: src/ui/window.rs:912
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "Es gab ein Problem beim Fortsetzen von {} Prozessen"
 msgstr[1] "Es gab ein Problem beim Fortsetzen eines Prozesses"
 
-#: src/ui/window.rs:926
+#: src/ui/window.rs:922
 msgid "There was a problem ending {}"
 msgstr "Es gab ein Problem beim Beenden von {}"
 
-#: src/ui/window.rs:927
+#: src/ui/window.rs:923
 msgid "There was a problem halting {}"
 msgstr "Es gab ein Problem beim Anhalten von {}"
 
-#: src/ui/window.rs:928
+#: src/ui/window.rs:924
 msgid "There was a problem killing {}"
 msgstr "Es gab ein Problem beim Abwürgen von {}"
 
-#: src/ui/window.rs:929
+#: src/ui/window.rs:925
 msgid "There was a problem continuing {}"
 msgstr "Es gab ein Problem beim Fortsetzen von {}"
 
@@ -1387,22 +1391,6 @@ msgid "Virtual network interfaces are for example bridges or VPN tunnels"
 msgstr ""
 "Als virtuelle Netzwerkschnittstellen zählen zum Beispiel Bridges oder Tunnel"
 
-#: data/resources/ui/pages/applications.ui:6
-msgid "Kill App"
-msgstr "Anwendung abwürgen"
-
-#: data/resources/ui/pages/applications.ui:10
-msgid "Halt App"
-msgstr "Anwendung anhalten"
-
-#: data/resources/ui/pages/applications.ui:14
-msgid "Continue App"
-msgstr "Anwendung fortsetzen"
-
-#: data/resources/ui/pages/applications.ui:97
-msgid "End App"
-msgstr "Anwendung beenden"
-
 #: data/resources/ui/pages/battery.ui:36
 msgid "Battery Health"
 msgstr "Batteriezustand"
@@ -1556,21 +1544,29 @@ msgstr "Schnittstelle"
 msgid "Hardware Address"
 msgstr "Geräteadresse"
 
-#: data/resources/ui/pages/processes.ui:6
-msgid "Kill Process"
-msgstr "Prozess abwürgen"
+#~ msgid "End app"
+#~ msgstr "Anwendung beenden"
 
-#: data/resources/ui/pages/processes.ui:10
-msgid "Halt Process"
-msgstr "Prozess anhalten"
+#~ msgid "Halt app"
+#~ msgstr "Anwendung anhalten"
 
-#: data/resources/ui/pages/processes.ui:14
-msgid "Continue Process"
-msgstr "Prozess fortsetzen"
+#~ msgid "Kill app"
+#~ msgstr "Anwendung abwürgen"
 
-#: data/resources/ui/pages/processes.ui:97
-msgid "End Process"
-msgstr "Prozess beenden"
+#~ msgid "Continue app"
+#~ msgstr "Anwendung fortfahren"
+
+#~ msgid "End process"
+#~ msgstr "Prozess beenden"
+
+#~ msgid "Halt process"
+#~ msgstr "Prozess anhalten"
+
+#~ msgid "Kill process"
+#~ msgstr "Prozess abwürgen"
+
+#~ msgid "Continue process"
+#~ msgstr "Prozess fortsetzen"
 
 #~ msgid "Application"
 #~ msgstr "Anwendung"
