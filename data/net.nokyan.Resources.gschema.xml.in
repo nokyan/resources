@@ -189,5 +189,9 @@
       <default>true</default>
       <summary>Whether the CPU usage should be normalized (divided by the number of threads)</summary>
     </key>
+    <key name="enable-transitions" type="b">
+      <default>true</default>
+      <summary>Show transiitons when switching between views</summary>
+    </key>
   </schema>
 </schemalist>

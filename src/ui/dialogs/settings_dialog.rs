@@ -38,6 +38,8 @@ mod imp {
         pub sidebar_meter_type_row: TemplateChild<adw::ComboRow>,
         #[template_child]
         pub normalize_cpu_usage_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub enable_transitions_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub apps_show_memory_row: TemplateChild<adw::SwitchRow>,
@@ -173,6 +175,8 @@ impl ResSettingsDialog {
             .set_active(SETTINGS.show_search_on_start());
         imp.normalize_cpu_usage_row
             .set_active(SETTINGS.normalize_cpu_usage());
+        imp.enable_transitions_row
+            .set_active(SETTINGS.enable_transitions());
 
         imp.apps_show_memory_row
             .set_active(SETTINGS.apps_show_memory());
@@ -293,6 +297,11 @@ impl ResSettingsDialog {
         imp.normalize_cpu_usage_row
             .connect_active_notify(|switch_row| {
                 let _ = SETTINGS.set_normalize_cpu_usage(switch_row.is_active());
+            });
+        
+        imp.enable_transitions_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_enable_transitions(switch_row.is_active());
             });
 
         imp.apps_show_cpu_row.connect_active_notify(|switch_row| {

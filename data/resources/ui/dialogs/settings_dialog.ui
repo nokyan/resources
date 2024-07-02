@@ -117,6 +117,12 @@
                 <property name="subtitle" translatable="yes">If enabled, the total usage of all cores will be divided by the amount of cores</property>
               </object>
             </child>
+            <child>
+              <object class="AdwSwitchRow" id="enable_transitions_row">
+                <property name="title" translatable="yes">Show Transitions when switching Views (requires restart)</property>
+                <property name="subtitle" translatable="yes">If enabled, switching between views will display a fading transition</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
