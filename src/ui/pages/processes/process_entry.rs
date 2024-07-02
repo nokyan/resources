@@ -106,9 +106,8 @@ mod imp {
     impl ProcessEntry {
         pub fn name(&self) -> glib::GString {
             let name = self.name.take();
-            let result = name.clone();
-            self.name.set(name);
-            result
+            self.name.set(name.clone());
+            name
         }
 
         pub fn set_name(&self, name: &str) {
@@ -117,9 +116,8 @@ mod imp {
 
         pub fn commandline(&self) -> glib::GString {
             let commandline = self.commandline.take();
-            let result = commandline.clone();
-            self.commandline.set(commandline);
-            result
+            self.commandline.set(commandline.clone());
+            commandline
         }
 
         pub fn set_commandline(&self, commandline: &str) {
@@ -128,9 +126,8 @@ mod imp {
 
         pub fn user(&self) -> glib::GString {
             let user = self.user.take();
-            let result = user.clone();
-            self.user.set(user);
-            result
+            self.user.set(user.clone());
+            user
         }
 
         pub fn set_user(&self, user: &str) {
@@ -139,9 +136,8 @@ mod imp {
 
         pub fn icon(&self) -> Icon {
             let icon = self.icon.replace(ThemedIcon::new("generic-process").into());
-            let result = icon.clone();
-            self.icon.set(icon);
-            result
+            self.icon.set(icon.clone());
+            icon
         }
 
         pub fn set_icon(&self, icon: &Icon) {

@@ -641,6 +641,10 @@ impl ResApplications {
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("icon")
                 .bind(&row, "icon", Widget::NONE);
+
+            item.property_expression("item")
+                .chain_property::<ApplicationEntry>("symbolic")
+                .bind(&row, "symbolic", Widget::NONE);
         });
 
         let name_col_sorter = StringSorter::builder()

@@ -53,10 +53,8 @@ mod imp {
     impl ResStackSidebarItem {
         pub fn name(&self) -> glib::GString {
             let name = self.name.take();
-            let result = name.clone();
-            self.name.set(name);
-
-            result
+            self.name.set(name.clone());
+            name
         }
 
         pub fn set_name(&self, name: &str) {
@@ -70,11 +68,9 @@ mod imp {
         }
 
         pub fn subtitle(&self) -> glib::GString {
-            let usage_string = self.subtitle.take();
-            let result = usage_string.clone();
-            self.subtitle.set(usage_string);
-
-            result
+            let subtitle = self.subtitle.take();
+            self.subtitle.set(subtitle.clone());
+            subtitle
         }
 
         pub fn set_subtitle(&self, usage_string: &str) {
@@ -88,10 +84,8 @@ mod imp {
 
         pub fn detail(&self) -> glib::GString {
             let detail = self.detail.take();
-            let result = detail.clone();
-            self.detail.set(detail);
-
-            result
+            self.detail.set(detail.clone());
+            detail
         }
 
         pub fn set_detail(&self, detail: &str) {
@@ -107,9 +101,8 @@ mod imp {
             let icon = self
                 .icon
                 .replace_with(|_| ThemedIcon::new("generic-process").into());
-            let result = icon.clone();
-            self.icon.set(icon);
-            result
+            self.icon.set(icon.clone());
+            icon
         }
 
         pub fn set_icon(&self, icon: &Icon) {
@@ -132,10 +125,8 @@ mod imp {
 
         pub fn tab_id(&self) -> glib::GString {
             let tab_id = self.tab_id.take();
-            let result = tab_id.clone();
-            self.tab_id.set(tab_id);
-
-            result
+            self.tab_id.set(tab_id.clone());
+            tab_id
         }
 
         pub fn set_tab_id(&self, tab_id: &str) {

@@ -44,36 +44,22 @@ mod imp {
     impl ResProcessNameCell {
         pub fn name(&self) -> glib::GString {
             let name = self.name.take();
-            let result = name.clone();
-            self.name.set(name);
-
-            result
+            self.name.set(name.clone());
+            name
         }
 
         pub fn set_name(&self, name: &str) {
-            let current_name = self.name.take();
-            if current_name.as_str() == name {
-                self.name.set(current_name);
-                return;
-            }
             self.name.set(glib::GString::from(name));
             self.inscription.set_text(Some(name));
         }
 
         pub fn tooltip(&self) -> glib::GString {
             let tooltip = self.tooltip.take();
-            let result = tooltip.clone();
-            self.tooltip.set(tooltip);
-
-            result
+            self.tooltip.set(tooltip.clone());
+            tooltip
         }
 
         pub fn set_tooltip(&self, tooltip: &str) {
-            let current_tooltip = self.tooltip.take();
-            if current_tooltip.as_str() == tooltip {
-                self.tooltip.set(current_tooltip);
-                return;
-            }
             self.tooltip.set(glib::GString::from(tooltip));
             self.inscription.set_tooltip_text(Some(tooltip));
         }
@@ -82,21 +68,22 @@ mod imp {
             let icon = self
                 .icon
                 .replace_with(|_| ThemedIcon::new("generic-process").into());
-            let result = icon.clone();
-            self.icon.set(icon);
-
-            result
+            self.icon.set(icon.clone());
+            icon
         }
 
         pub fn set_icon(&self, icon: &Icon) {
             let current_icon = self
                 .icon
                 .replace_with(|_| ThemedIcon::new("generic-process").into());
+
             if &current_icon == icon {
                 self.icon.set(current_icon);
                 return;
             }
+
             self.image.set_gicon(Some(icon));
+
             self.icon.set(icon.clone());
         }
     }

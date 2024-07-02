@@ -8,6 +8,7 @@ use crate::utils::app::AppItem;
 mod imp {
     use std::cell::{Cell, RefCell};
 
+    use glib::object::Cast;
     use gtk::{
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
@@ -62,6 +63,11 @@ mod imp {
         #[property(get, set)]
         gpu_mem_usage: Cell<u64>,
 
+        // TODO: Make this properly dynamic, don't use a variable that's never read
+        #[property(get = Self::symbolic)]
+        #[allow(dead_code)]
+        symbolic: Cell<bool>,
+
         pub app_item: RefCell<Option<AppItem>>,
     }
 
@@ -83,6 +89,7 @@ mod imp {
                 enc_usage: Cell::new(0.0),
                 dec_usage: Cell::new(0.0),
                 gpu_mem_usage: Cell::new(0),
+                symbolic: Cell::new(false),
             }
         }
     }
@@ -90,9 +97,8 @@ mod imp {
     impl ApplicationEntry {
         pub fn name(&self) -> glib::GString {
             let name = self.name.take();
-            let result = name.clone();
-            self.name.set(name);
-            result
+            self.name.set(name.clone());
+            name
         }
 
         pub fn set_name(&self, name: &str) {
@@ -101,9 +107,8 @@ mod imp {
 
         pub fn description(&self) -> Option<glib::GString> {
             let description = self.description.take();
-            let result = description.clone();
-            self.description.set(description);
-            result
+            self.description.set(description.clone());
+            description
         }
 
         pub fn set_description(&self, description: Option<&str>) {
@@ -112,9 +117,8 @@ mod imp {
 
         pub fn id(&self) -> Option<glib::GString> {
             let id = self.id.take();
-            let result = id.clone();
-            self.id.set(id);
-            result
+            self.id.set(id.clone());
+            id
         }
 
         pub fn set_id(&self, id: Option<&str>) {
@@ -123,13 +127,35 @@ mod imp {
 
         pub fn icon(&self) -> Icon {
             let icon = self.icon.replace(ThemedIcon::new("generic-process").into());
-            let result = icon.clone();
-            self.icon.set(icon);
-            result
+            self.icon.set(icon.clone());
+            icon
         }
 
         pub fn set_icon(&self, icon: &Icon) {
             self.icon.set(icon.clone());
+        }
+
+        pub fn symbolic(&self) -> bool {
+            let id = self.id.take();
+            self.id.set(id.clone());
+
+            let icon = self.icon.replace(ThemedIcon::new("generic-process").into());
+            self.icon.set(icon.clone());
+
+            id.is_none() // this will be the case for System Processes
+                || icon
+                    .downcast_ref::<ThemedIcon>()
+                    .map(|themed_icon| {
+                        themed_icon
+                            .names()
+                            .iter()
+                            .all(|name| name.ends_with("-symbolic"))
+                            || themed_icon
+                                .names()
+                                .iter()
+                                .all(|name| name.contains("generic-process"))
+                    })
+                    .unwrap_or(false)
         }
     }
 
