@@ -1158,9 +1158,9 @@ fn get_app_action_warning(action: ProcessAction) -> String {
 
 fn get_app_action_description(action: ProcessAction) -> String {
     match action {
-        ProcessAction::TERM => i18n("End app"),
-        ProcessAction::STOP => i18n("Halt app"),
-        ProcessAction::KILL => i18n("Kill app"),
-        ProcessAction::CONT => i18n("Continue app"),
+        ProcessAction::TERM => i18n("End App"),
+        ProcessAction::STOP => i18n("Halt App"),
+        ProcessAction::KILL => i18n("Kill App"),
+        ProcessAction::CONT => i18n("Continue App"),
     }
 }
