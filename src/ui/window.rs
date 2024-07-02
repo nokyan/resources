@@ -566,10 +566,6 @@ impl MainWindow {
                     }
                 }
 
-                // enable the transition type only now to avoid having a transition right in the beginning
-                imp.content_stack
-                    .set_transition_type(gtk::StackTransitionType::Crossfade);
-
                 first_refresh = false;
             }
 
