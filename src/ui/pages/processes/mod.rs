@@ -24,7 +24,7 @@ use crate::utils::NUM_CPUS;
 use self::process_entry::ProcessEntry;
 use self::process_name_cell::ResProcessNameCell;
 
-pub const TAB_ID: &'static str = "processes";
+pub const TAB_ID: &str = "processes";
 
 mod imp {
     use std::{
@@ -1369,9 +1369,9 @@ fn get_process_action_warning(action: ProcessAction) -> String {
 
 fn get_process_action_description(action: ProcessAction) -> String {
     match action {
-        ProcessAction::TERM => i18n("End process"),
-        ProcessAction::STOP => i18n("Halt process"),
-        ProcessAction::KILL => i18n("Kill process"),
-        ProcessAction::CONT => i18n("Continue process"),
+        ProcessAction::TERM => i18n("End Process"),
+        ProcessAction::STOP => i18n("Halt Process"),
+        ProcessAction::KILL => i18n("Kill Process"),
+        ProcessAction::CONT => i18n("Continue Process"),
     }
 }

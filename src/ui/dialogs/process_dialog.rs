@@ -110,15 +110,44 @@ impl ResProcessDialog {
     pub fn setup_widgets(&self, process: &ProcessItem, user: &str) {
         let imp = self.imp();
 
+        imp.name.set_label(&process.display_name);
+
         imp.user.set_subtitle(user);
+
+        imp.pid.set_subtitle(&process.pid.to_string());
+
+        imp.running_since.set_subtitle(
+            &boot_time()
+                .and_then(|boot_time| {
+                    boot_time
+                        .add_seconds(process.starttime)
+                        .context("unable to add seconds to boot time")
+                })
+                .and_then(|time| time.format("%c").context("unable to format running_since"))
+                .map(|gstr| gstr.to_string())
+                .unwrap_or(i18n("N/A")),
+        );
+
+        imp.commandline.set_subtitle(&process.commandline);
+        imp.commandline.set_tooltip_text(Some(&process.commandline));
+
+        imp.cgroup
+            .set_subtitle(&process.cgroup.clone().unwrap_or_else(|| i18n("N/A")));
+        imp.cgroup
+            .set_tooltip_text(Some(&process.cgroup.clone().unwrap_or_else(|| i18n("N/A"))));
+
+        let containerized = match process.containerization {
+            Containerization::None => i18n("No"),
+            Containerization::Flatpak => i18n("Yes (Flatpak)"),
+            Containerization::Snap => i18n("Yes (Snap)"),
+        };
+        imp.containerized.set_subtitle(&containerized);
 
         self.update(process);
     }
 
     pub fn update(&self, process: &ProcessItem) {
         let imp = self.imp();
-
-        imp.name.set_label(&process.display_name);
 
         imp.cpu_usage
             .set_subtitle(&format!("{:.1} %", process.cpu_time_ratio * 100.0));
@@ -175,34 +204,5 @@ impl ResProcessDialog {
 
         imp.system_cpu_time
             .set_subtitle(&format_time(process.system_cpu_time));
-
-        imp.pid.set_subtitle(&process.pid.to_string());
-
-        imp.running_since.set_subtitle(
-            &boot_time()
-                .and_then(|boot_time| {
-                    boot_time
-                        .add_seconds(process.starttime)
-                        .context("unable to add seconds to boot time")
-                })
-                .and_then(|time| time.format("%c").context("unable to format running_since"))
-                .map(|gstr| gstr.to_string())
-                .unwrap_or(i18n("N/A")),
-        );
-
-        imp.commandline.set_subtitle(&process.commandline);
-        imp.commandline.set_tooltip_text(Some(&process.commandline));
-
-        imp.cgroup
-            .set_subtitle(&process.cgroup.clone().unwrap_or_else(|| i18n("N/A")));
-        imp.cgroup
-            .set_tooltip_text(Some(&process.cgroup.clone().unwrap_or_else(|| i18n("N/A"))));
-
-        let containerized = match process.containerization {
-            Containerization::None => i18n("No"),
-            Containerization::Flatpak => i18n("Yes (Flatpak)"),
-            Containerization::Snap => i18n("Yes (Snap)"),
-        };
-        imp.containerized.set_subtitle(&containerized);
     }
 }

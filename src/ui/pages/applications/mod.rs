@@ -24,7 +24,7 @@ use crate::utils::NUM_CPUS;
 use self::application_entry::ApplicationEntry;
 use self::application_name_cell::ResApplicationNameCell;
 
-pub const TAB_ID: &'static str = "applications";
+pub const TAB_ID: &str = "applications";
 
 mod imp {
     use std::{
@@ -641,6 +641,10 @@ impl ResApplications {
             item.property_expression("item")
                 .chain_property::<ApplicationEntry>("icon")
                 .bind(&row, "icon", Widget::NONE);
+
+            item.property_expression("item")
+                .chain_property::<ApplicationEntry>("symbolic")
+                .bind(&row, "symbolic", Widget::NONE);
         });
 
         let name_col_sorter = StringSorter::builder()
@@ -1158,9 +1162,9 @@ fn get_app_action_warning(action: ProcessAction) -> String {
 
 fn get_app_action_description(action: ProcessAction) -> String {
     match action {
-        ProcessAction::TERM => i18n("End app"),
-        ProcessAction::STOP => i18n("Halt app"),
-        ProcessAction::KILL => i18n("Kill app"),
-        ProcessAction::CONT => i18n("Continue app"),
+        ProcessAction::TERM => i18n("End App"),
+        ProcessAction::STOP => i18n("Halt App"),
+        ProcessAction::KILL => i18n("Kill App"),
+        ProcessAction::CONT => i18n("Continue App"),
     }
 }

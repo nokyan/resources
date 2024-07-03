@@ -27,6 +27,8 @@ mod imp {
         tooltip: Cell<glib::GString>,
         #[property(get = Self::icon, set = Self::set_icon, type = Icon)]
         icon: RefCell<Icon>,
+        #[property(get, set = Self::set_symbolic)]
+        symbolic: Cell<bool>,
     }
 
     impl Default for ResApplicationNameCell {
@@ -37,6 +39,7 @@ mod imp {
                 name: Default::default(),
                 tooltip: Default::default(),
                 icon: RefCell::new(ThemedIcon::new("generic-process").into()),
+                symbolic: Default::default(),
             }
         }
     }
@@ -51,17 +54,12 @@ mod imp {
         }
 
         pub fn set_name(&self, name: &str) {
-            let current_name = self.name.take();
-            if current_name.as_str() == name {
-                self.name.set(current_name);
-                return;
-            }
             self.name.set(glib::GString::from(name));
             self.inscription.set_text(Some(name));
         }
 
         pub fn tooltip(&self) -> glib::GString {
-            let tooltip = self.name.take();
+            let tooltip = self.tooltip.take();
             let result = tooltip.clone();
             self.tooltip.set(tooltip);
 
@@ -69,12 +67,6 @@ mod imp {
         }
 
         pub fn set_tooltip(&self, tooltip: &str) {
-            let current_tooltip = self.name.take();
-            if current_tooltip.as_str() == tooltip {
-                self.name.set(current_tooltip);
-                return;
-            }
-
             self.tooltip.set(glib::GString::from(tooltip));
             self.inscription.set_tooltip_text(Some(tooltip));
         }
@@ -83,22 +75,36 @@ mod imp {
             let icon = self
                 .icon
                 .replace_with(|_| ThemedIcon::new("generic-process").into());
-            let result = icon.clone();
-            self.icon.set(icon);
+            self.icon.set(icon.clone());
 
-            result
+            icon
         }
 
         pub fn set_icon(&self, icon: &Icon) {
             let current_icon = self
                 .icon
                 .replace_with(|_| ThemedIcon::new("generic-process").into());
+
             if &current_icon == icon {
                 self.icon.set(current_icon);
                 return;
             }
+
             self.image.set_gicon(Some(icon));
+
             self.icon.set(icon.clone());
+        }
+
+        pub fn set_symbolic(&self, symbolic: bool) {
+            self.symbolic.set(symbolic);
+
+            if symbolic {
+                self.image.set_css_classes(&["bubble"]);
+                self.image.set_pixel_size(16);
+            } else {
+                self.image.set_css_classes(&["lowres-icon"]);
+                self.image.set_pixel_size(32);
+            }
         }
     }
 
