@@ -12,3 +12,10 @@ progressbar.slim > trough, progressbar.slim > trough > progress {
   min-height: 32px;
   border-radius: 50%;
 }
+
+.big-bubble {
+  background-color: alpha(currentColor, 0.08);
+  min-width: 128px;
+  min-height: 128px;
+  border-radius: 50%;
+}

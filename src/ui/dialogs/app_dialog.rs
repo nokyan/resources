@@ -1,4 +1,5 @@
 use adw::{prelude::*, subclass::prelude::*};
+use gtk::gio::ThemedIcon;
 use gtk::glib;
 use process_data::Containerization;
 
@@ -100,11 +101,27 @@ impl ResAppDialog {
     }
 
     pub fn setup_widgets(&self, app: &AppItem) {
-        self.update(app);
-    }
-
-    pub fn update(&self, app: &AppItem) {
         let imp = self.imp();
+
+        if app.id.is_none() // this will be the case for System Processes
+            || app
+                .icon
+                .downcast_ref::<ThemedIcon>()
+                .map(|themed_icon| {
+                    themed_icon
+                        .names()
+                        .iter()
+                        .all(|name| name.ends_with("-symbolic"))
+                        || themed_icon
+                            .names()
+                            .iter()
+                            .all(|name| name.contains("generic-process"))
+                })
+                .unwrap_or(false)
+        {
+            imp.icon.set_pixel_size(imp.icon.pixel_size() / 2);
+            imp.icon.set_css_classes(&["big-bubble"]);
+        }
 
         imp.icon.set_gicon(Some(&app.icon));
 
@@ -121,6 +138,12 @@ impl ResAppDialog {
         } else {
             imp.id.set_visible(false);
         }
+
+        self.update(app);
+    }
+
+    pub fn update(&self, app: &AppItem) {
+        let imp = self.imp();
 
         imp.running_since.set_subtitle(&app.running_since);
 

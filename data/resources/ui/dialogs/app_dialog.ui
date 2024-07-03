@@ -33,11 +33,16 @@
                     <property name="margin-end">16</property>
                     <property name="spacing">16</property>
                     <child>
-                      <object class="GtkImage" id="icon">
-                        <property name="pixel-size">128</property>
-                        <style>
-                          <class name="icon-dropshadow"/>
-                        </style>
+                      <object class="GtkBox">
+                        <property name="halign">center</property>
+                        <child>
+                          <object class="GtkImage" id="icon">
+                            <property name="pixel-size">128</property>
+                            <style>
+                              <class name="icon-dropshadow"/>
+                            </style>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child>
