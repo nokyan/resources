@@ -139,13 +139,20 @@ impl ResAppDialog {
             imp.id.set_visible(false);
         }
 
+        imp.running_since.set_subtitle(&app.running_since);
+
+        let containerized = match app.containerization {
+            Containerization::None => i18n("No"),
+            Containerization::Flatpak => i18n("Yes (Flatpak)"),
+            Containerization::Snap => i18n("Yes (Snap)"),
+        };
+        imp.containerized.set_subtitle(&containerized);
+
         self.update(app);
     }
 
     pub fn update(&self, app: &AppItem) {
         let imp = self.imp();
-
-        imp.running_since.set_subtitle(&app.running_since);
 
         imp.cpu_usage
             .set_subtitle(&format!("{:.1} %", app.cpu_time_ratio * 100.0));
@@ -179,12 +186,5 @@ impl ResAppDialog {
 
         imp.processes_amount
             .set_subtitle(&app.processes_amount.to_string());
-
-        let containerized = match app.containerization {
-            Containerization::None => i18n("No"),
-            Containerization::Flatpak => i18n("Yes (Flatpak)"),
-            Containerization::Snap => i18n("Yes (Snap)"),
-        };
-        imp.containerized.set_subtitle(&containerized);
     }
 }
