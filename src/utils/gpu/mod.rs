@@ -177,7 +177,10 @@ pub trait GpuImpl {
     }
 
     fn hwmon_power_usage(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("power1_average")? as f64 / 1_000_000.0)
+        Ok(self
+            .read_hwmon_int("power1_average")
+            .or_else(|_| self.read_hwmon_int("power1_input"))? as f64
+            / 1_000_000.0)
     }
 
     fn hwmon_core_frequency(&self) -> Result<f64> {
