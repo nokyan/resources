@@ -24,7 +24,7 @@ use crate::utils::NUM_CPUS;
 use self::process_entry::ProcessEntry;
 use self::process_name_cell::ResProcessNameCell;
 
-pub const TAB_ID: &'static str = "processes";
+pub const TAB_ID: &str = "processes";
 
 mod imp {
     use std::{

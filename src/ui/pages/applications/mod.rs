@@ -24,7 +24,7 @@ use crate::utils::NUM_CPUS;
 use self::application_entry::ApplicationEntry;
 use self::application_name_cell::ResApplicationNameCell;
 
-pub const TAB_ID: &'static str = "applications";
+pub const TAB_ID: &str = "applications";
 
 mod imp {
     use std::{
