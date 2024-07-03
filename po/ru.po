@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-09 19:12+0200\n"
-"PO-Revision-Date: 2024-06-11 15:22+0300\n"
+"POT-Creation-Date: 2024-07-02 23:02+0200\n"
+"PO-Revision-Date: 2024-07-03 20:53+0300\n"
 "Last-Translator: Aleksandr Melman <Alexmelman88@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -24,7 +24,7 @@ msgstr "Ресурсы"
 
 #. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
 #: data/net.nokyan.Resources.desktop.in.in:4
-#: data/net.nokyan.Resources.metainfo.xml.in.in:6
+#: data/net.nokyan.Resources.metainfo.xml.in.in:5
 msgid "Keep an eye on system resources"
 msgstr "Отслеживайте системные ресурсы"
 
@@ -35,29 +35,28 @@ msgstr ""
 "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 "Система;Ресурсы;Процессы;ЦП;ОЗУ;Память;ГП;Монитор;Использование;"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:18
+#: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
 "Resources allows you to check the utilization of your system resources and "
-"control your running processes and applications. It’s designed to be user-"
-"friendly and feel right at home on a modern desktop by using GNOME’s "
-"libadwaita."
+"control your running processes and apps. It’s designed to be user-friendly "
+"and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
 "\"Ресурсы\" позволяют вам проверять использование системных ресурсов и "
-"контролировать запущенные процессы и приложения. Он разработан так, чтобы "
+"контролировать запущенные процессы и приложения. Оно разработано так, чтобы "
 "быть удобным для пользователя и чувствовать себя как дома на современном "
 "рабочем столе благодаря использованию библиотеки GNOME libadwaita."
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:21
+#: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
 msgstr "\"Ресурсы\" поддерживают мониторинг следующих компонентов:"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+#: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
 msgstr "ЦП"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:26
-#: src/ui/pages/applications/mod.rs:667 src/ui/pages/memory.rs:132
-#: src/ui/pages/memory.rs:205 src/ui/pages/processes/mod.rs:724
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+#: src/ui/pages/applications/mod.rs:670 src/ui/pages/memory.rs:132
+#: src/ui/pages/memory.rs:205 src/ui/pages/processes/mod.rs:726
 #: data/resources/ui/window.ui:158 data/resources/ui/window.ui:165
 #: data/resources/ui/dialogs/app_dialog.ui:81
 #: data/resources/ui/dialogs/process_dialog.ui:68
@@ -66,9 +65,9 @@ msgstr "ЦП"
 msgid "Memory"
 msgstr "Память"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:27
-#: src/ui/pages/applications/mod.rs:962 src/ui/pages/gpu.rs:146
-#: src/ui/pages/processes/mod.rs:1030 src/ui/window.rs:285
+#: data/net.nokyan.Resources.metainfo.xml.in.in:26
+#: src/ui/pages/applications/mod.rs:965 src/ui/pages/gpu.rs:146
+#: src/ui/pages/processes/mod.rs:1032 src/ui/window.rs:286
 #: data/resources/ui/dialogs/app_dialog.ui:130
 #: data/resources/ui/dialogs/process_dialog.ui:113
 #: data/resources/ui/dialogs/settings_dialog.ui:163
@@ -76,12 +75,12 @@ msgstr "Память"
 msgid "GPU"
 msgstr "ГП"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:28
+#: data/net.nokyan.Resources.metainfo.xml.in.in:27
 #: data/resources/ui/dialogs/settings_dialog.ui:288
 msgid "Network Interfaces"
 msgstr "Сетевые интерфейсы"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:29
+#: data/net.nokyan.Resources.metainfo.xml.in.in:28
 msgid "Storage Devices"
 msgstr "Устройства хранения"
 
@@ -106,7 +105,7 @@ msgid "Icon by"
 msgstr "Иконка от"
 
 #: src/ui/dialogs/app_dialog.rs:161 src/ui/dialogs/process_dialog.rs:202
-#: src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426
+#: src/ui/pages/drive.rs:418 src/ui/pages/drive.rs:428
 msgid "No"
 msgstr "Нет"
 
@@ -121,19 +120,19 @@ msgstr "Да (Snap)"
 #: src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:140
 #: src/ui/dialogs/process_dialog.rs:147 src/ui/dialogs/process_dialog.rs:154
 #: src/ui/dialogs/process_dialog.rs:190 src/ui/dialogs/process_dialog.rs:197
-#: src/ui/dialogs/process_dialog.rs:199 src/ui/pages/applications/mod.rs:781
-#: src/ui/pages/applications/mod.rs:879 src/ui/pages/battery.rs:223
+#: src/ui/dialogs/process_dialog.rs:199 src/ui/pages/applications/mod.rs:784
+#: src/ui/pages/applications/mod.rs:882 src/ui/pages/battery.rs:223
 #: src/ui/pages/battery.rs:244 src/ui/pages/battery.rs:250
 #: src/ui/pages/battery.rs:253 src/ui/pages/battery.rs:279
 #: src/ui/pages/battery.rs:303 src/ui/pages/battery.rs:305
 #: src/ui/pages/battery.rs:315 src/ui/pages/cpu.rs:237 src/ui/pages/cpu.rs:252
 #: src/ui/pages/cpu.rs:266 src/ui/pages/cpu.rs:272 src/ui/pages/cpu.rs:278
 #: src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:288 src/ui/pages/cpu.rs:291
-#: src/ui/pages/cpu.rs:384 src/ui/pages/drive.rs:323 src/ui/pages/drive.rs:353
-#: src/ui/pages/drive.rs:355 src/ui/pages/drive.rs:383
-#: src/ui/pages/drive.rs:385 src/ui/pages/drive.rs:401
-#: src/ui/pages/drive.rs:402 src/ui/pages/drive.rs:409
-#: src/ui/pages/drive.rs:419 src/ui/pages/drive.rs:429 src/ui/pages/gpu.rs:251
+#: src/ui/pages/cpu.rs:384 src/ui/pages/drive.rs:325 src/ui/pages/drive.rs:355
+#: src/ui/pages/drive.rs:357 src/ui/pages/drive.rs:385
+#: src/ui/pages/drive.rs:387 src/ui/pages/drive.rs:403
+#: src/ui/pages/drive.rs:404 src/ui/pages/drive.rs:411
+#: src/ui/pages/drive.rs:421 src/ui/pages/drive.rs:431 src/ui/pages/gpu.rs:251
 #: src/ui/pages/gpu.rs:293 src/ui/pages/gpu.rs:318 src/ui/pages/gpu.rs:321
 #: src/ui/pages/gpu.rs:332 src/ui/pages/gpu.rs:352 src/ui/pages/gpu.rs:364
 #: src/ui/pages/gpu.rs:378 src/ui/pages/gpu.rs:380 src/ui/pages/gpu.rs:392
@@ -147,33 +146,33 @@ msgstr "Да (Snap)"
 #: src/ui/pages/network.rs:341 src/ui/pages/network.rs:344
 #: src/ui/pages/network.rs:346 src/ui/pages/network.rs:375
 #: src/ui/pages/network.rs:378 src/ui/pages/network.rs:380
-#: src/ui/pages/processes/mod.rs:837 src/ui/pages/processes/mod.rs:890
-#: src/ui/pages/processes/mod.rs:943 src/ui/pages/processes/mod.rs:996
-#: src/utils/app.rs:686 src/utils/app.rs:762 src/utils/battery.rs:138
+#: src/ui/pages/processes/mod.rs:839 src/ui/pages/processes/mod.rs:892
+#: src/ui/pages/processes/mod.rs:945 src/ui/pages/processes/mod.rs:998
+#: src/utils/app.rs:689 src/utils/app.rs:765 src/utils/battery.rs:138
 #: src/utils/drive.rs:90 src/utils/gpu/mod.rs:255 src/utils/gpu/mod.rs:261
 msgid "N/A"
 msgstr "Н/Д"
 
-#: src/ui/pages/applications/mod.rs:151 data/resources/ui/window.ui:65
+#: src/ui/pages/applications/mod.rs:153 data/resources/ui/window.ui:65
 #: data/resources/ui/window.ui:72
 #: data/resources/ui/dialogs/settings_dialog.ui:127
-msgid "Applications"
+msgid "Apps"
 msgstr "Приложения"
 
-#: src/ui/pages/applications/mod.rs:570
-msgid "Running Applications: {}"
+#: src/ui/pages/applications/mod.rs:571
+msgid "Running Apps: {}"
 msgstr "Запущенные приложения: {}"
 
-#: src/ui/pages/applications/mod.rs:598 src/ui/pages/processes/mod.rs:570
+#: src/ui/pages/applications/mod.rs:597 src/ui/pages/processes/mod.rs:572
 msgid "Cancel"
 msgstr "Отменить"
 
-#: src/ui/pages/applications/mod.rs:625
-msgid "Application"
+#: src/ui/pages/applications/mod.rs:624
+msgid "App"
 msgstr "Приложение"
 
-#: src/ui/pages/applications/mod.rs:713 src/ui/pages/cpu.rs:149
-#: src/ui/pages/processes/mod.rs:769 src/ui/window.rs:324
+#: src/ui/pages/applications/mod.rs:716 src/ui/pages/cpu.rs:149
+#: src/ui/pages/processes/mod.rs:771 src/ui/window.rs:332
 #: data/resources/ui/window.ui:127 data/resources/ui/window.ui:134
 #: data/resources/ui/dialogs/app_dialog.ui:72
 #: data/resources/ui/dialogs/process_dialog.ui:59
@@ -182,7 +181,7 @@ msgstr "Приложение"
 msgid "Processor"
 msgstr "Процессор"
 
-#: src/ui/pages/applications/mod.rs:763 src/ui/pages/processes/mod.rs:819
+#: src/ui/pages/applications/mod.rs:766 src/ui/pages/processes/mod.rs:821
 #: data/resources/ui/dialogs/app_dialog.ui:90
 #: data/resources/ui/dialogs/process_dialog.ui:73
 #: data/resources/ui/dialogs/settings_dialog.ui:143
@@ -190,7 +189,7 @@ msgstr "Процессор"
 msgid "Drive Read"
 msgstr "Чтение с диска"
 
-#: src/ui/pages/applications/mod.rs:814 src/ui/pages/processes/mod.rs:872
+#: src/ui/pages/applications/mod.rs:817 src/ui/pages/processes/mod.rs:874
 #: data/resources/ui/dialogs/app_dialog.ui:99
 #: data/resources/ui/dialogs/process_dialog.ui:82
 #: data/resources/ui/dialogs/settings_dialog.ui:148
@@ -198,7 +197,7 @@ msgstr "Чтение с диска"
 msgid "Drive Read Total"
 msgstr "Общее чтение с диска"
 
-#: src/ui/pages/applications/mod.rs:861 src/ui/pages/processes/mod.rs:925
+#: src/ui/pages/applications/mod.rs:864 src/ui/pages/processes/mod.rs:927
 #: data/resources/ui/dialogs/app_dialog.ui:108
 #: data/resources/ui/dialogs/process_dialog.ui:91
 #: data/resources/ui/dialogs/settings_dialog.ui:153
@@ -206,7 +205,7 @@ msgstr "Общее чтение с диска"
 msgid "Drive Write"
 msgstr "Запись на диск"
 
-#: src/ui/pages/applications/mod.rs:914 src/ui/pages/processes/mod.rs:978
+#: src/ui/pages/applications/mod.rs:917 src/ui/pages/processes/mod.rs:980
 #: data/resources/ui/dialogs/app_dialog.ui:117
 #: data/resources/ui/dialogs/process_dialog.ui:100
 #: data/resources/ui/dialogs/settings_dialog.ui:158
@@ -214,7 +213,7 @@ msgstr "Запись на диск"
 msgid "Drive Write Total"
 msgstr "Общая запись на диск"
 
-#: src/ui/pages/applications/mod.rs:1007 src/ui/pages/processes/mod.rs:1075
+#: src/ui/pages/applications/mod.rs:1010 src/ui/pages/processes/mod.rs:1077
 #: data/resources/ui/dialogs/app_dialog.ui:148
 #: data/resources/ui/dialogs/process_dialog.ui:131
 #: data/resources/ui/dialogs/settings_dialog.ui:173
@@ -222,7 +221,7 @@ msgstr "Общая запись на диск"
 msgid "Video Encoder"
 msgstr "Видеокодер"
 
-#: src/ui/pages/applications/mod.rs:1054 src/ui/pages/processes/mod.rs:1122
+#: src/ui/pages/applications/mod.rs:1057 src/ui/pages/processes/mod.rs:1124
 #: data/resources/ui/dialogs/app_dialog.ui:157
 #: data/resources/ui/dialogs/process_dialog.ui:140
 #: data/resources/ui/dialogs/settings_dialog.ui:178
@@ -230,7 +229,7 @@ msgstr "Видеокодер"
 msgid "Video Decoder"
 msgstr "Видеодекодер"
 
-#: src/ui/pages/applications/mod.rs:1100 src/ui/pages/processes/mod.rs:1169
+#: src/ui/pages/applications/mod.rs:1103 src/ui/pages/processes/mod.rs:1171
 #: data/resources/ui/dialogs/app_dialog.ui:139
 #: data/resources/ui/dialogs/process_dialog.ui:122
 #: data/resources/ui/dialogs/settings_dialog.ui:168
@@ -238,56 +237,60 @@ msgstr "Видеодекодер"
 msgid "Video Memory"
 msgstr "Видеопамять"
 
-#: src/ui/pages/applications/mod.rs:1144 src/ui/pages/processes/mod.rs:1352
+#: src/ui/pages/applications/mod.rs:1147 src/ui/pages/processes/mod.rs:1354
 msgid "End {}?"
 msgstr "Завершить {}?"
 
-#: src/ui/pages/applications/mod.rs:1145 src/ui/pages/processes/mod.rs:1353
+#: src/ui/pages/applications/mod.rs:1148 src/ui/pages/processes/mod.rs:1355
 msgid "Halt {}?"
 msgstr "Остановить {}?"
 
-#: src/ui/pages/applications/mod.rs:1146 src/ui/pages/processes/mod.rs:1354
+#: src/ui/pages/applications/mod.rs:1149 src/ui/pages/processes/mod.rs:1356
 msgid "Kill {}?"
 msgstr "Убить {}?"
 
-#: src/ui/pages/applications/mod.rs:1147 src/ui/pages/processes/mod.rs:1355
+#: src/ui/pages/applications/mod.rs:1150 src/ui/pages/processes/mod.rs:1357
 msgid "Continue {}?"
 msgstr "Продолжить {}?"
 
-#: src/ui/pages/applications/mod.rs:1153 src/ui/pages/processes/mod.rs:1361
+#: src/ui/pages/applications/mod.rs:1156 src/ui/pages/processes/mod.rs:1363
 msgid "Unsaved work might be lost."
 msgstr "Несохраненная работа может быть потеряна."
 
-#: src/ui/pages/applications/mod.rs:1154
+#: src/ui/pages/applications/mod.rs:1157
 msgid ""
-"Halting an application can come with serious risks such as losing data and "
-"security implications. Use with caution."
+"Halting an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
 msgstr ""
 "Остановка приложения может сопровождаться серьезными рисками, такими как "
 "потеря данных и последствия для безопасности. Используйте с осторожностью."
 
-#: src/ui/pages/applications/mod.rs:1155
+#: src/ui/pages/applications/mod.rs:1158
 msgid ""
-"Killing an application can come with serious risks such as losing data and "
-"security implications. Use with caution."
+"Killing an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
 msgstr ""
 "Закрытие приложения может сопровождаться серьезными рисками, такими как "
 "потеря данных и последствия для безопасности. Используйте с осторожностью."
 
-#: src/ui/pages/applications/mod.rs:1162
-msgid "End application"
+#: src/ui/pages/applications/mod.rs:1165
+#: data/resources/ui/pages/applications.ui:97
+msgid "End App"
 msgstr "Завершить приложение"
 
-#: src/ui/pages/applications/mod.rs:1163
-msgid "Halt application"
+#: src/ui/pages/applications/mod.rs:1166
+#: data/resources/ui/pages/applications.ui:10
+msgid "Halt App"
 msgstr "Остановить приложение"
 
-#: src/ui/pages/applications/mod.rs:1164
-msgid "Kill application"
+#: src/ui/pages/applications/mod.rs:1167
+#: data/resources/ui/pages/applications.ui:6
+msgid "Kill App"
 msgstr "Убить приложение"
 
-#: src/ui/pages/applications/mod.rs:1165
-msgid "Continue application"
+#: src/ui/pages/applications/mod.rs:1168
+#: data/resources/ui/pages/applications.ui:14
+msgid "Continue App"
 msgstr "Продолжить приложение"
 
 #: src/ui/pages/battery.rs:136 src/ui/pages/drive.rs:157
@@ -302,8 +305,8 @@ msgstr "Заряд батареи"
 msgid "Power Usage"
 msgstr "Потребление энергии"
 
-#: src/ui/pages/battery.rs:293 src/ui/pages/drive.rs:347
-#: src/ui/pages/drive.rs:377 src/ui/pages/network.rs:333
+#: src/ui/pages/battery.rs:293 src/ui/pages/drive.rs:349
+#: src/ui/pages/drive.rs:379 src/ui/pages/network.rs:333
 #: src/ui/pages/network.rs:367
 msgid "Highest:"
 msgstr "Наибольшее:"
@@ -328,13 +331,13 @@ msgstr "Скорость чтения"
 msgid "Write Speed"
 msgstr "Скорость записи"
 
-#: src/ui/pages/drive.rs:414 src/ui/pages/drive.rs:424
+#: src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426
 msgid "Yes"
 msgstr "Да"
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
-#: src/ui/pages/drive.rs:436
+#: src/ui/pages/drive.rs:438
 msgid "R: {} · W: {}"
 msgstr "Ч: {} · З: {}"
 
@@ -394,51 +397,51 @@ msgstr "Отправка"
 msgid "R: {} · S: {}"
 msgstr "П: {} · О: {}"
 
-#: src/ui/pages/processes/mod.rs:155 data/resources/ui/window.ui:96
+#: src/ui/pages/processes/mod.rs:157 data/resources/ui/window.ui:96
 #: data/resources/ui/window.ui:103
 #: data/resources/ui/dialogs/settings_dialog.ui:188
 msgid "Processes"
 msgstr "Процессы"
 
-#: src/ui/pages/processes/mod.rs:544
+#: src/ui/pages/processes/mod.rs:546
 msgid "Running Processes: {}"
 msgstr "Запущенные процессы: {}"
 
-#: src/ui/pages/processes/mod.rs:597
+#: src/ui/pages/processes/mod.rs:599
 msgid "Process"
 msgstr "Процесс"
 
-#: src/ui/pages/processes/mod.rs:643
+#: src/ui/pages/processes/mod.rs:645
 #: data/resources/ui/dialogs/process_dialog.ui:181
 #: data/resources/ui/dialogs/settings_dialog.ui:194
 msgid "Process ID"
 msgstr "ИД процесса"
 
-#: src/ui/pages/processes/mod.rs:683
+#: src/ui/pages/processes/mod.rs:685
 #: data/resources/ui/dialogs/process_dialog.ui:208
 #: data/resources/ui/dialogs/settings_dialog.ui:199
 msgid "User"
 msgstr "Пользователь"
 
-#: src/ui/pages/processes/mod.rs:1215
+#: src/ui/pages/processes/mod.rs:1217
 #: data/resources/ui/dialogs/process_dialog.ui:149
 #: data/resources/ui/dialogs/settings_dialog.ui:254
 msgid "Total CPU Time"
 msgstr "Общее время ЦП"
 
-#: src/ui/pages/processes/mod.rs:1261
+#: src/ui/pages/processes/mod.rs:1263
 #: data/resources/ui/dialogs/process_dialog.ui:158
 #: data/resources/ui/dialogs/settings_dialog.ui:259
 msgid "User CPU Time"
 msgstr "Пользовательское время ЦП"
 
-#: src/ui/pages/processes/mod.rs:1307
+#: src/ui/pages/processes/mod.rs:1309
 #: data/resources/ui/dialogs/process_dialog.ui:167
 #: data/resources/ui/dialogs/settings_dialog.ui:264
 msgid "System CPU Time"
 msgstr "Системное время ЦП"
 
-#: src/ui/pages/processes/mod.rs:1362
+#: src/ui/pages/processes/mod.rs:1364
 msgid ""
 "Halting a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
@@ -446,7 +449,7 @@ msgstr ""
 "Остановка процесса может сопровождаться серьезными рисками, такими как "
 "потеря данных и последствия для безопасности. Используйте с осторожностью."
 
-#: src/ui/pages/processes/mod.rs:1363
+#: src/ui/pages/processes/mod.rs:1365
 msgid ""
 "Killing a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
@@ -454,87 +457,87 @@ msgstr ""
 "Убийство процесса может сопровождаться серьезными рисками, такими как потеря "
 "данных и последствия для безопасности. Используйте с осторожностью."
 
-#: src/ui/pages/processes/mod.rs:1370
-msgid "End process"
+#: src/ui/pages/processes/mod.rs:1372 data/resources/ui/pages/processes.ui:97
+msgid "End Process"
 msgstr "Завершить процесс"
 
-#: src/ui/pages/processes/mod.rs:1371
-msgid "Halt process"
+#: src/ui/pages/processes/mod.rs:1373 data/resources/ui/pages/processes.ui:10
+msgid "Halt Process"
 msgstr "Остановить процесс"
 
-#: src/ui/pages/processes/mod.rs:1372
-msgid "Kill process"
+#: src/ui/pages/processes/mod.rs:1374 data/resources/ui/pages/processes.ui:6
+msgid "Kill Process"
 msgstr "Убить процесс"
 
-#: src/ui/pages/processes/mod.rs:1373
-msgid "Continue process"
+#: src/ui/pages/processes/mod.rs:1375 data/resources/ui/pages/processes.ui:14
+msgid "Continue Process"
 msgstr "Продолжить процесс"
 
-#: src/ui/window.rs:283
+#: src/ui/window.rs:284
 msgid "GPU {}"
 msgstr "ГП {}"
 
-#: src/ui/window.rs:880
+#: src/ui/window.rs:884
 msgid "Successfully ended {}"
 msgstr "Успешно завершено {}"
 
-#: src/ui/window.rs:881
+#: src/ui/window.rs:885
 msgid "Successfully halted {}"
 msgstr "Успешно остановлено {}"
 
-#: src/ui/window.rs:882
+#: src/ui/window.rs:886
 msgid "Successfully killed {}"
 msgstr "Успешно убито {}"
 
-#: src/ui/window.rs:883
+#: src/ui/window.rs:887
 msgid "Successfully continued {}"
 msgstr "Успешно продолжено {}"
 
-#: src/ui/window.rs:890
+#: src/ui/window.rs:894
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] "Не удалось завершить процесс"
 msgstr[1] "Не удалось завершить {} процесса"
 msgstr[2] "Не удалось завершить {} процессов"
 
-#: src/ui/window.rs:896
+#: src/ui/window.rs:900
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "Не удалось остановить процесс"
 msgstr[1] "Не удалось остановить {} процесса"
 msgstr[2] "Не удалось остановить {} процессов"
 
-#: src/ui/window.rs:902
+#: src/ui/window.rs:906
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "Не удалось убить процесс"
 msgstr[1] "Не удалось убить {} процесса"
 msgstr[2] "Не удалось убить {} процессов"
 
-#: src/ui/window.rs:908
+#: src/ui/window.rs:912
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "Не удалось продолжить процесс"
 msgstr[1] "Не удалось продолжить {} процесса"
 msgstr[2] "Не удалось продолжить {} процессов"
 
-#: src/ui/window.rs:918
+#: src/ui/window.rs:922
 msgid "There was a problem ending {}"
 msgstr "Не удалось завершить {}"
 
-#: src/ui/window.rs:919
+#: src/ui/window.rs:923
 msgid "There was a problem halting {}"
 msgstr "Не удалось остановить {}"
 
-#: src/ui/window.rs:920
+#: src/ui/window.rs:924
 msgid "There was a problem killing {}"
 msgstr "Не удалось убить {}"
 
-#: src/ui/window.rs:921
+#: src/ui/window.rs:925
 msgid "There was a problem continuing {}"
 msgstr "Не удалось продолжить {}"
 
-#: src/utils/app.rs:768
+#: src/utils/app.rs:771
 msgid "System Processes"
 msgstr "Системные процессы"
 
@@ -1150,27 +1153,27 @@ msgstr "Переключить поле поиска"
 
 #: data/resources/ui/shortcuts.ui:38
 msgctxt "shortcut window"
-msgid "End Application/Process"
+msgid "End App/Process"
 msgstr "Завершить приложение/процесс"
 
 #: data/resources/ui/shortcuts.ui:44
 msgctxt "shortcut window"
-msgid "Kill Application/Process"
+msgid "Kill App/Process"
 msgstr "Убить приложение/процесс"
 
 #: data/resources/ui/shortcuts.ui:50
 msgctxt "shortcut window"
-msgid "Halt Application/Process"
+msgid "Halt App/Process"
 msgstr "Остановить приложение/процесс"
 
 #: data/resources/ui/shortcuts.ui:56
 msgctxt "shortcut window"
-msgid "Continue Application/Process"
+msgid "Continue App/Process"
 msgstr "Продолжить приложение/процесс"
 
 #: data/resources/ui/shortcuts.ui:62
 msgctxt "shortcut window"
-msgid "Show Information for Application/Process"
+msgid "Show Information for App/Process"
 msgstr "Показать информацию о приложении/процессе"
 
 #: data/resources/ui/window.ui:6
@@ -1186,13 +1189,13 @@ msgid "About Resources"
 msgstr "О приложении"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
-msgid "Application Information"
+msgid "App Information"
 msgstr "Информация о приложении"
 
 #: data/resources/ui/dialogs/app_dialog.ui:69
 #: data/resources/ui/dialogs/process_dialog.ui:52
-#: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:45
-#: data/resources/ui/pages/cpu.ui:58 data/resources/ui/pages/drive.ui:22
+#: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37
+#: data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22
 #: data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31
 #: data/resources/ui/pages/network.ui:22
 msgid "Usage"
@@ -1200,7 +1203,7 @@ msgstr "Использование"
 
 #: data/resources/ui/dialogs/app_dialog.ui:164
 #: data/resources/ui/dialogs/process_dialog.ui:174
-#: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:97
+#: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:89
 #: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:80
 #: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
 msgid "Properties"
@@ -1398,22 +1401,6 @@ msgstr "Показывать виртуальные сетевые интерф�
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
 msgstr "Виртуальные сетевые интерфейсы - это, например, мосты или VPN-туннели"
 
-#: data/resources/ui/pages/applications.ui:6
-msgid "Kill Application"
-msgstr "Убить приложение"
-
-#: data/resources/ui/pages/applications.ui:10
-msgid "Halt Application"
-msgstr "Остановить приложение"
-
-#: data/resources/ui/pages/applications.ui:14
-msgid "Continue Application"
-msgstr "Продолжить приложение"
-
-#: data/resources/ui/pages/applications.ui:95
-msgid "End Application"
-msgstr "Завершить приложение"
-
 #: data/resources/ui/pages/battery.ui:36
 msgid "Battery Health"
 msgstr "Здоровье батареи"
@@ -1451,35 +1438,35 @@ msgstr "Параметры"
 msgid "Show Usages of Logical CPUs"
 msgstr "Показывать использование логических процессоров"
 
-#: data/resources/ui/pages/cpu.ui:83 data/resources/ui/pages/gpu.ui:66
+#: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
 msgid "Sensors"
 msgstr "Датчики"
 
-#: data/resources/ui/pages/cpu.ui:90 data/resources/ui/pages/gpu.ui:69
+#: data/resources/ui/pages/cpu.ui:82 data/resources/ui/pages/gpu.ui:69
 msgid "Temperature"
 msgstr "Температура"
 
-#: data/resources/ui/pages/cpu.ui:104
+#: data/resources/ui/pages/cpu.ui:96
 msgid "Max Frequency"
 msgstr "Максимальная частота"
 
-#: data/resources/ui/pages/cpu.ui:113
+#: data/resources/ui/pages/cpu.ui:105
 msgid "Logical Cores"
 msgstr "Логические ядра"
 
-#: data/resources/ui/pages/cpu.ui:122
+#: data/resources/ui/pages/cpu.ui:114
 msgid "Physical Cores"
 msgstr "Физические ядра"
 
-#: data/resources/ui/pages/cpu.ui:131
+#: data/resources/ui/pages/cpu.ui:123
 msgid "Sockets"
 msgstr "Сокеты"
 
-#: data/resources/ui/pages/cpu.ui:140
+#: data/resources/ui/pages/cpu.ui:132
 msgid "Virtualization"
 msgstr "Виртуализация"
 
-#: data/resources/ui/pages/cpu.ui:149
+#: data/resources/ui/pages/cpu.ui:141
 msgid "Architecture"
 msgstr "Архитектура"
 
@@ -1567,21 +1554,51 @@ msgstr "Интерфейс"
 msgid "Hardware Address"
 msgstr "Аппаратный адрес"
 
-#: data/resources/ui/pages/processes.ui:6
-msgid "Kill Process"
-msgstr "Убить процесс"
+#~ msgid "Applications"
+#~ msgstr "Приложения"
 
-#: data/resources/ui/pages/processes.ui:10
-msgid "Halt Process"
-msgstr "Остановить процесс"
+#~ msgid "Application"
+#~ msgstr "Приложение"
 
-#: data/resources/ui/pages/processes.ui:14
-msgid "Continue Process"
-msgstr "Продолжить процесс"
+#~ msgid "End application"
+#~ msgstr "Завершить приложение"
 
-#: data/resources/ui/pages/processes.ui:95
-msgid "End Process"
-msgstr "Завершить процесс"
+#~ msgid "Halt application"
+#~ msgstr "Остановить приложение"
+
+#~ msgid "Kill application"
+#~ msgstr "Убить приложение"
+
+#~ msgid "Continue application"
+#~ msgstr "Продолжить приложение"
+
+#~ msgid "End process"
+#~ msgstr "Завершить процесс"
+
+#~ msgid "Halt process"
+#~ msgstr "Остановить процесс"
+
+#~ msgid "Kill process"
+#~ msgstr "Убить процесс"
+
+#~ msgid "Continue process"
+#~ msgstr "Продолжить процесс"
+
+#~ msgctxt "shortcut window"
+#~ msgid "End Application/Process"
+#~ msgstr "Завершить приложение/процесс"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Kill Application/Process"
+#~ msgstr "Убить приложение/процесс"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Halt Application/Process"
+#~ msgstr "Остановить приложение/процесс"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Continue Application/Process"
+#~ msgstr "Продолжить приложение/процесс"
 
 #~ msgid "root"
 #~ msgstr "root"
