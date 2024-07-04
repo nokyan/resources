@@ -5,10 +5,16 @@ use std::{
 };
 
 use anyhow::{bail, Context, Result};
+use once_cell::sync::Lazy;
+use regex::Regex;
 
 use crate::i18n::{i18n, i18n_f};
 
 use super::units::convert_energy;
+
+// For (at least) Lenovo Yoga 6 13ALC7
+static HEX_ENCODED_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^(0x[0-9a-fA-F]{2}\s*)*$").unwrap());
 
 pub struct BatteryData {
     pub inner: Battery,
@@ -156,14 +162,16 @@ impl Battery {
         let mut entries = std::fs::read_dir("/sys/class/power_supply")?;
         while let Some(entry) = entries.next() {
             let entry = entry?;
-            if std::fs::read_to_string(entry.path().join("type"))
+
+            if !entry
+                .path()
+                .file_name()
+                .map(|name| name.to_string_lossy().starts_with("BAT"))
                 .unwrap_or_default()
-                .to_ascii_lowercase()
-                .trim()
-                != "battery"
             {
                 continue;
             }
+
             list.push(entry.path());
         }
         Ok(list)
@@ -173,11 +181,11 @@ impl Battery {
         let sysfs_path = sysfs_path.as_ref().to_path_buf();
 
         let manufacturer = std::fs::read_to_string(sysfs_path.join("manufacturer"))
-            .map(|s| s.replace('\n', ""))
+            .map(|s| Self::untangle_weird_encoding(s.replace('\n', "")))
             .ok();
 
         let model_name = std::fs::read_to_string(sysfs_path.join("model_name"))
-            .map(|s| s.replace('\n', ""))
+            .map(|s| Self::untangle_weird_encoding(s.replace('\n', "")))
             .ok();
 
         let technology = Technology::from_str(
@@ -204,6 +212,24 @@ impl Battery {
             model_name,
             design_capacity,
             technology,
+        }
+    }
+
+    // apparently some manufacturers like to for whatever reason reencode the manufacturer and model name in hex or
+    // similar, this function will try to untangle it
+    fn untangle_weird_encoding<S: AsRef<str>>(s: S) -> String {
+        if HEX_ENCODED_REGEX.is_match(s.as_ref()) {
+            String::from_utf8_lossy(
+                &s.as_ref()
+                    .split_whitespace()
+                    .map(|hex| u8::from_str_radix(&hex.replace("0x", ""), 16))
+                    .flatten()
+                    .map(|byte| if byte == 0x0 { ' ' as u8 } else { byte }) // gtk will crash when encountering NUL
+                    .collect::<Vec<u8>>(),
+            )
+            .to_string()
+        } else {
+            s.as_ref().to_string()
         }
     }
 
