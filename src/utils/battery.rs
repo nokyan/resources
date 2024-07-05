@@ -318,3 +318,44 @@ impl Battery {
             .context("unable to parse power_now sysfs file")
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::Battery;
+
+    #[test]
+    fn dont_untangle_untangled_string() {
+        let untangled_string = String::from("This is a normal string");
+        assert_eq!(
+            Battery::untangle_weird_encoding(untangled_string),
+            String::from("This is a normal string")
+        )
+    }
+
+    #[test]
+    fn dont_untangle_non_hex_bytes() {
+        let non_hex_bytes = String::from("0xxy 0x4g");
+        assert_eq!(
+            Battery::untangle_weird_encoding(non_hex_bytes),
+            String::from("0xxy 0x4g")
+        )
+    }
+
+    #[test]
+    fn untangle_tangled_string() {
+        let tangled_string = String::from("0x41 0x42 0x43  0x58 0x59 0x5A");
+        assert_eq!(
+            Battery::untangle_weird_encoding(tangled_string),
+            String::from("ABCXYZ")
+        );
+    }
+
+    #[test]
+    fn untangle_tangled_string_with_nul() {
+        let tangled_string = String::from("0x41 0x42  0x43  0x00  0x44");
+        assert_eq!(
+            Battery::untangle_weird_encoding(tangled_string),
+            String::from("ABC D")
+        );
+    }
+}
