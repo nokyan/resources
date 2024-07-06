@@ -32,7 +32,6 @@
                 </style>
                 <property name="hexpand">true</property>
                 <property name="halign">start</property>
-                <property name="selectable">true</property>
                 <property name="ellipsize">2</property>
               </object>
             </child>
