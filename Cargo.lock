@@ -1107,7 +1107,6 @@ dependencies = [
  "regex",
  "rmp-serde",
  "rust-ini",
- "serde",
  "strum",
  "strum_macros",
  "sysconf",

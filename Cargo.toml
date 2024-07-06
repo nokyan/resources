@@ -29,7 +29,6 @@ plotters = { version = "0.3.6", default-features = false, features = [
     "area_series",
 ] }
 plotters-cairo = "0.6.0"
-serde = { version = "1.0.203", features = ["serde_derive"] }
 rmp-serde = "1.3.0"
 rust-ini = "0.21.0"
 gtk-macros = "0.3.0"
