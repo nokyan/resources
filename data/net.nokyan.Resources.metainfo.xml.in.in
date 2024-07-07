@@ -68,6 +68,27 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.5.1" date="2024-07-07">
+      <description translate="no">
+        <p>
+          Resources 1.5.1 is a small bugfix and GNOME Circle preparation release.
+        </p>
+        <p>
+          🐛 Bug fixes
+        </p>
+        <ul>
+          <li>AMD GPU usage could be displayed to be higher than 100 %</li>
+          <li>Resources detected HID batteries resulting in unnecessary battery pages with little to no information</li>
+          <li>AMD GPU power usage couldn’t be determined sometimes</li>
+        </ul>
+        <p>
+          📈 Improvements
+        </p>
+        <ul>
+          <li>Smaller GNOME Circle related fixes and improvements</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.5.0" date="2024-06-23">
       <description translate="no">
         <p>

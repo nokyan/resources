@@ -1029,7 +1029,7 @@ dependencies = [
 
 [[package]]
 name = "process-data"
-version = "1.5.0"
+version = "1.5.1"
 dependencies = [
  "anyhow",
  "glob",
@@ -1084,7 +1084,7 @@ checksum = "adad44e29e4c806119491a7f06f03de4d1af22c3a680dd47f1e6e179439d1f56"
 
 [[package]]
 name = "resources"
-version = "1.5.0"
+version = "1.5.1"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -1235,9 +1235,9 @@ checksum = "7da8b5736845d9f2fcb837ea5d9e2628564b3b043a70948a3f0b778838c5fb4f"
 
 [[package]]
 name = "strum"
-version = "0.26.2"
+version = "0.26.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d8cec3501a5194c432b2b7976db6b7d10ec95c253208b45f83f7136aa985e29"
+checksum = "8fec0f0aef304996cf250b31b5a10dee7980c85da9d759361292b8bca5a18f06"
 
 [[package]]
 name = "strum_macros"
