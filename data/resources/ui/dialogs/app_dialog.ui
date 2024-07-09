@@ -6,21 +6,17 @@
     <property name="content_width">480</property>
     <property name="title" translatable="yes">App Information</property>
     <child>
-      <object class="GtkBox">
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkHeaderBar">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
             <property name="title-widget">
-              <object class="AdwWindowTitle" id="dialog_title">
+              <object class="AdwWindowTitle">
                 <property name="visible">False</property>
               </object>
             </property>
-            <style>
-              <class name="flat"/>
-            </style>
           </object>
         </child>
-        <child>
+        <property name="content">
           <object class="GtkScrolledWindow">
             <property name="vexpand">True</property>
             <child>
@@ -210,7 +206,7 @@
               </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
     </child>
     <child>
