@@ -47,7 +47,7 @@
                     <child>
                       <object class="GtkSearchEntry" id="search_entry">
                         <accessibility>
-                          <property name="label">Search applications</property>
+                          <property name="label" translatable="yes">Search applications</property>
                         </accessibility>
                       </object>
                     </child>
@@ -65,9 +65,9 @@
                 <child>
                   <object class="GtkToggleButton" id="search_button">
                     <property name="icon-name">search-symbolic</property>
-                    <property name="tooltip-text">Search</property>
+                    <property name="tooltip-text" translatable="yes">Search</property>
                     <accessibility>
-                      <property name="label">Toggle search field</property>
+                      <property name="label" translatable="yes">Toggle search field</property>
                     </accessibility>
                     <style>
                       <class name="circular"/>
@@ -83,9 +83,9 @@
                       <object class="GtkButton" id="information_button">
                         <property name="icon-name">info-symbolic</property>
                         <property name="sensitive">false</property>
-                        <property name="tooltip-text">Show App Information</property>
+                        <property name="tooltip-text" translatable="yes">Show App Information</property>
                         <accessibility>
-                          <property name="label">Show app information</property>
+                          <property name="label" translatable="yes">Show App Information</property>
                         </accessibility>
                         <style>
                           <class name="circular"/>
