@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-02 23:02+0200\n"
-"PO-Revision-Date: 2024-07-07 09:15+0530\n"
+"Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues\n"
+"POT-Creation-Date: 2024-07-07 18:21+0200\n"
+"PO-Revision-Date: 2024-07-10 19:17+0530\n"
 "Last-Translator: Scrambled777 <weblate.scrambled777@simplelogin.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
 "Language: hi\n"
@@ -16,31 +16,34 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Gtranslator 46.1\n"
 
-#: data/net.nokyan.Resources.desktop.in.in:3 data/net.nokyan.Resources.metainfo.xml.in.in:4
-#: src/application.rs:191
+#: data/net.nokyan.Resources.desktop.in.in:3
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:191
 msgid "Resources"
 msgstr "Resources"
 
 #. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
-#: data/net.nokyan.Resources.desktop.in.in:4 data/net.nokyan.Resources.metainfo.xml.in.in:5
+#: data/net.nokyan.Resources.desktop.in.in:4
+#: data/net.nokyan.Resources.metainfo.xml.in.in:5
 msgid "Keep an eye on system resources"
 msgstr "सिस्टम संसाधनों पर नज़र रखें"
 
 #: data/net.nokyan.Resources.desktop.in.in:10
-msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
+msgid ""
+"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 msgstr "सिस्टम;संसाधन;निगरानी;प्रक्रियाएं;उपयोग;कार्य;प्रबंधक;CPU;रैम;मेमोरी;GPU;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
-"Resources allows you to check the utilization of your system resources and control your "
-"running processes and apps. It’s designed to be user-friendly and feel right at home on a "
-"modern desktop by using GNOME’s libadwaita."
+"Resources allows you to check the utilization of your system resources and "
+"control your running processes and apps. It’s designed to be user-friendly "
+"and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
-"Resources आपको अपने सिस्टम संसाधनों के उपयोग की जांच करने और आपकी चल रही प्रक्रियाओं और अनुप्रयोगों को "
-"नियंत्रित करने की अनुमति देता है। इसे GNOME के libadwaita का उपयोग करके उपयोगकर्ता के अनुकूल और आधुनिक "
-"डेस्कटॉप पर घर जैसा अनुभव देने के लिए डिज़ाइन किया गया है।"
+"Resources आपको अपने सिस्टम संसाधनों के उपयोग की जांच करने और आपकी चल रही प्रक्रियाओं "
+"और अनुप्रयोगों को नियंत्रित करने की अनुमति देता है। इसे GNOME के libadwaita का उपयोग "
+"करके उपयोगकर्ता के अनुकूल और आधुनिक डेस्कटॉप पर घर जैसा अनुभव देने के लिए डिज़ाइन किया गया "
+"है।"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
@@ -50,18 +53,21 @@ msgstr "संसाधन निम्नलिखित घटकों की
 msgid "CPU"
 msgstr "CPU"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:25 src/ui/pages/applications/mod.rs:670
-#: src/ui/pages/memory.rs:132 src/ui/pages/memory.rs:205 src/ui/pages/processes/mod.rs:726
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+#: src/ui/pages/applications/mod.rs:670 src/ui/pages/memory.rs:132
+#: src/ui/pages/memory.rs:205 src/ui/pages/processes/mod.rs:726
 #: data/resources/ui/window.ui:158 data/resources/ui/window.ui:165
-#: data/resources/ui/dialogs/app_dialog.ui:81 data/resources/ui/dialogs/process_dialog.ui:68
+#: data/resources/ui/dialogs/app_dialog.ui:86
+#: data/resources/ui/dialogs/process_dialog.ui:68
 #: data/resources/ui/dialogs/settings_dialog.ui:133
 #: data/resources/ui/dialogs/settings_dialog.ui:204
 msgid "Memory"
 msgstr "मेमोरी"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:26 src/ui/pages/applications/mod.rs:965
-#: src/ui/pages/gpu.rs:146 src/ui/pages/processes/mod.rs:1032 src/ui/window.rs:286
-#: data/resources/ui/dialogs/app_dialog.ui:130
+#: data/net.nokyan.Resources.metainfo.xml.in.in:26
+#: src/ui/pages/applications/mod.rs:965 src/ui/pages/gpu.rs:146
+#: src/ui/pages/processes/mod.rs:1032 src/ui/window.rs:286
+#: data/resources/ui/dialogs/app_dialog.ui:135
 #: data/resources/ui/dialogs/process_dialog.ui:113
 #: data/resources/ui/dialogs/settings_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:234
@@ -95,52 +101,58 @@ msgstr "Scrambled777 <weblate.scrambled777@simplelogin.com>"
 msgid "Icon by"
 msgstr "आइकॉन प्रदानकर्ता"
 
-#: src/ui/dialogs/app_dialog.rs:161 src/ui/dialogs/process_dialog.rs:202
+#: src/ui/dialogs/app_dialog.rs:145 src/ui/dialogs/process_dialog.rs:140
 #: src/ui/pages/drive.rs:418 src/ui/pages/drive.rs:428
 msgid "No"
 msgstr "नहीं"
 
-#: src/ui/dialogs/app_dialog.rs:162 src/ui/dialogs/process_dialog.rs:203
+#: src/ui/dialogs/app_dialog.rs:146 src/ui/dialogs/process_dialog.rs:141
 msgid "Yes (Flatpak)"
 msgstr "हां (Flatpak)"
 
-#: src/ui/dialogs/app_dialog.rs:163 src/ui/dialogs/process_dialog.rs:204
+#: src/ui/dialogs/app_dialog.rs:147 src/ui/dialogs/process_dialog.rs:142
 msgid "Yes (Snap)"
 msgstr "हां (Snap)"
 
-#: src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:140
-#: src/ui/dialogs/process_dialog.rs:147 src/ui/dialogs/process_dialog.rs:154
-#: src/ui/dialogs/process_dialog.rs:190 src/ui/dialogs/process_dialog.rs:197
-#: src/ui/dialogs/process_dialog.rs:199 src/ui/pages/applications/mod.rs:784
+#: src/ui/dialogs/process_dialog.rs:128 src/ui/dialogs/process_dialog.rs:135
+#: src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:162
+#: src/ui/dialogs/process_dialog.rs:169 src/ui/dialogs/process_dialog.rs:176
+#: src/ui/dialogs/process_dialog.rs:183 src/ui/pages/applications/mod.rs:784
 #: src/ui/pages/applications/mod.rs:882 src/ui/pages/battery.rs:223
-#: src/ui/pages/battery.rs:244 src/ui/pages/battery.rs:250 src/ui/pages/battery.rs:253
-#: src/ui/pages/battery.rs:279 src/ui/pages/battery.rs:303 src/ui/pages/battery.rs:305
+#: src/ui/pages/battery.rs:244 src/ui/pages/battery.rs:250
+#: src/ui/pages/battery.rs:253 src/ui/pages/battery.rs:279
+#: src/ui/pages/battery.rs:303 src/ui/pages/battery.rs:305
 #: src/ui/pages/battery.rs:315 src/ui/pages/cpu.rs:237 src/ui/pages/cpu.rs:252
 #: src/ui/pages/cpu.rs:266 src/ui/pages/cpu.rs:272 src/ui/pages/cpu.rs:278
 #: src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:288 src/ui/pages/cpu.rs:291
 #: src/ui/pages/cpu.rs:384 src/ui/pages/drive.rs:325 src/ui/pages/drive.rs:355
-#: src/ui/pages/drive.rs:357 src/ui/pages/drive.rs:385 src/ui/pages/drive.rs:387
-#: src/ui/pages/drive.rs:403 src/ui/pages/drive.rs:404 src/ui/pages/drive.rs:411
+#: src/ui/pages/drive.rs:357 src/ui/pages/drive.rs:385
+#: src/ui/pages/drive.rs:387 src/ui/pages/drive.rs:403
+#: src/ui/pages/drive.rs:404 src/ui/pages/drive.rs:411
 #: src/ui/pages/drive.rs:421 src/ui/pages/drive.rs:431 src/ui/pages/gpu.rs:251
 #: src/ui/pages/gpu.rs:293 src/ui/pages/gpu.rs:318 src/ui/pages/gpu.rs:321
 #: src/ui/pages/gpu.rs:332 src/ui/pages/gpu.rs:352 src/ui/pages/gpu.rs:364
 #: src/ui/pages/gpu.rs:378 src/ui/pages/gpu.rs:380 src/ui/pages/gpu.rs:392
 #: src/ui/pages/gpu.rs:399 src/ui/pages/gpu.rs:403 src/ui/pages/memory.rs:240
-#: src/ui/pages/memory.rs:241 src/ui/pages/memory.rs:245 src/ui/pages/memory.rs:246
-#: src/ui/pages/memory.rs:250 src/ui/pages/memory.rs:251 src/ui/pages/memory.rs:279
-#: src/ui/pages/memory.rs:333 src/ui/pages/network.rs:257 src/ui/pages/network.rs:264
-#: src/ui/pages/network.rs:271 src/ui/pages/network.rs:277 src/ui/pages/network.rs:280
-#: src/ui/pages/network.rs:341 src/ui/pages/network.rs:344 src/ui/pages/network.rs:346
-#: src/ui/pages/network.rs:375 src/ui/pages/network.rs:378 src/ui/pages/network.rs:380
+#: src/ui/pages/memory.rs:241 src/ui/pages/memory.rs:245
+#: src/ui/pages/memory.rs:246 src/ui/pages/memory.rs:250
+#: src/ui/pages/memory.rs:251 src/ui/pages/memory.rs:279
+#: src/ui/pages/memory.rs:333 src/ui/pages/network.rs:257
+#: src/ui/pages/network.rs:264 src/ui/pages/network.rs:271
+#: src/ui/pages/network.rs:277 src/ui/pages/network.rs:280
+#: src/ui/pages/network.rs:341 src/ui/pages/network.rs:344
+#: src/ui/pages/network.rs:346 src/ui/pages/network.rs:375
+#: src/ui/pages/network.rs:378 src/ui/pages/network.rs:380
 #: src/ui/pages/processes/mod.rs:839 src/ui/pages/processes/mod.rs:892
-#: src/ui/pages/processes/mod.rs:945 src/ui/pages/processes/mod.rs:998 src/utils/app.rs:689
-#: src/utils/app.rs:765 src/utils/battery.rs:138 src/utils/drive.rs:90
-#: src/utils/gpu/mod.rs:255 src/utils/gpu/mod.rs:261
+#: src/ui/pages/processes/mod.rs:945 src/ui/pages/processes/mod.rs:998
+#: src/utils/app.rs:689 src/utils/app.rs:765 src/utils/battery.rs:144
+#: src/utils/drive.rs:90 src/utils/gpu/mod.rs:258 src/utils/gpu/mod.rs:264
 msgid "N/A"
 msgstr "N/A"
 
 #: src/ui/pages/applications/mod.rs:153 data/resources/ui/window.ui:65
-#: data/resources/ui/window.ui:72 data/resources/ui/dialogs/settings_dialog.ui:127
+#: data/resources/ui/window.ui:72
+#: data/resources/ui/dialogs/settings_dialog.ui:127
 msgid "Apps"
 msgstr "ऐप्स"
 
@@ -157,8 +169,9 @@ msgid "App"
 msgstr "ऐप"
 
 #: src/ui/pages/applications/mod.rs:716 src/ui/pages/cpu.rs:149
-#: src/ui/pages/processes/mod.rs:771 src/ui/window.rs:332 data/resources/ui/window.ui:127
-#: data/resources/ui/window.ui:134 data/resources/ui/dialogs/app_dialog.ui:72
+#: src/ui/pages/processes/mod.rs:771 src/ui/window.rs:332
+#: data/resources/ui/window.ui:127 data/resources/ui/window.ui:134
+#: data/resources/ui/dialogs/app_dialog.ui:77
 #: data/resources/ui/dialogs/process_dialog.ui:59
 #: data/resources/ui/dialogs/settings_dialog.ui:138
 #: data/resources/ui/dialogs/settings_dialog.ui:209
@@ -166,28 +179,31 @@ msgid "Processor"
 msgstr "प्रोसेसर"
 
 #: src/ui/pages/applications/mod.rs:766 src/ui/pages/processes/mod.rs:821
-#: data/resources/ui/dialogs/app_dialog.ui:90 data/resources/ui/dialogs/process_dialog.ui:73
+#: data/resources/ui/dialogs/app_dialog.ui:95
+#: data/resources/ui/dialogs/process_dialog.ui:73
 #: data/resources/ui/dialogs/settings_dialog.ui:143
 #: data/resources/ui/dialogs/settings_dialog.ui:214
 msgid "Drive Read"
 msgstr "ड्राइव पठित"
 
 #: src/ui/pages/applications/mod.rs:817 src/ui/pages/processes/mod.rs:874
-#: data/resources/ui/dialogs/app_dialog.ui:99 data/resources/ui/dialogs/process_dialog.ui:82
+#: data/resources/ui/dialogs/app_dialog.ui:104
+#: data/resources/ui/dialogs/process_dialog.ui:82
 #: data/resources/ui/dialogs/settings_dialog.ui:148
 #: data/resources/ui/dialogs/settings_dialog.ui:219
 msgid "Drive Read Total"
 msgstr "कुल ड्राइव पठित"
 
 #: src/ui/pages/applications/mod.rs:864 src/ui/pages/processes/mod.rs:927
-#: data/resources/ui/dialogs/app_dialog.ui:108 data/resources/ui/dialogs/process_dialog.ui:91
+#: data/resources/ui/dialogs/app_dialog.ui:113
+#: data/resources/ui/dialogs/process_dialog.ui:91
 #: data/resources/ui/dialogs/settings_dialog.ui:153
 #: data/resources/ui/dialogs/settings_dialog.ui:224
 msgid "Drive Write"
 msgstr "ड्राइव लिखित"
 
 #: src/ui/pages/applications/mod.rs:917 src/ui/pages/processes/mod.rs:980
-#: data/resources/ui/dialogs/app_dialog.ui:117
+#: data/resources/ui/dialogs/app_dialog.ui:122
 #: data/resources/ui/dialogs/process_dialog.ui:100
 #: data/resources/ui/dialogs/settings_dialog.ui:158
 #: data/resources/ui/dialogs/settings_dialog.ui:229
@@ -195,7 +211,7 @@ msgid "Drive Write Total"
 msgstr "कुल ड्राइव लिखित"
 
 #: src/ui/pages/applications/mod.rs:1010 src/ui/pages/processes/mod.rs:1077
-#: data/resources/ui/dialogs/app_dialog.ui:148
+#: data/resources/ui/dialogs/app_dialog.ui:153
 #: data/resources/ui/dialogs/process_dialog.ui:131
 #: data/resources/ui/dialogs/settings_dialog.ui:173
 #: data/resources/ui/dialogs/settings_dialog.ui:244
@@ -203,7 +219,7 @@ msgid "Video Encoder"
 msgstr "वीडियो एनकोडर"
 
 #: src/ui/pages/applications/mod.rs:1057 src/ui/pages/processes/mod.rs:1124
-#: data/resources/ui/dialogs/app_dialog.ui:157
+#: data/resources/ui/dialogs/app_dialog.ui:162
 #: data/resources/ui/dialogs/process_dialog.ui:140
 #: data/resources/ui/dialogs/settings_dialog.ui:178
 #: data/resources/ui/dialogs/settings_dialog.ui:249
@@ -211,7 +227,7 @@ msgid "Video Decoder"
 msgstr "वीडियो डिकोडर"
 
 #: src/ui/pages/applications/mod.rs:1103 src/ui/pages/processes/mod.rs:1171
-#: data/resources/ui/dialogs/app_dialog.ui:139
+#: data/resources/ui/dialogs/app_dialog.ui:144
 #: data/resources/ui/dialogs/process_dialog.ui:122
 #: data/resources/ui/dialogs/settings_dialog.ui:168
 #: data/resources/ui/dialogs/settings_dialog.ui:239
@@ -240,31 +256,37 @@ msgstr "सहेजा न गया काम खो सकता है।"
 
 #: src/ui/pages/applications/mod.rs:1157
 msgid ""
-"Halting an app can come with serious risks such as losing data and security implications. "
-"Use with caution."
+"Halting an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
 msgstr ""
-"किसी ऐप को रोकने से डेटा खोने और सुरक्षा निहितार्थ जैसे गंभीर जोखिम आ सकते हैं। सावधानी से प्रयोग करें।"
+"किसी ऐप को रोकने से डेटा खोने और सुरक्षा निहितार्थ जैसे गंभीर जोखिम आ सकते हैं। सावधानी से "
+"प्रयोग करें।"
 
 #: src/ui/pages/applications/mod.rs:1158
 msgid ""
-"Killing an app can come with serious risks such as losing data and security implications. "
-"Use with caution."
+"Killing an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
 msgstr ""
-"किसी ऐप को खत्म करने से डेटा खोने और सुरक्षा निहितार्थ जैसे गंभीर जोखिम आ सकते हैं। सावधानी से प्रयोग करें।"
+"किसी ऐप को खत्म करने से डेटा खोने और सुरक्षा निहितार्थ जैसे गंभीर जोखिम आ सकते हैं। "
+"सावधानी से प्रयोग करें।"
 
-#: src/ui/pages/applications/mod.rs:1165 data/resources/ui/pages/applications.ui:97
+#: src/ui/pages/applications/mod.rs:1165
+#: data/resources/ui/pages/applications.ui:97
 msgid "End App"
 msgstr "ऐप समाप्त करें"
 
-#: src/ui/pages/applications/mod.rs:1166 data/resources/ui/pages/applications.ui:10
+#: src/ui/pages/applications/mod.rs:1166
+#: data/resources/ui/pages/applications.ui:10
 msgid "Halt App"
 msgstr "ऐप रोकें"
 
-#: src/ui/pages/applications/mod.rs:1167 data/resources/ui/pages/applications.ui:6
+#: src/ui/pages/applications/mod.rs:1167
+#: data/resources/ui/pages/applications.ui:6
 msgid "Kill App"
 msgstr "ऐप खत्म करें"
 
-#: src/ui/pages/applications/mod.rs:1168 data/resources/ui/pages/applications.ui:14
+#: src/ui/pages/applications/mod.rs:1168
+#: data/resources/ui/pages/applications.ui:14
 msgid "Continue App"
 msgstr "ऐप जारी रखें"
 
@@ -280,8 +302,9 @@ msgstr "बैटरी चार्ज"
 msgid "Power Usage"
 msgstr "बिजली का उपयोग"
 
-#: src/ui/pages/battery.rs:293 src/ui/pages/drive.rs:349 src/ui/pages/drive.rs:379
-#: src/ui/pages/network.rs:333 src/ui/pages/network.rs:367
+#: src/ui/pages/battery.rs:293 src/ui/pages/drive.rs:349
+#: src/ui/pages/drive.rs:379 src/ui/pages/network.rs:333
+#: src/ui/pages/network.rs:367
 msgid "Highest:"
 msgstr "उच्चतम:"
 
@@ -372,7 +395,8 @@ msgid "R: {} · S: {}"
 msgstr "प्रा: {} · भे: {}"
 
 #: src/ui/pages/processes/mod.rs:157 data/resources/ui/window.ui:96
-#: data/resources/ui/window.ui:103 data/resources/ui/dialogs/settings_dialog.ui:188
+#: data/resources/ui/window.ui:103
+#: data/resources/ui/dialogs/settings_dialog.ui:188
 msgid "Processes"
 msgstr "प्रक्रियाएं"
 
@@ -384,45 +408,51 @@ msgstr "चालू प्रक्रियाएं: {}"
 msgid "Process"
 msgstr "प्रक्रिया"
 
-#: src/ui/pages/processes/mod.rs:645 data/resources/ui/dialogs/process_dialog.ui:181
+#: src/ui/pages/processes/mod.rs:645
+#: data/resources/ui/dialogs/process_dialog.ui:181
 #: data/resources/ui/dialogs/settings_dialog.ui:194
 msgid "Process ID"
 msgstr "प्रक्रिया ID"
 
-#: src/ui/pages/processes/mod.rs:685 data/resources/ui/dialogs/process_dialog.ui:208
+#: src/ui/pages/processes/mod.rs:685
+#: data/resources/ui/dialogs/process_dialog.ui:208
 #: data/resources/ui/dialogs/settings_dialog.ui:199
 msgid "User"
 msgstr "उपयोक्ता"
 
-#: src/ui/pages/processes/mod.rs:1217 data/resources/ui/dialogs/process_dialog.ui:149
+#: src/ui/pages/processes/mod.rs:1217
+#: data/resources/ui/dialogs/process_dialog.ui:149
 #: data/resources/ui/dialogs/settings_dialog.ui:254
 msgid "Total CPU Time"
 msgstr "कुल CPU समय"
 
-#: src/ui/pages/processes/mod.rs:1263 data/resources/ui/dialogs/process_dialog.ui:158
+#: src/ui/pages/processes/mod.rs:1263
+#: data/resources/ui/dialogs/process_dialog.ui:158
 #: data/resources/ui/dialogs/settings_dialog.ui:259
 msgid "User CPU Time"
 msgstr "उपयोक्ता CPU समय"
 
-#: src/ui/pages/processes/mod.rs:1309 data/resources/ui/dialogs/process_dialog.ui:167
+#: src/ui/pages/processes/mod.rs:1309
+#: data/resources/ui/dialogs/process_dialog.ui:167
 #: data/resources/ui/dialogs/settings_dialog.ui:264
 msgid "System CPU Time"
 msgstr "सिस्टम CPU समय"
 
 #: src/ui/pages/processes/mod.rs:1364
 msgid ""
-"Halting a process can come with serious risks such as losing data and security "
-"implications. Use with caution."
+"Halting a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
 msgstr ""
-"किसी प्रक्रिया को रोकने से डेटा खोने और सुरक्षा निहितार्थ जैसे गंभीर जोखिम आ सकते हैं। सावधानी से प्रयोग करें।"
+"किसी प्रक्रिया को रोकने से डेटा खोने और सुरक्षा निहितार्थ जैसे गंभीर जोखिम आ सकते हैं। "
+"सावधानी से प्रयोग करें।"
 
 #: src/ui/pages/processes/mod.rs:1365
 msgid ""
-"Killing a process can come with serious risks such as losing data and security "
-"implications. Use with caution."
+"Killing a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
 msgstr ""
-"किसी प्रक्रिया को खत्म करने से डेटा खोने और सुरक्षा निहितार्थ जैसे गंभीर जोखिम आ सकते हैं। सावधानी से प्रयोग "
-"करें।"
+"किसी प्रक्रिया को खत्म करने से डेटा खोने और सुरक्षा निहितार्थ जैसे गंभीर जोखिम आ सकते हैं। "
+"सावधानी से प्रयोग करें।"
 
 #: src/ui/pages/processes/mod.rs:1372 data/resources/ui/pages/processes.ui:97
 msgid "End Process"
@@ -504,63 +534,63 @@ msgstr "{} को जारी रहने रखने में एक सम
 msgid "System Processes"
 msgstr "सिस्टम प्रक्रियाएं"
 
-#: src/utils/battery.rs:74
+#: src/utils/battery.rs:80
 msgid "Charging"
 msgstr "चार्ज हो रहा है"
 
-#: src/utils/battery.rs:75
+#: src/utils/battery.rs:81
 msgid "Discharging"
 msgstr "डिस्चार्ज हो रहा है"
 
-#: src/utils/battery.rs:76
+#: src/utils/battery.rs:82
 msgid "Empty"
 msgstr "खाली"
 
-#: src/utils/battery.rs:77
+#: src/utils/battery.rs:83
 msgid "Full"
 msgstr "पूर्ण"
 
-#: src/utils/battery.rs:78
+#: src/utils/battery.rs:84
 msgid "Unknown"
 msgstr "अज्ञात"
 
-#: src/utils/battery.rs:129
+#: src/utils/battery.rs:135
 msgid "Nickel-Metal Hydride"
 msgstr "निकल-धातु हाइड्राइड"
 
-#: src/utils/battery.rs:130
+#: src/utils/battery.rs:136
 msgid "Nickel-Cadmium"
 msgstr "निकल-कैडमियम"
 
-#: src/utils/battery.rs:131
+#: src/utils/battery.rs:137
 msgid "Nickel-Zinc"
 msgstr "निकल-जस्ता"
 
-#: src/utils/battery.rs:132
+#: src/utils/battery.rs:138
 msgid "Lead-Acid"
 msgstr "लैड-एसिड"
 
-#: src/utils/battery.rs:133
+#: src/utils/battery.rs:139
 msgid "Lithium-Ion"
 msgstr "लिथियम-आयन"
 
-#: src/utils/battery.rs:134
+#: src/utils/battery.rs:140
 msgid "Lithium Iron Phosphate"
 msgstr "लिथियम आयरन फॉस्फेट"
 
-#: src/utils/battery.rs:135
+#: src/utils/battery.rs:141
 msgid "Lithium Polymer"
 msgstr "लिथियम पॉलिमर"
 
-#: src/utils/battery.rs:137
+#: src/utils/battery.rs:143
 msgid "Rechargeable Alkaline Managanese"
 msgstr "रिचार्जेबल अल्कलाइन मैंगनीज"
 
-#: src/utils/battery.rs:213
+#: src/utils/battery.rs:239
 msgid "{} Battery"
 msgstr "{} बैटरी"
 
-#: src/utils/battery.rs:215
+#: src/utils/battery.rs:241
 msgid "Battery"
 msgstr "बैटरी"
 
@@ -704,7 +734,8 @@ msgstr "{} °C"
 msgid "{} °F"
 msgstr "{} °F"
 
-#: src/utils/units.rs:81 src/utils/units.rs:95 src/utils/units.rs:115 src/utils/units.rs:129
+#: src/utils/units.rs:81 src/utils/units.rs:95 src/utils/units.rs:115
+#: src/utils/units.rs:129
 msgid "{} B"
 msgstr "{} B"
 
@@ -1154,7 +1185,8 @@ msgstr "Resources के बारे में"
 msgid "App Information"
 msgstr "ऐप जानकारी"
 
-#: data/resources/ui/dialogs/app_dialog.ui:69 data/resources/ui/dialogs/process_dialog.ui:52
+#: data/resources/ui/dialogs/app_dialog.ui:74
+#: data/resources/ui/dialogs/process_dialog.ui:52
 #: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37
 #: data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22
 #: data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31
@@ -1162,28 +1194,28 @@ msgstr "ऐप जानकारी"
 msgid "Usage"
 msgstr "उपयोग"
 
-#: data/resources/ui/dialogs/app_dialog.ui:164
-#: data/resources/ui/dialogs/process_dialog.ui:174 data/resources/ui/pages/battery.ui:33
-#: data/resources/ui/pages/cpu.ui:89 data/resources/ui/pages/drive.ui:54
-#: data/resources/ui/pages/gpu.ui:80 data/resources/ui/pages/memory.ui:42
-#: data/resources/ui/pages/network.ui:51
+#: data/resources/ui/dialogs/app_dialog.ui:169
+#: data/resources/ui/dialogs/process_dialog.ui:174
+#: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:89
+#: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:80
+#: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
 msgid "Properties"
 msgstr "गुण"
 
-#: data/resources/ui/dialogs/app_dialog.ui:170
+#: data/resources/ui/dialogs/app_dialog.ui:175
 msgid "ID"
 msgstr "ID"
 
-#: data/resources/ui/dialogs/app_dialog.ui:180
+#: data/resources/ui/dialogs/app_dialog.ui:185
 #: data/resources/ui/dialogs/process_dialog.ui:190
 msgid "Running Since"
 msgstr "तब से चालू"
 
-#: data/resources/ui/dialogs/app_dialog.ui:188
+#: data/resources/ui/dialogs/app_dialog.ui:193
 msgid "Running Processes"
 msgstr "चालू प्रक्रियाएं"
 
-#: data/resources/ui/dialogs/app_dialog.ui:197
+#: data/resources/ui/dialogs/app_dialog.ui:202
 #: data/resources/ui/dialogs/process_dialog.ui:226
 msgid "Containerized"
 msgstr "कंटेनरीकृत"
@@ -1297,8 +1329,11 @@ msgid "Show Device Descriptions in Sidebar"
 msgstr "पार्श्वपट्टी में उपकरण विवरण दिखाएं"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
-msgid "If enabled, a device identifier like its name or device type will be displayed"
-msgstr "सक्षम होने पर, उपकरण पहचानकर्ता जैसे उसका नाम या उपकरण प्रकार प्रदर्शित किया जाएगा"
+msgid ""
+"If enabled, a device identifier like its name or device type will be "
+"displayed"
+msgstr ""
+"सक्षम होने पर, उपकरण पहचानकर्ता जैसे उसका नाम या उपकरण प्रकार प्रदर्शित किया जाएगा"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:103
 msgid "Sidebar Meter Type"
@@ -1317,7 +1352,9 @@ msgid "Normalize Processor Usage"
 msgstr "सामान्यीकृत प्रोसेसर उपयोग"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:117
-msgid "If enabled, the total usage of all cores will be divided by the amount of cores"
+msgid ""
+"If enabled, the total usage of all cores will be divided by the amount of "
+"cores"
 msgstr "सक्षम होने पर, सभी कोर का कुल उपयोग कोर की मात्रा से विभाजित किया जाएगा"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:130
@@ -1348,6 +1385,25 @@ msgstr "वर्चुअल नेटवर्क इंटरफेस दि
 #: data/resources/ui/dialogs/settings_dialog.ui:292
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
 msgstr "वर्चुअल नेटवर्क इंटरफेस उदाहरण ब्रिज या VPN सुरंग के लिए हैं"
+
+#: data/resources/ui/pages/applications.ui:50
+msgid "Search applications"
+msgstr "अनुप्रयोग खोजें"
+
+#: data/resources/ui/pages/applications.ui:68
+#: data/resources/ui/pages/processes.ui:68
+msgid "Search"
+msgstr "खोजें"
+
+#: data/resources/ui/pages/applications.ui:70
+#: data/resources/ui/pages/processes.ui:70
+msgid "Toggle search field"
+msgstr "खोज क्षेत्र टॉगल करें"
+
+#: data/resources/ui/pages/applications.ui:86
+#: data/resources/ui/pages/applications.ui:88
+msgid "Show App Information"
+msgstr "ऐप जानकारी दिखाएं"
 
 #: data/resources/ui/pages/battery.ui:36
 msgid "Battery Health"
@@ -1501,6 +1557,15 @@ msgstr "इंटरफेस"
 #: data/resources/ui/pages/network.ui:85
 msgid "Hardware Address"
 msgstr "हार्डवेयर पता"
+
+#: data/resources/ui/pages/processes.ui:50
+msgid "Search processes"
+msgstr "प्रक्रियाएं खोजें"
+
+#: data/resources/ui/pages/processes.ui:86
+#: data/resources/ui/pages/processes.ui:88
+msgid "Show Process Information"
+msgstr "प्रक्रिया जानकारी दिखाएं"
 
 #~ msgid "End app"
 #~ msgstr "ऐप समाप्त करें"
