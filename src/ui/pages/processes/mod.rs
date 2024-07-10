@@ -8,7 +8,8 @@ use adw::{prelude::*, subclass::prelude::*};
 use async_channel::Sender;
 use gtk::glib::{self, clone, closure, MainContext, Object};
 use gtk::{
-    gio, ColumnView, ColumnViewColumn, FilterChange, NumericSorter, SortType, StringSorter, Widget,
+    gio, ColumnView, ColumnViewColumn, EventControllerKey, FilterChange, NumericSorter, SortType,
+    StringSorter, Widget,
 };
 
 use crate::config::PROFILE;
@@ -324,8 +325,12 @@ impl ResProcesses {
 
     pub fn toggle_search(&self) {
         let imp = self.imp();
-
         imp.search_button.set_active(!imp.search_button.is_active());
+    }
+
+    pub fn close_search(&self) {
+        let imp = self.imp();
+        imp.search_button.set_active(false);
     }
 
     pub fn init(&self, sender: Sender<Action>) {
@@ -425,6 +430,14 @@ impl ResProcesses {
                     filter.changed(FilterChange::Different);
                 }
             }));
+
+        let event_controller = EventControllerKey::new();
+        event_controller.connect_key_released(clone!(@strong self as this => move|_, key, _, _| {
+            if key.name().unwrap_or_default() == "Escape" {
+                this.close_search()
+            }
+        }));
+        imp.search_entry.add_controller(event_controller);
 
         imp.information_button
             .connect_clicked(clone!(@strong self as this => move |_| {
