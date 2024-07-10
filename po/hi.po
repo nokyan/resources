@@ -1,15 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Hindi translation for resources.
+# Copyright (C) 2024 resources's COPYRIGHT HOLDER
+# This file is distributed under the same license as the resources package.
 # Scrambled777 <weblate.scrambled777@simplelogin.com>, 2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-16 11:25+0200\n"
-"PO-Revision-Date: 2024-06-20 15:41+0530\n"
+"Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues\n"
+"POT-Creation-Date: 2024-07-07 18:21+0200\n"
+"PO-Revision-Date: 2024-07-10 19:17+0530\n"
 "Last-Translator: Scrambled777 <weblate.scrambled777@simplelogin.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
 "Language: hi\n"
@@ -55,10 +54,10 @@ msgid "CPU"
 msgstr "CPU"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:25
-#: src/ui/pages/applications/mod.rs:666 src/ui/pages/memory.rs:132
+#: src/ui/pages/applications/mod.rs:670 src/ui/pages/memory.rs:132
 #: src/ui/pages/memory.rs:205 src/ui/pages/processes/mod.rs:726
 #: data/resources/ui/window.ui:158 data/resources/ui/window.ui:165
-#: data/resources/ui/dialogs/app_dialog.ui:81
+#: data/resources/ui/dialogs/app_dialog.ui:86
 #: data/resources/ui/dialogs/process_dialog.ui:68
 #: data/resources/ui/dialogs/settings_dialog.ui:133
 #: data/resources/ui/dialogs/settings_dialog.ui:204
@@ -66,9 +65,9 @@ msgid "Memory"
 msgstr "मेमोरी"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:26
-#: src/ui/pages/applications/mod.rs:961 src/ui/pages/gpu.rs:146
+#: src/ui/pages/applications/mod.rs:965 src/ui/pages/gpu.rs:146
 #: src/ui/pages/processes/mod.rs:1032 src/ui/window.rs:286
-#: data/resources/ui/dialogs/app_dialog.ui:130
+#: data/resources/ui/dialogs/app_dialog.ui:135
 #: data/resources/ui/dialogs/process_dialog.ui:113
 #: data/resources/ui/dialogs/settings_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:234
@@ -102,24 +101,24 @@ msgstr "Scrambled777 <weblate.scrambled777@simplelogin.com>"
 msgid "Icon by"
 msgstr "आइकॉन प्रदानकर्ता"
 
-#: src/ui/dialogs/app_dialog.rs:161 src/ui/dialogs/process_dialog.rs:202
+#: src/ui/dialogs/app_dialog.rs:145 src/ui/dialogs/process_dialog.rs:140
 #: src/ui/pages/drive.rs:418 src/ui/pages/drive.rs:428
 msgid "No"
 msgstr "नहीं"
 
-#: src/ui/dialogs/app_dialog.rs:162 src/ui/dialogs/process_dialog.rs:203
+#: src/ui/dialogs/app_dialog.rs:146 src/ui/dialogs/process_dialog.rs:141
 msgid "Yes (Flatpak)"
 msgstr "हां (Flatpak)"
 
-#: src/ui/dialogs/app_dialog.rs:163 src/ui/dialogs/process_dialog.rs:204
+#: src/ui/dialogs/app_dialog.rs:147 src/ui/dialogs/process_dialog.rs:142
 msgid "Yes (Snap)"
 msgstr "हां (Snap)"
 
-#: src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:140
-#: src/ui/dialogs/process_dialog.rs:147 src/ui/dialogs/process_dialog.rs:154
-#: src/ui/dialogs/process_dialog.rs:190 src/ui/dialogs/process_dialog.rs:197
-#: src/ui/dialogs/process_dialog.rs:199 src/ui/pages/applications/mod.rs:780
-#: src/ui/pages/applications/mod.rs:878 src/ui/pages/battery.rs:223
+#: src/ui/dialogs/process_dialog.rs:128 src/ui/dialogs/process_dialog.rs:135
+#: src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:162
+#: src/ui/dialogs/process_dialog.rs:169 src/ui/dialogs/process_dialog.rs:176
+#: src/ui/dialogs/process_dialog.rs:183 src/ui/pages/applications/mod.rs:784
+#: src/ui/pages/applications/mod.rs:882 src/ui/pages/battery.rs:223
 #: src/ui/pages/battery.rs:244 src/ui/pages/battery.rs:250
 #: src/ui/pages/battery.rs:253 src/ui/pages/battery.rs:279
 #: src/ui/pages/battery.rs:303 src/ui/pages/battery.rs:305
@@ -146,8 +145,8 @@ msgstr "हां (Snap)"
 #: src/ui/pages/network.rs:378 src/ui/pages/network.rs:380
 #: src/ui/pages/processes/mod.rs:839 src/ui/pages/processes/mod.rs:892
 #: src/ui/pages/processes/mod.rs:945 src/ui/pages/processes/mod.rs:998
-#: src/utils/app.rs:686 src/utils/app.rs:762 src/utils/battery.rs:138
-#: src/utils/drive.rs:90 src/utils/gpu/mod.rs:255 src/utils/gpu/mod.rs:261
+#: src/utils/app.rs:689 src/utils/app.rs:765 src/utils/battery.rs:144
+#: src/utils/drive.rs:90 src/utils/gpu/mod.rs:258 src/utils/gpu/mod.rs:264
 msgid "N/A"
 msgstr "N/A"
 
@@ -169,93 +168,93 @@ msgstr "रद्द करें"
 msgid "App"
 msgstr "ऐप"
 
-#: src/ui/pages/applications/mod.rs:712 src/ui/pages/cpu.rs:149
+#: src/ui/pages/applications/mod.rs:716 src/ui/pages/cpu.rs:149
 #: src/ui/pages/processes/mod.rs:771 src/ui/window.rs:332
 #: data/resources/ui/window.ui:127 data/resources/ui/window.ui:134
-#: data/resources/ui/dialogs/app_dialog.ui:72
+#: data/resources/ui/dialogs/app_dialog.ui:77
 #: data/resources/ui/dialogs/process_dialog.ui:59
 #: data/resources/ui/dialogs/settings_dialog.ui:138
 #: data/resources/ui/dialogs/settings_dialog.ui:209
 msgid "Processor"
 msgstr "प्रोसेसर"
 
-#: src/ui/pages/applications/mod.rs:762 src/ui/pages/processes/mod.rs:821
-#: data/resources/ui/dialogs/app_dialog.ui:90
+#: src/ui/pages/applications/mod.rs:766 src/ui/pages/processes/mod.rs:821
+#: data/resources/ui/dialogs/app_dialog.ui:95
 #: data/resources/ui/dialogs/process_dialog.ui:73
 #: data/resources/ui/dialogs/settings_dialog.ui:143
 #: data/resources/ui/dialogs/settings_dialog.ui:214
 msgid "Drive Read"
 msgstr "ड्राइव पठित"
 
-#: src/ui/pages/applications/mod.rs:813 src/ui/pages/processes/mod.rs:874
-#: data/resources/ui/dialogs/app_dialog.ui:99
+#: src/ui/pages/applications/mod.rs:817 src/ui/pages/processes/mod.rs:874
+#: data/resources/ui/dialogs/app_dialog.ui:104
 #: data/resources/ui/dialogs/process_dialog.ui:82
 #: data/resources/ui/dialogs/settings_dialog.ui:148
 #: data/resources/ui/dialogs/settings_dialog.ui:219
 msgid "Drive Read Total"
 msgstr "कुल ड्राइव पठित"
 
-#: src/ui/pages/applications/mod.rs:860 src/ui/pages/processes/mod.rs:927
-#: data/resources/ui/dialogs/app_dialog.ui:108
+#: src/ui/pages/applications/mod.rs:864 src/ui/pages/processes/mod.rs:927
+#: data/resources/ui/dialogs/app_dialog.ui:113
 #: data/resources/ui/dialogs/process_dialog.ui:91
 #: data/resources/ui/dialogs/settings_dialog.ui:153
 #: data/resources/ui/dialogs/settings_dialog.ui:224
 msgid "Drive Write"
 msgstr "ड्राइव लिखित"
 
-#: src/ui/pages/applications/mod.rs:913 src/ui/pages/processes/mod.rs:980
-#: data/resources/ui/dialogs/app_dialog.ui:117
+#: src/ui/pages/applications/mod.rs:917 src/ui/pages/processes/mod.rs:980
+#: data/resources/ui/dialogs/app_dialog.ui:122
 #: data/resources/ui/dialogs/process_dialog.ui:100
 #: data/resources/ui/dialogs/settings_dialog.ui:158
 #: data/resources/ui/dialogs/settings_dialog.ui:229
 msgid "Drive Write Total"
 msgstr "कुल ड्राइव लिखित"
 
-#: src/ui/pages/applications/mod.rs:1006 src/ui/pages/processes/mod.rs:1077
-#: data/resources/ui/dialogs/app_dialog.ui:148
+#: src/ui/pages/applications/mod.rs:1010 src/ui/pages/processes/mod.rs:1077
+#: data/resources/ui/dialogs/app_dialog.ui:153
 #: data/resources/ui/dialogs/process_dialog.ui:131
 #: data/resources/ui/dialogs/settings_dialog.ui:173
 #: data/resources/ui/dialogs/settings_dialog.ui:244
 msgid "Video Encoder"
 msgstr "वीडियो एनकोडर"
 
-#: src/ui/pages/applications/mod.rs:1053 src/ui/pages/processes/mod.rs:1124
-#: data/resources/ui/dialogs/app_dialog.ui:157
+#: src/ui/pages/applications/mod.rs:1057 src/ui/pages/processes/mod.rs:1124
+#: data/resources/ui/dialogs/app_dialog.ui:162
 #: data/resources/ui/dialogs/process_dialog.ui:140
 #: data/resources/ui/dialogs/settings_dialog.ui:178
 #: data/resources/ui/dialogs/settings_dialog.ui:249
 msgid "Video Decoder"
 msgstr "वीडियो डिकोडर"
 
-#: src/ui/pages/applications/mod.rs:1099 src/ui/pages/processes/mod.rs:1171
-#: data/resources/ui/dialogs/app_dialog.ui:139
+#: src/ui/pages/applications/mod.rs:1103 src/ui/pages/processes/mod.rs:1171
+#: data/resources/ui/dialogs/app_dialog.ui:144
 #: data/resources/ui/dialogs/process_dialog.ui:122
 #: data/resources/ui/dialogs/settings_dialog.ui:168
 #: data/resources/ui/dialogs/settings_dialog.ui:239
 msgid "Video Memory"
 msgstr "वीडियो मेमोरी"
 
-#: src/ui/pages/applications/mod.rs:1143 src/ui/pages/processes/mod.rs:1354
+#: src/ui/pages/applications/mod.rs:1147 src/ui/pages/processes/mod.rs:1354
 msgid "End {}?"
 msgstr "{} को समाप्त करें?"
 
-#: src/ui/pages/applications/mod.rs:1144 src/ui/pages/processes/mod.rs:1355
+#: src/ui/pages/applications/mod.rs:1148 src/ui/pages/processes/mod.rs:1355
 msgid "Halt {}?"
 msgstr "{} को रोकें?"
 
-#: src/ui/pages/applications/mod.rs:1145 src/ui/pages/processes/mod.rs:1356
+#: src/ui/pages/applications/mod.rs:1149 src/ui/pages/processes/mod.rs:1356
 msgid "Kill {}?"
 msgstr "{} को खत्म करें?"
 
-#: src/ui/pages/applications/mod.rs:1146 src/ui/pages/processes/mod.rs:1357
+#: src/ui/pages/applications/mod.rs:1150 src/ui/pages/processes/mod.rs:1357
 msgid "Continue {}?"
 msgstr "{} को जारी रखें?"
 
-#: src/ui/pages/applications/mod.rs:1152 src/ui/pages/processes/mod.rs:1363
+#: src/ui/pages/applications/mod.rs:1156 src/ui/pages/processes/mod.rs:1363
 msgid "Unsaved work might be lost."
 msgstr "सहेजा न गया काम खो सकता है।"
 
-#: src/ui/pages/applications/mod.rs:1153
+#: src/ui/pages/applications/mod.rs:1157
 msgid ""
 "Halting an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
@@ -263,7 +262,7 @@ msgstr ""
 "किसी ऐप को रोकने से डेटा खोने और सुरक्षा निहितार्थ जैसे गंभीर जोखिम आ सकते हैं। सावधानी से "
 "प्रयोग करें।"
 
-#: src/ui/pages/applications/mod.rs:1154
+#: src/ui/pages/applications/mod.rs:1158
 msgid ""
 "Killing an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
@@ -271,20 +270,24 @@ msgstr ""
 "किसी ऐप को खत्म करने से डेटा खोने और सुरक्षा निहितार्थ जैसे गंभीर जोखिम आ सकते हैं। "
 "सावधानी से प्रयोग करें।"
 
-#: src/ui/pages/applications/mod.rs:1161
-msgid "End app"
+#: src/ui/pages/applications/mod.rs:1165
+#: data/resources/ui/pages/applications.ui:97
+msgid "End App"
 msgstr "ऐप समाप्त करें"
 
-#: src/ui/pages/applications/mod.rs:1162
-msgid "Halt app"
+#: src/ui/pages/applications/mod.rs:1166
+#: data/resources/ui/pages/applications.ui:10
+msgid "Halt App"
 msgstr "ऐप रोकें"
 
-#: src/ui/pages/applications/mod.rs:1163
-msgid "Kill app"
+#: src/ui/pages/applications/mod.rs:1167
+#: data/resources/ui/pages/applications.ui:6
+msgid "Kill App"
 msgstr "ऐप खत्म करें"
 
-#: src/ui/pages/applications/mod.rs:1164
-msgid "Continue app"
+#: src/ui/pages/applications/mod.rs:1168
+#: data/resources/ui/pages/applications.ui:14
+msgid "Continue App"
 msgstr "ऐप जारी रखें"
 
 #: src/ui/pages/battery.rs:136 src/ui/pages/drive.rs:157
@@ -451,143 +454,143 @@ msgstr ""
 "किसी प्रक्रिया को खत्म करने से डेटा खोने और सुरक्षा निहितार्थ जैसे गंभीर जोखिम आ सकते हैं। "
 "सावधानी से प्रयोग करें।"
 
-#: src/ui/pages/processes/mod.rs:1372
-msgid "End process"
+#: src/ui/pages/processes/mod.rs:1372 data/resources/ui/pages/processes.ui:97
+msgid "End Process"
 msgstr "प्रक्रिया समाप्त करें"
 
-#: src/ui/pages/processes/mod.rs:1373
-msgid "Halt process"
+#: src/ui/pages/processes/mod.rs:1373 data/resources/ui/pages/processes.ui:10
+msgid "Halt Process"
 msgstr "प्रक्रिया रोकें"
 
-#: src/ui/pages/processes/mod.rs:1374
-msgid "Kill process"
+#: src/ui/pages/processes/mod.rs:1374 data/resources/ui/pages/processes.ui:6
+msgid "Kill Process"
 msgstr "प्रक्रिया खत्म करें"
 
-#: src/ui/pages/processes/mod.rs:1375
-msgid "Continue process"
+#: src/ui/pages/processes/mod.rs:1375 data/resources/ui/pages/processes.ui:14
+msgid "Continue Process"
 msgstr "प्रक्रिया जारी रखें"
 
 #: src/ui/window.rs:284
 msgid "GPU {}"
 msgstr "GPU {}"
 
-#: src/ui/window.rs:888
+#: src/ui/window.rs:884
 msgid "Successfully ended {}"
 msgstr "{} को सफलतापूर्वक समाप्त किया"
 
-#: src/ui/window.rs:889
+#: src/ui/window.rs:885
 msgid "Successfully halted {}"
 msgstr "{} को सफलतापूर्वक रोका गया"
 
-#: src/ui/window.rs:890
+#: src/ui/window.rs:886
 msgid "Successfully killed {}"
 msgstr "{} को सफलतापूर्वक खत्म किया"
 
-#: src/ui/window.rs:891
+#: src/ui/window.rs:887
 msgid "Successfully continued {}"
 msgstr "{} को सफलतापूर्वक जारी रखा"
 
-#: src/ui/window.rs:898
+#: src/ui/window.rs:894
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] "एक प्रक्रिया को समाप्त करने में समस्या हुई"
 msgstr[1] "{} प्रक्रियाओं को समाप्त करने में समस्याएं हुई"
 
-#: src/ui/window.rs:904
+#: src/ui/window.rs:900
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "एक प्रक्रिया को रोकने में समस्या हुई"
 msgstr[1] "{} प्रक्रियाओं को रोकने में समस्याएं हुई"
 
-#: src/ui/window.rs:910
+#: src/ui/window.rs:906
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "एक प्रक्रिया को खत्म करने में समस्या हुई"
 msgstr[1] "{} प्रक्रियाओं को बंद करने में समस्याएं हुई"
 
-#: src/ui/window.rs:916
+#: src/ui/window.rs:912
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "एक प्रक्रिया जारी रखने में समस्या हुई"
 msgstr[1] "{} प्रक्रियाओं को जारी रखने में समस्याएं हुई"
 
-#: src/ui/window.rs:926
+#: src/ui/window.rs:922
 msgid "There was a problem ending {}"
 msgstr "{} को समाप्त करने में एक समस्या हुई"
 
-#: src/ui/window.rs:927
+#: src/ui/window.rs:923
 msgid "There was a problem halting {}"
 msgstr "{} को रोकने करने में एक समस्या हुई"
 
-#: src/ui/window.rs:928
+#: src/ui/window.rs:924
 msgid "There was a problem killing {}"
 msgstr "{} को खत्म करने में एक समस्या हुई"
 
-#: src/ui/window.rs:929
+#: src/ui/window.rs:925
 msgid "There was a problem continuing {}"
 msgstr "{} को जारी रहने रखने में एक समस्या हुई"
 
-#: src/utils/app.rs:768
+#: src/utils/app.rs:771
 msgid "System Processes"
 msgstr "सिस्टम प्रक्रियाएं"
 
-#: src/utils/battery.rs:74
+#: src/utils/battery.rs:80
 msgid "Charging"
 msgstr "चार्ज हो रहा है"
 
-#: src/utils/battery.rs:75
+#: src/utils/battery.rs:81
 msgid "Discharging"
 msgstr "डिस्चार्ज हो रहा है"
 
-#: src/utils/battery.rs:76
+#: src/utils/battery.rs:82
 msgid "Empty"
 msgstr "खाली"
 
-#: src/utils/battery.rs:77
+#: src/utils/battery.rs:83
 msgid "Full"
 msgstr "पूर्ण"
 
-#: src/utils/battery.rs:78
+#: src/utils/battery.rs:84
 msgid "Unknown"
 msgstr "अज्ञात"
 
-#: src/utils/battery.rs:129
+#: src/utils/battery.rs:135
 msgid "Nickel-Metal Hydride"
 msgstr "निकल-धातु हाइड्राइड"
 
-#: src/utils/battery.rs:130
+#: src/utils/battery.rs:136
 msgid "Nickel-Cadmium"
 msgstr "निकल-कैडमियम"
 
-#: src/utils/battery.rs:131
+#: src/utils/battery.rs:137
 msgid "Nickel-Zinc"
 msgstr "निकल-जस्ता"
 
-#: src/utils/battery.rs:132
+#: src/utils/battery.rs:138
 msgid "Lead-Acid"
 msgstr "लैड-एसिड"
 
-#: src/utils/battery.rs:133
+#: src/utils/battery.rs:139
 msgid "Lithium-Ion"
 msgstr "लिथियम-आयन"
 
-#: src/utils/battery.rs:134
+#: src/utils/battery.rs:140
 msgid "Lithium Iron Phosphate"
 msgstr "लिथियम आयरन फॉस्फेट"
 
-#: src/utils/battery.rs:135
+#: src/utils/battery.rs:141
 msgid "Lithium Polymer"
 msgstr "लिथियम पॉलिमर"
 
-#: src/utils/battery.rs:137
+#: src/utils/battery.rs:143
 msgid "Rechargeable Alkaline Managanese"
 msgstr "रिचार्जेबल अल्कलाइन मैंगनीज"
 
-#: src/utils/battery.rs:213
+#: src/utils/battery.rs:239
 msgid "{} Battery"
 msgstr "{} बैटरी"
 
-#: src/utils/battery.rs:215
+#: src/utils/battery.rs:241
 msgid "Battery"
 msgstr "बैटरी"
 
@@ -1182,7 +1185,7 @@ msgstr "Resources के बारे में"
 msgid "App Information"
 msgstr "ऐप जानकारी"
 
-#: data/resources/ui/dialogs/app_dialog.ui:69
+#: data/resources/ui/dialogs/app_dialog.ui:74
 #: data/resources/ui/dialogs/process_dialog.ui:52
 #: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37
 #: data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22
@@ -1191,7 +1194,7 @@ msgstr "ऐप जानकारी"
 msgid "Usage"
 msgstr "उपयोग"
 
-#: data/resources/ui/dialogs/app_dialog.ui:164
+#: data/resources/ui/dialogs/app_dialog.ui:169
 #: data/resources/ui/dialogs/process_dialog.ui:174
 #: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:89
 #: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:80
@@ -1199,20 +1202,20 @@ msgstr "उपयोग"
 msgid "Properties"
 msgstr "गुण"
 
-#: data/resources/ui/dialogs/app_dialog.ui:170
+#: data/resources/ui/dialogs/app_dialog.ui:175
 msgid "ID"
 msgstr "ID"
 
-#: data/resources/ui/dialogs/app_dialog.ui:180
+#: data/resources/ui/dialogs/app_dialog.ui:185
 #: data/resources/ui/dialogs/process_dialog.ui:190
 msgid "Running Since"
 msgstr "तब से चालू"
 
-#: data/resources/ui/dialogs/app_dialog.ui:188
+#: data/resources/ui/dialogs/app_dialog.ui:193
 msgid "Running Processes"
 msgstr "चालू प्रक्रियाएं"
 
-#: data/resources/ui/dialogs/app_dialog.ui:197
+#: data/resources/ui/dialogs/app_dialog.ui:202
 #: data/resources/ui/dialogs/process_dialog.ui:226
 msgid "Containerized"
 msgstr "कंटेनरीकृत"
@@ -1383,21 +1386,24 @@ msgstr "वर्चुअल नेटवर्क इंटरफेस दि
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
 msgstr "वर्चुअल नेटवर्क इंटरफेस उदाहरण ब्रिज या VPN सुरंग के लिए हैं"
 
-#: data/resources/ui/pages/applications.ui:6
-msgid "Kill App"
-msgstr "ऐप खत्म करें"
+#: data/resources/ui/pages/applications.ui:50
+msgid "Search applications"
+msgstr "अनुप्रयोग खोजें"
 
-#: data/resources/ui/pages/applications.ui:10
-msgid "Halt App"
-msgstr "ऐप रोकें"
+#: data/resources/ui/pages/applications.ui:68
+#: data/resources/ui/pages/processes.ui:68
+msgid "Search"
+msgstr "खोजें"
 
-#: data/resources/ui/pages/applications.ui:14
-msgid "Continue App"
-msgstr "ऐप जारी रखें"
+#: data/resources/ui/pages/applications.ui:70
+#: data/resources/ui/pages/processes.ui:70
+msgid "Toggle search field"
+msgstr "खोज क्षेत्र टॉगल करें"
 
-#: data/resources/ui/pages/applications.ui:95
-msgid "End App"
-msgstr "ऐप समाप्त करें"
+#: data/resources/ui/pages/applications.ui:86
+#: data/resources/ui/pages/applications.ui:88
+msgid "Show App Information"
+msgstr "ऐप जानकारी दिखाएं"
 
 #: data/resources/ui/pages/battery.ui:36
 msgid "Battery Health"
@@ -1552,18 +1558,35 @@ msgstr "इंटरफेस"
 msgid "Hardware Address"
 msgstr "हार्डवेयर पता"
 
-#: data/resources/ui/pages/processes.ui:6
-msgid "Kill Process"
-msgstr "प्रक्रिया खत्म करें"
+#: data/resources/ui/pages/processes.ui:50
+msgid "Search processes"
+msgstr "प्रक्रियाएं खोजें"
 
-#: data/resources/ui/pages/processes.ui:10
-msgid "Halt Process"
-msgstr "प्रक्रिया रोकें"
+#: data/resources/ui/pages/processes.ui:86
+#: data/resources/ui/pages/processes.ui:88
+msgid "Show Process Information"
+msgstr "प्रक्रिया जानकारी दिखाएं"
 
-#: data/resources/ui/pages/processes.ui:14
-msgid "Continue Process"
-msgstr "प्रक्रिया जारी रखें"
+#~ msgid "End app"
+#~ msgstr "ऐप समाप्त करें"
 
-#: data/resources/ui/pages/processes.ui:95
-msgid "End Process"
-msgstr "प्रक्रिया समाप्त करें"
+#~ msgid "Halt app"
+#~ msgstr "ऐप रोकें"
+
+#~ msgid "Kill app"
+#~ msgstr "ऐप खत्म करें"
+
+#~ msgid "Continue app"
+#~ msgstr "ऐप जारी रखें"
+
+#~ msgid "End process"
+#~ msgstr "प्रक्रिया समाप्त करें"
+
+#~ msgid "Halt process"
+#~ msgstr "प्रक्रिया रोकें"
+
+#~ msgid "Kill process"
+#~ msgstr "प्रक्रिया खत्म करें"
+
+#~ msgid "Continue process"
+#~ msgstr "प्रक्रिया जारी रखें"
