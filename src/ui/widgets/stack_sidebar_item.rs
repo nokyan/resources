@@ -2,6 +2,7 @@ use adw::{prelude::*, subclass::prelude::*};
 use gtk::{
     gio::Icon,
     glib::{self},
+    Ordering,
 };
 
 use super::graph::ResGraph;
@@ -48,6 +49,9 @@ mod imp {
         usage: Cell<f64>,
         #[property(get = Self::tab_id, set = Self::set_tab_id, type = glib::GString)]
         tab_id: Cell<glib::GString>,
+
+        pub primary_ord: Cell<u32>,
+        pub secondary_ord: Cell<u32>,
     }
 
     impl ResStackSidebarItem {
@@ -154,6 +158,8 @@ mod imp {
                 icon: RefCell::new(ThemedIcon::new("generic-process").into()),
                 usage: Default::default(),
                 tab_id: Default::default(),
+                primary_ord: Default::default(),
+                secondary_ord: Default::default(),
             }
         }
     }
@@ -210,6 +216,8 @@ impl ResStackSidebarItem {
         usage_string: String,
         locked_max_y: bool,
         tab_id: String,
+        primary_ord: u32,
+        secondary_ord: u32,
     ) -> Self {
         let detail = detail.unwrap_or_default();
         let this: Self = glib::Object::builder()
@@ -228,6 +236,9 @@ impl ResStackSidebarItem {
 
         this.imp().set_tab_id(&tab_id);
 
+        this.imp().primary_ord.set(primary_ord);
+        this.imp().secondary_ord.set(secondary_ord);
+
         this
     }
 
@@ -245,5 +256,27 @@ impl ResStackSidebarItem {
 
     pub fn set_detail_label_visible(&self, visible: bool) {
         self.imp().detail_label.set_visible(visible);
+    }
+
+    pub fn primary_ord(&self) -> u32 {
+        self.imp().primary_ord.clone().take()
+    }
+
+    pub fn secondary_ord(&self) -> u32 {
+        self.imp().secondary_ord.clone().take()
+    }
+
+    pub fn ord(&self, other: &Self) -> Ordering {
+        if self.primary_ord() > other.primary_ord() {
+            Ordering::Larger
+        } else if self.primary_ord() < other.primary_ord() {
+            Ordering::Smaller
+        } else if self.secondary_ord() > other.secondary_ord() {
+            Ordering::Larger
+        } else if self.secondary_ord() < other.secondary_ord() {
+            Ordering::Smaller
+        } else {
+            Ordering::Equal
+        }
     }
 }

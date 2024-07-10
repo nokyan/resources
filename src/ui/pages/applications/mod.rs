@@ -33,7 +33,7 @@ mod imp {
         sync::OnceLock,
     };
 
-    use crate::ui::window::Action;
+    use crate::ui::{pages::APPLICATIONS_PRIMARY_ORD, window::Action};
 
     use super::*;
 
@@ -95,6 +95,12 @@ mod imp {
 
         #[property(get)]
         graph_locked_max_y: Cell<bool>,
+
+        #[property(get)]
+        primary_ord: Cell<u32>,
+
+        #[property(get)]
+        secondary_ord: Cell<u32>,
     }
 
     impl ResApplications {
@@ -158,6 +164,8 @@ mod imp {
                 popped_over_app: Default::default(),
                 columns: Default::default(),
                 graph_locked_max_y: Cell::new(true),
+                primary_ord: Cell::new(APPLICATIONS_PRIMARY_ORD),
+                secondary_ord: Default::default(),
             }
         }
     }

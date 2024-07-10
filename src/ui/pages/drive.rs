@@ -14,7 +14,7 @@ mod imp {
         collections::HashMap,
     };
 
-    use crate::ui::widgets::graph_box::ResGraphBox;
+    use crate::ui::{pages::DRIVE_PRIMARY_ORD, widgets::graph_box::ResGraphBox};
 
     use super::*;
 
@@ -77,6 +77,12 @@ mod imp {
 
         #[property(get)]
         graph_locked_max_y: Cell<bool>,
+
+        #[property(get)]
+        primary_ord: Cell<u32>,
+
+        #[property(get, set)]
+        secondary_ord: Cell<u32>,
     }
 
     impl ResDrive {
@@ -165,6 +171,8 @@ mod imp {
                 ),
                 tab_usage_string: Cell::new(glib::GString::new()),
                 graph_locked_max_y: Cell::new(true),
+                primary_ord: Cell::new(DRIVE_PRIMARY_ORD),
+                secondary_ord: Default::default(),
             }
         }
     }
@@ -227,7 +235,8 @@ impl ResDrive {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self, drive_data: &DriveData) {
+    pub fn init(&self, drive_data: &DriveData, secondary_ord: u32) {
+        self.set_secondary_ord(secondary_ord);
         self.setup_widgets(drive_data);
     }
 

@@ -9,7 +9,7 @@ use crate::utils::units::{convert_energy, convert_power};
 mod imp {
     use std::cell::{Cell, RefCell};
 
-    use crate::ui::widgets::graph_box::ResGraphBox;
+    use crate::ui::{pages::BATTERY_PRIMARY_ORD, widgets::graph_box::ResGraphBox};
 
     use super::*;
 
@@ -68,6 +68,12 @@ mod imp {
 
         #[property(get)]
         graph_locked_max_y: Cell<bool>,
+
+        #[property(get)]
+        primary_ord: Cell<u32>,
+
+        #[property(get, set)]
+        secondary_ord: Cell<u32>,
     }
 
     impl ResBattery {
@@ -138,6 +144,8 @@ mod imp {
                 tab_id: Cell::new(glib::GString::new()),
                 tab_usage_string: Cell::new(glib::GString::new()),
                 graph_locked_max_y: Cell::new(true),
+                primary_ord: Cell::new(BATTERY_PRIMARY_ORD),
+                secondary_ord: Default::default(),
             }
         }
     }
@@ -199,7 +207,8 @@ impl ResBattery {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self, battery_data: &BatteryData) {
+    pub fn init(&self, battery_data: &BatteryData, secondary_ord: u32) {
+        self.set_secondary_ord(secondary_ord);
         self.setup_widgets(battery_data);
     }
 

@@ -11,7 +11,7 @@ use crate::utils::units::{convert_speed, convert_storage};
 mod imp {
     use std::cell::{Cell, RefCell};
 
-    use crate::ui::widgets::graph_box::ResGraphBox;
+    use crate::ui::{pages::NETWORK_PRIMARY_ORD, widgets::graph_box::ResGraphBox};
 
     use super::*;
 
@@ -71,6 +71,12 @@ mod imp {
 
         #[property(get)]
         graph_locked_max_y: Cell<bool>,
+
+        #[property(get)]
+        primary_ord: Cell<u32>,
+
+        #[property(get, set)]
+        secondary_ord: Cell<u32>,
     }
 
     impl ResNetwork {
@@ -158,6 +164,8 @@ mod imp {
                 ),
                 tab_usage_string: Cell::new(glib::GString::new()),
                 graph_locked_max_y: Cell::new(false),
+                primary_ord: Cell::new(NETWORK_PRIMARY_ORD),
+                secondary_ord: Default::default(),
             }
         }
     }
@@ -223,7 +231,8 @@ impl ResNetwork {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self, network_data: &NetworkData) {
+    pub fn init(&self, network_data: &NetworkData, secondary_ord: u32) {
+        self.set_secondary_ord(secondary_ord);
         self.setup_widgets(network_data);
     }
 

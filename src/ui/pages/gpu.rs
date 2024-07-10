@@ -10,7 +10,10 @@ use crate::utils::{pci, NaNDefault};
 mod imp {
     use std::cell::{Cell, RefCell};
 
-    use crate::ui::widgets::{double_graph_box::ResDoubleGraphBox, graph_box::ResGraphBox};
+    use crate::ui::{
+        pages::GPU_PRIMARY_ORD,
+        widgets::{double_graph_box::ResDoubleGraphBox, graph_box::ResGraphBox},
+    };
 
     use super::*;
 
@@ -75,6 +78,12 @@ mod imp {
 
         #[property(get)]
         graph_locked_max_y: Cell<bool>,
+
+        #[property(get)]
+        primary_ord: Cell<u32>,
+
+        #[property(get, set)]
+        secondary_ord: Cell<u32>,
     }
 
     impl ResGPU {
@@ -148,6 +157,8 @@ mod imp {
                 tab_usage_string: Cell::new(glib::GString::new()),
                 tab_id: Cell::new(glib::GString::new()),
                 graph_locked_max_y: Cell::new(true),
+                primary_ord: Cell::new(GPU_PRIMARY_ORD),
+                secondary_ord: Default::default(),
             }
         }
     }
@@ -209,7 +220,8 @@ impl ResGPU {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self, gpu: &Gpu) {
+    pub fn init(&self, gpu: &Gpu, secondary_ord: u32) {
+        self.set_secondary_ord(secondary_ord);
         self.setup_widgets(gpu);
     }
 

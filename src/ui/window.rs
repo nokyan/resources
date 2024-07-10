@@ -294,7 +294,7 @@ impl MainWindow {
                 self.add_page(&page, &tab_name, &tab_name)
             };
 
-            page.init(gpu);
+            page.init(gpu, i as u32);
 
             imp.gpu_pages
                 .borrow_mut()
@@ -590,6 +590,13 @@ impl MainWindow {
 
         let mut drive_pages = imp.drive_pages.borrow_mut();
 
+        let mut highest_secondary_ord = drive_pages
+            .values()
+            .flat_map(|toolbar_view| toolbar_view.content())
+            .map(|widget| widget.property::<u32>("secondary_ord"))
+            .max()
+            .unwrap_or_default();
+
         let old_page_paths: Vec<PathBuf> = drive_pages
             .iter()
             .map(|(path, _)| path.to_owned())
@@ -629,6 +636,8 @@ impl MainWindow {
                     path.display()
                 );
 
+                highest_secondary_ord = highest_secondary_ord.saturating_add(1);
+
                 let drive = drive_data
                     .iter()
                     .find(|d| d.inner.sysfs_path == path)
@@ -637,7 +646,7 @@ impl MainWindow {
                 let display_name = drive.inner.display_name();
 
                 let page = ResDrive::new();
-                page.init(drive);
+                page.init(drive, highest_secondary_ord);
 
                 let toolbar = if let Some(model) = &drive.inner.model {
                     self.add_page(&page, model, &display_name)
@@ -655,6 +664,13 @@ impl MainWindow {
         let imp = self.imp();
 
         let mut network_pages = imp.network_pages.borrow_mut();
+
+        let mut highest_secondary_ord = network_pages
+            .values()
+            .flat_map(|toolbar_view| toolbar_view.content())
+            .map(|widget| widget.property::<u32>("secondary_ord"))
+            .max()
+            .unwrap_or_default();
 
         let old_page_paths: Vec<PathBuf> = network_pages
             .iter()
@@ -695,6 +711,8 @@ impl MainWindow {
                     path.display()
                 );
 
+                highest_secondary_ord = highest_secondary_ord.saturating_add(1);
+
                 let network_interface = network_data
                     .iter()
                     .find(|d| d.inner.sysfs_path == path)
@@ -702,7 +720,7 @@ impl MainWindow {
 
                 // Insert stub page, values will be updated in refresh_page()
                 let page = ResNetwork::new();
-                page.init(network_interface);
+                page.init(network_interface, highest_secondary_ord);
 
                 let toolbar = self.add_page(
                     &page,
@@ -721,15 +739,20 @@ impl MainWindow {
 
         let mut battery_pages = imp.battery_pages.borrow_mut();
 
-        let old_page_paths: Vec<PathBuf> = battery_pages
-            .iter()
-            .map(|(path, _)| path.to_owned())
-            .collect();
+        let mut highest_secondary_ord = battery_pages
+            .values()
+            .flat_map(|toolbar_view| toolbar_view.content())
+            .map(|widget| widget.property::<u32>("secondary_ord"))
+            .max()
+            .unwrap_or_default();
 
-        // Delete hidden old network pages
+        let old_page_paths: Vec<PathBuf> =
+            battery_pages.keys().map(|path| path.to_owned()).collect();
+
+        // Delete hidden old battery pages
         for page_path in &old_page_paths {
             if !paths.contains(page_path) {
-                // A network interface has been removed
+                // A battery has been removed
                 debug!("A battery has been removed: {}", page_path.display());
 
                 let page = battery_pages.remove(page_path).unwrap();
@@ -740,8 +763,10 @@ impl MainWindow {
         // Add new network pages
         for path in paths {
             if !battery_pages.contains_key(&path) {
-                // A network interface has been added
+                // A battery has been added
                 debug!("A battery has been added: {}", path.display());
+
+                highest_secondary_ord = highest_secondary_ord.saturating_add(1);
 
                 let battery = battery_data
                     .iter()
@@ -750,7 +775,7 @@ impl MainWindow {
 
                 // Insert stub page, values will be updated in refresh_page()
                 let page = ResBattery::new();
-                page.init(battery);
+                page.init(battery, highest_secondary_ord);
 
                 let toolbar = self.add_page(
                     &page,
