@@ -11,7 +11,7 @@ use crate::ui::window::MainWindow;
 use crate::utils::process::ProcessAction;
 
 mod imp {
-    use std::sync::OnceLock;
+    use std::{cell::Cell, sync::OnceLock};
 
     use super::*;
     use glib::WeakRef;
@@ -19,6 +19,8 @@ mod imp {
     #[derive(Debug, Default)]
     pub struct Application {
         pub window: OnceLock<WeakRef<MainWindow>>,
+
+        pub settings_window_opened: Cell<bool>,
     }
 
     #[glib::object_subclass]
@@ -179,11 +181,24 @@ impl Application {
     }
 
     fn show_settings_dialog(&self) {
+        let imp = self.imp();
+
+        let settings_window_opened = imp.settings_window_opened.take();
+        imp.settings_window_opened.set(settings_window_opened);
+        if settings_window_opened {
+            return;
+        }
+
         let settings = ResSettingsDialog::new();
 
         settings.init();
 
         settings.present(&self.main_window());
+        imp.settings_window_opened.set(true);
+
+        settings.connect_closed(clone!(@strong self as this => move |_| {
+            this.imp().settings_window_opened.set(false);
+        }));
     }
 
     fn show_about_dialog(&self) {
