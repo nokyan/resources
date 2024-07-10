@@ -222,9 +222,8 @@ impl Battery {
             String::from_utf8_lossy(
                 &s.as_ref()
                     .split_whitespace()
-                    .map(|hex| u8::from_str_radix(&hex.replace("0x", ""), 16))
-                    .flatten()
-                    .map(|byte| if byte == 0x0 { ' ' as u8 } else { byte }) // gtk will crash when encountering NUL
+                    .flat_map(|hex| u8::from_str_radix(&hex.replace("0x", ""), 16))
+                    .map(|byte| if byte == 0x0 { b' ' } else { byte }) // gtk will crash when encountering NUL
                     .collect::<Vec<u8>>(),
             )
             .to_string()
