@@ -1,7 +1,10 @@
 use std::rc::Rc;
 
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone, GString};
+use gtk::{
+    glib::{self, clone, GString},
+    Ordering,
+};
 use std::collections::HashMap;
 
 use crate::utils::settings::{SidebarMeterType, SETTINGS};
@@ -136,6 +139,8 @@ impl ResStackSidebar {
                 child.property("tab_usage_string"),
                 child.property("graph_locked_max_y"),
                 child.property("tab_id"),
+                child.property("primary_ord"),
+                child.property("secondary_ord"),
             );
 
             child
@@ -260,6 +265,17 @@ impl ResStackSidebar {
                 this.populate_list(this.clear());
             }),
         );
+
+        imp.list_box.set_sort_func(|a, b| {
+            let a_item = a.child().and_downcast::<ResStackSidebarItem>();
+            let b_item = b.child().and_downcast::<ResStackSidebarItem>();
+
+            if let (Some(a_item), Some(b_item)) = (a_item, b_item) {
+                a_item.ord(&b_item)
+            } else {
+                Ordering::Equal
+            }
+        });
 
         imp.list_box.connect_selected_rows_changed(
             clone!(@strong self as this => move |list_box| {

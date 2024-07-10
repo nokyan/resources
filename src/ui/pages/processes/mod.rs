@@ -33,7 +33,10 @@ mod imp {
         sync::OnceLock,
     };
 
-    use crate::{ui::window::Action, utils::process::ProcessAction};
+    use crate::{
+        ui::{pages::PROCESSES_PRIMARY_ORD, window::Action},
+        utils::process::ProcessAction,
+    };
 
     use super::*;
 
@@ -95,6 +98,12 @@ mod imp {
 
         #[property(get)]
         graph_locked_max_y: Cell<bool>,
+
+        #[property(get)]
+        primary_ord: Cell<u32>,
+
+        #[property(get)]
+        secondary_ord: Cell<u32>,
     }
 
     impl ResProcesses {
@@ -162,6 +171,8 @@ mod imp {
                 popped_over_process: Default::default(),
                 columns: Default::default(),
                 graph_locked_max_y: Cell::new(true),
+                primary_ord: Cell::new(PROCESSES_PRIMARY_ORD),
+                secondary_ord: Default::default(),
             }
         }
     }

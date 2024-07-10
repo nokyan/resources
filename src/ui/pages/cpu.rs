@@ -13,7 +13,7 @@ use crate::utils::{cpu, NaNDefault, NUM_CPUS};
 mod imp {
     use std::cell::{Cell, RefCell};
 
-    use crate::ui::widgets::graph_box::ResGraphBox;
+    use crate::ui::{pages::CPU_PRIMARY_ORD, widgets::graph_box::ResGraphBox};
 
     use super::*;
 
@@ -84,6 +84,12 @@ mod imp {
 
         #[property(get)]
         graph_locked_max_y: Cell<bool>,
+
+        #[property(get)]
+        primary_ord: Cell<u32>,
+
+        #[property(get)]
+        secondary_ord: Cell<u32>,
     }
 
     impl ResCPU {
@@ -154,6 +160,8 @@ mod imp {
                 old_thread_usages: RefCell::default(),
                 logical_cpus_amount: Cell::default(),
                 graph_locked_max_y: Cell::new(true),
+                primary_ord: Cell::new(CPU_PRIMARY_ORD),
+                secondary_ord: Default::default(),
             }
         }
     }
