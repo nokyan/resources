@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-02 23:02+0200\n"
-"PO-Revision-Date: 2024-07-03 20:53+0300\n"
+"POT-Creation-Date: 2024-07-07 18:21+0200\n"
+"PO-Revision-Date: 2024-07-11 17:30+0300\n"
 "Last-Translator: Aleksandr Melman <Alexmelman88@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -58,7 +58,7 @@ msgstr "ЦП"
 #: src/ui/pages/applications/mod.rs:670 src/ui/pages/memory.rs:132
 #: src/ui/pages/memory.rs:205 src/ui/pages/processes/mod.rs:726
 #: data/resources/ui/window.ui:158 data/resources/ui/window.ui:165
-#: data/resources/ui/dialogs/app_dialog.ui:81
+#: data/resources/ui/dialogs/app_dialog.ui:86
 #: data/resources/ui/dialogs/process_dialog.ui:68
 #: data/resources/ui/dialogs/settings_dialog.ui:133
 #: data/resources/ui/dialogs/settings_dialog.ui:204
@@ -68,7 +68,7 @@ msgstr "Память"
 #: data/net.nokyan.Resources.metainfo.xml.in.in:26
 #: src/ui/pages/applications/mod.rs:965 src/ui/pages/gpu.rs:146
 #: src/ui/pages/processes/mod.rs:1032 src/ui/window.rs:286
-#: data/resources/ui/dialogs/app_dialog.ui:130
+#: data/resources/ui/dialogs/app_dialog.ui:135
 #: data/resources/ui/dialogs/process_dialog.ui:113
 #: data/resources/ui/dialogs/settings_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:234
@@ -104,23 +104,23 @@ msgstr ""
 msgid "Icon by"
 msgstr "Иконка от"
 
-#: src/ui/dialogs/app_dialog.rs:161 src/ui/dialogs/process_dialog.rs:202
+#: src/ui/dialogs/app_dialog.rs:145 src/ui/dialogs/process_dialog.rs:140
 #: src/ui/pages/drive.rs:418 src/ui/pages/drive.rs:428
 msgid "No"
 msgstr "Нет"
 
-#: src/ui/dialogs/app_dialog.rs:162 src/ui/dialogs/process_dialog.rs:203
+#: src/ui/dialogs/app_dialog.rs:146 src/ui/dialogs/process_dialog.rs:141
 msgid "Yes (Flatpak)"
 msgstr "Да (Flatpak)"
 
-#: src/ui/dialogs/app_dialog.rs:163 src/ui/dialogs/process_dialog.rs:204
+#: src/ui/dialogs/app_dialog.rs:147 src/ui/dialogs/process_dialog.rs:142
 msgid "Yes (Snap)"
 msgstr "Да (Snap)"
 
-#: src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:140
-#: src/ui/dialogs/process_dialog.rs:147 src/ui/dialogs/process_dialog.rs:154
-#: src/ui/dialogs/process_dialog.rs:190 src/ui/dialogs/process_dialog.rs:197
-#: src/ui/dialogs/process_dialog.rs:199 src/ui/pages/applications/mod.rs:784
+#: src/ui/dialogs/process_dialog.rs:128 src/ui/dialogs/process_dialog.rs:135
+#: src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:162
+#: src/ui/dialogs/process_dialog.rs:169 src/ui/dialogs/process_dialog.rs:176
+#: src/ui/dialogs/process_dialog.rs:183 src/ui/pages/applications/mod.rs:784
 #: src/ui/pages/applications/mod.rs:882 src/ui/pages/battery.rs:223
 #: src/ui/pages/battery.rs:244 src/ui/pages/battery.rs:250
 #: src/ui/pages/battery.rs:253 src/ui/pages/battery.rs:279
@@ -148,8 +148,8 @@ msgstr "Да (Snap)"
 #: src/ui/pages/network.rs:378 src/ui/pages/network.rs:380
 #: src/ui/pages/processes/mod.rs:839 src/ui/pages/processes/mod.rs:892
 #: src/ui/pages/processes/mod.rs:945 src/ui/pages/processes/mod.rs:998
-#: src/utils/app.rs:689 src/utils/app.rs:765 src/utils/battery.rs:138
-#: src/utils/drive.rs:90 src/utils/gpu/mod.rs:255 src/utils/gpu/mod.rs:261
+#: src/utils/app.rs:689 src/utils/app.rs:765 src/utils/battery.rs:144
+#: src/utils/drive.rs:90 src/utils/gpu/mod.rs:258 src/utils/gpu/mod.rs:264
 msgid "N/A"
 msgstr "Н/Д"
 
@@ -174,7 +174,7 @@ msgstr "Приложение"
 #: src/ui/pages/applications/mod.rs:716 src/ui/pages/cpu.rs:149
 #: src/ui/pages/processes/mod.rs:771 src/ui/window.rs:332
 #: data/resources/ui/window.ui:127 data/resources/ui/window.ui:134
-#: data/resources/ui/dialogs/app_dialog.ui:72
+#: data/resources/ui/dialogs/app_dialog.ui:77
 #: data/resources/ui/dialogs/process_dialog.ui:59
 #: data/resources/ui/dialogs/settings_dialog.ui:138
 #: data/resources/ui/dialogs/settings_dialog.ui:209
@@ -182,7 +182,7 @@ msgid "Processor"
 msgstr "Процессор"
 
 #: src/ui/pages/applications/mod.rs:766 src/ui/pages/processes/mod.rs:821
-#: data/resources/ui/dialogs/app_dialog.ui:90
+#: data/resources/ui/dialogs/app_dialog.ui:95
 #: data/resources/ui/dialogs/process_dialog.ui:73
 #: data/resources/ui/dialogs/settings_dialog.ui:143
 #: data/resources/ui/dialogs/settings_dialog.ui:214
@@ -190,7 +190,7 @@ msgid "Drive Read"
 msgstr "Чтение с диска"
 
 #: src/ui/pages/applications/mod.rs:817 src/ui/pages/processes/mod.rs:874
-#: data/resources/ui/dialogs/app_dialog.ui:99
+#: data/resources/ui/dialogs/app_dialog.ui:104
 #: data/resources/ui/dialogs/process_dialog.ui:82
 #: data/resources/ui/dialogs/settings_dialog.ui:148
 #: data/resources/ui/dialogs/settings_dialog.ui:219
@@ -198,7 +198,7 @@ msgid "Drive Read Total"
 msgstr "Общее чтение с диска"
 
 #: src/ui/pages/applications/mod.rs:864 src/ui/pages/processes/mod.rs:927
-#: data/resources/ui/dialogs/app_dialog.ui:108
+#: data/resources/ui/dialogs/app_dialog.ui:113
 #: data/resources/ui/dialogs/process_dialog.ui:91
 #: data/resources/ui/dialogs/settings_dialog.ui:153
 #: data/resources/ui/dialogs/settings_dialog.ui:224
@@ -206,7 +206,7 @@ msgid "Drive Write"
 msgstr "Запись на диск"
 
 #: src/ui/pages/applications/mod.rs:917 src/ui/pages/processes/mod.rs:980
-#: data/resources/ui/dialogs/app_dialog.ui:117
+#: data/resources/ui/dialogs/app_dialog.ui:122
 #: data/resources/ui/dialogs/process_dialog.ui:100
 #: data/resources/ui/dialogs/settings_dialog.ui:158
 #: data/resources/ui/dialogs/settings_dialog.ui:229
@@ -214,7 +214,7 @@ msgid "Drive Write Total"
 msgstr "Общая запись на диск"
 
 #: src/ui/pages/applications/mod.rs:1010 src/ui/pages/processes/mod.rs:1077
-#: data/resources/ui/dialogs/app_dialog.ui:148
+#: data/resources/ui/dialogs/app_dialog.ui:153
 #: data/resources/ui/dialogs/process_dialog.ui:131
 #: data/resources/ui/dialogs/settings_dialog.ui:173
 #: data/resources/ui/dialogs/settings_dialog.ui:244
@@ -222,7 +222,7 @@ msgid "Video Encoder"
 msgstr "Видеокодер"
 
 #: src/ui/pages/applications/mod.rs:1057 src/ui/pages/processes/mod.rs:1124
-#: data/resources/ui/dialogs/app_dialog.ui:157
+#: data/resources/ui/dialogs/app_dialog.ui:162
 #: data/resources/ui/dialogs/process_dialog.ui:140
 #: data/resources/ui/dialogs/settings_dialog.ui:178
 #: data/resources/ui/dialogs/settings_dialog.ui:249
@@ -230,7 +230,7 @@ msgid "Video Decoder"
 msgstr "Видеодекодер"
 
 #: src/ui/pages/applications/mod.rs:1103 src/ui/pages/processes/mod.rs:1171
-#: data/resources/ui/dialogs/app_dialog.ui:139
+#: data/resources/ui/dialogs/app_dialog.ui:144
 #: data/resources/ui/dialogs/process_dialog.ui:122
 #: data/resources/ui/dialogs/settings_dialog.ui:168
 #: data/resources/ui/dialogs/settings_dialog.ui:239
@@ -541,63 +541,63 @@ msgstr "Не удалось продолжить {}"
 msgid "System Processes"
 msgstr "Системные процессы"
 
-#: src/utils/battery.rs:74
+#: src/utils/battery.rs:80
 msgid "Charging"
 msgstr "Заряжается"
 
-#: src/utils/battery.rs:75
+#: src/utils/battery.rs:81
 msgid "Discharging"
 msgstr "Разряжается"
 
-#: src/utils/battery.rs:76
+#: src/utils/battery.rs:82
 msgid "Empty"
 msgstr "Пустая"
 
-#: src/utils/battery.rs:77
+#: src/utils/battery.rs:83
 msgid "Full"
 msgstr "Полная"
 
-#: src/utils/battery.rs:78
+#: src/utils/battery.rs:84
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: src/utils/battery.rs:129
+#: src/utils/battery.rs:135
 msgid "Nickel-Metal Hydride"
 msgstr "Никель-металлогидридная"
 
-#: src/utils/battery.rs:130
+#: src/utils/battery.rs:136
 msgid "Nickel-Cadmium"
 msgstr "Никель-кадмиевая"
 
-#: src/utils/battery.rs:131
+#: src/utils/battery.rs:137
 msgid "Nickel-Zinc"
 msgstr "Никель-цинковая"
 
-#: src/utils/battery.rs:132
+#: src/utils/battery.rs:138
 msgid "Lead-Acid"
 msgstr "Свинцово-кислотная"
 
-#: src/utils/battery.rs:133
+#: src/utils/battery.rs:139
 msgid "Lithium-Ion"
 msgstr "Литий-ионная"
 
-#: src/utils/battery.rs:134
+#: src/utils/battery.rs:140
 msgid "Lithium Iron Phosphate"
 msgstr "Литий-железо-фосфатная"
 
-#: src/utils/battery.rs:135
+#: src/utils/battery.rs:141
 msgid "Lithium Polymer"
 msgstr "Литий-полимерная"
 
-#: src/utils/battery.rs:137
+#: src/utils/battery.rs:143
 msgid "Rechargeable Alkaline Managanese"
 msgstr "Перезаряжаемая щелочно-марганцевая"
 
-#: src/utils/battery.rs:213
+#: src/utils/battery.rs:239
 msgid "{} Battery"
 msgstr "Батарея {}"
 
-#: src/utils/battery.rs:215
+#: src/utils/battery.rs:241
 msgid "Battery"
 msgstr "Батарея"
 
@@ -1192,7 +1192,7 @@ msgstr "О приложении"
 msgid "App Information"
 msgstr "Информация о приложении"
 
-#: data/resources/ui/dialogs/app_dialog.ui:69
+#: data/resources/ui/dialogs/app_dialog.ui:74
 #: data/resources/ui/dialogs/process_dialog.ui:52
 #: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37
 #: data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22
@@ -1201,7 +1201,7 @@ msgstr "Информация о приложении"
 msgid "Usage"
 msgstr "Использование"
 
-#: data/resources/ui/dialogs/app_dialog.ui:164
+#: data/resources/ui/dialogs/app_dialog.ui:169
 #: data/resources/ui/dialogs/process_dialog.ui:174
 #: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:89
 #: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:80
@@ -1209,20 +1209,20 @@ msgstr "Использование"
 msgid "Properties"
 msgstr "Свойства"
 
-#: data/resources/ui/dialogs/app_dialog.ui:170
+#: data/resources/ui/dialogs/app_dialog.ui:175
 msgid "ID"
 msgstr "ИД"
 
-#: data/resources/ui/dialogs/app_dialog.ui:180
+#: data/resources/ui/dialogs/app_dialog.ui:185
 #: data/resources/ui/dialogs/process_dialog.ui:190
 msgid "Running Since"
 msgstr "Выполняется c"
 
-#: data/resources/ui/dialogs/app_dialog.ui:188
+#: data/resources/ui/dialogs/app_dialog.ui:193
 msgid "Running Processes"
 msgstr "Выполняемые процессы"
 
-#: data/resources/ui/dialogs/app_dialog.ui:197
+#: data/resources/ui/dialogs/app_dialog.ui:202
 #: data/resources/ui/dialogs/process_dialog.ui:226
 msgid "Containerized"
 msgstr "Контейнеризированный"
@@ -1401,6 +1401,25 @@ msgstr "Показывать виртуальные сетевые интерф�
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
 msgstr "Виртуальные сетевые интерфейсы - это, например, мосты или VPN-туннели"
 
+#: data/resources/ui/pages/applications.ui:50
+msgid "Search applications"
+msgstr "Поиск приложений"
+
+#: data/resources/ui/pages/applications.ui:68
+#: data/resources/ui/pages/processes.ui:68
+msgid "Search"
+msgstr "Поиск"
+
+#: data/resources/ui/pages/applications.ui:70
+#: data/resources/ui/pages/processes.ui:70
+msgid "Toggle search field"
+msgstr "Переключить поле поиска"
+
+#: data/resources/ui/pages/applications.ui:86
+#: data/resources/ui/pages/applications.ui:88
+msgid "Show App Information"
+msgstr "Показать информацию о приложении"
+
 #: data/resources/ui/pages/battery.ui:36
 msgid "Battery Health"
 msgstr "Здоровье батареи"
@@ -1554,6 +1573,15 @@ msgstr "Интерфейс"
 msgid "Hardware Address"
 msgstr "Аппаратный адрес"
 
+#: data/resources/ui/pages/processes.ui:50
+msgid "Search processes"
+msgstr "Поиск процессов"
+
+#: data/resources/ui/pages/processes.ui:86
+#: data/resources/ui/pages/processes.ui:88
+msgid "Show Process Information"
+msgstr "Показать информацию о процессе"
+
 #~ msgid "Applications"
 #~ msgstr "Приложения"
 
@@ -1562,9 +1590,6 @@ msgstr "Аппаратный адрес"
 
 #~ msgid "End application"
 #~ msgstr "Завершить приложение"
-
-#~ msgid "Halt application"
-#~ msgstr "Остановить приложение"
 
 #~ msgid "Kill application"
 #~ msgstr "Убить приложение"
