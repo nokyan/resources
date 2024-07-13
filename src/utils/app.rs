@@ -238,7 +238,7 @@ impl App {
         }
 
         let icon = if let Some(desktop_icon) = desktop_entry.get("Icon") {
-            if is_snap {
+            if is_snap || desktop_icon.starts_with('/') {
                 FileIcon::new(&File::for_path(desktop_icon)).into()
             } else {
                 ThemedIcon::new(desktop_icon).into()
