@@ -59,6 +59,10 @@
         </child>
         <child>
           <object class="ResGraph" id="graph">
+            <style>
+              <class name="ResGraph"/>
+            </style>
+            <property name="overflow">hidden</property>
             <property name="height-request">80</property>
           </object>
         </child>

@@ -19,3 +19,7 @@ progressbar.slim > trough, progressbar.slim > trough > progress {
   min-height: 128px;
   border-radius: 50%;
 }
+
+.ResGraph, .ResGraphWrapper {
+  border-radius: 10px;
+}

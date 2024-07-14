@@ -21,6 +21,10 @@
             <property name="spacing">12</property>
             <child>
               <object class="ResGraph" id="start_graph">
+                <style>
+                  <class name="ResGraph"/>
+                </style>
+                <property name="overflow">hidden</property>
                 <property name="hexpand">true</property>
                 <property name="height-request">120</property>
               </object>
