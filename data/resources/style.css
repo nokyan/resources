@@ -20,6 +20,14 @@ progressbar.slim > trough, progressbar.slim > trough > progress {
   border-radius: 50%;
 }
 
-.ResGraph, .ResGraphWrapper {
+.sidebar-graph {
+  border-radius: 5px;
+}
+
+.double-graph-box {
+  border-radius: 8px;
+}
+
+.res-graph {
   border-radius: 10px;
 }
