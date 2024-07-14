@@ -20,14 +20,14 @@ progressbar.slim > trough, progressbar.slim > trough > progress {
   border-radius: 50%;
 }
 
-.sidebar-graph {
-  border-radius: 5px;
+.small-graph {
+  border-radius: 4px;
 }
 
-.double-graph-box {
-  border-radius: 8px;
+.double-graph {
+  border-radius: 10px;
 }
 
-.res-graph {
+.graph {
   border-radius: 10px;
 }

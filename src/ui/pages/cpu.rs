@@ -258,6 +258,7 @@ impl ResCPU {
             let thread_box = ResGraphBox::new();
             thread_box.set_subtitle(&i18n_f("CPU {}", &[&(i + 1).to_string()]));
             thread_box.set_title_label(&i18n("N/A"));
+            thread_box.graph().set_css_classes(&["small-graph"]);
             thread_box.graph().set_height_request(72);
             thread_box.graph().set_graph_color(28, 113, 216);
             let flow_box_chld = FlowBoxChild::builder()

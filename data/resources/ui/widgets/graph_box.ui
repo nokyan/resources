@@ -17,7 +17,7 @@
         <child>
           <object class="ResGraph" id="graph">
             <style>
-              <class name="res-graph"/>
+              <class name="graph"/>
             </style>
             <property name="overflow">hidden</property>
             <property name="hexpand">true</property>

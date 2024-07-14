@@ -64,7 +64,7 @@
             <child>
               <object class="ResGraph" id="end_graph">
                 <style>
-                  <class name="double-graph-box"/>
+                  <class name="double-graph"/>
                 </style>
                 <property name="overflow">hidden</property>
                 <property name="hexpand">true</property>
