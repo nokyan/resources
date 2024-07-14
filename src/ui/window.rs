@@ -3,7 +3,7 @@ use process_data::ProcessData;
 use std::path::PathBuf;
 use std::time::Duration;
 
-use adw::{prelude::*, subclass::prelude::*};
+use adw::{prelude::*, subclass::prelude::*, ToolbarView};
 use adw::{Toast, ToastOverlay};
 use anyhow::{Context, Result};
 use gtk::glib::{clone, timeout_future, GString, MainContext};
@@ -584,6 +584,18 @@ impl MainWindow {
         }
     }
 
+    /// Wrapper to remove page, and check if removed page was visible with global default behavior
+    fn remove_page(&self, page: ToolbarView) {
+        let imp = self.imp();
+        imp.content_stack.remove(&page);
+
+        // no visible child exists
+        if imp.content_stack.is_child_visible() {
+            imp.resources_sidebar
+                .set_selected_list_item_by_tab_id(applications::TAB_ID);
+        }
+    }
+
     /// Create page for every drive that is shown
     fn refresh_drive_pages(&self, mut paths: Vec<PathBuf>, drive_data: &[DriveData]) {
         let imp = self.imp();
@@ -623,7 +635,7 @@ impl MainWindow {
                 );
 
                 let page = drive_pages.remove(page_path).unwrap();
-                imp.content_stack.remove(&page);
+                self.remove_page(page);
             }
         }
 
@@ -698,7 +710,7 @@ impl MainWindow {
                 );
 
                 let page = network_pages.remove(page_path).unwrap();
-                imp.content_stack.remove(&page);
+                self.remove_page(page);
             }
         }
 
@@ -756,7 +768,7 @@ impl MainWindow {
                 debug!("A battery has been removed: {}", page_path.display());
 
                 let page = battery_pages.remove(page_path).unwrap();
-                imp.content_stack.remove(&page);
+                self.remove_page(page);
             }
         }
 
