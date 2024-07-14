@@ -19,3 +19,15 @@ progressbar.slim > trough, progressbar.slim > trough > progress {
   min-height: 128px;
   border-radius: 50%;
 }
+
+.small-graph {
+  border-radius: 4px;
+}
+
+.double-graph {
+  border-radius: 10px;
+}
+
+.graph {
+  border-radius: 10px;
+}
