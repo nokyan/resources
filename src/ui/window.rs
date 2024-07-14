@@ -591,8 +591,8 @@ impl MainWindow {
 
         // no visible child exists
         if imp.content_stack.is_child_visible() {
-            imp.content_stack
-                .set_visible_child(&imp.applications_page.child());
+            imp.resources_sidebar
+                .set_selected_list_item_by_tab_id(applications::TAB_ID);
         }
     }
 
