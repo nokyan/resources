@@ -34,16 +34,28 @@ static RE_ENV_FILTER: Lazy<Regex> = Lazy::new(|| Regex::new(r"env\s*\S*=\S*\s*(.
 static RE_FLATPAK_FILTER: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"flatpak run .* --command=(\S*)").unwrap());
 
+fn format_path(path: &str) -> String {
+    if path.starts_with("~/") {
+        // $HOME may not include a trailing /, so we must not remove the extra trailing /
+        path.replace(
+            "~",
+            &*std::env::var("HOME").unwrap_or_else(|_| "/".to_string()),
+        )
+    } else {
+        path.parse().unwrap()
+    }
+}
+
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 pub static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
-    let home = std::env::var("HOME").unwrap_or_else(|_| "/".to_string());
+    let local_share = format_path("~/.local/share");
     let mut data_dirs: Vec<PathBuf> = std::env::var("XDG_DATA_DIRS")
-        .unwrap_or_else(|_| format!("/usr/share:{home}/.local/share"))
+        .unwrap_or_else(|_| format!("/usr/share:{local_share}"))
         .split(':')
-        .map(|s| s.replace('~', &home))
+        .map(|s| format_path(s))
         .map(PathBuf::from)
         .collect();
-    data_dirs.push(PathBuf::from(format!("{home}/.local/share")));
+    data_dirs.push(PathBuf::from(local_share));
     data_dirs
 });
 
@@ -179,8 +191,6 @@ impl App {
             .section(Some("Desktop Entry"))
             .context("no desktop entry section")?;
 
-        let is_snap = desktop_entry.get("X-SnapInstanceName").is_some();
-
         let id = desktop_entry
             .get("X-Flatpak") // is there a X-Flatpak section?
             .or_else(|| desktop_entry.get("X-SnapInstanceName")) // if not, maybe there is a X-SnapInstanceName
@@ -238,7 +248,7 @@ impl App {
         }
 
         let icon = if let Some(desktop_icon) = desktop_entry.get("Icon") {
-            if is_snap || desktop_icon.starts_with('/') {
+            if Path::new(&format_path(desktop_icon)).exists() {
                 FileIcon::new(&File::for_path(desktop_icon)).into()
             } else {
                 ThemedIcon::new(desktop_icon).into()
