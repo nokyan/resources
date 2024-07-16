@@ -143,8 +143,8 @@ impl PartialEq for NetworkInterface {
 impl NetworkInterface {
     pub fn get_sysfs_paths() -> Result<Vec<PathBuf>> {
         let mut list = Vec::new();
-        let mut entries = std::fs::read_dir("/sys/class/net")?;
-        while let Some(entry) = entries.next() {
+        let entries = std::fs::read_dir("/sys/class/net")?;
+        for entry in entries {
             let entry = entry?;
             let block_device = entry.file_name().to_string_lossy().to_string();
             if block_device.starts_with("lo") {

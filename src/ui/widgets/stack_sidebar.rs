@@ -84,6 +84,12 @@ glib::wrapper! {
         @extends gtk::Widget;
 }
 
+impl Default for ResStackSidebar {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResStackSidebar {
     pub fn new() -> Self {
         glib::Object::new::<Self>()

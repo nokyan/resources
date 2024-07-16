@@ -91,6 +91,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Dialog;
 }
 
+impl Default for ResAppDialog {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResAppDialog {
     pub fn new() -> Self {
         glib::Object::new::<Self>()
@@ -107,7 +113,7 @@ impl ResAppDialog {
             || app
                 .icon
                 .downcast_ref::<ThemedIcon>()
-                .map(|themed_icon| {
+                .is_some_and(|themed_icon| {
                     themed_icon
                         .names()
                         .iter()
@@ -117,7 +123,6 @@ impl ResAppDialog {
                             .iter()
                             .all(|name| name.contains("generic-process"))
                 })
-                .unwrap_or(false)
         {
             imp.icon.set_pixel_size(imp.icon.pixel_size() / 2);
             imp.icon.set_css_classes(&["big-bubble"]);

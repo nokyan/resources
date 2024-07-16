@@ -212,6 +212,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Bin;
 }
 
+impl Default for ResGPU {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResGPU {
     const ID_PREFIX: &'static str = "gpu";
     const MAIN_GRAPH_COLOR: [u8; 3] = [0xe0, 0x1b, 0x24];
@@ -282,7 +288,7 @@ impl ResGPU {
         }
     }
 
-    pub fn refresh_page(&self, gpu_data: GpuData) {
+    pub fn refresh_page(&self, gpu_data: &GpuData) {
         let imp = self.imp();
 
         let GpuData {
@@ -316,13 +322,13 @@ impl ResGPU {
         if let Some(encode_fraction) = encode_fraction {
             imp.encode_decode_usage
                 .start_graph()
-                .push_data_point(encode_fraction);
+                .push_data_point(*encode_fraction);
             imp.encode_decode_usage
                 .set_start_subtitle(&format!("{} %", (encode_fraction * 100.0).round()));
 
             imp.encode_decode_combined_usage
                 .graph()
-                .push_data_point(encode_fraction);
+                .push_data_point(*encode_fraction);
             imp.encode_decode_combined_usage
                 .set_subtitle(&format!("{} %", (encode_fraction * 100.0).round()));
         } else {
@@ -336,7 +342,7 @@ impl ResGPU {
         if let Some(decode_fraction) = decode_fraction {
             imp.encode_decode_usage
                 .end_graph()
-                .push_data_point(decode_fraction);
+                .push_data_point(*decode_fraction);
             imp.encode_decode_usage
                 .set_end_subtitle(&format!("{} %", (decode_fraction * 100.0).round()));
         } else {
@@ -355,7 +361,7 @@ impl ResGPU {
 
         let used_vram_fraction =
             if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
-                Some((used_vram as f64 / total_vram as f64).nan_default(0.0))
+                Some((*used_vram as f64 / *total_vram as f64).nan_default(0.0))
             } else {
                 None
             };
@@ -368,8 +374,8 @@ impl ResGPU {
         let vram_subtitle = if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
             format!(
                 "{} / {} · {}",
-                convert_storage(used_vram as f64, false),
-                convert_storage(total_vram as f64, false),
+                convert_storage(*used_vram as f64, false),
+                convert_storage(*total_vram as f64, false),
                 vram_percentage_string
             )
         } else {
@@ -392,21 +398,21 @@ impl ResGPU {
         let mut power_string = power_usage.map_or_else(|| i18n("N/A"), convert_power);
 
         if let Some(power_cap) = power_cap {
-            power_string.push_str(&format!(" / {}", convert_power(power_cap)));
+            power_string.push_str(&format!(" / {}", convert_power(*power_cap)));
         }
 
         imp.power_usage.set_subtitle(&power_string);
 
         if let Some(gpu_clockspeed) = clock_speed {
             imp.gpu_clockspeed
-                .set_subtitle(&convert_frequency(gpu_clockspeed));
+                .set_subtitle(&convert_frequency(*gpu_clockspeed));
         } else {
             imp.gpu_clockspeed.set_subtitle(&i18n("N/A"));
         }
 
         if let Some(vram_clockspeed) = vram_speed {
             imp.vram_clockspeed
-                .set_subtitle(&convert_frequency(vram_clockspeed));
+                .set_subtitle(&convert_frequency(*vram_clockspeed));
         } else {
             imp.vram_clockspeed.set_subtitle(&i18n("N/A"));
         }

@@ -215,6 +215,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Bin;
 }
 
+impl Default for ResCPU {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResCPU {
     const MAIN_GRAPH_COLOR: [u8; 3] = [0x35, 0x84, 0xe4];
 

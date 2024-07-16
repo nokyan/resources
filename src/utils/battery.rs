@@ -109,15 +109,10 @@ impl str::FromStr for Technology {
             "nimh" => Technology::NickelMetalHydride,
             "nicd" => Technology::NickelCadmium,
             "nizn" => Technology::NickelZinc,
-            "pb" => Technology::LeadAcid,
-            "pbac" => Technology::LeadAcid,
-            "li-i" => Technology::LithiumIon,
-            "li-ion" => Technology::LithiumIon,
-            "lion" => Technology::LithiumIon,
+            "pb" | "pbac" => Technology::LeadAcid,
+            "li-i" | "li-ion" | "lion" => Technology::LithiumIon,
             "life" => Technology::LithiumIronPhosphate,
-            "lip" => Technology::LithiumPolymer,
-            "lipo" => Technology::LithiumPolymer,
-            "li-poly" => Technology::LithiumPolymer,
+            "lip" | "lipo" | "li-poly" => Technology::LithiumPolymer,
             "ram" => Technology::RechargeableAlkalineManganese,
             _ => Technology::Unknown,
         };
@@ -159,15 +154,14 @@ pub struct Battery {
 impl Battery {
     pub fn get_sysfs_paths() -> Result<Vec<PathBuf>> {
         let mut list = Vec::new();
-        let mut entries = std::fs::read_dir("/sys/class/power_supply")?;
-        while let Some(entry) = entries.next() {
+        let entries = std::fs::read_dir("/sys/class/power_supply")?;
+        for entry in entries {
             let entry = entry?;
 
             if !entry
                 .path()
                 .file_name()
-                .map(|name| name.to_string_lossy().starts_with("BAT"))
-                .unwrap_or_default()
+                .is_some_and(|name| name.to_string_lossy().starts_with("BAT"))
             {
                 continue;
             }

@@ -139,6 +139,12 @@ glib::wrapper! {
         @extends adw::PreferencesDialog, gtk::Widget, adw::Dialog;
 }
 
+impl Default for ResSettingsDialog {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResSettingsDialog {
     pub fn new() -> Self {
         glib::Object::new::<Self>()

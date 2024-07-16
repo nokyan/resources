@@ -24,10 +24,6 @@ progressbar.slim > trough, progressbar.slim > trough > progress {
   border-radius: 4px;
 }
 
-.double-graph {
-  border-radius: 10px;
-}
-
 .graph {
-  border-radius: 10px;
+  border-radius: 8px;
 }

@@ -145,7 +145,7 @@ mod imp {
             id.is_none() // this will be the case for System Processes
                 || icon
                     .downcast_ref::<ThemedIcon>()
-                    .map(|themed_icon| {
+                    .is_some_and(|themed_icon| {
                         themed_icon
                             .names()
                             .iter()
@@ -155,7 +155,6 @@ mod imp {
                                 .iter()
                                 .all(|name| name.contains("generic-process"))
                     })
-                    .unwrap_or(false)
         }
     }
 

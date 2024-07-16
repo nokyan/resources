@@ -219,6 +219,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Bin;
 }
 
+impl Default for ResNetwork {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResNetwork {
     const ID_PREFIX: &'static str = "network";
     // TODO: this is the color for receiving, but it is also used in sidebar,
