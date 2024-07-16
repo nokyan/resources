@@ -212,6 +212,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Bin;
 }
 
+impl Default for ResGPU {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResGPU {
     const ID_PREFIX: &'static str = "gpu";
     const MAIN_GRAPH_COLOR: [u8; 3] = [0xe0, 0x1b, 0x24];

@@ -536,7 +536,7 @@ impl MainWindow {
 
                 // Wait on delay so we don't gather data multiple times in a short time span
                 // Which usually just yields the same data and makes changes appear delayed by (up to) multiple refreshes
-                let _wait = rx_wait.recv().unwrap();
+                rx_wait.recv().unwrap();
             }
         });
 

@@ -199,6 +199,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Bin;
 }
 
+impl Default for ResBattery {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResBattery {
     const ID_PREFIX: &'static str = "battery";
     const MAIN_GRAPH_COLOR: [u8; 3] = [0x33, 0xd1, 0x7a];

@@ -91,6 +91,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Dialog;
 }
 
+impl Default for ResAppDialog {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResAppDialog {
     pub fn new() -> Self {
         glib::Object::new::<Self>()

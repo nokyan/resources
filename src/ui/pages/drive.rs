@@ -226,6 +226,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Bin;
 }
 
+impl Default for ResDrive {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResDrive {
     const ID_PREFIX: &'static str = "drive";
     const MAIN_GRAPH_COLOR: [u8; 3] = [0xff, 0x78, 0x00];

@@ -63,6 +63,12 @@ glib::wrapper! {
         @extends gtk::Widget, gtk::ListBoxRow, adw::PreferencesRow;
 }
 
+impl Default for ResGraphBox {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResGraphBox {
     pub fn new() -> Self {
         glib::Object::new::<Self>()

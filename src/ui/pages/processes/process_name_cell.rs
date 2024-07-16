@@ -132,6 +132,12 @@ glib::wrapper! {
         @extends gtk::Widget, gtk::Box;
 }
 
+impl Default for ResProcessNameCell {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResProcessNameCell {
     pub fn new() -> Self {
         glib::Object::new::<Self>()

@@ -195,6 +195,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Bin;
 }
 
+impl Default for ResMemory {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResMemory {
     const MAIN_GRAPH_COLOR: [u8; 3] = [0xc5, 0x2f, 0x90];
 

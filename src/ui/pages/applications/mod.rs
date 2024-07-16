@@ -322,6 +322,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Bin;
 }
 
+impl Default for ResApplications {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResApplications {
     pub fn new() -> Self {
         glib::Object::new::<Self>()

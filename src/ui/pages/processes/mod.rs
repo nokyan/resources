@@ -329,6 +329,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Bin;
 }
 
+impl Default for ResProcesses {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResProcesses {
     pub fn new() -> Self {
         glib::Object::new::<Self>()

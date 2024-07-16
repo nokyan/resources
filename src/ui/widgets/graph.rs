@@ -143,6 +143,12 @@ glib::wrapper! {
     pub struct ResGraph(ObjectSubclass<imp::ResGraph>) @extends gtk::Widget;
 }
 
+impl Default for ResGraph {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ResGraph {
     pub fn new() -> Self {
         glib::Object::new::<Self>()
