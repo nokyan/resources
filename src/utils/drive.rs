@@ -135,8 +135,8 @@ impl Drive {
     /// reading or parsing
     pub fn get_sysfs_paths() -> Result<Vec<PathBuf>> {
         let mut list = Vec::new();
-        let mut entries = std::fs::read_dir("/sys/block")?;
-        while let Some(entry) = entries.next() {
+        let entries = std::fs::read_dir("/sys/block")?;
+        for entry in entries {
             let entry = entry?;
             let block_device = entry.file_name().to_string_lossy().to_string();
             if block_device.is_empty() {

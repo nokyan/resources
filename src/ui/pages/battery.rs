@@ -249,8 +249,7 @@ impl ResBattery {
             &battery_data
                 .charge_cycles
                 .as_ref()
-                .map(|cycles| cycles.to_string())
-                .unwrap_or_else(|_| i18n("N/A")),
+                .map_or_else(|_| i18n("N/A"), std::string::ToString::to_string),
         );
 
         imp.technology.set_subtitle(&battery.technology.to_string());
@@ -264,7 +263,7 @@ impl ResBattery {
         imp.device
             .set_subtitle(&battery.sysfs_path.file_name().unwrap().to_string_lossy());
 
-        imp.set_tab_detail(&battery.sysfs_path.file_name().unwrap().to_string_lossy())
+        imp.set_tab_detail(&battery.sysfs_path.file_name().unwrap().to_string_lossy());
     }
 
     pub fn refresh_page(&self, battery_data: BatteryData) {
@@ -277,7 +276,7 @@ impl ResBattery {
             usage_string.push_str(&percentage_string);
 
             if let Ok(state) = battery_data.state {
-                percentage_string.push_str(&format!(" ({})", state));
+                percentage_string.push_str(&format!(" ({state})"));
             }
 
             imp.charge.graph().set_visible(true);
@@ -319,7 +318,7 @@ impl ResBattery {
 
         if let Ok(health) = battery_data.health {
             imp.health
-                .set_subtitle(&format!("{} %", (health * 100.0).round()))
+                .set_subtitle(&format!("{} %", (health * 100.0).round()));
         } else {
             imp.health.set_subtitle(&i18n("N/A"));
         }

@@ -440,7 +440,7 @@ impl MainWindow {
                 gpu_data.decode_fraction = Some(processes_decode_fraction.into());
             }
 
-            page.refresh_page(gpu_data);
+            page.refresh_page(&gpu_data);
         }
 
         std::mem::drop(apps_context);
@@ -466,7 +466,7 @@ impl MainWindow {
         self.refresh_drive_pages(drive_paths, &drive_data);
 
         // Update drive pages
-        for drive_data in drive_data.into_iter() {
+        for drive_data in drive_data {
             if drive_data.is_virtual && !SETTINGS.show_virtual_drives() {
                 continue;
             }
@@ -485,7 +485,7 @@ impl MainWindow {
         self.refresh_network_pages(network_paths, &network_data);
 
         // Update network pages
-        for network_data in network_data.into_iter() {
+        for network_data in network_data {
             if network_data.is_virtual && !SETTINGS.show_virtual_network_interfaces() {
                 continue;
             }
@@ -504,7 +504,7 @@ impl MainWindow {
         self.refresh_battery_pages(battery_paths, &battery_data);
 
         // Update battery pages
-        for battery_data in battery_data.into_iter() {
+        for battery_data in battery_data {
             let battery_pages = imp.battery_pages.borrow();
             let page = battery_pages.get(&battery_data.inner.sysfs_path).unwrap();
             let page = page.content().and_downcast::<ResBattery>().unwrap();
@@ -585,9 +585,9 @@ impl MainWindow {
     }
 
     /// Wrapper to remove page, and check if removed page was visible with global default behavior
-    fn remove_page(&self, page: ToolbarView) {
+    fn remove_page(&self, page: &ToolbarView) {
         let imp = self.imp();
-        imp.content_stack.remove(&page);
+        imp.content_stack.remove(page);
 
         // no visible child exists
         if imp.content_stack.is_child_visible() {
@@ -604,7 +604,7 @@ impl MainWindow {
 
         let mut highest_secondary_ord = drive_pages
             .values()
-            .flat_map(|toolbar_view| toolbar_view.content())
+            .filter_map(adw::ToolbarView::content)
             .map(|widget| widget.property::<u32>("secondary_ord"))
             .max()
             .unwrap_or_default();
@@ -635,7 +635,7 @@ impl MainWindow {
                 );
 
                 let page = drive_pages.remove(page_path).unwrap();
-                self.remove_page(page);
+                self.remove_page(&page);
             }
         }
 
@@ -679,7 +679,7 @@ impl MainWindow {
 
         let mut highest_secondary_ord = network_pages
             .values()
-            .flat_map(|toolbar_view| toolbar_view.content())
+            .filter_map(adw::ToolbarView::content)
             .map(|widget| widget.property::<u32>("secondary_ord"))
             .max()
             .unwrap_or_default();
@@ -710,7 +710,7 @@ impl MainWindow {
                 );
 
                 let page = network_pages.remove(page_path).unwrap();
-                self.remove_page(page);
+                self.remove_page(&page);
             }
         }
 
@@ -753,13 +753,15 @@ impl MainWindow {
 
         let mut highest_secondary_ord = battery_pages
             .values()
-            .flat_map(|toolbar_view| toolbar_view.content())
+            .filter_map(adw::ToolbarView::content)
             .map(|widget| widget.property::<u32>("secondary_ord"))
             .max()
             .unwrap_or_default();
 
-        let old_page_paths: Vec<PathBuf> =
-            battery_pages.keys().map(|path| path.to_owned()).collect();
+        let old_page_paths: Vec<PathBuf> = battery_pages
+            .keys()
+            .map(std::borrow::ToOwned::to_owned)
+            .collect();
 
         // Delete hidden old battery pages
         for page_path in &old_page_paths {
@@ -768,7 +770,7 @@ impl MainWindow {
                 debug!("A battery has been removed: {}", page_path.display());
 
                 let page = battery_pages.remove(page_path).unwrap();
-                self.remove_page(page);
+                self.remove_page(&page);
             }
         }
 

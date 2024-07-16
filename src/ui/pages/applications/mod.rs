@@ -441,7 +441,7 @@ impl ResApplications {
         let event_controller = EventControllerKey::new();
         event_controller.connect_key_released(clone!(@strong self as this => move|_, key, _, _| {
             if key.name().unwrap_or_default() == "Escape" {
-                this.close_search()
+                this.close_search();
             }
         }));
         imp.search_entry.add_controller(event_controller);

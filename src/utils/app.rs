@@ -38,8 +38,8 @@ fn format_path(path: &str) -> String {
     if path.starts_with("~/") {
         // $HOME may not include a trailing /, so we must not remove the extra trailing /
         path.replace(
-            "~",
-            &*std::env::var("HOME").unwrap_or_else(|_| "/".to_string()),
+            '~',
+            &std::env::var("HOME").unwrap_or_else(|_| "/".to_string()),
         )
     } else {
         path.parse().unwrap()
@@ -52,7 +52,7 @@ pub static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
     let mut data_dirs: Vec<PathBuf> = std::env::var("XDG_DATA_DIRS")
         .unwrap_or_else(|_| format!("/usr/share:{local_share}"))
         .split(':')
-        .map(|s| format_path(s))
+        .map(format_path)
         .map(PathBuf::from)
         .collect();
     data_dirs.push(PathBuf::from(local_share));
