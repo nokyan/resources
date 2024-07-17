@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues\n"
 "POT-Creation-Date: 2024-07-07 18:21+0200\n"
-"PO-Revision-Date: 2024-07-10 19:17+0530\n"
+"PO-Revision-Date: 2024-07-17 11:18+0530\n"
 "Last-Translator: Scrambled777 <weblate.scrambled777@simplelogin.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
 "Language: hi\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: data/net.nokyan.Resources.desktop.in.in:3
 #: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:191
 msgid "Resources"
-msgstr "Resources"
+msgstr "रिसोर्सेज"
 
 #. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
 #: data/net.nokyan.Resources.desktop.in.in:4
@@ -32,7 +32,7 @@ msgstr "सिस्टम संसाधनों पर नज़र रख�
 #: data/net.nokyan.Resources.desktop.in.in:10
 msgid ""
 "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
-msgstr "सिस्टम;संसाधन;निगरानी;प्रक्रियाएं;उपयोग;कार्य;प्रबंधक;CPU;रैम;मेमोरी;GPU;"
+msgstr "सिस्टम;संसाधन;निगरानी;प्रक्रियाएं;उपयोग;कार्य;प्रबंधक;सीपीयू;रैम;मेमोरी;जीपीयू;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
@@ -40,10 +40,9 @@ msgid ""
 "control your running processes and apps. It’s designed to be user-friendly "
 "and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
-"Resources आपको अपने सिस्टम संसाधनों के उपयोग की जांच करने और आपकी चल रही प्रक्रियाओं "
-"और अनुप्रयोगों को नियंत्रित करने की अनुमति देता है। इसे GNOME के libadwaita का उपयोग "
-"करके उपयोगकर्ता के अनुकूल और आधुनिक डेस्कटॉप पर घर जैसा अनुभव देने के लिए डिज़ाइन किया गया "
-"है।"
+"रिसोर्सेज आपको अपने सिस्टम संसाधनों के उपयोग की जांच करने और आपकी चल रही प्रक्रियाओं और "
+"अनुप्रयोगों को नियंत्रित करने की अनुमति देता है। इसे गनोम के libadwaita का उपयोग करके "
+"उपयोगकर्ता के अनुकूल और आधुनिक डेस्कटॉप पर घर जैसा अनुभव देने के लिए डिज़ाइन किया गया है।"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
@@ -51,7 +50,7 @@ msgstr "संसाधन निम्नलिखित घटकों की
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
-msgstr "CPU"
+msgstr "सीपीयू"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:25
 #: src/ui/pages/applications/mod.rs:670 src/ui/pages/memory.rs:132
@@ -72,7 +71,7 @@ msgstr "मेमोरी"
 #: data/resources/ui/dialogs/settings_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:234
 msgid "GPU"
-msgstr "GPU"
+msgstr "जीपीयू"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:27
 #: data/resources/ui/dialogs/settings_dialog.ui:288
@@ -108,11 +107,11 @@ msgstr "नहीं"
 
 #: src/ui/dialogs/app_dialog.rs:146 src/ui/dialogs/process_dialog.rs:141
 msgid "Yes (Flatpak)"
-msgstr "हां (Flatpak)"
+msgstr "हां (फ्लैटपैक)"
 
 #: src/ui/dialogs/app_dialog.rs:147 src/ui/dialogs/process_dialog.rs:142
 msgid "Yes (Snap)"
-msgstr "हां (Snap)"
+msgstr "हां (स्नैप)"
 
 #: src/ui/dialogs/process_dialog.rs:128 src/ui/dialogs/process_dialog.rs:135
 #: src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:162
@@ -300,7 +299,7 @@ msgstr "बैटरी चार्ज"
 
 #: src/ui/pages/battery.rs:235 data/resources/ui/pages/gpu.ui:55
 msgid "Power Usage"
-msgstr "बिजली का उपयोग"
+msgstr "ऊर्जा उपयोग"
 
 #: src/ui/pages/battery.rs:293 src/ui/pages/drive.rs:349
 #: src/ui/pages/drive.rs:379 src/ui/pages/network.rs:333
@@ -314,7 +313,7 @@ msgstr "कुल उपयोग"
 
 #: src/ui/pages/cpu.rs:251 src/ui/pages/cpu.rs:368 src/ui/pages/cpu.rs:372
 msgid "CPU {}"
-msgstr "CPU {}"
+msgstr "सीपीयू {}"
 
 #: src/ui/pages/drive.rs:251
 msgid "Drive Activity"
@@ -322,11 +321,11 @@ msgstr "ड्राइव गतिविधि"
 
 #: src/ui/pages/drive.rs:258
 msgid "Read Speed"
-msgstr "पढ़ने की गति"
+msgstr "पठन गति"
 
 #: src/ui/pages/drive.rs:262
 msgid "Write Speed"
-msgstr "लिखने की गति"
+msgstr "लेखन गति"
 
 #: src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426
 msgid "Yes"
@@ -356,7 +355,7 @@ msgstr "वीडियो मेमोरी उपयोग"
 
 #: src/ui/pages/gpu.rs:409
 msgid "VRAM: {}"
-msgstr "VRAM: {}"
+msgstr "वीआरएएम: {}"
 
 #: src/ui/pages/memory.rs:211
 msgid "Swap"
@@ -412,7 +411,7 @@ msgstr "प्रक्रिया"
 #: data/resources/ui/dialogs/process_dialog.ui:181
 #: data/resources/ui/dialogs/settings_dialog.ui:194
 msgid "Process ID"
-msgstr "प्रक्रिया ID"
+msgstr "प्रक्रिया आईडी"
 
 #: src/ui/pages/processes/mod.rs:685
 #: data/resources/ui/dialogs/process_dialog.ui:208
@@ -424,19 +423,19 @@ msgstr "उपयोक्ता"
 #: data/resources/ui/dialogs/process_dialog.ui:149
 #: data/resources/ui/dialogs/settings_dialog.ui:254
 msgid "Total CPU Time"
-msgstr "कुल CPU समय"
+msgstr "कुल सीपीयू समय"
 
 #: src/ui/pages/processes/mod.rs:1263
 #: data/resources/ui/dialogs/process_dialog.ui:158
 #: data/resources/ui/dialogs/settings_dialog.ui:259
 msgid "User CPU Time"
-msgstr "उपयोक्ता CPU समय"
+msgstr "उपयोक्ता सीपीयू समय"
 
 #: src/ui/pages/processes/mod.rs:1309
 #: data/resources/ui/dialogs/process_dialog.ui:167
 #: data/resources/ui/dialogs/settings_dialog.ui:264
 msgid "System CPU Time"
-msgstr "सिस्टम CPU समय"
+msgstr "सिस्टम सीपीयू समय"
 
 #: src/ui/pages/processes/mod.rs:1364
 msgid ""
@@ -472,7 +471,7 @@ msgstr "प्रक्रिया जारी रखें"
 
 #: src/ui/window.rs:284
 msgid "GPU {}"
-msgstr "GPU {}"
+msgstr "जीपीयू {}"
 
 #: src/ui/window.rs:884
 msgid "Successfully ended {}"
@@ -564,7 +563,7 @@ msgstr "निकल-कैडमियम"
 
 #: src/utils/battery.rs:137
 msgid "Nickel-Zinc"
-msgstr "निकल-जस्ता"
+msgstr "निकल-जिंक"
 
 #: src/utils/battery.rs:138
 msgid "Lead-Acid"
@@ -596,7 +595,7 @@ msgstr "बैटरी"
 
 #: src/utils/drive.rs:82 src/utils/drive.rs:153
 msgid "CD/DVD/Blu-ray Drive"
-msgstr "CD/DVD/ब्लू-रे ड्राइव"
+msgstr "सीडी/डीवीडी/ब्लू-रे ड्राइव"
 
 #: src/utils/drive.rs:83
 msgid "eMMC Storage"
@@ -640,7 +639,7 @@ msgstr "सॉलिड स्टेट ड्राइव"
 
 #: src/utils/drive.rs:94
 msgid "ZFS Volume"
-msgstr "ZFS वॉल्यूम"
+msgstr "जेडएफएस वॉल्यूम"
 
 #: src/utils/drive.rs:95
 msgid "Compressed RAM Disk (zram)"
@@ -668,7 +667,7 @@ msgstr "{} zram उपकरण"
 
 #: src/utils/drive.rs:160
 msgid "{} ZFS Volume"
-msgstr "{} ZFS वॉल्यूम"
+msgstr "{} जेडएफएस वॉल्यूम"
 
 #: src/utils/drive.rs:161
 msgid "{} Drive"
@@ -704,23 +703,23 @@ msgstr "वर्चुअल ईथरनेट उपकरण"
 
 #: src/utils/network.rs:123
 msgid "VM Network Bridge"
-msgstr "VM नेटवर्क ब्रिज"
+msgstr "वीएम नेटवर्क ब्रिज"
 
 #: src/utils/network.rs:124
 msgid "VPN Tunnel"
-msgstr "VPN टनल"
+msgstr "वीपीएन टनल"
 
 #: src/utils/network.rs:125
 msgid "VPN Tunnel (WireGuard)"
-msgstr "VPN टनल (वायरगार्ड)"
+msgstr "वीपीएन टनल (वायरगार्ड)"
 
 #: src/utils/network.rs:126
 msgid "Wi-Fi Connection"
-msgstr "Wi-Fi कनेक्शन"
+msgstr "वाई-फाई कनेक्शन"
 
 #: src/utils/network.rs:127
 msgid "WWAN Connection"
-msgstr "WWAN कनेक्शन"
+msgstr "डब्ल्यूडब्ल्यूएएन कनेक्शन"
 
 #: src/utils/units.rs:59
 msgid "{} K"
@@ -1137,7 +1136,7 @@ msgstr "शॉर्टकट दिखाएं"
 #: data/resources/ui/shortcuts.ui:26
 msgctxt "shortcut window"
 msgid "Quit"
-msgstr "छोड़ें"
+msgstr "बंद करें"
 
 #: data/resources/ui/shortcuts.ui:32
 msgctxt "shortcut window"
@@ -1179,7 +1178,7 @@ msgstr "कीबोर्ड शॉर्टकट"
 
 #: data/resources/ui/window.ui:14
 msgid "About Resources"
-msgstr "Resources के बारे में"
+msgstr "रिसोर्सेज के बारे में"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
 msgid "App Information"
@@ -1200,14 +1199,15 @@ msgstr "उपयोग"
 #: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:80
 #: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
 msgid "Properties"
-msgstr "गुण"
+msgstr "प्रॉपर्टी"
 
 #: data/resources/ui/dialogs/app_dialog.ui:175
 msgid "ID"
-msgstr "ID"
+msgstr "आईडी"
 
 #: data/resources/ui/dialogs/app_dialog.ui:185
 #: data/resources/ui/dialogs/process_dialog.ui:190
+#, fuzzy
 msgid "Running Since"
 msgstr "तब से चालू"
 
@@ -1222,7 +1222,7 @@ msgstr "कंटेनरीकृत"
 
 #: data/resources/ui/dialogs/process_dialog.ui:7
 msgid "Process Information"
-msgstr "प्रक्रिया की जानकारी"
+msgstr "प्रक्रिया जानकारी"
 
 #: data/resources/ui/dialogs/process_dialog.ui:199
 msgid "Commandline"
@@ -1376,7 +1376,7 @@ msgstr "वर्चुअल ड्राइव दिखाएं"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:281
 msgid "Virtual drives are for example ZFS volumes or mapped devices"
-msgstr "वर्चुअल ड्राइव उदाहरण के लिए ZFS वॉल्यूम या मैप किए गए उपकरण हैं"
+msgstr "वर्चुअल ड्राइव उदाहरण के लिए जेडएफएस वॉल्यूम या मैप किए गए उपकरण हैं"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:291
 msgid "Show Virtual Network Interfaces"
@@ -1384,7 +1384,7 @@ msgstr "वर्चुअल नेटवर्क इंटरफेस दि
 
 #: data/resources/ui/dialogs/settings_dialog.ui:292
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
-msgstr "वर्चुअल नेटवर्क इंटरफेस उदाहरण ब्रिज या VPN सुरंग के लिए हैं"
+msgstr "वर्चुअल नेटवर्क इंटरफेस उदाहरण ब्रिज या वीपीएन टनल के लिए हैं"
 
 #: data/resources/ui/pages/applications.ui:50
 msgid "Search applications"
@@ -1440,7 +1440,7 @@ msgstr "विकल्प"
 
 #: data/resources/ui/pages/cpu.ui:26
 msgid "Show Usages of Logical CPUs"
-msgstr "तार्किक CPU के उपयोग दिखाएं"
+msgstr "तार्किक सीपीयू के उपयोग दिखाएं"
 
 #: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
 msgid "Sensors"
@@ -1500,7 +1500,7 @@ msgstr "हटाने योग्य"
 
 #: data/resources/ui/pages/gpu.ui:37
 msgid "GPU Frequency"
-msgstr "GPU आवृत्ति"
+msgstr "जीपीयू आवृत्ति"
 
 #: data/resources/ui/pages/gpu.ui:50
 msgid "Video Memory Frequency"
@@ -1508,7 +1508,7 @@ msgstr "वीडियो मेमोरी आवृत्ति"
 
 #: data/resources/ui/pages/gpu.ui:96
 msgid "PCI Slot"
-msgstr "PCI स्लॉट"
+msgstr "पीसीआई स्लॉट"
 
 #: data/resources/ui/pages/gpu.ui:105 data/resources/ui/pages/network.ui:67
 msgid "Driver Used"
@@ -1516,11 +1516,11 @@ msgstr "ड्राइवर प्रयुक्त"
 
 #: data/resources/ui/pages/gpu.ui:114
 msgid "Max Power Cap"
-msgstr "अधि. बिजली क्षमता"
+msgstr "अधि. ऊर्जा क्षमता"
 
 #: data/resources/ui/pages/memory.ui:9
 msgid "You need to authenticate to see memory properties"
-msgstr "मेमोरी गुण देखने के लिए आपको प्रमाणित करना होगा"
+msgstr "मेमोरी प्रॉपर्टी देखने के लिए आपको प्रमाणित करना होगा"
 
 #: data/resources/ui/pages/memory.ui:10
 msgid "Authenticate"
@@ -1536,7 +1536,7 @@ msgstr "गति"
 
 #: data/resources/ui/pages/memory.ui:63
 msgid "Form Factor"
-msgstr "प्रपत्र कारक"
+msgstr "स्वरुप कारक"
 
 #: data/resources/ui/pages/memory.ui:81
 msgid "Type Detail"
@@ -1566,27 +1566,3 @@ msgstr "प्रक्रियाएं खोजें"
 #: data/resources/ui/pages/processes.ui:88
 msgid "Show Process Information"
 msgstr "प्रक्रिया जानकारी दिखाएं"
-
-#~ msgid "End app"
-#~ msgstr "ऐप समाप्त करें"
-
-#~ msgid "Halt app"
-#~ msgstr "ऐप रोकें"
-
-#~ msgid "Kill app"
-#~ msgstr "ऐप खत्म करें"
-
-#~ msgid "Continue app"
-#~ msgstr "ऐप जारी रखें"
-
-#~ msgid "End process"
-#~ msgstr "प्रक्रिया समाप्त करें"
-
-#~ msgid "Halt process"
-#~ msgstr "प्रक्रिया रोकें"
-
-#~ msgid "Kill process"
-#~ msgstr "प्रक्रिया खत्म करें"
-
-#~ msgid "Continue process"
-#~ msgstr "प्रक्रिया जारी रखें"
