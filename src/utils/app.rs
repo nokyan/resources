@@ -545,6 +545,16 @@ impl AppsContext {
     fn app_associated_with_process(&self, process: &Process) -> Option<String> {
         // TODO: tidy this up
         // ↓ look for whether we can find an ID in the cgroup
+        if process.data.cgroup.as_deref().unwrap_or_default() == "org.gnome.Shell" {
+            if let Some(parent) = self
+                .apps
+                .values()
+                .find(|app| app.processes.contains(&process.data.parent_pid))
+            {
+                return Some(parent.id.clone());
+            }
+        }
+
         if let Some(app) = self
             .apps
             .get(process.data.cgroup.as_deref().unwrap_or_default())
@@ -562,17 +572,19 @@ impl AppsContext {
                 .find(|app| {
                     // ↓ probably most expensive lookup, therefore only last resort: look if the process' commandline
                     //   can be found in the app's commandline
-                    let commandline_match = app
+                    if app
                         .commandline
                         .as_ref()
-                        .is_some_and(|commandline| commandline == &process.executable_path);
-
-                    let executable_name_match = app
+                        .is_some_and(|commandline| commandline == &process.executable_path)
+                    {
+                        true
+                    } else if app
                         .executable_name
                         .as_ref()
-                        .is_some_and(|executable_name| executable_name == &process.executable_name);
-
-                    let known_exception_match = app
+                        .is_some_and(|executable_name| executable_name == &process.executable_name)
+                    {
+                        true
+                    } else if app
                         .executable_name
                         .as_ref()
                         .and_then(|executable_name| {
@@ -582,9 +594,12 @@ impl AppsContext {
                                     substituted_executable_name == executable_name
                                 })
                         })
-                        .unwrap_or(false);
-
-                    commandline_match || executable_name_match || known_exception_match
+                        .unwrap_or(false)
+                    {
+                        true
+                    } else {
+                        false
+                    }
                 })
                 .map(|app| app.id.clone())
         }
