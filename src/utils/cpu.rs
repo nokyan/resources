@@ -1,36 +1,41 @@
 use anyhow::{anyhow, bail, Context, Result};
 use glob::glob;
 use log::{debug, warn};
-use once_cell::sync::Lazy;
 use regex::Regex;
-use std::path::{Path, PathBuf};
+use std::{
+    path::{Path, PathBuf},
+    sync::LazyLock,
+};
 
 const KNOWN_HWMONS: &[&str] = &["zenpower", "coretemp", "k10temp"];
 
 const KNOWN_THERMAL_ZONES: &[&str] = &["x86_pkg_temp", "acpitz"];
 
-static RE_LSCPU_MODEL_NAME: Lazy<Regex> = Lazy::new(|| Regex::new(r"Model name:\s*(.*)").unwrap());
+static RE_LSCPU_MODEL_NAME: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"Model name:\s*(.*)").unwrap());
 
-static RE_LSCPU_ARCHITECTURE: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"Architecture:\s*(.*)").unwrap());
+static RE_LSCPU_ARCHITECTURE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"Architecture:\s*(.*)").unwrap());
 
-static RE_LSCPU_CPUS: Lazy<Regex> = Lazy::new(|| Regex::new(r"CPU\(s\):\s*(.*)").unwrap());
+static RE_LSCPU_CPUS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"CPU\(s\):\s*(.*)").unwrap());
 
-static RE_LSCPU_SOCKETS: Lazy<Regex> = Lazy::new(|| Regex::new(r"Socket\(s\):\s*(.*)").unwrap());
+static RE_LSCPU_SOCKETS: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"Socket\(s\):\s*(.*)").unwrap());
 
-static RE_LSCPU_CORES: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"Core\(s\) per socket:\s*(.*)").unwrap());
+static RE_LSCPU_CORES: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"Core\(s\) per socket:\s*(.*)").unwrap());
 
-static RE_LSCPU_VIRTUALIZATION: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"Virtualization:\s*(.*)").unwrap());
+static RE_LSCPU_VIRTUALIZATION: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"Virtualization:\s*(.*)").unwrap());
 
-static RE_LSCPU_MAX_MHZ: Lazy<Regex> = Lazy::new(|| Regex::new(r"CPU max MHz:\s*(.*)").unwrap());
+static RE_LSCPU_MAX_MHZ: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"CPU max MHz:\s*(.*)").unwrap());
 
-static RE_PROC_STAT: Lazy<Regex> = Lazy::new(|| {
+static RE_PROC_STAT: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"cpu[0-9]* *(?P<user>[0-9]*) *(?P<nice>[0-9]*) *(?P<system>[0-9]*) *(?P<idle>[0-9]*) *(?P<iowait>[0-9]*) *(?P<irq>[0-9]*) *(?P<softirq>[0-9]*) *(?P<steal>[0-9]*) *(?P<guest>[0-9]*) *(?P<guest_nice>[0-9]*)").unwrap()
 });
 
-static CPU_TEMPERATURE_PATH: Lazy<Option<PathBuf>> = Lazy::new(|| {
+static CPU_TEMPERATURE_PATH: LazyLock<Option<PathBuf>> = LazyLock::new(|| {
     let cpu_temperature_path =
         search_for_hwmons(KNOWN_HWMONS).or_else(|| search_for_thermal_zones(KNOWN_THERMAL_ZONES));
 

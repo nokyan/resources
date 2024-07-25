@@ -5,12 +5,11 @@ use nvml_wrapper::{
     error::NvmlError,
     Nvml,
 };
-use once_cell::sync::Lazy;
 use process_data::pci_slot::PciSlot;
 
-use std::path::PathBuf;
+use std::{path::PathBuf, sync::LazyLock};
 
-static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(|| {
+static NVML: LazyLock<Result<Nvml, NvmlError>> = LazyLock::new(|| {
     let nvml = Nvml::init();
 
     if let Err(error) = nvml.as_ref() {

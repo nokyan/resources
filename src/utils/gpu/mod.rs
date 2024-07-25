@@ -4,7 +4,7 @@ mod nvidia;
 mod other;
 
 use anyhow::{bail, Context, Result};
-use log::debug;
+use log::info;
 use process_data::pci_slot::PciSlot;
 
 use std::{
@@ -316,7 +316,7 @@ impl Gpu {
             )
         };
 
-        debug!(
+        info!(
             "Found GPU \"{}\" (PCI slot: {} · PCI ID: {vid:x}:{pid:x} · Category: {gpu_category})",
             gpu.name().unwrap_or("<unknown name>".into()),
             gpu.pci_slot(),

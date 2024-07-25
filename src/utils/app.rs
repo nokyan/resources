@@ -1,4 +1,8 @@
-use std::path::{Path, PathBuf};
+use std::{
+    path::{Path, PathBuf},
+    sync::LazyLock,
+    time::Instant,
+};
 
 use anyhow::{bail, Context, Result};
 use gtk::{
@@ -6,8 +10,7 @@ use gtk::{
     glib::GString,
 };
 use hashbrown::{HashMap, HashSet};
-use log::debug;
-use once_cell::sync::Lazy;
+use log::{debug, info};
 use process_data::{pci_slot::PciSlot, Containerization, ProcessData};
 use regex::Regex;
 
@@ -29,10 +32,11 @@ const APP_ID_BLOCKLIST: &[&str] = &[
     "org.gnome.RemoteDesktop.Handover", // Technical application
 ];
 
-static RE_ENV_FILTER: Lazy<Regex> = Lazy::new(|| Regex::new(r"env\s*\S*=\S*\s*(.*)").unwrap());
+static RE_ENV_FILTER: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"env\s*\S*=\S*\s*(.*)").unwrap());
 
-static RE_FLATPAK_FILTER: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"flatpak run .* --command=(\S*)").unwrap());
+static RE_FLATPAK_FILTER: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"flatpak run .* --command=(\S*)").unwrap());
 
 fn format_path(path: &str) -> String {
     if path.starts_with("~/") {
@@ -47,7 +51,7 @@ fn format_path(path: &str) -> String {
 }
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
-pub static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
+pub static DATA_DIRS: LazyLock<Vec<PathBuf>> = LazyLock::new(|| {
     let local_share = format_path("~/.local/share");
     let mut data_dirs: Vec<PathBuf> = std::env::var("XDG_DATA_DIRS")
         .unwrap_or_else(|_| format!("/usr/share:{local_share}"))
@@ -63,7 +67,7 @@ pub static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
 // The HashMap is used like this:
 //   Key: The name of the executable of the process
 //   Value: What it should be replaced with when finding out to which app it belongs
-static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: Lazy<HashMap<String, String>> = Lazy::new(|| {
+static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: LazyLock<HashMap<String, String>> = LazyLock::new(|| {
     HashMap::from([
         ("firefox-bin".into(), "firefox".into()),
         ("oosplash".into(), "libreoffice".into()),
@@ -74,7 +78,7 @@ static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: Lazy<HashMap<String, String>> = Lazy::n
     ])
 });
 
-static MESSAGE_LOCALES: Lazy<Vec<String>> = Lazy::new(|| {
+static MESSAGE_LOCALES: LazyLock<Vec<String>> = LazyLock::new(|| {
     let envs = ["LC_MESSAGES", "LANGUAGE", "LANG", "LC_ALL"];
     let mut return_vec: Vec<String> = Vec::new();
 
@@ -164,6 +168,8 @@ impl App {
     pub fn all() -> Vec<App> {
         debug!("Detecting installed applications…");
 
+        let start = Instant::now();
+
         let apps: Vec<App> = DATA_DIRS
             .iter()
             .filter_map(|path| {
@@ -179,13 +185,17 @@ impl App {
             .flatten()
             .collect();
 
-        debug!("Detected {} applications", apps.len());
+        let elapsed = start.elapsed();
+
+        info!("Detected {} applications within {elapsed:.2?}", apps.len());
 
         apps
     }
 
     pub fn from_desktop_file<P: AsRef<Path>>(file_path: P) -> Result<App> {
-        let ini = ini::Ini::load_from_file(file_path.as_ref())?;
+        let file_path = file_path.as_ref();
+
+        let ini = ini::Ini::load_from_file(file_path)?;
 
         let desktop_entry = ini
             .section(Some("Desktop Entry"))
@@ -197,13 +207,7 @@ impl App {
             .map(str::to_string)
             .or_else(|| {
                 // if not, presume that the ID is in the file name
-                Some(
-                    file_path
-                        .as_ref()
-                        .file_stem()?
-                        .to_string_lossy()
-                        .to_string(),
-                )
+                Some(file_path.file_stem()?.to_string_lossy().to_string())
             })
             .context("unable to get ID of desktop file")?;
 
@@ -282,6 +286,13 @@ impl App {
         let description = description_opt
             .or_else(|| desktop_entry.get("Comment"))
             .map(str::to_string);
+
+        debug!(
+            "Found application \"{display_name}\" ({id}) at {} with commandline `{}` (executable name: {})",
+            commandline.as_ref().unwrap_or(&"<None>".into()),
+            file_path.to_string_lossy(),
+            executable_name.as_ref().unwrap_or(&"<None>".into()),
+        );
 
         Ok(App {
             processes: Vec::new(),

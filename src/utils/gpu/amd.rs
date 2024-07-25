@@ -1,10 +1,10 @@
 use anyhow::{bail, Result};
 use hashbrown::HashMap;
-use once_cell::sync::Lazy;
+use log::{debug, warn};
 use process_data::pci_slot::PciSlot;
 use regex::Regex;
 
-use std::path::PathBuf;
+use std::{path::PathBuf, sync::LazyLock, time::Instant};
 
 use crate::utils::{
     pci::{self, Device},
@@ -13,11 +13,14 @@ use crate::utils::{
 
 use super::GpuImpl;
 
-static RE_AMDGPU_IDS: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"([0-9A-F]{4}),\s*([0-9A-F]{2}),\s*(.*)").unwrap());
+static RE_AMDGPU_IDS: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"([0-9A-F]{4}),\s*([0-9A-F]{2}),\s*(.*)").unwrap());
 
-static AMDGPU_IDS: Lazy<HashMap<(u16, u8), String>> =
-    Lazy::new(|| AmdGpu::read_libdrm_ids().unwrap_or_default());
+static AMDGPU_IDS: LazyLock<HashMap<(u16, u8), String>> = LazyLock::new(|| {
+    AmdGpu::read_libdrm_ids()
+        .inspect_err(|e| warn!("Unable to parse amdgpu.ids! Stacktrace:\n{}", e.backtrace()))
+        .unwrap_or_default()
+});
 
 #[derive(Debug, Clone, Default)]
 
@@ -53,9 +56,13 @@ impl AmdGpu {
             PathBuf::from("/usr/share/libdrm/amdgpu.ids")
         };
 
+        debug!("Parsing {}…", path.to_string_lossy());
+
+        let start = Instant::now();
+
         let mut map = HashMap::new();
 
-        let amdgpu_ids_raw = std::fs::read_to_string(path)?;
+        let amdgpu_ids_raw = std::fs::read_to_string(&path)?;
 
         for capture in RE_AMDGPU_IDS.captures_iter(&amdgpu_ids_raw) {
             if let (Some(device_id), Some(revision), Some(name)) =
@@ -67,6 +74,13 @@ impl AmdGpu {
                 map.insert((device_id, revision), name);
             }
         }
+
+        let elapsed = start.elapsed();
+
+        debug!(
+            "Successfully parsed {} within {elapsed:.2?}",
+            path.to_string_lossy()
+        );
 
         Ok(map)
     }
@@ -96,7 +110,7 @@ impl GpuImpl for AmdGpu {
     fn name(&self) -> Result<String> {
         let revision =
             u8::from_str_radix(&self.read_device_file("revision")?.replace("0x", ""), 16)?;
-        Ok(AMDGPU_IDS
+        Ok((*AMDGPU_IDS)
             .get(&(self.device().map_or(0, pci::Device::pid), revision))
             .cloned()
             .unwrap_or_else(|| {

@@ -1,13 +1,12 @@
 use anyhow::{bail, Context, Result};
 use config::LIBEXECDIR;
 use log::debug;
-use once_cell::sync::Lazy;
 use process_data::{pci_slot::PciSlot, Containerization, GpuUsageStats, ProcessData};
 use std::{
     collections::BTreeMap,
     io::{Read, Write},
     process::{ChildStdin, ChildStdout, Command, Stdio},
-    sync::Mutex,
+    sync::{LazyLock, Mutex},
 };
 use strum_macros::Display;
 
@@ -17,7 +16,7 @@ use crate::config;
 
 use super::{NaNDefault, FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK, NUM_CPUS, TICK_RATE};
 
-static OTHER_PROCESS: Lazy<Mutex<(ChildStdin, ChildStdout)>> = Lazy::new(|| {
+static OTHER_PROCESS: LazyLock<Mutex<(ChildStdin, ChildStdout)>> = LazyLock::new(|| {
     let proxy_path = if *IS_FLATPAK {
         format!(
             "{}/libexec/resources/resources-processes",
@@ -28,6 +27,7 @@ static OTHER_PROCESS: Lazy<Mutex<(ChildStdin, ChildStdout)>> = Lazy::new(|| {
     };
 
     let child = if *IS_FLATPAK {
+        debug!("Spawning resources-processes in Flatpak mode");
         Command::new(FLATPAK_SPAWN)
             .args(["--host", proxy_path.as_str()])
             .stdin(Stdio::piped())
@@ -36,6 +36,7 @@ static OTHER_PROCESS: Lazy<Mutex<(ChildStdin, ChildStdout)>> = Lazy::new(|| {
             .spawn()
             .unwrap()
     } else {
+        debug!("Spawning resources-processes in native mode");
         Command::new(proxy_path)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
