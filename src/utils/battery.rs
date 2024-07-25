@@ -290,11 +290,14 @@ impl Battery {
     }
 
     pub fn power_usage(&self) -> Result<f64> {
-        std::fs::read_to_string(self.sysfs_path.join("power_now"))?
-            .trim()
-            .parse::<usize>()
-            .map(|microwatts| microwatts as f64 / 1_000_000.0)
-            .context("unable to parse power_now sysfs file")
+        std::fs::read_to_string(self.sysfs_path.join("power_now"))
+            .context("unable to read power_now file")
+            .and_then(|x| {
+                x.trim()
+                    .parse::<usize>()
+                    .map(|microwatts| microwatts as f64 / 1_000_000.0)
+                    .context("unable to parse power_now sysfs file")
+            })
             .or_else(|_| self.power_usage_from_voltage_and_current())
     }
 
