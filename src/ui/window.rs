@@ -205,13 +205,17 @@ impl MainWindow {
 
         if let Some(receiver) = &*window.imp().receiver.borrow() {
             let main_context = MainContext::default();
-            main_context.spawn_local(
-                clone!(@strong receiver as receiver, @weak window as window => async move {
+            main_context.spawn_local(clone!(
+                #[strong]
+                receiver,
+                #[weak]
+                window,
+                async move {
                     while let Ok(action) = receiver.recv().await {
                         window.process_action(action);
                     }
-                }),
-            );
+                }
+            ));
         }
         window.setup_widgets();
         window
@@ -337,9 +341,13 @@ impl MainWindow {
 
         let main_context = MainContext::default();
 
-        main_context.spawn_local(clone!(@strong self as this => async move {
-            this.periodic_refresh_all().await;
-        }));
+        main_context.spawn_local(clone!(
+            #[weak(rename_to = this)]
+            self,
+            async move {
+                this.periodic_refresh_all().await;
+            }
+        ));
     }
 
     fn gather_refresh_data(logical_cpus: usize, gpus: &[Gpu]) -> RefreshData {

@@ -312,8 +312,10 @@ impl ResCPU {
 
     pub fn setup_signals(&self) {
         let imp = self.imp();
-        imp.logical_switch
-            .connect_active_notify(clone!(@weak self as this => move |switch| {
+        imp.logical_switch.connect_active_notify(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |switch| {
                 let imp = this.imp();
                 if switch.is_active() {
                     imp.stack.set_visible_child(&imp.logical_page.get());
@@ -321,7 +323,8 @@ impl ResCPU {
                     imp.stack.set_visible_child(&imp.total_page.get());
                 }
                 let _ = SETTINGS.set_show_logical_cpus(switch.is_active());
-            }));
+            }
+        ));
 
         imp.logical_switch.set_active(SETTINGS.show_logical_cpus());
     }

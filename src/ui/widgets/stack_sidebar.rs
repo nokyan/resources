@@ -170,22 +170,31 @@ impl ResStackSidebar {
                 .build();
 
             sidebar_item.set_usage_label_visible(SETTINGS.sidebar_details());
-            SETTINGS.connect_sidebar_details(
-                clone!(@strong sidebar_item as item => move |sidebar_details| {
+            SETTINGS.connect_sidebar_details(clone!(
+                #[weak(rename_to = item)]
+                sidebar_item,
+                move |sidebar_details| {
                     item.set_usage_label_visible(sidebar_details);
-                }),
-            );
+                }
+            ));
 
             sidebar_item.set_detail_label_visible(
                 SETTINGS.sidebar_description()
                     && !child.property::<GString>("tab_detail_string").is_empty(),
             );
-            SETTINGS.connect_sidebar_description(
-                clone!(@strong sidebar_item as item, @strong child as child => move |sidebar_details| {
+            SETTINGS.connect_sidebar_description(clone!(
+                #[weak(rename_to = item)]
+                sidebar_item,
+                #[weak]
+                child,
+                move |sidebar_details| {
                     // if the view doesn't provide a description, disable it regardless of the setting
-                    item.set_detail_label_visible(sidebar_details && !child.property::<GString>("tab_detail_string").is_empty());
-                }),
-            );
+                    item.set_detail_label_visible(
+                        sidebar_details
+                            && !child.property::<GString>("tab_detail_string").is_empty(),
+                    );
+                }
+            ));
 
             // TODO: generalize to "uses_meter"?
             if child.property::<bool>("uses_progress_bar") {
@@ -200,12 +209,17 @@ impl ResStackSidebar {
                 sidebar_item
                     .graph()
                     .set_visible(SETTINGS.sidebar_meter_type() == SidebarMeterType::Graph);
-                SETTINGS.connect_sidebar_meter_type(
-                    clone!(@strong sidebar_item as item => move |sidebar_meter_type| {
-                        item.set_progress_bar_visible(sidebar_meter_type == SidebarMeterType::ProgressBar);
-                        item.graph().set_visible(sidebar_meter_type == SidebarMeterType::Graph);
-                    }),
-                );
+                SETTINGS.connect_sidebar_meter_type(clone!(
+                    #[weak(rename_to = item)]
+                    sidebar_item,
+                    move |sidebar_meter_type| {
+                        item.set_progress_bar_visible(
+                            sidebar_meter_type == SidebarMeterType::ProgressBar,
+                        );
+                        item.graph()
+                            .set_visible(sidebar_meter_type == SidebarMeterType::Graph);
+                    }
+                ));
                 child
                     .bind_property("usage", &sidebar_item, "usage")
                     .sync_create()
@@ -266,11 +280,13 @@ impl ResStackSidebar {
         *imp.stack.borrow_mut() = Rc::from(stack.clone());
         *imp.pages.borrow_mut() = Rc::from(stack.clone().pages());
 
-        imp.pages.borrow().connect_items_changed(
-            clone!(@strong self as this => move |_, _, _, _| {
+        imp.pages.borrow().connect_items_changed(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _, _, _| {
                 this.populate_list(this.clear());
-            }),
-        );
+            }
+        ));
 
         imp.list_box.set_sort_func(|a, b| {
             let a_item = a.child().and_downcast::<ResStackSidebarItem>();
@@ -283,8 +299,10 @@ impl ResStackSidebar {
             }
         });
 
-        imp.list_box.connect_selected_rows_changed(
-            clone!(@strong self as this => move |list_box| {
+        imp.list_box.connect_selected_rows_changed(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |list_box| {
                 let imp = this.imp();
                 if let Some(selected) = list_box.selected_row() {
                     if !imp.populating.get() {
@@ -292,14 +310,17 @@ impl ResStackSidebar {
 
                         imp.stack.borrow().set_visible_child(&child);
 
-                        if let Some(page) = child.downcast::<adw::ToolbarView>().ok()
-                            .and_then(|toolbar| toolbar.content()) {
-
-                            let _ = SETTINGS.set_last_viewed_page(page.property::<GString>("tab-id").as_str());
+                        if let Some(page) = child
+                            .downcast::<adw::ToolbarView>()
+                            .ok()
+                            .and_then(|toolbar| toolbar.content())
+                        {
+                            let _ = SETTINGS
+                                .set_last_viewed_page(page.property::<GString>("tab-id").as_str());
                         }
                     }
                 }
-            }),
-        );
+            }
+        ));
     }
 }

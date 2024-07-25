@@ -128,7 +128,7 @@ impl ResAppDialog {
             imp.icon.set_css_classes(&["big-bubble"]);
         }
 
-        imp.icon.set_gicon(Some(&app.icon));
+        imp.icon.set_from_gicon(&app.icon);
 
         imp.name.set_label(&app.display_name);
 
