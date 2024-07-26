@@ -27,7 +27,7 @@ static OTHER_PROCESS: LazyLock<Mutex<(ChildStdin, ChildStdout)>> = LazyLock::new
     };
 
     let child = if *IS_FLATPAK {
-        debug!("Spawning resources-processes in Flatpak mode");
+        debug!("Spawning resources-processes in Flatpak mode ({proxy_path})");
         Command::new(FLATPAK_SPAWN)
             .args(["--host", proxy_path.as_str()])
             .stdin(Stdio::piped())
@@ -36,7 +36,7 @@ static OTHER_PROCESS: LazyLock<Mutex<(ChildStdin, ChildStdout)>> = LazyLock::new
             .spawn()
             .unwrap()
     } else {
-        debug!("Spawning resources-processes in native mode");
+        debug!("Spawning resources-processes in native mode ({proxy_path})");
         Command::new(proxy_path)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
@@ -123,8 +123,7 @@ impl Process {
             output_bytes
         };
 
-        rmp_serde::from_slice::<Vec<ProcessData>>(&output)
-            .context("error decoding resources-processes' output")
+        rmp_serde::from_slice(&output).context("error decoding resources-processes' output")
     }
 
     pub fn from_process_data(process_data: ProcessData) -> Self {
