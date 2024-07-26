@@ -18,7 +18,7 @@ static RE_AMDGPU_IDS: LazyLock<Regex> =
 
 static AMDGPU_IDS: LazyLock<HashMap<(u16, u8), String>> = LazyLock::new(|| {
     AmdGpu::read_libdrm_ids()
-        .inspect_err(|e| warn!("Unable to parse amdgpu.ids! Stacktrace:\n{}", e.backtrace()))
+        .inspect_err(|e| warn!("Unable to parse amdgpu.ids!\n{e}\n{}", e.backtrace()))
         .unwrap_or_default()
 });
 

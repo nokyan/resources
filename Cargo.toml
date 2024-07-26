@@ -14,7 +14,7 @@ lto = true
 
 [dependencies]
 adw = { version = "0.7.0", features = ["v1_5"], package = "libadwaita" }
-anyhow = "1.0.86"
+anyhow = { version = "1.0.86", features = ["backtrace"] }
 async-channel = "2.3.1"
 clap = { version = "4.5.11", features = ["derive"] }
 gettext-rs = { version = "0.7", features = ["gettext-system"] }

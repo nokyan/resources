@@ -123,7 +123,7 @@ impl Process {
             output_bytes
         };
 
-        rmp_serde::from_slice(&output).context("error decoding resources-processes' output")
+        Ok(rmp_serde::from_slice(&output)?)
     }
 
     pub fn from_process_data(process_data: ProcessData) -> Self {

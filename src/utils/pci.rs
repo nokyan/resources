@@ -5,7 +5,7 @@ use log::{debug, info, warn};
 
 static VENDORS: LazyLock<BTreeMap<u16, Vendor>> = LazyLock::new(|| {
     parse_pci_ids()
-        .inspect_err(|e| warn!("Unable to parse pci.ids! Stacktrace:\n{}", e.backtrace()))
+        .inspect_err(|e| warn!("Unable to parse pci.ids!\n{e}\n{}", e.backtrace()))
         .unwrap_or_default()
 });
 
