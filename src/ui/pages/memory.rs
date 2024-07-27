@@ -303,15 +303,18 @@ impl ResMemory {
     pub fn setup_signals(&self) {
         let imp = self.imp();
 
-        imp.authentication_banner
-            .connect_button_clicked(clone!(@strong self as this => move |_| {
+        imp.authentication_banner.connect_button_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
                 let imp = this.imp();
                 if let Ok(memory_devices) = memory::pkexec_dmidecode() {
                     this.setup_properties(memory_devices);
                     imp.properties.set_visible(true);
                 }
                 imp.authentication_banner.set_revealed(false);
-            }));
+            }
+        ));
     }
 
     pub fn refresh_page(&self, memdata: MemoryData) {

@@ -4,7 +4,7 @@
 
 [![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app)
 
-Resources is a simple yet powerful monitor for your system resources and processes, written in Rust and using GTK 4 and libadwaita for its GUI. It's capable of displaying usage and details of your CPU, memory, GPUs, network interfaces and block devices. It's also capable of listing and terminating running graphical applications as well as processes.
+Resources is a simple yet powerful monitor for your system resources and processes, written in Rust and using GTK 4 and libadwaita for its GUI. It’s capable of displaying usage and details of your CPU, memory, GPUs, network interfaces and block devices. It’s also capable of listing and terminating running graphical applications as well as processes.
 
 <details>
   <summary><b>Click me for screenshots!</b></summary>
@@ -43,6 +43,7 @@ Other dependencies are handled by `cargo`.
 
 The **official** and **only supported** way of installing Resources is using Flatpak. Simply use your graphical software manager like GNOME Software or Discover to install Resources from Flathub or type ``flatpak install flathub net.nokyan.Resources`` in your terminal.
 Please keep in mind that you need to have Flathub set up on your device. You can find out how to set up Flathub [here](https://flathub.org/setup).
+Resources’ minimum supported Rust version (MSRV) is **1.80.0**.
 
 ### Fedora
 
@@ -75,12 +76,12 @@ If you use [GNOME Builder](https://apps.gnome.org/app/org.gnome.Builder/) or Vis
 ## Running
 
 Running Resources is as simple as typing `flatpak run net.nokyan.Resources` into a terminal or running it from your app launcher.
-If you've built Resources natively or installed it from a traditional package manager such as `apt` or `dnf`, or if you've built Resources yourself, typing `resources` in a terminal will start Resources.
-If you've built Resources as a Flatpak, type `flatpak-builder --run flatpak_app build-aux/net.nokyan.Resources.Devel.json resources` into your terminal or use one of the aforementioned IDEs to do that automatically.
+If you’ve built Resources natively or installed it from a traditional package manager such as `apt` or `dnf`, or if you’ve built Resources yourself, typing `resources` in a terminal will start Resources.
+If you’ve built Resources as a Flatpak, type `flatpak-builder --run flatpak_app build-aux/net.nokyan.Resources.Devel.json resources` into your terminal or use one of the aforementioned IDEs to do that automatically.
 
 ## Contributing
 
-If you have an idea, bug report, question or something else, don't hesitate to [open an issue](https://github.com/nokyan/resources/issues)! Translations are always welcome.
+If you have an idea, bug report, question or something else, don’t hesitate to [open an issue](https://github.com/nokyan/resources/issues)! Translations are always welcome.
 
 ## Code of Conduct
 
