@@ -19,6 +19,10 @@ use super::{
     NaNDefault, TICK_RATE,
 };
 
+/// This contains the cgroups of desktop environments. If a process has this as its cgroup, its parent's cgroup will be
+/// considered instead to enhance app detection
+const DESKTOP_ENVIRONMENT_CGROUPS: &[&str] = &["org.gnome.Shell"];
+
 // This contains executable names that are blacklisted from being recognized as applications
 const DESKTOP_EXEC_BLOCKLIST: &[&str] = &["bash", "zsh", "fish", "sh", "ksh", "flatpak"];
 
@@ -545,7 +549,8 @@ impl AppsContext {
     fn app_associated_with_process(&self, process: &Process) -> Option<String> {
         // TODO: tidy this up
         // ↓ look for whether we can find an ID in the cgroup
-        if process.data.cgroup.as_deref().unwrap_or_default() == "org.gnome.Shell" {
+        if DESKTOP_ENVIRONMENT_CGROUPS.contains(&process.data.cgroup.as_deref().unwrap_or_default())
+        {
             if let Some(parent) = self
                 .apps
                 .values()
