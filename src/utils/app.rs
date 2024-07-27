@@ -224,7 +224,8 @@ impl App {
             .context("unable to get ID of desktop file")?;
 
         if APP_ID_BLOCKLIST.contains(&id.as_str()) {
-            bail!("skipping {id} because the ID is blacklisted")
+            debug!("Skipping {id} because it's blocklisted…");
+            bail!("{id} is blocklisted")
         }
 
         let exec = desktop_entry.get("Exec");
@@ -255,11 +256,8 @@ impl App {
 
         if let Some(executable_name) = &executable_name {
             if DESKTOP_EXEC_BLOCKLIST.contains(&executable_name.as_str()) {
-                bail!(
-                    "skipping {} because its executable {} is blacklisted",
-                    id,
-                    executable_name
-                )
+                debug!("Skipping {id} because its executable {executable_name} blacklisted…");
+                bail!("{id}'s executable {executable_name} is blacklisted")
             }
         }
 
