@@ -110,7 +110,7 @@ mod imp {
         }
 
         pub fn set_icon(&self, icon: &Icon) {
-            self.image.set_gicon(Some(icon));
+            self.image.set_from_gicon(icon);
             self.icon.set(icon.clone());
         }
 

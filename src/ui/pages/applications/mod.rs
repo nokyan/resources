@@ -375,9 +375,11 @@ impl ResApplications {
 
         let filter_model = gtk::FilterListModel::new(
             Some(store.clone()),
-            Some(gtk::CustomFilter::new(
-                clone!(@strong self as this => move |obj| this.search_filter(obj)),
-            )),
+            Some(gtk::CustomFilter::new(clone!(
+                #[strong(rename_to = this)]
+                self,
+                move |obj| this.search_filter(obj)
+            ))),
         );
 
         let sort_model = gtk::SortListModel::new(Some(filter_model.clone()), column_view.sorter());
@@ -409,23 +411,31 @@ impl ResApplications {
     pub fn setup_signals(&self) {
         let imp = self.imp();
 
-        imp.selection_model.borrow().connect_selection_changed(
-        clone!(@strong self as this => move |model, _, _| {
-            let imp = this.imp();
-                let is_system_processes = model.selected_item().map_or(false, |object| {
-                    object
-                    .downcast::<ApplicationEntry>()
-                    .unwrap()
-                    .id()
-                    .is_none()
-                });
-                imp.information_button.set_sensitive(model.selected() != u32::MAX);
-                imp.end_application_button.set_sensitive(model.selected() != u32::MAX && !is_system_processes);
-            }),
-        );
+        imp.selection_model
+            .borrow()
+            .connect_selection_changed(clone!(
+                #[weak(rename_to = this)]
+                self,
+                move |model, _, _| {
+                    let imp = this.imp();
+                    let is_system_processes = model.selected_item().map_or(false, |object| {
+                        object
+                            .downcast::<ApplicationEntry>()
+                            .unwrap()
+                            .id()
+                            .is_none()
+                    });
+                    imp.information_button
+                        .set_sensitive(model.selected() != u32::MAX);
+                    imp.end_application_button
+                        .set_sensitive(model.selected() != u32::MAX && !is_system_processes);
+                }
+            ));
 
-        imp.search_button
-            .connect_toggled(clone!(@strong self as this => move |button| {
+        imp.search_button.connect_toggled(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |button| {
                 let imp = this.imp();
                 imp.search_revealer.set_reveal_child(button.is_active());
                 if let Some(filter) = imp.filter_model.borrow().filter() {
@@ -434,62 +444,89 @@ impl ResApplications {
                 if button.is_active() {
                     imp.search_entry.grab_focus();
                 }
-            }));
+            }
+        ));
 
-        imp.search_entry
-            .connect_search_changed(clone!(@strong self as this => move |_| {
-            let imp = this.imp();
+        imp.search_entry.connect_search_changed(clone!(
+            #[strong(rename_to = this)]
+            self,
+            move |_| {
+                let imp = this.imp();
                 if let Some(filter) = imp.filter_model.borrow().filter() {
                     filter.changed(FilterChange::Different);
                 }
-            }));
+            }
+        ));
 
         let event_controller = EventControllerKey::new();
-        event_controller.connect_key_released(clone!(@strong self as this => move|_, key, _, _| {
-            if key.name().unwrap_or_default() == "Escape" {
-                this.close_search();
+        event_controller.connect_key_released(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, key, _, _| {
+                if key.name().unwrap_or_default() == "Escape" {
+                    this.close_search();
+                }
             }
-        }));
+        ));
         imp.search_entry.add_controller(event_controller);
 
-        imp.information_button
-            .connect_clicked(clone!(@strong self as this => move |_| {
+        imp.information_button.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
                 let imp = this.imp();
-                let selection_option = imp.selection_model.borrow()
-                .selected_item()
-                .map(|object| {
-                    object
-                    .downcast::<ApplicationEntry>()
-                    .unwrap()
-                });
+                let selection_option = imp
+                    .selection_model
+                    .borrow()
+                    .selected_item()
+                    .map(|object| object.downcast::<ApplicationEntry>().unwrap());
                 if let Some(selection) = selection_option {
                     this.open_information_dialog(&selection.app_item().unwrap());
                 }
-            }));
+            }
+        ));
 
-        imp.end_application_button
-            .connect_clicked(clone!(@strong self as this => move |_| {
+        imp.end_application_button.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
                 if let Some(app) = this.get_selected_app_item() {
                     this.execute_process_action_dialog(app, ProcessAction::TERM);
                 }
-            }));
+            }
+        ));
 
         if let Some(column_view_sorter) = imp.column_view.borrow().sorter() {
-            column_view_sorter.connect_changed(clone!(@strong self as this => move |sorter, _| {
-                if let Some(sorter) = sorter.downcast_ref::<gtk::ColumnViewSorter>() {
-                    let current_column = sorter.primary_sort_column().map(|column| column.as_ptr() as usize).unwrap_or_default();
+            column_view_sorter.connect_changed(clone!(
+                #[weak(rename_to = this)]
+                self,
+                move |sorter, _| {
+                    if let Some(sorter) = sorter.downcast_ref::<gtk::ColumnViewSorter>() {
+                        let current_column = sorter
+                            .primary_sort_column()
+                            .map(|column| column.as_ptr() as usize)
+                            .unwrap_or_default();
 
-                    let current_column_number = this.imp().columns.borrow().iter().enumerate().find(|(_, column)| column.as_ptr() as usize == current_column).map_or(0, |(i, _)| i as u32); // 0 corresponds to the name column
+                        let current_column_number = this
+                            .imp()
+                            .columns
+                            .borrow()
+                            .iter()
+                            .enumerate()
+                            .find(|(_, column)| column.as_ptr() as usize == current_column)
+                            .map_or(0, |(i, _)| i as u32); // 0 corresponds to the name column
 
-                    if SETTINGS.apps_sort_by() != current_column_number {
-                        let _ = SETTINGS.set_apps_sort_by(current_column_number);
-                    }
+                        if SETTINGS.apps_sort_by() != current_column_number {
+                            let _ = SETTINGS.set_apps_sort_by(current_column_number);
+                        }
 
-                    if SETTINGS.apps_sort_by_ascending() != sorter.primary_sort_order() {
-                        let _ = SETTINGS.set_apps_sort_by_ascending(sorter.primary_sort_order());
+                        if SETTINGS.apps_sort_by_ascending() != sorter.primary_sort_order() {
+                            let _ =
+                                SETTINGS.set_apps_sort_by_ascending(sorter.primary_sort_order());
+                        }
                     }
                 }
-            }));
+            ));
         }
     }
 
@@ -497,7 +534,7 @@ impl ResApplications {
         let imp = self.imp();
         let app_dialog = ResAppDialog::new();
         app_dialog.init(app_item);
-        app_dialog.present(&MainWindow::default());
+        app_dialog.present(Some(&MainWindow::default()));
         *imp.open_dialog.borrow_mut() = Some((
             app_item.id.as_ref().map(std::string::ToString::to_string),
             app_dialog,
@@ -603,12 +640,23 @@ impl ResApplications {
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
             let main_context = MainContext::default();
-            main_context.spawn_local(clone!(@strong self as this => async move {
-                let imp = this.imp();
-                let _ = imp.sender.get().unwrap().send(
-                    Action::ManipulateApp(action, app.id.unwrap(), imp.toast_overlay.get())
-                ).await;
-            }));
+            main_context.spawn_local(clone!(
+                #[weak(rename_to = this)]
+                self,
+                async move {
+                    let imp = this.imp();
+                    let _ = imp
+                        .sender
+                        .get()
+                        .unwrap()
+                        .send(Action::ManipulateApp(
+                            action,
+                            app.id.unwrap(),
+                            imp.toast_overlay.get(),
+                        ))
+                        .await;
+                }
+            ));
             return;
         }
 
@@ -628,20 +676,37 @@ impl ResApplications {
         // Called when "yes" or "no" were clicked
         dialog.connect_response(
             None,
-            clone!(@strong self as this => move |_, response| {
-                if response == "yes" {
-                    let main_context = MainContext::default();
-                    main_context.spawn_local(clone!(@strong this, @strong app => async move {
-                        let imp = this.imp();
-                        let _ = imp.sender.get().unwrap().send(
-                            Action::ManipulateApp(action, app.id.clone().unwrap(), imp.toast_overlay.get())
-                        ).await;
-                    }));
+            clone!(
+                #[weak(rename_to = this)]
+                self,
+                move |_, response| {
+                    if response == "yes" {
+                        let main_context = MainContext::default();
+                        main_context.spawn_local(clone!(
+                            #[weak]
+                            this,
+                            #[strong]
+                            app,
+                            async move {
+                                let imp = this.imp();
+                                let _ = imp
+                                    .sender
+                                    .get()
+                                    .unwrap()
+                                    .send(Action::ManipulateApp(
+                                        action,
+                                        app.id.clone().unwrap(),
+                                        imp.toast_overlay.get(),
+                                    ))
+                                    .await;
+                            }
+                        ));
+                    }
                 }
-            }),
+            ),
         );
 
-        dialog.present(&MainWindow::default());
+        dialog.present(Some(&MainWindow::default()));
     }
 
     fn add_name_column(column_view: &ColumnView) -> ColumnViewColumn {
@@ -729,9 +794,11 @@ impl ResApplications {
 
         column_view.append_column(&memory_col);
 
-        SETTINGS.connect_apps_show_memory(
-            clone!(@strong memory_col => move |visible| memory_col.set_visible(visible)),
-        );
+        SETTINGS.connect_apps_show_memory(clone!(
+            #[weak]
+            memory_col,
+            move |visible| memory_col.set_visible(visible)
+        ));
 
         memory_col
     }
@@ -779,9 +846,11 @@ impl ResApplications {
 
         column_view.append_column(&cpu_col);
 
-        SETTINGS.connect_apps_show_cpu(
-            clone!(@strong cpu_col => move |visible| cpu_col.set_visible(visible)),
-        );
+        SETTINGS.connect_apps_show_cpu(clone!(
+            #[weak]
+            cpu_col,
+            move |visible| cpu_col.set_visible(visible)
+        ));
 
         cpu_col
     }
@@ -830,9 +899,11 @@ impl ResApplications {
 
         column_view.append_column(&read_speed_col);
 
-        SETTINGS.connect_apps_show_drive_read_speed(
-            clone!(@strong read_speed_col => move |visible| read_speed_col.set_visible(visible)),
-        );
+        SETTINGS.connect_apps_show_drive_read_speed(clone!(
+            #[weak]
+            read_speed_col,
+            move |visible| read_speed_col.set_visible(visible)
+        ));
 
         read_speed_col
     }
@@ -877,9 +948,11 @@ impl ResApplications {
 
         column_view.append_column(&read_total_col);
 
-        SETTINGS.connect_apps_show_drive_read_total(
-            clone!(@strong read_total_col => move |visible| read_total_col.set_visible(visible)),
-        );
+        SETTINGS.connect_apps_show_drive_read_total(clone!(
+            #[weak]
+            read_total_col,
+            move |visible| read_total_col.set_visible(visible)
+        ));
 
         read_total_col
     }
@@ -928,11 +1001,13 @@ impl ResApplications {
 
         column_view.append_column(&write_speed_col);
 
-        SETTINGS.connect_apps_show_drive_write_speed(
-            clone!(@strong write_speed_col => move |visible| {
+        SETTINGS.connect_apps_show_drive_write_speed(clone!(
+            #[weak]
+            write_speed_col,
+            move |visible| {
                 write_speed_col.set_visible(visible);
-            }),
-        );
+            }
+        ));
 
         write_speed_col
     }
@@ -977,11 +1052,13 @@ impl ResApplications {
 
         column_view.append_column(&write_total_col);
 
-        SETTINGS.connect_apps_show_drive_write_total(
-            clone!(@strong write_total_col => move |visible| {
+        SETTINGS.connect_apps_show_drive_write_total(clone!(
+            #[weak]
+            write_total_col,
+            move |visible| {
                 write_total_col.set_visible(visible);
-            }),
-        );
+            }
+        ));
 
         write_total_col
     }
@@ -1023,9 +1100,11 @@ impl ResApplications {
 
         column_view.append_column(&gpu_col);
 
-        SETTINGS.connect_apps_show_gpu(
-            clone!(@strong gpu_col => move |visible| gpu_col.set_visible(visible)),
-        );
+        SETTINGS.connect_apps_show_gpu(clone!(
+            #[weak]
+            gpu_col,
+            move |visible| gpu_col.set_visible(visible)
+        ));
 
         gpu_col
     }
@@ -1070,9 +1149,11 @@ impl ResApplications {
 
         column_view.append_column(&encoder_col);
 
-        SETTINGS.connect_apps_show_encoder(
-            clone!(@strong encoder_col => move |visible| encoder_col.set_visible(visible)),
-        );
+        SETTINGS.connect_apps_show_encoder(clone!(
+            #[weak]
+            encoder_col,
+            move |visible| encoder_col.set_visible(visible)
+        ));
 
         encoder_col
     }
@@ -1117,9 +1198,11 @@ impl ResApplications {
 
         column_view.append_column(&decoder_col);
 
-        SETTINGS.connect_apps_show_decoder(
-            clone!(@strong decoder_col => move |visible| decoder_col.set_visible(visible)),
-        );
+        SETTINGS.connect_apps_show_decoder(clone!(
+            #[weak]
+            decoder_col,
+            move |visible| decoder_col.set_visible(visible)
+        ));
 
         decoder_col
     }
@@ -1161,9 +1244,11 @@ impl ResApplications {
 
         column_view.append_column(&gpu_mem_col);
 
-        SETTINGS.connect_apps_show_gpu_memory(
-            clone!(@strong gpu_mem_col => move |visible| gpu_mem_col.set_visible(visible)),
-        );
+        SETTINGS.connect_apps_show_gpu_memory(clone!(
+            #[weak]
+            gpu_mem_col,
+            move |visible| gpu_mem_col.set_visible(visible)
+        ));
 
         gpu_mem_col
     }

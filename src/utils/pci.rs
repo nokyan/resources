@@ -1,19 +1,12 @@
-use std::{collections::BTreeMap, io::BufRead};
+use std::{collections::BTreeMap, io::BufRead, sync::LazyLock, time::Instant};
 
 use anyhow::{Context, Result};
-use log::{debug, warn};
-use once_cell::sync::Lazy;
+use log::{debug, info, warn};
 
-static VENDORS: Lazy<BTreeMap<u16, Vendor>> = Lazy::new(|| {
-    let res = parse_pci_ids();
-
-    if let Err(error) = res.as_ref() {
-        warn!("Unable to read pci.ids, reason: {error}");
-    } else {
-        debug!("Successfully parsed pci.ids");
-    }
-
-    res.unwrap_or_default()
+static VENDORS: LazyLock<BTreeMap<u16, Vendor>> = LazyLock::new(|| {
+    parse_pci_ids()
+        .inspect_err(|e| warn!("Unable to parse pci.ids!\n{e}\n{}", e.backtrace()))
+        .unwrap_or_default()
 });
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -85,14 +78,16 @@ impl Vendor {
 }
 
 fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
+    debug!("Parsing pci.ids…");
+
+    let start = Instant::now();
+
     // first check if we can use flatpak's FS to get to the (probably newer) host's pci.ids file
     //
     // if that doesn't work, we're either not on flatpak or we're not allowed to see the host's pci.ids for some reason,
     // so try to either access flatpak's own (probably older) pci.ids or the host's if we're not on flatpak
     let file = std::fs::File::open("/run/host/usr/share/hwdata/pci.ids")
         .or_else(|_| std::fs::File::open("/usr/share/hwdata/pci.ids"))?;
-
-    debug!("Parsing pci.ids…");
 
     let reader = std::io::BufReader::new(file);
 
@@ -199,6 +194,10 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
             seen.insert(vid, vendor);
         }
     }
+
+    let elapsed = start.elapsed();
+
+    info!("Successfully parsed pci.ids within {elapsed:.2?}");
 
     Ok(seen)
 }

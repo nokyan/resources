@@ -8,7 +8,7 @@ use adw::{Toast, ToastOverlay};
 use anyhow::{Context, Result};
 use gtk::glib::{clone, timeout_future, GString, MainContext};
 use gtk::{gio, glib, Widget};
-use log::{debug, error, warn};
+use log::{error, info, warn};
 
 use crate::application::Application;
 use crate::config::PROFILE;
@@ -205,13 +205,17 @@ impl MainWindow {
 
         if let Some(receiver) = &*window.imp().receiver.borrow() {
             let main_context = MainContext::default();
-            main_context.spawn_local(
-                clone!(@strong receiver as receiver, @weak window as window => async move {
+            main_context.spawn_local(clone!(
+                #[strong]
+                receiver,
+                #[weak]
+                window,
+                async move {
                     while let Ok(action) = receiver.recv().await {
                         window.process_action(action);
                     }
-                }),
-            );
+                }
+            ));
         }
         window.setup_widgets();
         window
@@ -337,9 +341,13 @@ impl MainWindow {
 
         let main_context = MainContext::default();
 
-        main_context.spawn_local(clone!(@strong self as this => async move {
-            this.periodic_refresh_all().await;
-        }));
+        main_context.spawn_local(clone!(
+            #[weak(rename_to = this)]
+            self,
+            async move {
+                this.periodic_refresh_all().await;
+            }
+        ));
     }
 
     fn gather_refresh_data(logical_cpus: usize, gpus: &[Gpu]) -> RefreshData {
@@ -372,11 +380,14 @@ impl MainWindow {
             battery_data.push(BatteryData::new(path));
         }
 
-        let _process_data = Process::all_data();
-        if let Err(error) = &_process_data {
-            warn!("Unable to update process and app data, reason: {error}");
-        }
-        let process_data = _process_data.unwrap_or_default();
+        let process_data = Process::all_data()
+            .inspect_err(|e| {
+                warn!(
+                    "Unable to update process and app data!\n{e}\n{}",
+                    e.backtrace()
+                );
+            })
+            .unwrap_or_default();
 
         RefreshData {
             cpu_data,
@@ -629,7 +640,7 @@ impl MainWindow {
         for page_path in &old_page_paths {
             if !paths.contains(page_path) {
                 // A drive has been removed
-                debug!(
+                info!(
                     "A drive has been removed (or turned invisible): {}",
                     page_path.display()
                 );
@@ -643,7 +654,7 @@ impl MainWindow {
         for path in paths {
             if !drive_pages.contains_key(&path) {
                 // A drive has been added
-                debug!(
+                info!(
                     "A drive has been added (or turned visible): {}",
                     path.display()
                 );
@@ -704,7 +715,7 @@ impl MainWindow {
         for page_path in &old_page_paths {
             if !paths.contains(page_path) {
                 // A network interface has been removed
-                debug!(
+                info!(
                     "A network interface has been removed (or turned invisible): {}",
                     page_path.display()
                 );
@@ -718,7 +729,7 @@ impl MainWindow {
         for path in paths {
             if !network_pages.contains_key(&path) {
                 // A network interface has been added
-                debug!(
+                info!(
                     "A network interface has been added (or turned visible): {}",
                     path.display()
                 );
@@ -767,7 +778,7 @@ impl MainWindow {
         for page_path in &old_page_paths {
             if !paths.contains(page_path) {
                 // A battery has been removed
-                debug!("A battery has been removed: {}", page_path.display());
+                info!("A battery has been removed: {}", page_path.display());
 
                 let page = battery_pages.remove(page_path).unwrap();
                 self.remove_page(&page);
@@ -778,7 +789,7 @@ impl MainWindow {
         for path in paths {
             if !battery_pages.contains_key(&path) {
                 // A battery has been added
-                debug!("A battery has been added: {}", path.display());
+                info!("A battery has been added: {}", path.display());
 
                 highest_secondary_ord = highest_secondary_ord.saturating_add(1);
 

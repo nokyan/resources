@@ -1,16 +1,15 @@
-use std::{ops::Deref, str::FromStr};
+use std::{ops::Deref, str::FromStr, sync::LazyLock};
 
 use adw::prelude::*;
 
 use gtk::{gio, glib, SortType};
-use once_cell::sync::Lazy;
 use strum_macros::{Display, EnumString, FromRepr};
 
 use paste::paste;
 
 use crate::config::APP_ID;
 
-pub static SETTINGS: Lazy<Settings> = Lazy::new(Settings::default);
+pub static SETTINGS: LazyLock<Settings> = LazyLock::new(Settings::default);
 
 macro_rules! bool_settings {
     ($($setting_name:ident),*) => {

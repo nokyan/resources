@@ -387,9 +387,11 @@ impl ResProcesses {
 
         let filter_model = gtk::FilterListModel::new(
             Some(store.clone()),
-            Some(gtk::CustomFilter::new(
-                clone!(@strong self as this => move |obj| this.search_filter(obj)),
-            )),
+            Some(gtk::CustomFilter::new(clone!(
+                #[strong(rename_to = this)]
+                self,
+                move |obj| this.search_filter(obj)
+            ))),
         );
 
         let sort_model = gtk::SortListModel::new(Some(filter_model.clone()), column_view.sorter());
@@ -420,16 +422,24 @@ impl ResProcesses {
     pub fn setup_signals(&self) {
         let imp = self.imp();
 
-        imp.selection_model.borrow().connect_selection_changed(
-            clone!(@strong self as this => move |model, _, _| {
-                let imp = this.imp();
-                imp.information_button.set_sensitive(model.selected() != u32::MAX);
-                imp.end_process_button.set_sensitive(model.selected() != u32::MAX);
-            }),
-        );
+        imp.selection_model
+            .borrow()
+            .connect_selection_changed(clone!(
+                #[weak(rename_to = this)]
+                self,
+                move |model, _, _| {
+                    let imp = this.imp();
+                    imp.information_button
+                        .set_sensitive(model.selected() != u32::MAX);
+                    imp.end_process_button
+                        .set_sensitive(model.selected() != u32::MAX);
+                }
+            ));
 
-        imp.search_button
-            .connect_toggled(clone!(@strong self as this => move |button| {
+        imp.search_button.connect_toggled(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |button| {
                 let imp = this.imp();
                 imp.search_revealer.set_reveal_child(button.is_active());
                 if let Some(filter) = imp.filter_model.borrow().filter() {
@@ -438,62 +448,89 @@ impl ResProcesses {
                 if button.is_active() {
                     imp.search_entry.grab_focus();
                 }
-            }));
+            }
+        ));
 
-        imp.search_entry
-            .connect_search_changed(clone!(@strong self as this => move |_| {
+        imp.search_entry.connect_search_changed(clone!(
+            #[strong(rename_to = this)]
+            self,
+            move |_| {
                 let imp = this.imp();
                 if let Some(filter) = imp.filter_model.borrow().filter() {
                     filter.changed(FilterChange::Different);
                 }
-            }));
+            }
+        ));
 
         let event_controller = EventControllerKey::new();
-        event_controller.connect_key_released(clone!(@strong self as this => move|_, key, _, _| {
-            if key.name().unwrap_or_default() == "Escape" {
-                this.close_search();
+        event_controller.connect_key_released(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, key, _, _| {
+                if key.name().unwrap_or_default() == "Escape" {
+                    this.close_search();
+                }
             }
-        }));
+        ));
         imp.search_entry.add_controller(event_controller);
 
-        imp.information_button
-            .connect_clicked(clone!(@strong self as this => move |_| {
-            let imp = this.imp();
-                let selection_option = imp.selection_model.borrow()
-                .selected_item()
-                .map(|object| {
-                    object
-                    .downcast::<ProcessEntry>()
-                    .unwrap()
-                });
+        imp.information_button.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
+                let imp = this.imp();
+                let selection_option = imp
+                    .selection_model
+                    .borrow()
+                    .selected_item()
+                    .map(|object| object.downcast::<ProcessEntry>().unwrap());
                 if let Some(selection) = selection_option {
                     this.open_information_dialog(&selection.process_item().unwrap());
                 }
-            }));
+            }
+        ));
 
-        imp.end_process_button
-            .connect_clicked(clone!(@strong self as this => move |_| {
+        imp.end_process_button.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
                 if let Some(app) = this.get_selected_process_item() {
                     this.execute_process_action_dialog(app, ProcessAction::TERM);
                 }
-            }));
+            }
+        ));
 
         if let Some(column_view_sorter) = imp.column_view.borrow().sorter() {
-            column_view_sorter.connect_changed(clone!(@strong self as this => move |sorter, _| {
-                if let Some(sorter) = sorter.downcast_ref::<gtk::ColumnViewSorter>() {
-                    let current_column = sorter.primary_sort_column().map(|column| column.as_ptr() as usize).unwrap_or_default();
+            column_view_sorter.connect_changed(clone!(
+                #[weak(rename_to = this)]
+                self,
+                move |sorter, _| {
+                    if let Some(sorter) = sorter.downcast_ref::<gtk::ColumnViewSorter>() {
+                        let current_column = sorter
+                            .primary_sort_column()
+                            .map(|column| column.as_ptr() as usize)
+                            .unwrap_or_default();
 
-                    let current_column_number = this.imp().columns.borrow().iter().enumerate().find(|(_, column)| column.as_ptr() as usize == current_column).map_or(3, |(i, _)| i as u32); // 3 corresponds to the memory column
+                        let current_column_number = this
+                            .imp()
+                            .columns
+                            .borrow()
+                            .iter()
+                            .enumerate()
+                            .find(|(_, column)| column.as_ptr() as usize == current_column)
+                            .map_or(3, |(i, _)| i as u32); // 3 corresponds to the memory column
 
-                    if SETTINGS.processes_sort_by() != current_column_number {
-                        let _ = SETTINGS.set_processes_sort_by(current_column_number);
-                    }
+                        if SETTINGS.processes_sort_by() != current_column_number {
+                            let _ = SETTINGS.set_processes_sort_by(current_column_number);
+                        }
 
-                    if SETTINGS.processes_sort_by_ascending() != sorter.primary_sort_order() {
-                        let _ = SETTINGS.set_processes_sort_by_ascending(sorter.primary_sort_order());
+                        if SETTINGS.processes_sort_by_ascending() != sorter.primary_sort_order() {
+                            let _ = SETTINGS
+                                .set_processes_sort_by_ascending(sorter.primary_sort_order());
+                        }
                     }
                 }
-            }));
+            ));
         }
     }
 
@@ -501,7 +538,7 @@ impl ResProcesses {
         let imp = self.imp();
         let process_dialog = ResProcessDialog::new();
         process_dialog.init(process, &process.user);
-        process_dialog.present(&MainWindow::default());
+        process_dialog.present(Some(&MainWindow::default()));
         *imp.open_dialog.borrow_mut() = Some((process.pid, process_dialog));
     }
 
@@ -581,12 +618,24 @@ impl ResProcesses {
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
             let main_context = MainContext::default();
-            main_context.spawn_local(clone!(@strong self as this => async move {
-                let imp = this.imp();
-                let _ = imp.sender.get().unwrap().send(
-                    Action::ManipulateProcess(action, process.pid, process.clone().display_name, imp.toast_overlay.get())
-                ).await;
-            }));
+            main_context.spawn_local(clone!(
+                #[weak(rename_to = this)]
+                self,
+                async move {
+                    let imp = this.imp();
+                    let _ = imp
+                        .sender
+                        .get()
+                        .unwrap()
+                        .send(Action::ManipulateProcess(
+                            action,
+                            process.pid,
+                            process.clone().display_name,
+                            imp.toast_overlay.get(),
+                        ))
+                        .await;
+                }
+            ));
             return;
         }
 
@@ -606,20 +655,38 @@ impl ResProcesses {
         // Called when "yes" or "no" were clicked
         dialog.connect_response(
             None,
-            clone!(@strong self as this => move |_, response| {
-                if response == "yes" {
-                    let main_context = MainContext::default();
-                    main_context.spawn_local(clone!(@strong this, @strong process => async move {
-                        let imp = this.imp();
-                        let _ = imp.sender.get().unwrap().send(
-                            Action::ManipulateProcess(action, process.pid, process.clone().display_name, imp.toast_overlay.get())
-                        ).await;
-                    }));
+            clone!(
+                #[weak(rename_to = this)]
+                self,
+                move |_, response| {
+                    if response == "yes" {
+                        let main_context = MainContext::default();
+                        main_context.spawn_local(clone!(
+                            #[strong]
+                            this,
+                            #[strong]
+                            process,
+                            async move {
+                                let imp = this.imp();
+                                let _ = imp
+                                    .sender
+                                    .get()
+                                    .unwrap()
+                                    .send(Action::ManipulateProcess(
+                                        action,
+                                        process.pid,
+                                        process.clone().display_name,
+                                        imp.toast_overlay.get(),
+                                    ))
+                                    .await;
+                            }
+                        ));
+                    }
                 }
-            }),
+            ),
         );
 
-        dialog.present(&MainWindow::default());
+        dialog.present(Some(&MainWindow::default()));
     }
 
     fn add_name_column(column_view: &ColumnView) -> ColumnViewColumn {
@@ -701,9 +768,11 @@ impl ResProcesses {
 
         column_view.append_column(&pid_col);
 
-        SETTINGS.connect_processes_show_id(
-            clone!(@strong pid_col => move |visible| pid_col.set_visible(visible)),
-        );
+        SETTINGS.connect_processes_show_id(clone!(
+            #[weak]
+            pid_col,
+            move |visible| pid_col.set_visible(visible)
+        ));
 
         pid_col
     }
@@ -742,9 +811,11 @@ impl ResProcesses {
 
         column_view.append_column(&user_col);
 
-        SETTINGS.connect_processes_show_user(
-            clone!(@strong user_col => move |visible| user_col.set_visible(visible)),
-        );
+        SETTINGS.connect_processes_show_user(clone!(
+            #[weak]
+            user_col,
+            move |visible| user_col.set_visible(visible)
+        ));
 
         user_col
     }
@@ -787,9 +858,11 @@ impl ResProcesses {
 
         column_view.append_column(&memory_col);
 
-        SETTINGS.connect_processes_show_memory(
-            clone!(@strong memory_col => move |visible| memory_col.set_visible(visible)),
-        );
+        SETTINGS.connect_processes_show_memory(clone!(
+            #[weak]
+            memory_col,
+            move |visible| memory_col.set_visible(visible)
+        ));
 
         memory_col
     }
@@ -837,9 +910,11 @@ impl ResProcesses {
 
         column_view.append_column(&cpu_col);
 
-        SETTINGS.connect_processes_show_cpu(
-            clone!(@strong cpu_col => move |visible| cpu_col.set_visible(visible)),
-        );
+        SETTINGS.connect_processes_show_cpu(clone!(
+            #[weak]
+            cpu_col,
+            move |visible| cpu_col.set_visible(visible)
+        ));
 
         cpu_col
     }
@@ -888,11 +963,13 @@ impl ResProcesses {
 
         column_view.append_column(&read_speed_col);
 
-        SETTINGS.connect_processes_show_drive_read_speed(
-            clone!(@strong read_speed_col => move |visible| {
+        SETTINGS.connect_processes_show_drive_read_speed(clone!(
+            #[weak]
+            read_speed_col,
+            move |visible| {
                 read_speed_col.set_visible(visible);
-            }),
-        );
+            }
+        ));
 
         read_speed_col
     }
@@ -941,11 +1018,13 @@ impl ResProcesses {
 
         column_view.append_column(&read_total_col);
 
-        SETTINGS.connect_processes_show_drive_read_total(
-            clone!(@strong read_total_col => move |visible| {
+        SETTINGS.connect_processes_show_drive_read_total(clone!(
+            #[weak]
+            read_total_col,
+            move |visible| {
                 read_total_col.set_visible(visible);
-            }),
-        );
+            }
+        ));
 
         read_total_col
     }
@@ -994,11 +1073,13 @@ impl ResProcesses {
 
         column_view.append_column(&write_speed_col);
 
-        SETTINGS.connect_processes_show_drive_write_speed(
-            clone!(@strong write_speed_col => move |visible| {
+        SETTINGS.connect_processes_show_drive_write_speed(clone!(
+            #[weak]
+            write_speed_col,
+            move |visible| {
                 write_speed_col.set_visible(visible);
-            }),
-        );
+            }
+        ));
 
         write_speed_col
     }
@@ -1047,11 +1128,13 @@ impl ResProcesses {
 
         column_view.append_column(&write_total_col);
 
-        SETTINGS.connect_processes_show_drive_write_total(
-            clone!(@strong write_total_col => move |visible| {
+        SETTINGS.connect_processes_show_drive_write_total(clone!(
+            #[weak]
+            write_total_col,
+            move |visible| {
                 write_total_col.set_visible(visible);
-            }),
-        );
+            }
+        ));
 
         write_total_col
     }
@@ -1093,9 +1176,11 @@ impl ResProcesses {
 
         column_view.append_column(&gpu_col);
 
-        SETTINGS.connect_processes_show_gpu(
-            clone!(@strong gpu_col => move |visible| gpu_col.set_visible(visible)),
-        );
+        SETTINGS.connect_processes_show_gpu(clone!(
+            #[weak]
+            gpu_col,
+            move |visible| gpu_col.set_visible(visible)
+        ));
 
         gpu_col
     }
@@ -1140,9 +1225,11 @@ impl ResProcesses {
 
         column_view.append_column(&encoder_col);
 
-        SETTINGS.connect_processes_show_encoder(
-            clone!(@strong encoder_col => move |visible| encoder_col.set_visible(visible)),
-        );
+        SETTINGS.connect_processes_show_encoder(clone!(
+            #[weak]
+            encoder_col,
+            move |visible| encoder_col.set_visible(visible)
+        ));
 
         encoder_col
     }
@@ -1187,9 +1274,11 @@ impl ResProcesses {
 
         column_view.append_column(&decoder_col);
 
-        SETTINGS.connect_processes_show_decoder(
-            clone!(@strong decoder_col => move |visible| decoder_col.set_visible(visible)),
-        );
+        SETTINGS.connect_processes_show_decoder(clone!(
+            #[weak]
+            decoder_col,
+            move |visible| decoder_col.set_visible(visible)
+        ));
 
         decoder_col
     }
@@ -1233,9 +1322,11 @@ impl ResProcesses {
 
         column_view.append_column(&gpu_mem_col);
 
-        SETTINGS.connect_processes_show_gpu_memory(
-            clone!(@strong gpu_mem_col => move |visible| gpu_mem_col.set_visible(visible)),
-        );
+        SETTINGS.connect_processes_show_gpu_memory(clone!(
+            #[weak]
+            gpu_mem_col,
+            move |visible| gpu_mem_col.set_visible(visible)
+        ));
 
         gpu_mem_col
     }
@@ -1279,9 +1370,11 @@ impl ResProcesses {
 
         column_view.append_column(&total_cpu_time_col);
 
-        SETTINGS.connect_processes_show_total_cpu_time(
-            clone!(@strong total_cpu_time_col => move |visible| total_cpu_time_col.set_visible(visible)),
-        );
+        SETTINGS.connect_processes_show_total_cpu_time(clone!(
+            #[weak]
+            total_cpu_time_col,
+            move |visible| total_cpu_time_col.set_visible(visible)
+        ));
 
         total_cpu_time_col
     }
@@ -1325,9 +1418,11 @@ impl ResProcesses {
 
         column_view.append_column(&user_cpu_time_col);
 
-        SETTINGS.connect_processes_show_user_cpu_time(
-            clone!(@strong user_cpu_time_col => move |visible| user_cpu_time_col.set_visible(visible)),
-        );
+        SETTINGS.connect_processes_show_user_cpu_time(clone!(
+            #[weak]
+            user_cpu_time_col,
+            move |visible| user_cpu_time_col.set_visible(visible)
+        ));
 
         user_cpu_time_col
     }
@@ -1371,9 +1466,11 @@ impl ResProcesses {
 
         column_view.append_column(&system_cpu_time_col);
 
-        SETTINGS.connect_processes_show_system_cpu_time(
-            clone!(@strong system_cpu_time_col => move |visible| system_cpu_time_col.set_visible(visible)),
-        );
+        SETTINGS.connect_processes_show_system_cpu_time(clone!(
+            #[weak]
+            system_cpu_time_col,
+            move |visible| system_cpu_time_col.set_visible(visible)
+        ));
 
         system_cpu_time_col
     }

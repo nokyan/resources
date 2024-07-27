@@ -13,29 +13,30 @@ strip = true
 lto = true
 
 [dependencies]
-process-data = { path = "lib/process_data" }
-glob = "0.3.1"
-anyhow = "1.0.86"
-log = "0.4.22"
-pretty_env_logger = "0.5"
+adw = { version = "0.7.0", features = ["v1_5"], package = "libadwaita" }
+anyhow = { version = "1.0.86", features = ["backtrace"] }
+async-channel = "2.3.1"
+clap = { version = "4.5.11", features = ["derive"] }
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
-gtk = { version = "0.8.2", features = ["v4_10"], package = "gtk4" }
-adw = { version = "0.6.0", features = ["v1_5"], package = "libadwaita" }
-regex = "1.10.5"
-sysconf = "0.3.4"
-nvml-wrapper = "0.10.0"
+glob = "0.3.1"
+gtk = { version = "0.9.0", features = ["v4_10"], package = "gtk4" }
+gtk-macros = "0.3.0"
+hashbrown = "0.14.5"
+log = "0.4.22"
 nix = { version = "0.29.0", default-features = false, features = ["signal"] }
+num_cpus = "1.16.0"
+nvml-wrapper = "0.10.0"
+paste = "1.0.15"
 plotters = { version = "0.3.6", default-features = false, features = [
     "area_series",
 ] }
-plotters-cairo = "0.6.0"
+plotters-cairo = "0.7.0"
+pretty_env_logger = "0.5"
+process-data = { path = "lib/process_data" }
+regex = "1.10.5"
 rmp-serde = "1.3.0"
+ron = "0.8.1"
 rust-ini = "0.21.0"
-gtk-macros = "0.3.0"
 strum = "0.26.3"
 strum_macros = "0.26.4"
-once_cell = "1.19.0"
-hashbrown = "0.14.5"
-paste = "1.0.15"
-num_cpus = "1.16.0"
-async-channel = "2.3.1"
+sysconf = "0.3.4"

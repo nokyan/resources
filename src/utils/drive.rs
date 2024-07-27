@@ -1,11 +1,11 @@
 use anyhow::{Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
-use once_cell::sync::Lazy;
 use regex::Regex;
 use std::{
     collections::HashMap,
     fmt::Display,
     path::{Path, PathBuf},
+    sync::LazyLock,
 };
 
 use crate::i18n::{i18n, i18n_f};
@@ -14,7 +14,7 @@ use super::units::convert_storage;
 
 const SYS_STATS: &str = r" *(?P<read_ios>[0-9]*) *(?P<read_merges>[0-9]*) *(?P<read_sectors>[0-9]*) *(?P<read_ticks>[0-9]*) *(?P<write_ios>[0-9]*) *(?P<write_merges>[0-9]*) *(?P<write_sectors>[0-9]*) *(?P<write_ticks>[0-9]*) *(?P<in_flight>[0-9]*) *(?P<io_ticks>[0-9]*) *(?P<time_in_queue>[0-9]*) *(?P<discard_ios>[0-9]*) *(?P<discard_merges>[0-9]*) *(?P<discard_sectors>[0-9]*) *(?P<discard_ticks>[0-9]*) *(?P<flush_ios>[0-9]*) *(?P<flush_ticks>[0-9]*)";
 
-static RE_DRIVE: Lazy<Regex> = Lazy::new(|| Regex::new(SYS_STATS).unwrap());
+static RE_DRIVE: LazyLock<Regex> = LazyLock::new(|| Regex::new(SYS_STATS).unwrap());
 
 #[derive(Debug)]
 pub struct DriveData {

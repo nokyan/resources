@@ -1,4 +1,8 @@
-use std::path::{Path, PathBuf};
+use std::{
+    path::{Path, PathBuf},
+    sync::LazyLock,
+    time::Instant,
+};
 
 use anyhow::{bail, Context, Result};
 use gtk::{
@@ -6,8 +10,7 @@ use gtk::{
     glib::GString,
 };
 use hashbrown::{HashMap, HashSet};
-use log::debug;
-use once_cell::sync::Lazy;
+use log::{debug, info};
 use process_data::{pci_slot::PciSlot, Containerization, ProcessData};
 use regex::Regex;
 
@@ -33,10 +36,11 @@ const APP_ID_BLOCKLIST: &[&str] = &[
     "org.gnome.RemoteDesktop.Handover", // Technical application
 ];
 
-static RE_ENV_FILTER: Lazy<Regex> = Lazy::new(|| Regex::new(r"env\s*\S*=\S*\s*(.*)").unwrap());
+static RE_ENV_FILTER: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"env\s*\S*=\S*\s*(.*)").unwrap());
 
-static RE_FLATPAK_FILTER: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"flatpak run .* --command=(\S*)").unwrap());
+static RE_FLATPAK_FILTER: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"flatpak run .* --command=(\S*)").unwrap());
 
 fn format_path(path: &str) -> String {
     if path.starts_with("~/") {
@@ -51,7 +55,7 @@ fn format_path(path: &str) -> String {
 }
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
-pub static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
+pub static DATA_DIRS: LazyLock<Vec<PathBuf>> = LazyLock::new(|| {
     let local_share = format_path("~/.local/share");
     let mut data_dirs: Vec<PathBuf> = std::env::var("XDG_DATA_DIRS")
         .unwrap_or_else(|_| format!("/usr/share:{local_share}"))
@@ -67,7 +71,7 @@ pub static DATA_DIRS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
 // The HashMap is used like this:
 //   Key: The name of the executable of the process
 //   Value: What it should be replaced with when finding out to which app it belongs
-static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: Lazy<HashMap<String, String>> = Lazy::new(|| {
+static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: LazyLock<HashMap<String, String>> = LazyLock::new(|| {
     HashMap::from([
         ("firefox-bin".into(), "firefox".into()),
         ("oosplash".into(), "libreoffice".into()),
@@ -78,7 +82,7 @@ static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: Lazy<HashMap<String, String>> = Lazy::n
     ])
 });
 
-static MESSAGE_LOCALES: Lazy<Vec<String>> = Lazy::new(|| {
+static MESSAGE_LOCALES: LazyLock<Vec<String>> = LazyLock::new(|| {
     let envs = ["LC_MESSAGES", "LANGUAGE", "LANG", "LC_ALL"];
     let mut return_vec: Vec<String> = Vec::new();
 
@@ -110,7 +114,7 @@ static MESSAGE_LOCALES: Lazy<Vec<String>> = Lazy::new(|| {
     }
 
     debug!(
-        "The following locales will be used for app names and descriptions: {:?}",
+        "Using the following locales for app names and descriptions: {:?}",
         &return_vec
     );
 
@@ -166,12 +170,23 @@ pub struct App {
 
 impl App {
     pub fn all() -> Vec<App> {
-        debug!("Detecting installed applications…");
+        debug!("Detecting installed apps");
 
-        let apps: Vec<App> = DATA_DIRS
+        let start = Instant::now();
+
+        let applications_dir: Vec<_> = DATA_DIRS
             .iter()
-            .filter_map(|path| {
-                let applications_path = path.join("applications");
+            .map(|path| path.join("applications"))
+            .collect();
+
+        debug!(
+            "Using the following directories for app detection: {:?}",
+            applications_dir
+        );
+
+        let apps: Vec<_> = applications_dir
+            .iter()
+            .flat_map(|applications_path| {
                 applications_path.read_dir().ok().map(|read| {
                     read.filter_map(|file_res| {
                         file_res
@@ -183,13 +198,20 @@ impl App {
             .flatten()
             .collect();
 
-        debug!("Detected {} applications", apps.len());
+        let elapsed = start.elapsed();
+
+        info!(
+            "Detected {} apps within {elapsed:.2?}",
+            applications_dir.len()
+        );
 
         apps
     }
 
     pub fn from_desktop_file<P: AsRef<Path>>(file_path: P) -> Result<App> {
-        let ini = ini::Ini::load_from_file(file_path.as_ref())?;
+        let file_path = file_path.as_ref();
+
+        let ini = ini::Ini::load_from_file(file_path)?;
 
         let desktop_entry = ini
             .section(Some("Desktop Entry"))
@@ -201,18 +223,13 @@ impl App {
             .map(str::to_string)
             .or_else(|| {
                 // if not, presume that the ID is in the file name
-                Some(
-                    file_path
-                        .as_ref()
-                        .file_stem()?
-                        .to_string_lossy()
-                        .to_string(),
-                )
+                Some(file_path.file_stem()?.to_string_lossy().to_string())
             })
             .context("unable to get ID of desktop file")?;
 
         if APP_ID_BLOCKLIST.contains(&id.as_str()) {
-            bail!("skipping {id} because the ID is blacklisted")
+            debug!("Skipping {id} because it's blocklisted…");
+            bail!("{id} is blocklisted")
         }
 
         let exec = desktop_entry.get("Exec");
@@ -243,11 +260,8 @@ impl App {
 
         if let Some(executable_name) = &executable_name {
             if DESKTOP_EXEC_BLOCKLIST.contains(&executable_name.as_str()) {
-                bail!(
-                    "skipping {} because its executable {} is blacklisted",
-                    id,
-                    executable_name
-                )
+                debug!("Skipping {id} because its executable {executable_name} blacklisted…");
+                bail!("{id}'s executable {executable_name} is blacklisted")
             }
         }
 
@@ -286,6 +300,13 @@ impl App {
         let description = description_opt
             .or_else(|| desktop_entry.get("Comment"))
             .map(str::to_string);
+
+        debug!(
+            "Found app \"{display_name}\" (ID: {id}) at {} with commandline `{}` (detected executable name: {})",
+            file_path.to_string_lossy(),
+            commandline.as_ref().unwrap_or(&"<None>".into()),
+            executable_name.as_ref().unwrap_or(&"<None>".into()),
+        );
 
         Ok(App {
             processes: Vec::new(),
@@ -564,12 +585,24 @@ impl AppsContext {
             .apps
             .get(process.data.cgroup.as_deref().unwrap_or_default())
         {
+            debug!(
+                "Associating process {} with app \"{}\" (ID: {}) based on process cgroup matching with app ID",
+                process.data.pid, app.display_name, app.id
+            );
             Some(app.id.clone())
         } else if let Some(app) = self.apps.get(&process.executable_path) {
             // ↑ look for whether we can find an ID in the executable path of the process
+            debug!(
+                "Associating process {} with app \"{}\" (ID: {}) based on process executable path matching with app ID",
+                process.data.pid, app.display_name, app.id
+            );
             Some(app.id.clone())
         } else if let Some(app) = self.apps.get(&process.executable_name) {
             // ↑ look for whether we can find an ID in the executable name of the process
+            debug!(
+                "Associating process {} with app \"{}\" (ID: {}) based on process executable name matching with app ID",
+                process.data.pid, app.display_name, app.id
+            );
             Some(app.id.clone())
         } else {
             self.apps
@@ -582,12 +615,20 @@ impl AppsContext {
                         .as_ref()
                         .is_some_and(|commandline| commandline == &process.executable_path)
                     {
+                        debug!(
+                            "Associating process {} with app \"{}\" (ID: {}) based on process executable pathmatching with app commandline ({})",
+                            process.data.pid, app.display_name, app.id, process.executable_path
+                        );
                         true
                     } else if app
                         .executable_name
                         .as_ref()
                         .is_some_and(|executable_name| executable_name == &process.executable_name)
                     {
+                        debug!(
+                            "Associating process {} with app \"{}\" (ID: {}) based on process executable name matching with app executable name ({})",
+                            process.data.pid, app.display_name, app.id, process.executable_name
+                        );
                         true
                     } else if app
                         .executable_name
@@ -601,6 +642,10 @@ impl AppsContext {
                         })
                         .unwrap_or(false)
                     {
+                        debug!(
+                            "Associating process {} with app \"{}\" (ID: {}) based on match in KNOWN_EXECUTABLE_NAME_EXCEPTIONS",
+                            process.data.pid, app.display_name, app.id
+                        );
                         true
                     } else {
                         false

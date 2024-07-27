@@ -91,68 +91,108 @@ impl Application {
     fn setup_gactions(&self) {
         // Quit
         let action_quit = gio::SimpleAction::new("quit", None);
-        action_quit.connect_activate(clone!(@weak self as app => move |_, _| {
-            // This is needed to trigger the delete event and saving the window state
-            app.main_window().close();
-            app.quit();
-        }));
+        action_quit.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _| {
+                // This is needed to trigger the delete event and saving the window state
+                this.main_window().close();
+                this.quit();
+            }
+        ));
         self.add_action(&action_quit);
 
         // Toggle Search
         let action_search = gio::SimpleAction::new("toggle-search", None);
-        action_search.connect_activate(clone!(@weak self as app => move |_, _| {
-            app.main_window().shortcut_toggle_search();
-        }));
+        action_search.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _| {
+                this.main_window().shortcut_toggle_search();
+            }
+        ));
         self.add_action(&action_search);
 
         // Show Settings
         let action_settings = gio::SimpleAction::new("settings", None);
-        action_settings.connect_activate(clone!(@weak self as app => move |_, _| {
-            app.show_settings_dialog();
-        }));
+        action_settings.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _| {
+                this.show_settings_dialog();
+            }
+        ));
         self.add_action(&action_settings);
 
         // About
         let action_about = gio::SimpleAction::new("about", None);
-        action_about.connect_activate(clone!(@weak self as app => move |_, _| {
-            app.show_about_dialog();
-        }));
+        action_about.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _| {
+                this.show_about_dialog();
+            }
+        ));
         self.add_action(&action_about);
 
         // End App/Process
         let action_end_app_process = gio::SimpleAction::new("end-app-process", None);
-        action_end_app_process.connect_activate(clone!(@weak self as app => move |_, _| {
-            app.main_window().shortcut_manipulate_app_process(ProcessAction::TERM);
-        }));
+        action_end_app_process.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _| {
+                this.main_window()
+                    .shortcut_manipulate_app_process(ProcessAction::TERM);
+            }
+        ));
         self.add_action(&action_end_app_process);
 
         // Kill App/Process
         let action_kill_app_process = gio::SimpleAction::new("kill-app-process", None);
-        action_kill_app_process.connect_activate(clone!(@weak self as app => move |_, _| {
-            app.main_window().shortcut_manipulate_app_process(ProcessAction::KILL);
-        }));
+        action_kill_app_process.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _| {
+                this.main_window()
+                    .shortcut_manipulate_app_process(ProcessAction::KILL);
+            }
+        ));
         self.add_action(&action_kill_app_process);
 
         // Halt App/Process
         let action_halt_app_process = gio::SimpleAction::new("halt-app-process", None);
-        action_halt_app_process.connect_activate(clone!(@weak self as app => move |_, _| {
-            app.main_window().shortcut_manipulate_app_process(ProcessAction::STOP);
-        }));
+        action_halt_app_process.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _| {
+                this.main_window()
+                    .shortcut_manipulate_app_process(ProcessAction::STOP);
+            }
+        ));
         self.add_action(&action_halt_app_process);
 
         // Continue App/Process
         let action_continue_app_process = gio::SimpleAction::new("continue-app-process", None);
-        action_continue_app_process.connect_activate(clone!(@weak self as app => move |_, _| {
-            app.main_window().shortcut_manipulate_app_process(ProcessAction::CONT);
-        }));
+        action_continue_app_process.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _| {
+                this.main_window()
+                    .shortcut_manipulate_app_process(ProcessAction::CONT);
+            }
+        ));
         self.add_action(&action_continue_app_process);
 
         // Show Information for App/Process
         let action_information_app_process =
             gio::SimpleAction::new("information-app-process", None);
-        action_information_app_process.connect_activate(clone!(@weak self as app => move |_, _| {
-            app.main_window().shortcut_information_app_process();
-        }));
+        action_information_app_process.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _| {
+                this.main_window().shortcut_information_app_process();
+            }
+        ));
         self.add_action(&action_information_app_process);
     }
 
@@ -193,12 +233,16 @@ impl Application {
 
         settings.init();
 
-        settings.present(&self.main_window());
+        settings.present(Some(&self.main_window()));
         imp.settings_window_opened.set(true);
 
-        settings.connect_closed(clone!(@strong self as this => move |_| {
-            this.imp().settings_window_opened.set(false);
-        }));
+        settings.connect_closed(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
+                this.imp().settings_window_opened.set(false);
+            }
+        ));
     }
 
     fn show_about_dialog(&self) {
@@ -222,7 +266,7 @@ impl Application {
         about.set_translator_credits(&i18n("translator-credits"));
         about.add_credit_section(Some(&i18n("Icon by")), &["Avhiren"]);
 
-        about.present(&self.main_window());
+        about.present(Some(&self.main_window()));
     }
 
     pub fn run(&self) {
