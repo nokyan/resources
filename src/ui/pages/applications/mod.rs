@@ -1,4 +1,4 @@
-mod application_entry;
+pub mod application_entry;
 mod application_name_cell;
 
 use std::collections::HashSet;
@@ -16,7 +16,7 @@ use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::ui::dialogs::app_dialog::ResAppDialog;
 use crate::ui::window::{Action, MainWindow};
-use crate::utils::app::{AppItem, AppsContext};
+use crate::utils::app::AppsContext;
 use crate::utils::process::ProcessAction;
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_speed, convert_storage};
@@ -184,10 +184,8 @@ mod imp {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
-                        if let Some(app_item) = application_entry.app_item() {
-                            res_applications
-                                .execute_process_action_dialog(app_item, ProcessAction::TERM);
-                        }
+                        res_applications
+                            .execute_process_action_dialog(application_entry, ProcessAction::TERM);
                     }
                 },
             );
@@ -199,10 +197,8 @@ mod imp {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
-                        if let Some(app_item) = application_entry.app_item() {
-                            res_applications
-                                .execute_process_action_dialog(app_item, ProcessAction::KILL);
-                        }
+                        res_applications
+                            .execute_process_action_dialog(application_entry, ProcessAction::KILL);
                     }
                 },
             );
@@ -214,10 +210,8 @@ mod imp {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
-                        if let Some(app_item) = application_entry.app_item() {
-                            res_applications
-                                .execute_process_action_dialog(app_item, ProcessAction::STOP);
-                        }
+                        res_applications
+                            .execute_process_action_dialog(application_entry, ProcessAction::STOP);
                     }
                 },
             );
@@ -229,10 +223,8 @@ mod imp {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
-                        if let Some(app_item) = application_entry.app_item() {
-                            res_applications
-                                .execute_process_action_dialog(app_item, ProcessAction::CONT);
-                        }
+                        res_applications
+                            .execute_process_action_dialog(application_entry, ProcessAction::CONT);
                     }
                 },
             );
@@ -244,8 +236,7 @@ mod imp {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
-                        res_applications
-                            .open_information_dialog(&application_entry.app_item().unwrap());
+                        res_applications.open_information_dialog(application_entry);
                     }
                 },
             );
@@ -254,8 +245,8 @@ mod imp {
                 "applications.kill-application",
                 None,
                 move |res_applications, _, _| {
-                    if let Some(app) = res_applications.get_selected_app_item() {
-                        res_applications.execute_process_action_dialog(app, ProcessAction::KILL);
+                    if let Some(app) = res_applications.get_selected_app_entry() {
+                        res_applications.execute_process_action_dialog(&app, ProcessAction::KILL);
                     }
                 },
             );
@@ -264,8 +255,8 @@ mod imp {
                 "applications.halt-application",
                 None,
                 move |res_applications, _, _| {
-                    if let Some(app) = res_applications.get_selected_app_item() {
-                        res_applications.execute_process_action_dialog(app, ProcessAction::STOP);
+                    if let Some(app) = res_applications.get_selected_app_entry() {
+                        res_applications.execute_process_action_dialog(&app, ProcessAction::STOP);
                     }
                 },
             );
@@ -274,8 +265,8 @@ mod imp {
                 "applications.continue-application",
                 None,
                 move |res_applications, _, _| {
-                    if let Some(app) = res_applications.get_selected_app_item() {
-                        res_applications.execute_process_action_dialog(app, ProcessAction::CONT);
+                    if let Some(app) = res_applications.get_selected_app_entry() {
+                        res_applications.execute_process_action_dialog(&app, ProcessAction::CONT);
                     }
                 },
             );
@@ -481,7 +472,7 @@ impl ResApplications {
                     .selected_item()
                     .map(|object| object.downcast::<ApplicationEntry>().unwrap());
                 if let Some(selection) = selection_option {
-                    this.open_information_dialog(&selection.app_item().unwrap());
+                    this.open_information_dialog(&selection);
                 }
             }
         ));
@@ -490,8 +481,8 @@ impl ResApplications {
             #[weak(rename_to = this)]
             self,
             move |_| {
-                if let Some(app) = this.get_selected_app_item() {
-                    this.execute_process_action_dialog(app, ProcessAction::TERM);
+                if let Some(app) = this.get_selected_app_entry() {
+                    this.execute_process_action_dialog(&app, ProcessAction::TERM);
                 }
             }
         ));
@@ -530,13 +521,13 @@ impl ResApplications {
         }
     }
 
-    pub fn open_information_dialog(&self, app_item: &AppItem) {
+    pub fn open_information_dialog(&self, app: &ApplicationEntry) {
         let imp = self.imp();
         let app_dialog = ResAppDialog::new();
-        app_dialog.init(app_item);
+        app_dialog.init(app);
         app_dialog.present(Some(&MainWindow::default()));
         *imp.open_dialog.borrow_mut() = Some((
-            app_item.id.as_ref().map(std::string::ToString::to_string),
+            app.id().as_ref().map(std::string::ToString::to_string),
             app_dialog,
         ));
     }
@@ -557,22 +548,22 @@ impl ResApplications {
                 .contains(&search_string)
     }
 
-    pub fn get_selected_app_item(&self) -> Option<AppItem> {
+    pub fn get_selected_app_entry(&self) -> Option<ApplicationEntry> {
         self.imp()
             .selection_model
             .borrow()
             .selected_item()
-            .and_then(|object| object.downcast::<ApplicationEntry>().unwrap().app_item())
+            .and_then(|object| object.downcast::<ApplicationEntry>().ok())
     }
 
-    pub fn refresh_apps_list(&self, apps: &AppsContext) {
+    pub fn refresh_apps_list(&self, apps_context: &AppsContext) {
         let imp = self.imp();
 
         let store = imp.store.borrow_mut();
         let mut dialog_opt = &*imp.open_dialog.borrow_mut();
 
-        let mut new_items = apps.app_items();
         let mut ids_to_remove = HashSet::new();
+        let mut already_existing_ids = HashSet::new();
 
         // change process entries of apps that have run before
         store
@@ -582,8 +573,8 @@ impl ResApplications {
                 let app_id = object.id().map(|gs| gs.to_string());
                 // filter out apps that have run before but don't anymore
                 if app_id.is_some() // don't try to filter out "System Processes"
-                    && !apps
-                        .get_app(&app_id.clone().unwrap_or_default())
+                    && !apps_context
+                        .get_app(&app_id)
                         .unwrap()
                         .is_running()
                 {
@@ -596,13 +587,15 @@ impl ResApplications {
                     *imp.popped_over_app.borrow_mut() = None;
                     ids_to_remove.insert(app_id.clone());
                 }
-                if let Some((_, new_item)) = new_items.remove_entry(&app_id) {
+
+                if let Some(app) = apps_context.get_app(&app_id) {
+                    object.update(app, apps_context);
                     if let Some((dialog_id, dialog)) = dialog_opt {
                         if *dialog_id == app_id {
-                            dialog.update(&new_item);
+                            dialog.update(&object);
                         }
                     }
-                    object.update(new_item);
+                    already_existing_ids.insert(app_id);
                 }
             });
 
@@ -619,9 +612,12 @@ impl ResApplications {
         });
 
         // add the newly started apps to the store
-        let items: Vec<ApplicationEntry> = new_items
-            .drain()
-            .map(|(_, new_item)| ApplicationEntry::new(new_item))
+        let items: Vec<ApplicationEntry> = apps_context
+            .running_apps_iter()
+            .filter(|app| {
+                !already_existing_ids.contains(&app.id) && !ids_to_remove.contains(&app.id)
+            })
+            .map(|new_item| ApplicationEntry::new(new_item, apps_context))
             .collect();
         store.extend_from_slice(&items);
 
@@ -636,13 +632,15 @@ impl ResApplications {
         );
     }
 
-    pub fn execute_process_action_dialog(&self, app: AppItem, action: ProcessAction) {
+    pub fn execute_process_action_dialog(&self, app: &ApplicationEntry, action: ProcessAction) {
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
             let main_context = MainContext::default();
             main_context.spawn_local(clone!(
                 #[weak(rename_to = this)]
                 self,
+                #[weak]
+                app,
                 async move {
                     let imp = this.imp();
                     let _ = imp
@@ -651,7 +649,7 @@ impl ResApplications {
                         .unwrap()
                         .send(Action::ManipulateApp(
                             action,
-                            app.id.unwrap(),
+                            app.id().unwrap().to_string(),
                             imp.toast_overlay.get(),
                         ))
                         .await;
@@ -662,7 +660,7 @@ impl ResApplications {
 
         // Confirmation dialog & warning
         let dialog = adw::AlertDialog::builder()
-            .heading(get_action_name(action, &[&app.display_name]))
+            .heading(get_action_name(action, &[&app.name()]))
             .body(get_app_action_warning(action))
             .build();
 
@@ -679,6 +677,8 @@ impl ResApplications {
             clone!(
                 #[weak(rename_to = this)]
                 self,
+                #[weak]
+                app,
                 move |_, response| {
                     if response == "yes" {
                         let main_context = MainContext::default();
@@ -695,7 +695,7 @@ impl ResApplications {
                                     .unwrap()
                                     .send(Action::ManipulateApp(
                                         action,
-                                        app.id.clone().unwrap(),
+                                        app.id().unwrap().to_string(),
                                         imp.toast_overlay.get(),
                                     ))
                                     .await;

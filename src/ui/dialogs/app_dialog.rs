@@ -1,12 +1,9 @@
+use crate::config::PROFILE;
+use crate::ui::pages::applications::application_entry::ApplicationEntry;
+use crate::utils::units::{convert_speed, convert_storage};
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::gio::ThemedIcon;
 use gtk::glib;
-use process_data::Containerization;
-
-use crate::config::PROFILE;
-use crate::i18n::i18n;
-use crate::utils::app::AppItem;
-use crate::utils::units::{convert_speed, convert_storage};
 
 mod imp {
 
@@ -102,16 +99,16 @@ impl ResAppDialog {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self, app: &AppItem) {
+    pub fn init(&self, app: &ApplicationEntry) {
         self.setup_widgets(app);
     }
 
-    pub fn setup_widgets(&self, app: &AppItem) {
+    pub fn setup_widgets(&self, app: &ApplicationEntry) {
         let imp = self.imp();
 
-        if app.id.is_none() // this will be the case for System Processes
+        if app.id().is_none() // this will be the case for System Processes
             || app
-                .icon
+                .icon()
                 .downcast_ref::<ThemedIcon>()
                 .is_some_and(|themed_icon| {
                     themed_icon
@@ -128,68 +125,63 @@ impl ResAppDialog {
             imp.icon.set_css_classes(&["big-bubble"]);
         }
 
-        imp.icon.set_from_gicon(&app.icon);
+        imp.icon.set_from_gicon(&app.icon());
 
-        imp.name.set_label(&app.display_name);
+        imp.name.set_label(&app.name());
 
-        if let Some(description) = &app.description {
+        if let Some(description) = &app.description() {
             imp.description.set_label(description);
         } else {
             imp.description.set_visible(false);
         }
 
-        if let Some(id) = &app.id {
+        if let Some(id) = &app.id() {
             imp.id.set_subtitle(id);
         } else {
             imp.id.set_visible(false);
         }
 
-        imp.running_since.set_subtitle(&app.running_since);
+        imp.running_since.set_subtitle(&app.running_since());
 
-        let containerized = match app.containerization {
-            Containerization::None => i18n("No"),
-            Containerization::Flatpak => i18n("Yes (Flatpak)"),
-            Containerization::Snap => i18n("Yes (Snap)"),
-        };
-        imp.containerized.set_subtitle(&containerized);
+        imp.containerized.set_subtitle(&app.containerization());
 
         self.update(app);
     }
 
-    pub fn update(&self, app: &AppItem) {
+    pub fn update(&self, app: &ApplicationEntry) {
         let imp = self.imp();
 
         imp.cpu_usage
-            .set_subtitle(&format!("{:.1} %", app.cpu_time_ratio * 100.0));
+            .set_subtitle(&format!("{:.1} %", app.cpu_usage() * 100.0));
 
         imp.memory_usage
-            .set_subtitle(&convert_storage(app.memory_usage as f64, false));
+            .set_subtitle(&convert_storage(app.memory_usage() as f64, false));
 
         imp.drive_read_speed
-            .set_subtitle(&convert_speed(app.read_speed, false));
+            .set_subtitle(&convert_speed(app.read_speed(), false));
 
         imp.drive_read_total
-            .set_subtitle(&convert_storage(app.read_total as f64, false));
+            .set_subtitle(&convert_storage(app.read_total() as f64, false));
 
         imp.drive_write_speed
-            .set_subtitle(&convert_speed(app.write_speed, false));
+            .set_subtitle(&convert_speed(app.write_speed(), false));
 
         imp.drive_write_total
-            .set_subtitle(&convert_storage(app.write_total as f64, false));
+            .set_subtitle(&convert_storage(app.write_total() as f64, false));
 
         imp.gpu_usage
-            .set_subtitle(&format!("{:.1} %", app.gpu_usage * 100.0));
+            .set_subtitle(&format!("{:.1} %", app.gpu_usage() * 100.0));
 
         imp.vram_usage
-            .set_subtitle(&convert_storage(app.gpu_mem_usage as f64, false));
+            .set_subtitle(&convert_storage(app.gpu_mem_usage() as f64, false));
 
         imp.encoder_usage
-            .set_subtitle(&format!("{:.1} %", app.enc_usage * 100.0));
+            .set_subtitle(&format!("{:.1} %", app.enc_usage() * 100.0));
 
         imp.decoder_usage
-            .set_subtitle(&format!("{:.1} %", app.dec_usage * 100.0));
+            .set_subtitle(&format!("{:.1} %", app.dec_usage() * 100.0));
 
         imp.processes_amount
-            .set_subtitle(&app.processes_amount.to_string());
+            .set_subtitle(&app.running_processes().to_string());
     }
 }

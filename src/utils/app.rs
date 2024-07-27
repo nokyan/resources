@@ -119,34 +119,8 @@ static MESSAGE_LOCALES: LazyLock<Vec<String>> = LazyLock::new(|| {
 
 #[derive(Debug, Clone, Default)]
 pub struct AppsContext {
-    apps: HashMap<String, App>,
+    apps: HashMap<Option<String>, App>,
     processes: HashMap<i32, Process>,
-    processes_assigned_to_apps: HashSet<i32>,
-    read_bytes_from_dead_system_processes: u64,
-    write_bytes_from_dead_system_processes: u64,
-}
-
-/// Convenience struct for displaying running applications and
-/// displaying a "System Processes" item.
-#[derive(Debug, Clone)]
-pub struct AppItem {
-    pub id: Option<String>,
-    pub display_name: String,
-    pub icon: Icon,
-    pub description: Option<String>,
-    pub memory_usage: usize,
-    pub cpu_time_ratio: f32,
-    pub processes_amount: usize,
-    pub containerization: Containerization,
-    pub running_since: GString,
-    pub read_speed: f64,
-    pub read_total: u64,
-    pub write_speed: f64,
-    pub write_total: u64,
-    pub gpu_usage: f32,
-    pub enc_usage: f32,
-    pub dec_usage: f32,
-    pub gpu_mem_usage: u64,
 }
 
 /// Represents an application installed on the system. It doesn't
@@ -159,9 +133,10 @@ pub struct App {
     pub display_name: String,
     pub description: Option<String>,
     pub icon: Icon,
-    pub id: String,
+    pub id: Option<String>,
     pub read_bytes_from_dead_processes: u64,
     pub write_bytes_from_dead_processes: u64,
+    pub containerization: Containerization,
 }
 
 impl App {
@@ -180,7 +155,7 @@ impl App {
             applications_dir
         );
 
-        let apps: Vec<_> = applications_dir
+        let mut apps: Vec<_> = applications_dir
             .iter()
             .flat_map(|applications_path| {
                 applications_path.read_dir().ok().map(|read| {
@@ -200,6 +175,19 @@ impl App {
             "Detected {} apps within {elapsed:.2?}",
             applications_dir.len()
         );
+
+        apps.push(App {
+            processes: Vec::new(),
+            commandline: None,
+            executable_name: None,
+            display_name: i18n("System Processes"),
+            description: None,
+            icon: ThemedIcon::new("system-processes").into(),
+            id: None,
+            read_bytes_from_dead_processes: 0,
+            write_bytes_from_dead_processes: 0,
+            containerization: Containerization::None,
+        });
 
         apps
     }
@@ -229,6 +217,9 @@ impl App {
         }
 
         let exec = desktop_entry.get("Exec");
+        let is_flatpak = exec
+            .map(|exec| exec.starts_with("/usr/bin/flatpak --run"))
+            .unwrap_or_default();
         let commandline = exec
             .and_then(|exec| {
                 RE_ENV_FILTER
@@ -297,12 +288,24 @@ impl App {
             .or_else(|| desktop_entry.get("Comment"))
             .map(str::to_string);
 
+        let is_snap = desktop_entry.get("X-SnapInstanceName").is_some();
+
+        let containerization = if is_flatpak {
+            Containerization::Flatpak
+        } else if is_snap {
+            Containerization::Snap
+        } else {
+            Containerization::None
+        };
+
         debug!(
             "Found app \"{display_name}\" (ID: {id}) at {} with commandline `{}` (detected executable name: {})",
             file_path.to_string_lossy(),
             commandline.as_ref().unwrap_or(&"<None>".into()),
             executable_name.as_ref().unwrap_or(&"<None>".into()),
         );
+
+        let id = Some(id);
 
         Ok(App {
             processes: Vec::new(),
@@ -314,6 +317,7 @@ impl App {
             id,
             read_bytes_from_dead_processes: 0,
             write_bytes_from_dead_processes: 0,
+            containerization,
         })
     }
 
@@ -335,7 +339,7 @@ impl App {
     }
 
     pub fn processes_iter<'a>(&'a self, apps: &'a AppsContext) -> impl Iterator<Item = &Process> {
-        apps.all_processes()
+        apps.processes_iter()
             .filter(move |process| self.processes.contains(&process.data.pid))
     }
 
@@ -343,7 +347,7 @@ impl App {
         &'a mut self,
         apps: &'a mut AppsContext,
     ) -> impl Iterator<Item = &mut Process> {
-        apps.all_processes_mut()
+        apps.processes_iter_mut()
             .filter(move |process| self.processes.contains(&process.data.pid))
     }
 
@@ -428,6 +432,21 @@ impl App {
             .map(|process| process.execute_process_action(action))
             .collect()
     }
+
+    pub fn running_since(&self, apps: &AppsContext) -> GString {
+        boot_time()
+            .and_then(|boot_time| {
+                boot_time
+                    .add_seconds(self.starttime(apps))
+                    .context("unable to add seconds to boot time")
+            })
+            .and_then(|time| time.format("%c").context("unable to format running_since"))
+            .unwrap_or_else(|_| GString::from(i18n("N/A")))
+    }
+
+    pub fn running_processes(&self) -> usize {
+        self.processes.len()
+    }
 }
 
 impl AppsContext {
@@ -435,7 +454,7 @@ impl AppsContext {
     /// so try to do it only one time during the lifetime of the program.
     /// Please call refresh() immediately after this function.
     pub fn new() -> AppsContext {
-        let apps: HashMap<String, App> = App::all()
+        let apps: HashMap<Option<String>, App> = App::all()
             .into_iter()
             .map(|app| (app.id.clone(), app))
             .collect();
@@ -443,14 +462,11 @@ impl AppsContext {
         AppsContext {
             apps,
             processes: HashMap::new(),
-            processes_assigned_to_apps: HashSet::new(),
-            read_bytes_from_dead_system_processes: 0,
-            write_bytes_from_dead_system_processes: 0,
         }
     }
 
     pub fn gpu_fraction(&self, pci_slot: PciSlot) -> f32 {
-        self.all_processes()
+        self.processes_iter()
             .map(|process| {
                 (
                     &process.data.gpu_usage_stats,
@@ -488,7 +504,7 @@ impl AppsContext {
     }
 
     pub fn encoder_fraction(&self, pci_slot: PciSlot) -> f32 {
-        self.all_processes()
+        self.processes_iter()
             .map(|process| {
                 (
                     &process.data.gpu_usage_stats,
@@ -526,7 +542,7 @@ impl AppsContext {
     }
 
     pub fn decoder_fraction(&self, pci_slot: PciSlot) -> f32 {
-        self.all_processes()
+        self.processes_iter()
             .map(|process| {
                 (
                     &process.data.gpu_usage_stats,
@@ -568,27 +584,27 @@ impl AppsContext {
         // ↓ look for whether we can find an ID in the cgroup
         if let Some(app) = self
             .apps
-            .get(process.data.cgroup.as_deref().unwrap_or_default())
+            .get(&Some(process.data.cgroup.clone().unwrap_or_default()))
         {
             debug!(
                 "Associating process {} with app \"{}\" (ID: {}) based on process cgroup matching with app ID",
-                process.data.pid, app.display_name, app.id
+                process.data.pid, app.display_name, app.id.as_deref().unwrap_or_default()
             );
-            Some(app.id.clone())
-        } else if let Some(app) = self.apps.get(&process.executable_path) {
+            app.id.clone()
+        } else if let Some(app) = self.apps.get(&Some(process.executable_path.clone())) {
             // ↑ look for whether we can find an ID in the executable path of the process
             debug!(
                 "Associating process {} with app \"{}\" (ID: {}) based on process executable path matching with app ID",
-                process.data.pid, app.display_name, app.id
+                process.data.pid, app.display_name, app.id.as_deref().unwrap_or_default()
             );
-            Some(app.id.clone())
-        } else if let Some(app) = self.apps.get(&process.executable_name) {
+            app.id.clone()
+        } else if let Some(app) = self.apps.get(&Some(process.executable_name.clone())) {
             // ↑ look for whether we can find an ID in the executable name of the process
             debug!(
                 "Associating process {} with app \"{}\" (ID: {}) based on process executable name matching with app ID",
-                process.data.pid, app.display_name, app.id
+                process.data.pid, app.display_name, app.id.as_deref().unwrap_or_default()
             );
-            Some(app.id.clone())
+            app.id.clone()
         } else {
             self.apps
                 .values()
@@ -602,7 +618,7 @@ impl AppsContext {
                     {
                         debug!(
                             "Associating process {} with app \"{}\" (ID: {}) based on process executable pathmatching with app commandline ({})",
-                            process.data.pid, app.display_name, app.id, process.executable_path
+                            process.data.pid, app.display_name, app.id.as_deref().unwrap_or_default(), process.executable_path
                         );
                         true
                     } else if app
@@ -612,7 +628,7 @@ impl AppsContext {
                     {
                         debug!(
                             "Associating process {} with app \"{}\" (ID: {}) based on process executable name matching with app executable name ({})",
-                            process.data.pid, app.display_name, app.id, process.executable_name
+                            process.data.pid, app.display_name, app.id.as_deref().unwrap_or_default(), process.executable_name
                         );
                         true
                     } else if app
@@ -629,14 +645,14 @@ impl AppsContext {
                     {
                         debug!(
                             "Associating process {} with app \"{}\" (ID: {}) based on match in KNOWN_EXECUTABLE_NAME_EXCEPTIONS",
-                            process.data.pid, app.display_name, app.id
+                            process.data.pid, app.display_name, app.id.as_deref().unwrap_or_default()
                         );
                         true
                     } else {
                         false
                     }
                 })
-                .map(|app| app.id.clone())
+                .and_then(|app| app.id.clone())
         }
     }
 
@@ -644,24 +660,24 @@ impl AppsContext {
         self.processes.get(&pid)
     }
 
-    pub fn get_app(&self, id: &str) -> Option<&App> {
+    pub fn get_app(&self, id: &Option<String>) -> Option<&App> {
         self.apps.get(id)
     }
 
     #[must_use]
-    pub fn all_processes(&self) -> impl Iterator<Item = &Process> {
+    pub fn processes_iter(&self) -> impl Iterator<Item = &Process> {
         self.processes.values()
     }
 
     #[must_use]
-    pub fn all_processes_mut(&mut self) -> impl Iterator<Item = &mut Process> {
+    pub fn processes_iter_mut(&mut self) -> impl Iterator<Item = &mut Process> {
         self.processes.values_mut()
     }
 
     /// Returns a `HashMap` of running processes. For more info, refer to
     /// `ProcessItem`.
     pub fn process_items(&self) -> HashMap<i32, ProcessItem> {
-        self.all_processes()
+        self.processes_iter()
             .map(|process| (process.data.pid, self.process_item(process.data.pid)))
             .filter_map(|(pid, process_opt)| process_opt.map(|process| (pid, process)))
             .collect()
@@ -700,157 +716,19 @@ impl AppsContext {
         })
     }
 
-    /// Returns a `HashMap` of running graphical applications. For more info,
-    /// refer to `AppItem`.
-    #[must_use]
-    pub fn app_items(&self) -> HashMap<Option<String>, AppItem> {
-        let mut app_pids = HashSet::new();
+    pub fn apps_iter(&self) -> impl Iterator<Item = &App> {
+        self.apps.values()
+    }
 
-        let mut return_map = self
-            .apps
-            .iter()
-            .filter(|(_, app)| app.is_running() && !app.id.starts_with("xdg-desktop-portal"))
-            .map(|(_, app)| {
-                app.processes_iter(self).for_each(|process| {
-                    app_pids.insert(process.data.pid);
-                });
-
-                let is_flatpak = app
-                    .processes_iter(self)
-                    .filter(|process| {
-                        !process.data.commandline.starts_with("bwrap")
-                            && !process.data.commandline.is_empty()
-                    })
-                    .any(|process| process.data.containerization == Containerization::Flatpak);
-
-                let is_snap = app
-                    .processes_iter(self)
-                    .filter(|process| {
-                        !process.data.commandline.starts_with("bwrap")
-                            && !process.data.commandline.is_empty()
-                    })
-                    .any(|process| process.data.containerization == Containerization::Snap);
-
-                let containerization = if is_flatpak {
-                    Containerization::Flatpak
-                } else if is_snap {
-                    Containerization::Snap
-                } else {
-                    Containerization::None
-                };
-
-                let running_since = boot_time()
-                    .and_then(|boot_time| {
-                        boot_time
-                            .add_seconds(app.starttime(self))
-                            .context("unable to add seconds to boot time")
-                    })
-                    .and_then(|time| time.format("%c").context("unable to format running_since"))
-                    .unwrap_or_else(|_| GString::from(i18n("N/A")));
-
-                (
-                    Some(app.id.clone()),
-                    AppItem {
-                        id: Some(app.id.clone()),
-                        display_name: app.display_name.clone(),
-                        icon: app.icon.clone(),
-                        description: app.description.clone(),
-                        memory_usage: app.memory_usage(self),
-                        cpu_time_ratio: app.cpu_time_ratio(self),
-                        processes_amount: app.processes_iter(self).count(),
-                        containerization,
-                        running_since,
-                        read_speed: app.read_speed(self),
-                        read_total: app.read_total(self),
-                        write_speed: app.write_speed(self),
-                        write_total: app.write_total(self),
-                        gpu_usage: app.gpu_usage(self),
-                        enc_usage: app.enc_usage(self),
-                        dec_usage: app.dec_usage(self),
-                        gpu_mem_usage: app.gpu_mem_usage(self),
-                    },
-                )
-            })
-            .collect::<HashMap<Option<String>, AppItem>>();
-
-        let system_cpu_ratio = self
-            .system_processes_iter()
-            .map(Process::cpu_time_ratio)
-            .sum();
-
-        let system_memory_usage: usize = self
-            .system_processes_iter()
-            .map(|process| process.data.memory_usage)
-            .sum();
-
-        let system_read_speed = self
-            .system_processes_iter()
-            .filter_map(Process::read_speed)
-            .sum();
-
-        let system_read_total = self.read_bytes_from_dead_system_processes
-            + self
-                .system_processes_iter()
-                .filter_map(|process| process.data.read_bytes)
-                .sum::<u64>();
-
-        let system_write_speed = self
-            .system_processes_iter()
-            .filter_map(Process::write_speed)
-            .sum();
-
-        let system_write_total = self.write_bytes_from_dead_system_processes
-            + self
-                .system_processes_iter()
-                .filter_map(|process| process.data.write_bytes)
-                .sum::<u64>();
-
-        let system_gpu_usage = self.system_processes_iter().map(Process::gpu_usage).sum();
-
-        let system_enc_usage = self.system_processes_iter().map(Process::enc_usage).sum();
-
-        let system_dec_usage = self.system_processes_iter().map(Process::dec_usage).sum();
-
-        let system_gpu_mem_usage = self
-            .system_processes_iter()
-            .map(Process::gpu_mem_usage)
-            .sum();
-
-        let system_running_since = boot_time()
-            .and_then(|boot_time| {
-                boot_time
-                    .format("%c")
-                    .context("unable to format running_time")
-            })
-            .unwrap_or_else(|_| GString::from(i18n("N/A")));
-
-        return_map.insert(
-            None,
-            AppItem {
-                id: None,
-                display_name: i18n("System Processes"),
-                icon: ThemedIcon::new("system-processes").into(),
-                description: None,
-                memory_usage: system_memory_usage,
-                cpu_time_ratio: system_cpu_ratio,
-                processes_amount: self
-                    .processes
-                    .len()
-                    .saturating_sub(self.processes_assigned_to_apps.len()),
-                containerization: Containerization::None,
-                running_since: system_running_since,
-                read_speed: system_read_speed,
-                read_total: system_read_total,
-                write_speed: system_write_speed,
-                write_total: system_write_total,
-                gpu_usage: system_gpu_usage,
-                enc_usage: system_enc_usage,
-                dec_usage: system_dec_usage,
-                gpu_mem_usage: system_gpu_mem_usage,
-            },
-        );
-
-        return_map
+    pub fn running_apps_iter(&self) -> impl Iterator<Item = &App> {
+        self.apps_iter().filter(|app| {
+            app.is_running()
+                && !app
+                    .id
+                    .as_ref()
+                    .map(|id| id.starts_with("xdg-desktop-portal"))
+                    .unwrap_or_default()
+        })
     }
 
     /// Refreshes the statistics about the running applications and processes.
@@ -876,13 +754,10 @@ impl AppsContext {
 
                 let mut new_process = Process::from_process_data(process_data);
 
-                if let Some(app_id) = self.app_associated_with_process(&new_process) {
-                    self.processes_assigned_to_apps.insert(new_process.data.pid);
-                    self.apps
-                        .get_mut(&app_id)
-                        .unwrap()
-                        .add_process(&mut new_process);
-                }
+                self.apps
+                    .get_mut(&self.app_associated_with_process(&new_process))
+                    .unwrap()
+                    .add_process(&mut new_process);
 
                 self.processes.insert(new_process.data.pid, new_process);
             }
@@ -920,7 +795,7 @@ impl AppsContext {
         });
 
         // same as above but for system processes
-        let (read_dead, write_dead) = self
+        /*let (read_dead, write_dead) = self
             .processes
             .iter()
             .filter(|(pid, _)| {
@@ -944,11 +819,6 @@ impl AppsContext {
 
         // remove the dead process from out list of app processes
         self.processes_assigned_to_apps
-            .retain(|pid| updated_processes.contains(pid));
-    }
-
-    pub fn system_processes_iter(&self) -> impl Iterator<Item = &Process> {
-        self.all_processes()
-            .filter(|process| !self.processes_assigned_to_apps.contains(&process.data.pid))
+            .retain(|pid| updated_processes.contains(pid));*/
     }
 }

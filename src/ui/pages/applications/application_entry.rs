@@ -1,12 +1,13 @@
-use gtk::{
-    glib::{self},
-    subclass::prelude::ObjectSubclassIsExt,
+use gtk::glib::{self};
+use process_data::Containerization;
+
+use crate::{
+    i18n::i18n,
+    utils::app::{App, AppsContext},
 };
 
-use crate::utils::app::AppItem;
-
 mod imp {
-    use std::cell::{Cell, RefCell};
+    use std::cell::Cell;
 
     use glib::object::Cast;
     use gtk::{
@@ -15,6 +16,8 @@ mod imp {
         prelude::ObjectExt,
         subclass::prelude::{DerivedObjectProperties, ObjectImpl, ObjectImplExt, ObjectSubclass},
     };
+
+    use crate::gstring_getter_setter;
 
     use super::*;
 
@@ -63,12 +66,19 @@ mod imp {
         #[property(get, set)]
         gpu_mem_usage: Cell<u64>,
 
+        #[property(get = Self::running_since, set = Self::set_running_since)]
+        running_since: Cell<glib::GString>,
+
+        #[property(get = Self::containerization, set = Self::set_containerization)]
+        containerization: Cell<glib::GString>,
+
+        #[property(get, set)]
+        running_processes: Cell<u32>,
+
         // TODO: Make this properly dynamic, don't use a variable that's never read
         #[property(get = Self::symbolic)]
         #[allow(dead_code)]
         symbolic: Cell<bool>,
-
-        pub app_item: RefCell<Option<AppItem>>,
     }
 
     impl Default for ApplicationEntry {
@@ -84,46 +94,22 @@ mod imp {
                 read_total: Cell::new(0),
                 write_speed: Cell::new(0.0),
                 write_total: Cell::new(0),
-                app_item: RefCell::new(None),
                 gpu_usage: Cell::new(0.0),
                 enc_usage: Cell::new(0.0),
                 dec_usage: Cell::new(0.0),
                 gpu_mem_usage: Cell::new(0),
                 symbolic: Cell::new(false),
+                running_since: Cell::new(glib::GString::default()),
+                containerization: Cell::new(glib::GString::default()),
+                running_processes: Cell::new(0),
             }
         }
     }
 
     impl ApplicationEntry {
-        pub fn name(&self) -> glib::GString {
-            let name = self.name.take();
-            self.name.set(name.clone());
-            name
-        }
+        gstring_getter_setter!(name, running_since, containerization);
 
-        pub fn set_name(&self, name: &str) {
-            self.name.set(glib::GString::from(name));
-        }
-
-        pub fn description(&self) -> Option<glib::GString> {
-            let description = self.description.take();
-            self.description.set(description.clone());
-            description
-        }
-
-        pub fn set_description(&self, description: Option<&str>) {
-            self.description.set(description.map(glib::GString::from));
-        }
-
-        pub fn id(&self) -> Option<glib::GString> {
-            let id = self.id.take();
-            self.id.set(id.clone());
-            id
-        }
-
-        pub fn set_id(&self, id: Option<&str>) {
-            self.id.set(id.map(glib::GString::from));
-        }
+        gstring_option_getter_setter!(description, id);
 
         pub fn icon(&self) -> Icon {
             let icon = self.icon.replace(ThemedIcon::new("generic-process").into());
@@ -188,35 +174,36 @@ glib::wrapper! {
 }
 
 impl ApplicationEntry {
-    pub fn new(app_item: AppItem) -> Self {
+    pub fn new(app: &App, apps_context: &AppsContext) -> Self {
         let this: Self = glib::Object::builder()
-            .property("name", &app_item.display_name)
-            .property("icon", &app_item.icon)
-            .property("id", &app_item.id)
+            .property("name", &app.display_name)
+            .property("icon", &app.icon)
+            .property("id", &app.id)
             .build();
-        this.update(app_item);
+        this.update(app, apps_context);
         this
     }
 
-    pub fn update(&self, app_item: AppItem) {
-        self.set_cpu_usage(app_item.cpu_time_ratio);
-        self.set_memory_usage(app_item.memory_usage as u64);
-        self.set_read_speed(app_item.read_speed);
-        self.set_read_total(app_item.read_total);
-        self.set_write_speed(app_item.write_speed);
-        self.set_write_total(app_item.write_total);
-        self.set_gpu_usage(app_item.gpu_usage);
-        self.set_enc_usage(app_item.enc_usage);
-        self.set_dec_usage(app_item.dec_usage);
-        self.set_gpu_mem_usage(app_item.gpu_mem_usage);
+    pub fn update(&self, app: &App, apps_context: &AppsContext) {
+        self.set_cpu_usage(app.cpu_time_ratio(apps_context));
+        self.set_memory_usage(app.memory_usage(apps_context) as u64);
+        self.set_read_speed(app.read_speed(apps_context));
+        self.set_read_total(app.read_total(apps_context));
+        self.set_write_speed(app.write_speed(apps_context));
+        self.set_write_total(app.write_total(apps_context));
+        self.set_gpu_usage(app.gpu_usage(apps_context));
+        self.set_enc_usage(app.enc_usage(apps_context));
+        self.set_dec_usage(app.dec_usage(apps_context));
+        self.set_gpu_mem_usage(app.gpu_mem_usage(apps_context));
 
-        self.imp().app_item.replace(Some(app_item));
-    }
+        let containerized = match app.containerization {
+            Containerization::None => i18n("No"),
+            Containerization::Flatpak => i18n("Yes (Flatpak)"),
+            Containerization::Snap => i18n("Yes (Snap)"),
+        };
 
-    pub fn app_item(&self) -> Option<AppItem> {
-        let imp = self.imp();
-        let item = imp.app_item.take();
-        imp.app_item.replace(item.clone());
-        item
+        self.set_containerization(containerized);
+        self.set_running_processes(app.running_processes() as u32);
+        self.set_running_since(app.running_since(apps_context));
     }
 }
