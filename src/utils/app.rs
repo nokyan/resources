@@ -110,7 +110,7 @@ static MESSAGE_LOCALES: LazyLock<Vec<String>> = LazyLock::new(|| {
     }
 
     debug!(
-        "The following locales will be used for app names and descriptions: {:?}",
+        "Using the following locales for app names and descriptions: {:?}",
         &return_vec
     );
 
@@ -166,14 +166,23 @@ pub struct App {
 
 impl App {
     pub fn all() -> Vec<App> {
-        debug!("Detecting installed applications…");
+        debug!("Detecting installed apps");
 
         let start = Instant::now();
 
-        let apps: Vec<App> = DATA_DIRS
+        let applications_dir: Vec<_> = DATA_DIRS
             .iter()
-            .filter_map(|path| {
-                let applications_path = path.join("applications");
+            .map(|path| path.join("applications"))
+            .collect();
+
+        debug!(
+            "Using the following directories for app detection: {:?}",
+            applications_dir
+        );
+
+        let apps: Vec<_> = applications_dir
+            .iter()
+            .flat_map(|applications_path| {
                 applications_path.read_dir().ok().map(|read| {
                     read.filter_map(|file_res| {
                         file_res
@@ -187,7 +196,10 @@ impl App {
 
         let elapsed = start.elapsed();
 
-        info!("Detected {} applications within {elapsed:.2?}", apps.len());
+        info!(
+            "Detected {} apps within {elapsed:.2?}",
+            applications_dir.len()
+        );
 
         apps
     }
@@ -288,7 +300,7 @@ impl App {
             .map(str::to_string);
 
         debug!(
-            "Found application \"{display_name}\" (ID: {id}) at {} with commandline `{}` (detected executable name: {})",
+            "Found app \"{display_name}\" (ID: {id}) at {} with commandline `{}` (detected executable name: {})",
             file_path.to_string_lossy(),
             commandline.as_ref().unwrap_or(&"<None>".into()),
             executable_name.as_ref().unwrap_or(&"<None>".into()),
@@ -591,8 +603,8 @@ impl AppsContext {
                         .is_some_and(|commandline| commandline == &process.executable_path)
                     {
                         debug!(
-                            "Associating process {} with app \"{}\" (ID: {}) based on process executable path matching with app commandline",
-                            process.data.pid, app.display_name, app.id
+                            "Associating process {} with app \"{}\" (ID: {}) based on process executable pathmatching with app commandline ({})",
+                            process.data.pid, app.display_name, app.id, process.executable_path
                         );
                         true
                     } else if app
@@ -601,8 +613,8 @@ impl AppsContext {
                         .is_some_and(|executable_name| executable_name == &process.executable_name)
                     {
                         debug!(
-                            "Associating process {} with app \"{}\" (ID: {}) based on process executable name matching with app executable name",
-                            process.data.pid, app.display_name, app.id
+                            "Associating process {} with app \"{}\" (ID: {}) based on process executable name matching with app executable name ({})",
+                            process.data.pid, app.display_name, app.id, process.executable_name
                         );
                         true
                     } else if app
