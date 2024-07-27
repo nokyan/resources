@@ -288,7 +288,7 @@ impl App {
             .map(str::to_string);
 
         debug!(
-            "Found application \"{display_name}\" ({id}) at {} with commandline `{}` (detected executable name: {})",
+            "Found application \"{display_name}\" (ID: {id}) at {} with commandline `{}` (detected executable name: {})",
             file_path.to_string_lossy(),
             commandline.as_ref().unwrap_or(&"<None>".into()),
             executable_name.as_ref().unwrap_or(&"<None>".into()),
