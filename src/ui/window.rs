@@ -385,7 +385,7 @@ impl MainWindow {
                 warn!(
                     "Unable to update process and app data!\n{e}\n{}",
                     e.backtrace()
-                )
+                );
             })
             .unwrap_or_default();
 

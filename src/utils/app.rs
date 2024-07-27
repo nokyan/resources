@@ -289,8 +289,8 @@ impl App {
 
         debug!(
             "Found application \"{display_name}\" ({id}) at {} with commandline `{}` (detected executable name: {})",
-            commandline.as_ref().unwrap_or(&"<None>".into()),
             file_path.to_string_lossy(),
+            commandline.as_ref().unwrap_or(&"<None>".into()),
             executable_name.as_ref().unwrap_or(&"<None>".into()),
         );
 
@@ -560,12 +560,24 @@ impl AppsContext {
             .apps
             .get(process.data.cgroup.as_deref().unwrap_or_default())
         {
+            debug!(
+                "Associating process {} with app \"{}\" (ID: {}) based on process cgroup matching with app ID",
+                process.data.pid, app.display_name, app.id
+            );
             Some(app.id.clone())
         } else if let Some(app) = self.apps.get(&process.executable_path) {
             // ↑ look for whether we can find an ID in the executable path of the process
+            debug!(
+                "Associating process {} with app \"{}\" (ID: {}) based on process executable path matching with app ID",
+                process.data.pid, app.display_name, app.id
+            );
             Some(app.id.clone())
         } else if let Some(app) = self.apps.get(&process.executable_name) {
             // ↑ look for whether we can find an ID in the executable name of the process
+            debug!(
+                "Associating process {} with app \"{}\" (ID: {}) based on process executable name matching with app ID",
+                process.data.pid, app.display_name, app.id
+            );
             Some(app.id.clone())
         } else {
             self.apps
@@ -573,17 +585,27 @@ impl AppsContext {
                 .find(|app| {
                     // ↓ probably most expensive lookup, therefore only last resort: look if the process' commandline
                     //   can be found in the app's commandline
-                    let commandline_match = app
+                    if app
                         .commandline
                         .as_ref()
-                        .is_some_and(|commandline| commandline == &process.executable_path);
-
-                    let executable_name_match = app
+                        .is_some_and(|commandline| commandline == &process.executable_path)
+                    {
+                        debug!(
+                            "Associating process {} with app \"{}\" (ID: {}) based on process executable path matching with app commandline",
+                            process.data.pid, app.display_name, app.id
+                        );
+                        true
+                    } else if app
                         .executable_name
                         .as_ref()
-                        .is_some_and(|executable_name| executable_name == &process.executable_name);
-
-                    let known_exception_match = app
+                        .is_some_and(|executable_name| executable_name == &process.executable_name)
+                    {
+                        debug!(
+                            "Associating process {} with app \"{}\" (ID: {}) based on process executable name matching with app executable name",
+                            process.data.pid, app.display_name, app.id
+                        );
+                        true
+                    } else if app
                         .executable_name
                         .as_ref()
                         .and_then(|executable_name| {
@@ -593,9 +615,16 @@ impl AppsContext {
                                     substituted_executable_name == executable_name
                                 })
                         })
-                        .unwrap_or(false);
-
-                    commandline_match || executable_name_match || known_exception_match
+                        .unwrap_or(false)
+                    {
+                        debug!(
+                            "Associating process {} with app \"{}\" (ID: {}) based on match in KNOWN_EXECUTABLE_NAME_EXCEPTIONS",
+                            process.data.pid, app.display_name, app.id
+                        );
+                        true
+                    } else {
+                        false
+                    }
                 })
                 .map(|app| app.id.clone())
         }
