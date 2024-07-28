@@ -252,9 +252,9 @@ impl MainWindow {
                     .execute_process_action_dialog(&app_item, process_action);
             }
         } else if selected_page.is::<ResProcesses>() {
-            if let Some(process_item) = imp.processes.get_selected_process_item() {
+            if let Some(process_item) = imp.processes.get_selected_process_entry() {
                 imp.processes
-                    .execute_process_action_dialog(process_item, process_action);
+                    .execute_process_action_dialog(&process_item, process_action);
             }
         }
     }
@@ -269,7 +269,7 @@ impl MainWindow {
                 imp.applications.open_information_dialog(&app_item);
             }
         } else if selected_page.is::<ResProcesses>() {
-            if let Some(process_item) = imp.processes.get_selected_process_item() {
+            if let Some(process_item) = imp.processes.get_selected_process_entry() {
                 imp.processes.open_information_dialog(&process_item);
             }
         }

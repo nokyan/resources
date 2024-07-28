@@ -1,4 +1,5 @@
 use crate::config::PROFILE;
+use crate::i18n::i18n;
 use crate::ui::pages::applications::application_entry::ApplicationEntry;
 use crate::utils::units::{convert_speed, convert_storage};
 use adw::{prelude::*, subclass::prelude::*};
@@ -141,7 +142,8 @@ impl ResAppDialog {
             imp.id.set_visible(false);
         }
 
-        imp.running_since.set_subtitle(&app.running_since());
+        imp.running_since
+            .set_subtitle(&app.running_since().unwrap_or_else(|| i18n("N/A").into()));
 
         imp.containerized.set_subtitle(&app.containerization());
 

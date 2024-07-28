@@ -67,7 +67,7 @@ mod imp {
         gpu_mem_usage: Cell<u64>,
 
         #[property(get = Self::running_since, set = Self::set_running_since)]
-        running_since: Cell<glib::GString>,
+        running_since: Cell<Option<glib::GString>>,
 
         #[property(get = Self::containerization, set = Self::set_containerization)]
         containerization: Cell<glib::GString>,
@@ -99,7 +99,7 @@ mod imp {
                 dec_usage: Cell::new(0.0),
                 gpu_mem_usage: Cell::new(0),
                 symbolic: Cell::new(false),
-                running_since: Cell::new(glib::GString::default()),
+                running_since: Cell::new(None),
                 containerization: Cell::new(glib::GString::default()),
                 running_processes: Cell::new(0),
             }
@@ -107,9 +107,9 @@ mod imp {
     }
 
     impl ApplicationEntry {
-        gstring_getter_setter!(name, running_since, containerization);
+        gstring_getter_setter!(name, containerization);
 
-        gstring_option_getter_setter!(description, id);
+        gstring_option_getter_setter!(description, id, running_since);
 
         pub fn icon(&self) -> Icon {
             let icon = self.icon.replace(ThemedIcon::new("generic-process").into());
@@ -175,10 +175,18 @@ glib::wrapper! {
 
 impl ApplicationEntry {
     pub fn new(app: &App, apps_context: &AppsContext) -> Self {
+        let containerization = match app.containerization {
+            Containerization::None => i18n("No"),
+            Containerization::Flatpak => i18n("Yes (Flatpak)"),
+            Containerization::Snap => i18n("Yes (Snap)"),
+        };
+
         let this: Self = glib::Object::builder()
             .property("name", &app.display_name)
             .property("icon", &app.icon)
             .property("id", &app.id)
+            .property("containerization", containerization)
+            .property("running_since", app.running_since(apps_context).ok())
             .build();
         this.update(app, apps_context);
         this
@@ -195,15 +203,6 @@ impl ApplicationEntry {
         self.set_enc_usage(app.enc_usage(apps_context));
         self.set_dec_usage(app.dec_usage(apps_context));
         self.set_gpu_mem_usage(app.gpu_mem_usage(apps_context));
-
-        let containerized = match app.containerization {
-            Containerization::None => i18n("No"),
-            Containerization::Flatpak => i18n("Yes (Flatpak)"),
-            Containerization::Snap => i18n("Yes (Snap)"),
-        };
-
-        self.set_containerization(containerized);
         self.set_running_processes(app.running_processes() as u32);
-        self.set_running_since(app.running_since(apps_context));
     }
 }

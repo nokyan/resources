@@ -739,6 +739,11 @@ impl ResApplications {
                 .bind(&row, "symbolic", Widget::NONE);
         });
 
+        name_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&ResApplicationNameCell>);
+        });
+
         let name_col_sorter = StringSorter::builder()
             .ignore_case(true)
             .expression(gtk::PropertyExpression::new(
@@ -778,6 +783,11 @@ impl ResApplications {
                     convert_storage(memory_usage as f64, false)
                 }))
                 .bind(&row, "text", Widget::NONE);
+        });
+
+        memory_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
         });
 
         let memory_col_sorter = NumericSorter::builder()
@@ -830,6 +840,11 @@ impl ResApplications {
                     format!("{percentage:.1} %")
                 }))
                 .bind(&row, "text", Widget::NONE);
+        });
+
+        cpu_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
         });
 
         let cpu_col_sorter = NumericSorter::builder()
@@ -885,6 +900,11 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
+        read_speed_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
+        });
+
         let read_speed_col_sorter = NumericSorter::builder()
             .sort_order(SortType::Ascending)
             .expression(gtk::PropertyExpression::new(
@@ -932,6 +952,11 @@ impl ResApplications {
                     convert_storage(read_total as f64, false)
                 }))
                 .bind(&row, "text", Widget::NONE);
+        });
+
+        read_total_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
         });
 
         let read_total_col_sorter = NumericSorter::builder()
@@ -987,6 +1012,11 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
+        write_speed_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
+        });
+
         let write_speed_col_sorter = NumericSorter::builder()
             .sort_order(SortType::Ascending)
             .expression(gtk::PropertyExpression::new(
@@ -1038,6 +1068,11 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
+        write_total_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
+        });
+
         let write_total_col_sorter = NumericSorter::builder()
             .sort_order(SortType::Ascending)
             .expression(gtk::PropertyExpression::new(
@@ -1084,6 +1119,11 @@ impl ResApplications {
                     format!("{:.1} %", gpu_usage * 100.0)
                 }))
                 .bind(&row, "text", Widget::NONE);
+        });
+
+        gpu_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
         });
 
         let gpu_col_sorter = NumericSorter::builder()
@@ -1135,6 +1175,11 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
+        encoder_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
+        });
+
         let encoder_col_sorter = NumericSorter::builder()
             .sort_order(SortType::Ascending)
             .expression(gtk::PropertyExpression::new(
@@ -1184,6 +1229,11 @@ impl ResApplications {
                 .bind(&row, "text", Widget::NONE);
         });
 
+        decoder_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
+        });
+
         let decoder_col_sorter = NumericSorter::builder()
             .sort_order(SortType::Ascending)
             .expression(gtk::PropertyExpression::new(
@@ -1228,6 +1278,11 @@ impl ResApplications {
                     convert_storage(gpu_mem as f64, false)
                 }))
                 .bind(&row, "text", Widget::NONE);
+        });
+
+        gpu_mem_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
         });
 
         let gpu_mem_col_sorter = NumericSorter::builder()

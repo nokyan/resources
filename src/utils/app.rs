@@ -18,8 +18,8 @@ use crate::i18n::i18n;
 
 use super::{
     boot_time,
-    process::{Process, ProcessAction, ProcessItem},
-    NaNDefault, TICK_RATE,
+    process::{Process, ProcessAction},
+    NaNDefault,
 };
 
 // This contains executable names that are blacklisted from being recognized as applications
@@ -30,6 +30,7 @@ const APP_ID_BLOCKLIST: &[&str] = &[
     "org.gnome.Terminal.Preferences", // Prevents the actual Terminal app "org.gnome.Terminal" from being shown
     "org.freedesktop.IBus.Panel.Extension.Gtk3", // Technical application
     "org.gnome.RemoteDesktop.Handover", // Technical application
+    "gnome-software-local-file-packagekit", // Technical application
 ];
 
 static RE_ENV_FILTER: LazyLock<Regex> =
@@ -433,7 +434,7 @@ impl App {
             .collect()
     }
 
-    pub fn running_since(&self, apps: &AppsContext) -> GString {
+    pub fn running_since(&self, apps: &AppsContext) -> Result<GString> {
         boot_time()
             .and_then(|boot_time| {
                 boot_time
@@ -441,7 +442,6 @@ impl App {
                     .context("unable to add seconds to boot time")
             })
             .and_then(|time| time.format("%c").context("unable to format running_since"))
-            .unwrap_or_else(|_| GString::from(i18n("N/A")))
     }
 
     pub fn running_processes(&self) -> usize {
@@ -674,48 +674,6 @@ impl AppsContext {
         self.processes.values_mut()
     }
 
-    /// Returns a `HashMap` of running processes. For more info, refer to
-    /// `ProcessItem`.
-    pub fn process_items(&self) -> HashMap<i32, ProcessItem> {
-        self.processes_iter()
-            .map(|process| (process.data.pid, self.process_item(process.data.pid)))
-            .filter_map(|(pid, process_opt)| process_opt.map(|process| (pid, process)))
-            .collect()
-    }
-
-    pub fn process_item(&self, pid: i32) -> Option<ProcessItem> {
-        self.get_process(pid).map(|process| {
-            let full_comm = if process.executable_name.starts_with(&process.data.comm) {
-                process.executable_name.clone()
-            } else {
-                process.data.comm.clone()
-            };
-            ProcessItem {
-                pid: process.data.pid,
-                user: process.data.user.clone(),
-                display_name: full_comm.clone(),
-                icon: process.icon.clone(),
-                memory_usage: process.data.memory_usage,
-                cpu_time_ratio: process.cpu_time_ratio(),
-                user_cpu_time: ((process.data.user_cpu_time) as f64 / (*TICK_RATE) as f64),
-                system_cpu_time: ((process.data.system_cpu_time) as f64 / (*TICK_RATE) as f64),
-                commandline: Process::sanitize_cmdline(process.data.commandline.clone())
-                    .unwrap_or(full_comm),
-                containerization: process.data.containerization,
-                starttime: process.starttime(),
-                cgroup: process.data.cgroup.clone(),
-                read_speed: process.read_speed(),
-                read_total: process.data.read_bytes,
-                write_speed: process.write_speed(),
-                write_total: process.data.write_bytes,
-                gpu_usage: process.gpu_usage(),
-                enc_usage: process.enc_usage(),
-                dec_usage: process.dec_usage(),
-                gpu_mem_usage: process.gpu_mem_usage(),
-            }
-        })
-    }
-
     pub fn apps_iter(&self) -> impl Iterator<Item = &App> {
         self.apps.values()
     }
@@ -763,8 +721,6 @@ impl AppsContext {
             }
         }
 
-        // all the not-updated processes have unfortunately died, probably
-
         // collect the I/O stats for died app processes so an app doesn't suddenly have less total disk I/O
         self.apps.values_mut().for_each(|app| {
             let (read_dead, write_dead) = app
@@ -794,31 +750,8 @@ impl AppsContext {
             }
         });
 
-        // same as above but for system processes
-        /*let (read_dead, write_dead) = self
-            .processes
-            .iter()
-            .filter(|(pid, _)| {
-                !self.processes_assigned_to_apps.contains(*pid) && !updated_processes.contains(*pid)
-            })
-            .map(|(_, process)| (process.data.read_bytes, process.data.write_bytes))
-            .filter_map(
-                |(read_bytes, write_bytes)| match (read_bytes, write_bytes) {
-                    (Some(read), Some(write)) => Some((read, write)),
-                    _ => None,
-                },
-            )
-            .reduce(|sum, current| (sum.0 + current.0, sum.1 + current.1))
-            .unwrap_or((0, 0));
-        self.read_bytes_from_dead_system_processes += read_dead;
-        self.write_bytes_from_dead_system_processes += write_dead;
-
-        // remove the dead process from our process map
+        // all the not-updated processes have unfortunately died, probably
         self.processes
             .retain(|pid, _| updated_processes.contains(pid));
-
-        // remove the dead process from out list of app processes
-        self.processes_assigned_to_apps
-            .retain(|pid| updated_processes.contains(pid));*/
     }
 }
