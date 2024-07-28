@@ -219,7 +219,7 @@ impl App {
 
         let exec = desktop_entry.get("Exec");
         let is_flatpak = exec
-            .map(|exec| exec.starts_with("/usr/bin/flatpak --run"))
+            .map(|exec| exec.starts_with("/usr/bin/flatpak run"))
             .unwrap_or_default();
         let commandline = exec
             .and_then(|exec| {
@@ -292,19 +292,30 @@ impl App {
         let is_snap = desktop_entry.get("X-SnapInstanceName").is_some();
 
         let containerization = if is_flatpak {
+            debug!(
+                "Found Flatpak app \"{display_name}\" (ID: {id}) at {} with commandline `{}` (detected executable name: {})",
+                file_path.to_string_lossy(),
+                commandline.as_ref().unwrap_or(&"<None>".into()),
+                executable_name.as_ref().unwrap_or(&"<None>".into()),
+            );
             Containerization::Flatpak
         } else if is_snap {
+            debug!(
+                "Found Snap app \"{display_name}\" (ID: {id}) at {} with commandline `{}` (detected executable name: {})",
+                file_path.to_string_lossy(),
+                commandline.as_ref().unwrap_or(&"<None>".into()),
+                executable_name.as_ref().unwrap_or(&"<None>".into()),
+            );
             Containerization::Snap
         } else {
+            debug!(
+                "Found native app \"{display_name}\" (ID: {id}) at {} with commandline `{}` (detected executable name: {})",
+                file_path.to_string_lossy(),
+                commandline.as_ref().unwrap_or(&"<None>".into()),
+                executable_name.as_ref().unwrap_or(&"<None>".into()),
+            );
             Containerization::None
         };
-
-        debug!(
-            "Found app \"{display_name}\" (ID: {id}) at {} with commandline `{}` (detected executable name: {})",
-            file_path.to_string_lossy(),
-            commandline.as_ref().unwrap_or(&"<None>".into()),
-            executable_name.as_ref().unwrap_or(&"<None>".into()),
-        );
 
         let id = Some(id);
 
