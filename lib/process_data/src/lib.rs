@@ -215,7 +215,7 @@ impl ProcessData {
             let data = ProcessData::try_from_path(entry);
 
             if let Ok(data) = data {
-                process_data.push(data)
+                process_data.push(data);
             }
         }
 
@@ -268,10 +268,13 @@ impl ProcessData {
 
         let containerization = match &proc_path.join("root").join(".flatpak-info").exists() {
             true => Containerization::Flatpak,
-            false => match commandline.starts_with("/snap/") {
-                true => Containerization::Snap,
-                false => Containerization::None,
-            },
+            false => {
+                if commandline.starts_with("/snap/") {
+                    Containerization::Snap
+                } else {
+                    Containerization::None
+                }
+            }
         };
 
         let read_bytes = io.as_ref().and_then(|io| {
@@ -312,8 +315,8 @@ impl ProcessData {
         })
     }
 
-    fn gpu_usage_stats(proc_path: &PathBuf, pid: i32) -> BTreeMap<PciSlot, GpuUsageStats> {
-        let nvidia_stats = Self::nvidia_gpu_stats_all(pid).unwrap_or_default();
+    fn gpu_usage_stats(proc_path: &Path, pid: i32) -> BTreeMap<PciSlot, GpuUsageStats> {
+        let nvidia_stats = Self::nvidia_gpu_stats_all(pid);
         let mut other_stats = Self::other_gpu_usage_stats(proc_path, pid).unwrap_or_default();
         other_stats.extend(nvidia_stats);
         other_stats
@@ -494,7 +497,7 @@ impl ProcessData {
         bail!("unable to find gpu information in this fdinfo");
     }
 
-    fn nvidia_gpu_stats_all(pid: i32) -> Result<BTreeMap<PciSlot, GpuUsageStats>> {
+    fn nvidia_gpu_stats_all(pid: i32) -> BTreeMap<PciSlot, GpuUsageStats> {
         let mut return_map = BTreeMap::new();
 
         for (pci_slot, _) in NVML_DEVICES.iter() {
@@ -503,7 +506,7 @@ impl ProcessData {
             }
         }
 
-        Ok(return_map)
+        return_map
     }
 
     fn nvidia_gpu_stats(pid: i32, pci_slot: PciSlot) -> Result<GpuUsageStats> {
