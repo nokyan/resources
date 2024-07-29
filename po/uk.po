@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues\n"
 "POT-Creation-Date: 2024-07-07 18:21+0200\n"
 "PO-Revision-Date: 2024-07-29 20:57+0300\n"
 "Last-Translator: volkov <volkovissocool@gmail.com>\n"
