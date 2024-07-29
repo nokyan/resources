@@ -1,4 +1,3 @@
-use hashbrown::HashMap;
 use process_data::ProcessData;
 use std::path::PathBuf;
 use std::time::Duration;
@@ -38,7 +37,7 @@ pub enum Action {
 }
 
 mod imp {
-    use std::cell::RefCell;
+    use std::{cell::RefCell, collections::HashMap};
 
     use crate::{
         ui::{

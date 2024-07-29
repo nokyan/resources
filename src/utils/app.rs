@@ -1,4 +1,5 @@
 use std::{
+    collections::{HashMap, HashSet},
     path::{Path, PathBuf},
     sync::LazyLock,
     time::Instant,
@@ -9,7 +10,6 @@ use gtk::{
     gio::{File, FileIcon, Icon, ThemedIcon},
     glib::GString,
 };
-use hashbrown::{HashMap, HashSet};
 use log::{debug, info};
 use process_data::{pci_slot::PciSlot, Containerization, ProcessData};
 use regex::Regex;
@@ -26,12 +26,24 @@ use super::{
 const DESKTOP_EXEC_BLOCKLIST: &[&str] = &["bash", "zsh", "fish", "sh", "ksh", "flatpak"];
 
 // This contains IDs of desktop files that shouldn't be counted as applications for whatever reason
-const APP_ID_BLOCKLIST: &[&str] = &[
-    "org.gnome.Terminal.Preferences", // Prevents the actual Terminal app "org.gnome.Terminal" from being shown
-    "org.freedesktop.IBus.Panel.Extension.Gtk3", // Technical application
-    "org.gnome.RemoteDesktop.Handover", // Technical application
-    "gnome-software-local-file-packagekit", // Technical application
-];
+static APP_ID_BLOCKLIST: LazyLock<HashMap<&'static str, &'static str>> = LazyLock::new(|| {
+    HashMap::from([
+        (
+            "org.gnome.Terminal.Preferences",
+            "Prevents the actual Terminal app \"org.gnome.Terminal\" from being shown",
+        ),
+        (
+            "org.freedesktop.IBus.Panel.Extension.Gtk3",
+            "Technical application",
+        ),
+        ("org.gnome.RemoteDesktop.Handover", "Technical application"),
+        (
+            "gnome-software-local-file-packagekit",
+            "Technical application",
+        ),
+        ("snap-handle-link", "Technical application"),
+    ])
+});
 
 static RE_ENV_FILTER: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"env\s*\S*=\S*\s*(.*)").unwrap());
@@ -68,16 +80,17 @@ pub static DATA_DIRS: LazyLock<Vec<PathBuf>> = LazyLock::new(|| {
 // The HashMap is used like this:
 //   Key: The name of the executable of the process
 //   Value: What it should be replaced with when finding out to which app it belongs
-static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: LazyLock<HashMap<String, String>> = LazyLock::new(|| {
-    HashMap::from([
-        ("firefox-bin".into(), "firefox".into()),
-        ("oosplash".into(), "libreoffice".into()),
-        ("soffice.bin".into(), "libreoffice".into()),
-        ("resources-processes".into(), "resources".into()),
-        ("gnome-terminal-server".into(), "gnome-terminal".into()),
-        ("chrome".into(), "google-chrome-stable".into()),
-    ])
-});
+static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: LazyLock<HashMap<&'static str, &'static str>> =
+    LazyLock::new(|| {
+        HashMap::from([
+            ("firefox-bin", "firefox"),
+            ("oosplash", "libreoffice"),
+            ("soffice.bin", "libreoffice"),
+            ("resources-processes", "resources"),
+            ("gnome-terminal-server", "gnome-terminal"),
+            ("chrome", "google-chrome-stable"),
+        ])
+    });
 
 static MESSAGE_LOCALES: LazyLock<Vec<String>> = LazyLock::new(|| {
     let envs = ["LC_MESSAGES", "LANGUAGE", "LANG", "LC_ALL"];
@@ -172,10 +185,7 @@ impl App {
 
         let elapsed = start.elapsed();
 
-        info!(
-            "Detected {} apps within {elapsed:.2?}",
-            applications_dir.len()
-        );
+        info!("Detected {} apps within {elapsed:.2?}", apps.len());
 
         apps.push(App {
             processes: Vec::new(),
@@ -212,9 +222,9 @@ impl App {
             })
             .context("unable to get ID of desktop file")?;
 
-        if APP_ID_BLOCKLIST.contains(&id.as_str()) {
-            debug!("Skipping {id} because it's blocklisted…");
-            bail!("{id} is blocklisted")
+        if let Some(reason) = APP_ID_BLOCKLIST.get(id.as_str()) {
+            debug!("Skipping {id} because it's blocklisted (reason: {reason})");
+            bail!("{id} is blocklisted (reason: {reason})")
         }
 
         let exec = desktop_entry.get("Exec");
@@ -647,7 +657,7 @@ impl AppsContext {
                         .as_ref()
                         .and_then(|executable_name| {
                             KNOWN_EXECUTABLE_NAME_EXCEPTIONS
-                                .get(&process.executable_name)
+                                .get(process.executable_name.as_str())
                                 .map(|substituted_executable_name| {
                                     substituted_executable_name == executable_name
                                 })
