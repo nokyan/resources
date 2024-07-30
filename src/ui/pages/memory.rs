@@ -7,6 +7,8 @@ use crate::utils::memory::{self, MemoryData, MemoryDevice};
 use crate::utils::units::convert_storage;
 use crate::utils::NaNDefault;
 
+pub const TAB_ID: &str = "memory";
+
 mod imp {
     use std::cell::{Cell, RefCell};
 
@@ -138,7 +140,7 @@ mod imp {
                 tab_name: Cell::new(glib::GString::from(i18n("Memory"))),
                 tab_detail_string: Cell::new(glib::GString::new()),
                 tab_usage_string: Cell::new(glib::GString::new()),
-                tab_id: Cell::new(glib::GString::from("memory")),
+                tab_id: Cell::new(glib::GString::from(TAB_ID)),
                 graph_locked_max_y: Cell::new(true),
                 primary_ord: Cell::new(MEMORY_PRIMARY_ORD),
                 secondary_ord: Default::default(),

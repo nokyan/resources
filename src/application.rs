@@ -280,7 +280,7 @@ impl Application {
             );
         }
 
-        ApplicationExtManual::run(self);
+        ApplicationExtManual::run_with_args::<&str>(self, &[]);
     }
 }
 

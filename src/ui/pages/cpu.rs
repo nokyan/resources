@@ -10,6 +10,8 @@ use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_frequency, convert_temperature};
 use crate::utils::{cpu, NaNDefault, NUM_CPUS};
 
+pub const TAB_ID: &str = "cpu";
+
 mod imp {
     use std::cell::{Cell, RefCell};
 
@@ -155,7 +157,7 @@ mod imp {
                 tab_name: Cell::new(glib::GString::from(i18n("Processor"))),
                 tab_detail_string: Cell::new(glib::GString::new()),
                 tab_usage_string: Cell::new(glib::GString::new()),
-                tab_id: Cell::new(glib::GString::from("cpu")),
+                tab_id: Cell::new(glib::GString::from(TAB_ID)),
                 old_total_usage: Cell::default(),
                 old_thread_usages: RefCell::default(),
                 logical_cpus_amount: Cell::default(),

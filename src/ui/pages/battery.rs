@@ -6,6 +6,8 @@ use crate::i18n::i18n;
 use crate::utils::battery::BatteryData;
 use crate::utils::units::{convert_energy, convert_power};
 
+pub const TAB_ID_PREFIX: &str = "battery";
+
 mod imp {
     use std::cell::{Cell, RefCell};
 
@@ -206,7 +208,6 @@ impl Default for ResBattery {
 }
 
 impl ResBattery {
-    const ID_PREFIX: &'static str = "battery";
     const MAIN_GRAPH_COLOR: [u8; 3] = [0x33, 0xd1, 0x7a];
 
     pub fn new() -> Self {
@@ -224,7 +225,7 @@ impl ResBattery {
 
         let tab_id = format!(
             "{}-{}-{}-{}",
-            Self::ID_PREFIX,
+            TAB_ID_PREFIX,
             battery.manufacturer.as_deref().unwrap_or_default(),
             battery.model_name.as_deref().unwrap_or_default(),
             battery.sysfs_path.file_name().unwrap().to_string_lossy(),
