@@ -19,7 +19,7 @@ use crate::i18n::i18n;
 use super::{
     boot_time,
     process::{Process, ProcessAction, ProcessItem},
-    NaNDefault, TICK_RATE,
+    FiniteOr, TICK_RATE,
 };
 
 // This contains executable names that are blacklisted from being recognized as applications
@@ -479,7 +479,7 @@ impl AppsContext {
                 } else {
                     ((new.gfx.saturating_sub(old.gfx) as f32)
                         / (timestamp.saturating_sub(timestamp_last) as f32))
-                        .nan_default(0.0)
+                        .finite_or_default()
                         / 1_000_000.0
                 }
             })
@@ -517,7 +517,7 @@ impl AppsContext {
                 } else {
                     ((new.enc.saturating_sub(old.enc) as f32)
                         / (timestamp.saturating_sub(timestamp_last) as f32))
-                        .nan_default(0.0)
+                        .finite_or_default()
                         / 1_000_000.0
                 }
             })
@@ -555,7 +555,7 @@ impl AppsContext {
                 } else {
                     ((new.dec.saturating_sub(old.dec) as f32)
                         / (timestamp.saturating_sub(timestamp_last) as f32))
-                        .nan_default(0.0)
+                        .finite_or_default()
                         / 1_000_000.0
                 }
             })
