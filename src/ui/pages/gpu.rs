@@ -5,7 +5,7 @@ use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::gpu::{Gpu, GpuData};
 use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
-use crate::utils::{pci, NaNDefault};
+use crate::utils::{pci, FiniteOr};
 
 pub const TAB_ID_PREFIX: &str = "gpu";
 
@@ -362,7 +362,7 @@ impl ResGPU {
 
         let used_vram_fraction =
             if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
-                Some((*used_vram as f64 / *total_vram as f64).nan_default(0.0))
+                Some((*used_vram as f64 / *total_vram as f64).finite_or_default())
             } else {
                 None
             };
