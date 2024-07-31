@@ -8,7 +8,7 @@ use crate::ui::widgets::graph_box::ResGraphBox;
 use crate::utils::cpu::{CpuData, CpuInfo};
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_frequency, convert_temperature};
-use crate::utils::{cpu, NaNDefault, NUM_CPUS};
+use crate::utils::{cpu, FiniteOr, NUM_CPUS};
 
 mod imp {
     use std::cell::{Cell, RefCell};
@@ -347,7 +347,8 @@ impl ResCPU {
             .saturating_sub(imp.old_total_usage.get().1);
         let work_total_time = sum_total_delta.saturating_sub(idle_total_delta);
 
-        let total_fraction = ((work_total_time as f64) / (sum_total_delta as f64)).nan_default(0.0);
+        let total_fraction =
+            ((work_total_time as f64) / (sum_total_delta as f64)).finite_or_default();
 
         imp.total_cpu.graph().push_data_point(total_fraction);
 
@@ -375,7 +376,7 @@ impl ResCPU {
                 let work_thread_time = sum_thread_delta.saturating_sub(idle_thread_delta);
                 let curr_threadbox = &imp.thread_graphs.borrow()[i];
                 let thread_fraction =
-                    ((work_thread_time as f64) / (sum_thread_delta as f64)).nan_default(0.0);
+                    ((work_thread_time as f64) / (sum_thread_delta as f64)).finite_or_default();
 
                 curr_threadbox.graph().push_data_point(thread_fraction);
                 curr_threadbox.set_subtitle(&format!("{} %", (thread_fraction * 100.0).round()));

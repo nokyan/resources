@@ -18,7 +18,7 @@ use gtk::{
 use crate::config;
 
 use super::{
-    boot_time, NaNDefault, FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK, NUM_CPUS, TICK_RATE,
+    boot_time, FiniteOr, FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK, NUM_CPUS, TICK_RATE,
 };
 
 static OTHER_PROCESS: LazyLock<Mutex<(ChildStdin, ChildStdout)>> = LazyLock::new(|| {
@@ -270,7 +270,8 @@ impl Process {
                 * 1000.0;
             let delta_time = self.data.timestamp.saturating_sub(self.timestamp_last);
 
-            delta_cpu_time / (delta_time * *TICK_RATE as u64 * *NUM_CPUS as u64) as f32
+            (delta_cpu_time / (delta_time * *TICK_RATE as u64 * *NUM_CPUS as u64) as f32)
+                .finite_or_default()
         }
     }
 
@@ -320,7 +321,7 @@ impl Process {
                 } else {
                     ((usage.gfx.saturating_sub(old_usage.gfx) as f32)
                         / (self.data.timestamp.saturating_sub(self.timestamp_last) as f32)
-                            .nan_default(0.0))
+                            .finite_or_default())
                         / 1_000_000.0
                 };
 
@@ -345,7 +346,7 @@ impl Process {
                 } else {
                     ((usage.enc.saturating_sub(old_usage.enc) as f32)
                         / (self.data.timestamp.saturating_sub(self.timestamp_last) as f32)
-                            .nan_default(0.0))
+                            .finite_or_default())
                         / 1_000_000.0
                 };
 
@@ -370,7 +371,7 @@ impl Process {
                 } else {
                     ((usage.dec.saturating_sub(old_usage.dec) as f32)
                         / (self.data.timestamp.saturating_sub(self.timestamp_last) as f32)
-                            .nan_default(0.0))
+                            .finite_or_default())
                         / 1_000_000.0
                 };
 
