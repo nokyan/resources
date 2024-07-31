@@ -1,12 +1,9 @@
 use adw::{prelude::*, subclass::prelude::*};
-use anyhow::Context;
 use gtk::glib;
-use process_data::Containerization;
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
-use crate::utils::boot_time;
-use crate::utils::process::ProcessItem;
+use crate::ui::pages::processes::process_entry::ProcessEntry;
 use crate::utils::units::{convert_speed, convert_storage, format_time};
 
 mod imp {
@@ -109,106 +106,96 @@ impl ResProcessDialog {
         glib::Object::new::<Self>()
     }
 
-    pub fn init<S: AsRef<str>>(&self, process: &ProcessItem, user: S) {
+    pub fn init<S: AsRef<str>>(&self, process: &ProcessEntry, user: S) {
         self.setup_widgets(process, user.as_ref());
     }
 
-    pub fn setup_widgets(&self, process: &ProcessItem, user: &str) {
+    pub fn setup_widgets(&self, process: &ProcessEntry, user: &str) {
         let imp = self.imp();
 
-        imp.name.set_label(&process.display_name);
+        imp.name.set_label(&process.name());
 
         imp.user.set_subtitle(user);
 
-        imp.pid.set_subtitle(&process.pid.to_string());
+        imp.pid.set_subtitle(&process.pid().to_string());
 
         imp.running_since.set_subtitle(
-            &boot_time()
-                .and_then(|boot_time| {
-                    boot_time
-                        .add_seconds(process.starttime)
-                        .context("unable to add seconds to boot time")
-                })
-                .and_then(|time| time.format("%c").context("unable to format running_since"))
-                .map(|gstr| gstr.to_string())
-                .unwrap_or(i18n("N/A")),
+            &process
+                .running_since()
+                .unwrap_or_else(|| i18n("N/A").into()),
         );
 
-        imp.commandline.set_subtitle(&process.commandline);
-        imp.commandline.set_tooltip_text(Some(&process.commandline));
+        imp.commandline.set_subtitle(&process.commandline());
+        imp.commandline
+            .set_tooltip_text(Some(&process.commandline()));
 
         imp.cgroup
-            .set_subtitle(&process.cgroup.clone().unwrap_or_else(|| i18n("N/A")));
-        imp.cgroup
-            .set_tooltip_text(Some(&process.cgroup.clone().unwrap_or_else(|| i18n("N/A"))));
+            .set_subtitle(&process.cgroup().unwrap_or_else(|| i18n("N/A").into()));
+        imp.cgroup.set_tooltip_text(Some(
+            &process.cgroup().unwrap_or_else(|| i18n("N/A").into()),
+        ));
 
-        let containerized = match process.containerization {
-            Containerization::None => i18n("No"),
-            Containerization::Flatpak => i18n("Yes (Flatpak)"),
-            Containerization::Snap => i18n("Yes (Snap)"),
-        };
-        imp.containerized.set_subtitle(&containerized);
+        imp.containerized.set_subtitle(&process.containerization());
 
         self.update(process);
     }
 
-    pub fn update(&self, process: &ProcessItem) {
+    pub fn update(&self, process: &ProcessEntry) {
         let imp = self.imp();
 
         imp.cpu_usage
-            .set_subtitle(&format!("{:.1} %", process.cpu_time_ratio * 100.0));
+            .set_subtitle(&format!("{:.1} %", process.cpu_usage() * 100.0));
 
         imp.memory_usage
-            .set_subtitle(&convert_storage(process.memory_usage as f64, false));
+            .set_subtitle(&convert_storage(process.memory_usage() as f64, false));
 
-        if let Some(read_speed) = process.read_speed {
-            imp.drive_read_speed
-                .set_subtitle(&convert_speed(read_speed, false));
-        } else {
+        if process.read_speed() == -1.0 {
             imp.drive_read_speed.set_subtitle(&i18n("N/A"));
+        } else {
+            imp.drive_read_speed
+                .set_subtitle(&convert_speed(process.read_speed(), false));
         }
 
-        if let Some(read_total) = process.read_total {
-            imp.drive_read_total
-                .set_subtitle(&convert_storage(read_total as f64, false));
-        } else {
+        if process.read_total() == -1 {
             imp.drive_read_total.set_subtitle(&i18n("N/A"));
+        } else {
+            imp.drive_read_total
+                .set_subtitle(&convert_storage(process.read_total() as f64, false));
         }
 
-        if let Some(write_speed) = process.write_speed {
-            imp.drive_write_speed
-                .set_subtitle(&convert_speed(write_speed, false));
-        } else {
+        if process.write_speed() == -1.0 {
             imp.drive_write_speed.set_subtitle(&i18n("N/A"));
+        } else {
+            imp.drive_write_speed
+                .set_subtitle(&convert_speed(process.write_speed(), false));
         }
 
-        if let Some(write_total) = process.write_total {
-            imp.drive_write_total
-                .set_subtitle(&convert_storage(write_total as f64, false));
-        } else {
+        if process.write_total() == -1 {
             imp.drive_write_total.set_subtitle(&i18n("N/A"));
+        } else {
+            imp.drive_write_total
+                .set_subtitle(&convert_storage(process.write_total() as f64, false));
         }
 
         imp.gpu_usage
-            .set_subtitle(&format!("{:.1} %", process.gpu_usage * 100.0));
+            .set_subtitle(&format!("{:.1} %", process.gpu_usage() * 100.0));
 
         imp.vram_usage
-            .set_subtitle(&convert_storage(process.gpu_mem_usage as f64, false));
+            .set_subtitle(&convert_storage(process.gpu_mem_usage() as f64, false));
 
         imp.encoder_usage
-            .set_subtitle(&format!("{:.1} %", process.enc_usage * 100.0));
+            .set_subtitle(&format!("{:.1} %", process.enc_usage() * 100.0));
 
         imp.decoder_usage
-            .set_subtitle(&format!("{:.1} %", process.dec_usage * 100.0));
+            .set_subtitle(&format!("{:.1} %", process.dec_usage() * 100.0));
 
-        imp.total_cpu_time.set_subtitle(&format_time(
-            process.user_cpu_time + process.system_cpu_time,
-        ));
+        imp.total_cpu_time
+            .set_subtitle(&format_time(process.total_cpu_time()));
 
         imp.user_cpu_time
-            .set_subtitle(&format_time(process.user_cpu_time));
+            .set_subtitle(&format_time(process.user_cpu_time()));
 
         imp.system_cpu_time
-            .set_subtitle(&format_time(process.system_cpu_time));
+            .set_subtitle(&format_time(process.system_cpu_time()));
     }
 }

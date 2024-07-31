@@ -1,4 +1,3 @@
-use hashbrown::HashMap;
 use process_data::ProcessData;
 use std::path::PathBuf;
 use std::time::Duration;
@@ -38,7 +37,7 @@ pub enum Action {
 }
 
 mod imp {
-    use std::cell::RefCell;
+    use std::{cell::RefCell, collections::HashMap};
 
     use crate::{
         ui::{
@@ -247,14 +246,14 @@ impl MainWindow {
         let selected_page = self.get_selected_page().unwrap();
 
         if selected_page.is::<ResApplications>() {
-            if let Some(app_item) = imp.applications.get_selected_app_item() {
+            if let Some(app_item) = imp.applications.get_selected_app_entry() {
                 imp.applications
-                    .execute_process_action_dialog(app_item, process_action);
+                    .execute_process_action_dialog(&app_item, process_action);
             }
         } else if selected_page.is::<ResProcesses>() {
-            if let Some(process_item) = imp.processes.get_selected_process_item() {
+            if let Some(process_item) = imp.processes.get_selected_process_entry() {
                 imp.processes
-                    .execute_process_action_dialog(process_item, process_action);
+                    .execute_process_action_dialog(&process_item, process_action);
             }
         }
     }
@@ -265,11 +264,11 @@ impl MainWindow {
         let selected_page = self.get_selected_page().unwrap();
 
         if selected_page.is::<ResApplications>() {
-            if let Some(app_item) = imp.applications.get_selected_app_item() {
+            if let Some(app_item) = imp.applications.get_selected_app_entry() {
                 imp.applications.open_information_dialog(&app_item);
             }
         } else if selected_page.is::<ResProcesses>() {
-            if let Some(process_item) = imp.processes.get_selected_process_item() {
+            if let Some(process_item) = imp.processes.get_selected_process_entry() {
                 imp.processes.open_information_dialog(&process_item);
             }
         }
@@ -835,7 +834,7 @@ impl MainWindow {
             }
 
             Action::ManipulateApp(action, id, toast_overlay) => {
-                let app = apps_context.get_app(&id).unwrap();
+                let app = apps_context.get_app(&Some(id.clone())).unwrap();
                 let res = app.execute_process_action(&apps_context, action);
 
                 for r in &res {

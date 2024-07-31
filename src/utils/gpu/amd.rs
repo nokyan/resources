@@ -1,10 +1,9 @@
 use anyhow::{bail, Result};
-use hashbrown::HashMap;
 use log::{debug, warn};
 use process_data::pci_slot::PciSlot;
 use regex::Regex;
 
-use std::{path::PathBuf, sync::LazyLock, time::Instant};
+use std::{collections::HashMap, path::PathBuf, sync::LazyLock, time::Instant};
 
 use crate::utils::{
     pci::{self, Device},

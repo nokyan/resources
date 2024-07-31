@@ -1,4 +1,4 @@
-mod process_entry;
+pub mod process_entry;
 mod process_name_cell;
 
 use std::collections::HashSet;
@@ -17,7 +17,7 @@ use crate::i18n::{i18n, i18n_f};
 use crate::ui::dialogs::process_dialog::ResProcessDialog;
 use crate::ui::window::{Action, MainWindow};
 use crate::utils::app::AppsContext;
-use crate::utils::process::{ProcessAction, ProcessItem};
+use crate::utils::process::ProcessAction;
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_speed, convert_storage, format_time};
 use crate::utils::NUM_CPUS;
@@ -191,10 +191,8 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        if let Some(process_item) = process_entry.process_item() {
-                            res_processes
-                                .execute_process_action_dialog(process_item, ProcessAction::TERM);
-                        }
+                        res_processes
+                            .execute_process_action_dialog(process_entry, ProcessAction::TERM);
                     }
                 },
             );
@@ -206,10 +204,8 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        if let Some(process_item) = process_entry.process_item() {
-                            res_processes
-                                .execute_process_action_dialog(process_item, ProcessAction::KILL);
-                        }
+                        res_processes
+                            .execute_process_action_dialog(process_entry, ProcessAction::KILL);
                     }
                 },
             );
@@ -221,10 +217,8 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        if let Some(process_item) = process_entry.process_item() {
-                            res_processes
-                                .execute_process_action_dialog(process_item, ProcessAction::STOP);
-                        }
+                        res_processes
+                            .execute_process_action_dialog(process_entry, ProcessAction::STOP);
                     }
                 },
             );
@@ -236,10 +230,8 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        if let Some(process_item) = process_entry.process_item() {
-                            res_processes
-                                .execute_process_action_dialog(process_item, ProcessAction::CONT);
-                        }
+                        res_processes
+                            .execute_process_action_dialog(process_entry, ProcessAction::CONT);
                     }
                 },
             );
@@ -251,8 +243,7 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        res_processes
-                            .open_information_dialog(&process_entry.process_item().unwrap());
+                        res_processes.open_information_dialog(process_entry);
                     }
                 },
             );
@@ -261,8 +252,8 @@ mod imp {
                 "processes.kill-process",
                 None,
                 move |res_processes, _, _| {
-                    if let Some(process) = res_processes.get_selected_process_item() {
-                        res_processes.execute_process_action_dialog(process, ProcessAction::KILL);
+                    if let Some(process) = res_processes.get_selected_process_entry() {
+                        res_processes.execute_process_action_dialog(&process, ProcessAction::KILL);
                     }
                 },
             );
@@ -271,8 +262,8 @@ mod imp {
                 "processes.halt-process",
                 None,
                 move |res_processes, _, _| {
-                    if let Some(process) = res_processes.get_selected_process_item() {
-                        res_processes.execute_process_action_dialog(process, ProcessAction::STOP);
+                    if let Some(process) = res_processes.get_selected_process_entry() {
+                        res_processes.execute_process_action_dialog(&process, ProcessAction::STOP);
                     }
                 },
             );
@@ -281,8 +272,8 @@ mod imp {
                 "processes.continue-process",
                 None,
                 move |res_processes, _, _| {
-                    if let Some(process) = res_processes.get_selected_process_item() {
-                        res_processes.execute_process_action_dialog(process, ProcessAction::CONT);
+                    if let Some(process) = res_processes.get_selected_process_entry() {
+                        res_processes.execute_process_action_dialog(&process, ProcessAction::CONT);
                     }
                 },
             );
@@ -485,7 +476,7 @@ impl ResProcesses {
                     .selected_item()
                     .map(|object| object.downcast::<ProcessEntry>().unwrap());
                 if let Some(selection) = selection_option {
-                    this.open_information_dialog(&selection.process_item().unwrap());
+                    this.open_information_dialog(&selection);
                 }
             }
         ));
@@ -494,8 +485,8 @@ impl ResProcesses {
             #[weak(rename_to = this)]
             self,
             move |_| {
-                if let Some(app) = this.get_selected_process_item() {
-                    this.execute_process_action_dialog(app, ProcessAction::TERM);
+                if let Some(process) = this.get_selected_process_entry() {
+                    this.execute_process_action_dialog(&process, ProcessAction::TERM);
                 }
             }
         ));
@@ -534,12 +525,12 @@ impl ResProcesses {
         }
     }
 
-    pub fn open_information_dialog(&self, process: &ProcessItem) {
+    pub fn open_information_dialog(&self, process: &ProcessEntry) {
         let imp = self.imp();
         let process_dialog = ResProcessDialog::new();
-        process_dialog.init(process, &process.user);
+        process_dialog.init(process, process.user());
         process_dialog.present(Some(&MainWindow::default()));
-        *imp.open_dialog.borrow_mut() = Some((process.pid, process_dialog));
+        *imp.open_dialog.borrow_mut() = Some((process.pid(), process_dialog));
     }
 
     fn search_filter(&self, obj: &Object) -> bool {
@@ -551,28 +542,36 @@ impl ResProcesses {
             || item.commandline().to_lowercase().contains(&search_string)
     }
 
-    pub fn get_selected_process_item(&self) -> Option<ProcessItem> {
+    pub fn get_selected_process_entry(&self) -> Option<ProcessEntry> {
         self.imp()
             .selection_model
             .borrow()
             .selected_item()
-            .and_then(|object| object.downcast::<ProcessEntry>().unwrap().process_item())
+            .and_then(|object| object.downcast::<ProcessEntry>().ok())
     }
 
-    pub fn refresh_processes_list(&self, apps: &AppsContext) {
+    pub fn refresh_processes_list(&self, apps_context: &AppsContext) {
         let imp = self.imp();
 
         let store = imp.store.borrow_mut();
         let mut dialog_opt = &*imp.open_dialog.borrow_mut();
 
-        let mut new_items = apps.process_items();
         let mut pids_to_remove = HashSet::new();
+        let mut already_existing_pids = HashSet::new();
 
         // change process entries of processes that have existed before
         store.iter::<ProcessEntry>().flatten().for_each(|object| {
             let item_pid = object.pid();
-            // filter out processes that have existed before but don't anymore
-            if apps.get_process(item_pid).is_none() {
+            if let Some(process) = apps_context.get_process(item_pid) {
+                object.update(process);
+                if let Some((dialog_pid, dialog)) = dialog_opt {
+                    if *dialog_pid == item_pid {
+                        dialog.update(&object);
+                    }
+                }
+                already_existing_pids.insert(item_pid);
+            } else {
+                // filter out processes that have existed before but don't anymore
                 if let Some((dialog_pid, dialog)) = dialog_opt {
                     if *dialog_pid == item_pid {
                         dialog.close();
@@ -582,14 +581,6 @@ impl ResProcesses {
                 *imp.popped_over_process.borrow_mut() = None;
                 pids_to_remove.insert(item_pid);
             }
-            if let Some((_, new_item)) = new_items.remove_entry(&item_pid) {
-                if let Some((dialog_pid, dialog)) = dialog_opt {
-                    if *dialog_pid == item_pid {
-                        dialog.update(&new_item);
-                    }
-                }
-                object.update(new_item);
-            }
         });
 
         // remove recently deceased processes
@@ -598,9 +589,13 @@ impl ResProcesses {
         });
 
         // add the newly started process to the store
-        let items: Vec<ProcessEntry> = new_items
-            .drain()
-            .map(|(_, new_item)| ProcessEntry::new(new_item))
+        let items: Vec<ProcessEntry> = apps_context
+            .processes_iter()
+            .filter(|process| {
+                !already_existing_pids.contains(&process.data.pid)
+                    && !pids_to_remove.contains(&process.data.pid)
+            })
+            .map(ProcessEntry::new)
             .collect();
         store.extend_from_slice(&items);
 
@@ -614,13 +609,15 @@ impl ResProcesses {
         );
     }
 
-    pub fn execute_process_action_dialog(&self, process: ProcessItem, action: ProcessAction) {
+    pub fn execute_process_action_dialog(&self, process: &ProcessEntry, action: ProcessAction) {
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
             let main_context = MainContext::default();
             main_context.spawn_local(clone!(
                 #[weak(rename_to = this)]
                 self,
+                #[weak]
+                process,
                 async move {
                     let imp = this.imp();
                     let _ = imp
@@ -629,8 +626,8 @@ impl ResProcesses {
                         .unwrap()
                         .send(Action::ManipulateProcess(
                             action,
-                            process.pid,
-                            process.clone().display_name,
+                            process.pid(),
+                            process.name().to_string(),
                             imp.toast_overlay.get(),
                         ))
                         .await;
@@ -641,7 +638,7 @@ impl ResProcesses {
 
         // Confirmation dialog & warning
         let dialog = adw::AlertDialog::builder()
-            .heading(get_action_name(action, &[&process.display_name]))
+            .heading(get_action_name(action, &[&process.name()]))
             .body(get_process_action_warning(action))
             .build();
 
@@ -658,6 +655,8 @@ impl ResProcesses {
             clone!(
                 #[weak(rename_to = this)]
                 self,
+                #[weak]
+                process,
                 move |_, response| {
                     if response == "yes" {
                         let main_context = MainContext::default();
@@ -674,8 +673,8 @@ impl ResProcesses {
                                     .unwrap()
                                     .send(Action::ManipulateProcess(
                                         action,
-                                        process.pid,
-                                        process.clone().display_name,
+                                        process.pid(),
+                                        process.name().to_string(),
                                         imp.toast_overlay.get(),
                                     ))
                                     .await;
@@ -719,6 +718,11 @@ impl ResProcesses {
                 .bind(&row, "tooltip", Widget::NONE);
         });
 
+        name_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&ResProcessNameCell>);
+        });
+
         let name_col_sorter = StringSorter::builder()
             .ignore_case(true)
             .expression(gtk::PropertyExpression::new(
@@ -752,6 +756,11 @@ impl ResProcesses {
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("pid")
                 .bind(&row, "text", Widget::NONE);
+        });
+
+        pid_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
         });
 
         let pid_col_sorter = NumericSorter::builder()
@@ -795,6 +804,11 @@ impl ResProcesses {
             item.property_expression("item")
                 .chain_property::<ProcessEntry>("user")
                 .bind(&row, "text", Widget::NONE);
+        });
+
+        user_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
         });
 
         let user_col_sorter = StringSorter::builder()
@@ -842,6 +856,11 @@ impl ResProcesses {
                     convert_storage(memory_usage as f64, false)
                 }))
                 .bind(&row, "text", Widget::NONE);
+        });
+
+        memory_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
         });
 
         let memory_col_sorter = NumericSorter::builder()
@@ -896,6 +915,11 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
+        cpu_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
+        });
+
         let cpu_col_sorter = NumericSorter::builder()
             .sort_order(SortType::Ascending)
             .expression(gtk::PropertyExpression::new(
@@ -947,6 +971,11 @@ impl ResProcesses {
                     }
                 }))
                 .bind(&row, "text", Widget::NONE);
+        });
+
+        read_speed_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
         });
 
         let read_speed_col_sorter = NumericSorter::builder()
@@ -1004,6 +1033,11 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
+        read_total_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
+        });
+
         let read_total_col_sorter = NumericSorter::builder()
             .sort_order(SortType::Ascending)
             .expression(gtk::PropertyExpression::new(
@@ -1057,6 +1091,11 @@ impl ResProcesses {
                     }
                 }))
                 .bind(&row, "text", Widget::NONE);
+        });
+
+        write_speed_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
         });
 
         let write_speed_col_sorter = NumericSorter::builder()
@@ -1114,6 +1153,11 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
+        write_total_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
+        });
+
         let write_total_col_sorter = NumericSorter::builder()
             .sort_order(SortType::Ascending)
             .expression(gtk::PropertyExpression::new(
@@ -1160,6 +1204,11 @@ impl ResProcesses {
                     format!("{:.1} %", gpu_usage * 100.0)
                 }))
                 .bind(&row, "text", Widget::NONE);
+        });
+
+        gpu_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
         });
 
         let gpu_col_sorter = NumericSorter::builder()
@@ -1211,6 +1260,11 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
+        encoder_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
+        });
+
         let encoder_col_sorter = NumericSorter::builder()
             .sort_order(SortType::Ascending)
             .expression(gtk::PropertyExpression::new(
@@ -1258,6 +1312,11 @@ impl ResProcesses {
                     format!("{:.1} %", dec_usage * 100.0)
                 }))
                 .bind(&row, "text", Widget::NONE);
+        });
+
+        decoder_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
         });
 
         let decoder_col_sorter = NumericSorter::builder()
@@ -1308,6 +1367,11 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
+        gpu_mem_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
+        });
+
         let gpu_mem_col_sorter = NumericSorter::builder()
             .sort_order(SortType::Ascending)
             .expression(gtk::PropertyExpression::new(
@@ -1354,6 +1418,11 @@ impl ResProcesses {
                     format_time(total_cpu_time)
                 }))
                 .bind(&row, "text", Widget::NONE);
+        });
+
+        total_cpu_time_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
         });
 
         let total_cpu_time_col_sorter = NumericSorter::builder()
@@ -1404,6 +1473,11 @@ impl ResProcesses {
                 .bind(&row, "text", Widget::NONE);
         });
 
+        user_cpu_time_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
+        });
+
         let user_cpu_time_col_sorter = NumericSorter::builder()
             .sort_order(SortType::Ascending)
             .expression(gtk::PropertyExpression::new(
@@ -1450,6 +1524,11 @@ impl ResProcesses {
                     format_time(system_cpu_time)
                 }))
                 .bind(&row, "text", Widget::NONE);
+        });
+
+        system_cpu_time_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>();
+            item.unwrap().set_child(None::<&gtk::Inscription>);
         });
 
         let system_cpu_time_col_sorter = NumericSorter::builder()
