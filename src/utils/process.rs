@@ -1,7 +1,7 @@
 use anyhow::{bail, Context, Result};
 use config::LIBEXECDIR;
 use log::debug;
-use process_data::{pci_slot::PciSlot, Containerization, GpuUsageStats, ProcessData};
+use process_data::{pci_slot::PciSlot, GpuUsageStats, ProcessData};
 use std::{
     collections::BTreeMap,
     io::{Read, Write},
@@ -10,11 +10,16 @@ use std::{
 };
 use strum_macros::Display;
 
-use gtk::gio::{Icon, ThemedIcon};
+use gtk::{
+    gio::{Icon, ThemedIcon},
+    glib::GString,
+};
 
 use crate::config;
 
-use super::{FiniteOr, FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK, NUM_CPUS, TICK_RATE};
+use super::{
+    boot_time, FiniteOr, FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK, NUM_CPUS, TICK_RATE,
+};
 
 static OTHER_PROCESS: LazyLock<Mutex<(ChildStdin, ChildStdout)>> = LazyLock::new(|| {
     let proxy_path = if *IS_FLATPAK {
@@ -72,30 +77,6 @@ pub enum ProcessAction {
     STOP,
     KILL,
     CONT,
-}
-/// Convenience struct for displaying running processes
-#[derive(Debug, Clone)]
-pub struct ProcessItem {
-    pub pid: i32,
-    pub user: String,
-    pub display_name: String,
-    pub icon: Icon,
-    pub memory_usage: usize,
-    pub cpu_time_ratio: f32,
-    pub user_cpu_time: f64,
-    pub system_cpu_time: f64,
-    pub commandline: String,
-    pub containerization: Containerization,
-    pub starttime: f64,
-    pub cgroup: Option<String>,
-    pub read_speed: Option<f64>,
-    pub read_total: Option<u64>,
-    pub write_speed: Option<f64>,
-    pub write_total: Option<u64>,
-    pub gpu_usage: f32,
-    pub enc_usage: f32,
-    pub dec_usage: f32,
-    pub gpu_mem_usage: u64,
 }
 
 impl Process {
@@ -415,6 +396,16 @@ impl Process {
     #[must_use]
     pub fn starttime(&self) -> f64 {
         self.data.starttime as f64 / *TICK_RATE as f64
+    }
+
+    pub fn running_since(&self) -> Result<GString> {
+        boot_time()
+            .and_then(|boot_time| {
+                boot_time
+                    .add_seconds(self.starttime())
+                    .context("unable to add seconds to boot time")
+            })
+            .and_then(|time| time.format("%c").context("unable to format running_since"))
     }
 
     pub fn sanitize_cmdline<S: AsRef<str>>(cmdline: S) -> Option<String> {

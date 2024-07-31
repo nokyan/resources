@@ -40,11 +40,11 @@ static BOOT_TIMESTAMP: LazyLock<Option<i64>> = LazyLock::new(|| {
         .ok()
 });
 
-static TICK_RATE: LazyLock<usize> =
-    LazyLock::new(|| sysconf::sysconf(sysconf::SysconfVariable::ScClkTck).unwrap_or(100) as usize);
-
 static FLATPAK_APP_PATH: LazyLock<String> =
     LazyLock::new(|| flatpak_app_path().unwrap_or_else(|_| String::new()));
+
+pub static TICK_RATE: LazyLock<usize> =
+    LazyLock::new(|| sysconf::sysconf(sysconf::SysconfVariable::ScClkTck).unwrap_or(100) as usize);
 
 pub static NUM_CPUS: LazyLock<usize> = LazyLock::new(num_cpus::get);
 

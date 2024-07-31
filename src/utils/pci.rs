@@ -93,6 +93,8 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
 
     let mut seen: BTreeMap<u16, Vendor> = BTreeMap::new();
 
+    let (mut vendors_count, mut devices_count, mut subdevices_count) = (0, 0, 0);
+
     for line in reader.lines().map_while(Result::ok) {
         if line.starts_with('C') {
             // case 1: we've reached the classes, time to stop
@@ -130,6 +132,8 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
                 name,
             };
 
+            subdevices_count += 1;
+
             seen.values_mut()
                 .last()
                 .and_then(|vendor| vendor.devices.values_mut().last())
@@ -164,6 +168,8 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
                 sub_devices: Vec::new(),
             };
 
+            devices_count += 1;
+
             seen.values_mut()
                 .last()
                 .with_context(|| format!("no preceding device (line: {line})"))?
@@ -191,13 +197,15 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
                 devices: BTreeMap::new(),
             };
 
+            vendors_count += 1;
+
             seen.insert(vid, vendor);
         }
     }
 
     let elapsed = start.elapsed();
 
-    info!("Successfully parsed pci.ids within {elapsed:.2?}");
+    info!("Successfully parsed pci.ids within {elapsed:.2?} (vendors: {vendors_count}, devices: {devices_count}, subdevices: {subdevices_count})");
 
     Ok(seen)
 }
