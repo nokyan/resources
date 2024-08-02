@@ -8,9 +8,10 @@ edition = "2021"
 opt-level = 1
 
 [profile.release]
-opt-level = 3
-strip = true
+codegen-units = 1
 lto = true
+strip = true
+opt-level = 3
 
 [dependencies]
 adw = { version = "0.7.0", features = ["v1_5"], package = "libadwaita" }
