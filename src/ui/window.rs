@@ -11,6 +11,7 @@ use log::{error, info, warn};
 
 use crate::application::Application;
 use crate::config::PROFILE;
+use crate::gui::ARGS;
 use crate::i18n::{i18n, i18n_f, ni18n_f};
 use crate::ui::pages::applications::ResApplications;
 use crate::ui::pages::battery::ResBattery;
@@ -184,8 +185,8 @@ glib::wrapper! {
 }
 
 struct RefreshData {
-    cpu_data: CpuData,
-    mem_data: Result<MemoryData>,
+    cpu_data: Option<CpuData>,
+    mem_data: Option<Result<MemoryData>>,
     gpu_data: Vec<GpuData>,
     drive_paths: Vec<PathBuf>,
     drive_data: Vec<DriveData>,
@@ -311,10 +312,6 @@ impl MainWindow {
 
         imp.resources_sidebar.set_stack(&imp.content_stack);
 
-        imp.applications.init(imp.sender.clone());
-        imp.processes.init(imp.sender.clone());
-        imp.memory.init();
-
         if SETTINGS.show_search_on_start() {
             // we want the search bar to show up for both but also let the last viewed page grab the focus, so order is
             // important here
@@ -327,16 +324,35 @@ impl MainWindow {
             }
         }
 
-        *self.imp().apps_context.borrow_mut() = AppsContext::new();
-
-        let cpu_info = cpu::cpu_info().context("unable to get CPUInfo").unwrap();
-        if let Some(model_name) = cpu_info.model_name.as_deref() {
-            imp.processor_window_title.set_title(model_name);
-            imp.processor_window_title.set_subtitle(&i18n("Processor"));
+        if ARGS.disable_process_monitoring {
+            self.remove_page(imp.applications_page.child().downcast_ref().unwrap());
+            self.remove_page(imp.processes_page.child().downcast_ref().unwrap());
+        } else {
+            *imp.apps_context.borrow_mut() = AppsContext::new();
+            imp.applications.init(imp.sender.clone());
+            imp.processes.init(imp.sender.clone())
         }
-        self.imp().cpu.init(cpu_info);
 
-        self.init_gpu_pages();
+        if ARGS.disable_cpu_monitoring {
+            self.remove_page(imp.cpu_page.child().downcast_ref().unwrap());
+        } else {
+            let cpu_info = cpu::cpu_info().context("unable to get CPUInfo").unwrap();
+            if let Some(model_name) = cpu_info.model_name.as_deref() {
+                imp.processor_window_title.set_title(model_name);
+                imp.processor_window_title.set_subtitle(&i18n("Processor"));
+            }
+            imp.cpu.init(cpu_info);
+        }
+
+        if ARGS.disable_memory_monitoring {
+            self.remove_page(imp.memory_page.child().downcast_ref().unwrap());
+        } else {
+            imp.memory.init();
+        }
+
+        if !ARGS.disable_gpu_monitoring {
+            self.init_gpu_pages();
+        }
 
         let main_context = MainContext::default();
 
@@ -350,9 +366,17 @@ impl MainWindow {
     }
 
     fn gather_refresh_data(logical_cpus: usize, gpus: &[Gpu]) -> RefreshData {
-        let cpu_data = CpuData::new(logical_cpus);
+        let cpu_data = if ARGS.disable_cpu_monitoring {
+            None
+        } else {
+            Some(CpuData::new(logical_cpus))
+        };
 
-        let mem_data = MemoryData::new();
+        let mem_data = if ARGS.disable_memory_monitoring {
+            None
+        } else {
+            Some(MemoryData::new())
+        };
 
         let mut gpu_data = Vec::with_capacity(gpus.len());
         for gpu in gpus {
@@ -361,32 +385,48 @@ impl MainWindow {
             gpu_data.push(data);
         }
 
-        let drive_paths = Drive::get_sysfs_paths().unwrap_or_default();
+        let drive_paths = if ARGS.disable_drive_monitoring {
+            Vec::new()
+        } else {
+            Drive::get_sysfs_paths().unwrap_or_default()
+        };
         let mut drive_data = Vec::with_capacity(drive_paths.len());
         for path in &drive_paths {
             drive_data.push(DriveData::new(path));
         }
 
-        let network_paths = NetworkInterface::get_sysfs_paths().unwrap_or_default();
+        let network_paths = if ARGS.disable_network_interface_monitoring {
+            Vec::new()
+        } else {
+            NetworkInterface::get_sysfs_paths().unwrap_or_default()
+        };
         let mut network_data = Vec::with_capacity(network_paths.len());
         for path in &network_paths {
             network_data.push(NetworkData::new(path));
         }
 
-        let battery_paths = Battery::get_sysfs_paths().unwrap_or_default();
+        let battery_paths = if ARGS.disable_battery_monitoring {
+            Vec::new()
+        } else {
+            Battery::get_sysfs_paths().unwrap_or_default()
+        };
         let mut battery_data = Vec::with_capacity(battery_paths.len());
         for path in &battery_paths {
             battery_data.push(BatteryData::new(path));
         }
 
-        let process_data = Process::all_data()
-            .inspect_err(|e| {
-                warn!(
-                    "Unable to update process and app data!\n{e}\n{}",
-                    e.backtrace()
-                );
-            })
-            .unwrap_or_default();
+        let process_data = if ARGS.disable_process_monitoring {
+            Vec::new()
+        } else {
+            Process::all_data()
+                .inspect_err(|e| {
+                    warn!(
+                        "Unable to update process and app data!\n{e}\n{}",
+                        e.backtrace()
+                    );
+                })
+                .unwrap_or_default()
+        };
 
         RefreshData {
             cpu_data,
@@ -458,15 +498,19 @@ impl MainWindow {
         /*
          * Cpu
          */
-        imp.cpu.refresh_page(&cpu_data);
+        if let Some(cpu_data) = cpu_data {
+            imp.cpu.refresh_page(&cpu_data);
+        }
 
         /*
          * Memory
          */
-        if let Ok(mem_data) = mem_data {
-            imp.memory.refresh_page(mem_data);
-        } else if let Err(error) = mem_data {
-            warn!("Unable to update memory data, reason: {error}");
+        if let Some(mem_data_result) = mem_data {
+            if let Ok(mem_data) = mem_data_result {
+                imp.memory.refresh_page(mem_data);
+            } else if let Err(error) = mem_data_result {
+                warn!("Unable to update memory data, reason: {error}");
+            }
         }
 
         /*
@@ -526,13 +570,16 @@ impl MainWindow {
     pub async fn periodic_refresh_all(&self) {
         let imp = self.imp();
 
-        let gpus = imp
-            .gpu_pages
-            .borrow()
-            .values()
-            .map(|(gpu, _)| gpu)
-            .cloned()
-            .collect::<Vec<Gpu>>();
+        let gpus = if ARGS.disable_gpu_monitoring {
+            Vec::new()
+        } else {
+            imp.gpu_pages
+                .borrow()
+                .values()
+                .map(|(gpu, _)| gpu)
+                .cloned()
+                .collect::<Vec<Gpu>>()
+        };
 
         let logical_cpus = imp.cpu.imp().logical_cpus_amount.get();
 
@@ -558,9 +605,13 @@ impl MainWindow {
 
             self.refresh_ui(refresh_data);
 
-            // if this is our first refresh, we want to set the opening view to what it was when the last session was ended
+            // if this is our first refresh, we want to set the opening view to what it was when the last session was
+            // ended or whatever the user has supplied via CLI arg
             if first_refresh {
-                let saved_page = SETTINGS.last_viewed_page();
+                let page_to_open = ARGS
+                    .open_tab_id
+                    .clone()
+                    .unwrap_or_else(|| SETTINGS.last_viewed_page());
 
                 // yes, this is bad and O(n).
                 for page in imp.content_stack.pages().iter::<gtk::StackPage>().flatten() {
@@ -568,7 +619,7 @@ impl MainWindow {
 
                     let child_id = toolbar.content().unwrap().property::<GString>("tab_id");
 
-                    if child_id == saved_page {
+                    if child_id == page_to_open {
                         imp.content_stack.set_visible_child(&toolbar);
                         imp.resources_sidebar
                             .set_selected_list_item_by_tab_id(&child_id);
@@ -651,7 +702,7 @@ impl MainWindow {
 
         // Add new drive pages
         for path in paths {
-            if !drive_pages.contains_key(&path) {
+            drive_pages.entry(path.clone()).or_insert_with(|| {
                 // A drive has been added
                 info!(
                     "A drive has been added (or turned visible): {}",
@@ -670,14 +721,12 @@ impl MainWindow {
                 let page = ResDrive::new();
                 page.init(drive, highest_secondary_ord);
 
-                let toolbar = if let Some(model) = &drive.inner.model {
+                if let Some(model) = &drive.inner.model {
                     self.add_page(&page, model, &display_name)
                 } else {
                     self.add_page(&page, &drive.inner.block_device, &display_name)
-                };
-
-                drive_pages.insert(path, toolbar);
-            }
+                }
+            });
         }
     }
 
@@ -726,7 +775,7 @@ impl MainWindow {
 
         // Add new network pages
         for path in paths {
-            if !network_pages.contains_key(&path) {
+            network_pages.entry(path.clone()).or_insert_with(|| {
                 // A network interface has been added
                 info!(
                     "A network interface has been added (or turned visible): {}",
@@ -744,14 +793,12 @@ impl MainWindow {
                 let page = ResNetwork::new();
                 page.init(network_interface, highest_secondary_ord);
 
-                let toolbar = self.add_page(
+                self.add_page(
                     &page,
                     &network_interface.inner.display_name(),
                     &network_interface.inner.interface_type.to_string(),
-                );
-
-                network_pages.insert(path.clone(), toolbar);
-            }
+                )
+            });
         }
     }
 
@@ -786,7 +833,7 @@ impl MainWindow {
 
         // Add new network pages
         for path in paths {
-            if !battery_pages.contains_key(&path) {
+            battery_pages.entry(path.clone()).or_insert_with(|| {
                 // A battery has been added
                 info!("A battery has been added: {}", path.display());
 
@@ -801,7 +848,7 @@ impl MainWindow {
                 let page = ResBattery::new();
                 page.init(battery, highest_secondary_ord);
 
-                let toolbar = self.add_page(
+                self.add_page(
                     &page,
                     &battery
                         .inner
@@ -810,10 +857,8 @@ impl MainWindow {
                         .unwrap()
                         .to_string_lossy(),
                     &battery.inner.display_name(),
-                );
-
-                battery_pages.insert(path.clone(), toolbar);
-            }
+                )
+            });
         }
     }
 

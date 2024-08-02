@@ -8,6 +8,8 @@ use crate::i18n::{i18n, i18n_f};
 use crate::utils::network::{NetworkData, NetworkInterface};
 use crate::utils::units::{convert_speed, convert_storage};
 
+pub const TAB_ID_PREFIX: &str = "network";
+
 mod imp {
     use std::cell::{Cell, RefCell};
 
@@ -226,7 +228,6 @@ impl Default for ResNetwork {
 }
 
 impl ResNetwork {
-    const ID_PREFIX: &'static str = "network";
     // TODO: this is the color for receiving, but it is also used in sidebar,
     // which graphs the sum of send+recv.
     // This does not make much sense, but we probably can't do something
@@ -248,7 +249,7 @@ impl ResNetwork {
 
         let tab_id = format!(
             "{}-{}",
-            Self::ID_PREFIX,
+            TAB_ID_PREFIX,
             network_interface.interface_name.to_str().unwrap()
         );
         imp.set_tab_id(&tab_id);
