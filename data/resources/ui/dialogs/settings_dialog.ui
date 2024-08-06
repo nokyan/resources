@@ -188,6 +188,17 @@
         <property name="title" translatable="yes">Processes</property>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Options</property>
+            <child>
+              <object class="AdwSwitchRow" id="processes_niceness">
+                <property name="title" translatable="yes">Show Niceness Values</property>
+                <property name="subtitle" translatable="yes">Display priorities as niceness to allow for more fine-grained adjustments</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Information Columns</property>
             <child>
               <object class="AdwSwitchRow" id="processes_show_id_row">
@@ -262,6 +273,11 @@
             <child>
               <object class="AdwSwitchRow" id="processes_show_system_cpu_time_row">
                 <property name="title" translatable="yes">System CPU Time</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_priority_row">
+                <property name="title" translatable="yes">Priority</property>
               </object>
             </child>
           </object>

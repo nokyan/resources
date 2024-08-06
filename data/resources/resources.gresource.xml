@@ -44,6 +44,7 @@
     <file compressed="true">style.css</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/dialogs/app_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/dialogs/process_dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/dialogs/process_options_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/dialogs/settings_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/applications.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/battery.ui</file>
