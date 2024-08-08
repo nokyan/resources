@@ -139,7 +139,7 @@ impl ResProcessOptionsDialog {
 
         for (i, affinity) in process.affinity().iter().enumerate() {
             let switch_row = adw::SwitchRow::builder()
-                .title(&i18n_f("CPU {}", &[&(i + 1).to_string()]))
+                .title(i18n_f("CPU {}", &[&(i + 1).to_string()]))
                 .active(*affinity)
                 .build();
 
@@ -184,15 +184,14 @@ impl ResProcessOptionsDialog {
                         let imp = this.imp();
 
                         if !imp.current_affinity.borrow().iter().any(|b| *b) {
-                            let dialog = adw::MessageDialog::new(
-                                Some(&MainWindow::default()),
+                            let dialog = adw::AlertDialog::new(
                                 Some(&i18n("Unable to Apply Adjustment")),
                                 Some(&i18n("Please ensure that at least one CPU is enabled in the processor affinity."))
                             );
 
-                            dialog.add_response("OK", &i18n("OK"));
-                            dialog.set_default_response(Some("OK"));
-                            dialog.present();
+                            dialog.add_response("cancel", &i18n("Cancel"));
+                            dialog.set_default_response(Some("cancel"));
+                            dialog.present(Some(&MainWindow::default()));
 
                             return;
                         }
