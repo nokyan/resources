@@ -249,7 +249,7 @@ impl MainWindow {
         if selected_page.is::<ResApplications>() {
             if let Some(app_item) = imp.applications.get_selected_app_entry() {
                 imp.applications
-                    .execute_process_action_dialog(&app_item, process_action);
+                    .execute_app_action_dialog(&app_item, process_action);
             }
         } else if selected_page.is::<ResProcesses>() {
             if let Some(process_item) = imp.processes.get_selected_process_entry() {
