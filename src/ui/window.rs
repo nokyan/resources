@@ -1,4 +1,4 @@
-use process_data::ProcessData;
+use process_data::{Niceness, ProcessData};
 use std::path::PathBuf;
 use std::time::Duration;
 
@@ -7,7 +7,7 @@ use adw::{Toast, ToastOverlay};
 use anyhow::{Context, Result};
 use gtk::glib::{clone, timeout_future, GString, MainContext};
 use gtk::{gio, glib, Widget};
-use log::{error, info, warn};
+use log::{info, warn};
 
 use crate::application::Application;
 use crate::config::PROFILE;
@@ -32,8 +32,9 @@ use super::pages::{applications, processes};
 
 #[derive(Debug, Clone)]
 pub enum Action {
-    ManipulateProcess(ProcessAction, i32, String, ToastOverlay),
+    ManipulateProcess(ProcessAction, libc::pid_t, String, ToastOverlay),
     ManipulateApp(ProcessAction, String, ToastOverlay),
+    AdjustProcess(libc::pid_t, Niceness, Vec<bool>, String, ToastOverlay),
 }
 
 mod imp {
@@ -824,10 +825,7 @@ impl MainWindow {
                 if let Some(process) = apps_context.get_process(pid) {
                     let toast_message = match process.execute_process_action(action) {
                         Ok(()) => get_action_success(action, &[&display_name]),
-                        Err(e) => {
-                            error!("Unable to kill process {pid}: {e}");
-                            get_process_action_failure(action, &[&display_name])
-                        }
+                        Err(_) => get_process_action_failure(action, &[&display_name]),
                     };
                     toast_overlay.add_toast(Toast::new(&toast_message));
                 }
@@ -835,16 +833,10 @@ impl MainWindow {
 
             Action::ManipulateApp(action, id, toast_overlay) => {
                 let app = apps_context.get_app(&Some(id.clone())).unwrap();
-                let res = app.execute_process_action(&apps_context, action);
+                let result = app.execute_process_action(&apps_context, action);
 
-                for r in &res {
-                    if let Err(e) = r {
-                        error!("Unable to kill a process of app {id}: {e}");
-                    }
-                }
-
-                let processes_tried = res.len();
-                let processes_successful = res.iter().flatten().count();
+                let processes_tried = result.len();
+                let processes_successful = result.iter().flatten().count();
                 let processes_unsuccessful = processes_tried - processes_successful;
 
                 let toast_message = if processes_unsuccessful > 0 {
@@ -854,6 +846,18 @@ impl MainWindow {
                 };
 
                 toast_overlay.add_toast(Toast::new(&toast_message));
+            }
+
+            Action::AdjustProcess(pid, niceness, affinity, display_name, toast_overlay) => {
+                if let Some(process) = apps_context.get_process(pid) {
+                    let result = process.adjust(niceness, affinity);
+
+                    let toast_message = match result {
+                        Ok(()) => i18n_f("Successfully adjusted {}", &[&display_name]),
+                        Err(_) => i18n_f("There was a problem adjusting {}", &[&display_name]),
+                    };
+                    toast_overlay.add_toast(Toast::new(&toast_message));
+                }
             }
         };
     }

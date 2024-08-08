@@ -1,16 +1,20 @@
 use crate::{
     config::PROFILE,
-    i18n::i18n_f,
-    ui::pages::{processes::process_entry::ProcessEntry, NICE_TO_LABEL},
+    i18n::{i18n, i18n_f},
+    ui::{
+        pages::{processes::process_entry::ProcessEntry, NICE_TO_LABEL},
+        window::{Action, MainWindow},
+    },
     utils::settings::SETTINGS,
 };
-use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib;
+use adw::{prelude::*, subclass::prelude::*, ToastOverlay};
+use async_channel::Sender;
+use gtk::glib::{self, clone, MainContext};
 use process_data::Niceness;
 
 mod imp {
 
-    use std::cell::Cell;
+    use std::cell::{Cell, RefCell};
 
     use super::*;
 
@@ -30,13 +34,15 @@ mod imp {
         #[template_child]
         pub affinity_row: TemplateChild<adw::ExpanderRow>,
 
+        pub current_affinity: RefCell<Vec<bool>>,
+
         pub pid: Cell<libc::pid_t>,
     }
 
     #[glib::object_subclass]
     impl ObjectSubclass for ResProcessOptionsDialog {
         const NAME: &'static str = "ResProcessOptionsDialog";
-        type Type = super::ResPriorityDialog;
+        type Type = super::ResProcessOptionsDialog;
         type ParentType = adw::Dialog;
 
         fn class_init(klass: &mut Self::Class) {
@@ -67,23 +73,46 @@ mod imp {
 }
 
 glib::wrapper! {
-    pub struct ResPriorityDialog(ObjectSubclass<imp::ResProcessOptionsDialog>)
+    pub struct ResProcessOptionsDialog(ObjectSubclass<imp::ResProcessOptionsDialog>)
         @extends gtk::Widget, adw::Dialog;
 }
 
-impl Default for ResPriorityDialog {
+impl Default for ResProcessOptionsDialog {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl ResPriorityDialog {
+impl ResProcessOptionsDialog {
     pub fn new() -> Self {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self, process: &ProcessEntry) {
+    pub fn init(
+        &self,
+        process: &ProcessEntry,
+        sender: Sender<Action>,
+        toast_overlay: &ToastOverlay,
+    ) {
         self.setup_widgets(process);
+        self.setup_signals(process, sender, toast_overlay)
+    }
+
+    fn get_current_niceness(&self) -> Niceness {
+        let imp = self.imp();
+
+        if imp.priority_row.is_visible() {
+            match imp.priority_row.selected() {
+                0 => Niceness::try_from(20).unwrap_or_default(),
+                1 => Niceness::try_from(5).unwrap_or_default(),
+                2 => Niceness::try_from(0).unwrap_or_default(),
+                3 => Niceness::try_from(5).unwrap_or_default(),
+                4 => Niceness::try_from(19).unwrap_or_default(),
+                _ => Niceness::default(),
+            }
+        } else {
+            Niceness::try_from(imp.nice_row.value() as i8).unwrap_or_default()
+        }
     }
 
     pub fn setup_widgets(&self, process: &ProcessEntry) {
@@ -106,14 +135,80 @@ impl ResPriorityDialog {
             imp.nice_row.set_visible(false);
         }
 
+        *imp.current_affinity.borrow_mut() = process.affinity();
+
         for (i, affinity) in process.affinity().iter().enumerate() {
             let switch_row = adw::SwitchRow::builder()
                 .title(&i18n_f("CPU {}", &[&(i + 1).to_string()]))
                 .active(*affinity)
                 .build();
+
+            switch_row.connect_active_notify(clone!(
+                #[weak(rename_to = this)]
+                self,
+                move |switch_row| {
+                    // TODO: maybe not a direct index access?
+                    this.imp().current_affinity.borrow_mut()[i] = switch_row.is_active();
+                }
+            ));
+
             imp.affinity_row.add_row(&switch_row);
         }
 
         imp.pid.set(process.pid())
+    }
+
+    pub fn setup_signals(
+        &self,
+        process: &ProcessEntry,
+        sender: Sender<Action>,
+        toast_overlay: &ToastOverlay,
+    ) {
+        self.imp().apply_button.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            #[weak]
+            process,
+            #[weak]
+            toast_overlay,
+            #[strong]
+            sender,
+            move |_| {
+                let main_context = MainContext::default();
+                main_context.spawn_local(clone!(
+                    #[weak]
+                    this,
+                    #[strong]
+                    sender,
+                    async move {
+                        let imp = this.imp();
+
+                        if !imp.current_affinity.borrow().iter().any(|b| *b) {
+                            let dialog = adw::MessageDialog::new(
+                                Some(&MainWindow::default()),
+                                Some(&i18n("Unable to Apply Adjustment")),
+                                Some(&i18n("Please ensure that atleast one CPU is enabled in the processor affinity."))
+                            );
+
+                            dialog.add_response("OK", &i18n("OK"));
+                            dialog.set_default_response(Some("OK"));
+                            dialog.present();
+
+                            return;
+                        }
+
+                        let _ = sender
+                            .send(Action::AdjustProcess(
+                                process.pid(),
+                                this.get_current_niceness(),
+                                imp.current_affinity.borrow().clone(),
+                                process.name().to_string(),
+                                toast_overlay.clone(),
+                            ))
+                            .await;
+                    }
+                ));
+            }
+        ));
     }
 }

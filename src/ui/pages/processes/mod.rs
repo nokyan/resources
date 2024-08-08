@@ -55,7 +55,7 @@ mod imp {
 
     use crate::{
         ui::{
-            dialogs::process_options_dialog::ResPriorityDialog, pages::PROCESSES_PRIMARY_ORD,
+            dialogs::process_options_dialog::ResProcessOptionsDialog, pages::PROCESSES_PRIMARY_ORD,
             window::Action,
         },
         utils::process::ProcessAction,
@@ -95,7 +95,8 @@ mod imp {
         pub filter_model: RefCell<gtk::FilterListModel>,
         pub sort_model: RefCell<gtk::SortListModel>,
         pub column_view: RefCell<gtk::ColumnView>,
-        pub open_dialog: RefCell<Option<(i32, ResProcessDialog)>>,
+        pub open_info_dialog: RefCell<Option<(i32, ResProcessDialog)>>,
+        pub open_options_dialog: RefCell<Option<(i32, ResProcessOptionsDialog)>>,
 
         pub sender: OnceLock<Sender<Action>>,
 
@@ -158,7 +159,8 @@ mod imp {
                 filter_model: Default::default(),
                 sort_model: Default::default(),
                 column_view: Default::default(),
-                open_dialog: Default::default(),
+                open_info_dialog: Default::default(),
+                open_options_dialog: Default::default(),
                 sender: Default::default(),
                 uses_progress_bar: Cell::new(false),
                 icon: RefCell::new(ThemedIcon::new("generic-process-symbolic").into()),
@@ -253,11 +255,18 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        let dialog = ResPriorityDialog::new();
+                        let dialog = ResProcessOptionsDialog::new();
 
-                        dialog.init(process_entry);
+                        dialog.init(
+                            process_entry,
+                            res_processes.imp().sender.get().unwrap().clone(),
+                            &res_processes.imp().toast_overlay,
+                        );
 
                         dialog.present(Some(&MainWindow::default()));
+
+                        *res_processes.imp().open_options_dialog.borrow_mut() =
+                            Some((process_entry.pid(), dialog));
                     }
                 },
             );
@@ -585,7 +594,7 @@ impl ResProcesses {
         let process_dialog = ResProcessDialog::new();
         process_dialog.init(process, process.user());
         process_dialog.present(Some(&MainWindow::default()));
-        *imp.open_dialog.borrow_mut() = Some((process.pid(), process_dialog));
+        *imp.open_info_dialog.borrow_mut() = Some((process.pid(), process_dialog));
     }
 
     fn search_filter(&self, obj: &Object) -> bool {
@@ -609,7 +618,8 @@ impl ResProcesses {
         let imp = self.imp();
 
         let store = imp.store.borrow_mut();
-        let mut dialog_opt = &*imp.open_dialog.borrow_mut();
+        let mut info_dialog_opt = imp.open_info_dialog.borrow_mut();
+        let mut options_dialog_opt = imp.open_options_dialog.borrow_mut();
 
         let mut pids_to_remove = HashSet::new();
         let mut already_existing_pids = HashSet::new();
@@ -619,7 +629,7 @@ impl ResProcesses {
             let item_pid = object.pid();
             if let Some(process) = apps_context.get_process(item_pid) {
                 object.update(process);
-                if let Some((dialog_pid, dialog)) = dialog_opt {
+                if let Some((dialog_pid, dialog)) = &*info_dialog_opt {
                     if *dialog_pid == item_pid {
                         dialog.update(&object);
                     }
@@ -627,10 +637,16 @@ impl ResProcesses {
                 already_existing_pids.insert(item_pid);
             } else {
                 // filter out processes that have existed before but don't anymore
-                if let Some((dialog_pid, dialog)) = dialog_opt {
+                if let Some((dialog_pid, dialog)) = &*info_dialog_opt {
                     if *dialog_pid == item_pid {
                         dialog.close();
-                        dialog_opt = &None;
+                        *info_dialog_opt = None;
+                    }
+                }
+                if let Some((dialog_pid, dialog)) = &*options_dialog_opt {
+                    if *dialog_pid == item_pid {
+                        dialog.close();
+                        *options_dialog_opt = None;
                     }
                 }
                 *imp.popped_over_process.borrow_mut() = None;
@@ -638,6 +654,9 @@ impl ResProcesses {
                 pids_to_remove.insert(item_pid);
             }
         });
+
+        std::mem::drop(info_dialog_opt);
+        std::mem::drop(options_dialog_opt);
 
         // remove recently deceased processes
         store.retain(|object| {

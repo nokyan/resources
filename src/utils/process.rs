@@ -1,9 +1,10 @@
 use anyhow::{bail, Context, Result};
 use config::LIBEXECDIR;
-use log::debug;
-use process_data::{pci_slot::PciSlot, GpuUsageStats, ProcessData};
+use log::{debug, error, info};
+use process_data::{pci_slot::PciSlot, GpuUsageStats, Niceness, ProcessData};
 use std::{
     collections::BTreeMap,
+    ffi::{OsStr, OsString},
     io::{Read, Write},
     process::{ChildStdin, ChildStdout, Command, Stdio},
     sync::{LazyLock, Mutex},
@@ -147,13 +148,168 @@ impl Process {
         }
     }
 
-    pub fn execute_process_action(&self, action: ProcessAction) -> Result<()> {
-        let action_str = match action {
-            ProcessAction::TERM => "TERM",
-            ProcessAction::STOP => "STOP",
-            ProcessAction::KILL => "KILL",
-            ProcessAction::CONT => "CONT",
+    /// Tries to run a command unprivileged and then privileged if permissions were missing
+    fn maybe_pkexec_command<S: AsRef<OsStr>, I: IntoIterator<Item = S>>(
+        command: S,
+        args: I,
+    ) -> Result<i32> {
+        let args = args
+            .into_iter()
+            .map(|s| s.as_ref().to_os_string())
+            .collect::<Vec<_>>();
+
+        let status_code = if *IS_FLATPAK {
+            debug!(
+                "Executing command: {} --host {} {}",
+                FLATPAK_SPAWN,
+                command.as_ref().to_string_lossy(),
+                args.join(&OsString::from(" ")).to_string_lossy()
+            );
+
+            Command::new(FLATPAK_SPAWN)
+                .arg("--host")
+                .arg(command.as_ref())
+                .args(args.clone())
+                .output()?
+                .status
+                .code()
+                .context("no status code?")?
+        } else {
+            debug!(
+                "Executing command: {} {}",
+                command.as_ref().to_string_lossy(),
+                args.join(&OsString::from(" ")).to_string_lossy()
+            );
+
+            Command::new(command.as_ref())
+                .args(args.clone())
+                .output()?
+                .status
+                .code()
+                .context("no status code?")?
         };
+
+        if status_code == libc::EPERM || status_code == libc::EACCES {
+            let pkexec_status_code = if *IS_FLATPAK {
+                debug!(
+                    "Received EPERM, executing command: {} --host pkexec --disable-internal-agent {} {}", 
+                    FLATPAK_SPAWN,
+                    command.as_ref().to_string_lossy(),
+                    args.join(&OsString::from(" ")).to_string_lossy()
+                );
+                Command::new(FLATPAK_SPAWN)
+                    .args(["--host", "pkexec", "--disable-internal-agent"])
+                    .arg(command)
+                    .args(args)
+                    .output()?
+                    .status
+                    .code()
+                    .context("no status code?")?
+            } else {
+                debug!(
+                    "Received EPERM or EACCES, executing command: pkexec --disable-internal-agent {} {}", 
+                    command.as_ref().to_string_lossy(),
+                    args.join(&OsString::from(" ")).to_string_lossy()
+                );
+                Command::new("pkexec")
+                    .arg("--disable-internal-agent")
+                    .arg(command)
+                    .args(args)
+                    .output()?
+                    .status
+                    .code()
+                    .context("no status code?")?
+            };
+
+            Ok(pkexec_status_code)
+        } else {
+            Ok(status_code)
+        }
+    }
+
+    pub fn adjust<I: IntoIterator<Item = bool>>(
+        &self,
+        niceness: Niceness,
+        affinity: I,
+    ) -> Result<()> {
+        let adjust_path = if *IS_FLATPAK {
+            format!(
+                "{}/libexec/resources/resources-adjust",
+                FLATPAK_APP_PATH.as_str()
+            )
+        } else {
+            format!("{LIBEXECDIR}/resources-adjust")
+        };
+
+        let adjust_string = affinity
+            .into_iter()
+            .map(|b| if b { '1' } else { '0' })
+            .collect::<String>();
+
+        let result = Self::maybe_pkexec_command(
+            adjust_path,
+            [
+                self.data.pid.to_string(),
+                niceness.to_string(),
+                adjust_string,
+            ],
+        );
+
+        if let Ok(return_code) = result {
+            if return_code == 0 {
+                Ok(())
+            } else {
+                bail!("non-zero return code: {return_code}")
+            }
+        } else if let Err(err) = result {
+            Err(err)
+        } else {
+            bail!("unknown error")
+        }
+    }
+
+    pub fn execute_process_action(&self, action: ProcessAction) -> Result<()> {
+        let action_string = action.to_string();
+
+        let kill_path = if *IS_FLATPAK {
+            format!(
+                "{}/libexec/resources/resources-kill",
+                FLATPAK_APP_PATH.as_str()
+            )
+        } else {
+            format!("{LIBEXECDIR}/resources-kill")
+        };
+
+        let result = Self::maybe_pkexec_command(
+            kill_path,
+            [self.data.pid.to_string(), action_string.clone()],
+        );
+
+        if let Ok(return_code) = result {
+            if return_code == 0 || return_code == 3 {
+                info!("Successfully {action_string}ed {}", self.data.pid);
+                Ok(())
+            } else {
+                error!(
+                    "Couldn't {action_string} {}, return_code: {return_code}",
+                    self.data.pid
+                );
+                bail!("non-zero return code: {return_code}")
+            }
+        } else if let Err(err) = result {
+            error!(
+                "Unknown error while trying to {action_string} {}\n{err}\n{}",
+                self.data.pid,
+                err.backtrace()
+            );
+            Err(err)
+        } else {
+            bail!("unknown error")
+        }
+    }
+
+    /*pub fn execute_process_action(&self, action: ProcessAction) -> Result<()> {
+        let action_string = action.to_string();
 
         // TODO: tidy this mess up
 
@@ -171,7 +327,7 @@ impl Process {
                 .args([
                     "--host",
                     kill_path.as_str(),
-                    action_str,
+                    &action_string,
                     self.data.pid.to_string().as_str(),
                 ])
                 .output()?
@@ -180,27 +336,27 @@ impl Process {
                 .context("no status code?")?
         } else {
             Command::new(kill_path.as_str())
-                .args([action_str, self.data.pid.to_string().as_str()])
+                .args([&action_string, self.data.pid.to_string().as_str()])
                 .output()?
                 .status
                 .code()
                 .context("no status code?")?
         };
 
-        if status_code == 0 || status_code == 3 {
+        if status_code == 0 || status_code == libc::ESRCH {
             // 0 := successful; 3 := process not found which we don't care
             // about because that might happen because we killed the
             // process' parent first, killing the child before we explicitly
             // did
             debug!("Successfully {action}ed {}", self.data.pid);
             Ok(())
-        } else if status_code == 1 {
+        } else if status_code == libc::EPERM {
             // 1 := no permissions
             debug!(
                 "No permissions to {action} {}, attempting pkexec",
                 self.data.pid
             );
-            self.pkexec_execute_process_action(action_str, &kill_path)
+            self.pkexec_execute_process_action(action_string, &kill_path)
         } else {
             bail!(
                 "couldn't {action} {} due to unknown reasons, status code: {}",
@@ -255,7 +411,7 @@ impl Process {
                 status_code
             )
         }
-    }
+    }*/
 
     #[must_use]
     pub fn cpu_time_ratio(&self) -> f32 {
