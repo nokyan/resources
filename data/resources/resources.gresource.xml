@@ -22,6 +22,7 @@
     <file preprocess="xml-stripblanks" alias="mapped-device-symbolic.svg">icons/mapped-device-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="memory-symbolic.svg">icons/memory-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="nvme-symbolic.svg">icons/nvme-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="options-symbolic.svg">icons/options-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="processor-symbolic.svg">icons/processor-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="raid-symbolic.svg">icons/raid-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="ram-disk-symbolic.svg">icons/ram-disk-symbolic.svg</file>

@@ -270,7 +270,7 @@ impl MainWindow {
             }
         } else if selected_page.is::<ResProcesses>() {
             if let Some(process_item) = imp.processes.get_selected_process_entry() {
-                imp.processes.open_information_dialog(&process_item);
+                imp.processes.open_info_dialog(&process_item);
             }
         }
     }

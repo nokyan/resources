@@ -17,6 +17,7 @@ use process_data::Niceness;
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::ui::dialogs::process_dialog::ResProcessDialog;
+use crate::ui::dialogs::process_options_dialog::ResProcessOptionsDialog;
 use crate::ui::pages::NICE_TO_LABEL;
 use crate::ui::window::{Action, MainWindow};
 use crate::utils::app::AppsContext;
@@ -86,6 +87,8 @@ mod imp {
         #[template_child]
         pub search_button: TemplateChild<gtk::ToggleButton>,
         #[template_child]
+        pub options_button: TemplateChild<gtk::Button>,
+        #[template_child]
         pub information_button: TemplateChild<gtk::Button>,
         #[template_child]
         pub end_process_button: TemplateChild<adw::SplitButton>,
@@ -152,6 +155,7 @@ mod imp {
                 search_entry: Default::default(),
                 processes_scrolled_window: Default::default(),
                 search_button: Default::default(),
+                options_button: Default::default(),
                 information_button: Default::default(),
                 end_process_button: Default::default(),
                 store: gio::ListStore::new::<ProcessEntry>().into(),
@@ -243,7 +247,7 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        res_processes.open_information_dialog(process_entry);
+                        res_processes.open_info_dialog(process_entry);
                     }
                 },
             );
@@ -255,18 +259,7 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        let dialog = ResProcessOptionsDialog::new();
-
-                        dialog.init(
-                            process_entry,
-                            res_processes.imp().sender.get().unwrap().clone(),
-                            &res_processes.imp().toast_overlay,
-                        );
-
-                        dialog.present(Some(&MainWindow::default()));
-
-                        *res_processes.imp().open_options_dialog.borrow_mut() =
-                            Some((process_entry.pid(), dialog));
+                        res_processes.open_options_dialog(process_entry)
                     }
                 },
             );
@@ -486,6 +479,8 @@ impl ResProcesses {
                     let imp = this.imp();
                     imp.information_button
                         .set_sensitive(model.selected() != u32::MAX);
+                    imp.options_button
+                        .set_sensitive(model.selected() != u32::MAX);
                     imp.end_process_button
                         .set_sensitive(model.selected() != u32::MAX);
                 }
@@ -529,6 +524,22 @@ impl ResProcesses {
         ));
         imp.search_entry.add_controller(event_controller);
 
+        imp.options_button.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
+                let imp = this.imp();
+                let selection_option = imp
+                    .selection_model
+                    .borrow()
+                    .selected_item()
+                    .map(|object| object.downcast::<ProcessEntry>().unwrap());
+                if let Some(selection) = selection_option {
+                    this.open_options_dialog(&selection);
+                }
+            }
+        ));
+
         imp.information_button.connect_clicked(clone!(
             #[weak(rename_to = this)]
             self,
@@ -540,7 +551,7 @@ impl ResProcesses {
                     .selected_item()
                     .map(|object| object.downcast::<ProcessEntry>().unwrap());
                 if let Some(selection) = selection_option {
-                    this.open_information_dialog(&selection);
+                    this.open_info_dialog(&selection);
                 }
             }
         ));
@@ -589,7 +600,22 @@ impl ResProcesses {
         }
     }
 
-    pub fn open_information_dialog(&self, process: &ProcessEntry) {
+    pub fn open_options_dialog(&self, process: &ProcessEntry) {
+        let imp = self.imp();
+        let dialog = ResProcessOptionsDialog::new();
+
+        dialog.init(
+            process,
+            imp.sender.get().unwrap().clone(),
+            &imp.toast_overlay,
+        );
+
+        dialog.present(Some(&MainWindow::default()));
+
+        *imp.open_options_dialog.borrow_mut() = Some((process.pid(), dialog));
+    }
+
+    pub fn open_info_dialog(&self, process: &ProcessEntry) {
         let imp = self.imp();
         let process_dialog = ResProcessDialog::new();
         process_dialog.init(process, process.user());

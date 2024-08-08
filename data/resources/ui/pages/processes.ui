@@ -116,6 +116,19 @@
                     <property name="spacing">16</property>
                     <property name="halign">end</property>
                     <child>
+                      <object class="GtkButton" id="options_button">
+                        <property name="icon-name">options-symbolic</property>
+                        <property name="sensitive">false</property>
+                        <property name="tooltip-text" translatable="yes">Show Process Options</property>
+                        <accessibility>
+                          <property name="label" translatable="yes">Show Process Options</property>
+                        </accessibility>
+                        <style>
+                          <class name="circular"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkButton" id="information_button">
                         <property name="icon-name">info-symbolic</property>
                         <property name="sensitive">false</property>

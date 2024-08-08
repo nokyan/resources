@@ -187,7 +187,7 @@ impl ResProcessOptionsDialog {
                             let dialog = adw::MessageDialog::new(
                                 Some(&MainWindow::default()),
                                 Some(&i18n("Unable to Apply Adjustment")),
-                                Some(&i18n("Please ensure that atleast one CPU is enabled in the processor affinity."))
+                                Some(&i18n("Please ensure that at least one CPU is enabled in the processor affinity."))
                             );
 
                             dialog.add_response("OK", &i18n("OK"));
