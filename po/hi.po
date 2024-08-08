@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues\n"
 "POT-Creation-Date: 2024-07-07 18:21+0200\n"
-"PO-Revision-Date: 2024-07-17 11:18+0530\n"
+"PO-Revision-Date: 2024-08-02 23:51+0530\n"
 "Last-Translator: Scrambled777 <weblate.scrambled777@simplelogin.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
 "Language: hi\n"
@@ -1207,7 +1207,6 @@ msgstr "आईडी"
 
 #: data/resources/ui/dialogs/app_dialog.ui:185
 #: data/resources/ui/dialogs/process_dialog.ui:190
-#, fuzzy
 msgid "Running Since"
 msgstr "तब से चालू"
 
