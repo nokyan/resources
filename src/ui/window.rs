@@ -275,6 +275,18 @@ impl MainWindow {
         }
     }
 
+    pub fn shortcut_process_options(&self) {
+        let imp = self.imp();
+
+        let selected_page = self.get_selected_page().unwrap();
+
+        if selected_page.is::<ResProcesses>() {
+            if let Some(process_item) = imp.processes.get_selected_process_entry() {
+                imp.processes.open_options_dialog(&process_item);
+            }
+        }
+    }
+
     fn init_gpu_pages(self: &MainWindow) -> Vec<Gpu> {
         let imp = self.imp();
 
