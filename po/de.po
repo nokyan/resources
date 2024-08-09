@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-09 16:12+0200\n"
-"PO-Revision-Date: 2024-08-09 16:12+0200\n"
+"POT-Creation-Date: 2024-08-09 19:26+0200\n"
+"PO-Revision-Date: 2024-08-09 19:26+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: de\n"
@@ -145,18 +145,18 @@ msgstr "n. v."
 msgid "CPU {}"
 msgstr "CPU {}"
 
-#: src/ui/dialogs/process_options_dialog.rs:208
+#: src/ui/dialogs/process_options_dialog.rs:210
 msgid "Unable to Apply Adjustment"
 msgstr "Anpassung konnte nicht vorgenommen werden"
 
-#: src/ui/dialogs/process_options_dialog.rs:209
+#: src/ui/dialogs/process_options_dialog.rs:211
 msgid ""
 "Please ensure that at least one CPU is enabled in the processor affinity."
 msgstr ""
 "Bitte stellen Sie sicher, dass mindestens eine CPU in der Prozessoraffinität "
 "aktiviert ist."
 
-#: src/ui/dialogs/process_options_dialog.rs:212
+#: src/ui/dialogs/process_options_dialog.rs:214
 #: src/ui/pages/applications/mod.rs:713 src/ui/pages/processes/mod.rs:749
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -1325,8 +1325,8 @@ msgid "Processor Affinity"
 msgstr "Prozessoraffinität"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:108
-msgid "Select All"
-msgstr "Alle auswählen"
+msgid "Toggle All"
+msgstr "Alle umschalten"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:111
 msgid "Select which processor cores the process is allowed to run on"
@@ -1684,6 +1684,9 @@ msgstr "Prozesse suchen"
 #: data/resources/ui/pages/processes.ui:124
 msgid "Show Process Options"
 msgstr "Prozessoptionen anzeigen"
+
+#~ msgid "Select All"
+#~ msgstr "Alle auswählen"
 
 #~ msgid "End app"
 #~ msgstr "Anwendung beenden"
