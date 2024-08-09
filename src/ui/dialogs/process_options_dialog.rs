@@ -36,8 +36,6 @@ mod imp {
         #[template_child]
         pub select_all_button: TemplateChild<gtk::Button>,
 
-        pub current_affinity: RefCell<Vec<bool>>,
-
         pub cpu_rows: RefCell<Vec<adw::SwitchRow>>,
 
         pub pid: Cell<libc::pid_t>,
@@ -139,8 +137,6 @@ impl ResProcessOptionsDialog {
             imp.nice_row.set_visible(false);
         }
 
-        *imp.current_affinity.borrow_mut() = process.affinity();
-
         for (i, affinity) in process.affinity().iter().enumerate() {
             let switch_row = adw::SwitchRow::builder()
                 .title(i18n_f("CPU {}", &[&(i + 1).to_string()]))
@@ -150,9 +146,16 @@ impl ResProcessOptionsDialog {
             switch_row.connect_active_notify(clone!(
                 #[weak(rename_to = this)]
                 self,
-                move |switch_row| {
-                    // TODO: maybe not a direct index access?
-                    this.imp().current_affinity.borrow_mut()[i] = switch_row.is_active();
+                move |_| {
+                    let imp = this.imp();
+
+                    // if all switch rows are disabled, disable the apply button
+                    let setting = imp
+                        .cpu_rows
+                        .borrow()
+                        .iter()
+                        .any(|switch_row| switch_row.is_active());
+                    imp.apply_button.set_sensitive(setting);
                 }
             ));
 
@@ -205,24 +208,18 @@ impl ResProcessOptionsDialog {
                     async move {
                         let imp = this.imp();
 
-                        if !imp.current_affinity.borrow().iter().any(|b| *b) {
-                            let dialog = adw::AlertDialog::new(
-                                Some(&i18n("Unable to Apply Adjustment")),
-                                Some(&i18n("Please ensure that at least one CPU is enabled in the processor affinity."))
-                            );
-
-                            dialog.add_response("cancel", &i18n("Cancel"));
-                            dialog.set_default_response(Some("cancel"));
-                            dialog.present(Some(&MainWindow::default()));
-
-                            return;
-                        }
+                        let affinity: Vec<_> = imp
+                            .cpu_rows
+                            .borrow()
+                            .iter()
+                            .map(|switch_row| switch_row.is_active())
+                            .collect();
 
                         let _ = sender
                             .send(Action::AdjustProcess(
                                 process.pid(),
                                 this.get_current_niceness(),
-                                imp.current_affinity.borrow().clone(),
+                                affinity,
                                 process.name().to_string(),
                                 toast_overlay.clone(),
                             ))

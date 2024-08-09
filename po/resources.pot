@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-09 19:26+0200\n"
+"POT-Creation-Date: 2024-08-09 19:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -135,23 +135,9 @@ msgstr ""
 msgid "N/A"
 msgstr ""
 
-#: src/ui/dialogs/process_options_dialog.rs:146 src/ui/pages/cpu.rs:265
+#: src/ui/dialogs/process_options_dialog.rs:142 src/ui/pages/cpu.rs:265
 #: src/ui/pages/cpu.rs:387 src/ui/pages/cpu.rs:391
 msgid "CPU {}"
-msgstr ""
-
-#: src/ui/dialogs/process_options_dialog.rs:210
-msgid "Unable to Apply Adjustment"
-msgstr ""
-
-#: src/ui/dialogs/process_options_dialog.rs:211
-msgid ""
-"Please ensure that at least one CPU is enabled in the processor affinity."
-msgstr ""
-
-#: src/ui/dialogs/process_options_dialog.rs:214
-#: src/ui/pages/applications/mod.rs:713 src/ui/pages/processes/mod.rs:749
-msgid "Cancel"
 msgstr ""
 
 #: src/ui/pages/applications/application_entry.rs:179 src/ui/pages/drive.rs:433
@@ -177,6 +163,10 @@ msgstr ""
 
 #: src/ui/pages/applications/mod.rs:674
 msgid "Running Apps: {}"
+msgstr ""
+
+#: src/ui/pages/applications/mod.rs:713 src/ui/pages/processes/mod.rs:749
+msgid "Cancel"
 msgstr ""
 
 #: src/ui/pages/applications/mod.rs:759
