@@ -356,9 +356,11 @@ impl Settings {
         processes_show_total_cpu_time,
         processes_show_user_cpu_time,
         processes_show_system_cpu_time,
+        processes_show_priority,
         show_logical_cpus,
         show_graph_grids,
-        normalize_cpu_usage
+        normalize_cpu_usage,
+        detailed_priority
     );
 }
 

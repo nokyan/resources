@@ -27,6 +27,8 @@ mod imp {
         tooltip: Cell<glib::GString>,
         #[property(get = Self::icon, set = Self::set_icon, type = Icon)]
         icon: RefCell<Icon>,
+        #[property(get, set = Self::set_symbolic)]
+        symbolic: Cell<bool>,
     }
 
     impl Default for ResProcessNameCell {
@@ -37,6 +39,7 @@ mod imp {
                 name: Default::default(),
                 tooltip: Default::default(),
                 icon: RefCell::new(ThemedIcon::new("generic-process").into()),
+                symbolic: Default::default(),
             }
         }
     }
@@ -85,6 +88,16 @@ mod imp {
             self.image.set_from_gicon(icon);
 
             self.icon.set(icon.clone());
+        }
+
+        pub fn set_symbolic(&self, symbolic: bool) {
+            self.symbolic.set(symbolic);
+
+            if symbolic {
+                self.image.set_css_classes(&[]);
+            } else {
+                self.image.set_css_classes(&["lowres-icon"]);
+            }
         }
     }
 

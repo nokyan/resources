@@ -16,7 +16,43 @@
       </item>
     </section>
   </menu>
+  <menu id="process_context_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">End Process</attribute>
+        <attribute name="action">processes.context-end-process</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Kill Process</attribute>
+        <attribute name="action">processes.context-kill-process</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Halt Process</attribute>
+        <attribute name="action">processes.context-halt-process</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Continue Process</attribute>
+        <attribute name="action">processes.context-continue-process</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Options</attribute>
+        <attribute name="action">processes.context-options</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Show Process Information</attribute>
+        <attribute name="action">processes.context-information</attribute>
+      </item>
+    </section>
+  </menu>
   <template class="ResProcesses" parent="AdwBin">
+    <object class="GtkPopoverMenu" id="popover_menu">
+      <property name="name">popover_menu</property>
+      <property name="menu-model">process_context_menu</property>
+    </object>
     <property name="child">
       <object class="AdwToolbarView">
         <property name="content">
@@ -79,6 +115,19 @@
                     <property name="hexpand">true</property>
                     <property name="spacing">16</property>
                     <property name="halign">end</property>
+                    <child>
+                      <object class="GtkButton" id="options_button">
+                        <property name="icon-name">options-symbolic</property>
+                        <property name="sensitive">false</property>
+                        <property name="tooltip-text" translatable="yes">Show Process Options</property>
+                        <accessibility>
+                          <property name="label" translatable="yes">Show Process Options</property>
+                        </accessibility>
+                        <style>
+                          <class name="circular"/>
+                        </style>
+                      </object>
+                    </child>
                     <child>
                       <object class="GtkButton" id="information_button">
                         <property name="icon-name">info-symbolic</property>

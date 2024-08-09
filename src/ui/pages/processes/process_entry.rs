@@ -1,4 +1,7 @@
-use gtk::glib::{self, GString};
+use gtk::{
+    glib::{self, GString},
+    subclass::prelude::ObjectSubclassIsExt,
+};
 use process_data::Containerization;
 
 use crate::{
@@ -7,12 +10,12 @@ use crate::{
 };
 
 mod imp {
-    use std::cell::Cell;
+    use std::cell::{Cell, RefCell};
 
     use gtk::{
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        prelude::ObjectExt,
+        prelude::{Cast, ObjectExt},
         subclass::prelude::{DerivedObjectProperties, ObjectImpl, ObjectImplExt, ObjectSubclass},
     };
 
@@ -75,6 +78,9 @@ mod imp {
         #[property(get, set)]
         system_cpu_time: Cell<f64>,
 
+        #[property(get, set)]
+        niceness: Cell<i8>,
+
         #[property(get = Self::cgroup, set = Self::set_cgroup)]
         cgroup: Cell<Option<glib::GString>>,
 
@@ -83,6 +89,13 @@ mod imp {
 
         #[property(get = Self::running_since, set = Self::set_running_since)]
         running_since: Cell<Option<glib::GString>>,
+
+        // TODO: Make this properly dynamic, don't use a variable that's never read
+        #[property(get = Self::symbolic)]
+        #[allow(dead_code)]
+        symbolic: Cell<bool>,
+
+        pub affinity: RefCell<Vec<bool>>,
     }
 
     impl Default for ProcessEntry {
@@ -106,9 +119,12 @@ mod imp {
                 total_cpu_time: Cell::new(0.0),
                 user_cpu_time: Cell::new(0.0),
                 system_cpu_time: Cell::new(0.0),
+                niceness: Cell::new(0),
                 cgroup: Cell::new(None),
                 containerization: Cell::new(glib::GString::default()),
                 running_since: Cell::new(None),
+                symbolic: Cell::new(false),
+                affinity: Default::default(),
             }
         }
     }
@@ -125,6 +141,27 @@ mod imp {
 
         pub fn set_icon(&self, icon: &Icon) {
             self.icon.set(icon.clone());
+        }
+
+        pub fn symbolic(&self) -> bool {
+            let icon = self.icon.replace(ThemedIcon::new("generic-process").into());
+            self.icon.set(icon.clone());
+
+            icon.downcast_ref::<ThemedIcon>()
+                .is_some_and(|themed_icon| {
+                    themed_icon
+                        .names()
+                        .iter()
+                        .all(|name| name.ends_with("-symbolic"))
+                        || themed_icon
+                            .names()
+                            .iter()
+                            .all(|name| name.contains("system-processes"))
+                        || themed_icon
+                            .names()
+                            .iter()
+                            .all(|name| name.contains("generic-process"))
+                })
         }
     }
 
@@ -209,5 +246,11 @@ impl ProcessEntry {
         self.set_user_cpu_time((process.data.user_cpu_time as f64) / (*TICK_RATE as f64));
         self.set_system_cpu_time((process.data.system_cpu_time as f64) / (*TICK_RATE as f64));
         self.set_total_cpu_time(self.user_cpu_time() + self.system_cpu_time());
+        self.set_niceness(*process.data.niceness);
+        *self.imp().affinity.borrow_mut() = process.data.affinity.clone();
+    }
+
+    pub fn affinity(&self) -> Vec<bool> {
+        self.imp().affinity.borrow().clone()
     }
 }

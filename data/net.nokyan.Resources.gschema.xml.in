@@ -153,6 +153,10 @@
       <default>false</default>
       <summary>Display system CPU time in Processes view</summary>
     </key>
+    <key name="processes-show-priority" type="b">
+      <default>false</default>
+      <summary>Display priority in Processes view</summary>
+    </key>
     <key name="show-logical-cpus" type="b">
       <default>false</default>
       <summary>Display logical CPU graphs in Processor view</summary>
@@ -188,6 +192,10 @@
     <key name="normalize-cpu-usage" type="b">
       <default>true</default>
       <summary>Whether the CPU usage should be normalized (divided by the number of threads)</summary>
+    </key>
+    <key name="detailed-priority" type="b">
+      <default>false</default>
+      <summary>Whether to show niceness values for CPU priorities</summary>
     </key>
   </schema>
 </schemalist>
