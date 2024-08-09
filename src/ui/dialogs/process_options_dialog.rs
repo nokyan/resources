@@ -176,11 +176,13 @@ impl ResProcessOptionsDialog {
             #[weak(rename_to = this)]
             self,
             move |_| {
-                this.imp()
-                    .cpu_rows
-                    .borrow()
+                let cpu_rows = this.imp().cpu_rows.borrow();
+
+                let setting = !cpu_rows.iter().all(|switch_row| switch_row.is_active());
+
+                cpu_rows
                     .iter()
-                    .for_each(|switch_row| switch_row.set_active(true));
+                    .for_each(|switch_row| switch_row.set_active(setting));
             }
         ));
 

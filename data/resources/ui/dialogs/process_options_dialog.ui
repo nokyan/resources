@@ -105,7 +105,7 @@
                               <object class="GtkButton" id="select_all_button">
                                 <property name="valign">center</property>
                                 <property name="icon-name">select-all-symbolic</property>
-                                <property name="tooltip-text" translatable="yes">Select All</property>
+                                <property name="tooltip-text" translatable="yes">Toggle All</property>
                               </object>
                             </child>
                             <property name="subtitle" translatable="yes">Select which processor cores the process is allowed to run on</property>

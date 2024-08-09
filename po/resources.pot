@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-09 15:48+0200\n"
+"POT-Creation-Date: 2024-08-09 19:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -140,16 +140,16 @@ msgstr ""
 msgid "CPU {}"
 msgstr ""
 
-#: src/ui/dialogs/process_options_dialog.rs:208
+#: src/ui/dialogs/process_options_dialog.rs:210
 msgid "Unable to Apply Adjustment"
 msgstr ""
 
-#: src/ui/dialogs/process_options_dialog.rs:209
+#: src/ui/dialogs/process_options_dialog.rs:211
 msgid ""
 "Please ensure that at least one CPU is enabled in the processor affinity."
 msgstr ""
 
-#: src/ui/dialogs/process_options_dialog.rs:212
+#: src/ui/dialogs/process_options_dialog.rs:214
 #: src/ui/pages/applications/mod.rs:713 src/ui/pages/processes/mod.rs:749
 msgid "Cancel"
 msgstr ""
@@ -1308,7 +1308,7 @@ msgid "Processor Affinity"
 msgstr ""
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:108
-msgid "Select All"
+msgid "Toggle All"
 msgstr ""
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:111
