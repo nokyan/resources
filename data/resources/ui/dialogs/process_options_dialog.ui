@@ -88,11 +88,11 @@
                             <property name="model">
                               <object class="GtkStringList">
                                 <items>
-                                  <item translatable="yes">Very High</item>
-                                  <item translatable="yes">High</item>
-                                  <item translatable="yes">Normal</item>
-                                  <item translatable="yes">Low</item>
-                                  <item translatable="yes">Very Low</item>
+                                  <item translatable="yes" context="process priority">Very High</item>
+                                  <item translatable="yes" context="process priority">High</item>
+                                  <item translatable="yes" context="process priority">Normal</item>
+                                  <item translatable="yes" context="process priority">Low</item>
+                                  <item translatable="yes" context="process priority">Very Low</item>
                                 </items>
                               </object>
                             </property>
@@ -120,10 +120,7 @@
           </object>
         </property>
       </object>
-    </child>&lt;/object&gt;
-        &lt;/property&gt;
-      &lt;/object&gt;
-    &lt;/child&gt;
+    </child>
     <child>
       <object class="GtkShortcutController">
         <property name="scope">local</property>

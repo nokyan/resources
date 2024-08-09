@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-09 19:44+0200\n"
+"POT-Creation-Date: 2024-08-09 23:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -478,28 +478,22 @@ msgid "Continue Process"
 msgstr ""
 
 #: src/ui/pages/mod.rs:29
-#: data/resources/ui/dialogs/process_options_dialog.ui:91
 msgid "Very High"
 msgstr ""
 
 #: src/ui/pages/mod.rs:33
-#: data/resources/ui/dialogs/process_options_dialog.ui:92
 msgid "High"
 msgstr ""
 
 #: src/ui/pages/mod.rs:37
-#: data/resources/ui/dialogs/process_options_dialog.ui:93
-#: data/resources/ui/dialogs/settings_dialog.ui:57
 msgid "Normal"
 msgstr ""
 
 #: src/ui/pages/mod.rs:41
-#: data/resources/ui/dialogs/process_options_dialog.ui:94
 msgid "Low"
 msgstr ""
 
 #: src/ui/pages/mod.rs:45
-#: data/resources/ui/dialogs/process_options_dialog.ui:95
 msgid "Very Low"
 msgstr ""
 
@@ -1293,6 +1287,31 @@ msgid ""
 "correspond to a higher priority."
 msgstr ""
 
+#: data/resources/ui/dialogs/process_options_dialog.ui:91
+msgctxt "process priority"
+msgid "Very High"
+msgstr ""
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:92
+msgctxt "process priority"
+msgid "High"
+msgstr ""
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:93
+msgctxt "process priority"
+msgid "Normal"
+msgstr ""
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:94
+msgctxt "process priority"
+msgid "Low"
+msgstr ""
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:95
+msgctxt "process priority"
+msgid "Very Low"
+msgstr ""
+
 #: data/resources/ui/dialogs/process_options_dialog.ui:103
 msgid "Processor Affinity"
 msgstr ""
@@ -1358,18 +1377,27 @@ msgid "Higher refresh speeds can lead to higher processor usage"
 msgstr ""
 
 #: data/resources/ui/dialogs/settings_dialog.ui:55
+msgctxt "UI refresh speed"
 msgid "Very Slow"
 msgstr ""
 
 #: data/resources/ui/dialogs/settings_dialog.ui:56
+msgctxt "UI refresh speed"
 msgid "Slow"
 msgstr ""
 
+#: data/resources/ui/dialogs/settings_dialog.ui:57
+msgctxt "UI refresh speed"
+msgid "Normal"
+msgstr ""
+
 #: data/resources/ui/dialogs/settings_dialog.ui:58
+msgctxt "UI refresh speed"
 msgid "Fast"
 msgstr ""
 
 #: data/resources/ui/dialogs/settings_dialog.ui:59
+msgctxt "UI refresh speed"
 msgid "Very Fast"
 msgstr ""
 
