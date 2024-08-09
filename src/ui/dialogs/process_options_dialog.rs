@@ -1,9 +1,9 @@
 use crate::{
     config::PROFILE,
-    i18n::{i18n, i18n_f},
+    i18n::i18n_f,
     ui::{
         pages::{processes::process_entry::ProcessEntry, NICE_TO_LABEL},
-        window::{Action, MainWindow},
+        window::Action,
     },
     utils::settings::SETTINGS,
 };
