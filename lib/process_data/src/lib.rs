@@ -2,6 +2,7 @@ pub mod pci_slot;
 
 use anyhow::{bail, Context, Result};
 use glob::glob;
+use nutype::nutype;
 use nvml_wrapper::enums::device::UsedGpuMemory;
 use nvml_wrapper::error::NvmlError;
 use nvml_wrapper::struct_wrappers::device::{ProcessInfo, ProcessUtilizationSample};
@@ -27,7 +28,12 @@ static USERS_CACHE: Lazy<HashMap<u32, String>> = Lazy::new(|| unsafe {
 
 static PAGESIZE: Lazy<usize> = Lazy::new(sysconf::pagesize);
 
+static NUM_CPUS: Lazy<usize> = Lazy::new(num_cpus::get);
+
 static RE_UID: Lazy<Regex> = Lazy::new(|| Regex::new(r"Uid:\s*(\d+)").unwrap());
+
+static RE_AFFINITY: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"Cpus_allowed:\s*([0-9A-Fa-f]+)").unwrap());
 
 static RE_IO_READ: Lazy<Regex> = Lazy::new(|| Regex::new(r"read_bytes:\s*(\d+)").unwrap());
 
@@ -97,6 +103,14 @@ static NVIDIA_PROCESSES_STATS: Lazy<RwLock<HashMap<PciSlot, Vec<ProcessUtilizati
 static NVIDIA_PROCESS_INFOS: Lazy<RwLock<HashMap<PciSlot, Vec<ProcessInfo>>>> =
     Lazy::new(|| RwLock::new(HashMap::new()));
 
+#[nutype(
+    validate(less_or_equal = 19),
+    validate(greater_or_equal = -20),
+    derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, Copy, FromStr, Deref, TryFrom),
+    default = 0
+)]
+pub struct Niceness(i8);
+
 #[derive(Debug, Clone, Default, Hash, PartialEq, Eq, Serialize, Deserialize, Copy)]
 pub enum Containerization {
     #[default]
@@ -128,14 +142,14 @@ pub struct GpuUsageStats {
 /// `Deserialize`.
 #[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ProcessData {
-    pub pid: i32,
+    pub pid: libc::pid_t,
     pub user: String,
-    proc_path: PathBuf,
     pub comm: String,
     pub commandline: String,
     pub user_cpu_time: u64,
     pub system_cpu_time: u64,
-    pub cpu_time_timestamp: u64,
+    pub niceness: Niceness,
+    pub affinity: Vec<bool>,
     pub memory_usage: usize,
     pub starttime: u64, // in clock ticks, see man proc(5)!
     pub cgroup: Option<String>,
@@ -212,7 +226,7 @@ impl ProcessData {
 
         let mut process_data = vec![];
         for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-            let data = ProcessData::try_from_path(entry);
+            let data = ProcessData::try_from_path(&entry);
 
             if let Ok(data) = data {
                 process_data.push(data);
@@ -222,9 +236,10 @@ impl ProcessData {
         Ok(process_data)
     }
 
-    pub fn try_from_path(proc_path: PathBuf) -> Result<Self> {
+    pub fn try_from_path(proc_path: &PathBuf) -> Result<Self> {
         let stat = std::fs::read_to_string(proc_path.join("stat"))?;
         let statm = std::fs::read_to_string(proc_path.join("statm"))?;
+        let status = std::fs::read_to_string(proc_path.join("status"))?;
         let comm = std::fs::read_to_string(proc_path.join("comm"))?;
         let commandline = std::fs::read_to_string(proc_path.join("cmdline"))?;
         let cgroup = std::fs::read_to_string(proc_path.join("cgroup"))?;
@@ -255,10 +270,28 @@ impl ProcessData {
         let comm = comm.replace('\n', "");
 
         // -2 to accommodate for only collecting after the second item (which is the executable name as mentioned above)
-        let user_cpu_time = stat[13 - 2].parse::<u64>()?;
-        let system_cpu_time = stat[14 - 2].parse::<u64>()?;
+        let user_cpu_time = stat[13 - 2].parse()?;
+        let system_cpu_time = stat[14 - 2].parse()?;
+        let nice = stat[18 - 2].parse()?;
 
-        let cpu_time_timestamp = unix_as_millis();
+        let mut affinity = Vec::with_capacity(*NUM_CPUS);
+        RE_AFFINITY
+            .captures(&status)
+            .and_then(|captures| captures.get(1))
+            .map(|capture| capture.as_str())
+            .unwrap_or_default()
+            .chars()
+            .map(|c| c.to_digit(16).unwrap_or_default())
+            .rev()
+            .for_each(|int| {
+                // we want the bits and there are 4 bits in a hex digit
+                (0..4).for_each(|i| {
+                    // this if should prevent wrong size affinity vecs if the thread count is not divisible by 4
+                    if affinity.len() < *NUM_CPUS {
+                        affinity.push((int & (1 << i)) != 0);
+                    }
+                });
+            });
 
         let memory_usage = (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?) * *PAGESIZE;
 
@@ -302,11 +335,11 @@ impl ProcessData {
             commandline,
             user_cpu_time,
             system_cpu_time,
-            cpu_time_timestamp,
+            niceness: nice,
+            affinity,
             memory_usage,
             starttime,
             cgroup,
-            proc_path,
             containerization,
             read_bytes,
             write_bytes,
