@@ -33,8 +33,12 @@ mod imp {
         pub priority_row: TemplateChild<adw::ComboRow>,
         #[template_child]
         pub affinity_row: TemplateChild<adw::ExpanderRow>,
+        #[template_child]
+        pub select_all_button: TemplateChild<gtk::Button>,
 
         pub current_affinity: RefCell<Vec<bool>>,
+
+        pub cpu_rows: RefCell<Vec<adw::SwitchRow>>,
 
         pub pid: Cell<libc::pid_t>,
     }
@@ -153,6 +157,8 @@ impl ResProcessOptionsDialog {
             ));
 
             imp.affinity_row.add_row(&switch_row);
+
+            imp.cpu_rows.borrow_mut().push(switch_row);
         }
 
         imp.pid.set(process.pid())
@@ -164,7 +170,21 @@ impl ResProcessOptionsDialog {
         sender: Sender<Action>,
         toast_overlay: &ToastOverlay,
     ) {
-        self.imp().apply_button.connect_clicked(clone!(
+        let imp = self.imp();
+
+        imp.select_all_button.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
+                this.imp()
+                    .cpu_rows
+                    .borrow()
+                    .iter()
+                    .for_each(|switch_row| switch_row.set_active(true));
+            }
+        ));
+
+        imp.apply_button.connect_clicked(clone!(
             #[weak(rename_to = this)]
             self,
             #[weak]

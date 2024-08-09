@@ -26,6 +26,7 @@
     <file preprocess="xml-stripblanks" alias="processor-symbolic.svg">icons/processor-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="raid-symbolic.svg">icons/raid-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="ram-disk-symbolic.svg">icons/ram-disk-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="select-all-symbolic.svg">icons/select-all-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="search-symbolic.svg">icons/search-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="shell-symbolic.svg">icons/shell-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="slip-symbolic.svg">icons/slip-symbolic.svg</file>

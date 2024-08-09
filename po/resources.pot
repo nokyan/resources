@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-09 00:13+0200\n"
+"POT-Creation-Date: 2024-08-09 15:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,7 +51,7 @@ msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:25
 #: src/ui/pages/applications/mod.rs:816 src/ui/pages/memory.rs:138
-#: src/ui/pages/memory.rs:219 src/ui/pages/processes/mod.rs:960
+#: src/ui/pages/memory.rs:219 src/ui/pages/processes/mod.rs:964
 #: data/resources/ui/window.ui:158 data/resources/ui/window.ui:165
 #: data/resources/ui/dialogs/app_dialog.ui:82
 #: data/resources/ui/dialogs/process_dialog.ui:64
@@ -62,7 +62,7 @@ msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:26
 #: src/ui/pages/applications/mod.rs:1189 src/ui/pages/gpu.rs:155
-#: src/ui/pages/processes/mod.rs:1344 src/ui/window.rs:302
+#: src/ui/pages/processes/mod.rs:1348 src/ui/window.rs:302
 #: data/resources/ui/dialogs/app_dialog.ui:131
 #: data/resources/ui/dialogs/process_dialog.ui:109
 #: data/resources/ui/dialogs/settings_dialog.ui:163
@@ -127,45 +127,45 @@ msgstr ""
 #: src/ui/pages/network.rs:356 src/ui/pages/network.rs:359
 #: src/ui/pages/network.rs:361 src/ui/pages/network.rs:390
 #: src/ui/pages/network.rs:393 src/ui/pages/network.rs:395
-#: src/ui/pages/processes/mod.rs:1102 src/ui/pages/processes/mod.rs:1168
-#: src/ui/pages/processes/mod.rs:1234 src/ui/pages/processes/mod.rs:1300
-#: src/ui/pages/processes/mod.rs:1782 src/ui/pages/processes/mod.rs:1784
+#: src/ui/pages/processes/mod.rs:1106 src/ui/pages/processes/mod.rs:1172
+#: src/ui/pages/processes/mod.rs:1238 src/ui/pages/processes/mod.rs:1304
+#: src/ui/pages/processes/mod.rs:1786 src/ui/pages/processes/mod.rs:1788
 #: src/utils/battery.rs:139 src/utils/drive.rs:90 src/utils/gpu/mod.rs:258
 #: src/utils/gpu/mod.rs:264
 msgid "N/A"
 msgstr ""
 
-#: src/ui/dialogs/process_options_dialog.rs:142 src/ui/pages/cpu.rs:265
+#: src/ui/dialogs/process_options_dialog.rs:146 src/ui/pages/cpu.rs:265
 #: src/ui/pages/cpu.rs:387 src/ui/pages/cpu.rs:391
 msgid "CPU {}"
 msgstr ""
 
-#: src/ui/dialogs/process_options_dialog.rs:188
+#: src/ui/dialogs/process_options_dialog.rs:208
 msgid "Unable to Apply Adjustment"
 msgstr ""
 
-#: src/ui/dialogs/process_options_dialog.rs:189
+#: src/ui/dialogs/process_options_dialog.rs:209
 msgid ""
 "Please ensure that at least one CPU is enabled in the processor affinity."
 msgstr ""
 
-#: src/ui/dialogs/process_options_dialog.rs:192
+#: src/ui/dialogs/process_options_dialog.rs:212
 #: src/ui/pages/applications/mod.rs:713 src/ui/pages/processes/mod.rs:749
 msgid "Cancel"
 msgstr ""
 
 #: src/ui/pages/applications/application_entry.rs:179 src/ui/pages/drive.rs:433
-#: src/ui/pages/drive.rs:443 src/ui/pages/processes/process_entry.rs:179
+#: src/ui/pages/drive.rs:443 src/ui/pages/processes/process_entry.rs:206
 msgid "No"
 msgstr ""
 
 #: src/ui/pages/applications/application_entry.rs:180
-#: src/ui/pages/processes/process_entry.rs:180
+#: src/ui/pages/processes/process_entry.rs:207
 msgid "Yes (Flatpak)"
 msgstr ""
 
 #: src/ui/pages/applications/application_entry.rs:181
-#: src/ui/pages/processes/process_entry.rs:181
+#: src/ui/pages/processes/process_entry.rs:208
 msgid "Yes (Snap)"
 msgstr ""
 
@@ -184,7 +184,7 @@ msgid "App"
 msgstr ""
 
 #: src/ui/pages/applications/mod.rs:875 src/ui/pages/cpu.rs:155
-#: src/ui/pages/processes/mod.rs:1018 src/ui/window.rs:348
+#: src/ui/pages/processes/mod.rs:1022 src/ui/window.rs:348
 #: data/resources/ui/window.ui:127 data/resources/ui/window.ui:134
 #: data/resources/ui/dialogs/app_dialog.ui:73
 #: data/resources/ui/dialogs/process_dialog.ui:55
@@ -193,7 +193,7 @@ msgstr ""
 msgid "Processor"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:938 src/ui/pages/processes/mod.rs:1081
+#: src/ui/pages/applications/mod.rs:938 src/ui/pages/processes/mod.rs:1085
 #: data/resources/ui/dialogs/app_dialog.ui:91
 #: data/resources/ui/dialogs/process_dialog.ui:69
 #: data/resources/ui/dialogs/settings_dialog.ui:143
@@ -201,7 +201,7 @@ msgstr ""
 msgid "Drive Read"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:1002 src/ui/pages/processes/mod.rs:1147
+#: src/ui/pages/applications/mod.rs:1002 src/ui/pages/processes/mod.rs:1151
 #: data/resources/ui/dialogs/app_dialog.ui:100
 #: data/resources/ui/dialogs/process_dialog.ui:78
 #: data/resources/ui/dialogs/settings_dialog.ui:148
@@ -209,7 +209,7 @@ msgstr ""
 msgid "Drive Read Total"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:1062 src/ui/pages/processes/mod.rs:1213
+#: src/ui/pages/applications/mod.rs:1062 src/ui/pages/processes/mod.rs:1217
 #: data/resources/ui/dialogs/app_dialog.ui:109
 #: data/resources/ui/dialogs/process_dialog.ui:87
 #: data/resources/ui/dialogs/settings_dialog.ui:153
@@ -217,7 +217,7 @@ msgstr ""
 msgid "Drive Write"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:1128 src/ui/pages/processes/mod.rs:1279
+#: src/ui/pages/applications/mod.rs:1128 src/ui/pages/processes/mod.rs:1283
 #: data/resources/ui/dialogs/app_dialog.ui:118
 #: data/resources/ui/dialogs/process_dialog.ui:96
 #: data/resources/ui/dialogs/settings_dialog.ui:158
@@ -225,7 +225,7 @@ msgstr ""
 msgid "Drive Write Total"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:1247 src/ui/pages/processes/mod.rs:1402
+#: src/ui/pages/applications/mod.rs:1247 src/ui/pages/processes/mod.rs:1406
 #: data/resources/ui/dialogs/app_dialog.ui:149
 #: data/resources/ui/dialogs/process_dialog.ui:127
 #: data/resources/ui/dialogs/settings_dialog.ui:173
@@ -233,7 +233,7 @@ msgstr ""
 msgid "Video Encoder"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:1307 src/ui/pages/processes/mod.rs:1462
+#: src/ui/pages/applications/mod.rs:1307 src/ui/pages/processes/mod.rs:1466
 #: data/resources/ui/dialogs/app_dialog.ui:158
 #: data/resources/ui/dialogs/process_dialog.ui:136
 #: data/resources/ui/dialogs/settings_dialog.ui:178
@@ -241,7 +241,7 @@ msgstr ""
 msgid "Video Decoder"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:1366 src/ui/pages/processes/mod.rs:1522
+#: src/ui/pages/applications/mod.rs:1366 src/ui/pages/processes/mod.rs:1526
 #: data/resources/ui/dialogs/app_dialog.ui:140
 #: data/resources/ui/dialogs/process_dialog.ui:118
 #: data/resources/ui/dialogs/settings_dialog.ui:168
@@ -249,23 +249,23 @@ msgstr ""
 msgid "Video Memory"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:1423 src/ui/pages/processes/mod.rs:1824
+#: src/ui/pages/applications/mod.rs:1423 src/ui/pages/processes/mod.rs:1828
 msgid "End {}?"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:1424 src/ui/pages/processes/mod.rs:1825
+#: src/ui/pages/applications/mod.rs:1424 src/ui/pages/processes/mod.rs:1829
 msgid "Halt {}?"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:1425 src/ui/pages/processes/mod.rs:1826
+#: src/ui/pages/applications/mod.rs:1425 src/ui/pages/processes/mod.rs:1830
 msgid "Kill {}?"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:1426 src/ui/pages/processes/mod.rs:1827
+#: src/ui/pages/applications/mod.rs:1426 src/ui/pages/processes/mod.rs:1831
 msgid "Continue {}?"
 msgstr ""
 
-#: src/ui/pages/applications/mod.rs:1432 src/ui/pages/processes/mod.rs:1833
+#: src/ui/pages/applications/mod.rs:1432 src/ui/pages/processes/mod.rs:1837
 msgid "Unsaved work might be lost."
 msgstr ""
 
@@ -419,70 +419,70 @@ msgstr ""
 msgid "Process"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:853
+#: src/ui/pages/processes/mod.rs:857
 #: data/resources/ui/dialogs/process_dialog.ui:177
 #: data/resources/ui/dialogs/settings_dialog.ui:205
 msgid "Process ID"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:906
+#: src/ui/pages/processes/mod.rs:910
 #: data/resources/ui/dialogs/process_dialog.ui:204
 #: data/resources/ui/dialogs/settings_dialog.ui:210
 msgid "User"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:1581
+#: src/ui/pages/processes/mod.rs:1585
 #: data/resources/ui/dialogs/process_dialog.ui:145
 #: data/resources/ui/dialogs/settings_dialog.ui:265
 msgid "Total CPU Time"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:1640
+#: src/ui/pages/processes/mod.rs:1644
 #: data/resources/ui/dialogs/process_dialog.ui:154
 #: data/resources/ui/dialogs/settings_dialog.ui:270
 msgid "User CPU Time"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:1699
+#: src/ui/pages/processes/mod.rs:1703
 #: data/resources/ui/dialogs/process_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:275
 msgid "System CPU Time"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:1758
+#: src/ui/pages/processes/mod.rs:1762
 #: data/resources/ui/dialogs/process_options_dialog.ui:87
 #: data/resources/ui/dialogs/settings_dialog.ui:280
 msgid "Priority"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:1834
+#: src/ui/pages/processes/mod.rs:1838
 msgid ""
 "Halting a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:1835
+#: src/ui/pages/processes/mod.rs:1839
 msgid ""
 "Killing a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:1842 data/resources/ui/pages/processes.ui:22
+#: src/ui/pages/processes/mod.rs:1846 data/resources/ui/pages/processes.ui:22
 #: data/resources/ui/pages/processes.ui:146
 msgid "End Process"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:1843 data/resources/ui/pages/processes.ui:10
+#: src/ui/pages/processes/mod.rs:1847 data/resources/ui/pages/processes.ui:10
 #: data/resources/ui/pages/processes.ui:30
 msgid "Halt Process"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:1844 data/resources/ui/pages/processes.ui:6
+#: src/ui/pages/processes/mod.rs:1848 data/resources/ui/pages/processes.ui:6
 #: data/resources/ui/pages/processes.ui:26
 msgid "Kill Process"
 msgstr ""
 
-#: src/ui/pages/processes/mod.rs:1845 data/resources/ui/pages/processes.ui:14
+#: src/ui/pages/processes/mod.rs:1849 data/resources/ui/pages/processes.ui:14
 #: data/resources/ui/pages/processes.ui:34
 msgid "Continue Process"
 msgstr ""
@@ -1307,7 +1307,11 @@ msgstr ""
 msgid "Processor Affinity"
 msgstr ""
 
-#: data/resources/ui/dialogs/process_options_dialog.ui:104
+#: data/resources/ui/dialogs/process_options_dialog.ui:108
+msgid "Select All"
+msgstr ""
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:111
 msgid "Select which processor cores the process is allowed to run on"
 msgstr ""
 

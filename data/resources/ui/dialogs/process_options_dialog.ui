@@ -101,6 +101,13 @@
                         <child>
                           <object class="AdwExpanderRow" id="affinity_row">
                             <property name="title" translatable="yes">Processor Affinity</property>
+                            <child type="suffix">
+                              <object class="GtkButton" id="select_all_button">
+                                <property name="valign">center</property>
+                                <property name="icon-name">select-all-symbolic</property>
+                                <property name="tooltip-text" translatable="yes">Select All</property>
+                              </object>
+                            </child>
                             <property name="subtitle" translatable="yes">Select which processor cores the process is allowed to run on</property>
                           </object>
                         </child>
