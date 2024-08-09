@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-09 19:44+0200\n"
-"PO-Revision-Date: 2024-08-09 23:53+0300\n"
+"POT-Creation-Date: 2024-08-09 23:34+0200\n"
+"PO-Revision-Date: 2024-08-10 00:51+0300\n"
 "Last-Translator: Aleksandr Melman <Alexmelman88@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -493,28 +493,22 @@ msgid "Continue Process"
 msgstr "Продолжить процесс"
 
 #: src/ui/pages/mod.rs:29
-#: data/resources/ui/dialogs/process_options_dialog.ui:91
 msgid "Very High"
 msgstr "Очень высоко"
 
 #: src/ui/pages/mod.rs:33
-#: data/resources/ui/dialogs/process_options_dialog.ui:92
 msgid "High"
 msgstr "Высоко"
 
 #: src/ui/pages/mod.rs:37
-#: data/resources/ui/dialogs/process_options_dialog.ui:93
-#: data/resources/ui/dialogs/settings_dialog.ui:57
 msgid "Normal"
 msgstr "Нормально"
 
 #: src/ui/pages/mod.rs:41
-#: data/resources/ui/dialogs/process_options_dialog.ui:94
 msgid "Low"
 msgstr "Низко"
 
 #: src/ui/pages/mod.rs:45
-#: data/resources/ui/dialogs/process_options_dialog.ui:95
 msgid "Very Low"
 msgstr "Очень низко"
 
@@ -1314,6 +1308,31 @@ msgstr ""
 "Приоритет процесса определяется его уступчивостью. Меньшее значение "
 "уступчивости соответствует более высокому приоритету."
 
+#: data/resources/ui/dialogs/process_options_dialog.ui:91
+msgctxt "process priority"
+msgid "Very High"
+msgstr "Очень высокий"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:92
+msgctxt "process priority"
+msgid "High"
+msgstr "Высокий"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:93
+msgctxt "process priority"
+msgid "Normal"
+msgstr "Нормальный"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:94
+msgctxt "process priority"
+msgid "Low"
+msgstr "Низкий"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:95
+msgctxt "process priority"
+msgid "Very Low"
+msgstr "Очень низкий"
+
 #: data/resources/ui/dialogs/process_options_dialog.ui:103
 msgid "Processor Affinity"
 msgstr "Привязка к процессору"
@@ -1381,18 +1400,27 @@ msgstr ""
 "процессор"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:55
+msgctxt "UI refresh speed"
 msgid "Very Slow"
 msgstr "Очень медленно"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:56
+msgctxt "UI refresh speed"
 msgid "Slow"
 msgstr "Медленно"
 
+#: data/resources/ui/dialogs/settings_dialog.ui:57
+msgctxt "UI refresh speed"
+msgid "Normal"
+msgstr "Нормально"
+
 #: data/resources/ui/dialogs/settings_dialog.ui:58
+msgctxt "UI refresh speed"
 msgid "Fast"
 msgstr "Быстро"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:59
+msgctxt "UI refresh speed"
 msgid "Very Fast"
 msgstr "Очень быстро"
 
