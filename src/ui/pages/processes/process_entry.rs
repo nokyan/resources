@@ -15,7 +15,7 @@ mod imp {
     use gtk::{
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        prelude::ObjectExt,
+        prelude::{Cast, ObjectExt},
         subclass::prelude::{DerivedObjectProperties, ObjectImpl, ObjectImplExt, ObjectSubclass},
     };
 
@@ -90,6 +90,11 @@ mod imp {
         #[property(get = Self::running_since, set = Self::set_running_since)]
         running_since: Cell<Option<glib::GString>>,
 
+        // TODO: Make this properly dynamic, don't use a variable that's never read
+        #[property(get = Self::symbolic)]
+        #[allow(dead_code)]
+        symbolic: Cell<bool>,
+
         pub affinity: RefCell<Vec<bool>>,
     }
 
@@ -118,6 +123,7 @@ mod imp {
                 cgroup: Cell::new(None),
                 containerization: Cell::new(glib::GString::default()),
                 running_since: Cell::new(None),
+                symbolic: Cell::new(false),
                 affinity: Default::default(),
             }
         }
@@ -135,6 +141,27 @@ mod imp {
 
         pub fn set_icon(&self, icon: &Icon) {
             self.icon.set(icon.clone());
+        }
+
+        pub fn symbolic(&self) -> bool {
+            let icon = self.icon.replace(ThemedIcon::new("generic-process").into());
+            self.icon.set(icon.clone());
+
+            icon.downcast_ref::<ThemedIcon>()
+                .is_some_and(|themed_icon| {
+                    themed_icon
+                        .names()
+                        .iter()
+                        .all(|name| name.ends_with("-symbolic"))
+                        || themed_icon
+                            .names()
+                            .iter()
+                            .all(|name| name.contains("system-processes"))
+                        || themed_icon
+                            .names()
+                            .iter()
+                            .all(|name| name.contains("generic-process"))
+                })
         }
     }
 

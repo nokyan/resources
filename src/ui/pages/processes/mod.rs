@@ -821,6 +821,10 @@ impl ResProcesses {
                     .chain_property::<ProcessEntry>("commandline")
                     .bind(&row, "tooltip", Widget::NONE);
 
+                item.property_expression("item")
+                    .chain_property::<ProcessEntry>("symbolic")
+                    .bind(&row, "symbolic", Widget::NONE);
+
                 this.add_gestures(item);
             }
         ));
