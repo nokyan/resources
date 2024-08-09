@@ -52,11 +52,11 @@
                 <property name="model">
                   <object class="GtkStringList">
                     <items>
-                      <item translatable="yes">Very Slow</item>
-                      <item translatable="yes">Slow</item>
-                      <item translatable="yes">Normal</item>
-                      <item translatable="yes">Fast</item>
-                      <item translatable="yes">Very Fast</item>
+                      <item translatable="yes" context="UI refresh speed">Very Slow</item>
+                      <item translatable="yes" context="UI refresh speed">Slow</item>
+                      <item translatable="yes" context="UI refresh speed">Normal</item>
+                      <item translatable="yes" context="UI refresh speed">Fast</item>
+                      <item translatable="yes" context="UI refresh speed">Very Fast</item>
                     </items>
                   </object>
                 </property>
