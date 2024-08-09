@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, path::PathBuf};
 
 use nix::{
     sched::{sched_setaffinity, CpuSet},
@@ -17,19 +17,37 @@ fn main() {
                     }
                 }
 
-                let _ = sched_setaffinity(Pid::from_raw(pid), &cpu_set);
+                adjust(pid, nice, &cpu_set);
 
-                unsafe {
-                    libc::setpriority(libc::PRIO_PROCESS, pid as u32, nice);
-                };
+                // find tasks that belong to this process
+                let tasks_path = PathBuf::from("/proc/").join(pid.to_string()).join("task");
+                for entry in std::fs::read_dir(tasks_path).unwrap() {
+                    if let Ok(entry) = entry {
+                        let thread_id = entry.file_name().to_string_lossy().parse().unwrap();
 
-                let error = std::io::Error::last_os_error()
-                    .raw_os_error()
-                    .unwrap_or_default();
+                        adjust(thread_id, nice, &cpu_set);
+                    }
+                }
 
-                std::process::exit(error)
+                std::process::exit(0)
             }
         }
     }
     std::process::exit(255);
+}
+
+fn adjust(id: i32, nice: i32, cpu_set: &CpuSet) {
+    unsafe {
+        libc::setpriority(libc::PRIO_PROCESS, id as u32, nice);
+    };
+
+    let error = std::io::Error::last_os_error()
+        .raw_os_error()
+        .unwrap_or_default();
+
+    if error != 0 {
+        std::process::exit(error)
+    }
+
+    let _ = sched_setaffinity(Pid::from_raw(id), &cpu_set);
 }

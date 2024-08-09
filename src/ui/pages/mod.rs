@@ -26,11 +26,11 @@ pub static NICE_TO_LABEL: LazyLock<HashMap<Niceness, (String, u32)>> = LazyLock:
     let mut hash_map = HashMap::new();
 
     for i in -20..=-8 {
-        hash_map.insert(Niceness::try_new(i).unwrap(), (i18n("Very High"), 4));
+        hash_map.insert(Niceness::try_new(i).unwrap(), (i18n("Very High"), 0));
     }
 
     for i in -7..=-3 {
-        hash_map.insert(Niceness::try_new(i).unwrap(), (i18n("High"), 3));
+        hash_map.insert(Niceness::try_new(i).unwrap(), (i18n("High"), 1));
     }
 
     for i in -2..=2 {
@@ -38,11 +38,11 @@ pub static NICE_TO_LABEL: LazyLock<HashMap<Niceness, (String, u32)>> = LazyLock:
     }
 
     for i in 3..=6 {
-        hash_map.insert(Niceness::try_new(i).unwrap(), (i18n("Low"), 1));
+        hash_map.insert(Niceness::try_new(i).unwrap(), (i18n("Low"), 3));
     }
 
     for i in 7..=19 {
-        hash_map.insert(Niceness::try_new(i).unwrap(), (i18n("Very Low"), 0));
+        hash_map.insert(Niceness::try_new(i).unwrap(), (i18n("Very Low"), 4));
     }
 
     hash_map

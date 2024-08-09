@@ -107,11 +107,11 @@ impl ResProcessOptionsDialog {
 
         if imp.priority_row.is_visible() {
             match imp.priority_row.selected() {
-                0 => Niceness::try_from(20).unwrap_or_default(),
-                1 => Niceness::try_from(5).unwrap_or_default(),
+                0 => Niceness::try_from(-19).unwrap_or_default(),
+                1 => Niceness::try_from(-5).unwrap_or_default(),
                 2 => Niceness::try_from(0).unwrap_or_default(),
                 3 => Niceness::try_from(5).unwrap_or_default(),
-                4 => Niceness::try_from(19).unwrap_or_default(),
+                4 => Niceness::try_from(20).unwrap_or_default(),
                 _ => Niceness::default(),
             }
         } else {
