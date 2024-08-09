@@ -120,10 +120,7 @@
           </object>
         </property>
       </object>
-    </child>&lt;/object&gt;
-        &lt;/property&gt;
-      &lt;/object&gt;
-    &lt;/child&gt;
+    </child>
     <child>
       <object class="GtkShortcutController">
         <property name="scope">local</property>
