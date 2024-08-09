@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-09 19:26+0200\n"
+"POT-Creation-Date: 2024-08-09 19:44+0200\n"
 "PO-Revision-Date: 2024-08-09 19:26+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
@@ -140,26 +140,10 @@ msgstr "Icon von"
 msgid "N/A"
 msgstr "n. v."
 
-#: src/ui/dialogs/process_options_dialog.rs:146 src/ui/pages/cpu.rs:265
+#: src/ui/dialogs/process_options_dialog.rs:142 src/ui/pages/cpu.rs:265
 #: src/ui/pages/cpu.rs:387 src/ui/pages/cpu.rs:391
 msgid "CPU {}"
 msgstr "CPU {}"
-
-#: src/ui/dialogs/process_options_dialog.rs:210
-msgid "Unable to Apply Adjustment"
-msgstr "Anpassung konnte nicht vorgenommen werden"
-
-#: src/ui/dialogs/process_options_dialog.rs:211
-msgid ""
-"Please ensure that at least one CPU is enabled in the processor affinity."
-msgstr ""
-"Bitte stellen Sie sicher, dass mindestens eine CPU in der Prozessoraffinität "
-"aktiviert ist."
-
-#: src/ui/dialogs/process_options_dialog.rs:214
-#: src/ui/pages/applications/mod.rs:713 src/ui/pages/processes/mod.rs:749
-msgid "Cancel"
-msgstr "Abbrechen"
 
 #: src/ui/pages/applications/application_entry.rs:179 src/ui/pages/drive.rs:433
 #: src/ui/pages/drive.rs:443 src/ui/pages/processes/process_entry.rs:206
@@ -185,6 +169,10 @@ msgstr "Anwendungen"
 #: src/ui/pages/applications/mod.rs:674
 msgid "Running Apps: {}"
 msgstr "Laufende Anwendungen: {}"
+
+#: src/ui/pages/applications/mod.rs:713 src/ui/pages/processes/mod.rs:749
+msgid "Cancel"
+msgstr "Abbrechen"
 
 #: src/ui/pages/applications/mod.rs:759
 msgid "App"
@@ -1684,6 +1672,15 @@ msgstr "Prozesse suchen"
 #: data/resources/ui/pages/processes.ui:124
 msgid "Show Process Options"
 msgstr "Prozessoptionen anzeigen"
+
+#~ msgid "Unable to Apply Adjustment"
+#~ msgstr "Anpassung konnte nicht vorgenommen werden"
+
+#~ msgid ""
+#~ "Please ensure that at least one CPU is enabled in the processor affinity."
+#~ msgstr ""
+#~ "Bitte stellen Sie sicher, dass mindestens eine CPU in der "
+#~ "Prozessoraffinität aktiviert ist."
 
 #~ msgid "Select All"
 #~ msgstr "Alle auswählen"
