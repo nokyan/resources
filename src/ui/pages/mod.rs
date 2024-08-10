@@ -2,7 +2,7 @@ use std::{collections::HashMap, sync::LazyLock};
 
 use process_data::Niceness;
 
-use crate::i18n::i18n;
+use crate::i18n::pi18n;
 
 pub mod applications;
 pub mod battery;
@@ -26,23 +26,38 @@ pub static NICE_TO_LABEL: LazyLock<HashMap<Niceness, (String, u32)>> = LazyLock:
     let mut hash_map = HashMap::new();
 
     for i in -20..=-8 {
-        hash_map.insert(Niceness::try_new(i).unwrap(), (i18n("Very High"), 0));
+        hash_map.insert(
+            Niceness::try_new(i).unwrap(),
+            (pi18n("process priority", "Very High"), 0),
+        );
     }
 
     for i in -7..=-3 {
-        hash_map.insert(Niceness::try_new(i).unwrap(), (i18n("High"), 1));
+        hash_map.insert(
+            Niceness::try_new(i).unwrap(),
+            (pi18n("process priority", "High"), 1),
+        );
     }
 
     for i in -2..=2 {
-        hash_map.insert(Niceness::try_new(i).unwrap(), (i18n("Normal"), 2));
+        hash_map.insert(
+            Niceness::try_new(i).unwrap(),
+            (pi18n("process priority", "Normal"), 2),
+        );
     }
 
     for i in 3..=6 {
-        hash_map.insert(Niceness::try_new(i).unwrap(), (i18n("Low"), 3));
+        hash_map.insert(
+            Niceness::try_new(i).unwrap(),
+            (pi18n("process priority", "Low"), 3),
+        );
     }
 
     for i in 7..=19 {
-        hash_map.insert(Niceness::try_new(i).unwrap(), (i18n("Very Low"), 4));
+        hash_map.insert(
+            Niceness::try_new(i).unwrap(),
+            (pi18n("process priority", "Very Low"), 4),
+        );
     }
 
     hash_map
