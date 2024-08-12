@@ -9,45 +9,49 @@ Resources is a simple yet powerful monitor for your system resources and process
 <details>
   <summary><b>Click me for screenshots!</b></summary>
 
-  ![Apps View of Resources](data/resources/screenshots/1.png?raw=true "Apps View of Resources")
+  ![Apps View](data/resources/screenshots/1.png?raw=true "Apps View")
 
-  ![Processes View of Resources](data/resources/screenshots/2.png?raw=true "Processes View of Resources")
+  ![Processes View](data/resources/screenshots/2.png?raw=true "Processes View")
 
-  ![Processor View of Resources](data/resources/screenshots/3.png?raw=true "Processor View of Resources")
+  ![Processor View](data/resources/screenshots/3.png?raw=true "Processor View")
 
-  ![Memory View of Resources](data/resources/screenshots/4.png?raw=true "Memory View of Resources")
+  ![Memory View](data/resources/screenshots/4.png?raw=true "Memory View")
 
-  ![GPU View of Resources](data/resources/screenshots/5.png?raw=true "GPU View of Resources")
+  ![GPU View](data/resources/screenshots/5.png?raw=true "GPU View")
 
-  ![Drive View of Resources](data/resources/screenshots/6.png?raw=true "Drive View of Resources")
+  ![Drive View](data/resources/screenshots/6.png?raw=true "Drive View")
 
-  ![Network Interface View of Resources](data/resources/screenshots/7.png?raw=true "Network Interface View of Resources")
+  ![Network Interface View](data/resources/screenshots/7.png?raw=true "Network Interface View")
 
-  ![Battery View of Resources](data/resources/screenshots/8.png?raw=true "Battery View of Resources")
+  ![Battery View](data/resources/screenshots/8.png?raw=true "Battery View")
   
 </details>
-
-## Dependencies
-
-- `glib-2.0`
-- `gio-2.0`
-- `gtk-4`
-- `libadwaita-1`
-- `systemd`
-- `polkit`
-- `cargo`
-
-Other dependencies are handled by `cargo`.
 
 ## Installing
 
 The **official** and **only supported** way of installing Resources is using Flatpak. Simply use your graphical software manager like GNOME Software or Discover to install Resources from Flathub or type ``flatpak install flathub net.nokyan.Resources`` in your terminal.
 Please keep in mind that you need to have Flathub set up on your device. You can find out how to set up Flathub [here](https://flathub.org/setup).
-Resources’ minimum supported Rust version (MSRV) is **1.80.0**.
 
-### Fedora
+### Unofficial Packages
 
-**Unofficially** packaged in [COPR](https://copr.fedorainfracloud.org/coprs/atim/resources/) for Fedora 39 and newer.
+Resources has been packaged for some Linux distributions by volunteers. Keep in mind that these are not supported.
+If you’re packaging Resources for another distribution, feel free to send a pull request to add your package to this list!
+
+#### Arch Linux
+
+Unofficially packaged in the [AUR](https://aur.archlinux.org/packages/resources).
+
+You can either use `makepkg` yourself or use helpers such as `yay`.
+
+```sh
+yay -S resources
+```
+
+#### Fedora
+
+Unofficially packaged in [Copr](https://copr.fedorainfracloud.org/coprs/atim/resources/) for Fedora 39 and newer.
+
+You first need to enable the `atim/resources` Copr repository and then use `dnf` to install Resources.
 
 ```sh
 dnf copr enable atim/resources
@@ -56,15 +60,27 @@ dnf install resources
 
 ## Building
 
-If you prefer to build Resources yourself, you can do so using its build system Meson.
-You can either build and install Resources natively on your system like this:
+You can also build Resources yourself using either Meson directly or preferably using Flatpak Builder.
 
-```sh
-meson . build --prefix=/usr/local
-ninja -C build install
-```
+### Build Dependencies
 
-Or, even better, use the Flatpak CLI to build:
+- `glib-2.0` ≥ 2.66
+- `gio-2.0` ≥ 2.66
+- `gtk-4` ≥ 4.10
+- `libadwaita-1` ≥ 1.5
+- `cargo`
+
+Other dependencies are handled by `cargo`.
+Resources’ minimum supported Rust version (MSRV) is **1.80.0**.
+
+### Runtime Dependencies
+
+These dependencies are not needed to build Resources but Resources may lack certain functionalities when they are not present.
+
+- `systemd` (needed for app detection using cgroups)
+- `polkit` (needed for executing privileged actions like killing certain processes)
+
+### Building Using Flatpak Builder
 
 ```sh
 flatpak install org.gnome.Sdk//46 org.freedesktop.Sdk.Extension.rust-stable//23.08 org.gnome.Platform//46 org.freedesktop.Sdk.Extension.llvm18//23.08
@@ -72,6 +88,13 @@ flatpak-builder --user flatpak_app build-aux/net.nokyan.Resources.Devel.json
 ```
 
 If you use [GNOME Builder](https://apps.gnome.org/app/org.gnome.Builder/) or Visual Studio Code with the [Flatpak extension](https://marketplace.visualstudio.com/items?itemName=bilelmoussaoui.flatpak-vscode), Resources can be built and run automatically.
+
+### Building Natively Using Meson
+
+```sh
+meson . build --prefix=/usr/local
+ninja -C build install
+```
 
 ## Running
 

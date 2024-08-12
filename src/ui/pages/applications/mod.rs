@@ -8,8 +8,8 @@ use adw::{prelude::*, subclass::prelude::*};
 use async_channel::Sender;
 use gtk::glib::{self, clone, closure, MainContext, Object};
 use gtk::{
-    gio, ColumnView, ColumnViewColumn, EventControllerKey, FilterChange, NumericSorter, SortType,
-    StringSorter, Widget,
+    gio, ColumnView, ColumnViewColumn, EventControllerKey, FilterChange, ListItem, NumericSorter,
+    SortType, StringSorter, Widget,
 };
 
 use crate::config::PROFILE;
@@ -49,6 +49,8 @@ mod imp {
     pub struct ResApplications {
         #[template_child]
         pub toast_overlay: TemplateChild<adw::ToastOverlay>,
+        #[template_child]
+        pub popover_menu: TemplateChild<gtk::PopoverMenu>,
         #[template_child]
         pub search_revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
@@ -142,6 +144,7 @@ mod imp {
         fn default() -> Self {
             Self {
                 toast_overlay: Default::default(),
+                popover_menu: Default::default(),
                 search_revealer: Default::default(),
                 search_entry: Default::default(),
                 search_button: Default::default(),
@@ -178,53 +181,53 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.install_action(
-                "applications.context-end-process",
+                "applications.context-end-app",
                 None,
                 move |res_applications, _, _| {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
                         res_applications
-                            .execute_process_action_dialog(application_entry, ProcessAction::TERM);
+                            .execute_app_action_dialog(application_entry, ProcessAction::TERM);
                     }
                 },
             );
 
             klass.install_action(
-                "applications.context-kill-process",
+                "applications.context-kill-app",
                 None,
                 move |res_applications, _, _| {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
                         res_applications
-                            .execute_process_action_dialog(application_entry, ProcessAction::KILL);
+                            .execute_app_action_dialog(application_entry, ProcessAction::KILL);
                     }
                 },
             );
 
             klass.install_action(
-                "applications.context-halt-process",
+                "applications.context-halt-app",
                 None,
                 move |res_applications, _, _| {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
                         res_applications
-                            .execute_process_action_dialog(application_entry, ProcessAction::STOP);
+                            .execute_app_action_dialog(application_entry, ProcessAction::STOP);
                     }
                 },
             );
 
             klass.install_action(
-                "applications.context-continue-process",
+                "applications.context-continue-app",
                 None,
                 move |res_applications, _, _| {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
                         res_applications
-                            .execute_process_action_dialog(application_entry, ProcessAction::CONT);
+                            .execute_app_action_dialog(application_entry, ProcessAction::CONT);
                     }
                 },
             );
@@ -242,31 +245,31 @@ mod imp {
             );
 
             klass.install_action(
-                "applications.kill-application",
+                "applications.kill-app",
                 None,
                 move |res_applications, _, _| {
                     if let Some(app) = res_applications.get_selected_app_entry() {
-                        res_applications.execute_process_action_dialog(&app, ProcessAction::KILL);
+                        res_applications.execute_app_action_dialog(&app, ProcessAction::KILL);
                     }
                 },
             );
 
             klass.install_action(
-                "applications.halt-application",
+                "applications.halt-app",
                 None,
                 move |res_applications, _, _| {
                     if let Some(app) = res_applications.get_selected_app_entry() {
-                        res_applications.execute_process_action_dialog(&app, ProcessAction::STOP);
+                        res_applications.execute_app_action_dialog(&app, ProcessAction::STOP);
                     }
                 },
             );
 
             klass.install_action(
-                "applications.continue-application",
+                "applications.continue-app",
                 None,
                 move |res_applications, _, _| {
                     if let Some(app) = res_applications.get_selected_app_entry() {
-                        res_applications.execute_process_action_dialog(&app, ProcessAction::CONT);
+                        res_applications.execute_app_action_dialog(&app, ProcessAction::CONT);
                     }
                 },
             );
@@ -342,25 +345,65 @@ impl ResApplications {
         self.setup_signals();
     }
 
+    fn add_gestures(&self, item: &ListItem) {
+        let widget = item.child().unwrap();
+
+        let secondary_click = gtk::GestureClick::new();
+        secondary_click.set_button(3);
+        secondary_click.connect_released(clone!(
+            #[weak]
+            widget,
+            #[weak]
+            item,
+            #[weak(rename_to = this)]
+            self,
+            move |_, _, x, y| {
+                if let Some(entry) = item.item().and_downcast::<ApplicationEntry>() {
+                    let imp = this.imp();
+                    let popover_menu = &imp.popover_menu;
+
+                    *imp.popped_over_app.borrow_mut() = Some(entry);
+
+                    let position = widget
+                        .compute_point(&this, &gtk::graphene::Point::new(x as _, y as _))
+                        .unwrap();
+
+                    popover_menu.set_pointing_to(Some(&gtk::gdk::Rectangle::new(
+                        position.x().round() as i32,
+                        position.y().round() as i32,
+                        1,
+                        1,
+                    )));
+
+                    popover_menu.popup();
+                }
+            }
+        ));
+
+        widget.add_controller(secondary_click);
+    }
+
     pub fn setup_widgets(&self) {
         let imp = self.imp();
+
+        imp.popover_menu.set_parent(self);
 
         *imp.column_view.borrow_mut() = gtk::ColumnView::new(None::<gtk::SingleSelection>);
         let column_view = imp.column_view.borrow();
 
         let mut columns = imp.columns.borrow_mut();
 
-        columns.push(Self::add_name_column(&column_view));
-        columns.push(Self::add_memory_column(&column_view));
-        columns.push(Self::add_cpu_column(&column_view));
-        columns.push(Self::add_read_speed_column(&column_view));
-        columns.push(Self::add_read_total_column(&column_view));
-        columns.push(Self::add_write_speed_column(&column_view));
-        columns.push(Self::add_write_total_column(&column_view));
-        columns.push(Self::add_gpu_column(&column_view));
-        columns.push(Self::add_gpu_mem_column(&column_view));
-        columns.push(Self::add_encoder_column(&column_view));
-        columns.push(Self::add_decoder_column(&column_view));
+        columns.push(self.add_name_column(&column_view));
+        columns.push(self.add_memory_column(&column_view));
+        columns.push(self.add_cpu_column(&column_view));
+        columns.push(self.add_read_speed_column(&column_view));
+        columns.push(self.add_read_total_column(&column_view));
+        columns.push(self.add_write_speed_column(&column_view));
+        columns.push(self.add_write_total_column(&column_view));
+        columns.push(self.add_gpu_column(&column_view));
+        columns.push(self.add_gpu_mem_column(&column_view));
+        columns.push(self.add_encoder_column(&column_view));
+        columns.push(self.add_decoder_column(&column_view));
 
         let store = gio::ListStore::new::<ApplicationEntry>();
 
@@ -482,7 +525,7 @@ impl ResApplications {
             self,
             move |_| {
                 if let Some(app) = this.get_selected_app_entry() {
-                    this.execute_process_action_dialog(&app, ProcessAction::TERM);
+                    this.execute_app_action_dialog(&app, ProcessAction::TERM);
                 }
             }
         ));
@@ -635,7 +678,7 @@ impl ResApplications {
         );
     }
 
-    pub fn execute_process_action_dialog(&self, app: &ApplicationEntry, action: ProcessAction) {
+    pub fn execute_app_action_dialog(&self, app: &ApplicationEntry, action: ProcessAction) {
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
             let main_context = MainContext::default();
@@ -712,7 +755,7 @@ impl ResApplications {
         dialog.present(Some(&MainWindow::default()));
     }
 
-    fn add_name_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_name_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let name_col_factory = gtk::SignalListItemFactory::new();
 
         let name_col =
@@ -722,25 +765,31 @@ impl ResApplications {
 
         name_col.set_expand(true);
 
-        name_col_factory.connect_setup(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+        name_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let row = ResApplicationNameCell::new();
+                let row = ResApplicationNameCell::new();
 
-            item.set_child(Some(&row));
+                item.set_child(Some(&row));
 
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("name")
-                .bind(&row, "name", Widget::NONE);
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("name")
+                    .bind(&row, "name", Widget::NONE);
 
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("icon")
-                .bind(&row, "icon", Widget::NONE);
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("icon")
+                    .bind(&row, "icon", Widget::NONE);
 
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("symbolic")
-                .bind(&row, "symbolic", Widget::NONE);
-        });
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("symbolic")
+                    .bind(&row, "symbolic", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
 
         name_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>();
@@ -763,7 +812,7 @@ impl ResApplications {
         name_col
     }
 
-    fn add_memory_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_memory_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let memory_col_factory = gtk::SignalListItemFactory::new();
 
         let memory_col =
@@ -771,22 +820,28 @@ impl ResApplications {
 
         memory_col.set_resizable(true);
 
-        memory_col_factory.connect_setup(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+        memory_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let row = gtk::Inscription::new(None);
+                let row = gtk::Inscription::new(None);
 
-            row.set_min_chars(9);
+                row.set_min_chars(9);
 
-            item.set_child(Some(&row));
+                item.set_child(Some(&row));
 
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("memory_usage")
-                .chain_closure::<String>(closure!(|_: Option<Object>, memory_usage: u64| {
-                    convert_storage(memory_usage as f64, false)
-                }))
-                .bind(&row, "text", Widget::NONE);
-        });
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("memory_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, memory_usage: u64| {
+                        convert_storage(memory_usage as f64, false)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
 
         memory_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>();
@@ -816,7 +871,7 @@ impl ResApplications {
         memory_col
     }
 
-    fn add_cpu_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_cpu_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let cpu_col_factory = gtk::SignalListItemFactory::new();
 
         let cpu_col =
@@ -824,26 +879,32 @@ impl ResApplications {
 
         cpu_col.set_resizable(true);
 
-        cpu_col_factory.connect_setup(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+        cpu_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(7);
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(7);
 
-            item.set_child(Some(&row));
+                item.set_child(Some(&row));
 
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("cpu_usage")
-                .chain_closure::<String>(closure!(|_: Option<Object>, cpu_usage: f32| {
-                    let mut percentage = cpu_usage * 100.0;
-                    if !SETTINGS.normalize_cpu_usage() {
-                        percentage *= *NUM_CPUS as f32;
-                    }
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("cpu_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, cpu_usage: f32| {
+                        let mut percentage = cpu_usage * 100.0;
+                        if !SETTINGS.normalize_cpu_usage() {
+                            percentage *= *NUM_CPUS as f32;
+                        }
 
-                    format!("{percentage:.1} %")
-                }))
-                .bind(&row, "text", Widget::NONE);
-        });
+                        format!("{percentage:.1} %")
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
 
         cpu_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>();
@@ -873,7 +934,7 @@ impl ResApplications {
         cpu_col
     }
 
-    fn add_read_speed_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_read_speed_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let read_speed_col_factory = gtk::SignalListItemFactory::new();
 
         let read_speed_col = gtk::ColumnViewColumn::new(
@@ -883,25 +944,31 @@ impl ResApplications {
 
         read_speed_col.set_resizable(true);
 
-        read_speed_col_factory.connect_setup(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+        read_speed_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(11);
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(11);
 
-            item.set_child(Some(&row));
+                item.set_child(Some(&row));
 
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("read_speed")
-                .chain_closure::<String>(closure!(|_: Option<Object>, read_speed: f64| {
-                    if read_speed == -1.0 {
-                        i18n("N/A")
-                    } else {
-                        convert_speed(read_speed, false)
-                    }
-                }))
-                .bind(&row, "text", Widget::NONE);
-        });
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("read_speed")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, read_speed: f64| {
+                        if read_speed == -1.0 {
+                            i18n("N/A")
+                        } else {
+                            convert_speed(read_speed, false)
+                        }
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
 
         read_speed_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>();
@@ -931,7 +998,7 @@ impl ResApplications {
         read_speed_col
     }
 
-    fn add_read_total_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_read_total_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let read_total_col_factory = gtk::SignalListItemFactory::new();
 
         let read_total_col = gtk::ColumnViewColumn::new(
@@ -941,21 +1008,27 @@ impl ResApplications {
 
         read_total_col.set_resizable(true);
 
-        read_total_col_factory.connect_setup(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+        read_total_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(9);
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(9);
 
-            item.set_child(Some(&row));
+                item.set_child(Some(&row));
 
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("read_total")
-                .chain_closure::<String>(closure!(|_: Option<Object>, read_total: u64| {
-                    convert_storage(read_total as f64, false)
-                }))
-                .bind(&row, "text", Widget::NONE);
-        });
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("read_total")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, read_total: u64| {
+                        convert_storage(read_total as f64, false)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
 
         read_total_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>();
@@ -985,7 +1058,7 @@ impl ResApplications {
         read_total_col
     }
 
-    fn add_write_speed_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_write_speed_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let write_speed_col_factory = gtk::SignalListItemFactory::new();
 
         let write_speed_col = gtk::ColumnViewColumn::new(
@@ -995,25 +1068,31 @@ impl ResApplications {
 
         write_speed_col.set_resizable(true);
 
-        write_speed_col_factory.connect_setup(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+        write_speed_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(11);
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(11);
 
-            item.set_child(Some(&row));
+                item.set_child(Some(&row));
 
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("write_speed")
-                .chain_closure::<String>(closure!(|_: Option<Object>, write_speed: f64| {
-                    if write_speed == -1.0 {
-                        i18n("N/A")
-                    } else {
-                        convert_speed(write_speed, false)
-                    }
-                }))
-                .bind(&row, "text", Widget::NONE);
-        });
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("write_speed")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, write_speed: f64| {
+                        if write_speed == -1.0 {
+                            i18n("N/A")
+                        } else {
+                            convert_speed(write_speed, false)
+                        }
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
 
         write_speed_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>();
@@ -1045,7 +1124,7 @@ impl ResApplications {
         write_speed_col
     }
 
-    fn add_write_total_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_write_total_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let write_total_col_factory = gtk::SignalListItemFactory::new();
 
         let write_total_col = gtk::ColumnViewColumn::new(
@@ -1055,21 +1134,27 @@ impl ResApplications {
 
         write_total_col.set_resizable(true);
 
-        write_total_col_factory.connect_setup(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+        write_total_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(9);
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(9);
 
-            item.set_child(Some(&row));
+                item.set_child(Some(&row));
 
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("write_total")
-                .chain_closure::<String>(closure!(|_: Option<Object>, write_total: u64| {
-                    convert_storage(write_total as f64, false)
-                }))
-                .bind(&row, "text", Widget::NONE);
-        });
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("write_total")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, write_total: u64| {
+                        convert_storage(write_total as f64, false)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
 
         write_total_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>();
@@ -1101,28 +1186,34 @@ impl ResApplications {
         write_total_col
     }
 
-    fn add_gpu_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_gpu_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let gpu_col_factory = gtk::SignalListItemFactory::new();
 
         let gpu_col = gtk::ColumnViewColumn::new(Some(&i18n("GPU")), Some(gpu_col_factory.clone()));
 
         gpu_col.set_resizable(true);
 
-        gpu_col_factory.connect_setup(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+        gpu_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(7);
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(7);
 
-            item.set_child(Some(&row));
+                item.set_child(Some(&row));
 
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("gpu_usage")
-                .chain_closure::<String>(closure!(|_: Option<Object>, gpu_usage: f32| {
-                    format!("{:.1} %", gpu_usage * 100.0)
-                }))
-                .bind(&row, "text", Widget::NONE);
-        });
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("gpu_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, gpu_usage: f32| {
+                        format!("{:.1} %", gpu_usage * 100.0)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
 
         gpu_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>();
@@ -1152,7 +1243,7 @@ impl ResApplications {
         gpu_col
     }
 
-    fn add_encoder_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_encoder_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let encoder_col_factory = gtk::SignalListItemFactory::new();
 
         let encoder_col = gtk::ColumnViewColumn::new(
@@ -1162,21 +1253,27 @@ impl ResApplications {
 
         encoder_col.set_resizable(true);
 
-        encoder_col_factory.connect_setup(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+        encoder_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(7);
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(7);
 
-            item.set_child(Some(&row));
+                item.set_child(Some(&row));
 
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("enc_usage")
-                .chain_closure::<String>(closure!(|_: Option<Object>, enc_usage: f32| {
-                    format!("{:.1} %", enc_usage * 100.0)
-                }))
-                .bind(&row, "text", Widget::NONE);
-        });
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("enc_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, enc_usage: f32| {
+                        format!("{:.1} %", enc_usage * 100.0)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
 
         encoder_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>();
@@ -1206,7 +1303,7 @@ impl ResApplications {
         encoder_col
     }
 
-    fn add_decoder_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_decoder_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let decoder_col_factory = gtk::SignalListItemFactory::new();
 
         let decoder_col = gtk::ColumnViewColumn::new(
@@ -1216,21 +1313,27 @@ impl ResApplications {
 
         decoder_col.set_resizable(true);
 
-        decoder_col_factory.connect_setup(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+        decoder_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(7);
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(7);
 
-            item.set_child(Some(&row));
+                item.set_child(Some(&row));
 
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("dec_usage")
-                .chain_closure::<String>(closure!(|_: Option<Object>, dec_usage: f32| {
-                    format!("{:.1} %", dec_usage * 100.0)
-                }))
-                .bind(&row, "text", Widget::NONE);
-        });
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("dec_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, dec_usage: f32| {
+                        format!("{:.1} %", dec_usage * 100.0)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
 
         decoder_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>();
@@ -1260,7 +1363,7 @@ impl ResApplications {
         decoder_col
     }
 
-    fn add_gpu_mem_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_gpu_mem_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let gpu_mem_col_factory = gtk::SignalListItemFactory::new();
         let gpu_mem_col = gtk::ColumnViewColumn::new(
             Some(&i18n("Video Memory")),
@@ -1268,20 +1371,26 @@ impl ResApplications {
         );
         gpu_mem_col.set_resizable(true);
 
-        gpu_mem_col_factory.connect_setup(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+        gpu_mem_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(9);
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(9);
 
-            item.set_child(Some(&row));
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("gpu_mem_usage")
-                .chain_closure::<String>(closure!(|_: Option<Object>, gpu_mem: u64| {
-                    convert_storage(gpu_mem as f64, false)
-                }))
-                .bind(&row, "text", Widget::NONE);
-        });
+                item.set_child(Some(&row));
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("gpu_mem_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, gpu_mem: u64| {
+                        convert_storage(gpu_mem as f64, false)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
 
         gpu_mem_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>();

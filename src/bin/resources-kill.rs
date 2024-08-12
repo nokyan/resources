@@ -3,8 +3,8 @@ use std::env;
 use nix::{sys::signal, unistd::Pid};
 
 fn main() {
-    if let Some(arg) = env::args().nth(1) {
-        if let Some(pid) = env::args().nth(2).and_then(|s| s.trim().parse().ok()) {
+    if let Some(pid) = env::args().nth(1).and_then(|s| s.trim().parse().ok()) {
+        if let Some(arg) = env::args().nth(2) {
             let signal = match arg.as_str() {
                 "STOP" => signal::Signal::SIGSTOP,
                 "CONT" => signal::Signal::SIGCONT,
@@ -13,10 +13,10 @@ fn main() {
                 _ => std::process::exit(254),
             };
             let result = signal::kill(Pid::from_raw(pid), Some(signal));
-            if let Err(err) = result {
-                match err {
+            if let Err(errno) = result {
+                match errno {
                     nix::errno::Errno::UnknownErrno => std::process::exit(253),
-                    _ => std::process::exit(err as i32),
+                    _ => std::process::exit(errno as i32),
                 };
             }
             std::process::exit(0);

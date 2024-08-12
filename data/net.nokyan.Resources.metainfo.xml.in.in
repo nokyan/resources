@@ -33,7 +33,9 @@
   <url type="vcs-browser">https://github.com/nokyan/resources</url>
   <url type="translate">https://github.com/nokyan/resources/tree/main/po</url>
   <content_rating type="oars-1.1"/>
-  <developer_name translate="no">nokyan</developer_name>
+  <developer id="net.nokyan">
+    <name translate="no">nokyan</name>
+  </developer>
   <update_contact>nokyan@tuta.io</update_contact>
   <translation type="gettext">@gettext-package@</translation>
   <launchable type="desktop-id">@app-id@.desktop</launchable>
