@@ -21,12 +21,10 @@ fn main() {
 
                 // find tasks that belong to this process
                 let tasks_path = PathBuf::from("/proc/").join(pid.to_string()).join("task");
-                for entry in std::fs::read_dir(tasks_path).unwrap() {
-                    if let Ok(entry) = entry {
-                        let thread_id = entry.file_name().to_string_lossy().parse().unwrap();
+                for entry in std::fs::read_dir(tasks_path).unwrap().flatten() {
+                    let thread_id = entry.file_name().to_string_lossy().parse().unwrap();
 
-                        adjust(thread_id, nice, &cpu_set);
-                    }
+                    adjust(thread_id, nice, &cpu_set);
                 }
 
                 std::process::exit(0)
@@ -49,5 +47,5 @@ fn adjust(id: i32, nice: i32, cpu_set: &CpuSet) {
         std::process::exit(error)
     }
 
-    let _ = sched_setaffinity(Pid::from_raw(id), &cpu_set);
+    let _ = sched_setaffinity(Pid::from_raw(id), cpu_set);
 }
