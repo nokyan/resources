@@ -267,7 +267,7 @@ impl MainWindow {
 
         if selected_page.is::<ResApplications>() {
             if let Some(app_item) = imp.applications.get_selected_app_entry() {
-                imp.applications.open_information_dialog(&app_item);
+                imp.applications.open_info_dialog(&app_item);
             }
         } else if selected_page.is::<ResProcesses>() {
             if let Some(process_item) = imp.processes.get_selected_process_entry() {
