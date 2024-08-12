@@ -257,6 +257,7 @@ impl Process {
 
         if let Ok(return_code) = result {
             if return_code == 0 {
+                info!("Successfully adjusted {}", self.data.pid);
                 Ok(())
             } else {
                 bail!("non-zero return code: {return_code}")
