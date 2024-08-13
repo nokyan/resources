@@ -879,8 +879,8 @@ impl ResProcesses {
         ));
 
         name_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&ResProcessNameCell>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&ResProcessNameCell>);
         });
 
         let name_col_sorter = StringSorter::builder()
@@ -925,8 +925,8 @@ impl ResProcesses {
         ));
 
         pid_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let pid_col_sorter = NumericSorter::builder()
@@ -979,8 +979,8 @@ impl ResProcesses {
         ));
 
         user_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let user_col_sorter = StringSorter::builder()
@@ -1037,8 +1037,8 @@ impl ResProcesses {
         ));
 
         memory_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let memory_col_sorter = NumericSorter::builder()
@@ -1100,8 +1100,8 @@ impl ResProcesses {
         ));
 
         cpu_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let cpu_col_sorter = NumericSorter::builder()
@@ -1164,8 +1164,8 @@ impl ResProcesses {
         ));
 
         read_speed_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let read_speed_col_sorter = NumericSorter::builder()
@@ -1230,8 +1230,8 @@ impl ResProcesses {
         ));
 
         read_total_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let read_total_col_sorter = NumericSorter::builder()
@@ -1296,8 +1296,8 @@ impl ResProcesses {
         ));
 
         write_speed_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let write_speed_col_sorter = NumericSorter::builder()
@@ -1362,8 +1362,8 @@ impl ResProcesses {
         ));
 
         write_total_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let write_total_col_sorter = NumericSorter::builder()
@@ -1421,8 +1421,8 @@ impl ResProcesses {
         ));
 
         gpu_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let gpu_col_sorter = NumericSorter::builder()
@@ -1481,8 +1481,8 @@ impl ResProcesses {
         ));
 
         encoder_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let encoder_col_sorter = NumericSorter::builder()
@@ -1541,8 +1541,8 @@ impl ResProcesses {
         ));
 
         decoder_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let decoder_col_sorter = NumericSorter::builder()
@@ -1600,8 +1600,8 @@ impl ResProcesses {
         ));
 
         gpu_mem_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let gpu_mem_col_sorter = NumericSorter::builder()
@@ -1659,8 +1659,8 @@ impl ResProcesses {
         ));
 
         total_cpu_time_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let total_cpu_time_col_sorter = NumericSorter::builder()
@@ -1718,8 +1718,8 @@ impl ResProcesses {
         ));
 
         user_cpu_time_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let user_cpu_time_col_sorter = NumericSorter::builder()
@@ -1777,8 +1777,8 @@ impl ResProcesses {
         ));
 
         system_cpu_time_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let system_cpu_time_col_sorter = NumericSorter::builder()
@@ -1844,8 +1844,8 @@ impl ResProcesses {
         ));
 
         priority_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let priority_col_sorter = NumericSorter::builder()
