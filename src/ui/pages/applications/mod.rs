@@ -69,7 +69,8 @@ mod imp {
         pub filter_model: RefCell<gtk::FilterListModel>,
         pub sort_model: RefCell<gtk::SortListModel>,
         pub column_view: RefCell<gtk::ColumnView>,
-        pub open_dialog: RefCell<Option<(Option<String>, ResAppDialog)>>,
+        pub open_info_dialog: RefCell<Option<(Option<String>, ResAppDialog)>>,
+        pub info_dialog_closed: Cell<bool>,
 
         pub sender: OnceLock<Sender<Action>>,
 
@@ -154,7 +155,8 @@ mod imp {
                 filter_model: Default::default(),
                 sort_model: Default::default(),
                 column_view: Default::default(),
-                open_dialog: Default::default(),
+                open_info_dialog: Default::default(),
+                info_dialog_closed: Default::default(),
                 sender: Default::default(),
                 applications_scrolled_window: Default::default(),
                 end_application_button: Default::default(),
@@ -239,7 +241,7 @@ mod imp {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
-                        res_applications.open_information_dialog(application_entry);
+                        res_applications.open_info_dialog(application_entry);
                     }
                 },
             );
@@ -515,7 +517,7 @@ impl ResApplications {
                     .selected_item()
                     .map(|object| object.downcast::<ApplicationEntry>().unwrap());
                 if let Some(selection) = selection_option {
-                    this.open_information_dialog(&selection);
+                    this.open_info_dialog(&selection);
                 }
             }
         ));
@@ -564,14 +566,32 @@ impl ResApplications {
         }
     }
 
-    pub fn open_information_dialog(&self, app: &ApplicationEntry) {
+    pub fn open_info_dialog(&self, app: &ApplicationEntry) {
         let imp = self.imp();
-        let app_dialog = ResAppDialog::new();
-        app_dialog.init(app);
-        app_dialog.present(Some(&MainWindow::default()));
-        *imp.open_dialog.borrow_mut() = Some((
+
+        if imp.open_info_dialog.borrow().is_some() {
+            return;
+        }
+
+        imp.info_dialog_closed.set(false);
+
+        let dialog = ResAppDialog::new();
+
+        dialog.init(app);
+
+        dialog.present(Some(&MainWindow::default()));
+
+        dialog.connect_closed(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
+                this.imp().info_dialog_closed.set(true);
+            }
+        ));
+
+        *imp.open_info_dialog.borrow_mut() = Some((
             app.id().as_ref().map(std::string::ToString::to_string),
-            app_dialog,
+            dialog,
         ));
     }
 
@@ -602,8 +622,13 @@ impl ResApplications {
     pub fn refresh_apps_list(&self, apps_context: &AppsContext) {
         let imp = self.imp();
 
+        if imp.info_dialog_closed.get() {
+            let _ = imp.open_info_dialog.take();
+            imp.info_dialog_closed.set(false);
+        }
+
         let store = imp.store.borrow_mut();
-        let mut dialog_opt = &*imp.open_dialog.borrow_mut();
+        let mut dialog_opt = &*imp.open_info_dialog.borrow_mut();
 
         let mut ids_to_remove = HashSet::new();
         let mut already_existing_ids = HashSet::new();
@@ -671,7 +696,10 @@ impl ResApplications {
         // -1 because we don't want to count System Processes
         self.set_property(
             "tab_usage_string",
-            i18n_f("Running Apps: {}", &[&(store.n_items() - 1).to_string()]),
+            i18n_f(
+                "Running Apps: {}",
+                &[&(store.n_items().saturating_sub(1)).to_string()],
+            ),
         );
     }
 
@@ -789,8 +817,8 @@ impl ResApplications {
         ));
 
         name_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&ResApplicationNameCell>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&ResApplicationNameCell>);
         });
 
         let name_col_sorter = StringSorter::builder()
@@ -841,8 +869,8 @@ impl ResApplications {
         ));
 
         memory_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let memory_col_sorter = NumericSorter::builder()
@@ -904,8 +932,8 @@ impl ResApplications {
         ));
 
         cpu_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let cpu_col_sorter = NumericSorter::builder()
@@ -968,8 +996,8 @@ impl ResApplications {
         ));
 
         read_speed_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let read_speed_col_sorter = NumericSorter::builder()
@@ -1028,8 +1056,8 @@ impl ResApplications {
         ));
 
         read_total_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let read_total_col_sorter = NumericSorter::builder()
@@ -1092,8 +1120,8 @@ impl ResApplications {
         ));
 
         write_speed_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let write_speed_col_sorter = NumericSorter::builder()
@@ -1154,8 +1182,8 @@ impl ResApplications {
         ));
 
         write_total_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let write_total_col_sorter = NumericSorter::builder()
@@ -1213,8 +1241,8 @@ impl ResApplications {
         ));
 
         gpu_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let gpu_col_sorter = NumericSorter::builder()
@@ -1273,8 +1301,8 @@ impl ResApplications {
         ));
 
         encoder_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let encoder_col_sorter = NumericSorter::builder()
@@ -1333,8 +1361,8 @@ impl ResApplications {
         ));
 
         decoder_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let decoder_col_sorter = NumericSorter::builder()
@@ -1390,8 +1418,8 @@ impl ResApplications {
         ));
 
         gpu_mem_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>();
-            item.unwrap().set_child(None::<&gtk::Inscription>);
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let gpu_mem_col_sorter = NumericSorter::builder()
