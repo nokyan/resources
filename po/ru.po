@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-08-09 23:34+0200\n"
-"PO-Revision-Date: 2024-08-10 00:51+0300\n"
+"PO-Revision-Date: 2024-08-22 15:23+0300\n"
 "Last-Translator: Aleksandr Melman <Alexmelman88@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -33,7 +33,7 @@ msgid ""
 "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 msgstr ""
 "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
-"Система;Ресурсы;Процессы;ЦП;ОЗУ;Память;ГП;Монитор;Использование;"
+"Система;Ресурсы;Процессы;ЦП;ОЗУ;Память;Графика;Монитор;Использование;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
@@ -73,7 +73,7 @@ msgstr "Память"
 #: data/resources/ui/dialogs/settings_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:245
 msgid "GPU"
-msgstr "ГП"
+msgstr "Графика"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:27
 #: data/resources/ui/dialogs/settings_dialog.ui:304
@@ -514,7 +514,7 @@ msgstr "Очень низко"
 
 #: src/ui/window.rs:300
 msgid "GPU {}"
-msgstr "ГП {}"
+msgstr "Графика {}"
 
 #: src/ui/window.rs:868
 msgid "Successfully adjusted {}"
@@ -1637,7 +1637,7 @@ msgstr "Съемный"
 
 #: data/resources/ui/pages/gpu.ui:37
 msgid "GPU Frequency"
-msgstr "Частота ГП"
+msgstr "Частота графического процессора"
 
 #: data/resources/ui/pages/gpu.ui:50
 msgid "Video Memory Frequency"
