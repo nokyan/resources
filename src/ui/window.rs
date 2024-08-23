@@ -661,13 +661,16 @@ impl MainWindow {
     /// Wrapper to remove page, and check if removed page was visible with global default behavior
     fn remove_page(&self, page: &ToolbarView) {
         let imp = self.imp();
-        imp.content_stack.remove(page);
 
         // no visible child exists
-        if imp.content_stack.is_child_visible() {
-            imp.resources_sidebar
-                .set_selected_list_item_by_tab_id(applications::TAB_ID);
+        if let Some(visible_child) = imp.content_stack.visible_child() {
+            if visible_child == *page.upcast_ref::<gtk::Widget>() {
+                imp.resources_sidebar
+                    .set_selected_list_item_by_tab_id(applications::TAB_ID);
+            }
         }
+
+        imp.content_stack.remove(page);
     }
 
     /// Create page for every drive that is shown
