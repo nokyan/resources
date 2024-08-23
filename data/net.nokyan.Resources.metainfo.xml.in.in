@@ -70,6 +70,21 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.6.0" date="2024-08-23">
+      <url type="details">https://github.com/nokyan/resources/releases/tag/v1.6.0</url>
+      <description translate="no">
+        <p>
+          Resources 1.6 has landed and contains mainly internal changes and further preparations for GNOME Circle. Here are some highlights:
+        </p>
+        <ul>
+          <li>Introduction of commandline arguments for Resources</li>
+          <li>New dialog for changing a process’ priority and processor affinity</li>
+          <li>Improved application detection</li>
+          <li>Reduced memory usage over time</li>
+          <li>Added context menus in the Apps and Processes views</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.5.1" date="2024-07-07">
       <description translate="no">
         <p>
