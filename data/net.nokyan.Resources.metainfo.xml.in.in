@@ -28,7 +28,8 @@
       <li>Storage Devices</li>
     </ul>
   </description>
-  <url type="homepage">https://github.com/nokyan/resources</url>
+  <url type="homepage">https://apps.gnome.org/app/net.nokyan.Resources</url>
+  <url type="contribute">https://welcome.gnome.org/app/Resources/</url>
   <url type="bugtracker">https://github.com/nokyan/resources/issues</url>
   <url type="vcs-browser">https://github.com/nokyan/resources</url>
   <url type="translate">https://github.com/nokyan/resources/tree/main/po</url>

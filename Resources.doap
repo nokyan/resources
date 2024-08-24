@@ -7,7 +7,7 @@
 
   <name xml:lang="en">Resources</name>
   <shortdesc xml:lang="en">Keep an eye on system resources</shortdesc>
-  <homepage rdf:resource="https://github.com/nokyan/resources"/>
+  <homepage rdf:resource="https://apps.gnome.org/app/net.nokyan.Resources"/>
   <bug-database rdf:resource="https://github.com/nokyan/resources/issues/"/>
 
   <programming-language>Rust</programming-language>
