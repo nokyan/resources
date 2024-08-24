@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-09 23:34+0200\n"
-"PO-Revision-Date: 2024-08-22 15:23+0300\n"
+"POT-Creation-Date: 2024-08-24 11:07+0200\n"
+"PO-Revision-Date: 2024-08-24 14:30+0300\n"
 "Last-Translator: Aleksandr Melman <Alexmelman88@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -41,14 +41,14 @@ msgid ""
 "control your running processes and apps. It’s designed to be user-friendly "
 "and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
-"\"Ресурсы\" позволяют вам проверять использование системных ресурсов и "
+"Приложение позволяет вам проверять использование системных ресурсов и "
 "контролировать запущенные процессы и приложения. Оно разработано так, чтобы "
 "быть удобным для пользователя и чувствовать себя как дома на современном "
 "рабочем столе благодаря использованию библиотеки GNOME libadwaita."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
-msgstr "\"Ресурсы\" поддерживают мониторинг следующих компонентов:"
+msgstr "Приложение поддерживает мониторинг следующих компонентов:"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
@@ -83,6 +83,42 @@ msgstr "Сетевые интерфейсы"
 #: data/net.nokyan.Resources.metainfo.xml.in.in:28
 msgid "Storage Devices"
 msgstr "Устройства хранения"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:29
+msgid "Batteries"
+msgstr "Батареи"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:51
+msgid "Apps page in light theme"
+msgstr "Страница приложений в светлой теме"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:55
+msgid "Processes page in dark theme"
+msgstr "Страница процессов в темной теме"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:59
+msgid "Processor page in light theme"
+msgstr "Страница процессора в светлой теме"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:63
+msgid "Memory page in dark theme"
+msgstr "Страница памяти в темной теме"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:67
+msgid "GPU page in light theme"
+msgstr "Страница графики в светлой теме"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:71
+msgid "Drive page in dark theme"
+msgstr "Страница накопителя в темной теме"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:75
+msgid "Network Interface page in light theme"
+msgstr "Страница сетевого интерфейса в светлой теме"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:79
+msgid "Battery page in dark theme"
+msgstr "Страница батареи в темной теме"
 
 #: src/application.rs:264
 msgid "The Nalux Team"
