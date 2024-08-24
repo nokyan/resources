@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-24 10:56+0200\n"
+"POT-Creation-Date: 2024-08-24 11:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,6 +78,42 @@ msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:28
 msgid "Storage Devices"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:29
+msgid "Batteries"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:51
+msgid "Apps page in light theme"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:55
+msgid "Processes page in dark theme"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:59
+msgid "Processor page in light theme"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:63
+msgid "Memory page in dark theme"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:67
+msgid "GPU page in light theme"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:71
+msgid "Drive page in dark theme"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:75
+msgid "Network Interface page in light theme"
+msgstr ""
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:79
+msgid "Battery page in dark theme"
 msgstr ""
 
 #: src/application.rs:264
