@@ -26,6 +26,7 @@
       <li>GPU</li>
       <li>Network Interfaces</li>
       <li>Storage Devices</li>
+      <li>Batteries</li>
     </ul>
   </description>
   <url type="homepage">https://apps.gnome.org/app/net.nokyan.Resources</url>
@@ -47,27 +48,35 @@
   <screenshots>
     <screenshot type="default">
       <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/1.png</image>
+      <caption>Apps page in light theme</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/2.png</image>
+      <caption>Processes page in dark theme</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/3.png</image>
+      <caption>Processor page in light theme</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/4.png</image>
+      <caption>Memory page in dark theme</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/5.png</image>
+      <caption>GPU page in light theme</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/6.png</image>
+      <caption>Drive page in dark theme</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/7.png</image>
+      <caption>Network Interface page in light theme</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/nokyan/resources/main/data/resources/screenshots/8.png</image>
+      <caption>Battery page in dark theme</caption>
     </screenshot>
   </screenshots>
   <releases>
