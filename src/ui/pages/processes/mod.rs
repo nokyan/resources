@@ -123,7 +123,7 @@ mod imp {
         #[property(get = Self::tab_detail_string, type = glib::GString)]
         tab_detail_string: Cell<glib::GString>,
 
-        #[property(get = Self::tab_detail_string, set = Self::set_tab_detail_string, type = glib::GString)]
+        #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
         tab_usage_string: Cell<glib::GString>,
 
         #[property(get = Self::tab_id, type = glib::GString)]
