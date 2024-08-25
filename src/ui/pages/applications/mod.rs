@@ -694,13 +694,10 @@ impl ResApplications {
         }
 
         // -1 because we don't want to count System Processes
-        self.set_property(
-            "tab_usage_string",
-            i18n_f(
-                "Running Apps: {}",
-                &[&(store.n_items().saturating_sub(1)).to_string()],
-            ),
-        );
+        self.set_tab_usage_string(i18n_f(
+            "Running Apps: {}",
+            &[&(store.n_items().saturating_sub(1)).to_string()],
+        ));
     }
 
     pub fn execute_app_action_dialog(&self, app: &ApplicationEntry, action: ProcessAction) {
