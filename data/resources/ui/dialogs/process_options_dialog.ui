@@ -26,7 +26,7 @@
             <property name="spacing">16</property>
             <child>
               <object class="GtkButton" id="apply_button">
-                <property name="label">Apply</property>
+                <property name="label" translatable="yes">Apply</property>
                 <property name="halign">center</property>
                 <property name="hexpand">true</property>
                 <style>
