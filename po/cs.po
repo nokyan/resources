@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-24 11:07+0200\n"
-"PO-Revision-Date: 2024-08-25 13:18+0200\n"
+"POT-Creation-Date: 2024-08-26 01:10+0200\n"
+"PO-Revision-Date: 2024-08-26 16:36+0200\n"
 "Last-Translator: lorduskordus <lorduskordus@gmail.com>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -1309,6 +1309,10 @@ msgstr "Kontrolní Skupina"
 #: data/resources/ui/dialogs/process_options_dialog.ui:69
 msgid "Process Options"
 msgstr "Možnosti Procesu"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:29
+msgid "Apply"
+msgstr "Aplikovat"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:72
 msgid "Niceness"
