@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-24 11:07+0200\n"
-"PO-Revision-Date: 2024-08-24 12:26-0300\n"
+"POT-Creation-Date: 2024-08-26 01:10+0200\n"
+"PO-Revision-Date: 2024-08-26 13:53-0300\n"
 "Last-Translator: Filipe Motta <luizfilipemotta@gmail.com>\n"
 "Language-Team: Brazilian Portuguese\n"
 "Language: pt_BR\n"
@@ -1310,6 +1310,10 @@ msgstr "Grupo de Controle"
 #: data/resources/ui/dialogs/process_options_dialog.ui:69
 msgid "Process Options"
 msgstr "Opções do Processo"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:29
+msgid "Apply"
+msgstr "Aplicar"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:72
 msgid "Niceness"
