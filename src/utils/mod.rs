@@ -40,11 +40,11 @@ static BOOT_TIMESTAMP: LazyLock<Option<i64>> = LazyLock::new(|| {
         .ok()
 });
 
-static TICK_RATE: LazyLock<usize> =
-    LazyLock::new(|| sysconf::sysconf(sysconf::SysconfVariable::ScClkTck).unwrap_or(100) as usize);
-
 static FLATPAK_APP_PATH: LazyLock<String> =
     LazyLock::new(|| flatpak_app_path().unwrap_or_else(|_| String::new()));
+
+pub static TICK_RATE: LazyLock<usize> =
+    LazyLock::new(|| sysconf::sysconf(sysconf::SysconfVariable::ScClkTck).unwrap_or(100) as usize);
 
 pub static NUM_CPUS: LazyLock<usize> = LazyLock::new(num_cpus::get);
 
@@ -83,27 +83,73 @@ pub fn boot_time() -> Result<DateTime> {
         })
 }
 
-pub trait NaNDefault {
-    /// Returns the given `default` value if the variable is NaN,
+pub trait FiniteOr {
+    /// Returns the given `x` value if the variable is NaN or infinite,
     /// and returns itself otherwise.
     #[must_use]
-    fn nan_default(&self, default: Self) -> Self;
+    fn finite_or(&self, x: Self) -> Self;
+
+    /// Returns itself is the variable is finite (i.e. neither NaN nor infinite), otherwise returns its default
+    fn finite_or_default(&self) -> Self;
+
+    /// Returns itself is the variable is finite (i.e. neither NaN nor infinite), otherwise runs `f`
+    fn finite_or_else<F: FnOnce(Self) -> Self>(&self, f: F) -> Self
+    where
+        Self: Sized;
 }
 
-impl NaNDefault for f64 {
-    fn nan_default(&self, default: Self) -> Self {
-        if self.is_nan() {
-            default
+impl FiniteOr for f64 {
+    fn finite_or(&self, x: Self) -> Self {
+        if !self.is_finite() {
+            x
+        } else {
+            *self
+        }
+    }
+
+    fn finite_or_default(&self) -> Self {
+        if !self.is_finite() {
+            Self::default()
+        } else {
+            *self
+        }
+    }
+
+    fn finite_or_else<F: FnOnce(Self) -> Self>(&self, f: F) -> Self
+    where
+        Self: Sized,
+    {
+        if !self.is_finite() {
+            f(*self)
         } else {
             *self
         }
     }
 }
 
-impl NaNDefault for f32 {
-    fn nan_default(&self, default: Self) -> Self {
-        if self.is_nan() {
-            default
+impl FiniteOr for f32 {
+    fn finite_or(&self, x: Self) -> Self {
+        if !self.is_finite() {
+            x
+        } else {
+            *self
+        }
+    }
+
+    fn finite_or_default(&self) -> Self {
+        if !self.is_finite() {
+            Self::default()
+        } else {
+            *self
+        }
+    }
+
+    fn finite_or_else<F: FnOnce(Self) -> Self>(&self, f: F) -> Self
+    where
+        Self: Sized,
+    {
+        if !self.is_finite() {
+            f(*self)
         } else {
             *self
         }

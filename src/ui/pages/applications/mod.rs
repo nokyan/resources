@@ -1,4 +1,4 @@
-mod application_entry;
+pub mod application_entry;
 mod application_name_cell;
 
 use std::collections::HashSet;
@@ -8,15 +8,15 @@ use adw::{prelude::*, subclass::prelude::*};
 use async_channel::Sender;
 use gtk::glib::{self, clone, closure, MainContext, Object};
 use gtk::{
-    gio, ColumnView, ColumnViewColumn, EventControllerKey, FilterChange, NumericSorter, SortType,
-    StringSorter, Widget,
+    gio, ColumnView, ColumnViewColumn, EventControllerKey, FilterChange, ListItem, NumericSorter,
+    SortType, StringSorter, Widget,
 };
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::ui::dialogs::app_dialog::ResAppDialog;
 use crate::ui::window::{Action, MainWindow};
-use crate::utils::app::{AppItem, AppsContext};
+use crate::utils::app::AppsContext;
 use crate::utils::process::ProcessAction;
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_speed, convert_storage};
@@ -50,6 +50,8 @@ mod imp {
         #[template_child]
         pub toast_overlay: TemplateChild<adw::ToastOverlay>,
         #[template_child]
+        pub popover_menu: TemplateChild<gtk::PopoverMenu>,
+        #[template_child]
         pub search_revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub search_entry: TemplateChild<gtk::SearchEntry>,
@@ -67,7 +69,8 @@ mod imp {
         pub filter_model: RefCell<gtk::FilterListModel>,
         pub sort_model: RefCell<gtk::SortListModel>,
         pub column_view: RefCell<gtk::ColumnView>,
-        pub open_dialog: RefCell<Option<(Option<String>, ResAppDialog)>>,
+        pub open_info_dialog: RefCell<Option<(Option<String>, ResAppDialog)>>,
+        pub info_dialog_closed: Cell<bool>,
 
         pub sender: OnceLock<Sender<Action>>,
 
@@ -142,6 +145,7 @@ mod imp {
         fn default() -> Self {
             Self {
                 toast_overlay: Default::default(),
+                popover_menu: Default::default(),
                 search_revealer: Default::default(),
                 search_entry: Default::default(),
                 search_button: Default::default(),
@@ -151,7 +155,8 @@ mod imp {
                 filter_model: Default::default(),
                 sort_model: Default::default(),
                 column_view: Default::default(),
-                open_dialog: Default::default(),
+                open_info_dialog: Default::default(),
+                info_dialog_closed: Default::default(),
                 sender: Default::default(),
                 applications_scrolled_window: Default::default(),
                 end_application_button: Default::default(),
@@ -178,61 +183,53 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.install_action(
-                "applications.context-end-process",
+                "applications.context-end-app",
                 None,
                 move |res_applications, _, _| {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
-                        if let Some(app_item) = application_entry.app_item() {
-                            res_applications
-                                .execute_process_action_dialog(app_item, ProcessAction::TERM);
-                        }
+                        res_applications
+                            .execute_app_action_dialog(application_entry, ProcessAction::TERM);
                     }
                 },
             );
 
             klass.install_action(
-                "applications.context-kill-process",
+                "applications.context-kill-app",
                 None,
                 move |res_applications, _, _| {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
-                        if let Some(app_item) = application_entry.app_item() {
-                            res_applications
-                                .execute_process_action_dialog(app_item, ProcessAction::KILL);
-                        }
+                        res_applications
+                            .execute_app_action_dialog(application_entry, ProcessAction::KILL);
                     }
                 },
             );
 
             klass.install_action(
-                "applications.context-halt-process",
+                "applications.context-halt-app",
                 None,
                 move |res_applications, _, _| {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
-                        if let Some(app_item) = application_entry.app_item() {
-                            res_applications
-                                .execute_process_action_dialog(app_item, ProcessAction::STOP);
-                        }
+                        res_applications
+                            .execute_app_action_dialog(application_entry, ProcessAction::STOP);
                     }
                 },
             );
 
             klass.install_action(
-                "applications.context-continue-process",
+                "applications.context-continue-app",
                 None,
                 move |res_applications, _, _| {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
-                        if let Some(app_item) = application_entry.app_item() {
-                            res_applications
-                                .execute_process_action_dialog(app_item, ProcessAction::CONT);
-                        }
+                        res_applications
+                            .execute_app_action_dialog(application_entry, ProcessAction::CONT);
                     }
                 },
             );
@@ -244,38 +241,37 @@ mod imp {
                     if let Some(application_entry) =
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
-                        res_applications
-                            .open_information_dialog(&application_entry.app_item().unwrap());
+                        res_applications.open_info_dialog(application_entry);
                     }
                 },
             );
 
             klass.install_action(
-                "applications.kill-application",
+                "applications.kill-app",
                 None,
                 move |res_applications, _, _| {
-                    if let Some(app) = res_applications.get_selected_app_item() {
-                        res_applications.execute_process_action_dialog(app, ProcessAction::KILL);
+                    if let Some(app) = res_applications.get_selected_app_entry() {
+                        res_applications.execute_app_action_dialog(&app, ProcessAction::KILL);
                     }
                 },
             );
 
             klass.install_action(
-                "applications.halt-application",
+                "applications.halt-app",
                 None,
                 move |res_applications, _, _| {
-                    if let Some(app) = res_applications.get_selected_app_item() {
-                        res_applications.execute_process_action_dialog(app, ProcessAction::STOP);
+                    if let Some(app) = res_applications.get_selected_app_entry() {
+                        res_applications.execute_app_action_dialog(&app, ProcessAction::STOP);
                     }
                 },
             );
 
             klass.install_action(
-                "applications.continue-application",
+                "applications.continue-app",
                 None,
                 move |res_applications, _, _| {
-                    if let Some(app) = res_applications.get_selected_app_item() {
-                        res_applications.execute_process_action_dialog(app, ProcessAction::CONT);
+                    if let Some(app) = res_applications.get_selected_app_entry() {
+                        res_applications.execute_app_action_dialog(&app, ProcessAction::CONT);
                     }
                 },
             );
@@ -351,25 +347,65 @@ impl ResApplications {
         self.setup_signals();
     }
 
+    fn add_gestures(&self, item: &ListItem) {
+        let widget = item.child().unwrap();
+
+        let secondary_click = gtk::GestureClick::new();
+        secondary_click.set_button(3);
+        secondary_click.connect_released(clone!(
+            #[weak]
+            widget,
+            #[weak]
+            item,
+            #[weak(rename_to = this)]
+            self,
+            move |_, _, x, y| {
+                if let Some(entry) = item.item().and_downcast::<ApplicationEntry>() {
+                    let imp = this.imp();
+                    let popover_menu = &imp.popover_menu;
+
+                    *imp.popped_over_app.borrow_mut() = Some(entry);
+
+                    let position = widget
+                        .compute_point(&this, &gtk::graphene::Point::new(x as _, y as _))
+                        .unwrap();
+
+                    popover_menu.set_pointing_to(Some(&gtk::gdk::Rectangle::new(
+                        position.x().round() as i32,
+                        position.y().round() as i32,
+                        1,
+                        1,
+                    )));
+
+                    popover_menu.popup();
+                }
+            }
+        ));
+
+        widget.add_controller(secondary_click);
+    }
+
     pub fn setup_widgets(&self) {
         let imp = self.imp();
+
+        imp.popover_menu.set_parent(self);
 
         *imp.column_view.borrow_mut() = gtk::ColumnView::new(None::<gtk::SingleSelection>);
         let column_view = imp.column_view.borrow();
 
         let mut columns = imp.columns.borrow_mut();
 
-        columns.push(Self::add_name_column(&column_view));
-        columns.push(Self::add_memory_column(&column_view));
-        columns.push(Self::add_cpu_column(&column_view));
-        columns.push(Self::add_read_speed_column(&column_view));
-        columns.push(Self::add_read_total_column(&column_view));
-        columns.push(Self::add_write_speed_column(&column_view));
-        columns.push(Self::add_write_total_column(&column_view));
-        columns.push(Self::add_gpu_column(&column_view));
-        columns.push(Self::add_gpu_mem_column(&column_view));
-        columns.push(Self::add_encoder_column(&column_view));
-        columns.push(Self::add_decoder_column(&column_view));
+        columns.push(self.add_name_column(&column_view));
+        columns.push(self.add_memory_column(&column_view));
+        columns.push(self.add_cpu_column(&column_view));
+        columns.push(self.add_read_speed_column(&column_view));
+        columns.push(self.add_read_total_column(&column_view));
+        columns.push(self.add_write_speed_column(&column_view));
+        columns.push(self.add_write_total_column(&column_view));
+        columns.push(self.add_gpu_column(&column_view));
+        columns.push(self.add_gpu_mem_column(&column_view));
+        columns.push(self.add_encoder_column(&column_view));
+        columns.push(self.add_decoder_column(&column_view));
 
         let store = gio::ListStore::new::<ApplicationEntry>();
 
@@ -481,7 +517,7 @@ impl ResApplications {
                     .selected_item()
                     .map(|object| object.downcast::<ApplicationEntry>().unwrap());
                 if let Some(selection) = selection_option {
-                    this.open_information_dialog(&selection.app_item().unwrap());
+                    this.open_info_dialog(&selection);
                 }
             }
         ));
@@ -490,8 +526,8 @@ impl ResApplications {
             #[weak(rename_to = this)]
             self,
             move |_| {
-                if let Some(app) = this.get_selected_app_item() {
-                    this.execute_process_action_dialog(app, ProcessAction::TERM);
+                if let Some(app) = this.get_selected_app_entry() {
+                    this.execute_app_action_dialog(&app, ProcessAction::TERM);
                 }
             }
         ));
@@ -530,14 +566,32 @@ impl ResApplications {
         }
     }
 
-    pub fn open_information_dialog(&self, app_item: &AppItem) {
+    pub fn open_info_dialog(&self, app: &ApplicationEntry) {
         let imp = self.imp();
-        let app_dialog = ResAppDialog::new();
-        app_dialog.init(app_item);
-        app_dialog.present(Some(&MainWindow::default()));
-        *imp.open_dialog.borrow_mut() = Some((
-            app_item.id.as_ref().map(std::string::ToString::to_string),
-            app_dialog,
+
+        if imp.open_info_dialog.borrow().is_some() {
+            return;
+        }
+
+        imp.info_dialog_closed.set(false);
+
+        let dialog = ResAppDialog::new();
+
+        dialog.init(app);
+
+        dialog.present(Some(&MainWindow::default()));
+
+        dialog.connect_closed(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
+                this.imp().info_dialog_closed.set(true);
+            }
+        ));
+
+        *imp.open_info_dialog.borrow_mut() = Some((
+            app.id().as_ref().map(std::string::ToString::to_string),
+            dialog,
         ));
     }
 
@@ -557,22 +611,27 @@ impl ResApplications {
                 .contains(&search_string)
     }
 
-    pub fn get_selected_app_item(&self) -> Option<AppItem> {
+    pub fn get_selected_app_entry(&self) -> Option<ApplicationEntry> {
         self.imp()
             .selection_model
             .borrow()
             .selected_item()
-            .and_then(|object| object.downcast::<ApplicationEntry>().unwrap().app_item())
+            .and_then(|object| object.downcast::<ApplicationEntry>().ok())
     }
 
-    pub fn refresh_apps_list(&self, apps: &AppsContext) {
+    pub fn refresh_apps_list(&self, apps_context: &AppsContext) {
         let imp = self.imp();
 
-        let store = imp.store.borrow_mut();
-        let mut dialog_opt = &*imp.open_dialog.borrow_mut();
+        if imp.info_dialog_closed.get() {
+            let _ = imp.open_info_dialog.take();
+            imp.info_dialog_closed.set(false);
+        }
 
-        let mut new_items = apps.app_items();
+        let store = imp.store.borrow_mut();
+        let mut dialog_opt = &*imp.open_info_dialog.borrow_mut();
+
         let mut ids_to_remove = HashSet::new();
+        let mut already_existing_ids = HashSet::new();
 
         // change process entries of apps that have run before
         store
@@ -582,8 +641,8 @@ impl ResApplications {
                 let app_id = object.id().map(|gs| gs.to_string());
                 // filter out apps that have run before but don't anymore
                 if app_id.is_some() // don't try to filter out "System Processes"
-                    && !apps
-                        .get_app(&app_id.clone().unwrap_or_default())
+                    && !apps_context
+                        .get_app(&app_id)
                         .unwrap()
                         .is_running()
                 {
@@ -596,13 +655,15 @@ impl ResApplications {
                     *imp.popped_over_app.borrow_mut() = None;
                     ids_to_remove.insert(app_id.clone());
                 }
-                if let Some((_, new_item)) = new_items.remove_entry(&app_id) {
+
+                if let Some(app) = apps_context.get_app(&app_id) {
+                    object.update(app, apps_context);
                     if let Some((dialog_id, dialog)) = dialog_opt {
                         if *dialog_id == app_id {
-                            dialog.update(&new_item);
+                            dialog.update(&object);
                         }
                     }
-                    object.update(new_item);
+                    already_existing_ids.insert(app_id);
                 }
             });
 
@@ -619,9 +680,12 @@ impl ResApplications {
         });
 
         // add the newly started apps to the store
-        let items: Vec<ApplicationEntry> = new_items
-            .drain()
-            .map(|(_, new_item)| ApplicationEntry::new(new_item))
+        let items: Vec<ApplicationEntry> = apps_context
+            .running_apps_iter()
+            .filter(|app| {
+                !already_existing_ids.contains(&app.id) && !ids_to_remove.contains(&app.id)
+            })
+            .map(|new_item| ApplicationEntry::new(new_item, apps_context))
             .collect();
         store.extend_from_slice(&items);
 
@@ -630,19 +694,21 @@ impl ResApplications {
         }
 
         // -1 because we don't want to count System Processes
-        self.set_property(
-            "tab_usage_string",
-            i18n_f("Running Apps: {}", &[&(store.n_items() - 1).to_string()]),
-        );
+        self.set_tab_usage_string(i18n_f(
+            "Running Apps: {}",
+            &[&(store.n_items().saturating_sub(1)).to_string()],
+        ));
     }
 
-    pub fn execute_process_action_dialog(&self, app: AppItem, action: ProcessAction) {
+    pub fn execute_app_action_dialog(&self, app: &ApplicationEntry, action: ProcessAction) {
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
             let main_context = MainContext::default();
             main_context.spawn_local(clone!(
                 #[weak(rename_to = this)]
                 self,
+                #[weak]
+                app,
                 async move {
                     let imp = this.imp();
                     let _ = imp
@@ -651,7 +717,7 @@ impl ResApplications {
                         .unwrap()
                         .send(Action::ManipulateApp(
                             action,
-                            app.id.unwrap(),
+                            app.id().unwrap().to_string(),
                             imp.toast_overlay.get(),
                         ))
                         .await;
@@ -662,7 +728,7 @@ impl ResApplications {
 
         // Confirmation dialog & warning
         let dialog = adw::AlertDialog::builder()
-            .heading(get_action_name(action, &[&app.display_name]))
+            .heading(get_action_name(action, &[&app.name()]))
             .body(get_app_action_warning(action))
             .build();
 
@@ -679,6 +745,8 @@ impl ResApplications {
             clone!(
                 #[weak(rename_to = this)]
                 self,
+                #[weak]
+                app,
                 move |_, response| {
                     if response == "yes" {
                         let main_context = MainContext::default();
@@ -695,7 +763,7 @@ impl ResApplications {
                                     .unwrap()
                                     .send(Action::ManipulateApp(
                                         action,
-                                        app.id.clone().unwrap(),
+                                        app.id().unwrap().to_string(),
                                         imp.toast_overlay.get(),
                                     ))
                                     .await;
@@ -709,7 +777,7 @@ impl ResApplications {
         dialog.present(Some(&MainWindow::default()));
     }
 
-    fn add_name_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_name_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let name_col_factory = gtk::SignalListItemFactory::new();
 
         let name_col =
@@ -719,24 +787,35 @@ impl ResApplications {
 
         name_col.set_expand(true);
 
-        name_col_factory.connect_setup(move |_factory, item| {
+        name_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = ResApplicationNameCell::new();
+
+                item.set_child(Some(&row));
+
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("name")
+                    .bind(&row, "name", Widget::NONE);
+
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("icon")
+                    .bind(&row, "icon", Widget::NONE);
+
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("symbolic")
+                    .bind(&row, "symbolic", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        name_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-            let row = ResApplicationNameCell::new();
-
-            item.set_child(Some(&row));
-
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("name")
-                .bind(&row, "name", Widget::NONE);
-
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("icon")
-                .bind(&row, "icon", Widget::NONE);
-
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("symbolic")
-                .bind(&row, "symbolic", Widget::NONE);
+            item.set_child(None::<&ResApplicationNameCell>);
         });
 
         let name_col_sorter = StringSorter::builder()
@@ -755,7 +834,7 @@ impl ResApplications {
         name_col
     }
 
-    fn add_memory_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_memory_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let memory_col_factory = gtk::SignalListItemFactory::new();
 
         let memory_col =
@@ -763,21 +842,32 @@ impl ResApplications {
 
         memory_col.set_resizable(true);
 
-        memory_col_factory.connect_setup(move |_factory, item| {
+        memory_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = gtk::Inscription::new(None);
+
+                row.set_min_chars(9);
+
+                item.set_child(Some(&row));
+
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("memory_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, memory_usage: u64| {
+                        convert_storage(memory_usage as f64, false)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        memory_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-            let row = gtk::Inscription::new(None);
-
-            row.set_min_chars(9);
-
-            item.set_child(Some(&row));
-
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("memory_usage")
-                .chain_closure::<String>(closure!(|_: Option<Object>, memory_usage: u64| {
-                    convert_storage(memory_usage as f64, false)
-                }))
-                .bind(&row, "text", Widget::NONE);
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let memory_col_sorter = NumericSorter::builder()
@@ -803,7 +893,7 @@ impl ResApplications {
         memory_col
     }
 
-    fn add_cpu_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_cpu_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let cpu_col_factory = gtk::SignalListItemFactory::new();
 
         let cpu_col =
@@ -811,25 +901,36 @@ impl ResApplications {
 
         cpu_col.set_resizable(true);
 
-        cpu_col_factory.connect_setup(move |_factory, item| {
+        cpu_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(7);
+
+                item.set_child(Some(&row));
+
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("cpu_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, cpu_usage: f32| {
+                        let mut percentage = cpu_usage * 100.0;
+                        if !SETTINGS.normalize_cpu_usage() {
+                            percentage *= *NUM_CPUS as f32;
+                        }
+
+                        format!("{percentage:.1} %")
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        cpu_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(7);
-
-            item.set_child(Some(&row));
-
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("cpu_usage")
-                .chain_closure::<String>(closure!(|_: Option<Object>, cpu_usage: f32| {
-                    let mut percentage = cpu_usage * 100.0;
-                    if !SETTINGS.normalize_cpu_usage() {
-                        percentage *= *NUM_CPUS as f32;
-                    }
-
-                    format!("{percentage:.1} %")
-                }))
-                .bind(&row, "text", Widget::NONE);
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let cpu_col_sorter = NumericSorter::builder()
@@ -855,7 +956,7 @@ impl ResApplications {
         cpu_col
     }
 
-    fn add_read_speed_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_read_speed_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let read_speed_col_factory = gtk::SignalListItemFactory::new();
 
         let read_speed_col = gtk::ColumnViewColumn::new(
@@ -865,24 +966,35 @@ impl ResApplications {
 
         read_speed_col.set_resizable(true);
 
-        read_speed_col_factory.connect_setup(move |_factory, item| {
+        read_speed_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(11);
+
+                item.set_child(Some(&row));
+
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("read_speed")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, read_speed: f64| {
+                        if read_speed == -1.0 {
+                            i18n("N/A")
+                        } else {
+                            convert_speed(read_speed, false)
+                        }
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        read_speed_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(11);
-
-            item.set_child(Some(&row));
-
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("read_speed")
-                .chain_closure::<String>(closure!(|_: Option<Object>, read_speed: f64| {
-                    if read_speed == -1.0 {
-                        i18n("N/A")
-                    } else {
-                        convert_speed(read_speed, false)
-                    }
-                }))
-                .bind(&row, "text", Widget::NONE);
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let read_speed_col_sorter = NumericSorter::builder()
@@ -908,7 +1020,7 @@ impl ResApplications {
         read_speed_col
     }
 
-    fn add_read_total_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_read_total_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let read_total_col_factory = gtk::SignalListItemFactory::new();
 
         let read_total_col = gtk::ColumnViewColumn::new(
@@ -918,20 +1030,31 @@ impl ResApplications {
 
         read_total_col.set_resizable(true);
 
-        read_total_col_factory.connect_setup(move |_factory, item| {
+        read_total_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(9);
+
+                item.set_child(Some(&row));
+
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("read_total")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, read_total: u64| {
+                        convert_storage(read_total as f64, false)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        read_total_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(9);
-
-            item.set_child(Some(&row));
-
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("read_total")
-                .chain_closure::<String>(closure!(|_: Option<Object>, read_total: u64| {
-                    convert_storage(read_total as f64, false)
-                }))
-                .bind(&row, "text", Widget::NONE);
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let read_total_col_sorter = NumericSorter::builder()
@@ -957,7 +1080,7 @@ impl ResApplications {
         read_total_col
     }
 
-    fn add_write_speed_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_write_speed_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let write_speed_col_factory = gtk::SignalListItemFactory::new();
 
         let write_speed_col = gtk::ColumnViewColumn::new(
@@ -967,24 +1090,35 @@ impl ResApplications {
 
         write_speed_col.set_resizable(true);
 
-        write_speed_col_factory.connect_setup(move |_factory, item| {
+        write_speed_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(11);
+
+                item.set_child(Some(&row));
+
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("write_speed")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, write_speed: f64| {
+                        if write_speed == -1.0 {
+                            i18n("N/A")
+                        } else {
+                            convert_speed(write_speed, false)
+                        }
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        write_speed_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(11);
-
-            item.set_child(Some(&row));
-
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("write_speed")
-                .chain_closure::<String>(closure!(|_: Option<Object>, write_speed: f64| {
-                    if write_speed == -1.0 {
-                        i18n("N/A")
-                    } else {
-                        convert_speed(write_speed, false)
-                    }
-                }))
-                .bind(&row, "text", Widget::NONE);
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let write_speed_col_sorter = NumericSorter::builder()
@@ -1012,7 +1146,7 @@ impl ResApplications {
         write_speed_col
     }
 
-    fn add_write_total_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_write_total_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let write_total_col_factory = gtk::SignalListItemFactory::new();
 
         let write_total_col = gtk::ColumnViewColumn::new(
@@ -1022,20 +1156,31 @@ impl ResApplications {
 
         write_total_col.set_resizable(true);
 
-        write_total_col_factory.connect_setup(move |_factory, item| {
+        write_total_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(9);
+
+                item.set_child(Some(&row));
+
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("write_total")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, write_total: u64| {
+                        convert_storage(write_total as f64, false)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        write_total_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(9);
-
-            item.set_child(Some(&row));
-
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("write_total")
-                .chain_closure::<String>(closure!(|_: Option<Object>, write_total: u64| {
-                    convert_storage(write_total as f64, false)
-                }))
-                .bind(&row, "text", Widget::NONE);
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let write_total_col_sorter = NumericSorter::builder()
@@ -1063,27 +1208,38 @@ impl ResApplications {
         write_total_col
     }
 
-    fn add_gpu_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_gpu_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let gpu_col_factory = gtk::SignalListItemFactory::new();
 
         let gpu_col = gtk::ColumnViewColumn::new(Some(&i18n("GPU")), Some(gpu_col_factory.clone()));
 
         gpu_col.set_resizable(true);
 
-        gpu_col_factory.connect_setup(move |_factory, item| {
+        gpu_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(7);
+
+                item.set_child(Some(&row));
+
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("gpu_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, gpu_usage: f32| {
+                        format!("{:.1} %", gpu_usage * 100.0)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        gpu_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(7);
-
-            item.set_child(Some(&row));
-
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("gpu_usage")
-                .chain_closure::<String>(closure!(|_: Option<Object>, gpu_usage: f32| {
-                    format!("{:.1} %", gpu_usage * 100.0)
-                }))
-                .bind(&row, "text", Widget::NONE);
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let gpu_col_sorter = NumericSorter::builder()
@@ -1109,7 +1265,7 @@ impl ResApplications {
         gpu_col
     }
 
-    fn add_encoder_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_encoder_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let encoder_col_factory = gtk::SignalListItemFactory::new();
 
         let encoder_col = gtk::ColumnViewColumn::new(
@@ -1119,20 +1275,31 @@ impl ResApplications {
 
         encoder_col.set_resizable(true);
 
-        encoder_col_factory.connect_setup(move |_factory, item| {
+        encoder_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(7);
+
+                item.set_child(Some(&row));
+
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("enc_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, enc_usage: f32| {
+                        format!("{:.1} %", enc_usage * 100.0)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        encoder_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(7);
-
-            item.set_child(Some(&row));
-
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("enc_usage")
-                .chain_closure::<String>(closure!(|_: Option<Object>, enc_usage: f32| {
-                    format!("{:.1} %", enc_usage * 100.0)
-                }))
-                .bind(&row, "text", Widget::NONE);
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let encoder_col_sorter = NumericSorter::builder()
@@ -1158,7 +1325,7 @@ impl ResApplications {
         encoder_col
     }
 
-    fn add_decoder_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_decoder_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let decoder_col_factory = gtk::SignalListItemFactory::new();
 
         let decoder_col = gtk::ColumnViewColumn::new(
@@ -1168,20 +1335,31 @@ impl ResApplications {
 
         decoder_col.set_resizable(true);
 
-        decoder_col_factory.connect_setup(move |_factory, item| {
+        decoder_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(7);
+
+                item.set_child(Some(&row));
+
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("dec_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, dec_usage: f32| {
+                        format!("{:.1} %", dec_usage * 100.0)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        decoder_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(7);
-
-            item.set_child(Some(&row));
-
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("dec_usage")
-                .chain_closure::<String>(closure!(|_: Option<Object>, dec_usage: f32| {
-                    format!("{:.1} %", dec_usage * 100.0)
-                }))
-                .bind(&row, "text", Widget::NONE);
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let decoder_col_sorter = NumericSorter::builder()
@@ -1207,7 +1385,7 @@ impl ResApplications {
         decoder_col
     }
 
-    fn add_gpu_mem_column(column_view: &ColumnView) -> ColumnViewColumn {
+    fn add_gpu_mem_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
         let gpu_mem_col_factory = gtk::SignalListItemFactory::new();
         let gpu_mem_col = gtk::ColumnViewColumn::new(
             Some(&i18n("Video Memory")),
@@ -1215,19 +1393,30 @@ impl ResApplications {
         );
         gpu_mem_col.set_resizable(true);
 
-        gpu_mem_col_factory.connect_setup(move |_factory, item| {
+        gpu_mem_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(9);
+
+                item.set_child(Some(&row));
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("gpu_mem_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, gpu_mem: u64| {
+                        convert_storage(gpu_mem as f64, false)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        gpu_mem_col_factory.connect_teardown(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-            let row = gtk::Inscription::new(None);
-            row.set_min_chars(9);
-
-            item.set_child(Some(&row));
-            item.property_expression("item")
-                .chain_property::<ApplicationEntry>("gpu_mem_usage")
-                .chain_closure::<String>(closure!(|_: Option<Object>, gpu_mem: u64| {
-                    convert_storage(gpu_mem as f64, false)
-                }))
-                .bind(&row, "text", Widget::NONE);
+            item.set_child(None::<&gtk::Inscription>);
         });
 
         let gpu_mem_col_sorter = NumericSorter::builder()

@@ -5,7 +5,9 @@ use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::gpu::{Gpu, GpuData};
 use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
-use crate::utils::{pci, NaNDefault};
+use crate::utils::{pci, FiniteOr};
+
+pub const TAB_ID_PREFIX: &str = "gpu";
 
 mod imp {
     use std::cell::{Cell, RefCell};
@@ -219,7 +221,6 @@ impl Default for ResGPU {
 }
 
 impl ResGPU {
-    const ID_PREFIX: &'static str = "gpu";
     const MAIN_GRAPH_COLOR: [u8; 3] = [0xe0, 0x1b, 0x24];
 
     pub fn new() -> Self {
@@ -234,7 +235,7 @@ impl ResGPU {
     pub fn setup_widgets(&self, gpu: &Gpu) {
         let imp = self.imp();
 
-        let tab_id = format!("{}-{}", Self::ID_PREFIX, &gpu.pci_slot().to_string());
+        let tab_id = format!("{}-{}", TAB_ID_PREFIX, &gpu.pci_slot().to_string());
         imp.set_tab_id(&tab_id);
 
         imp.gpu_usage.set_title_label(&i18n("Total Usage"));
@@ -361,7 +362,7 @@ impl ResGPU {
 
         let used_vram_fraction =
             if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
-                Some((*used_vram as f64 / *total_vram as f64).nan_default(0.0))
+                Some((*used_vram as f64 / *total_vram as f64).finite_or_default())
             } else {
                 None
             };

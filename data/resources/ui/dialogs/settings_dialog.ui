@@ -52,11 +52,11 @@
                 <property name="model">
                   <object class="GtkStringList">
                     <items>
-                      <item translatable="yes">Very Slow</item>
-                      <item translatable="yes">Slow</item>
-                      <item translatable="yes">Normal</item>
-                      <item translatable="yes">Fast</item>
-                      <item translatable="yes">Very Fast</item>
+                      <item translatable="yes" context="UI refresh speed">Very Slow</item>
+                      <item translatable="yes" context="UI refresh speed">Slow</item>
+                      <item translatable="yes" context="UI refresh speed">Normal</item>
+                      <item translatable="yes" context="UI refresh speed">Fast</item>
+                      <item translatable="yes" context="UI refresh speed">Very Fast</item>
                     </items>
                   </object>
                 </property>
@@ -188,6 +188,17 @@
         <property name="title" translatable="yes">Processes</property>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Options</property>
+            <child>
+              <object class="AdwSwitchRow" id="processes_niceness">
+                <property name="title" translatable="yes">Show Niceness Values</property>
+                <property name="subtitle" translatable="yes">Display priorities as niceness to allow for more fine-grained adjustments</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Information Columns</property>
             <child>
               <object class="AdwSwitchRow" id="processes_show_id_row">
@@ -262,6 +273,11 @@
             <child>
               <object class="AdwSwitchRow" id="processes_show_system_cpu_time_row">
                 <property name="title" translatable="yes">System CPU Time</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_priority_row">
+                <property name="title" translatable="yes">Priority</property>
               </object>
             </child>
           </object>

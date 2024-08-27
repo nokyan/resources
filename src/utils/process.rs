@@ -1,20 +1,26 @@
 use anyhow::{bail, Context, Result};
 use config::LIBEXECDIR;
-use log::debug;
-use process_data::{pci_slot::PciSlot, Containerization, GpuUsageStats, ProcessData};
+use log::{debug, error, info};
+use process_data::{pci_slot::PciSlot, GpuUsageStats, Niceness, ProcessData};
 use std::{
     collections::BTreeMap,
+    ffi::{OsStr, OsString},
     io::{Read, Write},
     process::{ChildStdin, ChildStdout, Command, Stdio},
     sync::{LazyLock, Mutex},
 };
 use strum_macros::Display;
 
-use gtk::gio::{Icon, ThemedIcon};
+use gtk::{
+    gio::{Icon, ThemedIcon},
+    glib::GString,
+};
 
 use crate::config;
 
-use super::{NaNDefault, FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK, NUM_CPUS, TICK_RATE};
+use super::{
+    boot_time, FiniteOr, FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK, NUM_CPUS, TICK_RATE,
+};
 
 static OTHER_PROCESS: LazyLock<Mutex<(ChildStdin, ChildStdout)>> = LazyLock::new(|| {
     let proxy_path = if *IS_FLATPAK {
@@ -72,30 +78,6 @@ pub enum ProcessAction {
     STOP,
     KILL,
     CONT,
-}
-/// Convenience struct for displaying running processes
-#[derive(Debug, Clone)]
-pub struct ProcessItem {
-    pub pid: i32,
-    pub user: String,
-    pub display_name: String,
-    pub icon: Icon,
-    pub memory_usage: usize,
-    pub cpu_time_ratio: f32,
-    pub user_cpu_time: f64,
-    pub system_cpu_time: f64,
-    pub commandline: String,
-    pub containerization: Containerization,
-    pub starttime: f64,
-    pub cgroup: Option<String>,
-    pub read_speed: Option<f64>,
-    pub read_total: Option<u64>,
-    pub write_speed: Option<f64>,
-    pub write_total: Option<u64>,
-    pub gpu_usage: f32,
-    pub enc_usage: f32,
-    pub dec_usage: f32,
-    pub gpu_mem_usage: u64,
 }
 
 impl Process {
@@ -166,15 +148,129 @@ impl Process {
         }
     }
 
-    pub fn execute_process_action(&self, action: ProcessAction) -> Result<()> {
-        let action_str = match action {
-            ProcessAction::TERM => "TERM",
-            ProcessAction::STOP => "STOP",
-            ProcessAction::KILL => "KILL",
-            ProcessAction::CONT => "CONT",
+    /// Tries to run a command unprivileged and then privileged if permissions were missing
+    fn maybe_pkexec_command<S: AsRef<OsStr>, I: IntoIterator<Item = S>>(
+        command: S,
+        args: I,
+    ) -> Result<i32> {
+        let args = args
+            .into_iter()
+            .map(|s| s.as_ref().to_os_string())
+            .collect::<Vec<_>>();
+
+        let status_code = if *IS_FLATPAK {
+            debug!(
+                "Executing command: {} --host {} {}",
+                FLATPAK_SPAWN,
+                command.as_ref().to_string_lossy(),
+                args.join(&OsString::from(" ")).to_string_lossy()
+            );
+
+            Command::new(FLATPAK_SPAWN)
+                .arg("--host")
+                .arg(command.as_ref())
+                .args(args.clone())
+                .output()?
+                .status
+                .code()
+                .context("no status code?")?
+        } else {
+            debug!(
+                "Executing command: {} {}",
+                command.as_ref().to_string_lossy(),
+                args.join(&OsString::from(" ")).to_string_lossy()
+            );
+
+            Command::new(command.as_ref())
+                .args(args.clone())
+                .output()?
+                .status
+                .code()
+                .context("no status code?")?
         };
 
-        // TODO: tidy this mess up
+        if status_code == libc::EPERM || status_code == libc::EACCES {
+            let pkexec_status_code = if *IS_FLATPAK {
+                debug!(
+                    "Received EPERM, executing command: {} --host pkexec --disable-internal-agent {} {}", 
+                    FLATPAK_SPAWN,
+                    command.as_ref().to_string_lossy(),
+                    args.join(&OsString::from(" ")).to_string_lossy()
+                );
+                Command::new(FLATPAK_SPAWN)
+                    .args(["--host", "pkexec", "--disable-internal-agent"])
+                    .arg(command)
+                    .args(args)
+                    .output()?
+                    .status
+                    .code()
+                    .context("no status code?")?
+            } else {
+                debug!(
+                    "Received EPERM or EACCES, executing command: pkexec --disable-internal-agent {} {}", 
+                    command.as_ref().to_string_lossy(),
+                    args.join(&OsString::from(" ")).to_string_lossy()
+                );
+                Command::new("pkexec")
+                    .arg("--disable-internal-agent")
+                    .arg(command)
+                    .args(args)
+                    .output()?
+                    .status
+                    .code()
+                    .context("no status code?")?
+            };
+
+            Ok(pkexec_status_code)
+        } else {
+            Ok(status_code)
+        }
+    }
+
+    pub fn adjust<I: IntoIterator<Item = bool>>(
+        &self,
+        niceness: Niceness,
+        affinity: I,
+    ) -> Result<()> {
+        let adjust_path = if *IS_FLATPAK {
+            format!(
+                "{}/libexec/resources/resources-adjust",
+                FLATPAK_APP_PATH.as_str()
+            )
+        } else {
+            format!("{LIBEXECDIR}/resources-adjust")
+        };
+
+        let adjust_string = affinity
+            .into_iter()
+            .map(|b| if b { '1' } else { '0' })
+            .collect::<String>();
+
+        let result = Self::maybe_pkexec_command(
+            adjust_path,
+            [
+                self.data.pid.to_string(),
+                niceness.to_string(),
+                adjust_string,
+            ],
+        );
+
+        if let Ok(return_code) = result {
+            if return_code == 0 {
+                info!("Successfully adjusted {}", self.data.pid);
+                Ok(())
+            } else {
+                bail!("non-zero return code: {return_code}")
+            }
+        } else if let Err(err) = result {
+            Err(err)
+        } else {
+            bail!("unknown error")
+        }
+    }
+
+    pub fn execute_process_action(&self, action: ProcessAction) -> Result<()> {
+        let action_string = action.to_string();
 
         let kill_path = if *IS_FLATPAK {
             format!(
@@ -185,94 +281,31 @@ impl Process {
             format!("{LIBEXECDIR}/resources-kill")
         };
 
-        let status_code = if *IS_FLATPAK {
-            Command::new(FLATPAK_SPAWN)
-                .args([
-                    "--host",
-                    kill_path.as_str(),
-                    action_str,
-                    self.data.pid.to_string().as_str(),
-                ])
-                .output()?
-                .status
-                .code()
-                .context("no status code?")?
-        } else {
-            Command::new(kill_path.as_str())
-                .args([action_str, self.data.pid.to_string().as_str()])
-                .output()?
-                .status
-                .code()
-                .context("no status code?")?
-        };
+        let result = Self::maybe_pkexec_command(
+            kill_path,
+            [self.data.pid.to_string(), action_string.clone()],
+        );
 
-        if status_code == 0 || status_code == 3 {
-            // 0 := successful; 3 := process not found which we don't care
-            // about because that might happen because we killed the
-            // process' parent first, killing the child before we explicitly
-            // did
-            debug!("Successfully {action}ed {}", self.data.pid);
-            Ok(())
-        } else if status_code == 1 {
-            // 1 := no permissions
-            debug!(
-                "No permissions to {action} {}, attempting pkexec",
-                self.data.pid
-            );
-            self.pkexec_execute_process_action(action_str, &kill_path)
-        } else {
-            bail!(
-                "couldn't {action} {} due to unknown reasons, status code: {}",
+        if let Ok(return_code) = result {
+            if return_code == 0 || return_code == 3 {
+                info!("Successfully {action_string}ed {}", self.data.pid);
+                Ok(())
+            } else {
+                error!(
+                    "Couldn't {action_string} {}, return_code: {return_code}",
+                    self.data.pid
+                );
+                bail!("non-zero return code: {return_code}")
+            }
+        } else if let Err(err) = result {
+            error!(
+                "Unknown error while trying to {action_string} {}\n{err}\n{}",
                 self.data.pid,
-                status_code
-            )
-        }
-    }
-
-    fn pkexec_execute_process_action(&self, action: &str, kill_path: &str) -> Result<()> {
-        let status_code = if *IS_FLATPAK {
-            Command::new(FLATPAK_SPAWN)
-                .args([
-                    "--host",
-                    "pkexec",
-                    "--disable-internal-agent",
-                    kill_path,
-                    action,
-                    self.data.pid.to_string().as_str(),
-                ])
-                .output()?
-                .status
-                .code()
-                .context("no status code?")?
-        } else {
-            Command::new("pkexec")
-                .args([
-                    "--disable-internal-agent",
-                    kill_path,
-                    action,
-                    self.data.pid.to_string().as_str(),
-                ])
-                .output()?
-                .status
-                .code()
-                .context("no status code?")?
-        };
-
-        if status_code == 0 || status_code == 3 {
-            // 0 := successful; 3 := process not found which we don't care
-            // about because that might happen because we killed the
-            // process' parent first, killing the child before we explicitly do
-            debug!(
-                "Successfully {action}ed {} with elevated privileges",
-                self.data.pid
+                err.backtrace()
             );
-            Ok(())
+            Err(err)
         } else {
-            bail!(
-                "couldn't kill {} with elevated privileges due to unknown reasons, status code: {}",
-                self.data.pid,
-                status_code
-            )
+            bail!("unknown error")
         }
     }
 
@@ -289,7 +322,8 @@ impl Process {
                 * 1000.0;
             let delta_time = self.data.timestamp.saturating_sub(self.timestamp_last);
 
-            delta_cpu_time / (delta_time * *TICK_RATE as u64 * *NUM_CPUS as u64) as f32
+            (delta_cpu_time / (delta_time * *TICK_RATE as u64 * *NUM_CPUS as u64) as f32)
+                .finite_or_default()
         }
     }
 
@@ -339,7 +373,7 @@ impl Process {
                 } else {
                     ((usage.gfx.saturating_sub(old_usage.gfx) as f32)
                         / (self.data.timestamp.saturating_sub(self.timestamp_last) as f32)
-                            .nan_default(0.0))
+                            .finite_or_default())
                         / 1_000_000.0
                 };
 
@@ -364,7 +398,7 @@ impl Process {
                 } else {
                     ((usage.enc.saturating_sub(old_usage.enc) as f32)
                         / (self.data.timestamp.saturating_sub(self.timestamp_last) as f32)
-                            .nan_default(0.0))
+                            .finite_or_default())
                         / 1_000_000.0
                 };
 
@@ -389,7 +423,7 @@ impl Process {
                 } else {
                     ((usage.dec.saturating_sub(old_usage.dec) as f32)
                         / (self.data.timestamp.saturating_sub(self.timestamp_last) as f32)
-                            .nan_default(0.0))
+                            .finite_or_default())
                         / 1_000_000.0
                 };
 
@@ -414,6 +448,16 @@ impl Process {
     #[must_use]
     pub fn starttime(&self) -> f64 {
         self.data.starttime as f64 / *TICK_RATE as f64
+    }
+
+    pub fn running_since(&self) -> Result<GString> {
+        boot_time()
+            .and_then(|boot_time| {
+                boot_time
+                    .add_seconds(self.starttime())
+                    .context("unable to add seconds to boot time")
+            })
+            .and_then(|time| time.format("%c").context("unable to format running_since"))
     }
 
     pub fn sanitize_cmdline<S: AsRef<str>>(cmdline: S) -> Option<String> {

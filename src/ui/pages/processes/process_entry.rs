@@ -1,9 +1,13 @@
 use gtk::{
-    glib::{self},
+    glib::{self, GString},
     subclass::prelude::ObjectSubclassIsExt,
 };
+use process_data::Containerization;
 
-use crate::utils::process::ProcessItem;
+use crate::{
+    i18n::i18n,
+    utils::{process::Process, TICK_RATE},
+};
 
 mod imp {
     use std::cell::{Cell, RefCell};
@@ -11,7 +15,7 @@ mod imp {
     use gtk::{
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        prelude::ObjectExt,
+        prelude::{Cast, ObjectExt},
         subclass::prelude::{DerivedObjectProperties, ObjectImpl, ObjectImplExt, ObjectSubclass},
     };
 
@@ -74,7 +78,24 @@ mod imp {
         #[property(get, set)]
         system_cpu_time: Cell<f64>,
 
-        pub process_item: RefCell<Option<ProcessItem>>,
+        #[property(get, set)]
+        niceness: Cell<i8>,
+
+        #[property(get = Self::cgroup, set = Self::set_cgroup)]
+        cgroup: Cell<Option<glib::GString>>,
+
+        #[property(get = Self::containerization, set = Self::set_containerization)]
+        containerization: Cell<glib::GString>,
+
+        #[property(get = Self::running_since, set = Self::set_running_since)]
+        running_since: Cell<Option<glib::GString>>,
+
+        // TODO: Make this properly dynamic, don't use a variable that's never read
+        #[property(get = Self::symbolic)]
+        #[allow(dead_code)]
+        symbolic: Cell<bool>,
+
+        pub affinity: RefCell<Vec<bool>>,
     }
 
     impl Default for ProcessEntry {
@@ -87,7 +108,6 @@ mod imp {
                 pid: Cell::new(0),
                 cpu_usage: Cell::new(0.0),
                 memory_usage: Cell::new(0),
-                process_item: RefCell::new(None),
                 read_speed: Cell::new(0.0),
                 read_total: Cell::new(0),
                 write_speed: Cell::new(0.0),
@@ -99,40 +119,19 @@ mod imp {
                 total_cpu_time: Cell::new(0.0),
                 user_cpu_time: Cell::new(0.0),
                 system_cpu_time: Cell::new(0.0),
+                niceness: Cell::new(0),
+                cgroup: Cell::new(None),
+                containerization: Cell::new(glib::GString::default()),
+                running_since: Cell::new(None),
+                symbolic: Cell::new(false),
+                affinity: Default::default(),
             }
         }
     }
 
     impl ProcessEntry {
-        pub fn name(&self) -> glib::GString {
-            let name = self.name.take();
-            self.name.set(name.clone());
-            name
-        }
-
-        pub fn set_name(&self, name: &str) {
-            self.name.set(glib::GString::from(name));
-        }
-
-        pub fn commandline(&self) -> glib::GString {
-            let commandline = self.commandline.take();
-            self.commandline.set(commandline.clone());
-            commandline
-        }
-
-        pub fn set_commandline(&self, commandline: &str) {
-            self.commandline.set(glib::GString::from(commandline));
-        }
-
-        pub fn user(&self) -> glib::GString {
-            let user = self.user.take();
-            self.user.set(user.clone());
-            user
-        }
-
-        pub fn set_user(&self, user: &str) {
-            self.user.set(glib::GString::from(user));
-        }
+        gstring_getter_setter!(user, commandline, name, containerization);
+        gstring_option_getter_setter!(cgroup, running_since);
 
         pub fn icon(&self) -> Icon {
             let icon = self.icon.replace(ThemedIcon::new("generic-process").into());
@@ -142,6 +141,27 @@ mod imp {
 
         pub fn set_icon(&self, icon: &Icon) {
             self.icon.set(icon.clone());
+        }
+
+        pub fn symbolic(&self) -> bool {
+            let icon = self.icon.replace(ThemedIcon::new("generic-process").into());
+            self.icon.set(icon.clone());
+
+            icon.downcast_ref::<ThemedIcon>()
+                .is_some_and(|themed_icon| {
+                    themed_icon
+                        .names()
+                        .iter()
+                        .all(|name| name.ends_with("-symbolic"))
+                        || themed_icon
+                            .names()
+                            .iter()
+                            .all(|name| name.contains("system-processes"))
+                        || themed_icon
+                            .names()
+                            .iter()
+                            .all(|name| name.contains("generic-process"))
+                })
         }
     }
 
@@ -175,48 +195,62 @@ glib::wrapper! {
 }
 
 impl ProcessEntry {
-    pub fn new(process_item: ProcessItem) -> Self {
+    pub fn new(process: &Process) -> Self {
+        let display_name = if process.executable_name.starts_with(&process.data.comm) {
+            process.executable_name.clone()
+        } else {
+            process.data.comm.clone()
+        };
+
+        let containerization = match process.data.containerization {
+            Containerization::None => i18n("No"),
+            Containerization::Flatpak => i18n("Yes (Flatpak)"),
+            Containerization::Snap => i18n("Yes (Snap)"),
+        };
+
         let this: Self = glib::Object::builder()
-            .property("name", &process_item.display_name)
-            .property("commandline", &process_item.commandline)
-            .property("user", &process_item.user)
-            .property("icon", &process_item.icon)
-            .property("pid", process_item.pid)
+            .property("name", &display_name)
+            .property("commandline", process.data.commandline.replace('\0', " "))
+            .property("user", &process.data.user)
+            .property("icon", &process.icon)
+            .property("pid", process.data.pid)
+            .property("cgroup", process.data.cgroup.clone().map(GString::from))
+            .property("containerization", containerization)
+            .property("running_since", process.running_since().ok())
             .build();
-        this.update(process_item);
+        this.update(process);
         this
     }
 
-    pub fn update(&self, process_item: ProcessItem) {
-        self.set_cpu_usage(process_item.cpu_time_ratio);
-        self.set_memory_usage(process_item.memory_usage as u64);
-        self.set_read_speed(process_item.read_speed.unwrap_or(-1.0));
+    pub fn update(&self, process: &Process) {
+        self.set_cpu_usage(process.cpu_time_ratio());
+        self.set_memory_usage(process.data.memory_usage as u64);
+        self.set_read_speed(process.read_speed().unwrap_or(-1.0));
         self.set_read_total(
-            process_item
-                .read_total
+            process
+                .data
+                .read_bytes
                 .map_or(-1, |read_total| read_total as i64),
         );
-        self.set_write_speed(process_item.write_speed.unwrap_or(-1.0));
+        self.set_write_speed(process.write_speed().unwrap_or(-1.0));
         self.set_write_total(
-            process_item
-                .write_total
+            process
+                .data
+                .write_bytes
                 .map_or(-1, |write_total| write_total as i64),
         );
-        self.set_gpu_usage(process_item.gpu_usage);
-        self.set_enc_usage(process_item.enc_usage);
-        self.set_dec_usage(process_item.dec_usage);
-        self.set_gpu_mem_usage(process_item.gpu_mem_usage);
-        self.set_total_cpu_time(process_item.user_cpu_time + process_item.system_cpu_time);
-        self.set_user_cpu_time(process_item.user_cpu_time);
-        self.set_system_cpu_time(process_item.system_cpu_time);
-
-        self.imp().process_item.replace(Some(process_item));
+        self.set_gpu_usage(process.gpu_usage());
+        self.set_enc_usage(process.enc_usage());
+        self.set_dec_usage(process.dec_usage());
+        self.set_gpu_mem_usage(process.gpu_mem_usage());
+        self.set_user_cpu_time((process.data.user_cpu_time as f64) / (*TICK_RATE as f64));
+        self.set_system_cpu_time((process.data.system_cpu_time as f64) / (*TICK_RATE as f64));
+        self.set_total_cpu_time(self.user_cpu_time() + self.system_cpu_time());
+        self.set_niceness(*process.data.niceness);
+        *self.imp().affinity.borrow_mut() = process.data.affinity.clone();
     }
 
-    pub fn process_item(&self) -> Option<ProcessItem> {
-        let imp = self.imp();
-        let item = imp.process_item.take();
-        imp.process_item.replace(item.clone());
-        item
+    pub fn affinity(&self) -> Vec<bool> {
+        self.imp().affinity.borrow().clone()
     }
 }

@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues\n"
-"POT-Creation-Date: 2024-01-24 13:26+0100\n"
-"PO-Revision-Date: 2024-02-06 16:41+0200\n"
+"POT-Creation-Date: 2024-08-24 11:07+0200\n"
+"PO-Revision-Date: 2024-08-24 16:08+0300\n"
 "Last-Translator: volkov <volkovissocool@gmail.com>\n"
 "Language-Team: volkov <volkovissocool@gmail.com>\n"
 "Language: uk\n"
@@ -15,16 +15,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:3
-#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:196
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:262
+#: data/resources/ui/window.ui:22
 msgid "Resources"
 msgstr "Ресурси"
 
 #. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
 #: data/net.nokyan.Resources.desktop.in.in:4
-#: data/net.nokyan.Resources.metainfo.xml.in.in:6
+#: data/net.nokyan.Resources.metainfo.xml.in.in:5
 msgid "Keep an eye on system resources"
 msgstr "Слідкуйте за системними ресурсами"
 
@@ -36,549 +37,526 @@ msgstr ""
 "система;ресурси;монітор;процеси;менеджер;задачі;процесор;відеокарта;пам'ять;"
 "оператива;завис;лаг;"
 
-#: data/net.nokyan.Resources.gschema.xml.in:6
-msgid "Window width"
-msgstr "Ширина вікна"
-
-#: data/net.nokyan.Resources.gschema.xml.in:10
-msgid "Window height"
-msgstr "Висота вікна"
-
-#: data/net.nokyan.Resources.gschema.xml.in:14
-msgid "Window maximized state"
-msgstr "Стан розгортання вікна"
-
-#: data/net.nokyan.Resources.gschema.xml.in:18
-msgid "Temperature unit"
-msgstr "Одиниця вимірювання температури"
-
-#: data/net.nokyan.Resources.gschema.xml.in:22
-msgid "Unit Prefix Base"
-msgstr "Основа префіксів одиниць"
-
-#: data/net.nokyan.Resources.gschema.xml.in:26
-#: data/resources/ui/dialogs/settings_dialog.ui:53
-msgid "Refresh Speed"
-msgstr "Швидкість оновлення"
-
-#: data/net.nokyan.Resources.gschema.xml.in:30
-msgid "Show search field for Processes and Applications on launch"
-msgstr ""
-"Показувати поле пошуку для списку процесів та додатків при запуску додатку"
-
-#: data/net.nokyan.Resources.gschema.xml.in:34
-msgid "Show virtual block devices such as LVM containers"
-msgstr "Показувати віртуальні пристрої, такі як LVM контейнери"
-
-#: data/net.nokyan.Resources.gschema.xml.in:38
-msgid "Show virtual network interfaces such as Docker interfaces"
-msgstr "Показувати віртуальні мережеві інтерфейси, такі як Docker інтерфейси"
-
-#: data/net.nokyan.Resources.gschema.xml.in:42
-msgid "Show usage details in the sidebar"
-msgstr "Показувати деталі використання у бічній панелі"
-
-#: data/net.nokyan.Resources.gschema.xml.in:46
-msgid "Show device description in the sidebar"
-msgstr "Показувати опис пристрою у бічній панелі"
-
-#: data/net.nokyan.Resources.gschema.xml.in:50
-#: data/resources/ui/dialogs/settings_dialog.ui:103
-msgid "Sidebar Meter Type"
-msgstr "Тип вимірювання у бічній панелі"
-
-#: data/net.nokyan.Resources.gschema.xml.in:54
-msgid "Display network speeds in bits per second"
-msgstr "Показувати швидкість у бітах в секунду у списку додатків"
-
-#: data/net.nokyan.Resources.gschema.xml.in:58
-msgid "Display memory usage in Applications view"
-msgstr "Показувати використання пам'яті у списку додатків"
-
-#: data/net.nokyan.Resources.gschema.xml.in:62
-msgid "Display CPU usage in Applications view"
-msgstr "Показувати використання процесору у списку додатків"
-
-#: data/net.nokyan.Resources.gschema.xml.in:66
-msgid "Display drive read speed in Applications view"
-msgstr "Показувати швидкість запису на диск у списку додатків"
-
-#: data/net.nokyan.Resources.gschema.xml.in:70
-msgid "Display drive read total in Applications view"
-msgstr "Показувати читання з диску (загально) у списку додатків"
-
-#: data/net.nokyan.Resources.gschema.xml.in:74
-msgid "Display drive write speed in Applications view"
-msgstr "Показувати швидкість запису на диск у списку додатків"
-
-#: data/net.nokyan.Resources.gschema.xml.in:78
-msgid "Display drive write total in Applications view"
-msgstr "Показувати записування на диск (загально) у списку додатків"
-
-#: data/net.nokyan.Resources.gschema.xml.in:82
-msgid "Display GPU usage in Applications view"
-msgstr "Показувати використання відеокарти у списку додатків"
-
-#: data/net.nokyan.Resources.gschema.xml.in:86
-msgid "Display video encoder usage in Applications view"
-msgstr "Показувати використання відео кодувальника у списку додатків"
-
-#: data/net.nokyan.Resources.gschema.xml.in:90
-msgid "Display video decoder usage in Applications view"
-msgstr "Показувати використання відео декодувальника у списку додатків"
-
-#: data/net.nokyan.Resources.gschema.xml.in:94
-msgid "Display GPU memory usage in Applications view"
-msgstr "Показувати використання відеопам'яті у списку додатків"
-
-#: data/net.nokyan.Resources.gschema.xml.in:98
-msgid "Display process ID in Processes view"
-msgstr "Показувати ідентифікатор процесу у списку процесів"
-
-#: data/net.nokyan.Resources.gschema.xml.in:102
-msgid "Display user name in Processes view"
-msgstr "Показувати ім'я користувача у списку процесів"
-
-#: data/net.nokyan.Resources.gschema.xml.in:106
-msgid "Display memory usage in Processes view"
-msgstr "Показувати використання оперативної пам'яті у списку процесів"
-
-#: data/net.nokyan.Resources.gschema.xml.in:110
-msgid "Display CPU usage in Processes view"
-msgstr "Показувати використання процесору у списку процесів"
-
-#: data/net.nokyan.Resources.gschema.xml.in:114
-msgid "Display drive read speed in Processes view"
-msgstr "Показувати швидкість читання з диску у списку процесів"
-
-#: data/net.nokyan.Resources.gschema.xml.in:118
-msgid "Display drive read total in Processes view"
-msgstr "Показувати загальне читання з диску у списку процесів"
-
-#: data/net.nokyan.Resources.gschema.xml.in:122
-msgid "Display drive write speed in Processes view"
-msgstr "Показувати швидкість запису на диск у списку процесів"
-
-#: data/net.nokyan.Resources.gschema.xml.in:126
-msgid "Display drive write total in Processes view"
-msgstr "Показувати загальний запис на  у списку процесів"
-
-#: data/net.nokyan.Resources.gschema.xml.in:130
-msgid "Display GPU usage in Processes view"
-msgstr "Показувати використання відеокарти у списку процесів"
-
-#: data/net.nokyan.Resources.gschema.xml.in:134
-msgid "Display video encoder usage in Processes view"
-msgstr "Показувати використання відео декодувальника списку процесів"
-
-#: data/net.nokyan.Resources.gschema.xml.in:138
-msgid "Display video decoder usage in Processes view"
-msgstr "Показувати використання відео декодувальника у списку процесів"
-
-#: data/net.nokyan.Resources.gschema.xml.in:142
-msgid "Display GPU memory usage in Processes view"
-msgstr "Показувати використання відеокарти у списку процесів"
-
-#: data/net.nokyan.Resources.gschema.xml.in:146
-msgid "Display logical CPU graphs in Processor view"
-msgstr "Показувати графіки використання логічних процесорів у списку процесів"
-
-#: data/net.nokyan.Resources.gschema.xml.in:150
-msgid "Show grids in graphs"
-msgstr "Показувати ґрату на графіку"
-
-#: data/net.nokyan.Resources.gschema.xml.in:154
-msgid "Amount of data points that should be shown in a graph"
-msgstr "Кількість даних які повинні бути видимі на графіку"
-
-#: data/net.nokyan.Resources.metainfo.xml.in.in:18
+#: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
 "Resources allows you to check the utilization of your system resources and "
-"control your running processes and applications. It’s designed to be user-"
-"friendly and feel right at home on a modern desktop by using GNOME’s "
-"libadwaita."
+"control your running processes and apps. It’s designed to be user-friendly "
+"and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
 "'Ресурси' дозволяє вам перевірити утилізацію ресурсів вашої системи і "
 "контролювати запущені процеси та додатки. Цей додаток створено бути зручним "
 "для користувача і гарно виглядати на сучасних робочих столах, дякуючи "
 "бібліотеці libadwaita від GNOME."
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:21
+#: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
 msgstr "'Ресурси' підтримує моніторинг наступних компонентів:"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:25 src/ui/pages/cpu.rs:221
+#: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
 msgstr "Процесору"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:26
-#: src/ui/pages/applications/mod.rs:629 src/ui/pages/memory.rs:116
-#: src/ui/pages/memory.rs:187 src/ui/pages/processes/mod.rs:714
-#: data/resources/ui/window.ui:155 data/resources/ui/window.ui:162
-#: data/resources/ui/dialogs/app_dialog.ui:83
-#: data/resources/ui/dialogs/process_dialog.ui:70
-#: data/resources/ui/dialogs/settings_dialog.ui:127
-#: data/resources/ui/dialogs/settings_dialog.ui:198
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+#: src/ui/pages/applications/mod.rs:844 src/ui/pages/memory.rs:140
+#: src/ui/pages/memory.rs:221 src/ui/pages/processes/mod.rs:1013
+#: data/resources/ui/window.ui:158 data/resources/ui/window.ui:165
+#: data/resources/ui/dialogs/app_dialog.ui:82
+#: data/resources/ui/dialogs/process_dialog.ui:64
+#: data/resources/ui/dialogs/settings_dialog.ui:133
+#: data/resources/ui/dialogs/settings_dialog.ui:215
 msgid "Memory"
 msgstr "Оперативна пам'ять"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:27
-#: src/ui/pages/applications/mod.rs:909 src/ui/pages/gpu.rs:138
-#: src/ui/pages/processes/mod.rs:1007 src/ui/window.rs:277
-#: data/resources/ui/dialogs/app_dialog.ui:132
-#: data/resources/ui/dialogs/process_dialog.ui:115
-#: data/resources/ui/dialogs/settings_dialog.ui:157
-#: data/resources/ui/dialogs/settings_dialog.ui:228
+#: data/net.nokyan.Resources.metainfo.xml.in.in:26
+#: src/ui/pages/applications/mod.rs:1217 src/ui/pages/gpu.rs:157
+#: src/ui/pages/processes/mod.rs:1397 src/ui/window.rs:303
+#: data/resources/ui/dialogs/app_dialog.ui:131
+#: data/resources/ui/dialogs/process_dialog.ui:109
+#: data/resources/ui/dialogs/settings_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:245
 msgid "GPU"
 msgstr "Відеокарта"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:28
-#: data/resources/ui/dialogs/settings_dialog.ui:266
+#: data/net.nokyan.Resources.metainfo.xml.in.in:27
+#: data/resources/ui/dialogs/settings_dialog.ui:304
 msgid "Network Interfaces"
 msgstr "Мережевих інтерфейсів"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:29
+#: data/net.nokyan.Resources.metainfo.xml.in.in:28
 msgid "Storage Devices"
 msgstr "Накопичувачів даних"
 
-#: src/application.rs:198
+#: data/net.nokyan.Resources.metainfo.xml.in.in:29
+msgid "Batteries"
+msgstr "Акумулятори"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:51
+msgid "Apps page in light theme"
+msgstr "Сторінка додатків у світлому стилі"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:55
+msgid "Processes page in dark theme"
+msgstr "Сторінка процесів у темному стилі"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:59
+msgid "Processor page in light theme"
+msgstr "Сторінка процесору у світлому стилі"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:63
+msgid "Memory page in dark theme"
+msgstr "Сторінка оперативної пам'яті у темному стилі"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:67
+msgid "GPU page in light theme"
+msgstr "Сторінка відеокарти у світлому стилі"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:71
+msgid "Drive page in dark theme"
+msgstr "Сторінка диску у темному стилі"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:75
+msgid "Network Interface page in light theme"
+msgstr "Сторінка мережевого інтерфейсу у світлому стилі"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:79
+msgid "Battery page in dark theme"
+msgstr "Сторінка акумулятора у темному стилі"
+
+#: src/application.rs:264
 msgid "The Nalux Team"
 msgstr "Команда Nalux"
 
-#: src/application.rs:206
+#: src/application.rs:272
 msgid "Report Issues"
 msgstr "Повідомити про проблеми"
 
 #. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
 #. One name per line, please do not remove previous names.
-#: src/application.rs:212
+#: src/application.rs:278
 msgid "translator-credits"
 msgstr "volkov <volkovissocool@gmail.com>"
 
-#: src/application.rs:213
+#: src/application.rs:279
 msgid "Icon by"
 msgstr "Піктограму зробив"
 
-#: src/ui/dialogs/app_dialog.rs:163 src/ui/dialogs/process_dialog.rs:188
-#: src/ui/pages/drive.rs:267 src/ui/pages/drive.rs:273
-msgid "No"
-msgstr "Ні"
-
-#: src/ui/dialogs/app_dialog.rs:164 src/ui/dialogs/process_dialog.rs:189
-msgid "Yes (Flatpak)"
-msgstr "Так (Flatpak)"
-
-#: src/ui/dialogs/app_dialog.rs:165 src/ui/dialogs/process_dialog.rs:190
-msgid "Yes (Snap)"
-msgstr "Так (Snap)"
-
-#: src/ui/dialogs/process_dialog.rs:129 src/ui/dialogs/process_dialog.rs:136
-#: src/ui/dialogs/process_dialog.rs:143 src/ui/dialogs/process_dialog.rs:150
-#: src/ui/dialogs/process_dialog.rs:176 src/ui/dialogs/process_dialog.rs:183
-#: src/ui/dialogs/process_dialog.rs:185 src/ui/pages/applications/mod.rs:734
-#: src/ui/pages/applications/mod.rs:830 src/ui/pages/cpu.rs:222
-#: src/ui/pages/cpu.rs:237 src/ui/pages/cpu.rs:251 src/ui/pages/cpu.rs:257
-#: src/ui/pages/cpu.rs:263 src/ui/pages/cpu.rs:269 src/ui/pages/cpu.rs:273
-#: src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:361 src/ui/pages/gpu.rs:240
-#: src/ui/pages/gpu.rs:285 src/ui/pages/gpu.rs:308 src/ui/pages/gpu.rs:311
-#: src/ui/pages/gpu.rs:322 src/ui/pages/gpu.rs:344 src/ui/pages/gpu.rs:354
-#: src/ui/pages/gpu.rs:366 src/ui/pages/gpu.rs:369 src/ui/pages/gpu.rs:375
-#: src/ui/pages/gpu.rs:382 src/ui/pages/gpu.rs:386 src/ui/pages/gpu.rs:389
-#: src/ui/pages/memory.rs:222 src/ui/pages/memory.rs:227
-#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233
-#: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:242
-#: src/ui/pages/memory.rs:251 src/ui/pages/memory.rs:305
-#: src/ui/pages/network.rs:238 src/ui/pages/network.rs:246
-#: src/ui/pages/network.rs:253 src/ui/pages/network.rs:260
-#: src/ui/pages/network.rs:263 src/ui/pages/processes/mod.rs:822
-#: src/ui/pages/processes/mod.rs:873 src/ui/pages/processes/mod.rs:924
-#: src/ui/pages/processes/mod.rs:975 src/utils/app.rs:674 src/utils/app.rs:750
-#: src/utils/drive.rs:90 src/utils/gpu/mod.rs:250 src/utils/gpu/mod.rs:256
+#: src/ui/dialogs/app_dialog.rs:146 src/ui/dialogs/process_dialog.rs:125
+#: src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:135
+#: src/ui/dialogs/process_dialog.rs:153 src/ui/dialogs/process_dialog.rs:160
+#: src/ui/dialogs/process_dialog.rs:167 src/ui/dialogs/process_dialog.rs:174
+#: src/ui/pages/applications/mod.rs:987 src/ui/pages/applications/mod.rs:1111
+#: src/ui/pages/battery.rs:239 src/ui/pages/battery.rs:259
+#: src/ui/pages/battery.rs:265 src/ui/pages/battery.rs:268
+#: src/ui/pages/battery.rs:294 src/ui/pages/battery.rs:318
+#: src/ui/pages/battery.rs:320 src/ui/pages/battery.rs:330
+#: src/ui/pages/cpu.rs:253 src/ui/pages/cpu.rs:268 src/ui/pages/cpu.rs:283
+#: src/ui/pages/cpu.rs:289 src/ui/pages/cpu.rs:295 src/ui/pages/cpu.rs:301
+#: src/ui/pages/cpu.rs:305 src/ui/pages/cpu.rs:308 src/ui/pages/cpu.rs:405
+#: src/ui/pages/drive.rs:341 src/ui/pages/drive.rs:371
+#: src/ui/pages/drive.rs:373 src/ui/pages/drive.rs:401
+#: src/ui/pages/drive.rs:403 src/ui/pages/drive.rs:419
+#: src/ui/pages/drive.rs:420 src/ui/pages/drive.rs:427
+#: src/ui/pages/drive.rs:437 src/ui/pages/drive.rs:447 src/ui/pages/gpu.rs:270
+#: src/ui/pages/gpu.rs:312 src/ui/pages/gpu.rs:337 src/ui/pages/gpu.rs:340
+#: src/ui/pages/gpu.rs:351 src/ui/pages/gpu.rs:371 src/ui/pages/gpu.rs:383
+#: src/ui/pages/gpu.rs:397 src/ui/pages/gpu.rs:399 src/ui/pages/gpu.rs:411
+#: src/ui/pages/gpu.rs:418 src/ui/pages/gpu.rs:422 src/ui/pages/memory.rs:256
+#: src/ui/pages/memory.rs:257 src/ui/pages/memory.rs:261
+#: src/ui/pages/memory.rs:262 src/ui/pages/memory.rs:266
+#: src/ui/pages/memory.rs:267 src/ui/pages/memory.rs:295
+#: src/ui/pages/memory.rs:352 src/ui/pages/network.rs:273
+#: src/ui/pages/network.rs:280 src/ui/pages/network.rs:287
+#: src/ui/pages/network.rs:293 src/ui/pages/network.rs:296
+#: src/ui/pages/network.rs:357 src/ui/pages/network.rs:360
+#: src/ui/pages/network.rs:362 src/ui/pages/network.rs:391
+#: src/ui/pages/network.rs:394 src/ui/pages/network.rs:396
+#: src/ui/pages/processes/mod.rs:1155 src/ui/pages/processes/mod.rs:1221
+#: src/ui/pages/processes/mod.rs:1287 src/ui/pages/processes/mod.rs:1353
+#: src/ui/pages/processes/mod.rs:1835 src/ui/pages/processes/mod.rs:1837
+#: src/utils/battery.rs:139 src/utils/drive.rs:90 src/utils/gpu/mod.rs:258
+#: src/utils/gpu/mod.rs:264
 msgid "N/A"
 msgstr "Невідомо"
 
-#: src/ui/pages/applications/mod.rs:137 data/resources/ui/window.ui:62
-#: data/resources/ui/window.ui:69
-#: data/resources/ui/dialogs/settings_dialog.ui:121
-msgid "Applications"
-msgstr "Додатки"
-
-#: src/ui/pages/applications/mod.rs:527
-msgid "Running Applications: {}"
-msgstr "Запущених додатків: {}"
-
-#: src/ui/pages/applications/mod.rs:556 src/ui/pages/processes/mod.rs:538
-msgid "Cancel"
-msgstr "Скасувати"
-
-#: src/ui/pages/applications/mod.rs:583
-msgid "Application"
-msgstr "Назва додатку"
-
-#: src/ui/pages/applications/mod.rs:673 src/ui/pages/cpu.rs:136
-#: src/ui/pages/processes/mod.rs:761 src/ui/window.rs:316
-#: data/resources/ui/window.ui:124 data/resources/ui/window.ui:131
-#: data/resources/ui/dialogs/app_dialog.ui:74
-#: data/resources/ui/dialogs/process_dialog.ui:61
-#: data/resources/ui/dialogs/settings_dialog.ui:132
-#: data/resources/ui/dialogs/settings_dialog.ui:203
-msgid "Processor"
-msgstr "Процесор"
-
-#: src/ui/pages/applications/mod.rs:716 src/ui/pages/processes/mod.rs:804
-#: data/resources/ui/dialogs/app_dialog.ui:92
-#: data/resources/ui/dialogs/process_dialog.ui:75
-#: data/resources/ui/dialogs/settings_dialog.ui:137
-#: data/resources/ui/dialogs/settings_dialog.ui:208
-msgid "Drive Read"
-msgstr "Читання з диска"
-
-#: src/ui/pages/applications/mod.rs:766 src/ui/pages/processes/mod.rs:855
-#: data/resources/ui/dialogs/app_dialog.ui:101
-#: data/resources/ui/dialogs/process_dialog.ui:84
-#: data/resources/ui/dialogs/settings_dialog.ui:142
-#: data/resources/ui/dialogs/settings_dialog.ui:213
-msgid "Drive Read Total"
-msgstr "Читання з диска (загалом)"
-
-#: src/ui/pages/applications/mod.rs:812 src/ui/pages/processes/mod.rs:906
-#: data/resources/ui/dialogs/app_dialog.ui:110
-#: data/resources/ui/dialogs/process_dialog.ui:93
-#: data/resources/ui/dialogs/settings_dialog.ui:147
-#: data/resources/ui/dialogs/settings_dialog.ui:218
-msgid "Drive Write"
-msgstr "Запис на диск"
-
-#: src/ui/pages/applications/mod.rs:863 src/ui/pages/processes/mod.rs:957
-#: data/resources/ui/dialogs/app_dialog.ui:119
-#: data/resources/ui/dialogs/process_dialog.ui:102
-#: data/resources/ui/dialogs/settings_dialog.ui:152
-#: data/resources/ui/dialogs/settings_dialog.ui:223
-msgid "Drive Write Total"
-msgstr "Запис на диск (загалом)"
-
-#: src/ui/pages/applications/mod.rs:952 src/ui/pages/processes/mod.rs:1050
-#: data/resources/ui/dialogs/app_dialog.ui:150
-#: data/resources/ui/dialogs/process_dialog.ui:133
-#: data/resources/ui/dialogs/settings_dialog.ui:167
-#: data/resources/ui/dialogs/settings_dialog.ui:238
-msgid "Video Encoder"
-msgstr "Відео кодувальник"
-
-#: src/ui/pages/applications/mod.rs:997 src/ui/pages/processes/mod.rs:1095
-#: data/resources/ui/dialogs/app_dialog.ui:159
-#: data/resources/ui/dialogs/process_dialog.ui:142
-#: data/resources/ui/dialogs/settings_dialog.ui:172
-#: data/resources/ui/dialogs/settings_dialog.ui:243
-msgid "Video Decoder"
-msgstr "Відео декодувальник"
-
-#: src/ui/pages/applications/mod.rs:1041 src/ui/pages/processes/mod.rs:1140
-#: data/resources/ui/dialogs/app_dialog.ui:141
-#: data/resources/ui/dialogs/process_dialog.ui:124
-#: data/resources/ui/dialogs/settings_dialog.ui:162
-#: data/resources/ui/dialogs/settings_dialog.ui:233
-msgid "Video Memory"
-msgstr "Відеопам'ять"
-
-#: src/ui/pages/cpu.rs:236 src/ui/pages/cpu.rs:347 src/ui/pages/cpu.rs:351
+#: src/ui/dialogs/process_options_dialog.rs:142 src/ui/pages/cpu.rs:267
+#: src/ui/pages/cpu.rs:389 src/ui/pages/cpu.rs:393
 msgid "CPU {}"
 msgstr "Процесор {}"
 
-#: src/ui/pages/drive.rs:135
+#: src/ui/pages/applications/application_entry.rs:179 src/ui/pages/drive.rs:434
+#: src/ui/pages/drive.rs:444 src/ui/pages/processes/process_entry.rs:206
+msgid "No"
+msgstr "Ні"
+
+#: src/ui/pages/applications/application_entry.rs:180
+#: src/ui/pages/processes/process_entry.rs:207
+msgid "Yes (Flatpak)"
+msgstr "Так (Flatpak)"
+
+#: src/ui/pages/applications/application_entry.rs:181
+#: src/ui/pages/processes/process_entry.rs:208
+msgid "Yes (Snap)"
+msgstr "Так (Snap)"
+
+#: src/ui/pages/applications/mod.rs:165 data/resources/ui/window.ui:65
+#: data/resources/ui/window.ui:72
+#: data/resources/ui/dialogs/settings_dialog.ui:127
+msgid "Apps"
+msgstr "Додатки"
+
+#: src/ui/pages/applications/mod.rs:700
+msgid "Running Apps: {}"
+msgstr "Запущених додатків: {}"
+
+#: src/ui/pages/applications/mod.rs:741 src/ui/pages/processes/mod.rs:798
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: src/ui/pages/applications/mod.rs:787
+msgid "App"
+msgstr "Додаток"
+
+#: src/ui/pages/applications/mod.rs:903 src/ui/pages/cpu.rs:157
+#: src/ui/pages/processes/mod.rs:1071 src/ui/window.rs:355
+#: data/resources/ui/window.ui:127 data/resources/ui/window.ui:134
+#: data/resources/ui/dialogs/app_dialog.ui:73
+#: data/resources/ui/dialogs/process_dialog.ui:55
+#: data/resources/ui/dialogs/settings_dialog.ui:138
+#: data/resources/ui/dialogs/settings_dialog.ui:220
+msgid "Processor"
+msgstr "Процесор"
+
+#: src/ui/pages/applications/mod.rs:966 src/ui/pages/processes/mod.rs:1134
+#: data/resources/ui/dialogs/app_dialog.ui:91
+#: data/resources/ui/dialogs/process_dialog.ui:69
+#: data/resources/ui/dialogs/settings_dialog.ui:143
+#: data/resources/ui/dialogs/settings_dialog.ui:225
+msgid "Drive Read"
+msgstr "Читання з диска"
+
+#: src/ui/pages/applications/mod.rs:1030 src/ui/pages/processes/mod.rs:1200
+#: data/resources/ui/dialogs/app_dialog.ui:100
+#: data/resources/ui/dialogs/process_dialog.ui:78
+#: data/resources/ui/dialogs/settings_dialog.ui:148
+#: data/resources/ui/dialogs/settings_dialog.ui:230
+msgid "Drive Read Total"
+msgstr "Читання з диска (загалом)"
+
+#: src/ui/pages/applications/mod.rs:1090 src/ui/pages/processes/mod.rs:1266
+#: data/resources/ui/dialogs/app_dialog.ui:109
+#: data/resources/ui/dialogs/process_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:153
+#: data/resources/ui/dialogs/settings_dialog.ui:235
+msgid "Drive Write"
+msgstr "Запис на диск"
+
+#: src/ui/pages/applications/mod.rs:1156 src/ui/pages/processes/mod.rs:1332
+#: data/resources/ui/dialogs/app_dialog.ui:118
+#: data/resources/ui/dialogs/process_dialog.ui:96
+#: data/resources/ui/dialogs/settings_dialog.ui:158
+#: data/resources/ui/dialogs/settings_dialog.ui:240
+msgid "Drive Write Total"
+msgstr "Запис на диск (загалом)"
+
+#: src/ui/pages/applications/mod.rs:1275 src/ui/pages/processes/mod.rs:1455
+#: data/resources/ui/dialogs/app_dialog.ui:149
+#: data/resources/ui/dialogs/process_dialog.ui:127
+#: data/resources/ui/dialogs/settings_dialog.ui:173
+#: data/resources/ui/dialogs/settings_dialog.ui:255
+msgid "Video Encoder"
+msgstr "Відео кодувальник"
+
+#: src/ui/pages/applications/mod.rs:1335 src/ui/pages/processes/mod.rs:1515
+#: data/resources/ui/dialogs/app_dialog.ui:158
+#: data/resources/ui/dialogs/process_dialog.ui:136
+#: data/resources/ui/dialogs/settings_dialog.ui:178
+#: data/resources/ui/dialogs/settings_dialog.ui:260
+msgid "Video Decoder"
+msgstr "Відео декодувальник"
+
+#: src/ui/pages/applications/mod.rs:1394 src/ui/pages/processes/mod.rs:1575
+#: data/resources/ui/dialogs/app_dialog.ui:140
+#: data/resources/ui/dialogs/process_dialog.ui:118
+#: data/resources/ui/dialogs/settings_dialog.ui:168
+#: data/resources/ui/dialogs/settings_dialog.ui:250
+msgid "Video Memory"
+msgstr "Відеопам'ять"
+
+#: src/ui/pages/applications/mod.rs:1451 src/ui/pages/processes/mod.rs:1877
+msgid "End {}?"
+msgstr "Завершити {}?"
+
+#: src/ui/pages/applications/mod.rs:1452 src/ui/pages/processes/mod.rs:1878
+msgid "Halt {}?"
+msgstr "Зупинити {}?"
+
+#: src/ui/pages/applications/mod.rs:1453 src/ui/pages/processes/mod.rs:1879
+msgid "Kill {}?"
+msgstr "Знищити {}?"
+
+#: src/ui/pages/applications/mod.rs:1454 src/ui/pages/processes/mod.rs:1880
+msgid "Continue {}?"
+msgstr "Продовжити {}?"
+
+#: src/ui/pages/applications/mod.rs:1460 src/ui/pages/processes/mod.rs:1886
+msgid "Unsaved work might be lost."
+msgstr "Не збережена робота може бути втрачена."
+
+#: src/ui/pages/applications/mod.rs:1461
+msgid ""
+"Halting an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
+msgstr ""
+"Зупинка додатку може призвести до серйозних ризиків, такі як: втрата даних і "
+"проблеми з безпекою. Продовжуйте на свій власний ризик."
+
+#: src/ui/pages/applications/mod.rs:1462
+msgid ""
+"Killing an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
+msgstr ""
+"Знищення додатку може призвести до серйозних ризиків, такі як: втрата даних "
+"і проблеми з безпекою. Продовжуйте на свій власний ризик."
+
+#: src/ui/pages/applications/mod.rs:1469
+#: data/resources/ui/pages/applications.ui:22
+#: data/resources/ui/pages/applications.ui:127
+msgid "End App"
+msgstr "Завершити додаток"
+
+#: src/ui/pages/applications/mod.rs:1470
+#: data/resources/ui/pages/applications.ui:10
+#: data/resources/ui/pages/applications.ui:30
+msgid "Halt App"
+msgstr "Зупинити додаток"
+
+#: src/ui/pages/applications/mod.rs:1471
+#: data/resources/ui/pages/applications.ui:6
+#: data/resources/ui/pages/applications.ui:26
+msgid "Kill App"
+msgstr "Знищити додаток"
+
+#: src/ui/pages/applications/mod.rs:1472
+#: data/resources/ui/pages/applications.ui:14
+#: data/resources/ui/pages/applications.ui:34
+msgid "Continue App"
+msgstr "Продовжити додаток"
+
+#: src/ui/pages/battery.rs:144 src/ui/pages/drive.rs:165
 msgid "Drive"
 msgstr "Накопичувач"
 
-#: src/ui/pages/drive.rs:216
-msgid "Total Usage"
-msgstr "Загальне використання"
+#: src/ui/pages/battery.rs:244
+msgid "Battery Charge"
+msgstr "Заряд акумулятора"
 
-#: src/ui/pages/drive.rs:223
-msgid "Read Speed"
-msgstr "Швидкість читання"
+#: src/ui/pages/battery.rs:251 data/resources/ui/pages/gpu.ui:55
+msgid "Power Usage"
+msgstr "Споживання електроенергії"
 
-#: src/ui/pages/drive.rs:227
-msgid "Write Speed"
-msgstr "Швидкість запису"
-
-#: src/ui/pages/drive.rs:265 src/ui/pages/drive.rs:271
-msgid "Yes"
-msgstr "Так"
-
-#: src/ui/pages/drive.rs:339 src/ui/pages/drive.rs:344
-#: src/ui/pages/network.rs:309 src/ui/pages/network.rs:318
+#: src/ui/pages/battery.rs:308 src/ui/pages/drive.rs:365
+#: src/ui/pages/drive.rs:395 src/ui/pages/network.rs:349
+#: src/ui/pages/network.rs:383
 msgid "Highest:"
 msgstr "Пікове навантаження:"
 
+#: src/ui/pages/cpu.rs:252 src/ui/pages/gpu.rs:241
+msgid "Total Usage"
+msgstr "Загальне використання"
+
+#: src/ui/pages/drive.rs:267
+msgid "Drive Activity"
+msgstr "Активність диску"
+
+#: src/ui/pages/drive.rs:274
+msgid "Read Speed"
+msgstr "Швидкість читання"
+
+#: src/ui/pages/drive.rs:278
+msgid "Write Speed"
+msgstr "Швидкість запису"
+
+#: src/ui/pages/drive.rs:432 src/ui/pages/drive.rs:442
+msgid "Yes"
+msgstr "Так"
+
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
-#: src/ui/pages/drive.rs:352
+#: src/ui/pages/drive.rs:454
 msgid "R: {} · W: {}"
 msgstr "Чит.: {} · Зап.: {}"
 
-#: src/ui/pages/gpu.rs:210
-msgid "GPU Usage"
-msgstr "Використання відеокарти"
-
-#: src/ui/pages/gpu.rs:218
+#: src/ui/pages/gpu.rs:249
 msgid "Video Encoder/Decoder Usage"
 msgstr "Використання відео кодувальника/декодувальника"
 
-#: src/ui/pages/gpu.rs:224
+#: src/ui/pages/gpu.rs:255
 msgid "Video Encoder Usage"
 msgstr "Використання кодувальника"
 
-#: src/ui/pages/gpu.rs:229
+#: src/ui/pages/gpu.rs:260
 msgid "Video Decoder Usage"
 msgstr "Використання декодувальника"
 
-#: src/ui/pages/gpu.rs:234
+#: src/ui/pages/gpu.rs:265
 msgid "Video Memory Usage"
 msgstr "Використання відеопам'яті"
 
-#: src/ui/pages/gpu.rs:377
+#: src/ui/pages/gpu.rs:428
 msgid "VRAM: {}"
 msgstr "Відеопам'ять: {}"
 
-#: src/ui/pages/memory.rs:193
+#: src/ui/pages/memory.rs:227
 msgid "Swap"
 msgstr "Swap"
 
-#: src/ui/pages/memory.rs:247
+#: src/ui/pages/memory.rs:291
 msgid "{} of {}"
 msgstr "{} із {}"
 
-#: src/ui/pages/memory.rs:250
+#: src/ui/pages/memory.rs:294
 msgid "{} MT/s"
 msgstr "{} МТ/с"
 
 #. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
 #. preferably be quite short or an abbreviation
-#: src/ui/pages/memory.rs:324
+#: src/ui/pages/memory.rs:371
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · Swap: {} %"
 
-#: src/ui/pages/network.rs:134 src/utils/network.rs:122
+#: src/ui/pages/network.rs:157 src/utils/network.rs:128
 msgid "Network Interface"
 msgstr "Мережевий інтерфейс"
 
-#: src/ui/pages/network.rs:221
+#: src/ui/pages/network.rs:261
 msgid "Receiving"
 msgstr "Отримується"
 
-#: src/ui/pages/network.rs:229
+#: src/ui/pages/network.rs:265
 msgid "Sending"
 msgstr "Відправляється"
 
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
-#: src/ui/pages/network.rs:332
+#: src/ui/pages/network.rs:406
 msgid "R: {} · S: {}"
-msgstr "Отримування: {} · Надсилання: {}"
+msgstr "Отрим.: {} · Надсил.: {}"
 
-#: src/ui/pages/processes/mod.rs:145 data/resources/ui/window.ui:93
-#: data/resources/ui/window.ui:100
-#: data/resources/ui/dialogs/settings_dialog.ui:182
+#: src/ui/pages/processes/mod.rs:177 data/resources/ui/window.ui:96
+#: data/resources/ui/window.ui:103
+#: data/resources/ui/dialogs/settings_dialog.ui:188
 msgid "Processes"
 msgstr "Процеси"
 
-#: src/ui/pages/processes/mod.rs:506
+#: src/ui/pages/processes/mod.rs:757
 msgid "Running Processes: {}"
 msgstr "Запущених процесів: {}"
 
-#: src/ui/pages/processes/mod.rs:577
-msgid "root"
-msgstr "root"
-
-#: src/ui/pages/processes/mod.rs:591
+#: src/ui/pages/processes/mod.rs:845
 msgid "Process"
 msgstr "Назва процесу"
 
-#: src/ui/pages/processes/mod.rs:637
-#: data/resources/ui/dialogs/process_dialog.ui:156
-#: data/resources/ui/dialogs/settings_dialog.ui:188
+#: src/ui/pages/processes/mod.rs:906
+#: data/resources/ui/dialogs/process_dialog.ui:177
+#: data/resources/ui/dialogs/settings_dialog.ui:205
 msgid "Process ID"
 msgstr "Ідентифікатор процесу"
 
-#: src/ui/pages/processes/mod.rs:675
-#: data/resources/ui/dialogs/process_dialog.ui:183
-#: data/resources/ui/dialogs/settings_dialog.ui:193
+#: src/ui/pages/processes/mod.rs:959
+#: data/resources/ui/dialogs/process_dialog.ui:204
+#: data/resources/ui/dialogs/settings_dialog.ui:210
 msgid "User"
 msgstr "Користувач"
 
-#: src/ui/window.rs:275
+#: src/ui/pages/processes/mod.rs:1634
+#: data/resources/ui/dialogs/process_dialog.ui:145
+#: data/resources/ui/dialogs/settings_dialog.ui:265
+msgid "Total CPU Time"
+msgstr "Загальне використання процесору"
+
+#: src/ui/pages/processes/mod.rs:1693
+#: data/resources/ui/dialogs/process_dialog.ui:154
+#: data/resources/ui/dialogs/settings_dialog.ui:270
+msgid "User CPU Time"
+msgstr "Використання процесору користувачем"
+
+#: src/ui/pages/processes/mod.rs:1752
+#: data/resources/ui/dialogs/process_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:275
+msgid "System CPU Time"
+msgstr "Системне використання процессору"
+
+#: src/ui/pages/processes/mod.rs:1811
+#: data/resources/ui/dialogs/process_options_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:280
+msgid "Priority"
+msgstr "Пріорітет"
+
+#: src/ui/pages/processes/mod.rs:1887
+msgid ""
+"Halting a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"Зупинка процесу може призвести до серйозних ризиків, такі як: втрата даних і "
+"проблеми з безпекою. Продовжуйте на свій власний ризик."
+
+#: src/ui/pages/processes/mod.rs:1888
+msgid ""
+"Killing a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"Знищення процесу може призвести до серйозних ризиків, такі як: втрата даних "
+"і проблеми з безпекою. Продовжуйте на свій власний ризик."
+
+#: src/ui/pages/processes/mod.rs:1895 data/resources/ui/pages/processes.ui:22
+#: data/resources/ui/pages/processes.ui:146
+msgid "End Process"
+msgstr "Завершити процес"
+
+#: src/ui/pages/processes/mod.rs:1896 data/resources/ui/pages/processes.ui:10
+#: data/resources/ui/pages/processes.ui:30
+msgid "Halt Process"
+msgstr "Зупинити процес"
+
+#: src/ui/pages/processes/mod.rs:1897 data/resources/ui/pages/processes.ui:6
+#: data/resources/ui/pages/processes.ui:26
+msgid "Kill Process"
+msgstr "Знищити процес"
+
+#: src/ui/pages/processes/mod.rs:1898 data/resources/ui/pages/processes.ui:14
+#: data/resources/ui/pages/processes.ui:34
+msgid "Continue Process"
+msgstr "Продовжити процес"
+
+#: src/ui/window.rs:301
 msgid "GPU {}"
 msgstr "Відеокарта {}"
 
-#: src/ui/window.rs:794
-msgid "End {}?"
-msgstr "Завершити {}?"
+#: src/ui/window.rs:916
+msgid "Successfully adjusted {}"
+msgstr "Успішно відкориговано {}"
 
-#: src/ui/window.rs:795
-msgid "Halt {}?"
-msgstr "Зупинити {}?"
+#: src/ui/window.rs:917
+msgid "There was a problem adjusting {}"
+msgstr "Виникли проблема при коригуванні {}"
 
-#: src/ui/window.rs:796
-msgid "Kill {}?"
-msgstr "Знищити {}?"
-
-#: src/ui/window.rs:797
-msgid "Continue {}?"
-msgstr "Продовжити {}?"
-
-#: src/ui/window.rs:803
-msgid "Unsaved work might be lost."
-msgstr "Не збережена робота може бути втрачена."
-
-#: src/ui/window.rs:804
-msgid ""
-"Halting an application can come with serious risks such as losing data and "
-"security implications. Use with caution."
-msgstr ""
-"Зупинка додатку може призвести до серйозних ризиків, такі як: втрата даних і "
-"проблеми з безпекою. Продовжуйте на свій власний ризик."
-
-#: src/ui/window.rs:805
-msgid ""
-"Killing an application can come with serious risks such as losing data and "
-"security implications. Use with caution."
-msgstr ""
-"Знищення додатку може призвести до серйозних ризиків, такі як: втрата даних "
-"і проблеми з безпекою. Продовжуйте на свій власний ризик."
-
-#: src/ui/window.rs:812
-msgid "End application"
-msgstr "Завершити додаток"
-
-#: src/ui/window.rs:813
-msgid "Halt application"
-msgstr "Зупинити додаток"
-
-#: src/ui/window.rs:814
-msgid "Kill application"
-msgstr "Знищити додаток"
-
-#: src/ui/window.rs:815
-msgid "Continue application"
-msgstr "Продовжити додаток"
-
-#: src/ui/window.rs:821
+#: src/ui/window.rs:997
 msgid "Successfully ended {}"
 msgstr "Успішно завершено {}"
 
-#: src/ui/window.rs:822
+#: src/ui/window.rs:998
 msgid "Successfully halted {}"
 msgstr "Успішно зупинено {}"
 
-#: src/ui/window.rs:823
+#: src/ui/window.rs:999
 msgid "Successfully killed {}"
 msgstr "Успішно знищено {}"
 
-#: src/ui/window.rs:824
+#: src/ui/window.rs:1000
 msgid "Successfully continued {}"
 msgstr "Успішно продовжено {}"
 
-#: src/ui/window.rs:831
+#: src/ui/window.rs:1007
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] ""
@@ -587,46 +565,106 @@ msgstr[0] ""
 msgstr[1] "Виникли проблеми при завершені {} процесів"
 msgstr[2] "Виникли проблеми при завершені {} процесів"
 
-#: src/ui/window.rs:837
+#: src/ui/window.rs:1013
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "Виникли проблеми при зупинці {} процесу"
 msgstr[1] "Виникли проблеми при зупинці {} процесів"
 msgstr[2] "Виникли проблеми при зупинці {} процесів"
 
-#: src/ui/window.rs:843
+#: src/ui/window.rs:1019
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "Виникли проблеми при знищенні {} процесу"
 msgstr[1] "Виникли проблеми при знищенні {} процесів"
 msgstr[2] "Виникли проблеми при знищенні {} процесів"
 
-#: src/ui/window.rs:849
+#: src/ui/window.rs:1025
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "Виникли проблеми при продовженні {} процесу"
 msgstr[1] "Виникли проблеми при продовженні {} процесів"
 msgstr[2] "Виникли проблеми при продовженні {} процесів"
 
-#: src/ui/window.rs:859
+#: src/ui/window.rs:1035
 msgid "There was a problem ending {}"
 msgstr "Виникли проблема при продовженні {}"
 
-#: src/ui/window.rs:860
+#: src/ui/window.rs:1036
 msgid "There was a problem halting {}"
 msgstr "Виникли проблема при зупинці {}"
 
-#: src/ui/window.rs:861
+#: src/ui/window.rs:1037
 msgid "There was a problem killing {}"
 msgstr "Сталася проблема при знищенні {}"
 
-#: src/ui/window.rs:862
+#: src/ui/window.rs:1038
 msgid "There was a problem continuing {}"
 msgstr "Сталася проблема при продовженні {}"
 
-#: src/utils/app.rs:756
+#: src/utils/app.rs:220
 msgid "System Processes"
 msgstr "Системні процеси"
+
+#: src/utils/battery.rs:80
+msgid "Charging"
+msgstr "Заряджається"
+
+#: src/utils/battery.rs:81
+msgid "Discharging"
+msgstr "Розряджається"
+
+#: src/utils/battery.rs:82
+msgid "Empty"
+msgstr "Порожня"
+
+#: src/utils/battery.rs:83
+msgid "Full"
+msgstr "Повна"
+
+#: src/utils/battery.rs:84
+msgid "Unknown"
+msgstr "Невідомо"
+
+#: src/utils/battery.rs:130
+msgid "Nickel-Metal Hydride"
+msgstr "Нікель-металевий гідрид"
+
+#: src/utils/battery.rs:131
+msgid "Nickel-Cadmium"
+msgstr "Нікель-кадмій"
+
+#: src/utils/battery.rs:132
+msgid "Nickel-Zinc"
+msgstr "Нікель-цинк"
+
+#: src/utils/battery.rs:133
+msgid "Lead-Acid"
+msgstr "Свинець"
+
+#: src/utils/battery.rs:134
+msgid "Lithium-Ion"
+msgstr "Літій-іон"
+
+#: src/utils/battery.rs:135
+msgid "Lithium Iron Phosphate"
+msgstr "Літієвий залізний фосфат"
+
+#: src/utils/battery.rs:136
+msgid "Lithium Polymer"
+msgstr "Літій полімер"
+
+#: src/utils/battery.rs:138
+msgid "Rechargeable Alkaline Managanese"
+msgstr "Акумуляторний лужний марганець"
+
+#: src/utils/battery.rs:232
+msgid "{} Battery"
+msgstr "{} акумулятор"
+
+#: src/utils/battery.rs:234
+msgid "Battery"
+msgstr "Акумулятор"
 
 #: src/utils/drive.rs:82 src/utils/drive.rs:153
 msgid "CD/DVD/Blu-ray Drive"
@@ -708,402 +746,450 @@ msgstr "{} ZFS розділ"
 msgid "{} Drive"
 msgstr "{} накопичувач"
 
-#: src/utils/network.rs:111
+#: src/utils/network.rs:116
 msgid "Bluetooth Tether"
 msgstr "Bluetooth з'єднання"
 
-#: src/utils/network.rs:112
+#: src/utils/network.rs:117
 msgid "Network Bridge"
 msgstr "Мережевий міст"
 
-#: src/utils/network.rs:113
+#: src/utils/network.rs:118
 msgid "Ethernet Connection"
 msgstr "Дротове з'єднання"
 
-#: src/utils/network.rs:114
+#: src/utils/network.rs:119
+msgid "Docker Bridge"
+msgstr "Міст Docker"
+
+#: src/utils/network.rs:120
 msgid "InfiniBand Connection"
 msgstr "InfiniBand з'єднання"
 
-#: src/utils/network.rs:115
+#: src/utils/network.rs:121
 msgid "Serial Line IP Connection"
 msgstr "Послідовне IP-з'єднання"
 
-#: src/utils/network.rs:116
+#: src/utils/network.rs:122
 msgid "Virtual Ethernet Device"
 msgstr "Віртуальний Ethernet пристрій"
 
-#: src/utils/network.rs:117
+#: src/utils/network.rs:123
 msgid "VM Network Bridge"
 msgstr "Мережевий міст віртуальної машини"
 
-#: src/utils/network.rs:118
+#: src/utils/network.rs:124
 msgid "VPN Tunnel"
 msgstr "Тунель VPN"
 
-#: src/utils/network.rs:119
+#: src/utils/network.rs:125
 msgid "VPN Tunnel (WireGuard)"
 msgstr "Тунель VPN (WireGuard)"
 
-#: src/utils/network.rs:120
+#: src/utils/network.rs:126
 msgid "Wi-Fi Connection"
 msgstr "Wi-Fi з'єднання"
 
-#: src/utils/network.rs:121
+#: src/utils/network.rs:127
 msgid "WWAN Connection"
 msgstr "WWAN з'єдання"
 
-#: src/utils/units.rs:51
+#: src/utils/units.rs:59
 msgid "{} K"
 msgstr "{} K"
 
-#: src/utils/units.rs:53
+#: src/utils/units.rs:61
 msgid "{} °C"
 msgstr "{} °C"
 
-#: src/utils/units.rs:55
+#: src/utils/units.rs:63
 msgid "{} °F"
 msgstr "{} °F"
 
-#: src/utils/units.rs:73 src/utils/units.rs:87 src/utils/units.rs:107
-#: src/utils/units.rs:121
+#: src/utils/units.rs:81 src/utils/units.rs:95 src/utils/units.rs:115
+#: src/utils/units.rs:129
 msgid "{} B"
 msgstr "{} Б"
 
-#: src/utils/units.rs:74 src/utils/units.rs:88
+#: src/utils/units.rs:82 src/utils/units.rs:96
 msgid "{} kB"
 msgstr "{} кБ"
 
-#: src/utils/units.rs:75 src/utils/units.rs:89
+#: src/utils/units.rs:83 src/utils/units.rs:97
 msgid "{} MB"
 msgstr "{} МБ"
 
-#: src/utils/units.rs:76 src/utils/units.rs:90
+#: src/utils/units.rs:84 src/utils/units.rs:98
 msgid "{} GB"
 msgstr "{} ГБ"
 
-#: src/utils/units.rs:77 src/utils/units.rs:91
+#: src/utils/units.rs:85 src/utils/units.rs:99
 msgid "{} TB"
 msgstr "{} ТБ"
 
-#: src/utils/units.rs:78 src/utils/units.rs:92
+#: src/utils/units.rs:86 src/utils/units.rs:100
 msgid "{} PB"
 msgstr "{} ПБ"
 
-#: src/utils/units.rs:79 src/utils/units.rs:93
+#: src/utils/units.rs:87 src/utils/units.rs:101
 msgid "{} EB"
 msgstr "{} ЕБ"
 
-#: src/utils/units.rs:80 src/utils/units.rs:94
+#: src/utils/units.rs:88 src/utils/units.rs:102
 msgid "{} ZB"
 msgstr "{} ЗБ"
 
-#: src/utils/units.rs:81 src/utils/units.rs:95
+#: src/utils/units.rs:89 src/utils/units.rs:103
 msgid "{} YB"
 msgstr "{} ЙБ"
 
-#: src/utils/units.rs:82 src/utils/units.rs:96
+#: src/utils/units.rs:90 src/utils/units.rs:104
 msgid "{} RB"
 msgstr "{} РБ"
 
-#: src/utils/units.rs:83 src/utils/units.rs:97
+#: src/utils/units.rs:91 src/utils/units.rs:105
 msgid "{} QB"
 msgstr "{} КБ"
 
-#: src/utils/units.rs:108 src/utils/units.rs:122
+#: src/utils/units.rs:116 src/utils/units.rs:130
 msgid "{} KiB"
 msgstr "{} КіБ"
 
-#: src/utils/units.rs:109 src/utils/units.rs:123
+#: src/utils/units.rs:117 src/utils/units.rs:131
 msgid "{} MiB"
 msgstr "{} МіБ"
 
-#: src/utils/units.rs:110 src/utils/units.rs:124
+#: src/utils/units.rs:118 src/utils/units.rs:132
 msgid "{} GiB"
 msgstr "{} ГіБ"
 
-#: src/utils/units.rs:111 src/utils/units.rs:125
+#: src/utils/units.rs:119 src/utils/units.rs:133
 msgid "{} TiB"
 msgstr "{} ТіБ"
 
-#: src/utils/units.rs:112 src/utils/units.rs:126
+#: src/utils/units.rs:120 src/utils/units.rs:134
 msgid "{} PiB"
 msgstr "{} ПіБ"
 
-#: src/utils/units.rs:113 src/utils/units.rs:127
+#: src/utils/units.rs:121 src/utils/units.rs:135
 msgid "{} EiB"
 msgstr "{} ЕіБ"
 
-#: src/utils/units.rs:114 src/utils/units.rs:128
+#: src/utils/units.rs:122 src/utils/units.rs:136
 msgid "{} ZiB"
 msgstr "{} ЗіБ"
 
-#: src/utils/units.rs:115 src/utils/units.rs:129
+#: src/utils/units.rs:123 src/utils/units.rs:137
 msgid "{} YiB"
 msgstr "{} ЙіБ"
 
-#: src/utils/units.rs:116 src/utils/units.rs:130
+#: src/utils/units.rs:124 src/utils/units.rs:138
 msgid "{} RiB"
 msgstr "{} РіБ"
 
-#: src/utils/units.rs:117 src/utils/units.rs:131
+#: src/utils/units.rs:125 src/utils/units.rs:139
 msgid "{} QiB"
 msgstr "{} КіБ"
 
-#: src/utils/units.rs:158 src/utils/units.rs:175
+#: src/utils/units.rs:166 src/utils/units.rs:183
 msgid "{} B/s"
 msgstr "{} Б/с"
 
-#: src/utils/units.rs:159
+#: src/utils/units.rs:167
 msgid "{} kB/s"
 msgstr "{} кБ/с"
 
-#: src/utils/units.rs:160
+#: src/utils/units.rs:168
 msgid "{} MB/s"
 msgstr "{} МБ/с"
 
-#: src/utils/units.rs:161
+#: src/utils/units.rs:169
 msgid "{} GB/s"
 msgstr "{} ГБ/с"
 
-#: src/utils/units.rs:162
+#: src/utils/units.rs:170
 msgid "{} TB/s"
 msgstr "{} ТБ/с"
 
-#: src/utils/units.rs:163
+#: src/utils/units.rs:171
 msgid "{} PB/s"
 msgstr "{} ПБ/с"
 
-#: src/utils/units.rs:164
+#: src/utils/units.rs:172
 msgid "{} EB/s"
 msgstr "{} ЕБ/с"
 
-#: src/utils/units.rs:165
+#: src/utils/units.rs:173
 msgid "{} ZB/s"
 msgstr "{} ЗБ/с"
 
-#: src/utils/units.rs:166
+#: src/utils/units.rs:174
 msgid "{} YB/s"
 msgstr "{} ЙБ/с"
 
-#: src/utils/units.rs:167
+#: src/utils/units.rs:175
 msgid "{} RB/s"
 msgstr "{} РБ/с"
 
-#: src/utils/units.rs:168
+#: src/utils/units.rs:176
 msgid "{} QB/s"
 msgstr "{} КБ/с"
 
-#: src/utils/units.rs:176
+#: src/utils/units.rs:184
 msgid "{} KiB/s"
 msgstr "{} КіБ/с"
 
-#: src/utils/units.rs:177
+#: src/utils/units.rs:185
 msgid "{} MiB/s"
 msgstr "{} МіБ/с"
 
-#: src/utils/units.rs:178
+#: src/utils/units.rs:186
 msgid "{} GiB/s"
 msgstr "{} ГіБ/с"
 
-#: src/utils/units.rs:179
+#: src/utils/units.rs:187
 msgid "{} TiB/s"
 msgstr "{} ТіБ/с"
 
-#: src/utils/units.rs:180
+#: src/utils/units.rs:188
 msgid "{} PiB/s"
 msgstr "{} ПіБ/с"
 
-#: src/utils/units.rs:181
+#: src/utils/units.rs:189
 msgid "{} EiB/s"
 msgstr "{} ЕіБ/с"
 
-#: src/utils/units.rs:182
+#: src/utils/units.rs:190
 msgid "{} ZiB/s"
 msgstr "{} ЗіБ/с"
 
-#: src/utils/units.rs:183
+#: src/utils/units.rs:191
 msgid "{} YiB/s"
 msgstr "{} ЙіБ/с"
 
-#: src/utils/units.rs:184
+#: src/utils/units.rs:192
 msgid "{} RiB/s"
 msgstr "{} РіБ/с"
 
-#: src/utils/units.rs:185
+#: src/utils/units.rs:193
 msgid "{} QiB/s"
 msgstr "{} КіБ/с"
 
-#: src/utils/units.rs:192 src/utils/units.rs:209
+#: src/utils/units.rs:200 src/utils/units.rs:217
 msgid "{} b/s"
 msgstr "{} б/с"
 
-#: src/utils/units.rs:193
+#: src/utils/units.rs:201
 msgid "{} kb/s"
 msgstr "{} кб/с"
 
-#: src/utils/units.rs:194
+#: src/utils/units.rs:202
 msgid "{} Mb/s"
 msgstr "{} Мб/с"
 
-#: src/utils/units.rs:195
+#: src/utils/units.rs:203
 msgid "{} Gb/s"
 msgstr "{} Гб/с"
 
-#: src/utils/units.rs:196
+#: src/utils/units.rs:204
 msgid "{} Tb/s"
 msgstr "{} Тб/с"
 
-#: src/utils/units.rs:197
+#: src/utils/units.rs:205
 msgid "{} Pb/s"
 msgstr "{} Пб/с"
 
-#: src/utils/units.rs:198
+#: src/utils/units.rs:206
 msgid "{} Eb/s"
 msgstr "{} Еб/с"
 
-#: src/utils/units.rs:199
+#: src/utils/units.rs:207
 msgid "{} Zb/s"
 msgstr "{} Зб/с"
 
-#: src/utils/units.rs:200
+#: src/utils/units.rs:208
 msgid "{} Yb/s"
 msgstr "{} Йб/с"
 
-#: src/utils/units.rs:201
+#: src/utils/units.rs:209
 msgid "{} Rb/s"
 msgstr "{} Рб/с"
 
-#: src/utils/units.rs:202
+#: src/utils/units.rs:210
 msgid "{} Qb/s"
 msgstr "{} Кб/с"
 
-#: src/utils/units.rs:210
+#: src/utils/units.rs:218
 msgid "{} Kib/s"
 msgstr "{} КіБ/с"
 
-#: src/utils/units.rs:211
+#: src/utils/units.rs:219
 msgid "{} Mib/s"
 msgstr "{} МіБ/с"
 
-#: src/utils/units.rs:212
+#: src/utils/units.rs:220
 msgid "{} Gib/s"
 msgstr "{} ГіБ/с"
 
-#: src/utils/units.rs:213
+#: src/utils/units.rs:221
 msgid "{} Tib/s"
 msgstr "{} ТіБ/с"
 
-#: src/utils/units.rs:214
+#: src/utils/units.rs:222
 msgid "{} Pib/s"
 msgstr "{} ПіБ/с"
 
-#: src/utils/units.rs:215
+#: src/utils/units.rs:223
 msgid "{} Eib/s"
 msgstr "{} ЕіБ/с"
 
-#: src/utils/units.rs:216
+#: src/utils/units.rs:224
 msgid "{} Zib/s"
 msgstr "{} ЗіБ/с"
 
-#: src/utils/units.rs:217
+#: src/utils/units.rs:225
 msgid "{} Yib/s"
 msgstr "{} ЙіБ/с"
 
-#: src/utils/units.rs:218
+#: src/utils/units.rs:226
 msgid "{} Rib/s"
 msgstr "{} РіБ/с"
 
-#: src/utils/units.rs:219
+#: src/utils/units.rs:227
 msgid "{} Qib/s"
 msgstr "{} КіБ/с"
 
-#: src/utils/units.rs:226
+#: src/utils/units.rs:234
 msgid "{} Hz"
 msgstr "{} Гц"
 
-#: src/utils/units.rs:227
+#: src/utils/units.rs:235
 msgid "{} kHz"
 msgstr "{} кГц"
 
-#: src/utils/units.rs:228
+#: src/utils/units.rs:236
 msgid "{} MHz"
 msgstr "{} МГц"
 
-#: src/utils/units.rs:229
+#: src/utils/units.rs:237
 msgid "{} GHz"
 msgstr "{} ГГц"
 
-#: src/utils/units.rs:230
+#: src/utils/units.rs:238
 msgid "{} THz"
 msgstr "{} ТГц"
 
-#: src/utils/units.rs:231
+#: src/utils/units.rs:239
 msgid "{} PHz"
 msgstr "{} ПГц"
 
-#: src/utils/units.rs:232
+#: src/utils/units.rs:240
 msgid "{} EHz"
 msgstr "{} ЕГц"
 
-#: src/utils/units.rs:233
+#: src/utils/units.rs:241
 msgid "{} ZHz"
 msgstr "{} ЗГц"
 
-#: src/utils/units.rs:234
+#: src/utils/units.rs:242
 msgid "{} YHz"
 msgstr "{} ЙГц"
 
-#: src/utils/units.rs:235
+#: src/utils/units.rs:243
 msgid "{} RHz"
 msgstr "{} РГц"
 
-#: src/utils/units.rs:236
+#: src/utils/units.rs:244
 msgid "{} QHz"
 msgstr "{} ЙГц"
 
-#: src/utils/units.rs:243
+#: src/utils/units.rs:251
 msgid "{} W"
 msgstr "{} Вт"
 
-#: src/utils/units.rs:244
+#: src/utils/units.rs:252
 msgid "{} kW"
 msgstr "{} кВт"
 
-#: src/utils/units.rs:245
+#: src/utils/units.rs:253
 msgid "{} MW"
 msgstr "{} МВт"
 
-#: src/utils/units.rs:246
+#: src/utils/units.rs:254
 msgid "{} GW"
 msgstr "{} ГВт"
 
-#: src/utils/units.rs:247
+#: src/utils/units.rs:255
 msgid "{} TW"
 msgstr "{} ТВт"
 
-#: src/utils/units.rs:248
+#: src/utils/units.rs:256
 msgid "{} PW"
 msgstr "{} ПВт"
 
-#: src/utils/units.rs:249
+#: src/utils/units.rs:257
 msgid "{} EW"
 msgstr "{} ЕВт"
 
-#: src/utils/units.rs:250
+#: src/utils/units.rs:258
 msgid "{} ZW"
 msgstr "{} ЗВт"
 
-#: src/utils/units.rs:251
+#: src/utils/units.rs:259
 msgid "{} YW"
 msgstr "{} ЙВт"
 
-#: src/utils/units.rs:252
+#: src/utils/units.rs:260
 msgid "{} RW"
 msgstr "{} РВт"
 
-#: src/utils/units.rs:253
+#: src/utils/units.rs:261
 msgid "{} QW"
 msgstr "{} КВт"
+
+#: src/utils/units.rs:270 src/utils/units.rs:284
+msgid "{} Wh"
+msgstr "{} Вт/год"
+
+#: src/utils/units.rs:271 src/utils/units.rs:285
+msgid "{} kWh"
+msgstr "{} кВт/год"
+
+#: src/utils/units.rs:272 src/utils/units.rs:286
+msgid "{} MWh"
+msgstr "{} МВт/год"
+
+#: src/utils/units.rs:273 src/utils/units.rs:287
+msgid "{} GWh"
+msgstr "{} ГВт/год"
+
+#: src/utils/units.rs:274 src/utils/units.rs:288
+msgid "{} TWh"
+msgstr "{} ТВт/год"
+
+#: src/utils/units.rs:275 src/utils/units.rs:289
+msgid "{} PWh"
+msgstr "{} ПВт/год"
+
+#: src/utils/units.rs:276 src/utils/units.rs:290
+msgid "{} EWh"
+msgstr "{} ЕВт/год"
+
+#: src/utils/units.rs:277 src/utils/units.rs:291
+msgid "{} ZWh"
+msgstr "{} ЗВт/год"
+
+#: src/utils/units.rs:278 src/utils/units.rs:292
+msgid "{} YWh"
+msgstr "{} ЙВт/год"
+
+#: src/utils/units.rs:279 src/utils/units.rs:293
+msgid "{} RWh"
+msgstr "{} РВт/год"
+
+#: src/utils/units.rs:280 src/utils/units.rs:294
+msgid "{} QWh"
+msgstr "{} КВт/год"
 
 #: data/resources/ui/shortcuts.ui:11
 msgctxt "shortcut window"
@@ -1132,28 +1218,33 @@ msgstr "Перемкнути поле пошуку"
 
 #: data/resources/ui/shortcuts.ui:38
 msgctxt "shortcut window"
-msgid "End Application/Process"
+msgid "End App/Process"
 msgstr "Завершити додаток/процес"
 
 #: data/resources/ui/shortcuts.ui:44
 msgctxt "shortcut window"
-msgid "Kill Application/Process"
+msgid "Kill App/Process"
 msgstr "Знищити додаток/процес"
 
 #: data/resources/ui/shortcuts.ui:50
 msgctxt "shortcut window"
-msgid "Halt Application/Process"
+msgid "Halt App/Process"
 msgstr "Зупинити додаток/процес"
 
 #: data/resources/ui/shortcuts.ui:56
 msgctxt "shortcut window"
-msgid "Continue Application/Process"
+msgid "Continue App/Process"
 msgstr "Продовжити додаток/процес"
 
 #: data/resources/ui/shortcuts.ui:62
 msgctxt "shortcut window"
-msgid "Show Information for Application/Process"
+msgid "Show Information for App/Process"
 msgstr "Показати інформацію про додаток/процес"
+
+#: data/resources/ui/shortcuts.ui:68
+msgctxt "shortcut window"
+msgid "Show Process Options"
+msgstr "Показати налаштування процесу"
 
 #: data/resources/ui/window.ui:6
 msgid "Preferences"
@@ -1167,140 +1258,227 @@ msgstr "Клавіатурні скорочення"
 msgid "About Resources"
 msgstr "Про Ресурси"
 
-#: data/resources/ui/dialogs/app_dialog.ui:9
-msgid "Application Information"
+#: data/resources/ui/dialogs/app_dialog.ui:7
+msgid "App Information"
 msgstr "Інформація про додаток"
 
-#: data/resources/ui/dialogs/app_dialog.ui:71
-#: data/resources/ui/dialogs/process_dialog.ui:54
-#: data/resources/ui/pages/cpu.ui:42 data/resources/ui/pages/cpu.ui:55
-#: data/resources/ui/pages/drive.ui:22 data/resources/ui/pages/gpu.ui:22
-#: data/resources/ui/pages/memory.ui:31 data/resources/ui/pages/network.ui:22
+#: data/resources/ui/dialogs/app_dialog.ui:70
+#: data/resources/ui/dialogs/process_dialog.ui:48
+#: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37
+#: data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22
+#: data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31
+#: data/resources/ui/pages/network.ui:22
 msgid "Usage"
 msgstr "Використання"
 
-#: data/resources/ui/dialogs/app_dialog.ui:166
-#: data/resources/ui/dialogs/process_dialog.ui:149
-#: data/resources/ui/pages/applications.ui:26 data/resources/ui/pages/cpu.ui:91
-#: data/resources/ui/pages/drive.ui:36 data/resources/ui/pages/gpu.ui:80
+#: data/resources/ui/dialogs/app_dialog.ui:165
+#: data/resources/ui/dialogs/process_dialog.ui:170
+#: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:89
+#: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:80
 #: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
-#: data/resources/ui/pages/processes.ui:26
 msgid "Properties"
 msgstr "Властивості"
 
-#: data/resources/ui/dialogs/app_dialog.ui:172
+#: data/resources/ui/dialogs/app_dialog.ui:171
 msgid "ID"
 msgstr "Ідентифікатор"
 
-#: data/resources/ui/dialogs/app_dialog.ui:182
-#: data/resources/ui/dialogs/process_dialog.ui:165
+#: data/resources/ui/dialogs/app_dialog.ui:181
+#: data/resources/ui/dialogs/process_dialog.ui:186
 msgid "Running Since"
 msgstr "Запущено з"
 
-#: data/resources/ui/dialogs/app_dialog.ui:190
+#: data/resources/ui/dialogs/app_dialog.ui:189
 msgid "Running Processes"
 msgstr "Запущених процесів"
 
-#: data/resources/ui/dialogs/app_dialog.ui:199
-#: data/resources/ui/dialogs/process_dialog.ui:201
+#: data/resources/ui/dialogs/app_dialog.ui:198
+#: data/resources/ui/dialogs/process_dialog.ui:222
 msgid "Containerized"
 msgstr "Контейнірізовано"
 
-#: data/resources/ui/dialogs/process_dialog.ui:9
+#: data/resources/ui/dialogs/process_dialog.ui:7
 msgid "Process Information"
 msgstr "Інформація про процес"
 
-#: data/resources/ui/dialogs/process_dialog.ui:174
+#: data/resources/ui/dialogs/process_dialog.ui:195
 msgid "Commandline"
 msgstr "Аргументи командного рядку"
 
-#: data/resources/ui/dialogs/process_dialog.ui:192
+#: data/resources/ui/dialogs/process_dialog.ui:213
 msgid "Control Group"
 msgstr "Група контролю"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:10
+#: data/resources/ui/dialogs/process_options_dialog.ui:7
+#: data/resources/ui/dialogs/process_options_dialog.ui:69
+msgid "Process Options"
+msgstr "Налаштування процесу"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:72
+msgid "Niceness"
+msgstr "Пріоритет (niceness)"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:73
+msgid ""
+"The priority of a process is given by its niceness. A lower niceness value "
+"correspond to a higher priority."
+msgstr ""
+"Пріоритет процесору у niceness значенні. Чим нижче значення - тим більший "
+"пріоритет."
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:91
+msgctxt "process priority"
+msgid "Very High"
+msgstr "Дуже високий"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:92
+msgctxt "process priority"
+msgid "High"
+msgstr "Високий"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:93
+msgctxt "process priority"
+msgid "Normal"
+msgstr "Нормальний"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:94
+msgctxt "process priority"
+msgid "Low"
+msgstr "Низький"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:95
+msgctxt "process priority"
+msgid "Very Low"
+msgstr "Дуже низький"
+
+# Я так розумію, що мова йде про ось це: https://uk.wikipedia.org/wiki/%D0%A1%D0%BF%D0%BE%D1%80%D1%96%D0%B4%D0%BD%D0%B5%D0%BD%D1%96%D1%81%D1%82%D1%8C_%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D0%BE%D1%80%D0%B0 але я ні на що не претендую.
+#: data/resources/ui/dialogs/process_options_dialog.ui:103
+msgid "Processor Affinity"
+msgstr "Спорідненість процесора"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:108
+msgid "Toggle All"
+msgstr "Перемикнути всі"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:111
+msgid "Select which processor cores the process is allowed to run on"
+msgstr "Оберіть на яких ядрах процесору дозволено працювати процесу"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:7
 msgid "General"
 msgstr "Загальні"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:13
+#: data/resources/ui/dialogs/settings_dialog.ui:10
 msgid "Units"
 msgstr "Одиниці"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:16
+#: data/resources/ui/dialogs/settings_dialog.ui:13
 msgid "Data Unit Prefix"
 msgstr "Префікс одиниці даних"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:20
+#: data/resources/ui/dialogs/settings_dialog.ui:17
 msgid "Decimal"
 msgstr "Десяткова"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:21
+#: data/resources/ui/dialogs/settings_dialog.ui:18
 msgid "Binary"
 msgstr "Двійкова"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:29
+#: data/resources/ui/dialogs/settings_dialog.ui:26
 msgid "Show Network Speeds in Bits per Second"
 msgstr "Показувати швидкість мережі у бітах в секунду"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:34
+#: data/resources/ui/dialogs/settings_dialog.ui:31
 msgid "Temperature Unit"
 msgstr "Одиниця вимірювання температури"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:38
+#: data/resources/ui/dialogs/settings_dialog.ui:35
 msgid "Celsius"
 msgstr "Цельсій"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:39
+#: data/resources/ui/dialogs/settings_dialog.ui:36
 msgid "Kelvin"
 msgstr "Кельвін"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:40
+#: data/resources/ui/dialogs/settings_dialog.ui:37
 msgid "Fahrenheit"
 msgstr "Фаренгейт"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:50
+#: data/resources/ui/dialogs/settings_dialog.ui:47
 msgid "User Interface"
 msgstr "Інтерфейс користувача"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:57
+#: data/resources/ui/dialogs/settings_dialog.ui:50
+msgid "Refresh Speed"
+msgstr "Швидкість оновлення"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:51
+msgid "Higher refresh speeds can lead to higher processor usage"
+msgstr ""
+"Більша швидкість оновлення може призвести до збільшення навантаження "
+"процессору"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:55
+msgctxt "UI refresh speed"
 msgid "Very Slow"
-msgstr "Дуже повільно"
+msgstr "Дуже повільна"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:56
+msgctxt "UI refresh speed"
+msgid "Slow"
+msgstr "Повільна"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:57
+msgctxt "UI refresh speed"
+msgid "Normal"
+msgstr "Нормальна"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:58
-msgid "Slow"
-msgstr "Повільно"
+msgctxt "UI refresh speed"
+msgid "Fast"
+msgstr "Швидка"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:59
-msgid "Normal"
-msgstr "Нормально"
-
-#: data/resources/ui/dialogs/settings_dialog.ui:60
-msgid "Fast"
-msgstr "Швидко"
-
-#: data/resources/ui/dialogs/settings_dialog.ui:61
+msgctxt "UI refresh speed"
 msgid "Very Fast"
-msgstr "Дуже швидко"
+msgstr "Дуже швидка"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:69
+#: data/resources/ui/dialogs/settings_dialog.ui:67
 msgid "Show Graph Grids"
 msgstr "Показати ґратку графіку"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:74
+#: data/resources/ui/dialogs/settings_dialog.ui:72
 msgid "Graph Data Points"
 msgstr "Кількість точок даних графіку"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:88
+#: data/resources/ui/dialogs/settings_dialog.ui:86
 msgid "Show Search Fields on Launch"
 msgstr "Показувати поля пошуку при запуску додатка"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:93
+#: data/resources/ui/dialogs/settings_dialog.ui:91
 msgid "Show Usage Details in Sidebar"
 msgstr "Показати деталі використання у бічній панелі"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:98
+#: data/resources/ui/dialogs/settings_dialog.ui:92
+msgid "If enabled, the usage along with other information will be displayed"
+msgstr ""
+"Якщо активовано, використання (а також інша інформація) буде відображатися"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:97
 msgid "Show Device Descriptions in Sidebar"
 msgstr "Показати опис пристрою у бічній панелі"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:98
+msgid ""
+"If enabled, a device identifier like its name or device type will be "
+"displayed"
+msgstr ""
+"Якщо активовано, ідентифікатор пристрою (накшталт назви або типу) будуть "
+"відображатися"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:103
+msgid "Sidebar Meter Type"
+msgstr "Тип вимірювання у бічній панелі"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:107
 msgid "Bar"
@@ -1310,104 +1488,169 @@ msgstr "Полоса"
 msgid "Graph"
 msgstr "Графік"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:124
-#: data/resources/ui/dialogs/settings_dialog.ui:185
+#: data/resources/ui/dialogs/settings_dialog.ui:116
+msgid "Normalize Processor Usage"
+msgstr "Нормалізувати використання процесору"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:117
+msgid ""
+"If enabled, the total usage of all cores will be divided by the amount of "
+"cores"
+msgstr ""
+"Якщо активовано, загальне використання усіх ядер буде поділено на кількість "
+"ядер"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:130
+#: data/resources/ui/dialogs/settings_dialog.ui:202
 msgid "Information Columns"
 msgstr "Колонки з інформацією"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:253
+#: data/resources/ui/dialogs/settings_dialog.ui:191
+#: data/resources/ui/pages/cpu.ui:22 data/resources/ui/pages/processes.ui:40
+msgid "Options"
+msgstr "Налаштування"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:194
+msgid "Show Niceness Values"
+msgstr "Показати значення пріоритету (niceness)"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:195
+msgid ""
+"Display priorities as niceness to allow for more fine-grained adjustments"
+msgstr ""
+"Показувати пріоритети у вигляді значення niceness для більш тонкого "
+"корегування"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:290
 msgid "Devices"
 msgstr "Пристрої"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:256
+#: data/resources/ui/dialogs/settings_dialog.ui:293
 msgid "Drives"
 msgstr "Накопичувачі"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:259
+#: data/resources/ui/dialogs/settings_dialog.ui:296
 msgid "Show Virtual Drives"
 msgstr "Показати віртуальні диски"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:269
+#: data/resources/ui/dialogs/settings_dialog.ui:297
+msgid "Virtual drives are for example ZFS volumes or mapped devices"
+msgstr "Віртуальні диски, наприклад, ZFS розділ"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:307
 msgid "Show Virtual Network Interfaces"
 msgstr "Показати віртуальні мережеві інтерфейси"
 
-#: data/resources/ui/pages/applications.ui:6
-#: data/resources/ui/pages/applications.ui:36
-msgid "Kill Application"
-msgstr "Знищити додаток"
+#: data/resources/ui/dialogs/settings_dialog.ui:308
+msgid "Virtual network interfaces are for example bridges or VPN tunnels"
+msgstr "Віртуальні мережеві інтерфейси, накшталт мостів або VPN тунелів"
 
-#: data/resources/ui/pages/applications.ui:10
 #: data/resources/ui/pages/applications.ui:40
-msgid "Halt Application"
-msgstr "Зупинити додаток"
+#: data/resources/ui/pages/applications.ui:116
+#: data/resources/ui/pages/applications.ui:118
+msgid "Show App Information"
+msgstr "Показати інформацію про додаток"
 
-#: data/resources/ui/pages/applications.ui:14
-#: data/resources/ui/pages/applications.ui:44
-msgid "Continue Application"
-msgstr "Продовжити додаток"
+#: data/resources/ui/pages/applications.ui:80
+msgid "Search applications"
+msgstr "Шукати додатки"
 
-#: data/resources/ui/pages/applications.ui:32
-#: data/resources/ui/pages/applications.ui:111
-msgid "End Application"
-msgstr "Завершити додаток"
+#: data/resources/ui/pages/applications.ui:98
+#: data/resources/ui/pages/processes.ui:104
+msgid "Search"
+msgstr "Шукати"
 
-#: data/resources/ui/pages/cpu.ui:22
-msgid "Options"
-msgstr "Налаштування"
+#: data/resources/ui/pages/applications.ui:100
+#: data/resources/ui/pages/processes.ui:106
+msgid "Toggle search field"
+msgstr "Перемкнути поле пошуку"
+
+#: data/resources/ui/pages/battery.ui:36
+msgid "Battery Health"
+msgstr "Здоров'я акумулятора"
+
+#: data/resources/ui/pages/battery.ui:45
+msgid "Design Capacity"
+msgstr "Ємність"
+
+#: data/resources/ui/pages/battery.ui:54
+msgid "Charge Cycles"
+msgstr "Циклів заряджання"
+
+#: data/resources/ui/pages/battery.ui:63
+msgid "Technology"
+msgstr "Технологія"
+
+#: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:87
+#: data/resources/ui/pages/network.ui:58
+msgid "Manufacturer"
+msgstr "Виробник"
+
+#: data/resources/ui/pages/battery.ui:81
+msgid "Model Name"
+msgstr "Назва моделі"
+
+#: data/resources/ui/pages/battery.ui:90 data/resources/ui/pages/drive.ui:66
+msgid "Device"
+msgstr "Пристрій"
 
 #: data/resources/ui/pages/cpu.ui:26
 msgid "Show Usages of Logical CPUs"
 msgstr "Показати використання логічних процесорів"
 
-#: data/resources/ui/pages/cpu.ui:77 data/resources/ui/pages/gpu.ui:66
+#: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
 msgid "Sensors"
 msgstr "Сенсори"
 
-#: data/resources/ui/pages/cpu.ui:84 data/resources/ui/pages/gpu.ui:69
+#: data/resources/ui/pages/cpu.ui:82 data/resources/ui/pages/gpu.ui:69
 msgid "Temperature"
 msgstr "Температура"
 
-#: data/resources/ui/pages/cpu.ui:98
+#: data/resources/ui/pages/cpu.ui:96
 msgid "Max Frequency"
 msgstr "Максимальна частота"
 
-#: data/resources/ui/pages/cpu.ui:107
+#: data/resources/ui/pages/cpu.ui:105
 msgid "Logical Cores"
 msgstr "Логічні ядра"
 
-#: data/resources/ui/pages/cpu.ui:116
+#: data/resources/ui/pages/cpu.ui:114
 msgid "Physical Cores"
 msgstr "Фізичні ядра"
 
-#: data/resources/ui/pages/cpu.ui:125
+#: data/resources/ui/pages/cpu.ui:123
 msgid "Sockets"
 msgstr "Сокетів"
 
-#: data/resources/ui/pages/cpu.ui:134
+#: data/resources/ui/pages/cpu.ui:132
 msgid "Virtualization"
 msgstr "Віртуалізація"
 
-#: data/resources/ui/pages/cpu.ui:143
+#: data/resources/ui/pages/cpu.ui:141
 msgid "Architecture"
 msgstr "Архітектура"
 
-#: data/resources/ui/pages/drive.ui:39 data/resources/ui/pages/memory.ui:72
+#: data/resources/ui/pages/drive.ui:38
+msgid "Total Read"
+msgstr "Загально прочитано"
+
+#: data/resources/ui/pages/drive.ui:47
+msgid "Total Written"
+msgstr "Загально записано"
+
+#: data/resources/ui/pages/drive.ui:57 data/resources/ui/pages/memory.ui:72
 msgid "Type"
 msgstr "Тип"
 
-#: data/resources/ui/pages/drive.ui:48
-msgid "Device"
-msgstr "Пристрій"
-
-#: data/resources/ui/pages/drive.ui:57
+#: data/resources/ui/pages/drive.ui:75
 msgid "Capacity"
 msgstr "Ємність"
 
-#: data/resources/ui/pages/drive.ui:66
+#: data/resources/ui/pages/drive.ui:84
 msgid "Writable"
 msgstr "Можна записувати дані?"
 
-#: data/resources/ui/pages/drive.ui:75
+#: data/resources/ui/pages/drive.ui:93
 msgid "Removable"
 msgstr "Можна витягнути?"
 
@@ -1419,14 +1662,6 @@ msgstr "Частота ядра"
 msgid "Video Memory Frequency"
 msgstr "Частота пам'яті"
 
-#: data/resources/ui/pages/gpu.ui:55
-msgid "Power Usage"
-msgstr "Споживання електроенергії"
-
-#: data/resources/ui/pages/gpu.ui:87 data/resources/ui/pages/network.ui:58
-msgid "Manufacturer"
-msgstr "Виробник"
-
 #: data/resources/ui/pages/gpu.ui:96
 msgid "PCI Slot"
 msgstr "Слот PCI"
@@ -1436,10 +1671,6 @@ msgid "Driver Used"
 msgstr "Драйвер"
 
 #: data/resources/ui/pages/gpu.ui:114
-msgid "Current Power Cap"
-msgstr "Поточне обмеження споживання електроенергії"
-
-#: data/resources/ui/pages/gpu.ui:123
 msgid "Max Power Cap"
 msgstr "Максимальне обмеження споживання електроенергії"
 
@@ -1483,25 +1714,186 @@ msgstr "Інтерфейс"
 msgid "Hardware Address"
 msgstr "Апаратна адреса"
 
-#: data/resources/ui/pages/processes.ui:6
-#: data/resources/ui/pages/processes.ui:36
-msgid "Kill Process"
-msgstr "Знищити процес"
+#: data/resources/ui/pages/processes.ui:46
+#: data/resources/ui/pages/processes.ui:135
+#: data/resources/ui/pages/processes.ui:137
+msgid "Show Process Information"
+msgstr "Показати інформацію про процес"
 
-#: data/resources/ui/pages/processes.ui:10
-#: data/resources/ui/pages/processes.ui:40
-msgid "Halt Process"
-msgstr "Зупинити процес"
+#: data/resources/ui/pages/processes.ui:86
+msgid "Search processes"
+msgstr "Шукати процеси"
 
-#: data/resources/ui/pages/processes.ui:14
-#: data/resources/ui/pages/processes.ui:44
-msgid "Continue Process"
-msgstr "Продовжити процес"
+#: data/resources/ui/pages/processes.ui:122
+#: data/resources/ui/pages/processes.ui:124
+msgid "Show Process Options"
+msgstr "Показати налаштування процесу"
 
-#: data/resources/ui/pages/processes.ui:32
-#: data/resources/ui/pages/processes.ui:111
-msgid "End Process"
-msgstr "Завершити процес"
+#~ msgid "Very High"
+#~ msgstr "Дуже високий"
+
+#~ msgid "High"
+#~ msgstr "Високий"
+
+#~ msgid "Normal"
+#~ msgstr "Нормальний"
+
+#~ msgid "Low"
+#~ msgstr "Низький"
+
+#~ msgid "Very Low"
+#~ msgstr "Дуже низький"
+
+#~ msgid "Window width"
+#~ msgstr "Ширина вікна"
+
+#~ msgid "Window height"
+#~ msgstr "Висота вікна"
+
+#~ msgid "Window maximized state"
+#~ msgstr "Стан розгортання вікна"
+
+#~ msgid "Temperature unit"
+#~ msgstr "Одиниця вимірювання температури"
+
+#~ msgid "Unit Prefix Base"
+#~ msgstr "Основа префіксів одиниць"
+
+#~ msgid "Show search field for Processes and Applications on launch"
+#~ msgstr ""
+#~ "Показувати поле пошуку для списку процесів та додатків при запуску додатку"
+
+#~ msgid "Show virtual block devices such as LVM containers"
+#~ msgstr "Показувати віртуальні пристрої, такі як LVM контейнери"
+
+#~ msgid "Show virtual network interfaces such as Docker interfaces"
+#~ msgstr ""
+#~ "Показувати віртуальні мережеві інтерфейси, такі як Docker інтерфейси"
+
+#~ msgid "Show usage details in the sidebar"
+#~ msgstr "Показувати деталі використання у бічній панелі"
+
+#~ msgid "Show device description in the sidebar"
+#~ msgstr "Показувати опис пристрою у бічній панелі"
+
+#~ msgid "Display network speeds in bits per second"
+#~ msgstr "Показувати швидкість у бітах в секунду у списку додатків"
+
+#~ msgid "Display memory usage in Applications view"
+#~ msgstr "Показувати використання пам'яті у списку додатків"
+
+#~ msgid "Display CPU usage in Applications view"
+#~ msgstr "Показувати використання процесору у списку додатків"
+
+#~ msgid "Display drive read speed in Applications view"
+#~ msgstr "Показувати швидкість запису на диск у списку додатків"
+
+#~ msgid "Display drive read total in Applications view"
+#~ msgstr "Показувати читання з диску (загально) у списку додатків"
+
+#~ msgid "Display drive write speed in Applications view"
+#~ msgstr "Показувати швидкість запису на диск у списку додатків"
+
+#~ msgid "Display drive write total in Applications view"
+#~ msgstr "Показувати записування на диск (загально) у списку додатків"
+
+#~ msgid "Display GPU usage in Applications view"
+#~ msgstr "Показувати використання відеокарти у списку додатків"
+
+#~ msgid "Display video encoder usage in Applications view"
+#~ msgstr "Показувати використання відео кодувальника у списку додатків"
+
+#~ msgid "Display video decoder usage in Applications view"
+#~ msgstr "Показувати використання відео декодувальника у списку додатків"
+
+#~ msgid "Display GPU memory usage in Applications view"
+#~ msgstr "Показувати використання відеопам'яті у списку додатків"
+
+#~ msgid "Display process ID in Processes view"
+#~ msgstr "Показувати ідентифікатор процесу у списку процесів"
+
+#~ msgid "Display user name in Processes view"
+#~ msgstr "Показувати ім'я користувача у списку процесів"
+
+#~ msgid "Display memory usage in Processes view"
+#~ msgstr "Показувати використання оперативної пам'яті у списку процесів"
+
+#~ msgid "Display CPU usage in Processes view"
+#~ msgstr "Показувати використання процесору у списку процесів"
+
+#~ msgid "Display drive read speed in Processes view"
+#~ msgstr "Показувати швидкість читання з диску у списку процесів"
+
+#~ msgid "Display drive read total in Processes view"
+#~ msgstr "Показувати загальне читання з диску у списку процесів"
+
+#~ msgid "Display drive write speed in Processes view"
+#~ msgstr "Показувати швидкість запису на диск у списку процесів"
+
+#~ msgid "Display drive write total in Processes view"
+#~ msgstr "Показувати загальний запис на  у списку процесів"
+
+#~ msgid "Display GPU usage in Processes view"
+#~ msgstr "Показувати використання відеокарти у списку процесів"
+
+#~ msgid "Display video encoder usage in Processes view"
+#~ msgstr "Показувати використання відео декодувальника списку процесів"
+
+#~ msgid "Display video decoder usage in Processes view"
+#~ msgstr "Показувати використання відео декодувальника у списку процесів"
+
+#~ msgid "Display GPU memory usage in Processes view"
+#~ msgstr "Показувати використання відеокарти у списку процесів"
+
+#~ msgid "Display logical CPU graphs in Processor view"
+#~ msgstr ""
+#~ "Показувати графіки використання логічних процесорів у списку процесів"
+
+#~ msgid "Show grids in graphs"
+#~ msgstr "Показувати ґрату на графіку"
+
+#~ msgid "Amount of data points that should be shown in a graph"
+#~ msgstr "Кількість даних які повинні бути видимі на графіку"
+
+#~ msgid "Applications"
+#~ msgstr "Додатки"
+
+#~ msgid "Application"
+#~ msgstr "Назва додатку"
+
+#~ msgid "GPU Usage"
+#~ msgstr "Використання відеокарти"
+
+#~ msgid "root"
+#~ msgstr "root"
+
+#~ msgid "End application"
+#~ msgstr "Завершити додаток"
+
+#~ msgid "Kill application"
+#~ msgstr "Знищити додаток"
+
+#~ msgid "Continue application"
+#~ msgstr "Продовжити додаток"
+
+#~ msgctxt "shortcut window"
+#~ msgid "End Application/Process"
+#~ msgstr "Завершити додаток/процес"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Kill Application/Process"
+#~ msgstr "Знищити додаток/процес"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Halt Application/Process"
+#~ msgstr "Зупинити додаток/процес"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Continue Application/Process"
+#~ msgstr "Продовжити додаток/процес"
+
+#~ msgid "Current Power Cap"
+#~ msgstr "Поточне обмеження споживання електроенергії"
 
 #~ msgid "Monitor your system resources and processes"
 #~ msgstr "Моніторинг ресурсів і процесів вашої системи"

@@ -8,6 +8,8 @@ use crate::i18n::{i18n, i18n_f};
 use crate::utils::drive::{Drive, DriveData};
 use crate::utils::units::{convert_speed, convert_storage};
 
+pub const TAB_ID_PREFIX: &str = "drive";
+
 mod imp {
     use std::{
         cell::{Cell, RefCell},
@@ -233,7 +235,6 @@ impl Default for ResDrive {
 }
 
 impl ResDrive {
-    const ID_PREFIX: &'static str = "drive";
     const MAIN_GRAPH_COLOR: [u8; 3] = [0xff, 0x78, 0x00];
     const SECTOR_SIZE: usize = 512;
 
@@ -252,7 +253,7 @@ impl ResDrive {
 
         let tab_id = format!(
             "{}-{}",
-            Self::ID_PREFIX,
+            TAB_ID_PREFIX,
             drive
                 .model
                 .as_deref()

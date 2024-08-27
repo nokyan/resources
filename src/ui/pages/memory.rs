@@ -5,7 +5,9 @@ use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::memory::{self, MemoryData, MemoryDevice};
 use crate::utils::units::convert_storage;
-use crate::utils::NaNDefault;
+use crate::utils::FiniteOr;
+
+pub const TAB_ID: &str = "memory";
 
 mod imp {
     use std::cell::{Cell, RefCell};
@@ -138,7 +140,7 @@ mod imp {
                 tab_name: Cell::new(glib::GString::from(i18n("Memory"))),
                 tab_detail_string: Cell::new(glib::GString::new()),
                 tab_usage_string: Cell::new(glib::GString::new()),
-                tab_id: Cell::new(glib::GString::from("memory")),
+                tab_id: Cell::new(glib::GString::from(TAB_ID)),
                 graph_locked_max_y: Cell::new(true),
                 primary_ord: Cell::new(MEMORY_PRIMARY_ORD),
                 secondary_ord: Default::default(),
@@ -331,7 +333,7 @@ impl ResMemory {
         let used_swap = total_swap.saturating_sub(free_swap);
 
         let memory_fraction = used_mem as f64 / total_mem as f64;
-        let swap_fraction = (used_swap as f64 / total_swap as f64).nan_default(0.0);
+        let swap_fraction = (used_swap as f64 / total_swap as f64).finite_or_default();
 
         let formatted_used_mem = convert_storage(used_mem as f64, false);
         let formatted_total_mem = convert_storage(total_mem as f64, false);

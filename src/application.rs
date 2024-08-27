@@ -194,6 +194,17 @@ impl Application {
             }
         ));
         self.add_action(&action_information_app_process);
+
+        // Show Process Options
+        let action_process_options = gio::SimpleAction::new("process-options", None);
+        action_process_options.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _| {
+                this.main_window().shortcut_process_options();
+            }
+        ));
+        self.add_action(&action_process_options);
     }
 
     // Sets up keyboard shortcuts
@@ -204,8 +215,9 @@ impl Application {
         self.set_accels_for_action("app.end-app-process", &["<Control>E", "Delete"]);
         self.set_accels_for_action("app.kill-app-process", &["<Control>K", "<Shift>Delete"]);
         self.set_accels_for_action("app.halt-app-process", &["<Control>H"]);
-        self.set_accels_for_action("app.continue-app-process", &["<Control>O"]);
+        self.set_accels_for_action("app.continue-app-process", &["<Control>N"]);
         self.set_accels_for_action("app.information-app-process", &["<Control>I"]);
+        self.set_accels_for_action("app.process-options", &["<Control>O"]);
     }
 
     fn setup_css(&self) {
@@ -253,7 +265,7 @@ impl Application {
             .developers(vec!["nokyan <nokyan@tuta.io>".to_string()])
             .license_type(gtk::License::Gpl30)
             .version(config::VERSION)
-            .website("https://github.com/nokyan/resources")
+            .website("https://apps.gnome.org/app/net.nokyan.Resources")
             .build();
 
         about.add_link(
@@ -280,7 +292,7 @@ impl Application {
             );
         }
 
-        ApplicationExtManual::run(self);
+        ApplicationExtManual::run_with_args::<&str>(self, &[]);
     }
 }
 
