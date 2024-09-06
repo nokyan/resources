@@ -265,7 +265,7 @@ impl Application {
             .developers(vec!["nokyan <nokyan@tuta.io>".to_string()])
             .license_type(gtk::License::Gpl30)
             .version(config::VERSION)
-            .website("https://apps.gnome.org/app/net.nokyan.Resources")
+            .website("https://apps.gnome.org/app/net.nokyan.Resources/")
             .build();
 
         about.add_link(
