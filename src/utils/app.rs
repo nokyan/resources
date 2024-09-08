@@ -22,6 +22,10 @@ use super::{
     FiniteOr,
 };
 
+/// This contains the cgroups of desktop environments. If a process has this as its cgroup, its parent's cgroup will be
+/// considered instead to enhance app detection
+const DESKTOP_ENVIRONMENT_CGROUPS: &[&str] = &["org.gnome.Shell"];
+
 // This contains executable names that are blacklisted from being recognized as applications
 const DESKTOP_EXEC_BLOCKLIST: &[&str] = &["bash", "zsh", "fish", "sh", "ksh", "flatpak"];
 
@@ -629,27 +633,38 @@ impl AppsContext {
     fn app_associated_with_process(&self, process: &Process) -> Option<String> {
         // TODO: tidy this up
         // ↓ look for whether we can find an ID in the cgroup
+        if DESKTOP_ENVIRONMENT_CGROUPS.contains(&process.data.cgroup.as_deref().unwrap_or_default())
+        {
+            if let Some(parent) = self
+                .apps
+                .values()
+                .find(|app| app.processes.contains(&process.data.parent_pid))
+            {
+                return parent.id.clone();
+            }
+        }
+
         if let Some(app) = self
             .apps
             .get(&Some(process.data.cgroup.clone().unwrap_or_default()))
         {
             debug!(
-                "Associating process {} with app \"{}\" (ID: {}) based on process cgroup matching with app ID",
-                process.data.pid, app.display_name, app.id.as_deref().unwrap_or_default()
+                "Associating process {} with app \"{}\" (ID: {:?}) based on process cgroup matching with app ID",
+                process.data.pid, app.display_name, app.id
             );
             app.id.clone()
         } else if let Some(app) = self.apps.get(&Some(process.executable_path.clone())) {
             // ↑ look for whether we can find an ID in the executable path of the process
             debug!(
-                "Associating process {} with app \"{}\" (ID: {}) based on process executable path matching with app ID",
-                process.data.pid, app.display_name, app.id.as_deref().unwrap_or_default()
+                "Associating process {} with app \"{}\" (ID: {:?}) based on process executable path matching with app ID",
+                process.data.pid, app.display_name, app.id
             );
             app.id.clone()
         } else if let Some(app) = self.apps.get(&Some(process.executable_name.clone())) {
             // ↑ look for whether we can find an ID in the executable name of the process
             debug!(
-                "Associating process {} with app \"{}\" (ID: {}) based on process executable name matching with app ID",
-                process.data.pid, app.display_name, app.id.as_deref().unwrap_or_default()
+                "Associating process {} with app \"{}\" (ID: {:?}) based on process executable name matching with app ID",
+                process.data.pid, app.display_name, app.id
             );
             app.id.clone()
         } else {
@@ -664,8 +679,8 @@ impl AppsContext {
                         .is_some_and(|commandline| commandline == &process.executable_path)
                     {
                         debug!(
-                            "Associating process {} with app \"{}\" (ID: {}) based on process executable pathmatching with app commandline ({})",
-                            process.data.pid, app.display_name, app.id.as_deref().unwrap_or_default(), process.executable_path
+                            "Associating process {} with app \"{}\" (ID: {:?}) based on process executable pathmatching with app commandline ({})",
+                            process.data.pid, app.display_name, app.id, process.executable_path
                         );
                         true
                     } else if app
@@ -674,8 +689,8 @@ impl AppsContext {
                         .is_some_and(|executable_name| executable_name == &process.executable_name)
                     {
                         debug!(
-                            "Associating process {} with app \"{}\" (ID: {}) based on process executable name matching with app executable name ({})",
-                            process.data.pid, app.display_name, app.id.as_deref().unwrap_or_default(), process.executable_name
+                            "Associating process {} with app \"{}\" (ID: {:?}) based on process executable name matching with app executable name ({})",
+                            process.data.pid, app.display_name, app.id, process.executable_name
                         );
                         true
                     } else if app
@@ -691,8 +706,8 @@ impl AppsContext {
                         .unwrap_or(false)
                     {
                         debug!(
-                            "Associating process {} with app \"{}\" (ID: {}) based on match in KNOWN_EXECUTABLE_NAME_EXCEPTIONS",
-                            process.data.pid, app.display_name, app.id.as_deref().unwrap_or_default()
+                            "Associating process {} with app \"{}\" (ID: {:?}) based on match in KNOWN_EXECUTABLE_NAME_EXCEPTIONS",
+                            process.data.pid, app.display_name, app.id
                         );
                         true
                     } else {
