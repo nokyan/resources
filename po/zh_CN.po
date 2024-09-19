@@ -318,7 +318,7 @@ msgstr "视频编解码器占用"
 
 #: src/ui/pages/gpu.rs:236
 msgid "Video Encoder Usage"
-msgstr "视频解码器占用"
+msgstr "视频编码器占用"
 
 #: src/ui/pages/gpu.rs:241
 msgid "Video Decoder Usage"
