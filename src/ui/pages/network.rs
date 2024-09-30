@@ -1,6 +1,6 @@
 use std::time::{Duration, SystemTime};
 
-use adw::{prelude::*, subclass::prelude::*};
+use adw::{glib::property::PropertySet, prelude::*, subclass::prelude::*};
 use gtk::glib;
 
 use crate::config::PROFILE;
