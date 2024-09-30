@@ -436,6 +436,7 @@ impl ResProcesses {
         columns.push(self.add_user_cpu_time_column(&column_view));
         columns.push(self.add_system_cpu_time_column(&column_view));
         columns.push(self.add_priority_column(&column_view));
+        columns.push(self.add_swap_column(&column_view));
 
         let store = gio::ListStore::new::<ProcessEntry>();
 
@@ -1869,6 +1870,64 @@ impl ResProcesses {
         ));
 
         priority_col
+    }
+
+    fn add_swap_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+        let swap_col_factory = gtk::SignalListItemFactory::new();
+
+        let swap_col =
+            gtk::ColumnViewColumn::new(Some(&i18n("Swap")), Some(swap_col_factory.clone()));
+
+        swap_col.set_resizable(true);
+
+        swap_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(9);
+
+                item.set_child(Some(&row));
+
+                item.property_expression("item")
+                    .chain_property::<ProcessEntry>("swap_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, swap_usage: u64| {
+                        convert_storage(swap_usage as f64, false)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        swap_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
+        });
+
+        let swap_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "swap_usage",
+            ))
+            .build();
+
+        swap_col.set_sorter(Some(&swap_col_sorter));
+        swap_col.set_visible(SETTINGS.processes_show_swap());
+
+        column_view.append_column(&swap_col);
+
+        SETTINGS.connect_processes_show_swap(clone!(
+            #[weak]
+            swap_col,
+            move |visible| swap_col.set_visible(visible)
+        ));
+
+        swap_col
     }
 }
 

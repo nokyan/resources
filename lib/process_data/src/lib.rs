@@ -35,6 +35,8 @@ static RE_UID: Lazy<Regex> = Lazy::new(|| Regex::new(r"Uid:\s*(\d+)").unwrap());
 static RE_AFFINITY: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"Cpus_allowed:\s*([0-9A-Fa-f]+)").unwrap());
 
+static RE_SWAP_USAGGE: Lazy<Regex> = Lazy::new(|| Regex::new(r"VmSwap:\s*([0-9]+) kB").unwrap());
+
 static RE_IO_READ: Lazy<Regex> = Lazy::new(|| Regex::new(r"read_bytes:\s*(\d+)").unwrap());
 
 static RE_IO_WRITE: Lazy<Regex> = Lazy::new(|| Regex::new(r"write_bytes:\s*(\d+)").unwrap());
@@ -152,6 +154,7 @@ pub struct ProcessData {
     pub niceness: Niceness,
     pub affinity: Vec<bool>,
     pub memory_usage: usize,
+    pub swap_usage: usize,
     pub starttime: u64, // in clock ticks, see man proc(5)!
     pub cgroup: Option<String>,
     pub containerization: Containerization,
@@ -271,10 +274,26 @@ impl ProcessData {
         let comm = comm.replace('\n', "");
 
         // -2 to accommodate for only collecting after the second item (which is the executable name as mentioned above)
-        let parent_pid = stat[3 - 2].parse()?;
-        let user_cpu_time = stat[13 - 2].parse()?;
-        let system_cpu_time = stat[14 - 2].parse()?;
-        let nice = stat[18 - 2].parse()?;
+        let parent_pid = stat
+            .get(3 - 2)
+            .context("wrong stat file format")
+            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+        let user_cpu_time = stat
+            .get(13 - 2)
+            .context("wrong stat file format")
+            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+        let system_cpu_time = stat
+            .get(14 - 2)
+            .context("wrong stat file format")
+            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+        let nice = stat
+            .get(18 - 2)
+            .context("wrong stat file format")
+            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+        let starttime = stat
+            .get(21 - 2)
+            .context("wrong stat file format")
+            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
 
         let mut affinity = Vec::with_capacity(*NUM_CPUS);
         RE_AFFINITY
@@ -295,9 +314,32 @@ impl ProcessData {
                 });
             });
 
-        let memory_usage = (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?) * *PAGESIZE;
+        let swap_usage = RE_SWAP_USAGGE
+            .captures(&status)
+            .and_then(|captures| captures.get(1))
+            .map(|capture| capture.as_str())
+            .unwrap_or_default()
+            .parse::<usize>()
+            .context("couldn't parse status file content")?
+            .saturating_mul(1000);
 
-        let starttime = stat[21 - 2].parse()?;
+        let memory_usage = statm
+            .get(1)
+            .context("wrong statm file format")
+            .and_then(|x| {
+                x.parse::<usize>()
+                    .context("couldn't parse statm file content")
+            })?
+            .saturating_sub(
+                statm
+                    .get(2)
+                    .context("wrong statm file format")
+                    .and_then(|x| {
+                        x.parse::<usize>()
+                            .context("couldn't parse statm file content")
+                    })?,
+            )
+            .saturating_mul(*PAGESIZE);
 
         let cgroup = Self::sanitize_cgroup(cgroup);
 
@@ -341,6 +383,7 @@ impl ProcessData {
             niceness: nice,
             affinity,
             memory_usage,
+            swap_usage,
             starttime,
             cgroup,
             containerization,

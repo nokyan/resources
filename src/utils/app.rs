@@ -411,6 +411,13 @@ impl App {
     }
 
     #[must_use]
+    pub fn swap_usage(&self, apps: &AppsContext) -> usize {
+        self.processes_iter(apps)
+            .map(|process| process.data.swap_usage)
+            .sum()
+    }
+
+    #[must_use]
     pub fn cpu_time_ratio(&self, apps: &AppsContext) -> f32 {
         self.processes_iter(apps).map(Process::cpu_time_ratio).sum()
     }
