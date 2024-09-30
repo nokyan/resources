@@ -68,7 +68,7 @@ You can also build Resources yourself using either Meson directly or preferably 
 - `glib-2.0` ≥ 2.66
 - `gio-2.0` ≥ 2.66
 - `gtk-4` ≥ 4.10
-- `libadwaita-1` ≥ 1.5
+- `libadwaita-1` ≥ 1.6
 - `cargo`
 
 Other dependencies are handled by `cargo`.
@@ -84,7 +84,7 @@ These dependencies are not needed to build Resources but Resources may lack cert
 ### Building Using Flatpak Builder
 
 ```sh
-flatpak install org.gnome.Sdk//46 org.freedesktop.Sdk.Extension.rust-stable//23.08 org.gnome.Platform//46 org.freedesktop.Sdk.Extension.llvm18//23.08
+flatpak install org.gnome.Sdk//47 org.freedesktop.Sdk.Extension.rust-stable//24.08 org.gnome.Platform//47 org.freedesktop.Sdk.Extension.llvm18//24.08
 flatpak-builder --user flatpak_app build-aux/net.nokyan.Resources.Devel.json
 ```
 
