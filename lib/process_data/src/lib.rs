@@ -143,6 +143,7 @@ pub struct GpuUsageStats {
 #[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ProcessData {
     pub pid: libc::pid_t,
+    pub parent_pid: i32,
     pub user: String,
     pub comm: String,
     pub commandline: String,
@@ -270,6 +271,7 @@ impl ProcessData {
         let comm = comm.replace('\n', "");
 
         // -2 to accommodate for only collecting after the second item (which is the executable name as mentioned above)
+        let parent_pid = stat[3 - 2].parse()?;
         let user_cpu_time = stat[13 - 2].parse()?;
         let system_cpu_time = stat[14 - 2].parse()?;
         let nice = stat[18 - 2].parse()?;
@@ -330,6 +332,7 @@ impl ProcessData {
 
         Ok(Self {
             pid,
+            parent_pid,
             user,
             comm,
             commandline,
