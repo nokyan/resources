@@ -35,7 +35,7 @@ msgstr "Monitore os recursos do sistema"
 msgid ""
 "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 msgstr ""
-"Sistema;Recursos;Monitor;Processos;Uso;Tarefas;Gerenciador;CPU;RAM;Memória;"
+"Sistema;Resources;Recursos;Monitor;Processos;Uso;Tarefas;Gerenciador;CPU;RAM;Memória;"
 "GPU;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
