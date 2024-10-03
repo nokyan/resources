@@ -29,6 +29,7 @@ pub struct AmdGpu {
     pub driver: String,
     sysfs_path: PathBuf,
     first_hwmon_path: Option<PathBuf>,
+    combined_media_engine: bool,
 }
 
 impl AmdGpu {
@@ -39,13 +40,22 @@ impl AmdGpu {
         sysfs_path: PathBuf,
         first_hwmon_path: Option<PathBuf>,
     ) -> Self {
-        Self {
+        let mut gpu = Self {
             device,
             pci_slot,
             driver,
             sysfs_path,
             first_hwmon_path,
+            combined_media_engine: false,
+        };
+
+        if let Ok(vcn_version) = gpu.read_device_int("ip_discovery/die/0/UVD/0/major") {
+            if vcn_version >= 4 {
+                gpu.combined_media_engine = true;
+            }
         }
+
+        gpu
     }
 
     pub fn read_libdrm_ids() -> Result<HashMap<(u16, u8), String>> {
@@ -131,6 +141,10 @@ impl GpuImpl for AmdGpu {
 
     fn decode_usage(&self) -> Result<isize> {
         bail!("decode usage not implemented for AMD")
+    }
+
+    fn combined_media_engine(&self) -> Result<bool> {
+        Ok(self.combined_media_engine)
     }
 
     fn used_vram(&self) -> Result<isize> {
