@@ -40,12 +40,12 @@ If you’re packaging Resources for another distribution, feel free to send a pu
 
 #### Arch Linux
 
-Unofficially packaged in the [AUR](https://aur.archlinux.org/packages/resources).
+Unofficially packaged in the [extra](https://archlinux.org/packages/extra/x86_64/resources/) repository.
 
-You can either use `makepkg` yourself or use helpers such as `yay`.
+You can install it using `pacman` with no further configuration required.
 
 ```sh
-yay -S resources
+pacman -S resources
 ```
 
 #### Fedora
