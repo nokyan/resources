@@ -848,7 +848,7 @@ impl MainWindow {
             }
         }
 
-        // Add new network pages
+        // Add new battery pages
         for path in paths {
             battery_pages.entry(path.clone()).or_insert_with(|| {
                 // A battery has been added
