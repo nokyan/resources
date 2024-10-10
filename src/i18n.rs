@@ -18,7 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use gettextrs::{gettext, ngettext, npgettext, pgettext};
-use regex::{Captures, Regex};
+use lazy_regex::{Captures, Regex};
 
 #[allow(dead_code)]
 fn freplace(input: String, args: &[&str]) -> String {

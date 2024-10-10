@@ -10,9 +10,9 @@ use gtk::{
     gio::{File, FileIcon, Icon, ThemedIcon},
     glib::GString,
 };
+use lazy_regex::{lazy_regex, Lazy, Regex};
 use log::{debug, info};
 use process_data::{pci_slot::PciSlot, Containerization, ProcessData};
-use regex::Regex;
 
 use crate::i18n::i18n;
 
@@ -75,11 +75,9 @@ static APP_ID_BLOCKLIST: LazyLock<HashMap<&'static str, &'static str>> = LazyLoc
     ])
 });
 
-static RE_ENV_FILTER: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"env\s*\S*=\S*\s*(.*)").unwrap());
+static RE_ENV_FILTER: Lazy<Regex> = lazy_regex!(r"env\s*\S*=\S*\s*(.*)");
 
-static RE_FLATPAK_FILTER: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"flatpak run .* --command=(\S*)").unwrap());
+static RE_FLATPAK_FILTER: Lazy<Regex> = lazy_regex!(r"flatpak run .* --command=(\S*)");
 
 fn format_path(path: &str) -> String {
     if path.starts_with("~/") {
