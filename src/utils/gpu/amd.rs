@@ -1,7 +1,7 @@
 use anyhow::{bail, Result};
+use lazy_regex::{lazy_regex, Lazy, Regex};
 use log::{debug, warn};
 use process_data::pci_slot::PciSlot;
-use regex::Regex;
 
 use std::{collections::HashMap, path::PathBuf, sync::LazyLock, time::Instant};
 
@@ -12,8 +12,7 @@ use crate::utils::{
 
 use super::GpuImpl;
 
-static RE_AMDGPU_IDS: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"([0-9A-F]{4}),\s*([0-9A-F]{2}),\s*(.*)").unwrap());
+static RE_AMDGPU_IDS: Lazy<Regex> = lazy_regex!(r"([0-9A-F]{4}),\s*([0-9A-F]{2}),\s*(.*)");
 
 static AMDGPU_IDS: LazyLock<HashMap<(u16, u8), String>> = LazyLock::new(|| {
     AmdGpu::read_libdrm_ids()

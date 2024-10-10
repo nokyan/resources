@@ -1,8 +1,8 @@
-use std::{process::Command, sync::LazyLock};
+use std::process::Command;
 
 use anyhow::{bail, Context, Result};
+use lazy_regex::{lazy_regex, Lazy, Regex};
 use log::debug;
-use regex::Regex;
 
 use super::{FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
 
@@ -22,34 +22,27 @@ const TEMPLATE_RE_SIZE: &str = r"MEMORY_DEVICE_%_SIZE=(\d*)";
 
 const BYTES_IN_GIB: u64 = 1_073_741_824; // 1024 * 1024 * 1024
 
-static RE_CONFIGURED_SPEED: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"Configured Memory Speed: (\d+) MT/s").unwrap());
+static RE_CONFIGURED_SPEED: Lazy<Regex> = lazy_regex!(r"Configured Memory Speed: (\d+) MT/s");
 
-static RE_SPEED: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"Speed: (\d+) MT/s").unwrap());
+static RE_SPEED: Lazy<Regex> = lazy_regex!(r"Speed: (\d+) MT/s");
 
-static RE_FORMFACTOR: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"Form Factor: (.+)").unwrap());
+static RE_FORMFACTOR: Lazy<Regex> = lazy_regex!(r"Form Factor: (.+)");
 
-static RE_TYPE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"Type: (.+)").unwrap());
+static RE_TYPE: Lazy<Regex> = lazy_regex!(r"Type: (.+)");
 
-static RE_TYPE_DETAIL: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"Type Detail: (.+)").unwrap());
+static RE_TYPE_DETAIL: Lazy<Regex> = lazy_regex!(r"Type Detail: (.+)");
 
-static RE_SIZE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"Size: (\d+) GB").unwrap());
+static RE_SIZE: Lazy<Regex> = lazy_regex!(r"Size: (\d+) GB");
 
-static RE_MEM_TOTAL: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"MemTotal:\s*(\d*) kB").unwrap());
+static RE_MEM_TOTAL: Lazy<Regex> = lazy_regex!(r"MemTotal:\s*(\d*) kB");
 
-static RE_MEM_AVAILABLE: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"MemAvailable:\s*(\d*) kB").unwrap());
+static RE_MEM_AVAILABLE: Lazy<Regex> = lazy_regex!(r"MemAvailable:\s*(\d*) kB");
 
-static RE_SWAP_TOTAL: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"SwapTotal:\s*(\d*) kB").unwrap());
+static RE_SWAP_TOTAL: Lazy<Regex> = lazy_regex!(r"SwapTotal:\s*(\d*) kB");
 
-static RE_SWAP_FREE: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"SwapFree:\s*(\d*) kB").unwrap());
+static RE_SWAP_FREE: Lazy<Regex> = lazy_regex!(r"SwapFree:\s*(\d*) kB");
 
-static RE_NUM_MEMORY_DEVICES: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"MEMORY_ARRAY_NUM_DEVICES=(\d*)").unwrap());
+static RE_NUM_MEMORY_DEVICES: Lazy<Regex> = lazy_regex!(r"MEMORY_ARRAY_NUM_DEVICES=(\d*)");
 
 #[derive(Debug, Clone, Copy)]
 pub struct MemoryData {

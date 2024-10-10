@@ -2,19 +2,16 @@ use std::{
     fmt::Display,
     path::{Path, PathBuf},
     str::{self, FromStr},
-    sync::LazyLock,
 };
 
-use anyhow::{bail, Context, Result};
-use regex::Regex;
-
 use crate::i18n::{i18n, i18n_f};
+use anyhow::{bail, Context, Result};
+use lazy_regex::{lazy_regex, Lazy, Regex};
 
 use super::units::convert_energy;
 
 // For (at least) Lenovo Yoga 6 13ALC7
-static HEX_ENCODED_REGEX: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"^(0x[0-9a-fA-F]{2}\s*)*$").unwrap());
+static HEX_ENCODED_REGEX: Lazy<Regex> = lazy_regex!(r"^(0x[0-9a-fA-F]{2}\s*)*$");
 
 pub struct BatteryData {
     pub inner: Battery,
