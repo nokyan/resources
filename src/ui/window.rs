@@ -33,7 +33,7 @@ use super::pages::{applications, processes};
 
 #[derive(Debug, Clone)]
 pub enum Action {
-    ManipulateProcess(ProcessAction, libc::pid_t, String, ToastOverlay),
+    ManipulateProcesses(ProcessAction, Vec<libc::pid_t>, ToastOverlay),
     ManipulateApp(ProcessAction, String, ToastOverlay),
     AdjustProcess(libc::pid_t, Niceness, Vec<bool>, String, ToastOverlay),
 }
@@ -253,10 +253,9 @@ impl MainWindow {
                     .execute_app_action_dialog(&app_item, process_action);
             }
         } else if selected_page.is::<ResProcesses>() {
-            if let Some(process_item) = imp.processes.get_selected_process_entry() {
-                imp.processes
-                    .execute_process_action_dialog(&process_item, process_action);
-            }
+            let selected = imp.processes.get_selected_process_entries();
+            imp.processes
+                .execute_process_action_dialog(selected, process_action);
         }
     }
 
@@ -270,8 +269,9 @@ impl MainWindow {
                 imp.applications.open_info_dialog(&app_item);
             }
         } else if selected_page.is::<ResProcesses>() {
-            if let Some(process_item) = imp.processes.get_selected_process_entry() {
-                imp.processes.open_info_dialog(&process_item);
+            let selected = imp.processes.get_selected_process_entries();
+            if selected.len() == 1 {
+                imp.processes.open_info_dialog(&selected[0]);
             }
         }
     }
@@ -282,8 +282,9 @@ impl MainWindow {
         let selected_page = self.get_selected_page().unwrap();
 
         if selected_page.is::<ResProcesses>() {
-            if let Some(process_item) = imp.processes.get_selected_process_entry() {
-                imp.processes.open_options_dialog(&process_item);
+            let selected = imp.processes.get_selected_process_entries();
+            if selected.len() == 1 {
+                imp.processes.open_options_dialog(&selected[0]);
             }
         }
     }
@@ -881,14 +882,47 @@ impl MainWindow {
     fn process_action(&self, action: Action) {
         let apps_context = self.imp().apps_context.borrow();
         match action {
-            Action::ManipulateProcess(action, pid, display_name, toast_overlay) => {
-                if let Some(process) = apps_context.get_process(pid) {
-                    let toast_message = match process.execute_process_action(action) {
-                        Ok(()) => get_action_success(action, &[&display_name]),
-                        Err(_) => get_process_action_failure(action, &[&display_name]),
-                    };
-                    toast_overlay.add_toast(Toast::new(&toast_message));
+            Action::ManipulateProcesses(action, pids, toast_overlay) => {
+                let mut processes_unsuccessful: usize = 0;
+
+                let mut first_process = None;
+
+                for (i, pid) in pids.iter().enumerate() {
+                    if let Some(process) = apps_context.get_process(*pid) {
+                        if i == 0 {
+                            first_process = Some(process);
+                        }
+                        if process.execute_process_action(action).is_err() {
+                            processes_unsuccessful += 1;
+                        }
+                    }
                 }
+
+                let toast_message = if processes_unsuccessful > 0 {
+                    if pids.len() == 1 {
+                        if let Some(display_name) =
+                            first_process.map(|process| &process.display_name)
+                        {
+                            get_named_action_failure(action, display_name)
+                        } else {
+                            // this should never happen
+                            get_action_failure(action, 1)
+                        }
+                    } else {
+                        get_action_failure(action, processes_unsuccessful)
+                    }
+                } else if pids.len() == 1 {
+                    if let Some(display_name) = first_process.map(|process| &process.display_name) {
+                        get_action_success(action, display_name)
+                    } else {
+                        // this should never happen
+                        get_processes_success(action, 1)
+                    }
+                } else {
+                    get_processes_success(action, pids.len())
+                };
+
+                toast_overlay.add_toast(Toast::new(&toast_message));
             }
 
             Action::ManipulateApp(action, id, toast_overlay) => {
@@ -900,9 +934,9 @@ impl MainWindow {
                 let processes_unsuccessful = processes_tried - processes_successful;
 
                 let toast_message = if processes_unsuccessful > 0 {
-                    get_app_action_failure(action, processes_unsuccessful as u32)
+                    get_action_failure(action, processes_unsuccessful)
                 } else {
-                    get_action_success(action, &[&app.display_name])
+                    get_action_success(action, &app.display_name)
                 };
 
                 toast_overlay.add_toast(Toast::new(&toast_message));
@@ -992,49 +1026,78 @@ impl Default for MainWindow {
     }
 }
 
-fn get_action_success(action: ProcessAction, args: &[&str]) -> String {
+fn get_action_success(action: ProcessAction, name: &str) -> String {
     match action {
-        ProcessAction::TERM => i18n_f("Successfully ended {}", args),
-        ProcessAction::STOP => i18n_f("Successfully halted {}", args),
-        ProcessAction::KILL => i18n_f("Successfully killed {}", args),
-        ProcessAction::CONT => i18n_f("Successfully continued {}", args),
+        ProcessAction::TERM => i18n_f("Successfully ended {}", &[name]),
+        ProcessAction::STOP => i18n_f("Successfully halted {}", &[name]),
+        ProcessAction::KILL => i18n_f("Successfully killed {}", &[name]),
+        ProcessAction::CONT => i18n_f("Successfully continued {}", &[name]),
     }
 }
 
-fn get_app_action_failure(action: ProcessAction, args: u32) -> String {
+fn get_processes_success(action: ProcessAction, count: usize) -> String {
+    match action {
+        ProcessAction::TERM => ni18n_f(
+            "Successfully ended the process",
+            "Successfully ended {} processes",
+            count as u32,
+            &[&count.to_string()],
+        ),
+        ProcessAction::STOP => ni18n_f(
+            "Successfully halted the process",
+            "Successfully halted {} processes",
+            count as u32,
+            &[&count.to_string()],
+        ),
+        ProcessAction::KILL => ni18n_f(
+            "Successfully killed the process",
+            "Successfully killed {} processes",
+            count as u32,
+            &[&count.to_string()],
+        ),
+        ProcessAction::CONT => ni18n_f(
+            "Successfully continued the process",
+            "Successfully continued {} processes",
+            count as u32,
+            &[&count.to_string()],
+        ),
+    }
+}
+
+fn get_action_failure(action: ProcessAction, count: usize) -> String {
     match action {
         ProcessAction::TERM => ni18n_f(
             "There was a problem ending a process",
             "There were problems ending {} processes",
-            args,
-            &[&args.to_string()],
+            count as u32,
+            &[&count.to_string()],
         ),
         ProcessAction::STOP => ni18n_f(
             "There was a problem halting a process",
             "There were problems halting {} processes",
-            args,
-            &[&args.to_string()],
+            count as u32,
+            &[&count.to_string()],
         ),
         ProcessAction::KILL => ni18n_f(
             "There was a problem killing a process",
             "There were problems killing {} processes",
-            args,
-            &[&args.to_string()],
+            count as u32,
+            &[&count.to_string()],
         ),
         ProcessAction::CONT => ni18n_f(
             "There was a problem continuing a process",
             "There were problems continuing {} processes",
-            args,
-            &[&args.to_string()],
+            count as u32,
+            &[&count.to_string()],
         ),
     }
 }
 
-pub fn get_process_action_failure(action: ProcessAction, args: &[&str]) -> String {
+pub fn get_named_action_failure(action: ProcessAction, name: &str) -> String {
     match action {
-        ProcessAction::TERM => i18n_f("There was a problem ending {}", args),
-        ProcessAction::STOP => i18n_f("There was a problem halting {}", args),
-        ProcessAction::KILL => i18n_f("There was a problem killing {}", args),
-        ProcessAction::CONT => i18n_f("There was a problem continuing {}", args),
+        ProcessAction::TERM => i18n_f("There was a problem ending {}", &[name]),
+        ProcessAction::STOP => i18n_f("There was a problem halting {}", &[name]),
+        ProcessAction::KILL => i18n_f("There was a problem killing {}", &[name]),
+        ProcessAction::CONT => i18n_f("There was a problem continuing {}", &[name]),
     }
 }

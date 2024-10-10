@@ -69,6 +69,7 @@ pub struct Process {
     pub read_bytes_last: Option<u64>,
     pub write_bytes_last: Option<u64>,
     pub gpu_usage_stats_last: BTreeMap<PciSlot, GpuUsageStats>,
+    pub display_name: String,
 }
 
 // TODO: Better name?
@@ -135,6 +136,12 @@ impl Process {
             None
         };
 
+        let display_name = if executable_name.starts_with(&process_data.comm) {
+            executable_name.clone()
+        } else {
+            process_data.comm.clone()
+        };
+
         Self {
             executable_path,
             executable_name,
@@ -145,6 +152,7 @@ impl Process {
             read_bytes_last,
             write_bytes_last,
             gpu_usage_stats_last: Default::default(),
+            display_name,
         }
     }
 
@@ -292,7 +300,7 @@ impl Process {
                 Ok(())
             } else {
                 error!(
-                    "Couldn't {action_string} {}, return_code: {return_code}",
+                    "Couldn't {action_string} {}, return code: {return_code}",
                     self.data.pid
                 );
                 bail!("non-zero return code: {return_code}")
