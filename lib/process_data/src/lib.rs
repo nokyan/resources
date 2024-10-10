@@ -2,6 +2,7 @@ pub mod pci_slot;
 
 use anyhow::{bail, Context, Result};
 use glob::glob;
+use lazy_regex::{lazy_regex, Regex};
 use nutype::nutype;
 use nvml_wrapper::enums::device::UsedGpuMemory;
 use nvml_wrapper::error::NvmlError;
@@ -9,7 +10,6 @@ use nvml_wrapper::struct_wrappers::device::{ProcessInfo, ProcessUtilizationSampl
 use nvml_wrapper::{Device, Nvml};
 use once_cell::sync::Lazy;
 use pci_slot::PciSlot;
-use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs::File;
@@ -30,54 +30,44 @@ static PAGESIZE: Lazy<usize> = Lazy::new(sysconf::pagesize);
 
 static NUM_CPUS: Lazy<usize> = Lazy::new(num_cpus::get);
 
-static RE_UID: Lazy<Regex> = Lazy::new(|| Regex::new(r"Uid:\s*(\d+)").unwrap());
+static RE_UID: Lazy<Regex> = lazy_regex!(r"Uid:\s*(\d+)");
 
-static RE_AFFINITY: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"Cpus_allowed:\s*([0-9A-Fa-f]+)").unwrap());
+static RE_AFFINITY: Lazy<Regex> = lazy_regex!(r"Cpus_allowed:\s*([0-9A-Fa-f]+)");
 
-static RE_SWAP_USAGGE: Lazy<Regex> = Lazy::new(|| Regex::new(r"VmSwap:\s*([0-9]+) kB").unwrap());
+static RE_SWAP_USAGGE: Lazy<Regex> = lazy_regex!(r"VmSwap:\s*([0-9]+)\s*kB");
 
-static RE_IO_READ: Lazy<Regex> = Lazy::new(|| Regex::new(r"read_bytes:\s*(\d+)").unwrap());
+static RE_IO_READ: Lazy<Regex> = lazy_regex!(r"read_bytes:\s*(\d+)");
 
-static RE_IO_WRITE: Lazy<Regex> = Lazy::new(|| Regex::new(r"write_bytes:\s*(\d+)").unwrap());
+static RE_IO_WRITE: Lazy<Regex> = lazy_regex!(r"write_bytes:\s*(\d+)");
 
-static RE_DRM_PDEV: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"drm-pdev:\s*([0-9A-Fa-f]{4}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}\.[0-9A-Fa-f])").unwrap()
-});
+static RE_DRM_PDEV: Lazy<Regex> =
+    lazy_regex!(r"drm-pdev:\s*([0-9A-Fa-f]{4}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}\.[0-9A-Fa-f])");
 
-static RE_DRM_CLIENT_ID: Lazy<Regex> = Lazy::new(|| Regex::new(r"drm-client-id:\s*(\d+)").unwrap());
+static RE_DRM_CLIENT_ID: Lazy<Regex> = lazy_regex!(r"drm-client-id:\s*(\d+)");
 
 // AMD only
-static RE_DRM_ENGINE_GFX: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"drm-engine-gfx:\s*(\d+) ns").unwrap());
+static RE_DRM_ENGINE_GFX: Lazy<Regex> = lazy_regex!(r"drm-engine-gfx:\s*(\d+)\s*ns");
 
 // AMD only
-static RE_DRM_ENGINE_COMPUTE: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"drm-engine-compute:\s*(\d+) ns").unwrap());
+static RE_DRM_ENGINE_COMPUTE: Lazy<Regex> = lazy_regex!(r"drm-engine-compute:\s*(\d+)\s*ns");
 
 // AMD only
-static RE_DRM_ENGINE_ENC: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"drm-engine-enc:\s*(\d+) ns").unwrap());
+static RE_DRM_ENGINE_ENC: Lazy<Regex> = lazy_regex!(r"drm-engine-enc:\s*(\d+)\s*ns");
 
 // AMD only
-static RE_DRM_ENGINE_DEC: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"drm-engine-dec:\s*(\d+) ns").unwrap());
+static RE_DRM_ENGINE_DEC: Lazy<Regex> = lazy_regex!(r"drm-engine-dec:\s*(\d+)\s*ns");
 
 // AMD only
-static RE_DRM_MEMORY_VRAM: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"drm-memory-vram:\s*(\d+) KiB").unwrap());
+static RE_DRM_MEMORY_VRAM: Lazy<Regex> = lazy_regex!(r"drm-memory-vram:\s*(\d+)\s*KiB");
 
 // AMD only
-static RE_DRM_MEMORY_GTT: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"drm-memory-gtt:\s*(\d+) KiB").unwrap());
+static RE_DRM_MEMORY_GTT: Lazy<Regex> = lazy_regex!(r"drm-memory-gtt:\s*(\d+)\s*KiB");
 
 // Intel only
-static RE_DRM_ENGINE_RENDER: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"drm-engine-render:\s*(\d+) ns").unwrap());
+static RE_DRM_ENGINE_RENDER: Lazy<Regex> = lazy_regex!(r"drm-engine-render:\s*(\d+)\s*ns");
 
 // Intel only
-static RE_DRM_ENGINE_VIDEO: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"drm-engine-video:\s*(\d+) ns").unwrap());
+static RE_DRM_ENGINE_VIDEO: Lazy<Regex> = lazy_regex!(r"drm-engine-video:\s*(\d+)\s*ns");
 
 static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(Nvml::init);
 
@@ -257,7 +247,7 @@ impl ProcessData {
             .parse()?;
 
         let user = USERS_CACHE
-            .get(&Self::get_uid(&proc_path)?)
+            .get(&Self::get_uid(proc_path)?)
             .cloned()
             .unwrap_or(String::from("root"));
 
@@ -368,7 +358,7 @@ impl ProcessData {
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
         });
 
-        let gpu_usage_stats = Self::gpu_usage_stats(&proc_path, pid);
+        let gpu_usage_stats = Self::gpu_usage_stats(proc_path, pid);
 
         let timestamp = unix_as_millis();
 

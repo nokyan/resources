@@ -885,6 +885,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "lazy-regex"
+version = "3.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8d8e41c97e6bc7ecb552016274b99fbb5d035e8de288c582d9b933af6677bfda"
+dependencies = [
+ "lazy-regex-proc_macros",
+ "once_cell",
+ "regex",
+]
+
+[[package]]
+name = "lazy-regex-proc_macros"
+version = "3.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "76e1d8b05d672c53cb9c7b920bbba8783845ae4f0b076e02a3db1d02c81b4163"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "regex",
+ "syn",
+]
+
+[[package]]
 name = "lazy_static"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1245,12 +1268,12 @@ version = "1.6.0"
 dependencies = [
  "anyhow",
  "glob",
+ "lazy-regex",
  "libc",
  "num_cpus",
  "nutype",
  "nvml-wrapper",
  "once_cell",
- "regex",
  "serde",
  "syscalls",
  "sysconf",
@@ -1307,6 +1330,7 @@ dependencies = [
  "glob",
  "gtk-macros",
  "gtk4",
+ "lazy-regex",
  "libadwaita",
  "libc",
  "log",
@@ -1318,7 +1342,6 @@ dependencies = [
  "plotters-cairo",
  "pretty_env_logger",
  "process-data",
- "regex",
  "rmp-serde",
  "ron",
  "rust-ini",

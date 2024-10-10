@@ -1,7 +1,7 @@
 use anyhow::{anyhow, bail, Context, Result};
 use glob::glob;
+use lazy_regex::{lazy_regex, Lazy, Regex};
 use log::{debug, warn};
-use regex::Regex;
 use std::{
     path::{Path, PathBuf},
     sync::LazyLock,
@@ -11,29 +11,23 @@ const KNOWN_HWMONS: &[&str] = &["zenpower", "coretemp", "k10temp"];
 
 const KNOWN_THERMAL_ZONES: &[&str] = &["x86_pkg_temp", "acpitz"];
 
-static RE_LSCPU_MODEL_NAME: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"Model name:\s*(.*)").unwrap());
+static RE_LSCPU_MODEL_NAME: Lazy<Regex> = lazy_regex!(r"Model name:\s*(.*)");
 
-static RE_LSCPU_ARCHITECTURE: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"Architecture:\s*(.*)").unwrap());
+static RE_LSCPU_ARCHITECTURE: Lazy<Regex> = lazy_regex!(r"Architecture:\s*(.*)");
 
-static RE_LSCPU_CPUS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"CPU\(s\):\s*(.*)").unwrap());
+static RE_LSCPU_CPUS: Lazy<Regex> = lazy_regex!(r"CPU\(s\):\s*(.*)");
 
-static RE_LSCPU_SOCKETS: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"Socket\(s\):\s*(.*)").unwrap());
+static RE_LSCPU_SOCKETS: Lazy<Regex> = lazy_regex!(r"Socket\(s\):\s*(.*)");
 
-static RE_LSCPU_CORES: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"Core\(s\) per socket:\s*(.*)").unwrap());
+static RE_LSCPU_CORES: Lazy<Regex> = lazy_regex!(r"Core\(s\) per socket:\s*(.*)");
 
-static RE_LSCPU_VIRTUALIZATION: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"Virtualization:\s*(.*)").unwrap());
+static RE_LSCPU_VIRTUALIZATION: Lazy<Regex> = lazy_regex!(r"Virtualization:\s*(.*)");
 
-static RE_LSCPU_MAX_MHZ: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"CPU max MHz:\s*(.*)").unwrap());
+static RE_LSCPU_MAX_MHZ: Lazy<Regex> = lazy_regex!(r"CPU max MHz:\s*(.*)");
 
-static RE_PROC_STAT: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"cpu[0-9]* *(?P<user>[0-9]*) *(?P<nice>[0-9]*) *(?P<system>[0-9]*) *(?P<idle>[0-9]*) *(?P<iowait>[0-9]*) *(?P<irq>[0-9]*) *(?P<softirq>[0-9]*) *(?P<steal>[0-9]*) *(?P<guest>[0-9]*) *(?P<guest_nice>[0-9]*)").unwrap()
-});
+static RE_PROC_STAT: Lazy<Regex> = lazy_regex!(
+    r"cpu[0-9]* *(?P<user>[0-9]*) *(?P<nice>[0-9]*) *(?P<system>[0-9]*) *(?P<idle>[0-9]*) *(?P<iowait>[0-9]*) *(?P<irq>[0-9]*) *(?P<softirq>[0-9]*) *(?P<steal>[0-9]*) *(?P<guest>[0-9]*) *(?P<guest_nice>[0-9]*)"
+);
 
 static CPU_TEMPERATURE_PATH: LazyLock<Option<PathBuf>> = LazyLock::new(|| {
     let cpu_temperature_path =
