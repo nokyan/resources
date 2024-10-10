@@ -24,11 +24,13 @@ use crate::utils::drive::{Drive, DriveData};
 use crate::utils::gpu::{Gpu, GpuData};
 use crate::utils::memory::MemoryData;
 use crate::utils::network::{NetworkData, NetworkInterface};
+use crate::utils::npu::{Npu, NpuData};
 use crate::utils::process::{Process, ProcessAction};
 use crate::utils::settings::SETTINGS;
 
 use super::pages::gpu::ResGPU;
 use super::pages::network::ResNetwork;
+use super::pages::npu::ResNPU;
 use super::pages::{applications, processes};
 
 #[derive(Debug, Clone)]
@@ -94,6 +96,8 @@ mod imp {
 
         pub gpu_pages: RefCell<HashMap<PciSlot, (Gpu, adw::ToolbarView)>>,
 
+        pub npu_pages: RefCell<HashMap<PciSlot, (Npu, adw::ToolbarView)>>,
+
         pub apps_context: RefCell<AppsContext>,
 
         pub sender: Sender<Action>,
@@ -125,6 +129,7 @@ mod imp {
                 receiver,
                 processor_window_title: TemplateChild::default(),
                 gpu_pages: RefCell::default(),
+                npu_pages: RefCell::default(),
             }
         }
     }
@@ -189,6 +194,7 @@ struct RefreshData {
     cpu_data: Option<CpuData>,
     mem_data: Option<Result<MemoryData>>,
     gpu_data: Vec<GpuData>,
+    npu_data: Vec<NpuData>,
     drive_paths: Vec<PathBuf>,
     drive_data: Vec<DriveData>,
     network_paths: Vec<PathBuf>,
@@ -292,12 +298,11 @@ impl MainWindow {
         let imp = self.imp();
 
         let gpus = Gpu::get_gpus().unwrap_or_default();
-        let gpus_len = gpus.len();
 
         for (i, gpu) in gpus.iter().enumerate() {
             let page = ResGPU::new();
 
-            let tab_name = if gpus_len > 1 {
+            let tab_name = if gpus.len() > 1 {
                 i18n_f("GPU {}", &[&(i + 1).to_string()])
             } else {
                 i18n("GPU")
@@ -318,6 +323,37 @@ impl MainWindow {
                 .insert(gpu.pci_slot(), (gpu.clone(), added_page));
         }
         gpus
+    }
+
+    fn init_npu_pages(self: &MainWindow) -> Vec<Npu> {
+        let imp = self.imp();
+
+        let npus = Npu::get_npus().unwrap_or_default();
+
+        for (i, npu) in npus.iter().enumerate() {
+            let page = ResNPU::new();
+
+            let tab_name = if npus.len() > 1 {
+                i18n_f("NPU {}", &[&(i + 1).to_string()])
+            } else {
+                i18n("NPU")
+            };
+
+            page.set_tab_name(&*tab_name);
+
+            let added_page = if let Ok(npu_name) = npu.name() {
+                self.add_page(&page, &npu_name, &tab_name)
+            } else {
+                self.add_page(&page, &tab_name, &tab_name)
+            };
+
+            page.init(npu, i as u32);
+
+            imp.npu_pages
+                .borrow_mut()
+                .insert(npu.pci_slot(), (npu.clone(), added_page));
+        }
+        npus
     }
 
     fn setup_widgets(&self) {
@@ -367,6 +403,10 @@ impl MainWindow {
             self.init_gpu_pages();
         }
 
+        if !ARGS.disable_npu_monitoring {
+            self.init_npu_pages();
+        }
+
         let main_context = MainContext::default();
 
         main_context.spawn_local(clone!(
@@ -378,7 +418,7 @@ impl MainWindow {
         ));
     }
 
-    fn gather_refresh_data(logical_cpus: usize, gpus: &[Gpu]) -> RefreshData {
+    fn gather_refresh_data(logical_cpus: usize, gpus: &[Gpu], npus: &[Npu]) -> RefreshData {
         let cpu_data = if ARGS.disable_cpu_monitoring {
             None
         } else {
@@ -396,6 +436,13 @@ impl MainWindow {
             let data = GpuData::new(gpu);
 
             gpu_data.push(data);
+        }
+
+        let mut npu_data = Vec::with_capacity(npus.len());
+        for npu in npus {
+            let data = NpuData::new(npu);
+
+            npu_data.push(data);
         }
 
         let drive_paths = if ARGS.disable_drive_monitoring {
@@ -445,6 +492,7 @@ impl MainWindow {
             cpu_data,
             mem_data,
             gpu_data,
+            npu_data,
             drive_paths,
             drive_data,
             network_paths,
@@ -462,6 +510,7 @@ impl MainWindow {
             cpu_data,
             mem_data,
             gpu_data,
+            npu_data,
             drive_paths,
             drive_data,
             network_paths,
@@ -507,6 +556,15 @@ impl MainWindow {
         }
 
         std::mem::drop(apps_context);
+
+        /*
+         * Npu
+         */
+        let npu_pages = imp.npu_pages.borrow();
+        for ((_, page), npu_data) in npu_pages.values().zip(npu_data) {
+            let page = page.content().and_downcast::<ResNPU>().unwrap();
+            page.refresh_page(&npu_data);
+        }
 
         /*
          * Cpu
@@ -594,6 +652,17 @@ impl MainWindow {
                 .collect::<Vec<Gpu>>()
         };
 
+        let npus = if ARGS.disable_npu_monitoring {
+            Vec::new()
+        } else {
+            imp.npu_pages
+                .borrow()
+                .values()
+                .map(|(npu, _)| npu)
+                .cloned()
+                .collect::<Vec<Npu>>()
+        };
+
         let logical_cpus = imp.cpu.imp().logical_cpus_amount.get();
 
         let (tx_data, rx_data) = std::sync::mpsc::sync_channel(1);
@@ -601,7 +670,7 @@ impl MainWindow {
 
         std::thread::spawn(move || {
             loop {
-                let data = Self::gather_refresh_data(logical_cpus, &gpus);
+                let data = Self::gather_refresh_data(logical_cpus, &gpus, &npus);
                 tx_data.send(data).unwrap();
 
                 // Wait on delay so we don't gather data multiple times in a short time span

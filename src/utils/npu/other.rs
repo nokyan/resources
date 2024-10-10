@@ -1,15 +1,15 @@
-use anyhow::{bail, Result};
+use anyhow::Result;
 use process_data::pci_slot::PciSlot;
 
 use std::path::PathBuf;
 
 use crate::utils::pci::Device;
 
-use super::GpuImpl;
+use super::NpuImpl;
 
 #[derive(Debug, Clone, Default)]
 
-pub struct IntelGpu {
+pub struct OtherNpu {
     pub device: Option<&'static Device>,
     pub pci_slot: PciSlot,
     pub driver: String,
@@ -17,7 +17,7 @@ pub struct IntelGpu {
     first_hwmon_path: Option<PathBuf>,
 }
 
-impl IntelGpu {
+impl OtherNpu {
     pub fn new(
         device: Option<&'static Device>,
         pci_slot: PciSlot,
@@ -35,7 +35,7 @@ impl IntelGpu {
     }
 }
 
-impl GpuImpl for IntelGpu {
+impl NpuImpl for OtherNpu {
     fn device(&self) -> Option<&'static Device> {
         self.device
     }
@@ -64,14 +64,6 @@ impl GpuImpl for IntelGpu {
         self.drm_usage().map(|usage| usage as f64 / 100.0)
     }
 
-    fn encode_usage(&self) -> Result<f64> {
-        bail!("encode usage not implemented for Intel")
-    }
-
-    fn decode_usage(&self) -> Result<f64> {
-        bail!("decode usage not implemented for Intel")
-    }
-
     fn used_vram(&self) -> Result<usize> {
         self.drm_used_vram().map(|usage| usage as usize)
     }
@@ -89,7 +81,7 @@ impl GpuImpl for IntelGpu {
     }
 
     fn core_frequency(&self) -> Result<f64> {
-        Ok(self.read_sysfs_int("gt_cur_freq_mhz")? as f64 * 1_000_000.0)
+        self.hwmon_core_frequency()
     }
 
     fn vram_frequency(&self) -> Result<f64> {

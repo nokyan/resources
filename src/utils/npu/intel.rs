@@ -1,23 +1,25 @@
-use anyhow::{bail, Result};
-use process_data::pci_slot::PciSlot;
+use anyhow::Result;
+use process_data::{pci_slot::PciSlot, unix_as_millis};
 
-use std::path::PathBuf;
+use std::{cell::Cell, path::PathBuf};
 
 use crate::utils::pci::Device;
 
-use super::GpuImpl;
+use super::NpuImpl;
 
 #[derive(Debug, Clone, Default)]
 
-pub struct IntelGpu {
+pub struct IntelNpu {
     pub device: Option<&'static Device>,
     pub pci_slot: PciSlot,
     pub driver: String,
     sysfs_path: PathBuf,
     first_hwmon_path: Option<PathBuf>,
+    last_busy_time_us: Cell<usize>,
+    last_busy_time_timestamp: Cell<u64>,
 }
 
-impl IntelGpu {
+impl IntelNpu {
     pub fn new(
         device: Option<&'static Device>,
         pci_slot: PciSlot,
@@ -31,11 +33,13 @@ impl IntelGpu {
             driver,
             sysfs_path,
             first_hwmon_path,
+            last_busy_time_us: Cell::default(),
+            last_busy_time_timestamp: Cell::default(),
         }
     }
 }
 
-impl GpuImpl for IntelGpu {
+impl NpuImpl for IntelNpu {
     fn device(&self) -> Option<&'static Device> {
         self.device
     }
@@ -61,15 +65,21 @@ impl GpuImpl for IntelGpu {
     }
 
     fn usage(&self) -> Result<f64> {
-        self.drm_usage().map(|usage| usage as f64 / 100.0)
-    }
+        let last_timestamp = self.last_busy_time_timestamp.get();
+        let last_busy_time = self.last_busy_time_us.get();
 
-    fn encode_usage(&self) -> Result<f64> {
-        bail!("encode usage not implemented for Intel")
-    }
+        let new_timestamp = unix_as_millis();
+        let new_busy_time = self
+            .read_device_int("npu_busy_time_us")
+            .map(|int| int as usize)?;
 
-    fn decode_usage(&self) -> Result<f64> {
-        bail!("decode usage not implemented for Intel")
+        self.last_busy_time_timestamp.set(new_timestamp);
+        self.last_busy_time_us.set(new_busy_time);
+
+        let delta_timestamp = new_timestamp.saturating_sub(last_timestamp) as f64;
+        let delta_busy_time = new_busy_time.saturating_sub(last_busy_time) as f64;
+
+        Ok(delta_busy_time / delta_timestamp)
     }
 
     fn used_vram(&self) -> Result<usize> {
@@ -89,7 +99,7 @@ impl GpuImpl for IntelGpu {
     }
 
     fn core_frequency(&self) -> Result<f64> {
-        Ok(self.read_sysfs_int("gt_cur_freq_mhz")? as f64 * 1_000_000.0)
+        self.hwmon_core_frequency()
     }
 
     fn vram_frequency(&self) -> Result<f64> {
