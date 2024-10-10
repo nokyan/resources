@@ -121,6 +121,10 @@ impl GpuImpl for NvidiaGpu {
             .context("decode usage not implemented for NVIDIA not using the nvidia driver")
     }
 
+    fn combined_media_engine(&self) -> Result<bool> {
+        Ok(false)
+    }
+
     fn used_vram(&self) -> Result<isize> {
         Self::nvml_device(&self.pci_slot_string)
             .and_then(|dev| {
