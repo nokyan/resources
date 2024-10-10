@@ -2,7 +2,7 @@ mod intel;
 mod other;
 
 use anyhow::{bail, Context, Result};
-use log::info;
+use log::{debug, info};
 use process_data::pci_slot::PciSlot;
 
 use std::{
@@ -188,14 +188,16 @@ impl Npu {
     /// Will return `Err` if there are problems detecting
     /// the NPUs in the system
     pub fn get_npus() -> Result<Vec<Npu>> {
+        debug!("Searching for NPUs…");
+
         let mut npu_vec: Vec<Npu> = Vec::new();
-        let entries = std::fs::read_dir("/sys/class/accel")?;
-        for entry in entries {
-            let entry = entry?;
-            if let Ok(npu) = Self::from_sysfs_path(entry.path()) {
+        for entry in glob("/sys/class/accel/accel?")?.flatten() {
+            if let Ok(npu) = Self::from_sysfs_path(entry) {
                 npu_vec.push(npu);
             }
         }
+
+        debug!("{} NPUs found", npu_vec.len());
 
         Ok(npu_vec)
     }

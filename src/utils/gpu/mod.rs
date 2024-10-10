@@ -4,7 +4,7 @@ mod nvidia;
 mod other;
 
 use anyhow::{bail, Context, Result};
-use log::info;
+use log::{debug, info};
 use process_data::pci_slot::PciSlot;
 
 use std::{
@@ -208,12 +208,17 @@ impl Gpu {
     /// Will return `Err` if there are problems detecting
     /// the GPUs in the system
     pub fn get_gpus() -> Result<Vec<Gpu>> {
+        debug!("Searching for GPUs…");
+
         let mut gpu_vec: Vec<Gpu> = Vec::new();
         for entry in glob("/sys/class/drm/card?")?.flatten() {
             if let Ok(gpu) = Self::from_sysfs_path(entry) {
                 gpu_vec.push(gpu);
             }
         }
+
+        debug!("{} GPUs found", gpu_vec.len());
+
         Ok(gpu_vec)
     }
 
