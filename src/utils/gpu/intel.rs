@@ -72,6 +72,10 @@ impl GpuImpl for IntelGpu {
         bail!("decode usage not implemented for Intel")
     }
 
+    fn combined_media_engine(&self) -> Result<bool> {
+        Ok(true)
+    }
+
     fn used_vram(&self) -> Result<isize> {
         self.drm_used_vram()
     }
