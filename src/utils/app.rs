@@ -26,7 +26,7 @@ use super::{
 /// considered instead to enhance app detection
 const DESKTOP_ENVIRONMENT_CGROUPS: &[&str] = &["org.gnome.Shell"];
 
-// This contains executable names that are blacklisted from being recognized as applications
+// This contains executable names that are blocklisted from being recognized as applications
 const DESKTOP_EXEC_BLOCKLIST: &[&str] = &["bash", "zsh", "fish", "sh", "ksh", "flatpak"];
 
 // This contains IDs of desktop files that shouldn't be counted as applications for whatever reason
@@ -286,8 +286,8 @@ impl App {
 
         if let Some(executable_name) = &executable_name {
             if DESKTOP_EXEC_BLOCKLIST.contains(&executable_name.as_str()) {
-                debug!("Skipping {id} because its executable {executable_name} blacklisted…");
-                bail!("{id}'s executable {executable_name} is blacklisted")
+                debug!("Skipping {id} because its executable {executable_name} blocklisted…");
+                bail!("{id}'s executable {executable_name} is blocklisted")
             }
         }
 
@@ -405,6 +405,13 @@ impl App {
     pub fn memory_usage(&self, apps: &AppsContext) -> usize {
         self.processes_iter(apps)
             .map(|process| process.data.memory_usage)
+            .sum()
+    }
+
+    #[must_use]
+    pub fn swap_usage(&self, apps: &AppsContext) -> usize {
+        self.processes_iter(apps)
+            .map(|process| process.data.swap_usage)
             .sum()
     }
 
