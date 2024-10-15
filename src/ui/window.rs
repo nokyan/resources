@@ -499,13 +499,22 @@ impl MainWindow {
                 // usage, which might not be what we want
 
                 let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.pci_slot);
-                gpu_data.usage_fraction = Some(processes_gpu_fraction.into());
+                gpu_data.usage_fraction = Some(f64::max(
+                    gpu_data.usage_fraction.unwrap_or(0.0),
+                    processes_gpu_fraction.into(),
+                ));
 
                 let processes_encode_fraction = apps_context.encoder_fraction(gpu_data.pci_slot);
-                gpu_data.encode_fraction = Some(processes_encode_fraction.into());
+                gpu_data.encode_fraction = Some(f64::max(
+                    gpu_data.encode_fraction.unwrap_or(0.0),
+                    processes_encode_fraction.into(),
+                ));
 
                 let processes_decode_fraction = apps_context.decoder_fraction(gpu_data.pci_slot);
-                gpu_data.decode_fraction = Some(processes_decode_fraction.into());
+                gpu_data.decode_fraction = Some(f64::max(
+                    gpu_data.decode_fraction.unwrap_or(0.0),
+                    processes_decode_fraction.into(),
+                ));
             }
 
             page.refresh_page(&gpu_data);
