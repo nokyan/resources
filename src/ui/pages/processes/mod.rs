@@ -9,13 +9,13 @@ use adw::{prelude::*, subclass::prelude::*};
 use async_channel::Sender;
 use gtk::glib::{self, clone, closure, MainContext, Object};
 use gtk::{
-    gio, ColumnView, ColumnViewColumn, EventControllerKey, FilterChange, ListItem, NumericSorter,
-    SortType, StringSorter, Widget,
+    gio, BitsetIter, ColumnView, ColumnViewColumn, EventControllerKey, FilterChange, ListItem,
+    NumericSorter, SortType, StringSorter, Widget,
 };
 use process_data::Niceness;
 
 use crate::config::PROFILE;
-use crate::i18n::{i18n, i18n_f};
+use crate::i18n::{i18n, i18n_f, ni18n_f};
 use crate::ui::dialogs::process_dialog::ResProcessDialog;
 use crate::ui::dialogs::process_options_dialog::ResProcessOptionsDialog;
 use crate::ui::pages::NICE_TO_LABEL;
@@ -94,7 +94,7 @@ mod imp {
         pub end_process_button: TemplateChild<adw::SplitButton>,
 
         pub store: RefCell<gio::ListStore>,
-        pub selection_model: RefCell<gtk::SingleSelection>,
+        pub selection_model: RefCell<gtk::MultiSelection>,
         pub filter_model: RefCell<gtk::FilterListModel>,
         pub sort_model: RefCell<gtk::SortListModel>,
         pub column_view: RefCell<gtk::ColumnView>,
@@ -163,7 +163,7 @@ mod imp {
                 information_button: Default::default(),
                 end_process_button: Default::default(),
                 store: gio::ListStore::new::<ProcessEntry>().into(),
-                selection_model: Default::default(),
+                selection_model: RefCell::new(glib::object::Object::new::<gtk::MultiSelection>()),
                 filter_model: Default::default(),
                 sort_model: Default::default(),
                 column_view: Default::default(),
@@ -201,8 +201,10 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        res_processes
-                            .execute_process_action_dialog(process_entry, ProcessAction::TERM);
+                        res_processes.execute_process_action_dialog(
+                            vec![process_entry.clone()],
+                            ProcessAction::TERM,
+                        );
                     }
                 },
             );
@@ -214,8 +216,10 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        res_processes
-                            .execute_process_action_dialog(process_entry, ProcessAction::KILL);
+                        res_processes.execute_process_action_dialog(
+                            vec![process_entry.clone()],
+                            ProcessAction::KILL,
+                        );
                     }
                 },
             );
@@ -227,8 +231,10 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        res_processes
-                            .execute_process_action_dialog(process_entry, ProcessAction::STOP);
+                        res_processes.execute_process_action_dialog(
+                            vec![process_entry.clone()],
+                            ProcessAction::STOP,
+                        );
                     }
                 },
             );
@@ -240,8 +246,10 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        res_processes
-                            .execute_process_action_dialog(process_entry, ProcessAction::CONT);
+                        res_processes.execute_process_action_dialog(
+                            vec![process_entry.clone()],
+                            ProcessAction::CONT,
+                        );
                     }
                 },
             );
@@ -274,8 +282,9 @@ mod imp {
                 "processes.kill-process",
                 None,
                 move |res_processes, _, _| {
-                    if let Some(process) = res_processes.get_selected_process_entry() {
-                        res_processes.execute_process_action_dialog(&process, ProcessAction::KILL);
+                    let selected = res_processes.get_selected_process_entries();
+                    if !selected.is_empty() {
+                        res_processes.execute_process_action_dialog(selected, ProcessAction::KILL);
                     }
                 },
             );
@@ -284,8 +293,9 @@ mod imp {
                 "processes.halt-process",
                 None,
                 move |res_processes, _, _| {
-                    if let Some(process) = res_processes.get_selected_process_entry() {
-                        res_processes.execute_process_action_dialog(&process, ProcessAction::STOP);
+                    let selected = res_processes.get_selected_process_entries();
+                    if !selected.is_empty() {
+                        res_processes.execute_process_action_dialog(selected, ProcessAction::STOP);
                     }
                 },
             );
@@ -294,8 +304,9 @@ mod imp {
                 "processes.continue-process",
                 None,
                 move |res_processes, _, _| {
-                    if let Some(process) = res_processes.get_selected_process_entry() {
-                        res_processes.execute_process_action_dialog(&process, ProcessAction::CONT);
+                    let selected = res_processes.get_selected_process_entries();
+                    if !selected.is_empty() {
+                        res_processes.execute_process_action_dialog(selected, ProcessAction::CONT);
                     }
                 },
             );
@@ -450,9 +461,7 @@ impl ResProcesses {
 
         let sort_model = gtk::SortListModel::new(Some(filter_model.clone()), column_view.sorter());
 
-        let selection_model = gtk::SingleSelection::new(Some(sort_model.clone()));
-        selection_model.set_can_unselect(true);
-        selection_model.set_autoselect(false);
+        let selection_model = gtk::MultiSelection::new(Some(sort_model.clone()));
 
         column_view.set_model(Some(&selection_model));
 
@@ -483,12 +492,11 @@ impl ResProcesses {
                 self,
                 move |model, _, _| {
                     let imp = this.imp();
-                    imp.information_button
-                        .set_sensitive(model.selected() != u32::MAX);
-                    imp.options_button
-                        .set_sensitive(model.selected() != u32::MAX);
-                    imp.end_process_button
-                        .set_sensitive(model.selected() != u32::MAX);
+                    let bitset = model.selection();
+
+                    imp.information_button.set_sensitive(bitset.size() == 1);
+                    imp.options_button.set_sensitive(bitset.size() == 1);
+                    imp.end_process_button.set_sensitive(bitset.size() > 0);
                 }
             ));
 
@@ -535,10 +543,11 @@ impl ResProcesses {
             self,
             move |_| {
                 let imp = this.imp();
+                let bitset = imp.selection_model.borrow().selection();
                 let selection_option = imp
                     .selection_model
                     .borrow()
-                    .selected_item()
+                    .item(bitset.maximum()) // the info button is only available when only 1 item is selected, so this should be fine
                     .map(|object| object.downcast::<ProcessEntry>().unwrap());
                 if let Some(selection) = selection_option {
                     this.open_options_dialog(&selection);
@@ -551,10 +560,11 @@ impl ResProcesses {
             self,
             move |_| {
                 let imp = this.imp();
+                let bitset = imp.selection_model.borrow().selection();
                 let selection_option = imp
                     .selection_model
                     .borrow()
-                    .selected_item()
+                    .item(bitset.maximum()) // the info button is only available when only 1 item is selected, so this should be fine
                     .map(|object| object.downcast::<ProcessEntry>().unwrap());
                 if let Some(selection) = selection_option {
                     this.open_info_dialog(&selection);
@@ -566,8 +576,9 @@ impl ResProcesses {
             #[weak(rename_to = this)]
             self,
             move |_| {
-                if let Some(process) = this.get_selected_process_entry() {
-                    this.execute_process_action_dialog(&process, ProcessAction::TERM);
+                let selected = this.get_selected_process_entries();
+                if !selected.is_empty() {
+                    this.execute_process_action_dialog(selected, ProcessAction::TERM);
                 }
             }
         ));
@@ -671,12 +682,34 @@ impl ResProcesses {
             || item.commandline().to_lowercase().contains(&search_string)
     }
 
-    pub fn get_selected_process_entry(&self) -> Option<ProcessEntry> {
-        self.imp()
-            .selection_model
-            .borrow()
-            .selected_item()
-            .and_then(|object| object.downcast::<ProcessEntry>().ok())
+    pub fn get_selected_process_entries(&self) -> Vec<ProcessEntry> {
+        let imp = self.imp();
+
+        if let Some((bitset_iter, first)) =
+            BitsetIter::init_first(&imp.selection_model.borrow().selection())
+        {
+            let mut return_vec: Vec<_> = bitset_iter
+                .filter_map(|position| {
+                    imp.selection_model
+                        .borrow()
+                        .item(position)
+                        .map(|object| object.downcast::<ProcessEntry>().unwrap())
+                })
+                .collect();
+
+            if let Some(first_process) = imp
+                .selection_model
+                .borrow()
+                .item(first)
+                .map(|object| object.downcast::<ProcessEntry>().unwrap())
+            {
+                return_vec.insert(0, first_process);
+            }
+
+            return_vec
+        } else {
+            Vec::default()
+        }
     }
 
     pub fn refresh_processes_list(&self, apps_context: &AppsContext) {
@@ -759,25 +792,31 @@ impl ResProcesses {
         ));
     }
 
-    pub fn execute_process_action_dialog(&self, process: &ProcessEntry, action: ProcessAction) {
+    pub fn execute_process_action_dialog(
+        &self,
+        processes: Vec<ProcessEntry>,
+        action: ProcessAction,
+    ) {
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
             let main_context = MainContext::default();
             main_context.spawn_local(clone!(
                 #[weak(rename_to = this)]
                 self,
-                #[weak]
-                process,
+                #[strong]
+                processes,
                 async move {
                     let imp = this.imp();
                     let _ = imp
                         .sender
                         .get()
                         .unwrap()
-                        .send(Action::ManipulateProcess(
+                        .send(Action::ManipulateProcesses(
                             action,
-                            process.pid(),
-                            process.name().to_string(),
+                            processes
+                                .iter()
+                                .map(|process_entry| process_entry.pid())
+                                .collect(),
                             imp.toast_overlay.get(),
                         ))
                         .await;
@@ -786,45 +825,53 @@ impl ResProcesses {
             return;
         }
 
+        let action_name = if processes.len() == 1 {
+            get_action_name(action, &processes[0].name())
+        } else {
+            get_action_name_multiple(action, processes.len())
+        };
+
         // Confirmation dialog & warning
         let dialog = adw::AlertDialog::builder()
-            .heading(get_action_name(action, &[&process.name()]))
-            .body(get_process_action_warning(action))
+            .heading(action_name)
+            .body(get_action_warning(action))
             .build();
 
-        dialog.add_response("yes", &get_process_action_description(action));
+        dialog.add_response("yes", &get_action_description(action));
         dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
 
         dialog.add_response("no", &i18n("Cancel"));
         dialog.set_default_response(Some("no"));
         dialog.set_close_response("no");
 
-        // Called when "yes" or "no" were clicked
+        // wtf is this
         dialog.connect_response(
             None,
             clone!(
                 #[weak(rename_to = this)]
                 self,
-                #[weak]
-                process,
+                #[strong]
+                processes,
                 move |_, response| {
                     if response == "yes" {
                         let main_context = MainContext::default();
                         main_context.spawn_local(clone!(
-                            #[strong]
+                            #[weak]
                             this,
                             #[strong]
-                            process,
+                            processes,
                             async move {
                                 let imp = this.imp();
                                 let _ = imp
                                     .sender
                                     .get()
                                     .unwrap()
-                                    .send(Action::ManipulateProcess(
+                                    .send(Action::ManipulateProcesses(
                                         action,
-                                        process.pid(),
-                                        process.name().to_string(),
+                                        processes
+                                            .iter()
+                                            .map(|process_entry| process_entry.pid())
+                                            .collect(),
                                         imp.toast_overlay.get(),
                                     ))
                                     .await;
@@ -1872,16 +1919,45 @@ impl ResProcesses {
     }
 }
 
-fn get_action_name(action: ProcessAction, args: &[&str]) -> String {
+fn get_action_name(action: ProcessAction, name: &str) -> String {
     match action {
-        ProcessAction::TERM => i18n_f("End {}?", args),
-        ProcessAction::STOP => i18n_f("Halt {}?", args),
-        ProcessAction::KILL => i18n_f("Kill {}?", args),
-        ProcessAction::CONT => i18n_f("Continue {}?", args),
+        ProcessAction::TERM => i18n_f("End {}?", &[name]),
+        ProcessAction::STOP => i18n_f("Halt {}?", &[name]),
+        ProcessAction::KILL => i18n_f("Kill {}?", &[name]),
+        ProcessAction::CONT => i18n_f("Continue {}?", &[name]),
     }
 }
 
-fn get_process_action_warning(action: ProcessAction) -> String {
+fn get_action_name_multiple(action: ProcessAction, count: usize) -> String {
+    match action {
+        ProcessAction::TERM => ni18n_f(
+            "End process?",
+            "End {} processes?",
+            count as u32,
+            &[&count.to_string()],
+        ),
+        ProcessAction::STOP => ni18n_f(
+            "Halt process?",
+            "Halt {} processes?",
+            count as u32,
+            &[&count.to_string()],
+        ),
+        ProcessAction::KILL => ni18n_f(
+            "Kill process?",
+            "Kill {} processes?",
+            count as u32,
+            &[&count.to_string()],
+        ),
+        ProcessAction::CONT => ni18n_f(
+            "Kill process?",
+            "Kill {} processes?",
+            count as u32,
+            &[&count.to_string()],
+        ),
+    }
+}
+
+fn get_action_warning(action: ProcessAction) -> String {
     match action {
             ProcessAction::TERM => i18n("Unsaved work might be lost."),
             ProcessAction::STOP => i18n("Halting a process can come with serious risks such as losing data and security implications. Use with caution."),
@@ -1890,7 +1966,7 @@ fn get_process_action_warning(action: ProcessAction) -> String {
         }
 }
 
-fn get_process_action_description(action: ProcessAction) -> String {
+fn get_action_description(action: ProcessAction) -> String {
     match action {
         ProcessAction::TERM => i18n("End Process"),
         ProcessAction::STOP => i18n("Halt Process"),
