@@ -349,7 +349,8 @@ impl ResDrive {
         ) {
             let delta_read_sectors = read_sectors.saturating_sub(*old_read_sectors);
 
-            let read_speed = (delta_read_sectors * Self::SECTOR_SIZE) as f64 / time_passed;
+            let read_speed =
+                (delta_read_sectors.saturating_mul(Self::SECTOR_SIZE)) as f64 / time_passed;
 
             imp.read_speed.graph().set_visible(true);
             imp.read_speed.graph().push_data_point(read_speed);
@@ -379,7 +380,8 @@ impl ResDrive {
         ) {
             let delta_write_sectors = write_sectors.saturating_sub(*old_write_sectors);
 
-            let write_speed = (delta_write_sectors * Self::SECTOR_SIZE) as f64 / time_passed;
+            let write_speed =
+                (delta_write_sectors.saturating_mul(Self::SECTOR_SIZE)) as f64 / time_passed;
 
             imp.read_speed.graph().set_visible(true);
             imp.write_speed.graph().push_data_point(write_speed);
@@ -408,11 +410,11 @@ impl ResDrive {
             disk_stats.get("write_sectors"),
         ) {
             imp.total_read.set_subtitle(&convert_storage(
-                (read_sectors * Self::SECTOR_SIZE) as f64,
+                (read_sectors.saturating_mul(Self::SECTOR_SIZE)) as f64,
                 false,
             ));
             imp.total_written.set_subtitle(&convert_storage(
-                (write_sectors * Self::SECTOR_SIZE) as f64,
+                (write_sectors.saturating_mul(Self::SECTOR_SIZE)) as f64,
                 false,
             ));
         } else {

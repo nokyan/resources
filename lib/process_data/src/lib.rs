@@ -284,7 +284,8 @@ impl ProcessData {
                 });
             });
 
-        let memory_usage = (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?) * *PAGESIZE;
+        let memory_usage =
+            (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?).saturating_mul(*PAGESIZE);
 
         let starttime = stat[21 - 2].parse()?;
 
@@ -498,17 +499,17 @@ impl ProcessData {
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 .unwrap_or_default()
-                * 1024;
+                .saturating_mul(1024);
 
             let gtt = RE_DRM_MEMORY_GTT
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 .unwrap_or_default()
-                * 1024;
+                .saturating_mul(1024);
 
             let stats = GpuUsageStats {
-                gfx: gfx + compute,
+                gfx: gfx.saturating_add(compute),
                 mem: vram.saturating_add(gtt),
                 enc,
                 dec,
@@ -586,8 +587,12 @@ impl ProcessData {
         for (pci_slot, gpu) in NVML_DEVICES.iter() {
             return_map.insert(
                 pci_slot.to_owned(),
-                gpu.process_utilization_stats(unix_as_millis() * 1000 - 5_000_000)
-                    .unwrap_or_default(),
+                gpu.process_utilization_stats(
+                    unix_as_millis()
+                        .saturating_mul(1000)
+                        .saturating_sub(5_000_000),
+                )
+                .unwrap_or_default(),
             );
         }
 

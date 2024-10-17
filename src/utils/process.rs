@@ -330,7 +330,10 @@ impl Process {
                 * 1000.0;
             let delta_time = self.data.timestamp.saturating_sub(self.timestamp_last);
 
-            (delta_cpu_time / (delta_time * *TICK_RATE as u64 * *NUM_CPUS as u64) as f32)
+            (delta_cpu_time
+                / (delta_time
+                    .saturating_mul(*TICK_RATE as u64)
+                    .saturating_mul(*NUM_CPUS as u64)) as f32)
                 .finite_or_default()
         }
     }
