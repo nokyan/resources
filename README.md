@@ -42,7 +42,7 @@ If you’re packaging Resources for another distribution, feel free to send a pu
 
 Unofficially packaged in the [extra](https://archlinux.org/packages/extra/x86_64/resources/) repository.
 
-You can install it using `pacman` with no further configuration required.
+You can install Resources using `pacman` with no further configuration required.
 
 ```sh
 pacman -S resources

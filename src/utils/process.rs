@@ -91,7 +91,7 @@ impl Process {
     pub fn all_data() -> Result<Vec<ProcessData>> {
         let output = {
             let mut process = OTHER_PROCESS.lock().unwrap();
-            let _ = process.0.write_all(&[b'\n']);
+            let _ = process.0.write_all(b"\n");
             let _ = process.0.flush();
 
             let mut len_bytes = [0_u8; (usize::BITS / 8) as usize];
