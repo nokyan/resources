@@ -93,6 +93,10 @@
       <default>false</default>
       <summary>Display GPU memory usage in Applications view</summary>
     </key>
+    <key name="apps-show-swap" type="b">
+      <default>false</default>
+      <summary>Display swap usage in Applications view</summary>
+    </key>
     <key name="processes-show-id" type="b">
       <default>true</default>
       <summary>Display process ID in Processes view</summary>
@@ -156,6 +160,10 @@
     <key name="processes-show-priority" type="b">
       <default>false</default>
       <summary>Display priority in Processes view</summary>
+    </key>
+    <key name="processes-show-swap" type="b">
+      <default>false</default>
+      <summary>Display swap usage in Processes view</summary>
     </key>
     <key name="show-logical-cpus" type="b">
       <default>false</default>

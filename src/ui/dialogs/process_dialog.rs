@@ -22,6 +22,8 @@ mod imp {
         #[template_child]
         pub memory_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
+        pub swap_usage: TemplateChild<adw::ActionRow>,
+        #[template_child]
         pub drive_read_speed: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub drive_read_total: TemplateChild<adw::ActionRow>,
@@ -148,6 +150,9 @@ impl ResProcessDialog {
 
         imp.memory_usage
             .set_subtitle(&convert_storage(process.memory_usage() as f64, false));
+
+        imp.swap_usage
+            .set_subtitle(&convert_storage(process.swap_usage() as f64, false));
 
         if process.read_speed() == -1.0 {
             imp.drive_read_speed.set_subtitle(&i18n("N/A"));
