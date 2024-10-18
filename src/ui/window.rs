@@ -254,8 +254,10 @@ impl MainWindow {
             }
         } else if selected_page.is::<ResProcesses>() {
             let selected = imp.processes.get_selected_process_entries();
-            imp.processes
-                .open_process_action_dialog(selected, process_action);
+            if !selected.is_empty() {
+                imp.processes
+                    .open_process_action_dialog(selected, process_action);
+            }
         }
     }
 
