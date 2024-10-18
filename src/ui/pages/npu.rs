@@ -236,8 +236,7 @@ impl ResNPU {
             Self::MAIN_GRAPH_COLOR[2],
         );
 
-        imp.memory_usage
-            .set_title_label(&i18n("Video Memory Usage"));
+        imp.memory_usage.set_title_label(&i18n("Memory Usage"));
         imp.memory_usage.graph().set_graph_color(0x9e, 0xc, 0xcc);
 
         imp.manufacturer.set_subtitle(
@@ -346,7 +345,9 @@ impl ResNPU {
 
         if used_vram_fraction.is_some() {
             usage_percentage_string.push_str(" · ");
-            usage_percentage_string.push_str(&i18n_f("VRAM: {}", &[&vram_percentage_string]));
+            // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
+            // shorter than) 'Memory'
+            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&vram_percentage_string]));
         }
 
         if let Some(temperature_string) = temperature_string {

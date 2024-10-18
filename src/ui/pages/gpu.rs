@@ -425,7 +425,9 @@ impl ResGPU {
 
         if used_vram_fraction.is_some() {
             usage_percentage_string.push_str(" · ");
-            usage_percentage_string.push_str(&i18n_f("VRAM: {}", &[&vram_percentage_string]));
+            // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
+            // shorter than) 'Memory'
+            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&vram_percentage_string]));
         }
 
         if let Some(temperature_string) = temperature_string {
