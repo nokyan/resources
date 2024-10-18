@@ -11,6 +11,7 @@ pub mod drive;
 pub mod gpu;
 pub mod memory;
 pub mod network;
+pub mod npu;
 pub mod processes;
 
 const APPLICATIONS_PRIMARY_ORD: u32 = 0;
@@ -18,9 +19,10 @@ const PROCESSES_PRIMARY_ORD: u32 = 1;
 const CPU_PRIMARY_ORD: u32 = 2;
 const MEMORY_PRIMARY_ORD: u32 = 3;
 const GPU_PRIMARY_ORD: u32 = 4;
-const DRIVE_PRIMARY_ORD: u32 = 5;
-const NETWORK_PRIMARY_ORD: u32 = 6;
-const BATTERY_PRIMARY_ORD: u32 = 7;
+const NPU_PRIMARY_ORD: u32 = 5;
+const DRIVE_PRIMARY_ORD: u32 = 6;
+const NETWORK_PRIMARY_ORD: u32 = 7;
+const BATTERY_PRIMARY_ORD: u32 = 8;
 
 pub static NICE_TO_LABEL: LazyLock<HashMap<Niceness, (String, u32)>> = LazyLock::new(|| {
     let mut hash_map = HashMap::new();

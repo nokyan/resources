@@ -21,6 +21,7 @@
     <file preprocess="xml-stripblanks" alias="loop-device-symbolic.svg">icons/loop-device-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="mapped-device-symbolic.svg">icons/mapped-device-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="memory-symbolic.svg">icons/memory-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="npu-symbolic.svg">icons/npu-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="nvme-symbolic.svg">icons/nvme-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="options-symbolic.svg">icons/options-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="processor-symbolic.svg">icons/processor-symbolic.svg</file>
@@ -55,6 +56,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/gpu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/memory.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/network.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/pages/npu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/processes.ui</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="gtk/help-overlay.ui">ui/shortcuts.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/application_name_cell.ui</file>

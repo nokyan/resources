@@ -127,20 +127,7 @@ mod imp {
             self.graph.push_data_point(usage);
         }
 
-        pub fn tab_id(&self) -> glib::GString {
-            let tab_id = self.tab_id.take();
-            self.tab_id.set(tab_id.clone());
-            tab_id
-        }
-
-        pub fn set_tab_id(&self, tab_id: &str) {
-            let current_tab_id = self.tab_id.take();
-            if current_tab_id.as_str() == tab_id {
-                self.tab_id.set(current_tab_id);
-                return;
-            }
-            self.tab_id.set(glib::GString::from(tab_id));
-        }
+        gstring_getter_setter!(tab_id);
     }
 
     impl Default for ResStackSidebarItem {

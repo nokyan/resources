@@ -86,8 +86,9 @@ impl AmdGpu {
         let elapsed = start.elapsed();
 
         debug!(
-            "Successfully parsed {} within {elapsed:.2?}",
-            path.to_string_lossy()
+            "Successfully parsed {} within {elapsed:.2?} ({} entries)",
+            path.to_string_lossy(),
+            map.len()
         );
 
         Ok(map)
@@ -130,15 +131,15 @@ impl GpuImpl for AmdGpu {
             }))
     }
 
-    fn usage(&self) -> Result<isize> {
-        self.drm_usage()
+    fn usage(&self) -> Result<f64> {
+        self.drm_usage().map(|usage| usage as f64 / 100.0)
     }
 
-    fn encode_usage(&self) -> Result<isize> {
+    fn encode_usage(&self) -> Result<f64> {
         bail!("encode usage not implemented for AMD")
     }
 
-    fn decode_usage(&self) -> Result<isize> {
+    fn decode_usage(&self) -> Result<f64> {
         bail!("decode usage not implemented for AMD")
     }
 
@@ -146,12 +147,12 @@ impl GpuImpl for AmdGpu {
         Ok(self.combined_media_engine)
     }
 
-    fn used_vram(&self) -> Result<isize> {
-        self.drm_used_vram()
+    fn used_vram(&self) -> Result<usize> {
+        self.drm_used_vram().map(|usage| usage as usize)
     }
 
-    fn total_vram(&self) -> Result<isize> {
-        self.drm_total_vram()
+    fn total_vram(&self) -> Result<usize> {
+        self.drm_total_vram().map(|usage| usage as usize)
     }
 
     fn temperature(&self) -> Result<f64> {

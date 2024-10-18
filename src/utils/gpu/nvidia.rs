@@ -91,33 +91,33 @@ impl GpuImpl for NvidiaGpu {
             .or_else(|_| self.drm_name())
     }
 
-    fn usage(&self) -> Result<isize> {
+    fn usage(&self) -> Result<f64> {
         Self::nvml_device(&self.pci_slot_string)
             .and_then(|dev| {
                 dev.utilization_rates()
                     .context("unable to get utilization rates through NVML")
             })
-            .map(|usage| usage.gpu as isize)
-            .or_else(|_| self.drm_usage())
+            .map(|usage| usage.gpu as f64 / 100.0)
+            .or_else(|_| self.drm_usage().map(|usage| usage as f64 / 100.0))
     }
 
-    fn encode_usage(&self) -> Result<isize> {
+    fn encode_usage(&self) -> Result<f64> {
         Self::nvml_device(&self.pci_slot_string)
             .and_then(|dev| {
                 dev.encoder_utilization()
                     .context("unable to get utilization rates through NVML")
             })
-            .map(|usage| usage.utilization as isize)
+            .map(|usage| usage.utilization as f64 / 100.0)
             .context("encode usage not implemented for NVIDIA not using the nvidia driver")
     }
 
-    fn decode_usage(&self) -> Result<isize> {
+    fn decode_usage(&self) -> Result<f64> {
         Self::nvml_device(&self.pci_slot_string)
             .and_then(|dev| {
                 dev.decoder_utilization()
                     .context("unable to get utilization rates through NVML")
             })
-            .map(|usage| usage.utilization as isize)
+            .map(|usage| usage.utilization as f64 / 100.0)
             .context("decode usage not implemented for NVIDIA not using the nvidia driver")
     }
 
@@ -125,24 +125,24 @@ impl GpuImpl for NvidiaGpu {
         Ok(false)
     }
 
-    fn used_vram(&self) -> Result<isize> {
+    fn used_vram(&self) -> Result<usize> {
         Self::nvml_device(&self.pci_slot_string)
             .and_then(|dev| {
                 dev.memory_info()
                     .context("unable to get memory info through NVML")
             })
-            .map(|memory_info| memory_info.used as isize)
-            .or_else(|_| self.drm_used_vram())
+            .map(|memory_info| memory_info.used as usize)
+            .or_else(|_| self.drm_used_vram().map(|usage| usage as usize))
     }
 
-    fn total_vram(&self) -> Result<isize> {
+    fn total_vram(&self) -> Result<usize> {
         Self::nvml_device(&self.pci_slot_string)
             .and_then(|dev| {
                 dev.memory_info()
                     .context("unable to get memory info through NVML")
             })
-            .map(|memory_info| memory_info.total as isize)
-            .or_else(|_| self.drm_total_vram())
+            .map(|memory_info| memory_info.total as usize)
+            .or_else(|_| self.drm_total_vram().map(|usage| usage as usize))
     }
 
     fn temperature(&self) -> Result<f64> {

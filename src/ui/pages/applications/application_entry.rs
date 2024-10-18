@@ -185,6 +185,7 @@ impl ApplicationEntry {
             .property("name", &app.display_name)
             .property("icon", &app.icon)
             .property("id", &app.id)
+            .property("description", &app.description)
             .property("containerization", containerization)
             .property("running_since", app.running_since(apps_context).ok())
             .build();
