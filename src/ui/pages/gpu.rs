@@ -5,7 +5,7 @@ use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::gpu::{Gpu, GpuData};
 use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
-use crate::utils::{pci, FiniteOr};
+use crate::utils::FiniteOr;
 
 pub const TAB_ID_PREFIX: &str = "gpu";
 
@@ -231,9 +231,7 @@ impl ResGPU {
 
         imp.driver_used.set_subtitle(&gpu.driver());
 
-        if gpu.get_vendor().map(pci::Vendor::vid).unwrap_or_default()
-            == crate::utils::gpu::VID_INTEL
-        {
+        if gpu.combined_media_engine().unwrap_or_default() {
             imp.encode_decode_combined_usage.set_visible(true);
             imp.encode_decode_usage.set_visible(false);
         } else {
@@ -276,7 +274,7 @@ impl ResGPU {
             .push_data_point(usage_fraction.unwrap_or(0.0));
         imp.gpu_usage.graph().set_visible(usage_fraction.is_some());
 
-        // encode_fraction could be the combined usage of encoder and decoder for intel GPUs
+        // encode_fraction could be the combined usage of encoder and decoder for Intel GPUs and newer AMD GPUs
         if let Some(encode_fraction) = encode_fraction {
             imp.encode_decode_usage
                 .start_graph()

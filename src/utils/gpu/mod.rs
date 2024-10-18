@@ -31,6 +31,7 @@ pub struct GpuData {
 
     pub usage_fraction: Option<f64>,
 
+    // in case of a GPU with a combined media engine, encode_fraction will contain the combined usage
     pub encode_fraction: Option<f64>,
     pub decode_fraction: Option<f64>,
 
@@ -53,11 +54,20 @@ impl GpuData {
     pub fn new(gpu: &Gpu) -> Self {
         let pci_slot = gpu.pci_slot();
 
-        let usage_fraction = gpu.usage().ok();
+        let usage_fraction = gpu
+            .usage()
+            .map(|usage| ((usage as f64) / 100.0).clamp(0.0, 1.0))
+            .ok();
 
-        let encode_fraction = gpu.encode_usage().ok();
+        let encode_fraction = gpu
+            .encode_usage()
+            .map(|usage| ((usage as f64) / 100.0).clamp(0.0, 1.0))
+            .ok();
 
-        let decode_fraction = gpu.decode_usage().ok();
+        let decode_fraction = gpu
+            .decode_usage()
+            .map(|usage| ((usage as f64) / 100.0).clamp(0.0, 1.0))
+            .ok();
 
         let total_vram = gpu.total_vram().ok();
         let used_vram = gpu.used_vram().ok();
@@ -116,6 +126,7 @@ pub trait GpuImpl {
     fn usage(&self) -> Result<f64>;
     fn encode_usage(&self) -> Result<f64>;
     fn decode_usage(&self) -> Result<f64>;
+    fn combined_media_engine(&self) -> Result<bool>;
     fn used_vram(&self) -> Result<usize>;
     fn total_vram(&self) -> Result<usize>;
     fn temperature(&self) -> Result<f64>;
@@ -392,6 +403,15 @@ impl Gpu {
             Gpu::Nvidia(gpu) => gpu.decode_usage(),
             Gpu::Intel(gpu) => gpu.decode_usage(),
             Gpu::Other(gpu) => gpu.decode_usage(),
+        }
+    }
+
+    pub fn combined_media_engine(&self) -> Result<bool> {
+        match self {
+            Gpu::Amd(gpu) => gpu.combined_media_engine(),
+            Gpu::Nvidia(gpu) => gpu.combined_media_engine(),
+            Gpu::Intel(gpu) => gpu.combined_media_engine(),
+            Gpu::Other(gpu) => gpu.combined_media_engine(),
         }
     }
 

@@ -316,12 +316,13 @@ impl MainWindow {
                 self.add_page(&page, &tab_name, &tab_name)
             };
 
-            page.init(gpu, i as u32);
+            page.init(&gpu, i as u32);
 
             imp.gpu_pages
                 .borrow_mut()
                 .insert(gpu.pci_slot(), (gpu.clone(), added_page));
         }
+
         gpus
     }
 
@@ -353,11 +354,14 @@ impl MainWindow {
                 .borrow_mut()
                 .insert(npu.pci_slot(), (npu.clone(), added_page));
         }
+
         npus
     }
 
     fn setup_widgets(&self) {
         let imp = self.imp();
+
+        let gpus = Gpu::get_gpus().unwrap_or_default();
 
         imp.resources_sidebar.set_stack(&imp.content_stack);
 
@@ -377,7 +381,12 @@ impl MainWindow {
             self.remove_page(imp.applications_page.child().downcast_ref().unwrap());
             self.remove_page(imp.processes_page.child().downcast_ref().unwrap());
         } else {
-            *imp.apps_context.borrow_mut() = AppsContext::new();
+            *imp.apps_context.borrow_mut() = AppsContext::new(
+                gpus.iter()
+                    .filter(|gpu| gpu.combined_media_engine().unwrap_or_default())
+                    .map(|gpu| gpu.pci_slot())
+                    .collect(),
+            );
             imp.applications.init(imp.sender.clone());
             imp.processes.init(imp.sender.clone())
         }
@@ -543,13 +552,22 @@ impl MainWindow {
                 // usage, which might not be what we want
 
                 let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.pci_slot);
-                gpu_data.usage_fraction = Some(processes_gpu_fraction.into());
+                gpu_data.usage_fraction = Some(f64::max(
+                    gpu_data.usage_fraction.unwrap_or(0.0),
+                    processes_gpu_fraction.into(),
+                ));
 
                 let processes_encode_fraction = apps_context.encoder_fraction(gpu_data.pci_slot);
-                gpu_data.encode_fraction = Some(processes_encode_fraction.into());
+                gpu_data.encode_fraction = Some(f64::max(
+                    gpu_data.encode_fraction.unwrap_or(0.0),
+                    processes_encode_fraction.into(),
+                ));
 
                 let processes_decode_fraction = apps_context.decoder_fraction(gpu_data.pci_slot);
-                gpu_data.decode_fraction = Some(processes_decode_fraction.into());
+                gpu_data.decode_fraction = Some(f64::max(
+                    gpu_data.decode_fraction.unwrap_or(0.0),
+                    processes_decode_fraction.into(),
+                ));
             }
 
             page.refresh_page(&gpu_data);

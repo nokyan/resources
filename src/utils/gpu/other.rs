@@ -72,6 +72,10 @@ impl GpuImpl for OtherGpu {
         bail!("decode usage not implemented for other")
     }
 
+    fn combined_media_engine(&self) -> Result<bool> {
+        bail!("can't know for other GPUs")
+    }
+
     fn used_vram(&self) -> Result<usize> {
         self.drm_used_vram().map(|usage| usage as usize)
     }
