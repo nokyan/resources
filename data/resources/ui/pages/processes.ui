@@ -16,6 +16,22 @@
       </item>
     </section>
   </menu>
+  <menu id="end_process_menu_multiple">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Kill Processes</attribute>
+        <attribute name="action">processes.kill-process</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Halt Processes</attribute>
+        <attribute name="action">processes.halt-process</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Continue Processes</attribute>
+        <attribute name="action">processes.continue-process</attribute>
+      </item>
+    </section>
+  </menu>
   <menu id="process_context_menu">
     <section>
       <item>
@@ -48,10 +64,34 @@
       </item>
     </section>
   </menu>
+  <menu id="process_context_menu_multiple">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">End Processes</attribute>
+        <attribute name="action">processes.end-process</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Kill Processes</attribute>
+        <attribute name="action">processes.kill-process</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Halt Processes</attribute>
+        <attribute name="action">processes.halt-process</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Continue Processes</attribute>
+        <attribute name="action">processes.continue-process</attribute>
+      </item>
+    </section>
+  </menu>
   <template class="ResProcesses" parent="AdwBin">
     <object class="GtkPopoverMenu" id="popover_menu">
       <property name="name">popover_menu</property>
       <property name="menu-model">process_context_menu</property>
+    </object>
+    <object class="GtkPopoverMenu" id="popover_menu_multiple">
+      <property name="name">popover_menu_multiple</property>
+      <property name="menu-model">process_context_menu_multiple</property>
     </object>
     <property name="child">
       <object class="AdwToolbarView">

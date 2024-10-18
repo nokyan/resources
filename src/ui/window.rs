@@ -250,12 +250,12 @@ impl MainWindow {
         if selected_page.is::<ResApplications>() {
             if let Some(app_item) = imp.applications.get_selected_app_entry() {
                 imp.applications
-                    .execute_app_action_dialog(&app_item, process_action);
+                    .open_app_action_dialog(&app_item, process_action);
             }
         } else if selected_page.is::<ResProcesses>() {
             let selected = imp.processes.get_selected_process_entries();
             imp.processes
-                .execute_process_action_dialog(selected, process_action);
+                .open_process_action_dialog(selected, process_action);
         }
     }
 

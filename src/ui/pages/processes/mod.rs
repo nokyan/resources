@@ -79,6 +79,8 @@ mod imp {
         #[template_child]
         pub popover_menu: TemplateChild<gtk::PopoverMenu>,
         #[template_child]
+        pub popover_menu_multiple: TemplateChild<gtk::PopoverMenu>,
+        #[template_child]
         pub search_revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub search_entry: TemplateChild<gtk::SearchEntry>,
@@ -92,7 +94,10 @@ mod imp {
         pub information_button: TemplateChild<gtk::Button>,
         #[template_child]
         pub end_process_button: TemplateChild<adw::SplitButton>,
-
+        #[template_child]
+        pub end_process_menu: TemplateChild<gio::MenuModel>,
+        #[template_child]
+        pub end_process_menu_multiple: TemplateChild<gio::MenuModel>,
         pub store: RefCell<gio::ListStore>,
         pub selection_model: RefCell<gtk::MultiSelection>,
         pub filter_model: RefCell<gtk::FilterListModel>,
@@ -155,6 +160,7 @@ mod imp {
             Self {
                 toast_overlay: Default::default(),
                 popover_menu: Default::default(),
+                popover_menu_multiple: Default::default(),
                 search_revealer: Default::default(),
                 search_entry: Default::default(),
                 processes_scrolled_window: Default::default(),
@@ -162,6 +168,8 @@ mod imp {
                 options_button: Default::default(),
                 information_button: Default::default(),
                 end_process_button: Default::default(),
+                end_process_menu: Default::default(),
+                end_process_menu_multiple: Default::default(),
                 store: gio::ListStore::new::<ProcessEntry>().into(),
                 selection_model: RefCell::new(glib::object::Object::new::<gtk::MultiSelection>()),
                 filter_model: Default::default(),
@@ -201,7 +209,7 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        res_processes.execute_process_action_dialog(
+                        res_processes.open_process_action_dialog(
                             vec![process_entry.clone()],
                             ProcessAction::TERM,
                         );
@@ -216,7 +224,7 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        res_processes.execute_process_action_dialog(
+                        res_processes.open_process_action_dialog(
                             vec![process_entry.clone()],
                             ProcessAction::KILL,
                         );
@@ -231,7 +239,7 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        res_processes.execute_process_action_dialog(
+                        res_processes.open_process_action_dialog(
                             vec![process_entry.clone()],
                             ProcessAction::STOP,
                         );
@@ -246,7 +254,7 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        res_processes.execute_process_action_dialog(
+                        res_processes.open_process_action_dialog(
                             vec![process_entry.clone()],
                             ProcessAction::CONT,
                         );
@@ -278,13 +286,20 @@ mod imp {
                 },
             );
 
+            klass.install_action("processes.end-process", None, move |res_processes, _, _| {
+                let selected = res_processes.get_selected_process_entries();
+                if !selected.is_empty() {
+                    res_processes.open_process_action_dialog(selected, ProcessAction::TERM);
+                }
+            });
+
             klass.install_action(
                 "processes.kill-process",
                 None,
                 move |res_processes, _, _| {
                     let selected = res_processes.get_selected_process_entries();
                     if !selected.is_empty() {
-                        res_processes.execute_process_action_dialog(selected, ProcessAction::KILL);
+                        res_processes.open_process_action_dialog(selected, ProcessAction::KILL);
                     }
                 },
             );
@@ -295,7 +310,7 @@ mod imp {
                 move |res_processes, _, _| {
                     let selected = res_processes.get_selected_process_entries();
                     if !selected.is_empty() {
-                        res_processes.execute_process_action_dialog(selected, ProcessAction::STOP);
+                        res_processes.open_process_action_dialog(selected, ProcessAction::STOP);
                     }
                 },
             );
@@ -306,7 +321,7 @@ mod imp {
                 move |res_processes, _, _| {
                     let selected = res_processes.get_selected_process_entries();
                     if !selected.is_empty() {
-                        res_processes.execute_process_action_dialog(selected, ProcessAction::CONT);
+                        res_processes.open_process_action_dialog(selected, ProcessAction::CONT);
                     }
                 },
             );
@@ -397,7 +412,14 @@ impl ResProcesses {
             move |_, _, x, y| {
                 if let Some(entry) = item.item().and_downcast::<ProcessEntry>() {
                     let imp = this.imp();
-                    let popover_menu = &imp.popover_menu;
+
+                    let selected = this.get_selected_process_entries();
+
+                    let popover_menu = if selected.len() > 1 {
+                        &imp.popover_menu_multiple
+                    } else {
+                        &imp.popover_menu
+                    };
 
                     *imp.popped_over_process.borrow_mut() = Some(entry);
 
@@ -423,7 +445,9 @@ impl ResProcesses {
     pub fn setup_widgets(&self) {
         let imp = self.imp();
 
+        // i don't quite get why that's necessary
         imp.popover_menu.set_parent(self);
+        imp.popover_menu_multiple.set_parent(self);
 
         *imp.column_view.borrow_mut() = gtk::ColumnView::new(None::<gtk::SingleSelection>);
         let column_view = imp.column_view.borrow();
@@ -485,6 +509,9 @@ impl ResProcesses {
     pub fn setup_signals(&self) {
         let imp = self.imp();
 
+        imp.end_process_button
+            .set_menu_model(Some(&imp.end_process_menu.get()));
+
         imp.selection_model
             .borrow()
             .connect_selection_changed(clone!(
@@ -497,6 +524,16 @@ impl ResProcesses {
                     imp.information_button.set_sensitive(bitset.size() == 1);
                     imp.options_button.set_sensitive(bitset.size() == 1);
                     imp.end_process_button.set_sensitive(bitset.size() > 0);
+
+                    if bitset.size() <= 1 {
+                        imp.end_process_button.set_label(&i18n("End Process"));
+                        imp.end_process_button
+                            .set_menu_model(Some(&imp.end_process_menu.get()));
+                    } else {
+                        imp.end_process_button.set_label(&i18n("End Processes"));
+                        imp.end_process_button
+                            .set_menu_model(Some(&imp.end_process_menu_multiple.get()));
+                    }
                 }
             ));
 
@@ -578,7 +615,7 @@ impl ResProcesses {
             move |_| {
                 let selected = this.get_selected_process_entries();
                 if !selected.is_empty() {
-                    this.execute_process_action_dialog(selected, ProcessAction::TERM);
+                    this.open_process_action_dialog(selected, ProcessAction::TERM);
                 }
             }
         ));
@@ -792,11 +829,7 @@ impl ResProcesses {
         ));
     }
 
-    pub fn execute_process_action_dialog(
-        &self,
-        processes: Vec<ProcessEntry>,
-        action: ProcessAction,
-    ) {
+    pub fn open_process_action_dialog(&self, processes: Vec<ProcessEntry>, action: ProcessAction) {
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
             let main_context = MainContext::default();
