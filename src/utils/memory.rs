@@ -69,7 +69,7 @@ impl MemoryData {
                             .as_str()
                             .parse::<usize>()
                             .context("unable to parse MemTotal")
-                            .map(|int| int * 1024)
+                            .map(|int| int.saturating_mul(1024))
                     })
             })?;
 
@@ -85,7 +85,7 @@ impl MemoryData {
                             .as_str()
                             .parse::<usize>()
                             .context("unable to parse MemAvailable")
-                            .map(|int| int * 1024)
+                            .map(|int| int.saturating_mul(1024))
                     })
             })?;
 
@@ -101,7 +101,7 @@ impl MemoryData {
                             .as_str()
                             .parse::<usize>()
                             .context("unable to parse SwapTotal")
-                            .map(|int| int * 1024)
+                            .map(|int| int.saturating_mul(1024))
                     })
             })?;
 
@@ -117,7 +117,7 @@ impl MemoryData {
                             .as_str()
                             .parse::<usize>()
                             .context("unable to parse SwapFree")
-                            .map(|int| int * 1024)
+                            .map(|int| int.saturating_mul(1024))
                     })
             })?;
 

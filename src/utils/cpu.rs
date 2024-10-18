@@ -174,7 +174,7 @@ pub fn cpu_info() -> Result<CpuInfo> {
         captures
             .get(1)
             .and_then(|capture| capture.as_str().parse::<usize>().ok())
-            .map(|int| int * sockets.unwrap_or(1))
+            .map(|int| int.saturating_mul(sockets.unwrap_or(1)))
     });
 
     let virtualization = RE_LSCPU_VIRTUALIZATION
@@ -229,10 +229,12 @@ fn parse_proc_stat_line<S: AsRef<str>>(line: S) -> Result<(u64, u64)> {
         .name("idle")
         .and_then(|x| x.as_str().parse::<u64>().ok())
         .ok_or_else(|| anyhow!("unable to get idle time"))?
-        + captures
-            .name("iowait")
-            .and_then(|x| x.as_str().parse::<u64>().ok())
-            .ok_or_else(|| anyhow!("unable to get iowait time"))?;
+        .saturating_add(
+            captures
+                .name("iowait")
+                .and_then(|x| x.as_str().parse::<u64>().ok())
+                .ok_or_else(|| anyhow!("unable to get iowait time"))?,
+        );
     let sum = captures
         .iter()
         .skip(1)

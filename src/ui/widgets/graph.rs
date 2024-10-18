@@ -90,7 +90,8 @@ mod imp {
             let data_points = self.data_points.borrow();
             let color = self.graph_color.get();
 
-            let start_point = (MAX_DATA_POINTS - SETTINGS.graph_data_points()) as usize;
+            let start_point =
+                (MAX_DATA_POINTS.saturating_sub(SETTINGS.graph_data_points())) as usize;
 
             let root = backend.into_drawing_area();
 
@@ -169,7 +170,7 @@ impl ResGraph {
     pub fn get_highest_value(&self) -> f64 {
         let imp = self.imp();
 
-        let start_point = (MAX_DATA_POINTS - SETTINGS.graph_data_points()) as usize;
+        let start_point = (MAX_DATA_POINTS.saturating_sub(SETTINGS.graph_data_points())) as usize;
 
         *imp.data_points
             .borrow()
