@@ -79,7 +79,7 @@ impl NpuImpl for IntelNpu {
         let delta_timestamp = new_timestamp.saturating_sub(last_timestamp) as f64;
         let delta_busy_time = new_busy_time.saturating_sub(last_busy_time) as f64;
 
-        Ok(delta_busy_time / delta_timestamp)
+        Ok((delta_busy_time / delta_timestamp) / 1000.0)
     }
 
     fn used_vram(&self) -> Result<usize> {
