@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-19 07:21+0200\n"
-"PO-Revision-Date: 2024-10-19 07:23+0200\n"
+"POT-Creation-Date: 2024-10-19 07:42+0200\n"
+"PO-Revision-Date: 2024-10-19 07:43+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: de\n"
@@ -1606,10 +1606,9 @@ msgstr ""
 "Als virtuelle Netzwerkschnittstellen zählen zum Beispiel Bridges oder Tunnel"
 
 #: data/resources/ui/pages/applications.ui:40
-#: data/resources/ui/pages/applications.ui:116
-#: data/resources/ui/pages/applications.ui:118
-msgid "Show App Information"
-msgstr "Anwendungsinformationen anzeigen"
+#: data/resources/ui/pages/processes.ui:62
+msgid "Information"
+msgstr "Informationen"
 
 #: data/resources/ui/pages/applications.ui:80
 msgid "Search applications"
@@ -1624,6 +1623,11 @@ msgstr "Suchen"
 #: data/resources/ui/pages/processes.ui:146
 msgid "Toggle search field"
 msgstr "Suchfeld umschalten"
+
+#: data/resources/ui/pages/applications.ui:116
+#: data/resources/ui/pages/applications.ui:118
+msgid "Show App Information"
+msgstr "Anwendungsinformationen anzeigen"
 
 #: data/resources/ui/pages/battery.ui:36
 msgid "Battery Health"
@@ -1800,12 +1804,6 @@ msgstr "Prozesse anhalten"
 msgid "Continue Processes"
 msgstr "Prozesse fortsetzen"
 
-#: data/resources/ui/pages/processes.ui:62
-#: data/resources/ui/pages/processes.ui:175
-#: data/resources/ui/pages/processes.ui:177
-msgid "Show Process Information"
-msgstr "Prozessinformationen anzeigen"
-
 #: data/resources/ui/pages/processes.ui:126
 msgid "Search processes"
 msgstr "Prozesse suchen"
@@ -1814,6 +1812,11 @@ msgstr "Prozesse suchen"
 #: data/resources/ui/pages/processes.ui:164
 msgid "Show Process Options"
 msgstr "Prozessoptionen anzeigen"
+
+#: data/resources/ui/pages/processes.ui:175
+#: data/resources/ui/pages/processes.ui:177
+msgid "Show Process Information"
+msgstr "Prozessinformationen anzeigen"
 
 #~ msgid "VRAM: {}"
 #~ msgstr "VRAM: {}"
