@@ -56,17 +56,17 @@ impl GpuData {
 
         let usage_fraction = gpu
             .usage()
-            .map(|usage| ((usage as f64) / 100.0).clamp(0.0, 1.0))
+            .map(|usage| (usage / 100.0).clamp(0.0, 1.0))
             .ok();
 
         let encode_fraction = gpu
             .encode_usage()
-            .map(|usage| ((usage as f64) / 100.0).clamp(0.0, 1.0))
+            .map(|usage| (usage / 100.0).clamp(0.0, 1.0))
             .ok();
 
         let decode_fraction = gpu
             .decode_usage()
-            .map(|usage| ((usage as f64) / 100.0).clamp(0.0, 1.0))
+            .map(|usage| (usage / 100.0).clamp(0.0, 1.0))
             .ok();
 
         let total_vram = gpu.total_vram().ok();

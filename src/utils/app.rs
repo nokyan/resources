@@ -200,7 +200,7 @@ impl App {
 
         let mut apps: Vec<_> = applications_dir
             .iter()
-            .flat_map(|applications_path| {
+            .filter_map(|applications_path| {
                 applications_path.read_dir().ok().map(|read| {
                     read.filter_map(|file_res| {
                         file_res
@@ -257,9 +257,7 @@ impl App {
         }
 
         let exec = desktop_entry.get("Exec");
-        let is_flatpak = exec
-            .map(|exec| exec.starts_with("/usr/bin/flatpak run"))
-            .unwrap_or_default();
+        let is_flatpak = exec.is_some_and(|exec| exec.starts_with("/usr/bin/flatpak run"));
         let commandline = exec
             .and_then(|exec| {
                 RE_ENV_FILTER
@@ -509,7 +507,7 @@ impl App {
 impl AppsContext {
     /// Creates a new `AppsContext` object, this operation is quite expensive
     /// so try to do it only one time during the lifetime of the program.
-    /// Please call refresh() immediately after this function.
+    /// Please call `refresh()` immediately after this function.
     pub fn new(gpus_with_combined_media_engine: Vec<PciSlot>) -> AppsContext {
         let apps: HashMap<Option<String>, App> = App::all()
             .into_iter()
@@ -753,8 +751,7 @@ impl AppsContext {
                 && !app
                     .id
                     .as_ref()
-                    .map(|id| id.starts_with("xdg-desktop-portal"))
-                    .unwrap_or_default()
+                    .is_some_and(|id| id.starts_with("xdg-desktop-portal"))
         })
     }
 

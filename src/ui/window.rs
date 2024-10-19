@@ -319,7 +319,7 @@ impl MainWindow {
                 self.add_page(&page, &tab_name, &tab_name)
             };
 
-            page.init(&gpu, i as u32);
+            page.init(gpu, i as u32);
 
             imp.gpu_pages
                 .borrow_mut()
@@ -387,11 +387,11 @@ impl MainWindow {
             *imp.apps_context.borrow_mut() = AppsContext::new(
                 gpus.iter()
                     .filter(|gpu| gpu.combined_media_engine().unwrap_or_default())
-                    .map(|gpu| gpu.pci_slot())
+                    .map(Gpu::pci_slot)
                     .collect(),
             );
             imp.applications.init(imp.sender.clone());
-            imp.processes.init(imp.sender.clone())
+            imp.processes.init(imp.sender.clone());
         }
 
         if ARGS.disable_cpu_monitoring {

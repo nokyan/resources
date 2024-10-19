@@ -274,7 +274,7 @@ mod imp {
                     if let Some(process_entry) =
                         res_processes.imp().popped_over_process.borrow().as_ref()
                     {
-                        res_processes.open_options_dialog(process_entry)
+                        res_processes.open_options_dialog(process_entry);
                     }
                 },
             );
