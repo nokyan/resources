@@ -59,7 +59,7 @@
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">Show Process Information</attribute>
+        <attribute name="label" translatable="yes">Information</attribute>
         <attribute name="action">processes.context-information</attribute>
       </item>
     </section>

@@ -37,7 +37,7 @@
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">Show App Information</attribute>
+        <attribute name="label" translatable="yes">Information</attribute>
         <attribute name="action">applications.context-information</attribute>
       </item>
     </section>
