@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-19 13:26+0200\n"
+"POT-Creation-Date: 2024-10-19 13:51+0200\n"
 "PO-Revision-Date: 2024-10-18 19:07+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
@@ -180,7 +180,7 @@ msgstr "Icon von"
 msgid "N/A"
 msgstr "n. v."
 
-#: src/ui/dialogs/process_options_dialog.rs:142 src/ui/pages/cpu.rs:232
+#: src/ui/dialogs/process_options_dialog.rs:141 src/ui/pages/cpu.rs:232
 #: src/ui/pages/cpu.rs:354 src/ui/pages/cpu.rs:358
 msgid "CPU {}"
 msgstr "CPU {}"
