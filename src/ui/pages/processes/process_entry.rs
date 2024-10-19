@@ -200,12 +200,6 @@ glib::wrapper! {
 
 impl ProcessEntry {
     pub fn new(process: &Process) -> Self {
-        let display_name = if process.executable_name.starts_with(&process.data.comm) {
-            process.executable_name.clone()
-        } else {
-            process.data.comm.clone()
-        };
-
         let containerization = match process.data.containerization {
             Containerization::None => i18n("No"),
             Containerization::Flatpak => i18n("Yes (Flatpak)"),
@@ -213,7 +207,7 @@ impl ProcessEntry {
         };
 
         let this: Self = glib::Object::builder()
-            .property("name", &display_name)
+            .property("name", &process.display_name)
             .property("commandline", process.data.commandline.replace('\0', " "))
             .property("user", &process.data.user)
             .property("icon", &process.icon)

@@ -159,7 +159,7 @@ mod imp {
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
                         res_applications
-                            .execute_app_action_dialog(application_entry, ProcessAction::TERM);
+                            .open_app_action_dialog(application_entry, ProcessAction::TERM);
                     }
                 },
             );
@@ -172,7 +172,7 @@ mod imp {
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
                         res_applications
-                            .execute_app_action_dialog(application_entry, ProcessAction::KILL);
+                            .open_app_action_dialog(application_entry, ProcessAction::KILL);
                     }
                 },
             );
@@ -185,7 +185,7 @@ mod imp {
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
                         res_applications
-                            .execute_app_action_dialog(application_entry, ProcessAction::STOP);
+                            .open_app_action_dialog(application_entry, ProcessAction::STOP);
                     }
                 },
             );
@@ -198,7 +198,7 @@ mod imp {
                         res_applications.imp().popped_over_app.borrow().as_ref()
                     {
                         res_applications
-                            .execute_app_action_dialog(application_entry, ProcessAction::CONT);
+                            .open_app_action_dialog(application_entry, ProcessAction::CONT);
                     }
                 },
             );
@@ -220,7 +220,7 @@ mod imp {
                 None,
                 move |res_applications, _, _| {
                     if let Some(app) = res_applications.get_selected_app_entry() {
-                        res_applications.execute_app_action_dialog(&app, ProcessAction::KILL);
+                        res_applications.open_app_action_dialog(&app, ProcessAction::KILL);
                     }
                 },
             );
@@ -230,7 +230,7 @@ mod imp {
                 None,
                 move |res_applications, _, _| {
                     if let Some(app) = res_applications.get_selected_app_entry() {
-                        res_applications.execute_app_action_dialog(&app, ProcessAction::STOP);
+                        res_applications.open_app_action_dialog(&app, ProcessAction::STOP);
                     }
                 },
             );
@@ -240,7 +240,7 @@ mod imp {
                 None,
                 move |res_applications, _, _| {
                     if let Some(app) = res_applications.get_selected_app_entry() {
-                        res_applications.execute_app_action_dialog(&app, ProcessAction::CONT);
+                        res_applications.open_app_action_dialog(&app, ProcessAction::CONT);
                     }
                 },
             );
@@ -497,7 +497,7 @@ impl ResApplications {
             self,
             move |_| {
                 if let Some(app) = this.get_selected_app_entry() {
-                    this.execute_app_action_dialog(&app, ProcessAction::TERM);
+                    this.open_app_action_dialog(&app, ProcessAction::TERM);
                 }
             }
         ));
@@ -670,7 +670,7 @@ impl ResApplications {
         ));
     }
 
-    pub fn execute_app_action_dialog(&self, app: &ApplicationEntry, action: ProcessAction) {
+    pub fn open_app_action_dialog(&self, app: &ApplicationEntry, action: ProcessAction) {
         // Nothing too bad can happen on Continue so dont show the dialog
         if action == ProcessAction::CONT {
             let main_context = MainContext::default();
@@ -698,11 +698,11 @@ impl ResApplications {
 
         // Confirmation dialog & warning
         let dialog = adw::AlertDialog::builder()
-            .heading(get_action_name(action, &[&app.name()]))
-            .body(get_app_action_warning(action))
+            .heading(get_action_name(action, &app.name()))
+            .body(get_action_warning(action))
             .build();
 
-        dialog.add_response("yes", &get_app_action_description(action));
+        dialog.add_response("yes", &get_action_description(action));
         dialog.set_response_appearance("yes", ResponseAppearance::Destructive);
 
         dialog.add_response("no", &i18n("Cancel"));
@@ -1472,16 +1472,16 @@ impl ResApplications {
     }
 }
 
-fn get_action_name(action: ProcessAction, args: &[&str]) -> String {
+fn get_action_name(action: ProcessAction, name: &str) -> String {
     match action {
-        ProcessAction::TERM => i18n_f("End {}?", args),
-        ProcessAction::STOP => i18n_f("Halt {}?", args),
-        ProcessAction::KILL => i18n_f("Kill {}?", args),
-        ProcessAction::CONT => i18n_f("Continue {}?", args),
+        ProcessAction::TERM => i18n_f("End {}?", &[name]),
+        ProcessAction::STOP => i18n_f("Halt {}?", &[name]),
+        ProcessAction::KILL => i18n_f("Kill {}?", &[name]),
+        ProcessAction::CONT => i18n_f("Continue {}?", &[name]),
     }
 }
 
-fn get_app_action_warning(action: ProcessAction) -> String {
+fn get_action_warning(action: ProcessAction) -> String {
     match action {
             ProcessAction::TERM => i18n("Unsaved work might be lost."),
             ProcessAction::STOP => i18n("Halting an app can come with serious risks such as losing data and security implications. Use with caution."),
@@ -1490,7 +1490,7 @@ fn get_app_action_warning(action: ProcessAction) -> String {
         }
 }
 
-fn get_app_action_description(action: ProcessAction) -> String {
+fn get_action_description(action: ProcessAction) -> String {
     match action {
         ProcessAction::TERM => i18n("End App"),
         ProcessAction::STOP => i18n("Halt App"),

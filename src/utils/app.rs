@@ -818,7 +818,13 @@ impl AppsContext {
                         _ => None,
                     },
                 )
-                .reduce(|sum, current| (sum.0 + current.0, sum.1 + current.1)) // sum them up
+                .reduce(|sum, current| {
+                    // sum them up
+                    (
+                        sum.0.saturating_add(current.0),
+                        sum.1.saturating_add(current.1),
+                    )
+                })
                 .unwrap_or((0, 0)); // if there were no processes, it's 0 for both
 
             app.read_bytes_from_dead_processes += read_dead;
