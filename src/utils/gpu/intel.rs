@@ -60,24 +60,28 @@ impl GpuImpl for IntelGpu {
         self.drm_name()
     }
 
-    fn usage(&self) -> Result<isize> {
-        self.drm_usage()
+    fn usage(&self) -> Result<f64> {
+        self.drm_usage().map(|usage| usage as f64 / 100.0)
     }
 
-    fn encode_usage(&self) -> Result<isize> {
+    fn encode_usage(&self) -> Result<f64> {
         bail!("encode usage not implemented for Intel")
     }
 
-    fn decode_usage(&self) -> Result<isize> {
+    fn decode_usage(&self) -> Result<f64> {
         bail!("decode usage not implemented for Intel")
     }
 
-    fn used_vram(&self) -> Result<isize> {
-        self.drm_used_vram()
+    fn combined_media_engine(&self) -> Result<bool> {
+        Ok(true)
     }
 
-    fn total_vram(&self) -> Result<isize> {
-        self.drm_total_vram()
+    fn used_vram(&self) -> Result<usize> {
+        self.drm_used_vram().map(|usage| usage as usize)
+    }
+
+    fn total_vram(&self) -> Result<usize> {
+        self.drm_total_vram().map(|usage| usage as usize)
     }
 
     fn temperature(&self) -> Result<f64> {

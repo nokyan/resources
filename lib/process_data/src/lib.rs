@@ -233,7 +233,6 @@ impl ProcessData {
         let status = std::fs::read_to_string(proc_path.join("status"))?;
         let comm = std::fs::read_to_string(proc_path.join("comm"))?;
         let commandline = std::fs::read_to_string(proc_path.join("cmdline"))?;
-        let cgroup = std::fs::read_to_string(proc_path.join("cgroup"))?;
         let io = std::fs::read_to_string(proc_path.join("io")).ok();
 
         let pid = proc_path
@@ -285,21 +284,21 @@ impl ProcessData {
                 });
             });
 
-        let memory_usage = (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?) * *PAGESIZE;
+        let memory_usage =
+            (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?).saturating_mul(*PAGESIZE);
 
         let starttime = stat[21 - 2].parse()?;
 
-        let cgroup = Self::sanitize_cgroup(cgroup);
+        let cgroup = std::fs::read_to_string(proc_path.join("cgroup"))
+            .ok()
+            .and_then(|raw| Self::sanitize_cgroup(raw));
 
-        let containerization = match &proc_path.join("root").join(".flatpak-info").exists() {
-            true => Containerization::Flatpak,
-            false => {
-                if commandline.starts_with("/snap/") {
-                    Containerization::Snap
-                } else {
-                    Containerization::None
-                }
-            }
+        let containerization = if commandline.starts_with("/snap/") {
+            Containerization::Snap
+        } else if proc_path.join("root").join(".flatpak-info").exists() {
+            Containerization::Flatpak
+        } else {
+            Containerization::None
         };
 
         let read_bytes = io.as_ref().and_then(|io| {
@@ -500,17 +499,17 @@ impl ProcessData {
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 .unwrap_or_default()
-                * 1024;
+                .saturating_mul(1024);
 
             let gtt = RE_DRM_MEMORY_GTT
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
                 .unwrap_or_default()
-                * 1024;
+                .saturating_mul(1024);
 
             let stats = GpuUsageStats {
-                gfx: gfx + compute,
+                gfx: gfx.saturating_add(compute),
                 mem: vram.saturating_add(gtt),
                 enc,
                 dec,
@@ -588,8 +587,12 @@ impl ProcessData {
         for (pci_slot, gpu) in NVML_DEVICES.iter() {
             return_map.insert(
                 pci_slot.to_owned(),
-                gpu.process_utilization_stats(unix_as_millis() * 1000 - 5_000_000)
-                    .unwrap_or_default(),
+                gpu.process_utilization_stats(
+                    unix_as_millis()
+                        .saturating_mul(1000)
+                        .saturating_sub(5_000_000),
+                )
+                .unwrap_or_default(),
             );
         }
 

@@ -24,16 +24,18 @@ use crate::utils::drive::{Drive, DriveData};
 use crate::utils::gpu::{Gpu, GpuData};
 use crate::utils::memory::MemoryData;
 use crate::utils::network::{NetworkData, NetworkInterface};
+use crate::utils::npu::{Npu, NpuData};
 use crate::utils::process::{Process, ProcessAction};
 use crate::utils::settings::SETTINGS;
 
 use super::pages::gpu::ResGPU;
 use super::pages::network::ResNetwork;
+use super::pages::npu::ResNPU;
 use super::pages::{applications, processes};
 
 #[derive(Debug, Clone)]
 pub enum Action {
-    ManipulateProcess(ProcessAction, libc::pid_t, String, ToastOverlay),
+    ManipulateProcesses(ProcessAction, Vec<libc::pid_t>, ToastOverlay),
     ManipulateApp(ProcessAction, String, ToastOverlay),
     AdjustProcess(libc::pid_t, Niceness, Vec<bool>, String, ToastOverlay),
 }
@@ -94,6 +96,8 @@ mod imp {
 
         pub gpu_pages: RefCell<HashMap<PciSlot, (Gpu, adw::ToolbarView)>>,
 
+        pub npu_pages: RefCell<HashMap<PciSlot, (Npu, adw::ToolbarView)>>,
+
         pub apps_context: RefCell<AppsContext>,
 
         pub sender: Sender<Action>,
@@ -125,6 +129,7 @@ mod imp {
                 receiver,
                 processor_window_title: TemplateChild::default(),
                 gpu_pages: RefCell::default(),
+                npu_pages: RefCell::default(),
             }
         }
     }
@@ -189,6 +194,7 @@ struct RefreshData {
     cpu_data: Option<CpuData>,
     mem_data: Option<Result<MemoryData>>,
     gpu_data: Vec<GpuData>,
+    npu_data: Vec<NpuData>,
     drive_paths: Vec<PathBuf>,
     drive_data: Vec<DriveData>,
     network_paths: Vec<PathBuf>,
@@ -250,12 +256,13 @@ impl MainWindow {
         if selected_page.is::<ResApplications>() {
             if let Some(app_item) = imp.applications.get_selected_app_entry() {
                 imp.applications
-                    .execute_app_action_dialog(&app_item, process_action);
+                    .open_app_action_dialog(&app_item, process_action);
             }
         } else if selected_page.is::<ResProcesses>() {
-            if let Some(process_item) = imp.processes.get_selected_process_entry() {
+            let selected = imp.processes.get_selected_process_entries();
+            if !selected.is_empty() {
                 imp.processes
-                    .execute_process_action_dialog(&process_item, process_action);
+                    .open_process_action_dialog(selected, process_action);
             }
         }
     }
@@ -270,8 +277,9 @@ impl MainWindow {
                 imp.applications.open_info_dialog(&app_item);
             }
         } else if selected_page.is::<ResProcesses>() {
-            if let Some(process_item) = imp.processes.get_selected_process_entry() {
-                imp.processes.open_info_dialog(&process_item);
+            let selected = imp.processes.get_selected_process_entries();
+            if selected.len() == 1 {
+                imp.processes.open_info_dialog(&selected[0]);
             }
         }
     }
@@ -282,8 +290,9 @@ impl MainWindow {
         let selected_page = self.get_selected_page().unwrap();
 
         if selected_page.is::<ResProcesses>() {
-            if let Some(process_item) = imp.processes.get_selected_process_entry() {
-                imp.processes.open_options_dialog(&process_item);
+            let selected = imp.processes.get_selected_process_entries();
+            if selected.len() == 1 {
+                imp.processes.open_options_dialog(&selected[0]);
             }
         }
     }
@@ -292,12 +301,11 @@ impl MainWindow {
         let imp = self.imp();
 
         let gpus = Gpu::get_gpus().unwrap_or_default();
-        let gpus_len = gpus.len();
 
         for (i, gpu) in gpus.iter().enumerate() {
             let page = ResGPU::new();
 
-            let tab_name = if gpus_len > 1 {
+            let tab_name = if gpus.len() > 1 {
                 i18n_f("GPU {}", &[&(i + 1).to_string()])
             } else {
                 i18n("GPU")
@@ -311,17 +319,52 @@ impl MainWindow {
                 self.add_page(&page, &tab_name, &tab_name)
             };
 
-            page.init(gpu, i as u32);
+            page.init(&gpu, i as u32);
 
             imp.gpu_pages
                 .borrow_mut()
                 .insert(gpu.pci_slot(), (gpu.clone(), added_page));
         }
+
         gpus
+    }
+
+    fn init_npu_pages(self: &MainWindow) -> Vec<Npu> {
+        let imp = self.imp();
+
+        let npus = Npu::get_npus().unwrap_or_default();
+
+        for (i, npu) in npus.iter().enumerate() {
+            let page = ResNPU::new();
+
+            let tab_name = if npus.len() > 1 {
+                i18n_f("NPU {}", &[&(i + 1).to_string()])
+            } else {
+                i18n("NPU")
+            };
+
+            page.set_tab_name(&*tab_name);
+
+            let added_page = if let Ok(npu_name) = npu.name() {
+                self.add_page(&page, &npu_name, &tab_name)
+            } else {
+                self.add_page(&page, &tab_name, &tab_name)
+            };
+
+            page.init(npu, i as u32);
+
+            imp.npu_pages
+                .borrow_mut()
+                .insert(npu.pci_slot(), (npu.clone(), added_page));
+        }
+
+        npus
     }
 
     fn setup_widgets(&self) {
         let imp = self.imp();
+
+        let gpus = Gpu::get_gpus().unwrap_or_default();
 
         imp.resources_sidebar.set_stack(&imp.content_stack);
 
@@ -341,7 +384,12 @@ impl MainWindow {
             self.remove_page(imp.applications_page.child().downcast_ref().unwrap());
             self.remove_page(imp.processes_page.child().downcast_ref().unwrap());
         } else {
-            *imp.apps_context.borrow_mut() = AppsContext::new();
+            *imp.apps_context.borrow_mut() = AppsContext::new(
+                gpus.iter()
+                    .filter(|gpu| gpu.combined_media_engine().unwrap_or_default())
+                    .map(|gpu| gpu.pci_slot())
+                    .collect(),
+            );
             imp.applications.init(imp.sender.clone());
             imp.processes.init(imp.sender.clone())
         }
@@ -367,6 +415,10 @@ impl MainWindow {
             self.init_gpu_pages();
         }
 
+        if !ARGS.disable_npu_monitoring {
+            self.init_npu_pages();
+        }
+
         let main_context = MainContext::default();
 
         main_context.spawn_local(clone!(
@@ -378,7 +430,7 @@ impl MainWindow {
         ));
     }
 
-    fn gather_refresh_data(logical_cpus: usize, gpus: &[Gpu]) -> RefreshData {
+    fn gather_refresh_data(logical_cpus: usize, gpus: &[Gpu], npus: &[Npu]) -> RefreshData {
         let cpu_data = if ARGS.disable_cpu_monitoring {
             None
         } else {
@@ -396,6 +448,13 @@ impl MainWindow {
             let data = GpuData::new(gpu);
 
             gpu_data.push(data);
+        }
+
+        let mut npu_data = Vec::with_capacity(npus.len());
+        for npu in npus {
+            let data = NpuData::new(npu);
+
+            npu_data.push(data);
         }
 
         let drive_paths = if ARGS.disable_drive_monitoring {
@@ -445,6 +504,7 @@ impl MainWindow {
             cpu_data,
             mem_data,
             gpu_data,
+            npu_data,
             drive_paths,
             drive_data,
             network_paths,
@@ -462,6 +522,7 @@ impl MainWindow {
             cpu_data,
             mem_data,
             gpu_data,
+            npu_data,
             drive_paths,
             drive_data,
             network_paths,
@@ -494,19 +555,37 @@ impl MainWindow {
                 // usage, which might not be what we want
 
                 let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.pci_slot);
-                gpu_data.usage_fraction = Some(processes_gpu_fraction.into());
+                gpu_data.usage_fraction = Some(f64::max(
+                    gpu_data.usage_fraction.unwrap_or(0.0),
+                    processes_gpu_fraction.into(),
+                ));
 
                 let processes_encode_fraction = apps_context.encoder_fraction(gpu_data.pci_slot);
-                gpu_data.encode_fraction = Some(processes_encode_fraction.into());
+                gpu_data.encode_fraction = Some(f64::max(
+                    gpu_data.encode_fraction.unwrap_or(0.0),
+                    processes_encode_fraction.into(),
+                ));
 
                 let processes_decode_fraction = apps_context.decoder_fraction(gpu_data.pci_slot);
-                gpu_data.decode_fraction = Some(processes_decode_fraction.into());
+                gpu_data.decode_fraction = Some(f64::max(
+                    gpu_data.decode_fraction.unwrap_or(0.0),
+                    processes_decode_fraction.into(),
+                ));
             }
 
             page.refresh_page(&gpu_data);
         }
 
         std::mem::drop(apps_context);
+
+        /*
+         * Npu
+         */
+        let npu_pages = imp.npu_pages.borrow();
+        for ((_, page), npu_data) in npu_pages.values().zip(npu_data) {
+            let page = page.content().and_downcast::<ResNPU>().unwrap();
+            page.refresh_page(&npu_data);
+        }
 
         /*
          * Cpu
@@ -594,6 +673,17 @@ impl MainWindow {
                 .collect::<Vec<Gpu>>()
         };
 
+        let npus = if ARGS.disable_npu_monitoring {
+            Vec::new()
+        } else {
+            imp.npu_pages
+                .borrow()
+                .values()
+                .map(|(npu, _)| npu)
+                .cloned()
+                .collect::<Vec<Npu>>()
+        };
+
         let logical_cpus = imp.cpu.imp().logical_cpus_amount.get();
 
         let (tx_data, rx_data) = std::sync::mpsc::sync_channel(1);
@@ -601,7 +691,7 @@ impl MainWindow {
 
         std::thread::spawn(move || {
             loop {
-                let data = Self::gather_refresh_data(logical_cpus, &gpus);
+                let data = Self::gather_refresh_data(logical_cpus, &gpus, &npus);
                 tx_data.send(data).unwrap();
 
                 // Wait on delay so we don't gather data multiple times in a short time span
@@ -847,7 +937,7 @@ impl MainWindow {
             }
         }
 
-        // Add new network pages
+        // Add new battery pages
         for path in paths {
             battery_pages.entry(path.clone()).or_insert_with(|| {
                 // A battery has been added
@@ -881,14 +971,47 @@ impl MainWindow {
     fn process_action(&self, action: Action) {
         let apps_context = self.imp().apps_context.borrow();
         match action {
-            Action::ManipulateProcess(action, pid, display_name, toast_overlay) => {
-                if let Some(process) = apps_context.get_process(pid) {
-                    let toast_message = match process.execute_process_action(action) {
-                        Ok(()) => get_action_success(action, &[&display_name]),
-                        Err(_) => get_process_action_failure(action, &[&display_name]),
-                    };
-                    toast_overlay.add_toast(Toast::new(&toast_message));
+            Action::ManipulateProcesses(action, pids, toast_overlay) => {
+                let mut processes_unsuccessful: usize = 0;
+
+                let mut first_process = None;
+
+                for (i, pid) in pids.iter().enumerate() {
+                    if let Some(process) = apps_context.get_process(*pid) {
+                        if i == 0 {
+                            first_process = Some(process);
+                        }
+                        if process.execute_process_action(action).is_err() {
+                            processes_unsuccessful += 1;
+                        }
+                    }
                 }
+
+                let toast_message = if processes_unsuccessful > 0 {
+                    if pids.len() == 1 {
+                        if let Some(display_name) =
+                            first_process.map(|process| &process.display_name)
+                        {
+                            get_named_action_failure(action, display_name)
+                        } else {
+                            // this should never happen
+                            get_action_failure(action, 1)
+                        }
+                    } else {
+                        get_action_failure(action, processes_unsuccessful)
+                    }
+                } else if pids.len() == 1 {
+                    if let Some(display_name) = first_process.map(|process| &process.display_name) {
+                        get_action_success(action, display_name)
+                    } else {
+                        // this should never happen
+                        get_processes_success(action, 1)
+                    }
+                } else {
+                    get_processes_success(action, pids.len())
+                };
+
+                toast_overlay.add_toast(Toast::new(&toast_message));
             }
 
             Action::ManipulateApp(action, id, toast_overlay) => {
@@ -900,9 +1023,9 @@ impl MainWindow {
                 let processes_unsuccessful = processes_tried - processes_successful;
 
                 let toast_message = if processes_unsuccessful > 0 {
-                    get_app_action_failure(action, processes_unsuccessful as u32)
+                    get_action_failure(action, processes_unsuccessful)
                 } else {
-                    get_action_success(action, &[&app.display_name])
+                    get_action_success(action, &app.display_name)
                 };
 
                 toast_overlay.add_toast(Toast::new(&toast_message));
@@ -992,49 +1115,78 @@ impl Default for MainWindow {
     }
 }
 
-fn get_action_success(action: ProcessAction, args: &[&str]) -> String {
+fn get_action_success(action: ProcessAction, name: &str) -> String {
     match action {
-        ProcessAction::TERM => i18n_f("Successfully ended {}", args),
-        ProcessAction::STOP => i18n_f("Successfully halted {}", args),
-        ProcessAction::KILL => i18n_f("Successfully killed {}", args),
-        ProcessAction::CONT => i18n_f("Successfully continued {}", args),
+        ProcessAction::TERM => i18n_f("Successfully ended {}", &[name]),
+        ProcessAction::STOP => i18n_f("Successfully halted {}", &[name]),
+        ProcessAction::KILL => i18n_f("Successfully killed {}", &[name]),
+        ProcessAction::CONT => i18n_f("Successfully continued {}", &[name]),
     }
 }
 
-fn get_app_action_failure(action: ProcessAction, args: u32) -> String {
+fn get_processes_success(action: ProcessAction, count: usize) -> String {
+    match action {
+        ProcessAction::TERM => ni18n_f(
+            "Successfully ended the process",
+            "Successfully ended {} processes",
+            count as u32,
+            &[&count.to_string()],
+        ),
+        ProcessAction::STOP => ni18n_f(
+            "Successfully halted the process",
+            "Successfully halted {} processes",
+            count as u32,
+            &[&count.to_string()],
+        ),
+        ProcessAction::KILL => ni18n_f(
+            "Successfully killed the process",
+            "Successfully killed {} processes",
+            count as u32,
+            &[&count.to_string()],
+        ),
+        ProcessAction::CONT => ni18n_f(
+            "Successfully continued the process",
+            "Successfully continued {} processes",
+            count as u32,
+            &[&count.to_string()],
+        ),
+    }
+}
+
+fn get_action_failure(action: ProcessAction, count: usize) -> String {
     match action {
         ProcessAction::TERM => ni18n_f(
             "There was a problem ending a process",
             "There were problems ending {} processes",
-            args,
-            &[&args.to_string()],
+            count as u32,
+            &[&count.to_string()],
         ),
         ProcessAction::STOP => ni18n_f(
             "There was a problem halting a process",
             "There were problems halting {} processes",
-            args,
-            &[&args.to_string()],
+            count as u32,
+            &[&count.to_string()],
         ),
         ProcessAction::KILL => ni18n_f(
             "There was a problem killing a process",
             "There were problems killing {} processes",
-            args,
-            &[&args.to_string()],
+            count as u32,
+            &[&count.to_string()],
         ),
         ProcessAction::CONT => ni18n_f(
             "There was a problem continuing a process",
             "There were problems continuing {} processes",
-            args,
-            &[&args.to_string()],
+            count as u32,
+            &[&count.to_string()],
         ),
     }
 }
 
-pub fn get_process_action_failure(action: ProcessAction, args: &[&str]) -> String {
+pub fn get_named_action_failure(action: ProcessAction, name: &str) -> String {
     match action {
-        ProcessAction::TERM => i18n_f("There was a problem ending {}", args),
-        ProcessAction::STOP => i18n_f("There was a problem halting {}", args),
-        ProcessAction::KILL => i18n_f("There was a problem killing {}", args),
-        ProcessAction::CONT => i18n_f("There was a problem continuing {}", args),
+        ProcessAction::TERM => i18n_f("There was a problem ending {}", &[name]),
+        ProcessAction::STOP => i18n_f("There was a problem halting {}", &[name]),
+        ProcessAction::KILL => i18n_f("There was a problem killing {}", &[name]),
+        ProcessAction::CONT => i18n_f("There was a problem continuing {}", &[name]),
     }
 }

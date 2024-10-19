@@ -3,19 +3,16 @@ use gtk::glib::{self};
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
-use crate::utils::gpu::{Gpu, GpuData};
+use crate::utils::npu::{Npu, NpuData};
 use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
 use crate::utils::FiniteOr;
 
-pub const TAB_ID_PREFIX: &str = "gpu";
+pub const TAB_ID_PREFIX: &str = "npu";
 
 mod imp {
     use std::cell::{Cell, RefCell};
 
-    use crate::ui::{
-        pages::GPU_PRIMARY_ORD,
-        widgets::{double_graph_box::ResDoubleGraphBox, graph_box::ResGraphBox},
-    };
+    use crate::ui::{pages::NPU_PRIMARY_ORD, widgets::graph_box::ResGraphBox};
 
     use super::*;
 
@@ -26,25 +23,21 @@ mod imp {
     };
 
     #[derive(CompositeTemplate, Properties)]
-    #[template(resource = "/net/nokyan/Resources/ui/pages/gpu.ui")]
-    #[properties(wrapper_type = super::ResGPU)]
-    pub struct ResGPU {
+    #[template(resource = "/net/nokyan/Resources/ui/pages/npu.ui")]
+    #[properties(wrapper_type = super::ResNPU)]
+    pub struct ResNPU {
         #[template_child]
-        pub gpu_usage: TemplateChild<ResGraphBox>,
+        pub npu_usage: TemplateChild<ResGraphBox>,
         #[template_child]
-        pub encode_decode_usage: TemplateChild<ResDoubleGraphBox>,
+        pub memory_usage: TemplateChild<ResGraphBox>,
         #[template_child]
-        pub encode_decode_combined_usage: TemplateChild<ResGraphBox>,
-        #[template_child]
-        pub vram_usage: TemplateChild<ResGraphBox>,
-        #[template_child]
-        pub temperature: TemplateChild<ResGraphBox>,
+        pub temperature: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub power_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub gpu_clockspeed: TemplateChild<adw::ActionRow>,
+        pub npu_clockspeed: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub vram_clockspeed: TemplateChild<adw::ActionRow>,
+        pub memory_clockspeed: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub manufacturer: TemplateChild<adw::ActionRow>,
         #[template_child]
@@ -88,44 +81,42 @@ mod imp {
         secondary_ord: Cell<u32>,
     }
 
-    impl ResGPU {
+    impl ResNPU {
         gstring_getter_setter!(tab_name, tab_detail_string, tab_usage_string, tab_id);
     }
 
-    impl Default for ResGPU {
+    impl Default for ResNPU {
         fn default() -> Self {
             Self {
-                gpu_usage: Default::default(),
-                encode_decode_usage: Default::default(),
-                encode_decode_combined_usage: Default::default(),
-                vram_usage: Default::default(),
+                npu_usage: Default::default(),
+                memory_usage: Default::default(),
                 temperature: Default::default(),
                 power_usage: Default::default(),
-                gpu_clockspeed: Default::default(),
-                vram_clockspeed: Default::default(),
+                npu_clockspeed: Default::default(),
+                memory_clockspeed: Default::default(),
                 manufacturer: Default::default(),
                 pci_slot: Default::default(),
                 driver_used: Default::default(),
                 max_power_cap: Default::default(),
                 uses_progress_bar: Cell::new(true),
-                main_graph_color: glib::Bytes::from_static(&super::ResGPU::MAIN_GRAPH_COLOR),
-                icon: RefCell::new(ThemedIcon::new("gpu-symbolic").into()),
+                main_graph_color: glib::Bytes::from_static(&super::ResNPU::MAIN_GRAPH_COLOR),
+                icon: RefCell::new(ThemedIcon::new("npu-symbolic").into()),
                 usage: Default::default(),
-                tab_name: Cell::new(glib::GString::from(i18n("GPU"))),
+                tab_name: Cell::new(glib::GString::from(i18n("NPU"))),
                 tab_detail_string: Cell::new(glib::GString::new()),
                 tab_usage_string: Cell::new(glib::GString::new()),
                 tab_id: Cell::new(glib::GString::new()),
                 graph_locked_max_y: Cell::new(true),
-                primary_ord: Cell::new(GPU_PRIMARY_ORD),
+                primary_ord: Cell::new(NPU_PRIMARY_ORD),
                 secondary_ord: Default::default(),
             }
         }
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for ResGPU {
-        const NAME: &'static str = "ResGPU";
-        type Type = super::ResGPU;
+    impl ObjectSubclass for ResNPU {
+        const NAME: &'static str = "ResNPU";
+        type Type = super::ResNPU;
         type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
@@ -138,7 +129,7 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for ResGPU {
+    impl ObjectImpl for ResNPU {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
@@ -162,162 +153,89 @@ mod imp {
         }
     }
 
-    impl WidgetImpl for ResGPU {}
-    impl BinImpl for ResGPU {}
+    impl WidgetImpl for ResNPU {}
+    impl BinImpl for ResNPU {}
 }
 
 glib::wrapper! {
-    pub struct ResGPU(ObjectSubclass<imp::ResGPU>)
+    pub struct ResNPU(ObjectSubclass<imp::ResNPU>)
         @extends gtk::Widget, adw::Bin;
 }
 
-impl Default for ResGPU {
+impl Default for ResNPU {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl ResGPU {
-    const MAIN_GRAPH_COLOR: [u8; 3] = [0xed, 0x33, 0x3b];
+impl ResNPU {
+    const MAIN_GRAPH_COLOR: [u8; 3] = [0xb5, 0x27, 0xe3];
 
     pub fn new() -> Self {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self, gpu: &Gpu, secondary_ord: u32) {
+    pub fn init(&self, npu: &Npu, secondary_ord: u32) {
         self.set_secondary_ord(secondary_ord);
-        self.setup_widgets(gpu);
+        self.setup_widgets(npu);
     }
 
-    pub fn setup_widgets(&self, gpu: &Gpu) {
+    pub fn setup_widgets(&self, npu: &Npu) {
         let imp = self.imp();
 
-        let tab_id = format!("{}-{}", TAB_ID_PREFIX, &gpu.pci_slot().to_string());
+        let tab_id = format!("{}-{}", TAB_ID_PREFIX, &npu.pci_slot().to_string());
         imp.set_tab_id(&tab_id);
 
-        imp.gpu_usage.set_title_label(&i18n("Total Usage"));
-        imp.gpu_usage.graph().set_graph_color(
+        imp.npu_usage.set_title_label(&i18n("Total Usage"));
+        imp.npu_usage.graph().set_graph_color(
             Self::MAIN_GRAPH_COLOR[0],
             Self::MAIN_GRAPH_COLOR[1],
             Self::MAIN_GRAPH_COLOR[2],
         );
 
-        imp.encode_decode_combined_usage
-            .set_title_label(&i18n("Video Encoder/Decoder Usage"));
-        imp.encode_decode_combined_usage
-            .graph()
-            .set_graph_color(0xe0, 0x1b, 0x24);
-
-        imp.encode_decode_usage
-            .set_start_title_label(&i18n("Video Encoder Usage"));
-        imp.encode_decode_usage
-            .start_graph()
-            .set_graph_color(0xe0, 0x1b, 0x24);
-        imp.encode_decode_usage
-            .set_end_title_label(&i18n("Video Decoder Usage"));
-        imp.encode_decode_usage
-            .end_graph()
-            .set_graph_color(0xe0, 0x1b, 0x24);
-
-        imp.vram_usage.set_title_label(&i18n("Video Memory Usage"));
-        imp.vram_usage.graph().set_graph_color(0xc0, 0x1c, 0x28);
-
-        imp.temperature.set_title_label(&i18n("Temperature"));
-        imp.temperature.graph().set_graph_color(0xa5, 0x1d, 0x2d);
-        imp.temperature.graph().set_locked_max_y(None);
+        imp.memory_usage.set_title_label(&i18n("Memory Usage"));
+        imp.memory_usage.graph().set_graph_color(0x9e, 0xc, 0xcc);
 
         imp.manufacturer.set_subtitle(
-            &gpu.get_vendor()
+            &npu.get_vendor()
                 .map_or_else(|_| i18n("N/A"), |vendor| vendor.name().to_string()),
         );
 
-        imp.pci_slot.set_subtitle(&gpu.pci_slot().to_string());
+        imp.pci_slot.set_subtitle(&npu.pci_slot().to_string());
 
-        imp.driver_used.set_subtitle(&gpu.driver());
+        imp.driver_used.set_subtitle(&npu.driver());
 
-        if gpu.combined_media_engine().unwrap_or_default() {
-            imp.encode_decode_combined_usage.set_visible(true);
-            imp.encode_decode_usage.set_visible(false);
-        } else {
-            imp.encode_decode_combined_usage.set_visible(false);
-            imp.encode_decode_usage.set_visible(true);
-        }
-
-        if let Ok(model_name) = gpu.name() {
+        if let Ok(model_name) = npu.name() {
             imp.set_tab_detail_string(&model_name);
         }
     }
 
-    pub fn refresh_page(&self, gpu_data: &GpuData) {
+    pub fn refresh_page(&self, npu_data: &NpuData) {
         let imp = self.imp();
 
-        let GpuData {
+        let NpuData {
             pci_slot: _,
             usage_fraction,
-            encode_fraction,
-            decode_fraction,
             total_vram,
             used_vram,
             clock_speed,
             vram_speed,
-            temperature,
+            temp,
             power_usage,
             power_cap,
             power_cap_max,
-            nvidia: _,
-        } = gpu_data;
+        } = npu_data;
 
         let mut usage_percentage_string = usage_fraction.map_or_else(
             || i18n("N/A"),
             |fraction| format!("{} %", (fraction * 100.0).round()),
         );
 
-        imp.gpu_usage.set_subtitle(&usage_percentage_string);
-        imp.gpu_usage
+        imp.npu_usage.set_subtitle(&usage_percentage_string);
+        imp.npu_usage
             .graph()
             .push_data_point(usage_fraction.unwrap_or(0.0));
-        imp.gpu_usage.graph().set_visible(usage_fraction.is_some());
-
-        // encode_fraction could be the combined usage of encoder and decoder for Intel GPUs and newer AMD GPUs
-        if let Some(encode_fraction) = encode_fraction {
-            imp.encode_decode_usage
-                .start_graph()
-                .push_data_point(*encode_fraction);
-            imp.encode_decode_usage
-                .set_start_subtitle(&format!("{} %", (encode_fraction * 100.0).round()));
-
-            imp.encode_decode_combined_usage
-                .graph()
-                .push_data_point(*encode_fraction);
-            imp.encode_decode_combined_usage
-                .set_subtitle(&format!("{} %", (encode_fraction * 100.0).round()));
-        } else {
-            imp.encode_decode_usage.start_graph().push_data_point(0.0);
-            imp.encode_decode_usage.set_start_subtitle(&i18n("N/A"));
-
-            imp.encode_decode_combined_usage.graph().set_visible(false);
-            imp.encode_decode_combined_usage.set_subtitle(&i18n("N/A"));
-        }
-
-        if let Some(decode_fraction) = decode_fraction {
-            imp.encode_decode_usage
-                .end_graph()
-                .push_data_point(*decode_fraction);
-            imp.encode_decode_usage
-                .set_end_subtitle(&format!("{} %", (decode_fraction * 100.0).round()));
-        } else {
-            imp.encode_decode_usage.end_graph().push_data_point(0.0);
-            imp.encode_decode_usage.set_end_subtitle(&i18n("N/A"));
-        }
-
-        // only turn enc and dec graphs invisible if both of them are None, otherwise only one of them might show a
-        // graph and that'd look odd
-        imp.encode_decode_usage
-            .start_graph()
-            .set_visible(encode_fraction.is_some() || decode_fraction.is_some());
-        imp.encode_decode_usage
-            .end_graph()
-            .set_visible(encode_fraction.is_some() || decode_fraction.is_some());
+        imp.npu_usage.graph().set_visible(usage_fraction.is_some());
 
         let used_vram_fraction =
             if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
@@ -342,13 +260,18 @@ impl ResGPU {
             i18n("N/A")
         };
 
-        imp.vram_usage.set_subtitle(&vram_subtitle);
-        imp.vram_usage
+        imp.memory_usage.set_subtitle(&vram_subtitle);
+        imp.memory_usage
             .graph()
             .push_data_point(used_vram_fraction.unwrap_or(0.0));
-        imp.vram_usage
+        imp.memory_usage
             .graph()
             .set_visible(used_vram_fraction.is_some());
+
+        let temperature_string = temp.map(convert_temperature);
+
+        imp.temperature
+            .set_subtitle(&temperature_string.clone().unwrap_or_else(|| i18n("N/A")));
 
         let mut power_string = power_usage.map_or_else(|| i18n("N/A"), convert_power);
 
@@ -358,18 +281,18 @@ impl ResGPU {
 
         imp.power_usage.set_subtitle(&power_string);
 
-        if let Some(gpu_clockspeed) = clock_speed {
-            imp.gpu_clockspeed
-                .set_subtitle(&convert_frequency(*gpu_clockspeed));
+        if let Some(npu_clockspeed) = clock_speed {
+            imp.npu_clockspeed
+                .set_subtitle(&convert_frequency(*npu_clockspeed));
         } else {
-            imp.gpu_clockspeed.set_subtitle(&i18n("N/A"));
+            imp.npu_clockspeed.set_subtitle(&i18n("N/A"));
         }
 
         if let Some(vram_clockspeed) = vram_speed {
-            imp.vram_clockspeed
+            imp.memory_clockspeed
                 .set_subtitle(&convert_frequency(*vram_clockspeed));
         } else {
-            imp.vram_clockspeed.set_subtitle(&i18n("N/A"));
+            imp.memory_clockspeed.set_subtitle(&i18n("N/A"));
         }
 
         imp.max_power_cap
@@ -384,26 +307,9 @@ impl ResGPU {
             usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&vram_percentage_string]));
         }
 
-        imp.temperature.graph().set_visible(temperature.is_some());
-
-        if let Some(temperature) = temperature {
-            let temperature_string = convert_temperature(*temperature as f64);
-
-            let highest_temperature_string =
-                convert_temperature(imp.temperature.graph().get_highest_value());
-
-            imp.temperature.set_subtitle(&format!(
-                "{} · {} {}",
-                &temperature_string,
-                i18n("Highest:"),
-                highest_temperature_string
-            ));
-            imp.temperature.graph().push_data_point(*temperature as f64);
-
+        if let Some(temperature_string) = temperature_string {
             usage_percentage_string.push_str(" · ");
             usage_percentage_string.push_str(&temperature_string);
-        } else {
-            imp.temperature.set_subtitle(&i18n("N/A"));
         }
 
         self.set_property("tab_usage_string", &usage_percentage_string);

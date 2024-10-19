@@ -69,6 +69,7 @@ pub struct Process {
     pub read_bytes_last: Option<u64>,
     pub write_bytes_last: Option<u64>,
     pub gpu_usage_stats_last: BTreeMap<PciSlot, GpuUsageStats>,
+    pub display_name: String,
 }
 
 // TODO: Better name?
@@ -90,7 +91,7 @@ impl Process {
     pub fn all_data() -> Result<Vec<ProcessData>> {
         let output = {
             let mut process = OTHER_PROCESS.lock().unwrap();
-            let _ = process.0.write_all(&[b'\n']);
+            let _ = process.0.write_all(b"\n");
             let _ = process.0.flush();
 
             let mut len_bytes = [0_u8; (usize::BITS / 8) as usize];
@@ -135,6 +136,12 @@ impl Process {
             None
         };
 
+        let display_name = if executable_name.starts_with(&process_data.comm) {
+            executable_name.clone()
+        } else {
+            process_data.comm.clone()
+        };
+
         Self {
             executable_path,
             executable_name,
@@ -145,6 +152,7 @@ impl Process {
             read_bytes_last,
             write_bytes_last,
             gpu_usage_stats_last: Default::default(),
+            display_name,
         }
     }
 
@@ -292,7 +300,7 @@ impl Process {
                 Ok(())
             } else {
                 error!(
-                    "Couldn't {action_string} {}, return_code: {return_code}",
+                    "Couldn't {action_string} {}, return code: {return_code}",
                     self.data.pid
                 );
                 bail!("non-zero return code: {return_code}")
@@ -322,7 +330,10 @@ impl Process {
                 * 1000.0;
             let delta_time = self.data.timestamp.saturating_sub(self.timestamp_last);
 
-            (delta_cpu_time / (delta_time * *TICK_RATE as u64 * *NUM_CPUS as u64) as f32)
+            (delta_cpu_time
+                / (delta_time
+                    .saturating_mul(*TICK_RATE as u64)
+                    .saturating_mul(*NUM_CPUS as u64)) as f32)
                 .finite_or_default()
         }
     }

@@ -75,7 +75,7 @@ mod imp {
         #[property(get = Self::tab_name, type = glib::GString)]
         tab_name: Cell<glib::GString>,
 
-        #[property(get = Self::tab_detail, set = Self::set_tab_detail, type = glib::GString)]
+        #[property(get = Self::tab_detail_string, set = Self::set_tab_detail_string, type = glib::GString)]
         tab_detail_string: Cell<glib::GString>,
 
         #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
@@ -95,42 +95,7 @@ mod imp {
     }
 
     impl ResCPU {
-        pub fn tab_name(&self) -> glib::GString {
-            let tab_name = self.tab_name.take();
-            let result = tab_name.clone();
-            self.tab_name.set(tab_name);
-            result
-        }
-
-        pub fn tab_detail(&self) -> glib::GString {
-            let detail = self.tab_detail_string.take();
-            let result = detail.clone();
-            self.tab_detail_string.set(detail);
-            result
-        }
-
-        pub fn set_tab_detail(&self, detail: &str) {
-            self.tab_detail_string.set(glib::GString::from(detail));
-        }
-
-        pub fn tab_usage_string(&self) -> glib::GString {
-            let tab_usage_string = self.tab_usage_string.take();
-            let result = tab_usage_string.clone();
-            self.tab_usage_string.set(tab_usage_string);
-            result
-        }
-
-        pub fn set_tab_usage_string(&self, tab_usage_string: &str) {
-            self.tab_usage_string
-                .set(glib::GString::from(tab_usage_string));
-        }
-
-        pub fn tab_id(&self) -> glib::GString {
-            let tab_id = self.tab_id.take();
-            let result = tab_id.clone();
-            self.tab_id.set(tab_id);
-            result
-        }
+        gstring_getter_setter!(tab_name, tab_detail_string, tab_usage_string, tab_id);
     }
 
     impl Default for ResCPU {
@@ -312,7 +277,7 @@ impl ResCPU {
             .set_subtitle(&cpu_info.architecture.unwrap_or_else(|| i18n("N/A")));
 
         if let Some(model_name) = cpu_info.model_name {
-            imp.set_tab_detail(&model_name);
+            imp.set_tab_detail_string(&model_name);
         }
     }
 
