@@ -309,7 +309,7 @@ impl ProcessData {
             .map(|capture| capture.as_str())
             .unwrap_or_default()
             .parse::<usize>()
-            .context("couldn't parse status file content")?
+            .unwrap_or_default() // kworkers don't have swap usage
             .saturating_mul(1000);
 
         let memory_usage = statm
