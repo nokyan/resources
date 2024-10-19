@@ -1,5 +1,5 @@
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib;
+use gtk::glib::{self, GString};
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
@@ -127,9 +127,14 @@ impl ResProcessDialog {
                 .unwrap_or_else(|| i18n("N/A").into()),
         );
 
-        imp.commandline.set_subtitle(&process.commandline());
-        imp.commandline
-            .set_tooltip_text(Some(&process.commandline()));
+        let commandline_str = if process.commandline().is_empty() {
+            GString::from(i18n("N/A"))
+        } else {
+            process.commandline()
+        };
+
+        imp.commandline.set_subtitle(&commandline_str);
+        imp.commandline.set_tooltip_text(Some(&commandline_str));
 
         imp.cgroup
             .set_subtitle(&process.cgroup().unwrap_or_else(|| i18n("N/A").into()));
