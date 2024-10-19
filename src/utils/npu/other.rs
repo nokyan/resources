@@ -1,15 +1,15 @@
-use anyhow::{bail, Result};
+use anyhow::Result;
 use process_data::pci_slot::PciSlot;
 
 use std::path::PathBuf;
 
 use crate::utils::pci::Device;
 
-use super::GpuImpl;
+use super::NpuImpl;
 
 #[derive(Debug, Clone, Default)]
 
-pub struct OtherGpu {
+pub struct OtherNpu {
     pub device: Option<&'static Device>,
     pub pci_slot: PciSlot,
     pub driver: String,
@@ -17,7 +17,7 @@ pub struct OtherGpu {
     first_hwmon_path: Option<PathBuf>,
 }
 
-impl OtherGpu {
+impl OtherNpu {
     pub fn new(
         device: Option<&'static Device>,
         pci_slot: PciSlot,
@@ -35,7 +35,7 @@ impl OtherGpu {
     }
 }
 
-impl GpuImpl for OtherGpu {
+impl NpuImpl for OtherNpu {
     fn device(&self) -> Option<&'static Device> {
         self.device
     }
@@ -62,18 +62,6 @@ impl GpuImpl for OtherGpu {
 
     fn usage(&self) -> Result<f64> {
         self.drm_usage().map(|usage| usage as f64 / 100.0)
-    }
-
-    fn encode_usage(&self) -> Result<f64> {
-        bail!("encode usage not implemented for other")
-    }
-
-    fn decode_usage(&self) -> Result<f64> {
-        bail!("decode usage not implemented for other")
-    }
-
-    fn combined_media_engine(&self) -> Result<bool> {
-        bail!("can't know for other GPUs")
     }
 
     fn used_vram(&self) -> Result<usize> {

@@ -43,6 +43,10 @@ pub struct Args {
     #[arg(short = 'm', long, default_value_t = false)]
     pub disable_memory_monitoring: bool,
 
+    /// Disable NPU monitoring
+    #[arg(short = 'v', long, default_value_t = false)]
+    pub disable_npu_monitoring: bool,
+
     /// Disable process monitoring
     #[arg(short = 'p', long, default_value_t = false)]
     pub disable_process_monitoring: bool,

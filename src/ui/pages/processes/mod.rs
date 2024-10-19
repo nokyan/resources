@@ -145,14 +145,7 @@ mod imp {
     }
 
     impl ResProcesses {
-        gstring_getter_setter!(tab_name, tab_detail_string, tab_usage_string);
-
-        pub fn tab_id(&self) -> glib::GString {
-            let tab_id = self.tab_id.take();
-            let result = tab_id.clone();
-            self.tab_id.set(tab_id);
-            result
-        }
+        gstring_getter_setter!(tab_name, tab_detail_string, tab_usage_string, tab_id);
     }
 
     impl Default for ResProcesses {
