@@ -28,6 +28,7 @@ pub struct AmdGpu {
     pub driver: String,
     sysfs_path: PathBuf,
     first_hwmon_path: Option<PathBuf>,
+    combined_media_engine: bool,
 }
 
 impl AmdGpu {
@@ -38,13 +39,22 @@ impl AmdGpu {
         sysfs_path: PathBuf,
         first_hwmon_path: Option<PathBuf>,
     ) -> Self {
-        Self {
+        let mut gpu = Self {
             device,
             pci_slot,
             driver,
             sysfs_path,
             first_hwmon_path,
+            combined_media_engine: false,
+        };
+
+        if let Ok(vcn_version) = gpu.read_device_int("ip_discovery/die/0/UVD/0/major") {
+            if vcn_version >= 4 {
+                gpu.combined_media_engine = true;
+            }
         }
+
+        gpu
     }
 
     pub fn read_libdrm_ids() -> Result<HashMap<(u16, u8), String>> {
@@ -76,8 +86,9 @@ impl AmdGpu {
         let elapsed = start.elapsed();
 
         debug!(
-            "Successfully parsed {} within {elapsed:.2?}",
-            path.to_string_lossy()
+            "Successfully parsed {} within {elapsed:.2?} ({} entries)",
+            path.to_string_lossy(),
+            map.len()
         );
 
         Ok(map)
@@ -120,24 +131,28 @@ impl GpuImpl for AmdGpu {
             }))
     }
 
-    fn usage(&self) -> Result<isize> {
-        self.drm_usage()
+    fn usage(&self) -> Result<f64> {
+        self.drm_usage().map(|usage| usage as f64 / 100.0)
     }
 
-    fn encode_usage(&self) -> Result<isize> {
+    fn encode_usage(&self) -> Result<f64> {
         bail!("encode usage not implemented for AMD")
     }
 
-    fn decode_usage(&self) -> Result<isize> {
+    fn decode_usage(&self) -> Result<f64> {
         bail!("decode usage not implemented for AMD")
     }
 
-    fn used_vram(&self) -> Result<isize> {
-        self.drm_used_vram()
+    fn combined_media_engine(&self) -> Result<bool> {
+        Ok(self.combined_media_engine)
     }
 
-    fn total_vram(&self) -> Result<isize> {
-        self.drm_total_vram()
+    fn used_vram(&self) -> Result<usize> {
+        self.drm_used_vram().map(|usage| usage as usize)
+    }
+
+    fn total_vram(&self) -> Result<usize> {
+        self.drm_total_vram().map(|usage| usage as usize)
     }
 
     fn temperature(&self) -> Result<f64> {

@@ -236,7 +236,6 @@ impl ProcessData {
         let status = std::fs::read_to_string(proc_path.join("status"))?;
         let comm = std::fs::read_to_string(proc_path.join("comm"))?;
         let commandline = std::fs::read_to_string(proc_path.join("cmdline"))?;
-        let cgroup = std::fs::read_to_string(proc_path.join("cgroup"))?;
         let io = std::fs::read_to_string(proc_path.join("io")).ok();
 
         let pid = proc_path
@@ -331,17 +330,16 @@ impl ProcessData {
             )
             .saturating_mul(*PAGESIZE);
 
-        let cgroup = Self::sanitize_cgroup(cgroup);
+        let cgroup = std::fs::read_to_string(proc_path.join("cgroup"))
+            .ok()
+            .and_then(|raw| Self::sanitize_cgroup(raw));
 
-        let containerization = match &proc_path.join("root").join(".flatpak-info").exists() {
-            true => Containerization::Flatpak,
-            false => {
-                if commandline.starts_with("/snap/") {
-                    Containerization::Snap
-                } else {
-                    Containerization::None
-                }
-            }
+        let containerization = if commandline.starts_with("/snap/") {
+            Containerization::Snap
+        } else if proc_path.join("root").join(".flatpak-info").exists() {
+            Containerization::Flatpak
+        } else {
+            Containerization::None
         };
 
         let read_bytes = io.as_ref().and_then(|io| {

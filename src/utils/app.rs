@@ -163,6 +163,7 @@ static MESSAGE_LOCALES: LazyLock<Vec<String>> = LazyLock::new(|| {
 pub struct AppsContext {
     apps: HashMap<Option<String>, App>,
     processes: HashMap<i32, Process>,
+    gpus_with_combined_media_engine: Vec<PciSlot>,
 }
 
 /// Represents an application installed on the system. It doesn't
@@ -509,7 +510,7 @@ impl AppsContext {
     /// Creates a new `AppsContext` object, this operation is quite expensive
     /// so try to do it only one time during the lifetime of the program.
     /// Please call refresh() immediately after this function.
-    pub fn new() -> AppsContext {
+    pub fn new(gpus_with_combined_media_engine: Vec<PciSlot>) -> AppsContext {
         let apps: HashMap<Option<String>, App> = App::all()
             .into_iter()
             .map(|app| (app.id.clone(), app))
@@ -518,6 +519,7 @@ impl AppsContext {
         AppsContext {
             apps,
             processes: HashMap::new(),
+            gpus_with_combined_media_engine,
         }
     }
 
@@ -760,8 +762,21 @@ impl AppsContext {
     pub fn refresh(&mut self, new_process_data: Vec<ProcessData>) {
         let mut updated_processes = HashSet::new();
 
-        for process_data in new_process_data {
+        for mut process_data in new_process_data {
             updated_processes.insert(process_data.pid);
+
+            // this is awkward: since AppsContext is the only object around that knows what GPUs have combined media
+            // engines, it is here where we have to manipulate the GpuUsageStats objects with PciSlots of those GPUs
+            // whose media engine is combined (e.g. no discrimination between enc and dec stats)
+            process_data
+                .gpu_usage_stats
+                .iter_mut()
+                .filter(|(pci_slot, _)| self.gpus_with_combined_media_engine.contains(pci_slot))
+                .for_each(|(_, stats)| {
+                    stats.dec = u64::max(stats.dec, stats.enc);
+                    stats.enc = u64::max(stats.dec, stats.enc);
+                });
+
             // refresh our old processes
             if let Some(old_process) = self.processes.get_mut(&process_data.pid) {
                 old_process.cpu_time_last = old_process
