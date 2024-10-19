@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-19 13:51+0200\n"
-"PO-Revision-Date: 2024-10-18 19:07+0200\n"
+"PO-Revision-Date: 2024-10-19 13:57+0200\n"
 "Last-Translator: nokyan <nokyan@tuta.io>\n"
 "Language-Team: German <nokyan@tuta.io>\n"
 "Language: de\n"
@@ -419,7 +419,7 @@ msgstr "Grafikspeicherauslastung"
 #. shorter than) 'Memory'
 #: src/ui/pages/gpu.rs:385 src/ui/pages/npu.rs:307
 msgid "Memory: {}"
-msgstr ""
+msgstr "Speicher: {}"
 
 #: src/ui/pages/memory.rs:256
 msgid "{} of {}"
@@ -475,7 +475,7 @@ msgstr "Prozess beenden"
 
 #: src/ui/pages/processes/mod.rs:527 data/resources/ui/pages/processes.ui:70
 msgid "End Processes"
-msgstr ""
+msgstr "Prozesse beenden"
 
 #: src/ui/pages/processes/mod.rs:821
 msgid "Running Processes: {}"
@@ -524,20 +524,20 @@ msgstr "Priorität"
 #: src/ui/pages/processes/mod.rs:2019
 msgid "End process?"
 msgid_plural "End {} processes?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Prozess beenden?"
+msgstr[1] "{} Prozesse beenden?"
 
 #: src/ui/pages/processes/mod.rs:2025
 msgid "Halt process?"
 msgid_plural "Halt {} processes?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Prozess anhalten?"
+msgstr[1] "{} Prozesse anhalten?"
 
 #: src/ui/pages/processes/mod.rs:2031 src/ui/pages/processes/mod.rs:2037
 msgid "Kill process?"
 msgid_plural "Kill {} processes?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Prozess abwürgen?"
+msgstr[1] "{} Prozesse abwürgen?"
 
 #: src/ui/pages/processes/mod.rs:2048
 msgid ""
@@ -605,26 +605,26 @@ msgstr "{} wurde erfolgreich fortgesetzt"
 #: src/ui/window.rs:1130
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Prozess wurde erfolgreich beendet"
+msgstr[1] "{} Prozesse wurden erfolgreich beendet"
 
 #: src/ui/window.rs:1136
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Prozess wurde erfolgreich angehalten"
+msgstr[1] "{} Prozesse wurden erfolgreich angehalten"
 
 #: src/ui/window.rs:1142
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Prozess wurde erfolgreich abgewürgt"
+msgstr[1] "{} Prozesse wurden erfolgreich abgewürgt"
 
 #: src/ui/window.rs:1148
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Prozess wurde erfolgreich fortgesetzt"
+msgstr[1] "{} Prozesse wurden erfolgreich fortgesetzt"
 
 #: src/ui/window.rs:1159
 msgid "There was a problem ending a process"
