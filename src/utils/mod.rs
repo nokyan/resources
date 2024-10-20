@@ -101,18 +101,18 @@ pub trait FiniteOr {
 
 impl FiniteOr for f64 {
     fn finite_or(&self, x: Self) -> Self {
-        if !self.is_finite() {
-            x
-        } else {
+        if self.is_finite() {
             *self
+        } else {
+            x
         }
     }
 
     fn finite_or_default(&self) -> Self {
-        if !self.is_finite() {
-            Self::default()
-        } else {
+        if self.is_finite() {
             *self
+        } else {
+            Self::default()
         }
     }
 
@@ -120,28 +120,28 @@ impl FiniteOr for f64 {
     where
         Self: Sized,
     {
-        if !self.is_finite() {
-            f(*self)
-        } else {
+        if self.is_finite() {
             *self
+        } else {
+            f(*self)
         }
     }
 }
 
 impl FiniteOr for f32 {
     fn finite_or(&self, x: Self) -> Self {
-        if !self.is_finite() {
-            x
-        } else {
+        if self.is_finite() {
             *self
+        } else {
+            x
         }
     }
 
     fn finite_or_default(&self) -> Self {
-        if !self.is_finite() {
-            Self::default()
-        } else {
+        if self.is_finite() {
             *self
+        } else {
+            Self::default()
         }
     }
 
@@ -149,10 +149,10 @@ impl FiniteOr for f32 {
     where
         Self: Sized,
     {
-        if !self.is_finite() {
-            f(*self)
-        } else {
+        if self.is_finite() {
             *self
+        } else {
+            f(*self)
         }
     }
 }

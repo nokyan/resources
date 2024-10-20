@@ -178,6 +178,11 @@
                 <property name="title" translatable="yes">Video Decoder</property>
               </object>
             </child>
+            <child>
+              <object class="AdwSwitchRow" id="apps_show_swap_row">
+                <property name="title" translatable="yes">Swap</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
@@ -278,6 +283,11 @@
             <child>
               <object class="AdwSwitchRow" id="processes_show_priority_row">
                 <property name="title" translatable="yes">Priority</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_swap_row">
+                <property name="title" translatable="yes">Swap</property>
               </object>
             </child>
           </object>
