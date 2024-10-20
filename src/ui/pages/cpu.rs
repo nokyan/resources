@@ -54,7 +54,7 @@ mod imp {
         #[template_child]
         pub architecture: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub temperature: TemplateChild<adw::ActionRow>,
+        pub temperature: TemplateChild<ResGraphBox>,
         pub thread_graphs: RefCell<Vec<ResGraphBox>>,
         pub old_total_usage: Cell<(u64, u64)>,
         pub old_thread_usages: RefCell<Vec<(u64, u64)>>,
@@ -242,6 +242,10 @@ impl ResCPU {
             imp.thread_graphs.borrow_mut().push(thread_box);
         }
 
+        imp.temperature.set_title_label(&i18n("Temperature"));
+        imp.temperature.graph().set_graph_color(0x1a, 0x5f, 0xb4);
+        imp.temperature.graph().set_locked_max_y(None);
+
         imp.max_speed.set_subtitle(
             &cpu_info
                 .max_speed
@@ -361,20 +365,29 @@ impl ResCPU {
             }
         }
 
-        let temperature_string = temperature
-            .as_ref()
-            .map(|temp| convert_temperature(*temp as f64))
-            .ok();
+        imp.temperature.graph().set_visible(temperature.is_ok());
 
-        imp.temperature
-            .set_subtitle(&temperature_string.clone().unwrap_or_else(|| i18n("N/A")));
+        if let Ok(temperature) = temperature {
+            let temperature_string = convert_temperature(*temperature as f64);
 
-        self.set_property("usage", total_fraction);
+            let highest_temperature_string =
+                convert_temperature(imp.temperature.graph().get_highest_value());
 
-        if let Some(temperature_string) = temperature_string {
+            imp.temperature.set_subtitle(&format!(
+                "{} · {} {}",
+                &temperature_string,
+                i18n("Highest:"),
+                highest_temperature_string
+            ));
+            imp.temperature.graph().push_data_point(*temperature as f64);
+
             percentage_string.push_str(" · ");
             percentage_string.push_str(&temperature_string);
+        } else {
+            imp.temperature.set_subtitle(&i18n("N/A"));
         }
+
+        self.set_property("usage", total_fraction);
 
         self.set_property("tab_usage_string", percentage_string);
     }

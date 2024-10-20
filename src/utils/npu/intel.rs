@@ -102,7 +102,7 @@ impl NpuImpl for IntelNpu {
         self.hwmon_core_frequency()
     }
 
-    fn vram_frequency(&self) -> Result<f64> {
+    fn memory_frequency(&self) -> Result<f64> {
         self.hwmon_vram_frequency()
     }
 

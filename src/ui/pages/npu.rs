@@ -31,7 +31,7 @@ mod imp {
         #[template_child]
         pub memory_usage: TemplateChild<ResGraphBox>,
         #[template_child]
-        pub temperature: TemplateChild<adw::ActionRow>,
+        pub temperature: TemplateChild<ResGraphBox>,
         #[template_child]
         pub power_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
@@ -194,7 +194,11 @@ impl ResNPU {
         );
 
         imp.memory_usage.set_title_label(&i18n("Memory Usage"));
-        imp.memory_usage.graph().set_graph_color(0x9e, 0xc, 0xcc);
+        imp.memory_usage.graph().set_graph_color(0x9e, 0x1c, 0xcc);
+
+        imp.temperature.set_title_label(&i18n("Temperature"));
+        imp.temperature.graph().set_graph_color(0x83, 0x1c, 0xac);
+        imp.temperature.graph().set_locked_max_y(None);
 
         imp.manufacturer.set_subtitle(
             &npu.get_vendor()
@@ -216,11 +220,11 @@ impl ResNPU {
         let NpuData {
             pci_slot: _,
             usage_fraction,
-            total_vram,
-            used_vram,
+            total_memory,
+            used_memory,
             clock_speed,
             vram_speed,
-            temp,
+            temperature,
             power_usage,
             power_cap,
             power_cap_max,
@@ -237,41 +241,39 @@ impl ResNPU {
             .push_data_point(usage_fraction.unwrap_or(0.0));
         imp.npu_usage.graph().set_visible(usage_fraction.is_some());
 
-        let used_vram_fraction =
-            if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
-                Some((*used_vram as f64 / *total_vram as f64).finite_or_default())
+        let used_memory_fraction =
+            if let (Some(total_memory), Some(used_memory)) = (total_memory, used_memory) {
+                Some((*used_memory as f64 / *total_memory as f64).finite_or_default())
             } else {
                 None
             };
 
-        let vram_percentage_string = used_vram_fraction.as_ref().map_or_else(
+        let memory_percentage_string = used_memory_fraction.as_ref().map_or_else(
             || i18n("N/A"),
             |fraction| format!("{} %", (fraction * 100.0).round()),
         );
 
-        let vram_subtitle = if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
-            format!(
-                "{} / {} · {}",
-                convert_storage(*used_vram as f64, false),
-                convert_storage(*total_vram as f64, false),
-                vram_percentage_string
-            )
-        } else {
-            i18n("N/A")
-        };
+        let memory_subtitle =
+            if let (Some(total_memory), Some(used_memory)) = (total_memory, used_memory) {
+                format!(
+                    "{} / {} · {}",
+                    convert_storage(*used_memory as f64, false),
+                    convert_storage(*total_memory as f64, false),
+                    memory_percentage_string
+                )
+            } else {
+                i18n("N/A")
+            };
 
-        imp.memory_usage.set_subtitle(&vram_subtitle);
+        imp.memory_usage.set_subtitle(&memory_subtitle);
         imp.memory_usage
             .graph()
-            .push_data_point(used_vram_fraction.unwrap_or(0.0));
+            .push_data_point(used_memory_fraction.unwrap_or(0.0));
         imp.memory_usage
             .graph()
-            .set_visible(used_vram_fraction.is_some());
+            .set_visible(used_memory_fraction.is_some());
 
-        let temperature_string = temp.map(convert_temperature);
-
-        imp.temperature
-            .set_subtitle(&temperature_string.clone().unwrap_or_else(|| i18n("N/A")));
+        imp.temperature.graph().set_visible(temperature.is_some());
 
         let mut power_string = power_usage.map_or_else(|| i18n("N/A"), convert_power);
 
@@ -300,16 +302,31 @@ impl ResNPU {
 
         self.set_property("usage", usage_fraction.unwrap_or(0.0));
 
-        if used_vram_fraction.is_some() {
+        if used_memory_fraction.is_some() {
             usage_percentage_string.push_str(" · ");
             // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
             // shorter than) 'Memory'
-            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&vram_percentage_string]));
+            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&memory_percentage_string]));
         }
 
-        if let Some(temperature_string) = temperature_string {
+        if let Some(temperature) = temperature {
+            let temperature_string = convert_temperature(*temperature as f64);
+
+            let highest_temperature_string =
+                convert_temperature(imp.temperature.graph().get_highest_value());
+
+            imp.temperature.set_subtitle(&format!(
+                "{} · {} {}",
+                &temperature_string,
+                i18n("Highest:"),
+                highest_temperature_string
+            ));
+            imp.temperature.graph().push_data_point(*temperature as f64);
+
             usage_percentage_string.push_str(" · ");
             usage_percentage_string.push_str(&temperature_string);
+        } else {
+            imp.temperature.set_subtitle(&i18n("N/A"));
         }
 
         self.set_property("tab_usage_string", &usage_percentage_string);

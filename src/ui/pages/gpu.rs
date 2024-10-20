@@ -38,7 +38,7 @@ mod imp {
         #[template_child]
         pub vram_usage: TemplateChild<ResGraphBox>,
         #[template_child]
-        pub temperature: TemplateChild<adw::ActionRow>,
+        pub temperature: TemplateChild<ResGraphBox>,
         #[template_child]
         pub power_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
@@ -178,7 +178,7 @@ impl Default for ResGPU {
 }
 
 impl ResGPU {
-    const MAIN_GRAPH_COLOR: [u8; 3] = [0xe0, 0x1b, 0x24];
+    const MAIN_GRAPH_COLOR: [u8; 3] = [0xed, 0x33, 0x3b];
 
     pub fn new() -> Self {
         glib::Object::new::<Self>()
@@ -206,21 +206,25 @@ impl ResGPU {
             .set_title_label(&i18n("Video Encoder/Decoder Usage"));
         imp.encode_decode_combined_usage
             .graph()
-            .set_graph_color(0xc0, 0x1c, 0x28);
+            .set_graph_color(0xe0, 0x1b, 0x24);
 
         imp.encode_decode_usage
             .set_start_title_label(&i18n("Video Encoder Usage"));
         imp.encode_decode_usage
             .start_graph()
-            .set_graph_color(0xc0, 0x1c, 0x28);
+            .set_graph_color(0xe0, 0x1b, 0x24);
         imp.encode_decode_usage
             .set_end_title_label(&i18n("Video Decoder Usage"));
         imp.encode_decode_usage
             .end_graph()
-            .set_graph_color(0xc0, 0x1c, 0x28);
+            .set_graph_color(0xe0, 0x1b, 0x24);
 
         imp.vram_usage.set_title_label(&i18n("Video Memory Usage"));
-        imp.vram_usage.graph().set_graph_color(0xa5, 0x1d, 0x2d);
+        imp.vram_usage.graph().set_graph_color(0xc0, 0x1c, 0x28);
+
+        imp.temperature.set_title_label(&i18n("Temperature"));
+        imp.temperature.graph().set_graph_color(0xa5, 0x1d, 0x2d);
+        imp.temperature.graph().set_locked_max_y(None);
 
         imp.manufacturer.set_subtitle(
             &gpu.get_vendor()
@@ -256,7 +260,7 @@ impl ResGPU {
             used_vram,
             clock_speed,
             vram_speed,
-            temp,
+            temperature,
             power_usage,
             power_cap,
             power_cap_max,
@@ -346,11 +350,6 @@ impl ResGPU {
             .graph()
             .set_visible(used_vram_fraction.is_some());
 
-        let temperature_string = temp.map(convert_temperature);
-
-        imp.temperature
-            .set_subtitle(&temperature_string.clone().unwrap_or_else(|| i18n("N/A")));
-
         let mut power_string = power_usage.map_or_else(|| i18n("N/A"), convert_power);
 
         if let Some(power_cap) = power_cap {
@@ -385,9 +384,26 @@ impl ResGPU {
             usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&vram_percentage_string]));
         }
 
-        if let Some(temperature_string) = temperature_string {
+        imp.temperature.graph().set_visible(temperature.is_some());
+
+        if let Some(temperature) = temperature {
+            let temperature_string = convert_temperature(*temperature as f64);
+
+            let highest_temperature_string =
+                convert_temperature(imp.temperature.graph().get_highest_value());
+
+            imp.temperature.set_subtitle(&format!(
+                "{} · {} {}",
+                &temperature_string,
+                i18n("Highest:"),
+                highest_temperature_string
+            ));
+            imp.temperature.graph().push_data_point(*temperature as f64);
+
             usage_percentage_string.push_str(" · ");
             usage_percentage_string.push_str(&temperature_string);
+        } else {
+            imp.temperature.set_subtitle(&i18n("N/A"));
         }
 
         self.set_property("tab_usage_string", &usage_percentage_string);

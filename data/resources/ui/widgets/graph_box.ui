@@ -10,7 +10,7 @@
         <property name="orientation">vertical</property>
         <property name="margin-start">12</property>
         <property name="margin-end">12</property>
-        <property name="margin-top">12</property>
+        <property name="margin-top">6</property>
         <property name="margin-bottom">6</property>
         <property name="spacing">12</property>
         <property name="hexpand">true</property>
@@ -19,6 +19,7 @@
             <style>
               <class name="graph"/>
             </style>
+            <property name="margin-top">6</property>
             <property name="overflow">hidden</property>
             <property name="hexpand">true</property>
             <property name="height-request">120</property>
