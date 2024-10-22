@@ -3,6 +3,7 @@ pub mod pci_slot;
 use anyhow::{bail, Context, Result};
 use glob::glob;
 use lazy_regex::{lazy_regex, Regex};
+use libc::uid_t;
 use nutype::nutype;
 use nvml_wrapper::enums::device::UsedGpuMemory;
 use nvml_wrapper::error::NvmlError;
@@ -20,7 +21,14 @@ use std::str::FromStr;
 use std::sync::RwLock;
 use std::{path::PathBuf, time::SystemTime};
 
-static USERS_CACHE: Lazy<HashMap<u32, String>> = Lazy::new(|| unsafe {
+const STAT_OFFSET: usize = 2; // we split the stat contents where the executable name ends, which is the second element
+const STAT_PARENT_PID: usize = 3 - STAT_OFFSET;
+const STAT_USER_CPU_TIME: usize = 13 - STAT_OFFSET;
+const STAT_SYSTEM_CPU_TIME: usize = 14 - STAT_OFFSET;
+const STAT_NICE: usize = 18 - STAT_OFFSET;
+const STAT_STARTTIME: usize = 21 - STAT_OFFSET;
+
+static USERS_CACHE: Lazy<HashMap<uid_t, String>> = Lazy::new(|| unsafe {
     uzers::all_users()
         .map(|user| (user.uid(), user.name().to_string_lossy().to_string()))
         .collect()
@@ -264,23 +272,23 @@ impl ProcessData {
 
         // -2 to accommodate for only collecting after the second item (which is the executable name as mentioned above)
         let parent_pid = stat
-            .get(3 - 2)
+            .get(STAT_PARENT_PID)
             .context("wrong stat file format")
             .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
         let user_cpu_time = stat
-            .get(13 - 2)
+            .get(STAT_USER_CPU_TIME)
             .context("wrong stat file format")
             .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
         let system_cpu_time = stat
-            .get(14 - 2)
+            .get(STAT_SYSTEM_CPU_TIME)
             .context("wrong stat file format")
             .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
         let nice = stat
-            .get(18 - 2)
+            .get(STAT_NICE)
             .context("wrong stat file format")
             .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
         let starttime = stat
-            .get(21 - 2)
+            .get(STAT_STARTTIME)
             .context("wrong stat file format")
             .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
 
