@@ -3,7 +3,6 @@ pub mod pci_slot;
 use anyhow::{bail, Context, Result};
 use glob::glob;
 use lazy_regex::{lazy_regex, Regex};
-use libc::uid_t;
 use nutype::nutype;
 use nvml_wrapper::enums::device::UsedGpuMemory;
 use nvml_wrapper::error::NvmlError;
@@ -28,7 +27,7 @@ const STAT_SYSTEM_CPU_TIME: usize = 14 - STAT_OFFSET;
 const STAT_NICE: usize = 18 - STAT_OFFSET;
 const STAT_STARTTIME: usize = 21 - STAT_OFFSET;
 
-static USERS_CACHE: Lazy<HashMap<uid_t, String>> = Lazy::new(|| unsafe {
+static USERS_CACHE: Lazy<HashMap<libc::uid_t, String>> = Lazy::new(|| unsafe {
     uzers::all_users()
         .map(|user| (user.uid(), user.name().to_string_lossy().to_string()))
         .collect()
@@ -143,7 +142,7 @@ pub struct GpuUsageStats {
 #[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ProcessData {
     pub pid: libc::pid_t,
-    pub parent_pid: i32,
+    pub parent_pid: libc::pid_t,
     pub user: String,
     pub comm: String,
     pub commandline: String,
