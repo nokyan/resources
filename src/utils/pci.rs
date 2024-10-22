@@ -4,7 +4,7 @@ use anyhow::{Context, Result};
 use log::{debug, info, warn};
 
 static VENDORS: LazyLock<BTreeMap<u16, Vendor>> = LazyLock::new(|| {
-    parse_pci_ids()
+    init()
         .inspect_err(|e| warn!("Unable to parse pci.ids!\n{e}\n{}", e.backtrace()))
         .unwrap_or_default()
 });
@@ -77,23 +77,8 @@ impl Vendor {
     }
 }
 
-fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
-    debug!("Parsing pci.ids…");
-
-    let start = Instant::now();
-
-    // first check if we can use flatpak's FS to get to the (probably newer) host's pci.ids file
-    //
-    // if that doesn't work, we're either not on flatpak or we're not allowed to see the host's pci.ids for some reason,
-    // so try to either access flatpak's own (probably older) pci.ids or the host's if we're not on flatpak
-    let file = std::fs::File::open("/run/host/usr/share/hwdata/pci.ids")
-        .or_else(|_| std::fs::File::open("/usr/share/hwdata/pci.ids"))?;
-
-    let reader = std::io::BufReader::new(file);
-
+fn parse_pci_ids<R: BufRead>(reader: R) -> Result<BTreeMap<u16, Vendor>> {
     let mut seen: BTreeMap<u16, Vendor> = BTreeMap::new();
-
-    let (mut vendors_count, mut devices_count, mut subdevices_count) = (0, 0, 0);
 
     for line in reader.lines().map_while(Result::ok) {
         if line.starts_with('C') {
@@ -132,8 +117,6 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
                 name,
             };
 
-            subdevices_count += 1;
-
             seen.values_mut()
                 .last()
                 .and_then(|vendor| vendor.devices.values_mut().last())
@@ -168,8 +151,6 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
                 sub_devices: Vec::new(),
             };
 
-            devices_count += 1;
-
             seen.values_mut()
                 .last()
                 .with_context(|| format!("no preceding device (line: {line})"))?
@@ -197,15 +178,267 @@ fn parse_pci_ids() -> Result<BTreeMap<u16, Vendor>> {
                 devices: BTreeMap::new(),
             };
 
-            vendors_count += 1;
-
             seen.insert(vid, vendor);
         }
     }
+
+    Ok(seen)
+}
+
+fn init() -> Result<BTreeMap<u16, Vendor>> {
+    debug!("Parsing pci.ids…");
+
+    let start = Instant::now();
+
+    // first check if we can use flatpak's FS to get to the (probably newer) host's pci.ids file
+    //
+    // if that doesn't work, we're either not on flatpak or we're not allowed to see the host's pci.ids for some reason,
+    // so try to either access flatpak's own (probably older) pci.ids or the host's if we're not on flatpak
+    let file = std::fs::File::open("/run/host/usr/share/hwdata/pci.ids")
+        .or_else(|_| std::fs::File::open("/usr/share/hwdata/pci.ids"))?;
+
+    let reader = std::io::BufReader::new(file);
+
+    let map = parse_pci_ids(reader)?;
+
+    let vendors_count = map.len();
+    let devices_count: usize = map.values().map(|vendor| vendor.devices.len()).sum();
+    let subdevices_count: usize = map
+        .values()
+        .map(|vendor| {
+            vendor
+                .devices
+                .values()
+                .map(|device| device.sub_devices.len())
+                .sum::<usize>()
+        })
+        .sum();
 
     let elapsed = start.elapsed();
 
     info!("Successfully parsed pci.ids within {elapsed:.2?} (vendors: {vendors_count}, devices: {devices_count}, subdevices: {subdevices_count})");
 
-    Ok(seen)
+    Ok(map)
+}
+
+#[cfg(test)]
+mod test {
+    use std::{collections::BTreeMap, io::BufReader};
+
+    use crate::utils::pci::{parse_pci_ids, Device, Subdevice, Vendor};
+
+    #[test]
+    fn valid_empty() {
+        let pci_ids = "";
+
+        let reader = BufReader::new(pci_ids.as_bytes());
+
+        let result = parse_pci_ids(reader).unwrap();
+
+        let expected = BTreeMap::new();
+
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn valid_empty_comment() {
+        let pci_ids = "# just a comment";
+
+        let reader = BufReader::new(pci_ids.as_bytes());
+
+        let result = parse_pci_ids(reader).unwrap();
+
+        let expected = BTreeMap::new();
+
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn valid_empty_class() {
+        let pci_ids = "C 00 Unclassified device";
+
+        let reader = BufReader::new(pci_ids.as_bytes());
+
+        let result = parse_pci_ids(reader).unwrap();
+
+        let expected = BTreeMap::new();
+
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn valid_single_vendor() {
+        let pci_ids = "1234  Example Technologies Inc.";
+
+        let reader = BufReader::new(pci_ids.as_bytes());
+
+        let result = parse_pci_ids(reader).unwrap();
+
+        let expected = BTreeMap::from([(
+            0x1234,
+            Vendor {
+                id: 0x1234,
+                name: "Example Technologies Inc.".into(),
+                devices: BTreeMap::new(),
+            },
+        )]);
+
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn valid_single_device() {
+        let pci_ids = concat!(
+            "1234  Example Technologies Inc.\n",
+            "\t5678  Super Device 3000"
+        );
+
+        let reader = BufReader::new(pci_ids.as_bytes());
+
+        let result = parse_pci_ids(reader).unwrap();
+
+        let expected = BTreeMap::from([(
+            0x1234,
+            Vendor {
+                id: 0x1234,
+                name: "Example Technologies Inc.".into(),
+                devices: BTreeMap::from([(
+                    0x5678,
+                    Device {
+                        id: 0x5678,
+                        vendor_id: 0x1234,
+                        name: "Super Device 3000".into(),
+                        sub_devices: vec![],
+                    },
+                )]),
+            },
+        )]);
+
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn valid_complex() {
+        let pci_ids = concat!(
+            "# interesting comment\n",
+            "\n",
+            "1234  Example Technologies Inc.\n",
+            "# another interesting comment\n",
+            "\t5678  Super Device 3000\n",
+            "\t5679  Super Device 3000.2 Gen 2x2 5Gbps Somewhat Hi-Speed\n",
+            "dead  Zombie Computers LLC\n",
+            "\tbeef  Brain\n",
+            "\t\tdead cafe  Energy Depot\n",
+            "\t\t1234 abcd  Example Braincell\n",
+            "# most interesting comment yet\n",
+            "C 00 Unclassified device"
+        );
+
+        let reader = BufReader::new(pci_ids.as_bytes());
+
+        let result = parse_pci_ids(reader).unwrap();
+
+        let expected = BTreeMap::from([
+            (
+                0x1234,
+                Vendor {
+                    id: 0x1234,
+                    name: "Example Technologies Inc.".into(),
+                    devices: BTreeMap::from([
+                        (
+                            0x5678,
+                            Device {
+                                id: 0x5678,
+                                vendor_id: 0x1234,
+                                name: "Super Device 3000".into(),
+                                sub_devices: vec![],
+                            },
+                        ),
+                        (
+                            0x5679,
+                            Device {
+                                id: 0x5679,
+                                vendor_id: 0x1234,
+                                name: "Super Device 3000.2 Gen 2x2 5Gbps Somewhat Hi-Speed".into(),
+                                sub_devices: vec![],
+                            },
+                        ),
+                    ]),
+                },
+            ),
+            (
+                0xdead,
+                Vendor {
+                    id: 0xdead,
+                    name: "Zombie Computers LLC".into(),
+                    devices: BTreeMap::from([(
+                        0xbeef,
+                        Device {
+                            id: 0xbeef,
+                            vendor_id: 0xdead,
+                            name: "Brain".into(),
+                            sub_devices: vec![
+                                Subdevice {
+                                    id: 0xcafe,
+                                    vendor_id: 0xdead,
+                                    name: "Energy Depot".into(),
+                                },
+                                Subdevice {
+                                    id: 0xabcd,
+                                    vendor_id: 0x1234,
+                                    name: "Example Braincell".into(),
+                                },
+                            ],
+                        },
+                    )]),
+                },
+            ),
+        ]);
+
+        assert_eq!(expected, result)
+    }
+
+    #[test]
+    fn invalid_no_preceding_vendor() {
+        let pci_ids = "\tabcd  Vendorless Device";
+
+        let reader = BufReader::new(pci_ids.as_bytes());
+
+        let result = parse_pci_ids(reader);
+
+        assert_eq!(result.is_err(), true);
+    }
+
+    #[test]
+    fn invalid_no_preceding_device() {
+        let pci_ids = "\t\t0123 abcd  Vendorless Device";
+
+        let reader = BufReader::new(pci_ids.as_bytes());
+
+        let result = parse_pci_ids(reader);
+
+        assert_eq!(result.is_err(), true);
+    }
+
+    #[test]
+    fn invalid_malformed_vendor() {
+        let pci_ids = concat!("Vendor with no ID :(\n", "\t1234 Device");
+
+        let reader = BufReader::new(pci_ids.as_bytes());
+
+        let result = parse_pci_ids(reader);
+
+        assert_eq!(result.is_err(), true);
+    }
+
+    #[test]
+    fn invalid_malformed_device() {
+        let pci_ids = concat!("0123  Vendor\n", "\tNo device ID :(");
+
+        let reader = BufReader::new(pci_ids.as_bytes());
+
+        let result = parse_pci_ids(reader);
+
+        assert_eq!(result.is_err(), true);
+    }
 }
