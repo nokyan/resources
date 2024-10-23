@@ -29,9 +29,8 @@ endif
 
 cargo_env = ['CARGO_HOME=' + meson.project_build_root() / 'cargo']
 
-cargo_target_dir = meson.project_build_root() / 'target'
 test(
-  'Cargo tests',
+  'Cargo tests (main application)',
   cargo,
   args: ['test', cargo_options],
   timeout: 600, # cargo might take a bit of time sometimes,
