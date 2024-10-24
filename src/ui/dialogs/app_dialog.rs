@@ -26,6 +26,8 @@ mod imp {
         #[template_child]
         pub memory_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
+        pub swap_usage: TemplateChild<adw::ActionRow>,
+        #[template_child]
         pub drive_read_speed: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub drive_read_total: TemplateChild<adw::ActionRow>,
@@ -158,6 +160,9 @@ impl ResAppDialog {
 
         imp.memory_usage
             .set_subtitle(&convert_storage(app.memory_usage() as f64, false));
+
+        imp.swap_usage
+            .set_subtitle(&convert_storage(app.swap_usage() as f64, false));
 
         imp.drive_read_speed
             .set_subtitle(&convert_speed(app.read_speed(), false));

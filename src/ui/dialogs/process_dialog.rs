@@ -1,5 +1,5 @@
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib;
+use gtk::glib::{self, GString};
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
@@ -21,6 +21,8 @@ mod imp {
         pub cpu_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub memory_usage: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub swap_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub drive_read_speed: TemplateChild<adw::ActionRow>,
         #[template_child]
@@ -125,9 +127,14 @@ impl ResProcessDialog {
                 .unwrap_or_else(|| i18n("N/A").into()),
         );
 
-        imp.commandline.set_subtitle(&process.commandline());
-        imp.commandline
-            .set_tooltip_text(Some(&process.commandline()));
+        let commandline_str = if process.commandline().is_empty() {
+            GString::from(i18n("N/A"))
+        } else {
+            process.commandline()
+        };
+
+        imp.commandline.set_subtitle(&commandline_str);
+        imp.commandline.set_tooltip_text(Some(&commandline_str));
 
         imp.cgroup
             .set_subtitle(&process.cgroup().unwrap_or_else(|| i18n("N/A").into()));
@@ -148,6 +155,9 @@ impl ResProcessDialog {
 
         imp.memory_usage
             .set_subtitle(&convert_storage(process.memory_usage() as f64, false));
+
+        imp.swap_usage
+            .set_subtitle(&convert_storage(process.swap_usage() as f64, false));
 
         if process.read_speed() == -1.0 {
             imp.drive_read_speed.set_subtitle(&i18n("N/A"));

@@ -5,7 +5,7 @@
 [![GNOME Circle](https://circle.gnome.org/assets/button/badge.svg
 )](https://apps.gnome.org/app/net.nokyan.Resources/) [![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app)  
 
-Resources is a simple yet powerful monitor for your system resources and processes, written in Rust and using GTK 4 and libadwaita for its GUI. It’s capable of displaying usage and details of your CPU, memory, GPUs, network interfaces and block devices. It’s also capable of listing and terminating running graphical applications as well as processes.
+Resources is a simple yet powerful monitor for your system resources and processes, written in Rust and using GTK 4 and libadwaita for its GUI. It’s capable of displaying usage and details of your CPU, memory, GPUs, NPUs, network interfaces and block devices. It’s also capable of listing and terminating running graphical applications as well as processes.
 
 <details>
   <summary><b>Click me for screenshots!</b></summary>

@@ -20,7 +20,14 @@ use std::str::FromStr;
 use std::sync::RwLock;
 use std::{path::PathBuf, time::SystemTime};
 
-static USERS_CACHE: Lazy<HashMap<u32, String>> = Lazy::new(|| unsafe {
+const STAT_OFFSET: usize = 2; // we split the stat contents where the executable name ends, which is the second element
+const STAT_PARENT_PID: usize = 3 - STAT_OFFSET;
+const STAT_USER_CPU_TIME: usize = 13 - STAT_OFFSET;
+const STAT_SYSTEM_CPU_TIME: usize = 14 - STAT_OFFSET;
+const STAT_NICE: usize = 18 - STAT_OFFSET;
+const STAT_STARTTIME: usize = 21 - STAT_OFFSET;
+
+static USERS_CACHE: Lazy<HashMap<libc::uid_t, String>> = Lazy::new(|| unsafe {
     uzers::all_users()
         .map(|user| (user.uid(), user.name().to_string_lossy().to_string()))
         .collect()
@@ -33,6 +40,8 @@ static NUM_CPUS: Lazy<usize> = Lazy::new(num_cpus::get);
 static RE_UID: Lazy<Regex> = lazy_regex!(r"Uid:\s*(\d+)");
 
 static RE_AFFINITY: Lazy<Regex> = lazy_regex!(r"Cpus_allowed:\s*([0-9A-Fa-f]+)");
+
+static RE_SWAP_USAGGE: Lazy<Regex> = lazy_regex!(r"VmSwap:\s*([0-9]+)\s*kB");
 
 static RE_IO_READ: Lazy<Regex> = lazy_regex!(r"read_bytes:\s*(\d+)");
 
@@ -133,7 +142,7 @@ pub struct GpuUsageStats {
 #[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ProcessData {
     pub pid: libc::pid_t,
-    pub parent_pid: i32,
+    pub parent_pid: libc::pid_t,
     pub user: String,
     pub comm: String,
     pub commandline: String,
@@ -142,6 +151,7 @@ pub struct ProcessData {
     pub niceness: Niceness,
     pub affinity: Vec<bool>,
     pub memory_usage: usize,
+    pub swap_usage: usize,
     pub starttime: u64, // in clock ticks, see man proc(5)!
     pub cgroup: Option<String>,
     pub containerization: Containerization,
@@ -260,10 +270,26 @@ impl ProcessData {
         let comm = comm.replace('\n', "");
 
         // -2 to accommodate for only collecting after the second item (which is the executable name as mentioned above)
-        let parent_pid = stat[3 - 2].parse()?;
-        let user_cpu_time = stat[13 - 2].parse()?;
-        let system_cpu_time = stat[14 - 2].parse()?;
-        let nice = stat[18 - 2].parse()?;
+        let parent_pid = stat
+            .get(STAT_PARENT_PID)
+            .context("wrong stat file format")
+            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+        let user_cpu_time = stat
+            .get(STAT_USER_CPU_TIME)
+            .context("wrong stat file format")
+            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+        let system_cpu_time = stat
+            .get(STAT_SYSTEM_CPU_TIME)
+            .context("wrong stat file format")
+            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+        let nice = stat
+            .get(STAT_NICE)
+            .context("wrong stat file format")
+            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+        let starttime = stat
+            .get(STAT_STARTTIME)
+            .context("wrong stat file format")
+            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
 
         let mut affinity = Vec::with_capacity(*NUM_CPUS);
         RE_AFFINITY
@@ -284,10 +310,32 @@ impl ProcessData {
                 });
             });
 
-        let memory_usage =
-            (statm[1].parse::<usize>()? - statm[2].parse::<usize>()?).saturating_mul(*PAGESIZE);
+        let swap_usage = RE_SWAP_USAGGE
+            .captures(&status)
+            .and_then(|captures| captures.get(1))
+            .map(|capture| capture.as_str())
+            .unwrap_or_default()
+            .parse::<usize>()
+            .unwrap_or_default() // kworkers don't have swap usage
+            .saturating_mul(1000);
 
-        let starttime = stat[21 - 2].parse()?;
+        let memory_usage = statm
+            .get(1)
+            .context("wrong statm file format")
+            .and_then(|x| {
+                x.parse::<usize>()
+                    .context("couldn't parse statm file content")
+            })?
+            .saturating_sub(
+                statm
+                    .get(2)
+                    .context("wrong statm file format")
+                    .and_then(|x| {
+                        x.parse::<usize>()
+                            .context("couldn't parse statm file content")
+                    })?,
+            )
+            .saturating_mul(*PAGESIZE);
 
         let cgroup = std::fs::read_to_string(proc_path.join("cgroup"))
             .ok()
@@ -330,6 +378,7 @@ impl ProcessData {
             niceness: nice,
             affinity,
             memory_usage,
+            swap_usage,
             starttime,
             cgroup,
             containerization,

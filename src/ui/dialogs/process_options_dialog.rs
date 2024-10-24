@@ -97,7 +97,7 @@ impl ResProcessOptionsDialog {
         toast_overlay: &ToastOverlay,
     ) {
         self.setup_widgets(process);
-        self.setup_signals(process, sender, toast_overlay)
+        self.setup_signals(process, sender, toast_overlay);
     }
 
     fn get_current_niceness(&self) -> Niceness {
@@ -127,8 +127,7 @@ impl ResProcessOptionsDialog {
         imp.priority_row.set_selected(
             NICE_TO_LABEL
                 .get(&Niceness::try_from(process.niceness()).unwrap_or_default())
-                .map(|(_, i)| *i)
-                .unwrap_or(2),
+                .map_or(2, |(_, i)| *i),
         );
 
         if SETTINGS.detailed_priority() {
@@ -164,7 +163,7 @@ impl ResProcessOptionsDialog {
             imp.cpu_rows.borrow_mut().push(switch_row);
         }
 
-        imp.pid.set(process.pid())
+        imp.pid.set(process.pid());
     }
 
     pub fn setup_signals(
