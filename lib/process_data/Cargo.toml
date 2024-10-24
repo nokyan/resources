@@ -27,3 +27,6 @@ syscalls = { version = "0.6.18", features = ["all"] }
 sysconf = "0.3.4"
 unescape = "0.1.0"
 uzers = "0.12.1"
+
+[dev-dependencies]
+pretty_assertions = "1.4.1"

@@ -223,6 +223,7 @@ fn init() -> Result<BTreeMap<u16, Vendor>> {
 
 #[cfg(test)]
 mod test {
+    use pretty_assertions::assert_eq;
     use std::{collections::BTreeMap, io::BufReader};
 
     use crate::utils::pci::{parse_pci_ids, Device, Subdevice, Vendor};

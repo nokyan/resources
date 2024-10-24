@@ -44,3 +44,6 @@ rust-ini = "0.21.1"
 strum = "0.26.3"
 strum_macros = "0.26.4"
 sysconf = "0.3.4"
+
+[dev-dependencies]
+pretty_assertions = "1.4.1"

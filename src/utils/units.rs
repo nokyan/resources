@@ -319,6 +319,7 @@ mod test {
         settings::Base,
         units::{celsius_to_fahrenheit, celsius_to_kelvin, to_largest_prefix, Prefix},
     };
+    use pretty_assertions::assert_eq;
 
     use super::format_time;
 
