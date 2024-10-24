@@ -317,7 +317,7 @@ pub fn convert_energy(watthours: f64, integer: bool) -> String {
 mod test {
     use crate::utils::{
         settings::Base,
-        units::{to_largest_prefix, Prefix},
+        units::{celsius_to_fahrenheit, celsius_to_kelvin, to_largest_prefix, Prefix},
     };
 
     use super::format_time;
@@ -427,5 +427,19 @@ mod test {
         let raw = f64::NEG_INFINITY;
         let formatted = to_largest_prefix(raw, Base::Binary);
         assert_eq!((f64::NEG_INFINITY, Prefix::None), formatted)
+    }
+
+    #[test]
+    fn celsius_to_kelvin_valid() {
+        let celsius = 20.0;
+        let kelvin = celsius_to_kelvin(celsius);
+        assert_eq!(293.15, kelvin);
+    }
+
+    #[test]
+    fn celsius_to_fahrenheit_valid() {
+        let celsius = 20.0;
+        let fahrenheit = celsius_to_fahrenheit(celsius);
+        assert_eq!(68.0, fahrenheit);
     }
 }
