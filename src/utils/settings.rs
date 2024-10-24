@@ -94,6 +94,15 @@ pub enum Base {
     Binary,
 }
 
+impl Base {
+    pub const fn base(&self) -> f64 {
+        match self {
+            Base::Decimal => 1000.0,
+            Base::Binary => 1024.0,
+        }
+    }
+}
+
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, Default, EnumString, Display, Hash, FromRepr)]
 pub enum TemperatureUnit {
@@ -115,7 +124,7 @@ pub enum RefreshSpeed {
 }
 
 impl RefreshSpeed {
-    pub fn ui_refresh_interval(&self) -> f32 {
+    pub const fn ui_refresh_interval(&self) -> f32 {
         match self {
             RefreshSpeed::VerySlow => 3.0,
             RefreshSpeed::Slow => 2.0,
