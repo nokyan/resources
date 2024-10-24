@@ -406,7 +406,7 @@ mod test {
 
         let result = parse_pci_ids(reader);
 
-        assert_eq!(result.is_err(), true);
+        assert!(result.is_err());
     }
 
     #[test]
@@ -417,7 +417,7 @@ mod test {
 
         let result = parse_pci_ids(reader);
 
-        assert_eq!(result.is_err(), true);
+        assert!(result.is_err());
     }
 
     #[test]
@@ -428,7 +428,7 @@ mod test {
 
         let result = parse_pci_ids(reader);
 
-        assert_eq!(result.is_err(), true);
+        assert!(result.is_err());
     }
 
     #[test]
@@ -439,6 +439,6 @@ mod test {
 
         let result = parse_pci_ids(reader);
 
-        assert_eq!(result.is_err(), true);
+        assert!(result.is_err());
     }
 }
