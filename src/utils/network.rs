@@ -86,7 +86,7 @@ impl InterfaceType {
                 return *interface_type;
             }
         }
-        Self::Unknown;
+        Self::Unknown
     }
 }
 
