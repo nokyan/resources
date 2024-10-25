@@ -9,13 +9,10 @@ use gtk::gio::{Icon, ThemedIcon};
 
 use crate::i18n::i18n;
 
-use super::{
-    pci::{Device, Vendor},
-    read_uevent,
-};
+use super::{pci::Device, read_uevent};
 
-// this is a vec because we don't look for exact matches but for if the device name starts with a certain string
-const INTERFACE_TYPE_MAP: &[(&'static str, InterfaceType)] = &[
+// this is a list because we don't look for exact matches but for if the device name starts with a certain string
+const INTERFACE_TYPE_MAP: &[(&str, InterfaceType)] = &[
     ("bn", InterfaceType::Bluetooth),
     ("br", InterfaceType::Bridge),
     ("docker", InterfaceType::Docker),
@@ -94,9 +91,8 @@ pub struct NetworkInterface {
     pub driver_name: Option<String>,
     pub interface_type: InterfaceType,
     pub speed: Option<usize>,
-    pub vendor: Option<String>,
-    pub pid_name: Option<String>,
-    pub device_name: Option<String>,
+    pub device: Option<&'static Device>,
+    pub device_label: Option<String>,
     pub hw_address: Option<String>,
     pub sysfs_path: PathBuf,
     received_bytes_path: PathBuf,
@@ -130,8 +126,7 @@ impl Display for InterfaceType {
 impl PartialEq for NetworkInterface {
     fn eq(&self, other: &Self) -> bool {
         self.interface_name == other.interface_name
-            && self.vendor == other.vendor
-            && self.pid_name == other.pid_name
+            && self.device == other.device
             && self.hw_address == other.hw_address
     }
 }
@@ -167,25 +162,14 @@ impl NetworkInterface {
             .expect("invalid sysfs path")
             .to_owned();
 
-        let mut vid_pid = (None, None);
-        if let Some(dev) = dev_uevent.get("PCI_ID") {
-            let id_vec: Vec<&str> = dev.split(':').collect();
-            if id_vec.len() == 2 {
-                vid_pid = (
-                    u16::from_str_radix(id_vec[0], 16).ok(),
-                    u16::from_str_radix(id_vec[1], 16).ok(),
-                );
-            }
-        }
-
-        let vendor = vid_pid
-            .0
-            .and_then(|vid| Vendor::from_vid(vid).map(|x| x.name().to_string()));
-
-        let pid_name = vid_pid
-            .0
-            .zip(vid_pid.1)
-            .and_then(|(vid, pid)| Device::from_vid_pid(vid, pid).map(|x| x.name().to_string()));
+        let device = if let Some(pci_line) = dev_uevent.get("PCI_ID") {
+            let (vid_str, pid_str) = pci_line.split_once(':').unwrap_or(("0", "0"));
+            let vid = u16::from_str_radix(vid_str, 16).unwrap_or_default();
+            let pid = u16::from_str_radix(pid_str, 16).unwrap_or_default();
+            Device::from_vid_pid(vid, pid)
+        } else {
+            None
+        };
 
         let sysfs_path_clone = sysfs_path.to_owned();
         let speed = std::fs::read_to_string(sysfs_path_clone.join("speed"))
@@ -193,7 +177,7 @@ impl NetworkInterface {
             .ok();
 
         let sysfs_path_clone = sysfs_path.to_owned();
-        let device_name = std::fs::read_to_string(sysfs_path_clone.join("device/label"))
+        let device_label = std::fs::read_to_string(sysfs_path_clone.join("device/label"))
             .map(|x| x.replace('\n', ""))
             .ok();
 
@@ -207,9 +191,8 @@ impl NetworkInterface {
             driver_name: dev_uevent.get("DRIVER").cloned(),
             interface_type: InterfaceType::from_interface_name(interface_name.to_string_lossy()),
             speed,
-            vendor,
-            pid_name,
-            device_name,
+            device,
+            device_label,
             hw_address,
             sysfs_path: sysfs_path.to_path_buf(),
             received_bytes_path: sysfs_path.join(PathBuf::from("statistics/rx_bytes")),
@@ -220,10 +203,10 @@ impl NetworkInterface {
     /// Returns a display name for this Network Interface.
     /// It tries to be as human readable as possible.
     pub fn display_name(&self) -> String {
-        self.device_name
+        self.device_label
             .clone()
-            .or_else(|| self.pid_name.clone())
-            .unwrap_or_else(|| self.interface_name.to_str().unwrap_or_default().to_string())
+            .or_else(|| self.device.map(|device| device.name().to_string()))
+            .unwrap_or_else(|| self.interface_name.to_string_lossy().to_string())
     }
 
     /// Returns the amount of bytes sent by this Network
