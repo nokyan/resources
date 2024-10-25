@@ -1,4 +1,4 @@
-use std::sync::LazyLock;
+use std::{collections::HashMap, path::Path, sync::LazyLock};
 
 use anyhow::{Context, Result};
 use gtk::glib::DateTime;
@@ -84,6 +84,22 @@ pub fn boot_time() -> Result<DateTime> {
         })
 }
 
+pub fn read_uevent_contents<S: AsRef<str>>(contents: S) -> Result<HashMap<String, String>> {
+    contents
+        .as_ref()
+        .lines()
+        .map(|line| {
+            line.split_once('=')
+                .map(|(a, b)| (a.to_string(), b.to_string()))
+                .context(format!("malformed line (no '='): {line}"))
+        })
+        .collect()
+}
+
+pub fn read_uevent<P: AsRef<Path>>(uevent_path: P) -> Result<HashMap<String, String>> {
+    read_uevent_contents(std::fs::read_to_string(uevent_path)?)
+}
+
 pub trait FiniteOr {
     /// Returns the given `x` value if the variable is NaN or infinite,
     /// and returns itself otherwise.
@@ -154,5 +170,111 @@ impl FiniteOr for f32 {
         } else {
             *self
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use pretty_assertions::assert_eq;
+    use std::collections::HashMap;
+
+    use crate::utils::read_uevent_contents;
+
+    #[test]
+    fn read_uevent_contents_valid_simple() {
+        let uevent_raw = "a=b";
+
+        let parsed = read_uevent_contents(uevent_raw).unwrap();
+
+        let expected: HashMap<String, String> = HashMap::from([("a".into(), "b".into())]);
+
+        assert_eq!(expected, parsed)
+    }
+
+    #[test]
+    fn read_uevent_contents_valid_single_equals() {
+        let uevent_raw = "=";
+
+        let parsed = read_uevent_contents(uevent_raw).unwrap();
+
+        let expected: HashMap<String, String> = HashMap::from([("".into(), "".into())]);
+
+        assert_eq!(expected, parsed)
+    }
+
+    #[test]
+    fn read_uevent_contents_valid_multiple_equals() {
+        let uevent_raw = "a=b=c";
+
+        let parsed = read_uevent_contents(uevent_raw).unwrap();
+
+        let expected: HashMap<String, String> = HashMap::from([("a".into(), "b=c".into())]);
+
+        assert_eq!(expected, parsed)
+    }
+
+    #[test]
+    fn read_uevent_contents_valid_left_empty() {
+        let uevent_raw = "=EMPTY";
+
+        let parsed = read_uevent_contents(uevent_raw).unwrap();
+
+        let expected: HashMap<String, String> = HashMap::from([("".into(), "EMPTY".into())]);
+
+        assert_eq!(expected, parsed)
+    }
+
+    #[test]
+    fn read_uevent_contents_valid_right_empty() {
+        let uevent_raw = "EMPTY=";
+
+        let parsed = read_uevent_contents(uevent_raw).unwrap();
+
+        let expected: HashMap<String, String> = HashMap::from([("EMPTY".into(), "".into())]);
+
+        assert_eq!(expected, parsed)
+    }
+
+    #[test]
+    fn read_uevent_contents_valid_complex() {
+        let uevent_raw = concat!(
+            "DRIVER=driver\n",
+            "PCI_CLASS=20000\n",
+            "CONTAINS_EQUALS=a=b\n",
+            "EMPTY=\n",
+            "="
+        );
+
+        let parsed = read_uevent_contents(uevent_raw).unwrap();
+
+        let expected: HashMap<String, String> = HashMap::from([
+            ("DRIVER".into(), "driver".into()),
+            ("PCI_CLASS".into(), "20000".into()),
+            ("CONTAINS_EQUALS".into(), "a=b".into()),
+            ("EMPTY".into(), "".into()),
+            ("".into(), "".into()),
+        ]);
+
+        assert_eq!(expected, parsed)
+    }
+
+    #[test]
+    fn read_uevent_contents_valid_empty() {
+        let uevent_raw = "";
+
+        let parsed = read_uevent_contents(uevent_raw).unwrap();
+
+        let expected: HashMap<String, String> = HashMap::new();
+
+        assert_eq!(expected, parsed)
+    }
+
+    #[test]
+    fn read_uevent_contents_invalid() {
+        let uevent_raw = "NO_EQUALS";
+
+        let parsed = read_uevent_contents(uevent_raw);
+
+        assert!(parsed.is_err())
     }
 }

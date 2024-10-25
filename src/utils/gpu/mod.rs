@@ -8,14 +8,16 @@ use log::{debug, info};
 use process_data::pci_slot::PciSlot;
 
 use std::{
-    collections::HashMap,
     path::{Path, PathBuf},
     str::FromStr,
 };
 
 use glob::glob;
 
-use crate::{i18n::i18n, utils::pci::Device};
+use crate::{
+    i18n::i18n,
+    utils::{pci::Device, read_uevent},
+};
 
 use self::{amd::AmdGpu, intel::IntelGpu, nvidia::NvidiaGpu, other::OtherGpu};
 
@@ -235,24 +237,16 @@ impl Gpu {
 
     fn from_sysfs_path<P: AsRef<Path>>(path: P) -> Result<Gpu> {
         let sysfs_device_path = path.as_ref().join("device");
-        let mut uevent_contents: HashMap<String, String> = HashMap::new();
-        let uevent_raw = std::fs::read_to_string(sysfs_device_path.join("uevent"))?;
+        let uevent_contents = read_uevent(sysfs_device_path.join("uevent"))?;
 
-        for line in uevent_raw.lines() {
-            let (k, v) = line
-                .split_once('=')
-                .context("unable to correctly read uevent file")?;
-            uevent_contents.insert(k.to_owned(), v.to_owned());
-        }
-
-        let mut vid: u16 = 0;
-        let mut pid: u16 = 0;
-
-        if let Some(pci_line) = uevent_contents.get("PCI_ID") {
-            let split = pci_line.split(':').collect::<Vec<&str>>();
-            vid = u16::from_str_radix(split[0], 16)?;
-            pid = u16::from_str_radix(split[1], 16)?;
-        }
+        let (device, vid, pid) = if let Some(pci_line) = uevent_contents.get("PCI_ID") {
+            let (vid_str, pid_str) = pci_line.split_once(':').unwrap_or(("0", "0"));
+            let vid = u16::from_str_radix(vid_str, 16).unwrap_or_default();
+            let pid = u16::from_str_radix(pid_str, 16).unwrap_or_default();
+            (Device::from_vid_pid(vid, pid), vid, pid)
+        } else {
+            (None, 0, 0)
+        };
 
         let mut hwmon_vec: Vec<PathBuf> = Vec::new();
         for hwmon in glob(&format!(
@@ -265,8 +259,6 @@ impl Gpu {
         {
             hwmon_vec.push(hwmon);
         }
-
-        let device = Device::from_vid_pid(vid, pid);
 
         let pci_slot = PciSlot::from_str(
             &uevent_contents

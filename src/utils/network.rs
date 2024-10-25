@@ -1,8 +1,8 @@
 use std::{
-    collections::HashMap,
     ffi::OsString,
     fmt::Display,
     path::{Path, PathBuf},
+    sync::LazyLock,
 };
 
 use anyhow::{Context, Result};
@@ -10,7 +10,29 @@ use gtk::gio::{Icon, ThemedIcon};
 
 use crate::i18n::i18n;
 
-use super::pci::{Device, Vendor};
+use super::{
+    pci::{Device, Vendor},
+    read_uevent,
+};
+
+// this is a vec because we don't look for exact matches but for if the device name starts with a certain string
+static INTERFACE_TYPE_MAP: LazyLock<Vec<(&'static str, InterfaceType)>> = LazyLock::new(|| {
+    vec![
+        ("bn", InterfaceType::Bluetooth),
+        ("br", InterfaceType::Bridge),
+        ("docker", InterfaceType::Docker),
+        ("eth", InterfaceType::Ethernet),
+        ("en", InterfaceType::Ethernet),
+        ("ib", InterfaceType::InfiniBand),
+        ("sl", InterfaceType::Slip),
+        ("veth", InterfaceType::VirtualEthernet),
+        ("virbr", InterfaceType::VmBridge),
+        ("vpn", InterfaceType::Vpn),
+        ("wg", InterfaceType::Wireguard),
+        ("wl", InterfaceType::Wlan),
+        ("ww", InterfaceType::Wwan),
+    ]
+});
 
 #[derive(Debug)]
 pub struct NetworkData {
@@ -59,35 +81,12 @@ pub enum InterfaceType {
 
 impl InterfaceType {
     pub fn from_interface_name<S: AsRef<str>>(interface_name: S) -> Self {
-        let interface_name = interface_name.as_ref();
-
-        if interface_name.starts_with("bn") {
-            Self::Bluetooth
-        } else if interface_name.starts_with("br") {
-            Self::Bridge
-        } else if interface_name.starts_with("docker") {
-            Self::Docker
-        } else if interface_name.starts_with("eth") || interface_name.starts_with("en") {
-            Self::Ethernet
-        } else if interface_name.starts_with("ib") {
-            Self::InfiniBand
-        } else if interface_name.starts_with("sl") {
-            Self::Slip
-        } else if interface_name.starts_with("veth") {
-            Self::VirtualEthernet
-        } else if interface_name.starts_with("virbr") {
-            Self::VmBridge
-        } else if interface_name.starts_with("vpn") {
-            Self::Vpn
-        } else if interface_name.starts_with("wg") {
-            Self::Wireguard
-        } else if interface_name.starts_with("wl") {
-            Self::Wlan
-        } else if interface_name.starts_with("ww") {
-            Self::Wwan
-        } else {
-            Self::Unknown
+        for (name, interface_type) in INTERFACE_TYPE_MAP.iter() {
+            if interface_name.as_ref().starts_with(name) {
+                return *interface_type;
+            }
         }
+        Self::Unknown;
     }
 }
 
@@ -155,20 +154,6 @@ impl NetworkInterface {
         Ok(list)
     }
 
-    fn read_uevent(uevent_path: PathBuf) -> Result<HashMap<String, String>> {
-        let entries: Vec<Vec<String>> = std::fs::read_to_string(uevent_path)?
-            .split('\n')
-            .map(|x| x.split('=').map(str::to_string).collect())
-            .collect();
-        let mut hmap = HashMap::new();
-        for entry in entries {
-            if entry.len() == 2 {
-                hmap.insert(entry[0].clone(), entry[1].clone());
-            }
-        }
-        Ok(hmap)
-    }
-
     /// Returns a `NetworkInterface` based on information
     /// found in its sysfs path
     ///
@@ -178,7 +163,7 @@ impl NetworkInterface {
     /// been passed or if there has been problems parsing
     /// information
     pub fn from_sysfs(sysfs_path: &Path) -> NetworkInterface {
-        let dev_uevent = Self::read_uevent(sysfs_path.join("device/uevent")).unwrap_or_default();
+        let dev_uevent = read_uevent(sysfs_path.join("device/uevent")).unwrap_or_default();
 
         let interface_name = sysfs_path
             .file_name()
