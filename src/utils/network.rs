@@ -2,7 +2,6 @@ use std::{
     ffi::OsString,
     fmt::Display,
     path::{Path, PathBuf},
-    sync::LazyLock,
 };
 
 use anyhow::{Context, Result};
@@ -16,23 +15,21 @@ use super::{
 };
 
 // this is a vec because we don't look for exact matches but for if the device name starts with a certain string
-static INTERFACE_TYPE_MAP: LazyLock<Vec<(&'static str, InterfaceType)>> = LazyLock::new(|| {
-    vec![
-        ("bn", InterfaceType::Bluetooth),
-        ("br", InterfaceType::Bridge),
-        ("docker", InterfaceType::Docker),
-        ("eth", InterfaceType::Ethernet),
-        ("en", InterfaceType::Ethernet),
-        ("ib", InterfaceType::InfiniBand),
-        ("sl", InterfaceType::Slip),
-        ("veth", InterfaceType::VirtualEthernet),
-        ("virbr", InterfaceType::VmBridge),
-        ("vpn", InterfaceType::Vpn),
-        ("wg", InterfaceType::Wireguard),
-        ("wl", InterfaceType::Wlan),
-        ("ww", InterfaceType::Wwan),
-    ]
-});
+const INTERFACE_TYPE_MAP: &[(&'static str, InterfaceType)] = &[
+    ("bn", InterfaceType::Bluetooth),
+    ("br", InterfaceType::Bridge),
+    ("docker", InterfaceType::Docker),
+    ("eth", InterfaceType::Ethernet),
+    ("en", InterfaceType::Ethernet),
+    ("ib", InterfaceType::InfiniBand),
+    ("sl", InterfaceType::Slip),
+    ("veth", InterfaceType::VirtualEthernet),
+    ("virbr", InterfaceType::VmBridge),
+    ("vpn", InterfaceType::Vpn),
+    ("wg", InterfaceType::Wireguard),
+    ("wl", InterfaceType::Wlan),
+    ("ww", InterfaceType::Wwan),
+];
 
 #[derive(Debug)]
 pub struct NetworkData {
