@@ -26,7 +26,7 @@ use super::{
 /// considered instead to enhance app detection
 const DESKTOP_ENVIRONMENT_CGROUPS: &[&str] = &["org.gnome.Shell"];
 
-// This contains executable names that are blacklisted from being recognized as applications
+// This contains executable names that are blocklisted from being recognized as applications
 const DESKTOP_EXEC_BLOCKLIST: &[&str] = &["bash", "zsh", "fish", "sh", "ksh", "flatpak"];
 
 // This contains IDs of desktop files that shouldn't be counted as applications for whatever reason
@@ -200,7 +200,7 @@ impl App {
 
         let mut apps: Vec<_> = applications_dir
             .iter()
-            .flat_map(|applications_path| {
+            .filter_map(|applications_path| {
                 applications_path.read_dir().ok().map(|read| {
                     read.filter_map(|file_res| {
                         file_res
@@ -257,9 +257,7 @@ impl App {
         }
 
         let exec = desktop_entry.get("Exec");
-        let is_flatpak = exec
-            .map(|exec| exec.starts_with("/usr/bin/flatpak run"))
-            .unwrap_or_default();
+        let is_flatpak = exec.is_some_and(|exec| exec.starts_with("/usr/bin/flatpak run"));
         let commandline = exec
             .and_then(|exec| {
                 RE_ENV_FILTER
@@ -287,8 +285,8 @@ impl App {
 
         if let Some(executable_name) = &executable_name {
             if DESKTOP_EXEC_BLOCKLIST.contains(&executable_name.as_str()) {
-                debug!("Skipping {id} because its executable {executable_name} blacklisted…");
-                bail!("{id}'s executable {executable_name} is blacklisted")
+                debug!("Skipping {id} because its executable {executable_name} blocklisted…");
+                bail!("{id}'s executable {executable_name} is blocklisted")
             }
         }
 
@@ -410,6 +408,13 @@ impl App {
     }
 
     #[must_use]
+    pub fn swap_usage(&self, apps: &AppsContext) -> usize {
+        self.processes_iter(apps)
+            .map(|process| process.data.swap_usage)
+            .sum()
+    }
+
+    #[must_use]
     pub fn cpu_time_ratio(&self, apps: &AppsContext) -> f32 {
         self.processes_iter(apps).map(Process::cpu_time_ratio).sum()
     }
@@ -502,7 +507,7 @@ impl App {
 impl AppsContext {
     /// Creates a new `AppsContext` object, this operation is quite expensive
     /// so try to do it only one time during the lifetime of the program.
-    /// Please call refresh() immediately after this function.
+    /// Please call `refresh()` immediately after this function.
     pub fn new(gpus_with_combined_media_engine: Vec<PciSlot>) -> AppsContext {
         let apps: HashMap<Option<String>, App> = App::all()
             .into_iter()
@@ -746,8 +751,7 @@ impl AppsContext {
                 && !app
                     .id
                     .as_ref()
-                    .map(|id| id.starts_with("xdg-desktop-portal"))
-                    .unwrap_or_default()
+                    .is_some_and(|id| id.starts_with("xdg-desktop-portal"))
         })
     }
 

@@ -29,13 +29,13 @@ pub struct NpuData {
 
     pub usage_fraction: Option<f64>,
 
-    pub total_vram: Option<usize>,
-    pub used_vram: Option<usize>,
+    pub total_memory: Option<usize>,
+    pub used_memory: Option<usize>,
 
     pub clock_speed: Option<f64>,
     pub vram_speed: Option<f64>,
 
-    pub temp: Option<f64>,
+    pub temperature: Option<f64>,
 
     pub power_usage: Option<f64>,
     pub power_cap: Option<f64>,
@@ -48,13 +48,13 @@ impl NpuData {
 
         let usage_fraction = npu.usage().ok();
 
-        let total_vram = npu.total_vram().ok();
-        let used_vram = npu.used_vram().ok();
+        let total_memory = npu.total_vram().ok();
+        let used_memory = npu.used_vram().ok();
 
         let clock_speed = npu.core_frequency().ok();
-        let vram_speed = npu.vram_frequency().ok();
+        let vram_speed = npu.memory_frequency().ok();
 
-        let temp = npu.temperature().ok();
+        let temperature = npu.temperature().ok();
 
         let power_usage = npu.power_usage().ok();
         let power_cap = npu.power_cap().ok();
@@ -63,11 +63,11 @@ impl NpuData {
         Self {
             pci_slot,
             usage_fraction,
-            total_vram,
-            used_vram,
+            total_memory,
+            used_memory,
             clock_speed,
             vram_speed,
-            temp,
+            temperature,
             power_usage,
             power_cap,
             power_cap_max,
@@ -101,7 +101,7 @@ pub trait NpuImpl {
     fn temperature(&self) -> Result<f64>;
     fn power_usage(&self) -> Result<f64>;
     fn core_frequency(&self) -> Result<f64>;
-    fn vram_frequency(&self) -> Result<f64>;
+    fn memory_frequency(&self) -> Result<f64>;
     fn power_cap(&self) -> Result<f64>;
     fn power_cap_max(&self) -> Result<f64>;
 
@@ -350,10 +350,10 @@ impl Npu {
         }
     }
 
-    pub fn vram_frequency(&self) -> Result<f64> {
+    pub fn memory_frequency(&self) -> Result<f64> {
         match self {
-            Npu::Intel(npu) => npu.vram_frequency(),
-            Npu::Other(npu) => npu.vram_frequency(),
+            Npu::Intel(npu) => npu.memory_frequency(),
+            Npu::Other(npu) => npu.memory_frequency(),
         }
     }
 

@@ -43,7 +43,7 @@ pub struct GpuData {
     pub clock_speed: Option<f64>,
     pub vram_speed: Option<f64>,
 
-    pub temp: Option<f64>,
+    pub temperature: Option<f64>,
 
     pub power_usage: Option<f64>,
     pub power_cap: Option<f64>,
@@ -58,17 +58,17 @@ impl GpuData {
 
         let usage_fraction = gpu
             .usage()
-            .map(|usage| ((usage as f64) / 100.0).clamp(0.0, 1.0))
+            .map(|usage| (usage / 100.0).clamp(0.0, 1.0))
             .ok();
 
         let encode_fraction = gpu
             .encode_usage()
-            .map(|usage| ((usage as f64) / 100.0).clamp(0.0, 1.0))
+            .map(|usage| (usage / 100.0).clamp(0.0, 1.0))
             .ok();
 
         let decode_fraction = gpu
             .decode_usage()
-            .map(|usage| ((usage as f64) / 100.0).clamp(0.0, 1.0))
+            .map(|usage| (usage / 100.0).clamp(0.0, 1.0))
             .ok();
 
         let total_vram = gpu.total_vram().ok();
@@ -77,7 +77,7 @@ impl GpuData {
         let clock_speed = gpu.core_frequency().ok();
         let vram_speed = gpu.vram_frequency().ok();
 
-        let temp = gpu.temperature().ok();
+        let temperature = gpu.temperature().ok();
 
         let power_usage = gpu.power_usage().ok();
         let power_cap = gpu.power_cap().ok();
@@ -94,7 +94,7 @@ impl GpuData {
             used_vram,
             clock_speed,
             vram_speed,
-            temp,
+            temperature,
             power_usage,
             power_cap,
             power_cap_max,
