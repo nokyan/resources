@@ -59,6 +59,8 @@ mod imp {
         pub apps_show_encoder_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub apps_show_decoder_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub apps_show_swap_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub processes_niceness: TemplateChild<adw::SwitchRow>,
@@ -94,6 +96,8 @@ mod imp {
         pub processes_show_system_cpu_time_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub processes_show_priority_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub processes_show_swap_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub show_virtual_drives_row: TemplateChild<adw::SwitchRow>,
@@ -202,6 +206,7 @@ impl ResSettingsDialog {
             .set_active(SETTINGS.apps_show_encoder());
         imp.apps_show_decoder_row
             .set_active(SETTINGS.apps_show_decoder());
+        imp.apps_show_swap_row.set_active(SETTINGS.apps_show_swap());
 
         imp.processes_niceness
             .set_active(SETTINGS.detailed_priority());
@@ -237,6 +242,8 @@ impl ResSettingsDialog {
             .set_active(SETTINGS.processes_show_system_cpu_time());
         imp.processes_show_priority_row
             .set_active(SETTINGS.processes_show_system_cpu_time());
+        imp.processes_show_swap_row
+            .set_active(SETTINGS.processes_show_swap());
 
         imp.show_virtual_drives_row
             .set_active(SETTINGS.show_virtual_drives());
@@ -357,6 +364,10 @@ impl ResSettingsDialog {
                 let _ = SETTINGS.set_apps_show_drive_write_total(switch_row.is_active());
             });
 
+        imp.apps_show_swap_row.connect_active_notify(|switch_row| {
+            let _ = SETTINGS.set_apps_show_swap(switch_row.is_active());
+        });
+
         imp.processes_niceness.connect_active_notify(|switch_row| {
             let _ = SETTINGS.set_detailed_priority(switch_row.is_active());
         });
@@ -439,6 +450,11 @@ impl ResSettingsDialog {
         imp.processes_show_priority_row
             .connect_active_notify(|switch_row| {
                 let _ = SETTINGS.set_processes_show_priority(switch_row.is_active());
+            });
+
+        imp.processes_show_swap_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_processes_show_swap(switch_row.is_active());
             });
 
         imp.show_virtual_drives_row

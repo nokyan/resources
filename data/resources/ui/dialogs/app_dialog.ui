@@ -87,6 +87,15 @@
                           </object>
                         </child>
                         <child>
+                          <object class="AdwActionRow" id="swap_usage">
+                            <property name="title" translatable="yes">Swap</property>
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <property name="subtitle-selectable">true</property>
+                          </object>
+                        </child>
+                        <child>
                           <object class="AdwActionRow" id="drive_read_speed">
                             <property name="title" translatable="yes">Drive Read</property>
                             <style>
