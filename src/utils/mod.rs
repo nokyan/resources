@@ -175,10 +175,11 @@ impl FiniteOr for f32 {
 
 #[cfg(test)]
 mod test {
+    use core::f64;
     use pretty_assertions::assert_eq;
     use std::collections::HashMap;
 
-    use crate::utils::read_uevent_contents;
+    use crate::utils::{read_uevent_contents, FiniteOr};
 
     #[test]
     fn read_uevent_contents_valid_simple() {
@@ -276,5 +277,113 @@ mod test {
         let parsed = read_uevent_contents(uevent_raw);
 
         assert!(parsed.is_err())
+    }
+
+    #[test]
+    fn finite_or_finite_f32() {
+        let float: f32 = 1.0;
+
+        let maybe = float.finite_or(8.0);
+
+        assert_eq!(maybe, float);
+    }
+
+    #[test]
+    fn finite_or_finite_f64() {
+        let float: f64 = 1.0;
+
+        let maybe = float.finite_or(8.0);
+
+        assert_eq!(maybe, float);
+    }
+
+    #[test]
+    fn finite_or_infinite_f32() {
+        let float: f32 = f32::INFINITY;
+
+        let maybe = float.finite_or(8.0);
+
+        assert_eq!(maybe, 8.0);
+    }
+
+    #[test]
+    fn finite_or_infinite_f64() {
+        let float: f64 = f64::INFINITY;
+
+        let maybe = float.finite_or(8.0);
+
+        assert_eq!(maybe, 8.0);
+    }
+
+    #[test]
+    fn finite_or_else_finite_f32() {
+        let float: f32 = 1.0;
+
+        let maybe = float.finite_or_else(|_| f32::powi(2.0, 3));
+
+        assert_eq!(maybe, float);
+    }
+
+    #[test]
+    fn finite_or_else_finite_f64() {
+        let float: f64 = 1.0;
+
+        let maybe = float.finite_or_else(|_| f64::powi(2.0, 3));
+
+        assert_eq!(maybe, float);
+    }
+
+    #[test]
+    fn finite_or_else_infinite_f32() {
+        let float: f32 = f32::INFINITY;
+
+        let maybe = float.finite_or_else(|_| f32::powi(2.0, 3));
+
+        assert_eq!(maybe, 8.0);
+    }
+
+    #[test]
+    fn finite_or_else_infinite_f64() {
+        let float: f64 = f64::INFINITY;
+
+        let maybe = float.finite_or_else(|_| f64::powi(2.0, 3));
+
+        assert_eq!(maybe, 8.0);
+    }
+
+    #[test]
+    fn finite_or_default_finite_f32() {
+        let float: f32 = 1.0;
+
+        let maybe = float.finite_or_default();
+
+        assert_eq!(maybe, float);
+    }
+
+    #[test]
+    fn finite_or_default_finite_f64() {
+        let float: f64 = 1.0;
+
+        let maybe = float.finite_or_default();
+
+        assert_eq!(maybe, float);
+    }
+
+    #[test]
+    fn finite_or_default_infinite_f32() {
+        let float: f32 = f32::INFINITY;
+
+        let maybe = float.finite_or_default();
+
+        assert_eq!(maybe, f32::default());
+    }
+
+    #[test]
+    fn finite_or_default_infinite_f64() {
+        let float: f64 = f64::INFINITY;
+
+        let maybe = float.finite_or_default();
+
+        assert_eq!(maybe, f64::default());
     }
 }
