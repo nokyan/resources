@@ -23,7 +23,7 @@ msgstr ""
 #: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:262
 #: data/resources/ui/window.ui:22
 msgid "Resources"
-msgstr "Resurser"
+msgstr "Resources"
 
 #. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
 #: data/net.nokyan.Resources.desktop.in.in:4
@@ -44,13 +44,13 @@ msgid ""
 "control your running processes and apps. It’s designed to be user-friendly "
 "and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
-"Resurser tillater deg å sjekke bruket av systemresursene dine og å håndtere "
-"kjørende prosesser og apper. Det er utviklet for å være brukervennlig og å "
+"Resources lar deg sjekke forbruket av systemresursene dine og håndtere "
+"kjørende prosesser og apper. Den er utviklet for å være brukervennlig og å "
 "høre hjemme på et moderne skrivebord ved å bruke GNOMEs libadwaita."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
-msgstr "Resurser kan overvåke de følgende komponenter:"
+msgstr "Resources kan overvåke de følgende komponenter:"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
@@ -92,35 +92,35 @@ msgstr "Batterier"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:51
 msgid "Apps page in light theme"
-msgstr "Apper-fanen på lyst tema"
+msgstr "Apper-fanen i lys drakt"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:55
 msgid "Processes page in dark theme"
-msgstr "Prosesser-fanen på mørkt tema"
+msgstr "Prosesser-fanen i mørk drakt"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:59
 msgid "Processor page in light theme"
-msgstr "Prosessor-fanen på lyst tema"
+msgstr "Prosessor-fanen i lys drakt"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:63
 msgid "Memory page in dark theme"
-msgstr "Minne-fanen på mørkt tema"
+msgstr "Minne-fanen i mørk drakt"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:67
 msgid "GPU page in light theme"
-msgstr "GPU-fanen på lyst tema"
+msgstr "GPU-fanen i lys drakt"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:71
 msgid "Drive page in dark theme"
-msgstr "Disk-fanen på mørkt tema"
+msgstr "Disk-fanen i mørk drakt"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:75
 msgid "Network Interface page in light theme"
-msgstr "Nettverkgrensesnitt-fanen på lyst tema"
+msgstr "Nettverkgrensesnitt-fanen i lys drakt"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:79
 msgid "Battery page in dark theme"
-msgstr "Batteri-fanen på mørkt tema"
+msgstr "Batteri-fanen i mørk drakt"
 
 #: src/application.rs:264
 msgid "The Nalux Team"
@@ -292,7 +292,7 @@ msgstr "Stopp {}?"
 
 #: src/ui/pages/applications/mod.rs:1453 src/ui/pages/processes/mod.rs:1879
 msgid "Kill {}?"
-msgstr "Død {}?"
+msgstr "Drep {}?"
 
 #: src/ui/pages/applications/mod.rs:1454 src/ui/pages/processes/mod.rs:1880
 msgid "Continue {}?"
@@ -315,7 +315,7 @@ msgid ""
 "Killing an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
 msgstr ""
-"Å døde en app kan medføre alvorlige risikoer som tap av data og "
+"Å drepe en app kan medføre alvorlige risikoer som tap av data og "
 "sikkerhetskonsekvenser. Bruk med forsiktighet."
 
 #: src/ui/pages/applications/mod.rs:1469
@@ -505,7 +505,7 @@ msgid ""
 "Killing a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
-"Å døde en prosess kan medføre alvorlige risikoer som tap av data og "
+"Å drepe en prosess kan medføre alvorlige risikoer som tap av data og "
 "sikkerhetskonsekvenser. Bruk med forsiktighet."
 
 #: src/ui/pages/processes/mod.rs:1895 data/resources/ui/pages/processes.ui:22
@@ -521,7 +521,7 @@ msgstr "Stopp prosess"
 #: src/ui/pages/processes/mod.rs:1897 data/resources/ui/pages/processes.ui:6
 #: data/resources/ui/pages/processes.ui:26
 msgid "Kill Process"
-msgstr "Død prosess"
+msgstr "Drep prosess"
 
 #: src/ui/pages/processes/mod.rs:1898 data/resources/ui/pages/processes.ui:14
 #: data/resources/ui/pages/processes.ui:34
@@ -550,7 +550,7 @@ msgstr "Stoppet {}"
 
 #: src/ui/window.rs:999
 msgid "Successfully killed {}"
-msgstr "Dødet {}"
+msgstr "Drepte {}"
 
 #: src/ui/window.rs:1000
 msgid "Successfully continued {}"
@@ -571,8 +571,8 @@ msgstr[1] "Det oppsto et problem med å stoppe {} prosesser"
 #: src/ui/window.rs:1019
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
-msgstr[0] "Det oppsto et problem med å døde en prosess"
-msgstr[1] "Det oppsto et problem med å døde {} prosesser"
+msgstr[0] "Det oppsto et problem med å drepe en prosess"
+msgstr[1] "Det oppsto et problem med å drepe {} prosesser"
 
 #: src/ui/window.rs:1025
 msgid "There was a problem continuing a process"
@@ -590,7 +590,7 @@ msgstr "Det oppsto et problem med å stoppe {}"
 
 #: src/ui/window.rs:1037
 msgid "There was a problem killing {}"
-msgstr "Det oppsto et problem med å døde {}"
+msgstr "Det oppsto et problem med å drepe {}"
 
 #: src/ui/window.rs:1038
 msgid "There was a problem continuing {}"
@@ -1218,7 +1218,7 @@ msgstr "Avslutt app/prosess"
 #: data/resources/ui/shortcuts.ui:44
 msgctxt "shortcut window"
 msgid "Kill App/Process"
-msgstr "Døde app/prosess"
+msgstr "Drep app/prosess"
 
 #: data/resources/ui/shortcuts.ui:50
 msgctxt "shortcut window"
@@ -1233,7 +1233,7 @@ msgstr "Fortsett app/prosess"
 #: data/resources/ui/shortcuts.ui:62
 msgctxt "shortcut window"
 msgid "Show Information for App/Process"
-msgstr "Vis opplysninger til appen/prosessen"
+msgstr "Vis app- eller prosessopplysninger"
 
 #: data/resources/ui/shortcuts.ui:68
 msgctxt "shortcut window"
@@ -1250,7 +1250,7 @@ msgstr "Tastatursnarveier"
 
 #: data/resources/ui/window.ui:14
 msgid "About Resources"
-msgstr "Om Resurser"
+msgstr "Om Resources"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
 msgid "App Information"
