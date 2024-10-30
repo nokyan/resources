@@ -6,7 +6,9 @@ use crate::i18n::i18n_f;
 use super::settings::{Base, TemperatureUnit, SETTINGS};
 
 #[repr(u8)]
-#[derive(Debug, Clone, Copy, Default, EnumString, Display, Hash, EnumIter)]
+#[derive(
+    Debug, Clone, Copy, Default, EnumString, Display, Hash, EnumIter, PartialEq, PartialOrd, Eq, Ord,
+)]
 enum Prefix {
     #[default]
     None,
@@ -23,26 +25,41 @@ enum Prefix {
 }
 
 pub fn format_time(time_in_seconds: f64) -> String {
+    if time_in_seconds.is_nan() || time_in_seconds.is_infinite() {
+        return time_in_seconds.to_string().replace("inf", "∞");
+    }
+    let negative = time_in_seconds.is_sign_negative();
+    let time_in_seconds = time_in_seconds.abs();
+
     let millis = ((time_in_seconds - time_in_seconds.floor()) * 100.0) as u8;
     let seconds = (time_in_seconds % 60.0) as u8;
     let minutes = ((time_in_seconds / 60.0) % 60.0) as u8;
     let hours = (time_in_seconds / (60.0 * 60.0)) as usize;
-    format!("{hours}∶{minutes:02}∶{seconds:02}.{millis:02}")
+
+    if negative {
+        format!("-{hours}∶{minutes:02}∶{seconds:02}.{millis:02}")
+    } else {
+        format!("{hours}∶{minutes:02}∶{seconds:02}.{millis:02}")
+    }
 }
 
 fn to_largest_prefix(amount: f64, prefix_base: Base) -> (f64, Prefix) {
-    let mut x = amount;
-    let base = match prefix_base {
-        Base::Decimal => 1000.0,
-        Base::Binary => 1024.0,
-    };
+    if amount.is_nan() || amount.is_infinite() {
+        return (amount, Prefix::None);
+    }
+
+    let negative_factor = if amount.is_sign_negative() { -1.0 } else { 1.0 };
+    let mut x = amount.abs();
+    let base = prefix_base.base();
+
     for prefix in Prefix::iter() {
         if x < base {
-            return (x, prefix);
+            return (x * negative_factor, prefix);
         }
         x /= base;
     }
-    (x, Prefix::Quetta)
+
+    (x * negative_factor, Prefix::Quetta)
 }
 
 fn celsius_to_fahrenheit(celsius: f64) -> f64 {
@@ -293,5 +310,137 @@ pub fn convert_energy(watthours: f64, integer: bool) -> String {
             Prefix::Ronna => i18n_f("{} RWh", &[&format!("{number:.2}")]),
             Prefix::Quetta => i18n_f("{} QWh", &[&format!("{number:.2}")]),
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::utils::{
+        settings::Base,
+        units::{celsius_to_fahrenheit, celsius_to_kelvin, to_largest_prefix, Prefix},
+    };
+    use pretty_assertions::assert_eq;
+
+    use super::format_time;
+
+    #[test]
+    fn format_time_negative() {
+        let seconds = -3723.13;
+        let formatted_time = format_time(seconds);
+        assert_eq!("-1∶02∶03.13", formatted_time)
+    }
+
+    #[test]
+    fn format_time_zero() {
+        let seconds = 0.0;
+        let formatted_time = format_time(seconds);
+        assert_eq!("0∶00∶00.00", formatted_time)
+    }
+
+    #[test]
+    fn format_time_positive() {
+        let seconds = 3723.13;
+        let formatted_time = format_time(seconds);
+        assert_eq!("1∶02∶03.13", formatted_time)
+    }
+
+    #[test]
+    fn format_time_nan() {
+        let seconds = f64::NAN;
+        let formatted_time = format_time(seconds);
+        assert_eq!("NaN", formatted_time)
+    }
+
+    #[test]
+    fn format_time_infinity() {
+        let seconds = f64::INFINITY;
+        let formatted_time = format_time(seconds);
+        assert_eq!("∞", formatted_time)
+    }
+
+    #[test]
+    fn format_time_neg_infinity() {
+        let seconds = f64::NEG_INFINITY;
+        let formatted_time = format_time(seconds);
+        assert_eq!("-∞", formatted_time)
+    }
+
+    #[test]
+    fn to_largest_prefix_decimal_giga_negative() {
+        let raw = -123_400_000_000.0;
+        let formatted = to_largest_prefix(raw, Base::Decimal);
+        assert_eq!((-123.4f64, Prefix::Giga), formatted)
+    }
+
+    #[test]
+    fn to_largest_prefix_binary_giga_negative() {
+        let raw = -132_499_741_081.6;
+        let formatted = to_largest_prefix(raw, Base::Binary);
+        assert_eq!((-123.4f64, Prefix::Giga), formatted)
+    }
+
+    #[test]
+    fn to_largest_prefix_decimal_none() {
+        let raw = 123.4;
+        let formatted = to_largest_prefix(raw, Base::Decimal);
+        assert_eq!((123.4f64, Prefix::None), formatted)
+    }
+
+    #[test]
+    fn to_largest_prefix_binary_none() {
+        let raw = 123.4;
+        let formatted = to_largest_prefix(raw, Base::Binary);
+        assert_eq!((123.4f64, Prefix::None), formatted)
+    }
+
+    #[test]
+    fn to_largest_prefix_decimal_giga() {
+        let raw = 123_400_000_000.0;
+        let formatted = to_largest_prefix(raw, Base::Decimal);
+        assert_eq!((123.4f64, Prefix::Giga), formatted)
+    }
+
+    #[test]
+    fn to_largest_prefix_binary_giga() {
+        let raw = 132_499_741_081.6;
+        let formatted = to_largest_prefix(raw, Base::Binary);
+        assert_eq!((123.4f64, Prefix::Giga), formatted)
+    }
+
+    #[test]
+    fn to_largest_prefix_nan() {
+        let raw = f64::NAN;
+        let formatted = to_largest_prefix(raw, Base::Binary);
+        // normal assert_eq! is not possible because NaN != NaN
+        assert_eq!(formatted.0.is_nan(), true);
+        assert_eq!(formatted.1, Prefix::None);
+    }
+
+    #[test]
+    fn to_largest_prefix_infinity() {
+        let raw = f64::INFINITY;
+        let formatted = to_largest_prefix(raw, Base::Binary);
+        assert_eq!((f64::INFINITY, Prefix::None), formatted)
+    }
+
+    #[test]
+    fn to_largest_prefix_neg_infinity() {
+        let raw = f64::NEG_INFINITY;
+        let formatted = to_largest_prefix(raw, Base::Binary);
+        assert_eq!((f64::NEG_INFINITY, Prefix::None), formatted)
+    }
+
+    #[test]
+    fn celsius_to_kelvin_valid() {
+        let celsius = 20.0;
+        let kelvin = celsius_to_kelvin(celsius);
+        assert_eq!(293.15, kelvin);
+    }
+
+    #[test]
+    fn celsius_to_fahrenheit_valid() {
+        let celsius = 20.0;
+        let fahrenheit = celsius_to_fahrenheit(celsius);
+        assert_eq!(68.0, fahrenheit);
     }
 }

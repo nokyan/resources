@@ -110,7 +110,7 @@ impl CpuData {
     }
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, PartialEq)]
 pub struct CpuInfo {
     pub model_name: Option<String>,
     pub architecture: Option<String>,
@@ -128,21 +128,8 @@ fn trade_mark_symbols<S: AsRef<str>>(s: S) -> String {
         .replace("(TM)", "™")
 }
 
-/// Returns a `CPUInfo` struct populated with values gathered from `lscpu`.
-///
-/// # Errors
-///
-/// Will return `Err` if the are problems during reading or parsing
-/// of the `lscpu` command
-pub fn cpu_info() -> Result<CpuInfo> {
-    let lscpu_output = String::from_utf8(
-        std::process::Command::new("lscpu")
-            .env("LC_ALL", "C")
-            .output()
-            .context("unable to run lscpu, is util-linux installed?")?
-            .stdout,
-    )
-    .context("unable to parse lscpu output to UTF-8")?;
+fn parse_lscpu<S: AsRef<str>>(lscpu_output: S) -> CpuInfo {
+    let lscpu_output = lscpu_output.as_ref();
 
     let model_name = RE_LSCPU_MODEL_NAME
         .captures(&lscpu_output)
@@ -193,7 +180,7 @@ pub fn cpu_info() -> Result<CpuInfo> {
             })
         });
 
-    Ok(CpuInfo {
+    CpuInfo {
         model_name,
         architecture,
         logical_cpus,
@@ -201,7 +188,25 @@ pub fn cpu_info() -> Result<CpuInfo> {
         sockets,
         virtualization,
         max_speed,
-    })
+    }
+}
+
+/// Returns a `CPUInfo` struct populated with values gathered from `lscpu`.
+///
+/// # Errors
+///
+/// Will return `Err` if the are problems during reading or parsing
+/// of the `lscpu` command
+pub fn cpu_info() -> Result<CpuInfo> {
+    String::from_utf8(
+        std::process::Command::new("lscpu")
+            .env("LC_ALL", "C")
+            .output()
+            .context("unable to run lscpu, is util-linux installed?")?
+            .stdout,
+    )
+    .context("unable to parse lscpu output to UTF-8")
+    .map(|output| parse_lscpu(output))
 }
 
 /// Returns the frequency of the given CPU `core`
@@ -296,4 +301,62 @@ fn read_sysfs_thermal<P: AsRef<Path>>(path: P) -> Result<f32> {
         .parse::<f32>()
         .with_context(|| format!("unable to parse {}", path.display()))
         .map(|t| t / 1000f32)
+}
+
+#[cfg(test)]
+mod test {
+    use pretty_assertions::assert_eq;
+
+    use crate::utils::cpu::CpuInfo;
+
+    use super::parse_lscpu;
+
+    const LSCPU_OUTPUT: &str = concat!(
+        "Architecture:             x86_64\n",
+        "  CPU op-mode(s):         32-bit, 64-bit\n",
+        "  Address sizes:          48 bits physical, 48 bits virtual\n",
+        "  Byte Order:             Little Endian\n",
+        "CPU(s):                   16\n",
+        "  On-line CPU(s) list:    0-7\n",
+        "Vendor ID:                UnauthenticIngenuineManufacturer\n",
+        "  Model name:             UIM(R) Abacus(tm) 10\n",
+        "    CPU family:           1\n",
+        "    Model:                2\n",
+        "    Thread(s) per core:   2\n",
+        "    Core(s) per socket:   4\n",
+        "    Socket(s):            2\n",
+        "    Stepping:             2\n",
+        "    Frequency boost:      enabled\n",
+        "    CPU(s) scaling MHz:   100%\n",
+        "    CPU max MHz:          3.0000\n",
+        "    CPU min MHz:          2.0000\n",
+        "    BogoMIPS:             0.0\n",
+        "Virtualization features:  \n",
+        "  Virtualization:         Abacus-V\n",
+        "Caches (sum of all):      \n",
+        "  L1d:                    256 KiB (8 instances)\n",
+        "  L1i:                    256 KiB (8 instances)\n",
+        "  L2:                     4 MiB (8 instances)\n",
+        "  L3:                     32 MiB (1 instance)\n",
+        "NUMA:                     \n",
+        "  NUMA node(s):           1\n",
+        "  NUMA node0 CPU(s):      0-15\n",
+    );
+
+    #[test]
+    fn lscpu_complex() {
+        let parsed = parse_lscpu(LSCPU_OUTPUT);
+
+        let expected = CpuInfo {
+            model_name: Some("UIM® Abacus™ 10".into()),
+            architecture: Some("x86_64".into()),
+            logical_cpus: Some(16),
+            physical_cpus: Some(8),
+            sockets: Some(2),
+            virtualization: Some("Abacus-V".into()),
+            max_speed: Some(3000000.0),
+        };
+
+        assert_eq!(parsed, expected)
+    }
 }

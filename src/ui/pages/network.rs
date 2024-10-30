@@ -225,8 +225,8 @@ impl ResNetwork {
 
         imp.manufacturer.set_subtitle(
             &network_interface
-                .vendor
-                .clone()
+                .device
+                .map(|device| device.vendor().name().to_string())
                 .unwrap_or_else(|| i18n("N/A")),
         );
 

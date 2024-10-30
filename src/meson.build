@@ -29,6 +29,14 @@ endif
 
 cargo_env = ['CARGO_HOME=' + meson.project_build_root() / 'cargo']
 
+test(
+  'Cargo tests (main application)',
+  cargo,
+  args: ['test', cargo_options],
+  timeout: 600,
+  env: cargo_env,
+)
+
 cargo_build = custom_target(
   'cargo-build',
   depends: resources,

@@ -98,6 +98,8 @@ impl Display for PciSlot {
 mod test {
     use std::str::FromStr;
 
+    use pretty_assertions::assert_eq;
+
     use super::PciSlot;
 
     #[test]

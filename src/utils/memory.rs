@@ -130,7 +130,7 @@ impl MemoryData {
     }
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, PartialEq)]
 pub struct MemoryDevice {
     pub speed_mts: Option<u32>,
     pub form_factor: Option<String>,
@@ -217,16 +217,27 @@ fn parse_virtual_dmi<S: AsRef<str>>(dmi: S) -> Vec<MemoryDevice> {
     for i in 0..devices_amount {
         let i = i.to_string();
 
-        let speed = Regex::new(&TEMPLATE_RE_CONFIGURED_SPEED_MTS.replace('%', &i))
+        let installed = Regex::new(&TEMPLATE_RE_PRESENT.replace('%', &i))
             .ok()
             .and_then(|regex| regex.captures(dmi))
-            .or_else(|| {
-                Regex::new(&TEMPLATE_RE_SPEED_MTS.replace('%', &i.to_string()))
-                    .ok()
-                    .and_then(|regex| regex.captures(dmi))
-            })
             .and_then(|captures| captures.get(1))
-            .and_then(|capture| capture.as_str().parse().ok());
+            .and_then(|capture| capture.as_str().parse::<usize>().ok())
+            .map_or(true, |int| int != 0);
+
+        let speed = if installed {
+            Regex::new(&TEMPLATE_RE_CONFIGURED_SPEED_MTS.replace('%', &i))
+                .ok()
+                .and_then(|regex| regex.captures(dmi))
+                .or_else(|| {
+                    Regex::new(&TEMPLATE_RE_SPEED_MTS.replace('%', &i.to_string()))
+                        .ok()
+                        .and_then(|regex| regex.captures(dmi))
+                })
+                .and_then(|captures| captures.get(1))
+                .and_then(|capture| capture.as_str().parse().ok())
+        } else {
+            None
+        };
 
         let form_factor = Regex::new(&TEMPLATE_RE_FORM_FACTOR.replace('%', &i))
             .ok()
@@ -252,13 +263,6 @@ fn parse_virtual_dmi<S: AsRef<str>>(dmi: S) -> Vec<MemoryDevice> {
             .and_then(|regex| regex.captures(dmi))
             .and_then(|captures| captures.get(1))
             .and_then(|capture| capture.as_str().parse().ok());
-
-        let installed = Regex::new(&TEMPLATE_RE_PRESENT.replace('%', &i))
-            .ok()
-            .and_then(|regex| regex.captures(dmi))
-            .and_then(|captures| captures.get(1))
-            .and_then(|capture| capture.as_str().parse::<usize>().ok())
-            .map_or(true, |int| int != 0);
 
         devices.push(MemoryDevice {
             speed_mts: speed,
@@ -312,4 +316,144 @@ pub fn pkexec_dmidecode() -> Result<Vec<MemoryDevice>> {
     };
     debug!("Memory information obtained using dmidecode (privileged)");
     Ok(parse_dmidecode(String::from_utf8(output.stdout)?.as_str()))
+}
+
+#[cfg(test)]
+mod test {
+    use pretty_assertions::assert_eq;
+
+    use crate::utils::memory::{parse_virtual_dmi, MemoryDevice};
+
+    use super::parse_dmidecode;
+
+    const DMIDECODE_OUTPUT: &str = concat!(
+        "Memory Device\n",
+        "        Total Width: Unknown\n",
+        "        Data Width: Unknown\n",
+        "        Size: No Module Installed\n",
+        "        Form Factor: Unknown\n",
+        "        Set: None\n",
+        "        Locator: DIMM 0\n",
+        "        Bank Locator: P0 CHANNEL A\n",
+        "        Type: Unknown\n",
+        "        Type Detail: Unknown\n",
+        "\n",
+        "Memory Device\n",
+        "        Total Width: 64 bits\n",
+        "        Data Width: 64 bits\n",
+        "        Size: 16 GB\n",
+        "        Form Factor: DIMM\n",
+        "        Set: None\n",
+        "        Locator: DIMM 1\n",
+        "        Bank Locator: P0 CHANNEL A\n",
+        "        Type: DDR4\n",
+        "        Type Detail: Synchronous Unbuffered (Unregistered)\n",
+        "        Speed: 3000 MT/s\n",
+        "        Manufacturer: Unknown\n",
+        "        Serial Number: 00000000\n",
+        "        Asset Tag: Not Specified\n",
+        "        Part Number: 123\n",
+        "        Rank: 1\n",
+        "        Configured Memory Speed: 3000 MT/s\n",
+        "        Minimum Voltage: 1.2 V\n",
+        "        Maximum Voltage: 1.2 V\n",
+        "        Configured Voltage: 1.2 V"
+    );
+
+    const UDEVADM_OUTPUT: &str = concat!(
+        "E: MEMORY_ARRAY_LOCATION=System Board Or Motherboard\n",
+        "E: MEMORY_ARRAY_MAX_CAPACITY=137438953472\n",
+        "E: MEMORY_DEVICE_0_PRESENT=0\n",
+        "E: MEMORY_DEVICE_0_FORM_FACTOR=Unknown\n",
+        "E: MEMORY_DEVICE_0_LOCATOR=DIMM 0\n",
+        "E: MEMORY_DEVICE_0_BANK_LOCATOR=P0 CHANNEL A\n",
+        "E: MEMORY_DEVICE_0_TYPE=Unknown\n",
+        "E: MEMORY_DEVICE_0_TYPE_DETAIL=Unknown\n",
+        "E: MEMORY_DEVICE_0_SPEED_MTS=3000\n",
+        "E: MEMORY_DEVICE_0_MANUFACTURER=Unknown\n",
+        "E: MEMORY_DEVICE_0_SERIAL_NUMBER=Unknown\n",
+        "E: MEMORY_DEVICE_0_ASSET_TAG=Not Specified\n",
+        "E: MEMORY_DEVICE_0_PART_NUMBER=Unknown\n",
+        "E: MEMORY_DEVICE_0_CONFIGURED_SPEED_MTS=3000\n",
+        "E: MEMORY_DEVICE_1_TOTAL_WIDTH=64\n",
+        "E: MEMORY_DEVICE_1_DATA_WIDTH=64\n",
+        "E: MEMORY_DEVICE_1_SIZE=17179869184\n",
+        "E: MEMORY_DEVICE_1_FORM_FACTOR=DIMM\n",
+        "E: MEMORY_DEVICE_1_LOCATOR=DIMM 1\n",
+        "E: MEMORY_DEVICE_1_BANK_LOCATOR=P0 CHANNEL A\n",
+        "E: MEMORY_DEVICE_1_TYPE=DDR4\n",
+        "E: MEMORY_DEVICE_1_TYPE_DETAIL=Synchronous Unbuffered (Unregistered)\n",
+        "E: MEMORY_DEVICE_1_SPEED_MTS=3000\n",
+        "E: MEMORY_DEVICE_1_MANUFACTURER=Unknown\n",
+        "E: MEMORY_DEVICE_1_SERIAL_NUMBER=00000000\n",
+        "E: MEMORY_DEVICE_1_ASSET_TAG=Not Specified\n",
+        "E: MEMORY_DEVICE_1_PART_NUMBER=123\n",
+        "E: MEMORY_DEVICE_1_RANK=1\n",
+        "E: MEMORY_DEVICE_1_CONFIGURED_SPEED_MTS=3000\n",
+        "E: MEMORY_DEVICE_1_MINIMUM_VOLTAGE=1\n",
+        "E: MEMORY_DEVICE_1_MAXIMUM_VOLTAGE=1\n",
+        "E: MEMORY_DEVICE_1_CONFIGURED_VOLTAGE=1\n",
+        "E: MEMORY_DEVICE_2_PRESENT=0\n",
+        "E: MEMORY_ARRAY_NUM_DEVICES=2"
+    );
+
+    #[test]
+    fn valid_dmidecode_complex() {
+        let parsed = parse_dmidecode(DMIDECODE_OUTPUT);
+
+        let expected = vec![
+            MemoryDevice {
+                speed_mts: None,
+                form_factor: Some("Unknown".into()),
+                r#type: Some("Unknown".into()),
+                type_detail: Some("Unknown".into()),
+                size: None,
+                installed: false,
+            },
+            MemoryDevice {
+                speed_mts: Some(3000),
+                form_factor: Some("DIMM".into()),
+                r#type: Some("DDR4".into()),
+                type_detail: Some("Synchronous Unbuffered (Unregistered)".into()),
+                size: Some(17179869184),
+                installed: true,
+            },
+        ];
+
+        assert_eq!(expected, parsed);
+    }
+
+    #[test]
+    fn valid_udevadm_complex() {
+        let parsed = parse_virtual_dmi(UDEVADM_OUTPUT);
+
+        let expected = vec![
+            MemoryDevice {
+                speed_mts: None,
+                form_factor: Some("Unknown".into()),
+                r#type: Some("Unknown".into()),
+                type_detail: Some("Unknown".into()),
+                size: None,
+                installed: false,
+            },
+            MemoryDevice {
+                speed_mts: Some(3000),
+                form_factor: Some("DIMM".into()),
+                r#type: Some("DDR4".into()),
+                type_detail: Some("Synchronous Unbuffered (Unregistered)".into()),
+                size: Some(17179869184),
+                installed: true,
+            },
+        ];
+
+        assert_eq!(expected, parsed);
+    }
+
+    #[test]
+    fn udevadm_dmidecode_equal() {
+        let dmidecode = parse_dmidecode(DMIDECODE_OUTPUT);
+        let udevadm = parse_virtual_dmi(UDEVADM_OUTPUT);
+
+        assert_eq!(dmidecode, udevadm);
+    }
 }

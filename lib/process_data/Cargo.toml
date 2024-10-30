@@ -3,6 +3,9 @@ name = "process-data"
 version = "1.6.0"
 authors = ["nokyan <nokyan@tuta.io>"]
 edition = "2021"
+rust-version = "1.80.0"
+homepage = "https://apps.gnome.org/app/net.nokyan.Resources/"
+license = "GPL-3.0-or-later"
 
 [profile.dev]
 opt-level = 1
@@ -27,3 +30,6 @@ syscalls = { version = "0.6.18", features = ["all"] }
 sysconf = "0.3.4"
 unescape = "0.1.0"
 uzers = "0.12.1"
+
+[dev-dependencies]
+pretty_assertions = "1.4.1"
