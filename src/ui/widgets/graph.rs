@@ -7,7 +7,7 @@ use std::f64;
 
 use crate::utils::settings::SETTINGS;
 
-const MAX_DATA_POINTS: u32 = 300;
+const MAX_DATA_POINTS: u32 = 600;
 
 mod imp {
     use std::{
