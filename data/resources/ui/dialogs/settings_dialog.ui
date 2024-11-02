@@ -73,7 +73,7 @@
                 <property name="snap-to-ticks">true</property>
                 <property name="adjustment">
                   <object class="GtkAdjustment">
-                    <property name="upper">300</property>
+                    <property name="upper">600</property>
                     <property name="lower">10</property>
                     <property name="step-increment">1</property>
                     <property name="page-increment">10</property>
