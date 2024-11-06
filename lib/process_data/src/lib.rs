@@ -2,13 +2,12 @@ pub mod pci_slot;
 
 use anyhow::{bail, Context, Result};
 use glob::glob;
-use lazy_regex::{lazy_regex, Regex};
+use lazy_regex::{lazy_regex, Lazy, Regex};
 use nutype::nutype;
 use nvml_wrapper::enums::device::UsedGpuMemory;
 use nvml_wrapper::error::NvmlError;
 use nvml_wrapper::struct_wrappers::device::{ProcessInfo, ProcessUtilizationSample};
 use nvml_wrapper::{Device, Nvml};
-use once_cell::sync::Lazy;
 use pci_slot::PciSlot;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap, HashSet};
@@ -17,7 +16,7 @@ use std::io::{Read, Write};
 use std::os::linux::fs::MetadataExt;
 use std::path::Path;
 use std::str::FromStr;
-use std::sync::RwLock;
+use std::sync::{LazyLock, RwLock};
 use std::{path::PathBuf, time::SystemTime};
 
 const STAT_OFFSET: usize = 2; // we split the stat contents where the executable name ends, which is the second element
@@ -27,15 +26,15 @@ const STAT_SYSTEM_CPU_TIME: usize = 14 - STAT_OFFSET;
 const STAT_NICE: usize = 18 - STAT_OFFSET;
 const STAT_STARTTIME: usize = 21 - STAT_OFFSET;
 
-static USERS_CACHE: Lazy<HashMap<libc::uid_t, String>> = Lazy::new(|| unsafe {
+static USERS_CACHE: LazyLock<HashMap<libc::uid_t, String>> = LazyLock::new(|| unsafe {
     uzers::all_users()
         .map(|user| (user.uid(), user.name().to_string_lossy().to_string()))
         .collect()
 });
 
-static PAGESIZE: Lazy<usize> = Lazy::new(sysconf::pagesize);
+static PAGESIZE: LazyLock<usize> = LazyLock::new(sysconf::pagesize);
 
-static NUM_CPUS: Lazy<usize> = Lazy::new(num_cpus::get);
+static NUM_CPUS: LazyLock<usize> = LazyLock::new(num_cpus::get);
 
 static RE_UID: Lazy<Regex> = lazy_regex!(r"Uid:\s*(\d+)");
 
