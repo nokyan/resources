@@ -1289,7 +1289,6 @@ dependencies = [
  "num_cpus",
  "nutype",
  "nvml-wrapper",
- "once_cell",
  "serde",
  "syscalls",
  "sysconf",
