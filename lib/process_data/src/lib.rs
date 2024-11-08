@@ -17,7 +17,7 @@ use std::os::linux::fs::MetadataExt;
 use std::path::Path;
 use std::str::FromStr;
 use std::sync::{LazyLock, RwLock};
-use std::{path::PathBuf, time::SystemTime};
+use std::time::SystemTime;
 
 const STAT_OFFSET: usize = 2; // we split the stat contents where the executable name ends, which is the second element
 const STAT_PARENT_PID: usize = 3 - STAT_OFFSET;
@@ -236,7 +236,8 @@ impl ProcessData {
         Ok(process_data)
     }
 
-    pub fn try_from_path(proc_path: &PathBuf) -> Result<Self> {
+    pub fn try_from_path<P: AsRef<Path>>(proc_path: P) -> Result<Self> {
+        let proc_path = proc_path.as_ref();
         let stat = std::fs::read_to_string(proc_path.join("stat"))?;
         let statm = std::fs::read_to_string(proc_path.join("statm"))?;
         let status = std::fs::read_to_string(proc_path.join("status"))?;
@@ -338,7 +339,7 @@ impl ProcessData {
 
         let cgroup = std::fs::read_to_string(proc_path.join("cgroup"))
             .ok()
-            .and_then(|raw| Self::sanitize_cgroup(raw));
+            .and_then(Self::sanitize_cgroup);
 
         let containerization = if commandline.starts_with("/snap/") {
             Containerization::Snap

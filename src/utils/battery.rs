@@ -332,6 +332,7 @@ impl Battery {
 #[cfg(test)]
 mod test {
     use super::Battery;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn dont_untangle_untangled_string() {

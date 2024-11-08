@@ -310,7 +310,7 @@ impl ResNPU {
         }
 
         if let Some(temperature) = temperature {
-            let temperature_string = convert_temperature(*temperature as f64);
+            let temperature_string = convert_temperature(*temperature);
 
             let highest_temperature_string =
                 convert_temperature(imp.temperature.graph().get_highest_value());
@@ -321,7 +321,7 @@ impl ResNPU {
                 i18n("Highest:"),
                 highest_temperature_string
             ));
-            imp.temperature.graph().push_data_point(*temperature as f64);
+            imp.temperature.graph().push_data_point(*temperature);
 
             usage_percentage_string.push_str(" · ");
             usage_percentage_string.push_str(&temperature_string);

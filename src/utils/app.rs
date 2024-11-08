@@ -252,7 +252,7 @@ impl App {
             .context("unable to get ID of desktop file")?;
 
         if let Some(reason) = APP_ID_BLOCKLIST.get(id.as_str()) {
-            debug!("Skipping {id} because it's blocklisted (reason: {reason})");
+            debug!("Skipping {id} because it's blocklisted ({reason})");
             bail!("{id} is blocklisted (reason: {reason})")
         }
 
@@ -330,7 +330,7 @@ impl App {
 
         let containerization = if is_flatpak {
             debug!(
-                "Found Flatpak app \"{display_name}\" (ID: {id}) at {} with commandline `{}` (detected executable name: {})",
+                "Found Flatpak app \"{display_name}\" (ID: {id:?}) at {} with commandline `{}` (detected executable name: {})",
                 file_path.to_string_lossy(),
                 commandline.as_ref().unwrap_or(&"<None>".into()),
                 executable_name.as_ref().unwrap_or(&"<None>".into()),
@@ -338,7 +338,7 @@ impl App {
             Containerization::Flatpak
         } else if is_snap {
             debug!(
-                "Found Snap app \"{display_name}\" (ID: {id}) at {} with commandline `{}` (detected executable name: {})",
+                "Found Snap app \"{display_name}\" (ID: {id:?}) at {} with commandline `{}` (detected executable name: {})",
                 file_path.to_string_lossy(),
                 commandline.as_ref().unwrap_or(&"<None>".into()),
                 executable_name.as_ref().unwrap_or(&"<None>".into()),
@@ -346,7 +346,7 @@ impl App {
             Containerization::Snap
         } else {
             debug!(
-                "Found native app \"{display_name}\" (ID: {id}) at {} with commandline `{}` (detected executable name: {})",
+                "Found native app \"{display_name}\" (ID: {id:?}) at {} with commandline `{}` (detected executable name: {})",
                 file_path.to_string_lossy(),
                 commandline.as_ref().unwrap_or(&"<None>".into()),
                 executable_name.as_ref().unwrap_or(&"<None>".into()),
@@ -654,22 +654,22 @@ impl AppsContext {
             .get(&Some(process.data.cgroup.clone().unwrap_or_default()))
         {
             debug!(
-                "Associating process {} with app \"{}\" (ID: {:?}) based on process cgroup matching with app ID",
-                process.data.pid, app.display_name, app.id
+                "Associating process {} with app {:?} (ID: {:?}) based on process cgroup matching with app ID",
+                process.data.pid, app.display_name, app.id.as_deref().unwrap_or("N/A")
             );
             app.id.clone()
         } else if let Some(app) = self.apps.get(&Some(process.executable_path.clone())) {
             // ↑ look for whether we can find an ID in the executable path of the process
             debug!(
-                "Associating process {} with app \"{}\" (ID: {:?}) based on process executable path matching with app ID",
-                process.data.pid, app.display_name, app.id
+                "Associating process {} with app {:?} (ID: {:?}) based on process executable path matching with app ID",
+                process.data.pid, app.display_name, app.id.as_deref().unwrap_or("N/A")
             );
             app.id.clone()
         } else if let Some(app) = self.apps.get(&Some(process.executable_name.clone())) {
             // ↑ look for whether we can find an ID in the executable name of the process
             debug!(
-                "Associating process {} with app \"{}\" (ID: {:?}) based on process executable name matching with app ID",
-                process.data.pid, app.display_name, app.id
+                "Associating process {} with app {:?} (ID: {:?}) based on process executable name matching with app ID",
+                process.data.pid, app.display_name, app.id.as_deref().unwrap_or("N/A")
             );
             app.id.clone()
         } else {
@@ -684,8 +684,8 @@ impl AppsContext {
                         .is_some_and(|commandline| commandline == &process.executable_path)
                     {
                         debug!(
-                            "Associating process {} with app \"{}\" (ID: {:?}) based on process executable pathmatching with app commandline ({})",
-                            process.data.pid, app.display_name, app.id, process.executable_path
+                            "Associating process {} with app {:?} (ID: {:?}) based on process executable path matching with app commandline ({})",
+                            process.data.pid, app.display_name, app.id.as_deref().unwrap_or("N/A"), process.executable_path
                         );
                         true
                     } else if app
@@ -694,8 +694,8 @@ impl AppsContext {
                         .is_some_and(|executable_name| executable_name == &process.executable_name)
                     {
                         debug!(
-                            "Associating process {} with app \"{}\" (ID: {:?}) based on process executable name matching with app executable name ({})",
-                            process.data.pid, app.display_name, app.id, process.executable_name
+                            "Associating process {} with app {:?} (ID: {:?}) based on process executable name matching with app executable name ({})",
+                            process.data.pid, app.display_name, app.id.as_deref().unwrap_or("N/A"), process.executable_name
                         );
                         true
                     } else if app
@@ -711,8 +711,8 @@ impl AppsContext {
                         .unwrap_or(false)
                     {
                         debug!(
-                            "Associating process {} with app \"{}\" (ID: {:?}) based on match in KNOWN_EXECUTABLE_NAME_EXCEPTIONS",
-                            process.data.pid, app.display_name, app.id
+                            "Associating process {} with app {:?} (ID: {:?}) based on match in KNOWN_EXECUTABLE_NAME_EXCEPTIONS",
+                            process.data.pid, app.display_name, app.id.as_deref().unwrap_or("N/A")
                         );
                         true
                     } else {
