@@ -132,7 +132,7 @@ fn parse_lscpu<S: AsRef<str>>(lscpu_output: S) -> CpuInfo {
     let lscpu_output = lscpu_output.as_ref();
 
     let model_name = RE_LSCPU_MODEL_NAME
-        .captures(&lscpu_output)
+        .captures(lscpu_output)
         .and_then(|captures| {
             captures
                 .get(1)
@@ -140,24 +140,24 @@ fn parse_lscpu<S: AsRef<str>>(lscpu_output: S) -> CpuInfo {
         });
 
     let architecture = RE_LSCPU_ARCHITECTURE
-        .captures(&lscpu_output)
+        .captures(lscpu_output)
         .and_then(|captures| captures.get(1).map(|capture| capture.as_str().into()));
 
     let sockets = RE_LSCPU_SOCKETS
-        .captures(&lscpu_output)
+        .captures(lscpu_output)
         .and_then(|captures| {
             captures
                 .get(1)
                 .and_then(|capture| capture.as_str().parse().ok())
         });
 
-    let logical_cpus = RE_LSCPU_CPUS.captures(&lscpu_output).and_then(|captures| {
+    let logical_cpus = RE_LSCPU_CPUS.captures(lscpu_output).and_then(|captures| {
         captures
             .get(1)
             .and_then(|capture| capture.as_str().parse().ok())
     });
 
-    let physical_cpus = RE_LSCPU_CORES.captures(&lscpu_output).and_then(|captures| {
+    let physical_cpus = RE_LSCPU_CORES.captures(lscpu_output).and_then(|captures| {
         captures
             .get(1)
             .and_then(|capture| capture.as_str().parse::<usize>().ok())
@@ -165,11 +165,11 @@ fn parse_lscpu<S: AsRef<str>>(lscpu_output: S) -> CpuInfo {
     });
 
     let virtualization = RE_LSCPU_VIRTUALIZATION
-        .captures(&lscpu_output)
+        .captures(lscpu_output)
         .and_then(|captures| captures.get(1).map(|capture| capture.as_str().into()));
 
     let max_speed = RE_LSCPU_MAX_MHZ
-        .captures(&lscpu_output)
+        .captures(lscpu_output)
         .and_then(|captures| {
             captures.get(1).and_then(|capture| {
                 capture
@@ -206,7 +206,7 @@ pub fn cpu_info() -> Result<CpuInfo> {
             .stdout,
     )
     .context("unable to parse lscpu output to UTF-8")
-    .map(|output| parse_lscpu(output))
+    .map(parse_lscpu)
 }
 
 /// Returns the frequency of the given CPU `core`

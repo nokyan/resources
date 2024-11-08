@@ -730,12 +730,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "gtk-macros"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da5bf7748fd4cd0b2490df8debcc911809dbcbee4ece9531b96c29a9c729de5a"
-
-[[package]]
 name = "gtk4"
 version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -958,9 +952,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.161"
+version = "0.2.162"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8e9489c2807c139ffd9c1794f4af0ebe86a828db53ecdc7fea2111d0fed085d1"
+checksum = "18d287de67fe55fd7e1581fe933d965a5a9477b38e949cfa9f8574ef01506398"
 
 [[package]]
 name = "libloading"
@@ -1340,7 +1334,6 @@ dependencies = [
  "clap",
  "gettext-rs",
  "glob",
- "gtk-macros",
  "gtk4",
  "lazy-regex",
  "libadwaita",
