@@ -387,7 +387,10 @@ impl App {
         !self.processes.is_empty()
     }
 
-    pub fn processes_iter<'a>(&'a self, apps: &'a AppsContext) -> impl Iterator<Item = &Process> {
+    pub fn processes_iter<'a>(
+        &'a self,
+        apps: &'a AppsContext,
+    ) -> impl Iterator<Item = &'a Process> {
         apps.processes_iter()
             .filter(move |process| self.processes.contains(&process.data.pid))
     }
@@ -395,7 +398,7 @@ impl App {
     pub fn processes_iter_mut<'a>(
         &'a mut self,
         apps: &'a mut AppsContext,
-    ) -> impl Iterator<Item = &mut Process> {
+    ) -> impl Iterator<Item = &'a mut Process> {
         apps.processes_iter_mut()
             .filter(move |process| self.processes.contains(&process.data.pid))
     }
