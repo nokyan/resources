@@ -22,6 +22,7 @@ const INTERFACE_TYPE_MAP: &[(&str, InterfaceType)] = &[
     ("sl", InterfaceType::Slip),
     ("veth", InterfaceType::VirtualEthernet),
     ("virbr", InterfaceType::VmBridge),
+    ("tun", InterfaceType::Vpn),
     ("vpn", InterfaceType::Vpn),
     ("wg", InterfaceType::Wireguard),
     ("wl", InterfaceType::Wlan),
