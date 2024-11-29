@@ -80,6 +80,21 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.7.0" date="2024-11-29">
+      <url type="details">https://github.com/nokyan/resources/releases/tag/v1.7.0</url>
+      <description translate="no">
+        <p>
+          Resources 1.7 has been released with a new supported device category and other improvements. Here are some highlights:
+        </p>
+        <ul>
+          <li>Support for monitoring Intel Neural Processing Units (NPUs)</li>
+          <li>Multiple processes can now be selected in the Processes view</li>
+          <li>Added a column for swap usage in the Apps and Processes view</li>
+          <li>Added temperature graphs</li>
+          <li>Improved handling of media engines on newer AMD GPUs</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.6.0" date="2024-08-23">
       <url type="details">https://github.com/nokyan/resources/releases/tag/v1.6.0</url>
       <description translate="no">

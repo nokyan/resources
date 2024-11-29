@@ -149,11 +149,7 @@ impl ResProcessOptionsDialog {
                     let imp = this.imp();
 
                     // if all switch rows are disabled, disable the apply button
-                    let setting = imp
-                        .cpu_rows
-                        .borrow()
-                        .iter()
-                        .any(|switch_row| switch_row.is_active());
+                    let setting = imp.cpu_rows.borrow().iter().any(adw::SwitchRow::is_active);
                     imp.apply_button.set_sensitive(setting);
                 }
             ));
@@ -180,7 +176,7 @@ impl ResProcessOptionsDialog {
             move |_| {
                 let cpu_rows = this.imp().cpu_rows.borrow();
 
-                let setting = !cpu_rows.iter().all(|switch_row| switch_row.is_active());
+                let setting = !cpu_rows.iter().all(adw::SwitchRow::is_active);
 
                 cpu_rows
                     .iter()
@@ -211,7 +207,7 @@ impl ResProcessOptionsDialog {
                             .cpu_rows
                             .borrow()
                             .iter()
-                            .map(|switch_row| switch_row.is_active())
+                            .map(adw::SwitchRow::is_active)
                             .collect();
 
                         let _ = sender

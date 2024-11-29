@@ -1,6 +1,6 @@
 [package]
 name = "process-data"
-version = "1.6.0"
+version = "1.7.0"
 authors = ["nokyan <nokyan@tuta.io>"]
 edition = "2021"
 rust-version = "1.80.0"
@@ -20,11 +20,11 @@ opt-level = 3
 anyhow = "1.0.93"
 glob = "0.3.1"
 lazy-regex = "3.3.0"
-libc = "0.2.162"
+libc = "0.2.166"
 num_cpus = "1.16.0"
 nutype = { version = "0.5.0", features = ["serde"] }
 nvml-wrapper = "0.10.0"
-serde = { version = "1.0.214", features = ["serde_derive"] }
+serde = { version = "1.0.215", features = ["serde_derive"] }
 syscalls = { version = "0.6.18", features = ["all"] }
 sysconf = "0.3.4"
 unescape = "0.1.0"

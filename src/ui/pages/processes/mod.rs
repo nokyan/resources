@@ -842,7 +842,7 @@ impl ResProcesses {
                             action,
                             processes
                                 .iter()
-                                .map(|process_entry| process_entry.pid())
+                                .map(process_entry::ProcessEntry::pid)
                                 .collect(),
                             imp.toast_overlay.get(),
                         ))
@@ -897,7 +897,7 @@ impl ResProcesses {
                                         action,
                                         processes
                                             .iter()
-                                            .map(|process_entry| process_entry.pid())
+                                            .map(process_entry::ProcessEntry::pid)
                                             .collect(),
                                         imp.toast_overlay.get(),
                                     ))
