@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-08-26 01:10+0200\n"
-"PO-Revision-Date: 2024-09-03 10:58+0200\n"
+"PO-Revision-Date: 2024-12-01 22:44+0100\n"
 "Last-Translator: Sunniva Løvstad <turtle@turtle.garden>\n"
 "Language-Team: \n"
 "Language: nb\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:3
 #: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:262
@@ -116,7 +116,7 @@ msgstr "Disk-fanen i mørk drakt"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:75
 msgid "Network Interface page in light theme"
-msgstr "Nettverkgrensesnitt-fanen i lys drakt"
+msgstr "Nettverksgrensesnitt-fanen i lys drakt"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:79
 msgid "Battery page in dark theme"
@@ -134,7 +134,7 @@ msgstr "Rapporter feil"
 #. One name per line, please do not remove previous names.
 #: src/application.rs:278
 msgid "translator-credits"
-msgstr "sunniva <turtle@turtle.garden>"
+msgstr "Sunniva Løvstad <resources@turtle.garden>"
 
 #: src/application.rs:279
 msgid "Icon by"
@@ -248,7 +248,7 @@ msgstr "Disklesingstotal"
 #: data/resources/ui/dialogs/settings_dialog.ui:153
 #: data/resources/ui/dialogs/settings_dialog.ui:235
 msgid "Drive Write"
-msgstr "Disklesingstotal"
+msgstr "Diskskriving"
 
 #: src/ui/pages/applications/mod.rs:1156 src/ui/pages/processes/mod.rs:1332
 #: data/resources/ui/dialogs/app_dialog.ui:118
@@ -292,7 +292,7 @@ msgstr "Stopp {}?"
 
 #: src/ui/pages/applications/mod.rs:1453 src/ui/pages/processes/mod.rs:1879
 msgid "Kill {}?"
-msgstr "Drep {}?"
+msgstr "Død {}?"
 
 #: src/ui/pages/applications/mod.rs:1454 src/ui/pages/processes/mod.rs:1880
 msgid "Continue {}?"
@@ -308,15 +308,15 @@ msgid ""
 "implications. Use with caution."
 msgstr ""
 "Å stoppe en app kan medføre alvorlige risikoer som tap av data og "
-"sikkerhetskonsekvenser. Bruk med forsiktighet."
+"sikkerhetskonsekvenser. Bruk med omhu."
 
 #: src/ui/pages/applications/mod.rs:1462
 msgid ""
 "Killing an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
 msgstr ""
-"Å drepe en app kan medføre alvorlige risikoer som tap av data og "
-"sikkerhetskonsekvenser. Bruk med forsiktighet."
+"Å døde en app kan medføre alvorlige risikoer som tap av data og "
+"sikkerhetskonsekvenser. Bruk med omhu."
 
 #: src/ui/pages/applications/mod.rs:1469
 #: data/resources/ui/pages/applications.ui:22
@@ -348,7 +348,7 @@ msgstr "Disk"
 
 #: src/ui/pages/battery.rs:244
 msgid "Battery Charge"
-msgstr "Akkulading"
+msgstr "Ladning"
 
 #: src/ui/pages/battery.rs:251 data/resources/ui/pages/gpu.ui:55
 msgid "Power Usage"
@@ -370,11 +370,11 @@ msgstr "Diskaktivitet"
 
 #: src/ui/pages/drive.rs:274
 msgid "Read Speed"
-msgstr "Lesingshastighet"
+msgstr "Lesehastighet"
 
 #: src/ui/pages/drive.rs:278
 msgid "Write Speed"
-msgstr "Skrivingshastighet"
+msgstr "Skrivehastighet"
 
 #: src/ui/pages/drive.rs:432 src/ui/pages/drive.rs:442
 msgid "Yes"
@@ -498,15 +498,15 @@ msgid ""
 "security implications. Use with caution."
 msgstr ""
 "Å stoppe en prosess kan medføre alvorlige risikoer som tap av data og "
-"sikkerhetskonsekvenser. Bruk med forsiktighet."
+"sikkerhetskonsekvenser. Bruk med omhu."
 
 #: src/ui/pages/processes/mod.rs:1888
 msgid ""
 "Killing a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
-"Å drepe en prosess kan medføre alvorlige risikoer som tap av data og "
-"sikkerhetskonsekvenser. Bruk med forsiktighet."
+"Å døde en prosess kan medføre alvorlige risikoer som tap av data og "
+"sikkerhetskonsekvenser. Bruk med omhu."
 
 #: src/ui/pages/processes/mod.rs:1895 data/resources/ui/pages/processes.ui:22
 #: data/resources/ui/pages/processes.ui:146
@@ -521,7 +521,7 @@ msgstr "Stopp prosess"
 #: src/ui/pages/processes/mod.rs:1897 data/resources/ui/pages/processes.ui:6
 #: data/resources/ui/pages/processes.ui:26
 msgid "Kill Process"
-msgstr "Drep prosess"
+msgstr "Død prosess"
 
 #: src/ui/pages/processes/mod.rs:1898 data/resources/ui/pages/processes.ui:14
 #: data/resources/ui/pages/processes.ui:34
@@ -550,7 +550,7 @@ msgstr "Stoppet {}"
 
 #: src/ui/window.rs:999
 msgid "Successfully killed {}"
-msgstr "Drepte {}"
+msgstr "Dødet {}"
 
 #: src/ui/window.rs:1000
 msgid "Successfully continued {}"
@@ -571,8 +571,8 @@ msgstr[1] "Det oppsto et problem med å stoppe {} prosesser"
 #: src/ui/window.rs:1019
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
-msgstr[0] "Det oppsto et problem med å drepe en prosess"
-msgstr[1] "Det oppsto et problem med å drepe {} prosesser"
+msgstr[0] "Det oppsto et problem med å døde en prosess"
+msgstr[1] "Det oppsto et problem med å døde {} prosesser"
 
 #: src/ui/window.rs:1025
 msgid "There was a problem continuing a process"
@@ -590,7 +590,7 @@ msgstr "Det oppsto et problem med å stoppe {}"
 
 #: src/ui/window.rs:1037
 msgid "There was a problem killing {}"
-msgstr "Det oppsto et problem med å drepe {}"
+msgstr "Det oppsto et problem med å døde {}"
 
 #: src/ui/window.rs:1038
 msgid "There was a problem continuing {}"
@@ -1218,7 +1218,7 @@ msgstr "Avslutt app/prosess"
 #: data/resources/ui/shortcuts.ui:44
 msgctxt "shortcut window"
 msgid "Kill App/Process"
-msgstr "Drep app/prosess"
+msgstr "Død app/prosess"
 
 #: data/resources/ui/shortcuts.ui:50
 msgctxt "shortcut window"
@@ -1242,7 +1242,7 @@ msgstr "Vis prosessinnstillinger"
 
 #: data/resources/ui/window.ui:6
 msgid "Preferences"
-msgstr "Brukervalg"
+msgstr "Innstillnger"
 
 #: data/resources/ui/window.ui:10
 msgid "Keyboard Shortcuts"
@@ -1629,7 +1629,7 @@ msgstr "Total lest"
 
 #: data/resources/ui/pages/drive.ui:47
 msgid "Total Written"
-msgstr "Total skrivet"
+msgstr "Total skrevet"
 
 #: data/resources/ui/pages/drive.ui:57 data/resources/ui/pages/memory.ui:72
 msgid "Type"
