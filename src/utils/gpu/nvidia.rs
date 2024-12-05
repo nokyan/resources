@@ -92,13 +92,13 @@ impl GpuImpl for NvidiaGpu {
     }
 
     fn usage(&self) -> Result<f64> {
-        Self::nvml_device(&self.pci_slot_string)
+        Ok(Self::nvml_device(&self.pci_slot_string)
             .and_then(|dev| {
                 dev.utilization_rates()
                     .context("unable to get utilization rates through NVML")
             })
-            .map(|usage| usage.gpu as f64 / 100.0)
-            .or_else(|_| self.drm_usage().map(|usage| usage as f64 / 100.0))
+            .unwrap()
+            .gpu as f64)
     }
 
     fn encode_usage(&self) -> Result<f64> {
