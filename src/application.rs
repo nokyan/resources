@@ -283,7 +283,7 @@ impl Application {
 
     pub fn run(&self) {
         info!("Resources ({})", APP_ID);
-        info!("Version: {} ({})", VERSION, PROFILE);
+        info!("Version: {}", VERSION);
         info!("Datadir: {}", PKGDATADIR);
 
         if PROFILE == "Devel" {

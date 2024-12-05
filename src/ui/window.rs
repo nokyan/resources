@@ -44,6 +44,7 @@ mod imp {
     use std::{cell::RefCell, collections::HashMap};
 
     use crate::{
+        config::VERSION,
         ui::{
             pages::{
                 applications::ResApplications, cpu::ResCPU, memory::ResMemory,
@@ -158,6 +159,9 @@ mod imp {
             // Devel Profile
             if PROFILE == "Devel" {
                 obj.add_css_class("devel");
+                obj.set_title(Some(
+                    &format!("{} ({})", obj.title().unwrap_or_default(), VERSION).trim(),
+                ));
             }
 
             // Load latest window state
