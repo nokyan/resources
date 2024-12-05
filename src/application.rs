@@ -1,4 +1,4 @@
-use log::info;
+use log::{debug, info};
 
 use adw::{prelude::*, subclass::prelude::*};
 use glib::clone;
@@ -8,6 +8,7 @@ use crate::config::{self, APP_ID, PKGDATADIR, PROFILE, VERSION};
 use crate::i18n::i18n;
 use crate::ui::dialogs::settings_dialog::ResSettingsDialog;
 use crate::ui::window::MainWindow;
+use crate::utils::os::OsInfo;
 use crate::utils::process::ProcessAction;
 
 mod imp {
@@ -282,9 +283,19 @@ impl Application {
     }
 
     pub fn run(&self) {
-        info!("Resources ({})", APP_ID);
-        info!("Version: {} ({})", VERSION, PROFILE);
-        info!("Datadir: {}", PKGDATADIR);
+        info!("Resources ({APP_ID})");
+        info!("Version: {VERSION} ({PROFILE})");
+        info!("Datadir: {PKGDATADIR}");
+
+        let os_info = OsInfo::get();
+        debug!(
+            "Operating system: {}",
+            os_info.name.as_deref().unwrap_or("N/A")
+        );
+        debug!(
+            "Kernel version: {}",
+            os_info.kernel_version.as_deref().unwrap_or("N/A")
+        );
 
         if PROFILE == "Devel" {
             info!(

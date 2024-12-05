@@ -121,92 +121,94 @@ pub struct CpuInfo {
     pub max_speed: Option<f64>,
 }
 
-fn trade_mark_symbols<S: AsRef<str>>(s: S) -> String {
-    s.as_ref()
-        .replace("(R)", "®")
-        .replace("(tm)", "™")
-        .replace("(TM)", "™")
-}
+impl CpuInfo {
+    fn parse_lscpu<S: AsRef<str>>(lscpu_output: S) -> Self {
+        let lscpu_output = lscpu_output.as_ref();
 
-fn parse_lscpu<S: AsRef<str>>(lscpu_output: S) -> CpuInfo {
-    let lscpu_output = lscpu_output.as_ref();
+        let model_name = RE_LSCPU_MODEL_NAME
+            .captures(lscpu_output)
+            .and_then(|captures| {
+                captures
+                    .get(1)
+                    .map(|capture| Self::trade_mark_symbols(capture.as_str()))
+            });
 
-    let model_name = RE_LSCPU_MODEL_NAME
-        .captures(lscpu_output)
-        .and_then(|captures| {
-            captures
-                .get(1)
-                .map(|capture| trade_mark_symbols(capture.as_str()))
-        });
+        let architecture = RE_LSCPU_ARCHITECTURE
+            .captures(lscpu_output)
+            .and_then(|captures| captures.get(1).map(|capture| capture.as_str().into()));
 
-    let architecture = RE_LSCPU_ARCHITECTURE
-        .captures(lscpu_output)
-        .and_then(|captures| captures.get(1).map(|capture| capture.as_str().into()));
+        let sockets = RE_LSCPU_SOCKETS
+            .captures(lscpu_output)
+            .and_then(|captures| {
+                captures
+                    .get(1)
+                    .and_then(|capture| capture.as_str().parse().ok())
+            });
 
-    let sockets = RE_LSCPU_SOCKETS
-        .captures(lscpu_output)
-        .and_then(|captures| {
+        let logical_cpus = RE_LSCPU_CPUS.captures(lscpu_output).and_then(|captures| {
             captures
                 .get(1)
                 .and_then(|capture| capture.as_str().parse().ok())
         });
 
-    let logical_cpus = RE_LSCPU_CPUS.captures(lscpu_output).and_then(|captures| {
-        captures
-            .get(1)
-            .and_then(|capture| capture.as_str().parse().ok())
-    });
-
-    let physical_cpus = RE_LSCPU_CORES.captures(lscpu_output).and_then(|captures| {
-        captures
-            .get(1)
-            .and_then(|capture| capture.as_str().parse::<usize>().ok())
-            .map(|int| int.saturating_mul(sockets.unwrap_or(1)))
-    });
-
-    let virtualization = RE_LSCPU_VIRTUALIZATION
-        .captures(lscpu_output)
-        .and_then(|captures| captures.get(1).map(|capture| capture.as_str().into()));
-
-    let max_speed = RE_LSCPU_MAX_MHZ
-        .captures(lscpu_output)
-        .and_then(|captures| {
-            captures.get(1).and_then(|capture| {
-                capture
-                    .as_str()
-                    .parse::<f64>()
-                    .ok()
-                    .map(|float| float * 1_000_000.0)
-            })
+        let physical_cpus = RE_LSCPU_CORES.captures(lscpu_output).and_then(|captures| {
+            captures
+                .get(1)
+                .and_then(|capture| capture.as_str().parse::<usize>().ok())
+                .map(|int| int.saturating_mul(sockets.unwrap_or(1)))
         });
 
-    CpuInfo {
-        model_name,
-        architecture,
-        logical_cpus,
-        physical_cpus,
-        sockets,
-        virtualization,
-        max_speed,
-    }
-}
+        let virtualization = RE_LSCPU_VIRTUALIZATION
+            .captures(lscpu_output)
+            .and_then(|captures| captures.get(1).map(|capture| capture.as_str().into()));
 
-/// Returns a `CPUInfo` struct populated with values gathered from `lscpu`.
-///
-/// # Errors
-///
-/// Will return `Err` if the are problems during reading or parsing
-/// of the `lscpu` command
-pub fn cpu_info() -> Result<CpuInfo> {
-    String::from_utf8(
-        std::process::Command::new("lscpu")
-            .env("LC_ALL", "C")
-            .output()
-            .context("unable to run lscpu, is util-linux installed?")?
-            .stdout,
-    )
-    .context("unable to parse lscpu output to UTF-8")
-    .map(parse_lscpu)
+        let max_speed = RE_LSCPU_MAX_MHZ
+            .captures(lscpu_output)
+            .and_then(|captures| {
+                captures.get(1).and_then(|capture| {
+                    capture
+                        .as_str()
+                        .parse::<f64>()
+                        .ok()
+                        .map(|float| float * 1_000_000.0)
+                })
+            });
+
+        Self {
+            model_name,
+            architecture,
+            logical_cpus,
+            physical_cpus,
+            sockets,
+            virtualization,
+            max_speed,
+        }
+    }
+
+    fn trade_mark_symbols<S: AsRef<str>>(s: S) -> String {
+        s.as_ref()
+            .replace("(R)", "®")
+            .replace("(tm)", "™")
+            .replace("(TM)", "™")
+    }
+
+    /// Returns a `CPUInfo` struct populated with values gathered from `lscpu`.
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the are problems during reading or parsing
+    /// of the `lscpu` command
+    pub fn get() -> Result<Self> {
+        String::from_utf8(
+            std::process::Command::new("lscpu")
+                .env("LC_ALL", "C")
+                .output()
+                .context("unable to run lscpu, is util-linux installed?")?
+                .stdout,
+        )
+        .context("unable to parse lscpu output to UTF-8")
+        .map(Self::parse_lscpu)
+    }
 }
 
 /// Returns the frequency of the given CPU `core`
@@ -309,8 +311,6 @@ mod test {
 
     use crate::utils::cpu::CpuInfo;
 
-    use super::parse_lscpu;
-
     const LSCPU_OUTPUT: &str = concat!(
         "Architecture:             x86_64\n",
         "  CPU op-mode(s):         32-bit, 64-bit\n",
@@ -345,7 +345,7 @@ mod test {
 
     #[test]
     fn lscpu_complex() {
-        let parsed = parse_lscpu(LSCPU_OUTPUT);
+        let parsed = CpuInfo::parse_lscpu(LSCPU_OUTPUT);
 
         let expected = CpuInfo {
             model_name: Some("UIM® Abacus™ 10".into()),

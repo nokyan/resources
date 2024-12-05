@@ -38,7 +38,7 @@ body:
     description: |
       Please run Resources once with debug logs enabled (if possible) and include the terminal output here. This helps us to get hardware and software information in a streamlined way.
       You can do this by running `flatpak run --env=RUST_LOG=resources=debug net.nokyan.Resources` in your terminal if you've installed Resources using Flatpak. Otherwise run `RUST_LOG=resources=debug resources`.
-      Especially during process and app detection, personally identifiable information may be printed in the debug logs, please double-check that there's nothing inside that you don't want to be public. If your issue is unrelated to process/app detection, you can safely omit any messages that start with 'DEBUG resources::utils::app'.
+      Especially during process and app detection, personally identifiable information may be printed in the debug logs, please double-check that there's nothing inside that you don't want to be public. If your issue is unrelated to process/app detection, you can safely omit any messages that start with `DEBUG resources::utils::app`.
     value: |
       <details>
         <summary>Expand logs</summary>
