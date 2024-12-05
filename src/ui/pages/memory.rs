@@ -3,7 +3,7 @@ use gtk::glib::{self, clone};
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
-use crate::utils::memory::{self, MemoryData, MemoryDevice};
+use crate::utils::memory::{MemoryData, MemoryDevice};
 use crate::utils::units::convert_storage;
 use crate::utils::FiniteOr;
 
@@ -192,7 +192,7 @@ impl ResMemory {
         imp.swap.set_title_label(&i18n("Swap"));
         imp.swap.graph().set_graph_color(0x94, 0x29, 0x7c);
 
-        if let Ok(memory_devices) = memory::get_memory_devices() {
+        if let Ok(memory_devices) = MemoryDevice::get() {
             self.setup_properties(memory_devices);
         } else {
             imp.properties.set_visible(false);
@@ -275,7 +275,7 @@ impl ResMemory {
             self,
             move |_| {
                 let imp = this.imp();
-                if let Ok(memory_devices) = memory::pkexec_dmidecode() {
+                if let Ok(memory_devices) = MemoryDevice::pkexec_dmidecode() {
                     this.setup_properties(memory_devices);
                     imp.properties.set_visible(true);
                 }
