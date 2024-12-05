@@ -44,6 +44,7 @@ mod imp {
     use std::{cell::RefCell, collections::HashMap};
 
     use crate::{
+        config::VERSION,
         ui::{
             pages::{
                 applications::ResApplications, cpu::ResCPU, memory::ResMemory,
@@ -158,6 +159,9 @@ mod imp {
             // Devel Profile
             if PROFILE == "Devel" {
                 obj.add_css_class("devel");
+                obj.set_title(Some(
+                    &format!("{} ({})", obj.title().unwrap_or_default(), VERSION).trim(),
+                ));
             }
 
             // Load latest window state
@@ -297,10 +301,8 @@ impl MainWindow {
         }
     }
 
-    fn init_gpu_pages(self: &MainWindow) -> Vec<Gpu> {
+    fn init_gpu_pages(self: &MainWindow, gpus: &[Gpu]) {
         let imp = self.imp();
-
-        let gpus = Gpu::get_gpus().unwrap_or_default();
 
         for (i, gpu) in gpus.iter().enumerate() {
             let page = ResGPU::new();
@@ -325,8 +327,6 @@ impl MainWindow {
                 .borrow_mut()
                 .insert(gpu.pci_slot(), (gpu.clone(), added_page));
         }
-
-        gpus
     }
 
     fn init_npu_pages(self: &MainWindow) -> Vec<Npu> {
@@ -365,6 +365,10 @@ impl MainWindow {
         let imp = self.imp();
 
         let gpus = Gpu::get_gpus().unwrap_or_default();
+
+        if !ARGS.disable_gpu_monitoring {
+            self.init_gpu_pages(&gpus);
+        }
 
         imp.resources_sidebar.set_stack(&imp.content_stack);
 
@@ -411,10 +415,6 @@ impl MainWindow {
             self.remove_page(imp.memory_page.child().downcast_ref().unwrap());
         } else {
             imp.memory.init();
-        }
-
-        if !ARGS.disable_gpu_monitoring {
-            self.init_gpu_pages();
         }
 
         if !ARGS.disable_npu_monitoring {

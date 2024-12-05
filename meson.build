@@ -37,10 +37,11 @@ gettext_package = meson.project_name()
 if get_option('profile') == 'development'
   profile = 'Devel'
   vcs_tag = run_command('git', 'rev-parse', '--short', 'HEAD').stdout().strip()
-  if vcs_tag == ''
+  vcs_branch = run_command('git', 'rev-parse', '--abbrev-ref', 'HEAD').stdout().strip()
+  if vcs_tag == '' or vcs_branch == ''
     version_suffix = '-devel'
   else
-    version_suffix = '-@0@'.format(vcs_tag)
+    version_suffix = '-@0@/@1@'.format(vcs_branch, vcs_tag)
   endif
   application_id = '@0@.@1@'.format(base_id, profile)
 else
