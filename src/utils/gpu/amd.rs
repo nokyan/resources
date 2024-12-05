@@ -48,10 +48,11 @@ impl AmdGpu {
             combined_media_engine: false,
         };
 
-        if let Ok(vcn_version) = gpu.read_device_int("ip_discovery/die/0/UVD/0/major") {
-            if vcn_version >= 4 {
-                gpu.combined_media_engine = true;
-            }
+        if let (Ok(gc_version), Ok(vcn_version)) = (
+            gpu.read_device_int("ip_discovery/die/0/GC/0/major"),
+            gpu.read_device_int("ip_discovery/die/0/UVD/0/major"),
+        ) {
+            gpu.combined_media_engine = gc_version >= 9 && vcn_version >= 4;
         }
 
         gpu
