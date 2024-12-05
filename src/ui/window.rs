@@ -397,7 +397,9 @@ impl MainWindow {
         if ARGS.disable_cpu_monitoring {
             self.remove_page(imp.cpu_page.child().downcast_ref().unwrap());
         } else {
-            let cpu_info = cpu::cpu_info().context("unable to get CPUInfo").unwrap();
+            let cpu_info = cpu::CpuInfo::get()
+                .context("unable to get CPUInfo")
+                .unwrap();
             if let Some(model_name) = cpu_info.model_name.as_deref() {
                 imp.processor_window_title.set_title(model_name);
                 imp.processor_window_title.set_subtitle(&i18n("Processor"));

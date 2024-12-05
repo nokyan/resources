@@ -14,6 +14,7 @@ pub mod gpu;
 pub mod memory;
 pub mod network;
 pub mod npu;
+pub mod os;
 pub mod pci;
 pub mod process;
 pub mod settings;

@@ -23,31 +23,50 @@ body:
     required: false
 - type: textarea
   attributes:
-    label: Steps To Reproduce
+    label: Steps to Reproduce
     description: Steps to reproduce the behavior.
     placeholder: |
-      1. Go to '...'
-      2. Click on '....'
-      3. Scroll down to '....'
+      1. Go to '…'
+      2. Click on '…'
+      3. Scroll down to '…'
       4. See error
   validations:
     required: false
 - type: textarea
   attributes:
-    label: Environment
+    label: Debug Logs
     description: |
-      Please provide information about your environment.
-    placeholder: |
-      Program Version 3.3.2 (You can find this in the About dialog)
-      Package type: Flatpak
-      System: Ubuntu 22.04
-      Hardware info(if applicable): Intel i7-7700k, 32GB RAM, Nvidia GTX 1080
-    render: markdown
+      Please run Resources once with debug logs enabled (if possible) and include the terminal output here. This helps us to get hardware and software information in a streamlined way.
+      You can do this by running `flatpak run --env=RUST_LOG=resources=debug net.nokyan.Resources` in your terminal if you've installed Resources using Flatpak. Otherwise run `RUST_LOG=resources=debug resources`.
+      Especially during process and app detection, personally identifiable information may be printed in the debug logs, please double-check that there's nothing inside that you don't want to be public. If your issue is unrelated to process/app detection, you can safely omit any messages that start with `DEBUG resources::utils::app`.
+    value: |
+      <details>
+        <summary>Expand logs</summary>
+        <!-- Please leave one blank line below for enabling the code block rendering. -->
+
+        ```
+        REPLACE THIS SENTENCE WITH THE TERMINAL OUTPUT OF THE AFOREMENTIONED COMMAND.
+        ```
+      </details>
   validations:
     required: true
 - type: textarea
   attributes:
-    label: Anything else?
+    label: Environment
+    description: |
+      Please provide information about your environment if you were not able to include debug logs as described above.
+    placeholder: |
+      Resources version: 1.7.0 (you can find this in the 'About' dialog)
+      Package type: Flatpak
+      Operating system: Ubuntu 22.04
+      Hardware info: Intel i7-7700k, Nvidia GTX 1080, …
+      …
+    render: markdown
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Anything Else?
     description: |
       Links? References? Anything that will give us more context about the issue you are encountering!
 
