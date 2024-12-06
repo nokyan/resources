@@ -80,6 +80,18 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.7.1" date="2024-12-06">
+      <url type="details">https://github.com/nokyan/resources/releases/tag/v1.7.1</url>
+      <description translate="no">
+        <p>
+          Resources 1.7.1 has been published including a hotfix for a critical bug and a small improvement for network interface detection:
+        </p>
+        <ul>
+          <li>GPU, encoder and decoder usage stats for NVIDIA GPUs were displayed as 0% most of the time</li>
+          <li>Improved detection for VPN tunnels</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.7.0" date="2024-11-29">
       <url type="details">https://github.com/nokyan/resources/releases/tag/v1.7.0</url>
       <description translate="no">
