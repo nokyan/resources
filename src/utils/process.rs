@@ -1,7 +1,7 @@
 use anyhow::{bail, Context, Result};
 use config::LIBEXECDIR;
 use log::{debug, error, info};
-use process_data::{pci_slot::PciSlot, GpuUsageStats, Niceness, ProcessData};
+use process_data::{GpuIdentifier, GpuUsageStats, Niceness, ProcessData};
 use std::{
     collections::BTreeMap,
     ffi::{OsStr, OsString},
@@ -68,7 +68,7 @@ pub struct Process {
     pub timestamp_last: u64,
     pub read_bytes_last: Option<u64>,
     pub write_bytes_last: Option<u64>,
-    pub gpu_usage_stats_last: BTreeMap<PciSlot, GpuUsageStats>,
+    pub gpu_usage_stats_last: BTreeMap<GpuIdentifier, GpuUsageStats>,
     pub display_name: String,
 }
 

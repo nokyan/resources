@@ -1,7 +1,7 @@
 use anyhow::{bail, Result};
 use lazy_regex::{lazy_regex, Lazy, Regex};
 use log::{debug, warn};
-use process_data::pci_slot::PciSlot;
+use process_data::GpuIdentifier;
 
 use std::{collections::HashMap, path::PathBuf, sync::LazyLock, time::Instant};
 
@@ -24,7 +24,7 @@ static AMDGPU_IDS: LazyLock<HashMap<(u16, u8), String>> = LazyLock::new(|| {
 
 pub struct AmdGpu {
     pub device: Option<&'static Device>,
-    pub pci_slot: PciSlot,
+    pub gpu_identifier: GpuIdentifier,
     pub driver: String,
     sysfs_path: PathBuf,
     first_hwmon_path: Option<PathBuf>,
@@ -34,14 +34,14 @@ pub struct AmdGpu {
 impl AmdGpu {
     pub fn new(
         device: Option<&'static Device>,
-        pci_slot: PciSlot,
+        gpu_identifier: GpuIdentifier,
         driver: String,
         sysfs_path: PathBuf,
         first_hwmon_path: Option<PathBuf>,
     ) -> Self {
         let mut gpu = Self {
             device,
-            pci_slot,
+            gpu_identifier,
             driver,
             sysfs_path,
             first_hwmon_path,
@@ -100,8 +100,8 @@ impl GpuImpl for AmdGpu {
         self.device
     }
 
-    fn pci_slot(&self) -> PciSlot {
-        self.pci_slot
+    fn gpu_identifier(&self) -> GpuIdentifier {
+        self.gpu_identifier
     }
 
     fn driver(&self) -> String {

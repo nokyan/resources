@@ -59,7 +59,7 @@ mod imp {
 
     use async_channel::{unbounded, Receiver, Sender};
     use gtk::CompositeTemplate;
-    use process_data::pci_slot::PciSlot;
+    use process_data::{pci_slot::PciSlot, GpuIdentifier};
 
     #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/net/nokyan/Resources/ui/window.ui")]
@@ -95,7 +95,7 @@ mod imp {
 
         pub battery_pages: RefCell<HashMap<PathBuf, adw::ToolbarView>>,
 
-        pub gpu_pages: RefCell<HashMap<PciSlot, (Gpu, adw::ToolbarView)>>,
+        pub gpu_pages: RefCell<HashMap<GpuIdentifier, (Gpu, adw::ToolbarView)>>,
 
         pub npu_pages: RefCell<HashMap<PciSlot, (Npu, adw::ToolbarView)>>,
 
@@ -325,7 +325,7 @@ impl MainWindow {
 
             imp.gpu_pages
                 .borrow_mut()
-                .insert(gpu.pci_slot(), (gpu.clone(), added_page));
+                .insert(gpu.gpu_identifier(), (gpu.clone(), added_page));
         }
     }
 
@@ -391,7 +391,7 @@ impl MainWindow {
             *imp.apps_context.borrow_mut() = AppsContext::new(
                 gpus.iter()
                     .filter(|gpu| gpu.combined_media_engine().unwrap_or_default())
-                    .map(Gpu::pci_slot)
+                    .map(Gpu::gpu_identifier)
                     .collect(),
             );
             imp.applications.init(imp.sender.clone());
@@ -556,19 +556,21 @@ impl MainWindow {
                 // average usage during now and the last refresh, while gpu_busy_percent is a snapshot of the current
                 // usage, which might not be what we want
 
-                let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.pci_slot);
+                let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.gpu_identifier);
                 gpu_data.usage_fraction = Some(f64::max(
                     gpu_data.usage_fraction.unwrap_or(0.0),
                     processes_gpu_fraction.into(),
                 ));
 
-                let processes_encode_fraction = apps_context.encoder_fraction(gpu_data.pci_slot);
+                let processes_encode_fraction =
+                    apps_context.encoder_fraction(gpu_data.gpu_identifier);
                 gpu_data.encode_fraction = Some(f64::max(
                     gpu_data.encode_fraction.unwrap_or(0.0),
                     processes_encode_fraction.into(),
                 ));
 
-                let processes_decode_fraction = apps_context.decoder_fraction(gpu_data.pci_slot);
+                let processes_decode_fraction =
+                    apps_context.decoder_fraction(gpu_data.gpu_identifier);
                 gpu_data.decode_fraction = Some(f64::max(
                     gpu_data.decode_fraction.unwrap_or(0.0),
                     processes_decode_fraction.into(),
