@@ -426,7 +426,8 @@ impl App {
     pub fn read_speed(&self, apps: &AppsContext) -> f64 {
         self.processes_iter(apps)
             .filter_map(Process::read_speed)
-            .sum()
+            .sum::<f64>()
+            .clamp(0.0, f64::MAX)
     }
 
     #[must_use]
@@ -442,7 +443,8 @@ impl App {
     pub fn write_speed(&self, apps: &AppsContext) -> f64 {
         self.processes_iter(apps)
             .filter_map(Process::write_speed)
-            .sum()
+            .sum::<f64>()
+            .clamp(0.0, f64::MAX)
     }
 
     #[must_use]
