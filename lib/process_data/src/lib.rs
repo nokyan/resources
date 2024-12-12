@@ -49,8 +49,6 @@ static RE_IO_WRITE: Lazy<Regex> = lazy_regex!(r"write_bytes:\s*(\d+)");
 static RE_DRM_PDEV: Lazy<Regex> =
     lazy_regex!(r"drm-pdev:\s*([0-9A-Fa-f]{4}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}\.[0-9A-Fa-f])");
 
-static RE_DRM_CLIENT_ID: Lazy<Regex> = lazy_regex!(r"drm-client-id:\s*(\d+)");
-
 // AMD only
 static RE_DRM_ENGINE_GFX: Lazy<Regex> = lazy_regex!(r"drm-engine-gfx:\s*(\d+)\s*ns");
 
@@ -486,10 +484,7 @@ impl ProcessData {
         Ok(return_map)
     }
 
-    fn read_fdinfo(
-        fdinfo_file: &mut File,
-        file_size: usize,
-    ) -> Result<(PciSlot, GpuUsageStats, i64)> {
+    fn read_fdinfo(fdinfo_file: &mut File, file_size: usize) -> Result<(PciSlot, GpuUsageStats)> {
         let mut content = String::with_capacity(file_size);
         fdinfo_file.read_to_string(&mut content)?;
         fdinfo_file.flush()?;
@@ -499,12 +494,7 @@ impl ProcessData {
             .and_then(|captures| captures.get(1))
             .and_then(|capture| PciSlot::from_str(capture.as_str()).ok());
 
-        let client_id = RE_DRM_CLIENT_ID
-            .captures(&content)
-            .and_then(|captures| captures.get(1))
-            .and_then(|capture| capture.as_str().parse::<i64>().ok());
-
-        if let (Some(pci_slot), Some(client_id)) = (pci_slot, client_id) {
+        if let Some(pci_slot) = pci_slot {
             let gfx = RE_DRM_ENGINE_GFX // amd
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
@@ -565,7 +555,7 @@ impl ProcessData {
                 nvidia: false,
             };
 
-            return Ok((pci_slot, stats, client_id));
+            return Ok((pci_slot, stats));
         }
 
         bail!("unable to find gpu information in this fdinfo");
