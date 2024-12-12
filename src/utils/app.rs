@@ -285,7 +285,7 @@ impl App {
 
         if let Some(executable_name) = &executable_name {
             if DESKTOP_EXEC_BLOCKLIST.contains(&executable_name.as_str()) {
-                debug!("Skipping {id} because its executable {executable_name} blocklisted…");
+                debug!("Skipping {id} because its executable {executable_name} is blocklisted…");
                 bail!("{id}'s executable {executable_name} is blocklisted")
             }
         }
