@@ -495,7 +495,7 @@ impl MainWindow {
             Process::all_data()
                 .inspect_err(|e| {
                     warn!(
-                        "Unable to update process and app data!\n{e}\n{}",
+                        "Unable to update process and app data! Is resources-processes running?\n{e}\n{}",
                         e.backtrace()
                     );
                 })
