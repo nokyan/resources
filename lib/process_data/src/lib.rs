@@ -26,6 +26,9 @@ const STAT_SYSTEM_CPU_TIME: usize = 14 - STAT_OFFSET;
 const STAT_NICE: usize = 18 - STAT_OFFSET;
 const STAT_STARTTIME: usize = 21 - STAT_OFFSET;
 
+const GPU_DRIVER_NAMES: &[&str] = &["amdgpu", "i915"];
+const NPU_DRIVER_NAMES: &[&str] = &["amdxdna_accel_driver"];
+
 static USERS_CACHE: LazyLock<HashMap<libc::uid_t, String>> = LazyLock::new(|| unsafe {
     uzers::all_users()
         .map(|user| (user.uid(), user.name().to_string_lossy().to_string()))
@@ -567,7 +570,11 @@ impl ProcessData {
             .and_then(|captures| captures.get(1))
             .map(|capture| capture.as_str());
 
-        if driver.is_some() {
+        if let Some(driver) = driver {
+            if !NPU_DRIVER_NAMES.contains(&driver) {
+                bail!("this is not an NPU")
+            }
+
             let pci_slot = RE_DRM_PDEV
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
@@ -614,7 +621,16 @@ impl ProcessData {
             .and_then(|captures| captures.get(1))
             .and_then(|capture| capture.as_str().parse::<i64>().ok());
 
+        let driver = RE_DRM_DRIVER
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .map(|capture| capture.as_str());
+
         if let (Some(pci_slot), Some(client_id)) = (pci_slot, client_id) {
+            if !GPU_DRIVER_NAMES.contains(&driver.unwrap_or_default()) {
+                bail!("this is not a GPU");
+            }
+
             let gfx = RE_DRM_ENGINE_GFX // amd
                 .captures(&content)
                 .and_then(|captures| captures.get(1))
