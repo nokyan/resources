@@ -651,7 +651,7 @@ impl ProcessData {
             mem: total_memory,
         };
 
-        trace!("Success reading GPU data for {pci_slot}: {stats:?}");
+        trace!("Success reading NPU data for {pci_slot}: {stats:?}");
 
         return Ok((pci_slot, stats));
     }
