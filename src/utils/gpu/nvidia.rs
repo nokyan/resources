@@ -10,15 +10,9 @@ use process_data::pci_slot::PciSlot;
 use std::{path::PathBuf, sync::LazyLock};
 
 static NVML: LazyLock<Result<Nvml, NvmlError>> = LazyLock::new(|| {
-    let nvml = Nvml::init();
-
-    if let Err(error) = nvml.as_ref() {
-        warn!("Connection to NVML failed, reason: {error}");
-    } else {
-        debug!("Successfully connected to NVML");
-    }
-
-    nvml
+    Nvml::init()
+        .inspect_err(|err| warn!("Unable to connect to NVML: {err}"))
+        .inspect(|_| debug!("Successfully connected to NVML"))
 });
 
 use crate::utils::pci::Device;

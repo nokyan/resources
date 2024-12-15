@@ -35,18 +35,29 @@ static OTHER_PROCESS: LazyLock<Mutex<(ChildStdin, ChildStdout)>> = LazyLock::new
     let child = if *IS_FLATPAK {
         debug!("Spawning resources-processes in Flatpak mode ({proxy_path})");
         Command::new(FLATPAK_SPAWN)
-            .args(["--host", proxy_path.as_str()])
+            .args([
+                &format!(
+                    "--env=RUST_LOG={}",
+                    std::env::var("RUST_LOG=resources").unwrap_or("warn".into())
+                ),
+                "--host",
+                proxy_path.as_str(),
+            ])
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
-            .stderr(Stdio::null())
+            .stderr(Stdio::inherit())
             .spawn()
             .unwrap()
     } else {
         debug!("Spawning resources-processes in native mode ({proxy_path})");
         Command::new(proxy_path)
+            .arg(&format!(
+                "--env=RUST_LOG={}",
+                std::env::var("RUST_LOG=resources").unwrap_or("warn".into())
+            ))
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
-            .stderr(Stdio::null())
+            .stderr(Stdio::inherit())
             .spawn()
             .unwrap()
     };
