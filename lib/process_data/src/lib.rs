@@ -11,8 +11,6 @@ use nvml_wrapper::{Device, Nvml};
 use pci_slot::PciSlot;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap, HashSet};
-use std::fs::File;
-use std::io::{Read, Write};
 use std::os::linux::fs::MetadataExt;
 use std::path::Path;
 use std::str::FromStr;
@@ -53,8 +51,6 @@ static RE_DRM_DRIVER: Lazy<Regex> = lazy_regex!(r"drm-driver:\s*(.+)");
 
 static RE_DRM_PDEV: Lazy<Regex> =
     lazy_regex!(r"drm-pdev:\s*([0-9A-Fa-f]{4}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}\.[0-9A-Fa-f])");
-
-static RE_DRM_CLIENT_ID: Lazy<Regex> = lazy_regex!(r"drm-client-id:\s*(\d+)");
 
 // AMD only
 static RE_DRM_ENGINE_NPU_AMDXDNA: Lazy<Regex> =
@@ -500,24 +496,24 @@ impl ProcessData {
 
             seen_fds.insert(fd_num);
 
-            if let Ok(stats) = Self::read_gpu_fdinfo(&fdinfo_path) {
+            if let Ok((pci_slot, stats)) = Self::read_gpu_fdinfo(&fdinfo_path) {
                 return_map
-                    .entry(stats.0)
+                    .entry(pci_slot)
                     .and_modify(|existing_value: &mut GpuUsageStats| {
-                        if stats.1.gfx > existing_value.gfx {
-                            existing_value.gfx = stats.1.gfx;
+                        if stats.gfx > existing_value.gfx {
+                            existing_value.gfx = stats.gfx;
                         }
-                        if stats.1.dec > existing_value.dec {
-                            existing_value.dec = stats.1.dec;
+                        if stats.dec > existing_value.dec {
+                            existing_value.dec = stats.dec;
                         }
-                        if stats.1.enc > existing_value.enc {
-                            existing_value.enc = stats.1.enc;
+                        if stats.enc > existing_value.enc {
+                            existing_value.enc = stats.enc;
                         }
-                        if stats.1.mem > existing_value.mem {
-                            existing_value.mem = stats.1.mem;
+                        if stats.mem > existing_value.mem {
+                            existing_value.mem = stats.mem;
                         }
                     })
-                    .or_insert(stats.1);
+                    .or_insert(stats);
             }
         }
 
@@ -560,10 +556,7 @@ impl ProcessData {
     }
 
     fn read_npu_fdinfo<P: AsRef<Path>>(fdinfo_path: P) -> Result<(PciSlot, NpuUsageStats)> {
-        let mut content = String::new();
-        let mut fdinfo_file = File::open(fdinfo_path.as_ref())?;
-        fdinfo_file.read_to_string(&mut content)?;
-        fdinfo_file.flush()?;
+        let content = std::fs::read_to_string(fdinfo_path.as_ref())?;
 
         let driver = RE_DRM_DRIVER
             .captures(&content)
@@ -605,96 +598,86 @@ impl ProcessData {
         bail!("unable to find gpu information in this fdinfo");
     }
 
-    fn read_gpu_fdinfo<P: AsRef<Path>>(fdinfo_path: P) -> Result<(PciSlot, GpuUsageStats, i64)> {
-        let mut content = String::new();
-        let mut fdinfo_file = File::open(fdinfo_path.as_ref())?;
-        fdinfo_file.read_to_string(&mut content)?;
-        fdinfo_file.flush()?;
+    fn read_gpu_fdinfo<P: AsRef<Path>>(fdinfo_path: P) -> Result<(PciSlot, GpuUsageStats)> {
+        let content = std::fs::read_to_string(fdinfo_path.as_ref())?;
 
         let pci_slot = RE_DRM_PDEV
             .captures(&content)
             .and_then(|captures| captures.get(1))
-            .and_then(|capture| PciSlot::from_str(capture.as_str()).ok());
-
-        let client_id = RE_DRM_CLIENT_ID
-            .captures(&content)
-            .and_then(|captures| captures.get(1))
-            .and_then(|capture| capture.as_str().parse::<i64>().ok());
+            .and_then(|capture| PciSlot::from_str(capture.as_str()).ok())
+            .context("can't parse PCI slot ID")?;
 
         let driver = RE_DRM_DRIVER
             .captures(&content)
             .and_then(|captures| captures.get(1))
-            .map(|capture| capture.as_str());
+            .map(|capture| capture.as_str())
+            .unwrap_or_default();
 
-        if let (Some(pci_slot), Some(client_id)) = (pci_slot, client_id) {
-            if !GPU_DRIVER_NAMES.contains(&driver.unwrap_or_default()) {
-                bail!("this is not a GPU");
-            }
-
-            let gfx = RE_DRM_ENGINE_GFX // amd
-                .captures(&content)
-                .and_then(|captures| captures.get(1))
-                .and_then(|capture| capture.as_str().parse::<u64>().ok())
-                .or_else(|| {
-                    // intel
-                    RE_DRM_ENGINE_RENDER
-                        .captures(&content)
-                        .and_then(|captures| captures.get(1))
-                        .and_then(|capture| capture.as_str().parse::<u64>().ok())
-                })
-                .unwrap_or_default();
-
-            let compute = RE_DRM_ENGINE_COMPUTE
-                .captures(&content)
-                .and_then(|captures| captures.get(1))
-                .and_then(|capture| capture.as_str().parse::<u64>().ok())
-                .unwrap_or_default();
-
-            let enc = RE_DRM_ENGINE_ENC // amd
-                .captures(&content)
-                .and_then(|captures| captures.get(1))
-                .and_then(|capture| capture.as_str().parse::<u64>().ok())
-                .or_else(|| {
-                    // intel
-                    RE_DRM_ENGINE_VIDEO
-                        .captures(&content)
-                        .and_then(|captures| captures.get(1))
-                        .and_then(|capture| capture.as_str().parse::<u64>().ok())
-                })
-                .unwrap_or_default();
-
-            let dec = RE_DRM_ENGINE_DEC
-                .captures(&content)
-                .and_then(|captures| captures.get(1))
-                .and_then(|capture| capture.as_str().parse::<u64>().ok())
-                .unwrap_or_default();
-
-            let vram = RE_DRM_MEMORY_VRAM
-                .captures(&content)
-                .and_then(|captures| captures.get(1))
-                .and_then(|capture| capture.as_str().parse::<u64>().ok())
-                .unwrap_or_default()
-                .saturating_mul(1024);
-
-            let gtt = RE_DRM_MEMORY_GTT
-                .captures(&content)
-                .and_then(|captures| captures.get(1))
-                .and_then(|capture| capture.as_str().parse::<u64>().ok())
-                .unwrap_or_default()
-                .saturating_mul(1024);
-
-            let stats = GpuUsageStats {
-                gfx: gfx.saturating_add(compute),
-                mem: vram.saturating_add(gtt),
-                enc,
-                dec,
-                nvidia: false,
-            };
-
-            return Ok((pci_slot, stats, client_id));
+        if !GPU_DRIVER_NAMES.contains(&driver) {
+            bail!("this is not a GPU");
         }
 
-        bail!("unable to find gpu information in this fdinfo");
+        let gfx = RE_DRM_ENGINE_GFX // amd
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse::<u64>().ok())
+            .or_else(|| {
+                // intel
+                RE_DRM_ENGINE_RENDER
+                    .captures(&content)
+                    .and_then(|captures| captures.get(1))
+                    .and_then(|capture| capture.as_str().parse::<u64>().ok())
+            })
+            .unwrap_or_default();
+
+        let compute = RE_DRM_ENGINE_COMPUTE
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse::<u64>().ok())
+            .unwrap_or_default();
+
+        let enc = RE_DRM_ENGINE_ENC // amd
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse::<u64>().ok())
+            .or_else(|| {
+                // intel
+                RE_DRM_ENGINE_VIDEO
+                    .captures(&content)
+                    .and_then(|captures| captures.get(1))
+                    .and_then(|capture| capture.as_str().parse::<u64>().ok())
+            })
+            .unwrap_or_default();
+
+        let dec = RE_DRM_ENGINE_DEC
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse::<u64>().ok())
+            .unwrap_or_default();
+
+        let vram = RE_DRM_MEMORY_VRAM
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse::<u64>().ok())
+            .unwrap_or_default()
+            .saturating_mul(1024);
+
+        let gtt = RE_DRM_MEMORY_GTT
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse::<u64>().ok())
+            .unwrap_or_default()
+            .saturating_mul(1024);
+
+        let stats = GpuUsageStats {
+            gfx: gfx.saturating_add(compute),
+            mem: vram.saturating_add(gtt),
+            enc,
+            dec,
+            nvidia: false,
+        };
+
+        return Ok((pci_slot, stats));
     }
 
     fn nvidia_gpu_stats_all(pid: i32) -> BTreeMap<PciSlot, GpuUsageStats> {
