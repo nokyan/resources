@@ -485,8 +485,7 @@ impl ProcessData {
         let mut seen_fds = HashSet::new();
 
         let mut return_map = BTreeMap::new();
-        for entry in std::fs::read_dir(fdinfo_dir)? {
-            let entry = entry?;
+        for entry in std::fs::read_dir(fdinfo_dir)?.flatten() {
             let fdinfo_path = entry.path();
 
             let (plausible, fd_num) = Self::drm_fdinfo_plausible(&fdinfo_path, pid, &seen_fds);
@@ -526,8 +525,7 @@ impl ProcessData {
         let mut seen_fds = HashSet::new();
 
         let mut return_map = BTreeMap::new();
-        for entry in std::fs::read_dir(fdinfo_dir)? {
-            let entry = entry?;
+        for entry in std::fs::read_dir(fdinfo_dir)?.flatten() {
             let fdinfo_path = entry.path();
 
             let (plausible, fd_num) = Self::drm_fdinfo_plausible(&fdinfo_path, pid, &seen_fds);
@@ -558,44 +556,41 @@ impl ProcessData {
     fn read_npu_fdinfo<P: AsRef<Path>>(fdinfo_path: P) -> Result<(PciSlot, NpuUsageStats)> {
         let content = std::fs::read_to_string(fdinfo_path.as_ref())?;
 
+        let pci_slot = RE_DRM_PDEV
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| PciSlot::from_str(capture.as_str()).ok())
+            .context("can't parse PCI slot ID")?;
+
         let driver = RE_DRM_DRIVER
             .captures(&content)
             .and_then(|captures| captures.get(1))
-            .map(|capture| capture.as_str());
+            .map(|capture| capture.as_str())
+            .unwrap_or_default();
 
-        if let Some(driver) = driver {
-            if !NPU_DRIVER_NAMES.contains(&driver) {
-                bail!("this is not an NPU")
-            }
-
-            let pci_slot = RE_DRM_PDEV
-                .captures(&content)
-                .and_then(|captures| captures.get(1))
-                .and_then(|capture| PciSlot::from_str(capture.as_str()).ok())
-                .unwrap_or_default();
-
-            let usage = RE_DRM_ENGINE_NPU_AMDXDNA
-                .captures(&content)
-                .and_then(|captures| captures.get(1))
-                .and_then(|capture| capture.as_str().parse::<u64>().ok())
-                .unwrap_or_default();
-
-            let total_memory = RE_DRM_TOTAL_MEMORY
-                .captures(&content)
-                .and_then(|captures| captures.get(1))
-                .and_then(|capture| capture.as_str().parse::<u64>().ok())
-                .unwrap_or_default()
-                .saturating_mul(1024);
-
-            let stats = NpuUsageStats {
-                usage,
-                mem: total_memory,
-            };
-
-            return Ok((pci_slot, stats));
+        if !NPU_DRIVER_NAMES.contains(&driver) {
+            bail!("this is not an NPU")
         }
 
-        bail!("unable to find gpu information in this fdinfo");
+        let usage = RE_DRM_ENGINE_NPU_AMDXDNA
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse::<u64>().ok())
+            .unwrap_or_default();
+
+        let total_memory = RE_DRM_TOTAL_MEMORY
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse::<u64>().ok())
+            .unwrap_or_default()
+            .saturating_mul(1024);
+
+        let stats = NpuUsageStats {
+            usage,
+            mem: total_memory,
+        };
+
+        return Ok((pci_slot, stats));
     }
 
     fn read_gpu_fdinfo<P: AsRef<Path>>(fdinfo_path: P) -> Result<(PciSlot, GpuUsageStats)> {
