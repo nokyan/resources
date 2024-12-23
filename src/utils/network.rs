@@ -6,10 +6,13 @@ use std::{
 
 use anyhow::{Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
+use log::trace;
 
 use crate::i18n::i18n;
 
 use super::{pci::Device, read_uevent};
+
+const PATH_SYSFS: &str = "/sys/class/net";
 
 // this is a list because we don't look for exact matches but for if the device name starts with a certain string
 const INTERFACE_TYPE_MAP: &[(&str, InterfaceType)] = &[
@@ -40,20 +43,31 @@ pub struct NetworkData {
 }
 
 impl NetworkData {
-    pub fn new(path: &Path) -> Self {
+    pub fn new<P: AsRef<Path>>(path: P) -> Self {
+        let path = path.as_ref();
+
+        trace!("Gathering network data for {path:?}…");
+
         let inner = NetworkInterface::from_sysfs(path);
         let is_virtual = inner.is_virtual();
         let received_bytes = inner.received_bytes();
         let sent_bytes = inner.sent_bytes();
         let display_name = inner.display_name();
 
-        Self {
+        let network_data = Self {
             inner,
             is_virtual,
             received_bytes,
             sent_bytes,
             display_name,
-        }
+        };
+
+        trace!(
+            "Gathered network data for {}: {network_data:?}",
+            path.to_string_lossy()
+        );
+
+        network_data
     }
 }
 
@@ -136,11 +150,16 @@ impl PartialEq for NetworkInterface {
 impl NetworkInterface {
     pub fn get_sysfs_paths() -> Result<Vec<PathBuf>> {
         let mut list = Vec::new();
-        let entries = std::fs::read_dir("/sys/class/net")?;
+
+        trace!("Finding entries in {PATH_SYSFS}");
+
+        let entries = std::fs::read_dir(PATH_SYSFS)?;
         for entry in entries {
             let entry = entry?;
             let block_device = entry.file_name().to_string_lossy().to_string();
+            trace!("Found block device {block_device}");
             if block_device.starts_with("lo") {
+                trace!("Skipping loopback interface {block_device}");
                 continue;
             }
             list.push(entry.path());
@@ -157,6 +176,8 @@ impl NetworkInterface {
     /// been passed or if there has been problems parsing
     /// information
     pub fn from_sysfs(sysfs_path: &Path) -> NetworkInterface {
+        trace!("Creating NetworkInterface object of {sysfs_path:?}…");
+
         let dev_uevent = read_uevent(sysfs_path.join("device/uevent")).unwrap_or_default();
 
         let interface_name = sysfs_path
@@ -188,10 +209,14 @@ impl NetworkInterface {
             .map(|x| x.replace('\n', ""))
             .ok();
 
-        NetworkInterface {
+        let interface_type = InterfaceType::from_interface_name(interface_name.to_string_lossy());
+
+        let driver = dev_uevent.get("DRIVER");
+
+        let network_interface = NetworkInterface {
             interface_name: interface_name.clone(),
-            driver_name: dev_uevent.get("DRIVER").cloned(),
-            interface_type: InterfaceType::from_interface_name(interface_name.to_string_lossy()),
+            driver_name: driver.cloned(),
+            interface_type,
             speed,
             device,
             device_label,
@@ -199,7 +224,11 @@ impl NetworkInterface {
             sysfs_path: sysfs_path.to_path_buf(),
             received_bytes_path: sysfs_path.join(PathBuf::from("statistics/rx_bytes")),
             sent_bytes_path: sysfs_path.join(PathBuf::from("statistics/tx_bytes")),
-        }
+        };
+
+        trace!("Created NetworkInterface object of {sysfs_path:?}: {network_interface:?}");
+
+        network_interface
     }
 
     /// Returns a display name for this Network Interface.

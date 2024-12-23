@@ -7,12 +7,14 @@ use std::{
 use crate::i18n::{i18n, i18n_f};
 use anyhow::{bail, Context, Result};
 use lazy_regex::{lazy_regex, Lazy, Regex};
+use log::trace;
 
 use super::units::convert_energy;
 
 // For (at least) Lenovo Yoga 6 13ALC7
 static HEX_ENCODED_REGEX: Lazy<Regex> = lazy_regex!(r"^(0x[0-9a-fA-F]{2}\s*)*$");
 
+#[derive(Debug)]
 pub struct BatteryData {
     pub inner: Battery,
     pub charge: Result<f64>,
@@ -24,21 +26,32 @@ pub struct BatteryData {
 
 impl BatteryData {
     pub fn new<P: AsRef<Path>>(path: P) -> Self {
-        let inner = Battery::from_sysfs(path.as_ref());
+        let path = path.as_ref();
+
+        trace!("Gathering battery data for {path:?}…");
+
+        let inner = Battery::from_sysfs(path);
         let charge = inner.charge();
         let power_usage = inner.power_usage();
         let health = inner.health();
         let state = inner.state();
         let charge_cycles = inner.charge_cycles();
 
-        Self {
+        let battery_data = Self {
             inner,
             charge,
             power_usage,
             health,
             state,
             charge_cycles,
-        }
+        };
+
+        trace!(
+            "Gathered battery data for {}: {battery_data:?}",
+            path.to_string_lossy()
+        );
+
+        battery_data
     }
 }
 
@@ -171,6 +184,8 @@ impl Battery {
     pub fn from_sysfs<P: AsRef<Path>>(sysfs_path: P) -> Battery {
         let sysfs_path = sysfs_path.as_ref().to_path_buf();
 
+        trace!("Creating Battery object of {sysfs_path:?}…");
+
         let manufacturer = std::fs::read_to_string(sysfs_path.join("manufacturer"))
             .map(|s| Self::untangle_weird_encoding(s.replace('\n', "")))
             .ok();
@@ -197,13 +212,17 @@ impl Battery {
             })
             .ok();
 
-        Battery {
-            sysfs_path,
+        let battery = Battery {
+            sysfs_path: sysfs_path.clone(),
             manufacturer,
             model_name,
             design_capacity,
             technology,
-        }
+        };
+
+        trace!("Created Battery object of {sysfs_path:?}: {battery:?}");
+
+        battery
     }
 
     // apparently some manufacturers like to for whatever reason reencode the manufacturer and model name in hex or

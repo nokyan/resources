@@ -1,6 +1,7 @@
 use adw::prelude::WidgetExt;
 use gtk::glib::{self};
 use gtk::subclass::prelude::*;
+use log::trace;
 use plotters::style::RGBColor;
 
 use std::f64;
@@ -152,6 +153,8 @@ impl Default for ResGraph {
 
 impl ResGraph {
     pub fn new() -> Self {
+        trace!("Creating ResGraph GObject…");
+
         glib::Object::new::<Self>()
     }
 

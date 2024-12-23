@@ -2,7 +2,7 @@ mod intel;
 mod other;
 
 use anyhow::{bail, Context, Result};
-use log::{debug, info};
+use log::{debug, info, trace};
 use process_data::pci_slot::PciSlot;
 
 use std::{
@@ -46,6 +46,8 @@ impl NpuData {
     pub fn new(npu: &Npu) -> Self {
         let pci_slot = npu.pci_slot();
 
+        trace!("Gathering NPU data for {}…", pci_slot);
+
         let usage_fraction = npu.usage().ok();
 
         let total_memory = npu.total_vram().ok();
@@ -60,7 +62,7 @@ impl NpuData {
         let power_cap = npu.power_cap().ok();
         let power_cap_max = npu.power_cap_max().ok();
 
-        Self {
+        let npu_data = Self {
             pci_slot,
             usage_fraction,
             total_memory,
@@ -71,7 +73,11 @@ impl NpuData {
             power_usage,
             power_cap,
             power_cap_max,
-        }
+        };
+
+        trace!("Gathered NPU data for {}: {npu_data:?}", pci_slot);
+
+        npu_data
     }
 }
 
@@ -203,7 +209,11 @@ impl Npu {
     }
 
     fn from_sysfs_path<P: AsRef<Path>>(path: P) -> Result<Npu> {
-        let sysfs_device_path = path.as_ref().join("device");
+        let path = path.as_ref();
+
+        trace!("Creating NPU object of {path:?}…");
+
+        let sysfs_device_path = path.join("device");
         let uevent_contents = read_uevent(sysfs_device_path.join("uevent"))?;
 
         let (device, vid, pid) = if let Some(pci_line) = uevent_contents.get("PCI_ID") {
@@ -243,15 +253,13 @@ impl Npu {
             bail!("this is a simple framebuffer");
         }
 
-        let path = path.as_ref().to_path_buf();
-
         let (npu, npu_category) = if vid == VID_INTEL || driver == "intel_vpu" {
             (
                 Npu::Intel(IntelNpu::new(
                     device,
                     pci_slot,
                     driver,
-                    path,
+                    path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "Intel",
@@ -262,7 +270,7 @@ impl Npu {
                     device,
                     pci_slot,
                     driver,
-                    path,
+                    path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "Other",
@@ -274,6 +282,8 @@ impl Npu {
             npu.name().unwrap_or("<unknown name>".into()),
             npu.pci_slot(),
         );
+
+        trace!("Created NPU object of {path:?}: {npu:?}");
 
         Ok(npu)
     }

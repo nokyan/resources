@@ -1,4 +1,5 @@
 use gtk::glib::{self};
+use log::trace;
 use process_data::Containerization;
 
 use crate::{
@@ -179,6 +180,8 @@ glib::wrapper! {
 
 impl ApplicationEntry {
     pub fn new(app: &App, apps_context: &AppsContext) -> Self {
+        trace!("Creating ApplicationEntry ({}) GObject…", app.display_name);
+
         let containerization = match app.containerization {
             Containerization::None => i18n("No"),
             Containerization::Flatpak => i18n("Yes (Flatpak)"),
@@ -198,6 +201,8 @@ impl ApplicationEntry {
     }
 
     pub fn update(&self, app: &App, apps_context: &AppsContext) {
+        trace!("Refreshing ApplicationEntry ({})…", app.display_name);
+
         self.set_cpu_usage(app.cpu_time_ratio(apps_context));
         self.set_memory_usage(app.memory_usage(apps_context) as u64);
         self.set_swap_usage(app.swap_usage(apps_context) as u64);
