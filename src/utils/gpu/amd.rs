@@ -1,6 +1,6 @@
 use anyhow::{bail, Result};
 use lazy_regex::{lazy_regex, Lazy, Regex};
-use log::{debug, warn};
+use log::{debug, trace, warn};
 use process_data::pci_slot::PciSlot;
 
 use std::{collections::HashMap, path::PathBuf, sync::LazyLock, time::Instant};
@@ -79,6 +79,7 @@ impl AmdGpu {
                 let device_id = u16::from_str_radix(device_id.as_str().trim(), 16).unwrap();
                 let revision = u8::from_str_radix(revision.as_str().trim(), 16).unwrap();
                 let name = name.as_str().into();
+                trace!("Found {name} ({device_id:04x}, rev {revision:02x})");
                 map.insert((device_id, revision), name);
             }
         }
