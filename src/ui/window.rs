@@ -1,6 +1,6 @@
 use process_data::{Niceness, ProcessData};
 use std::path::PathBuf;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use adw::{prelude::*, subclass::prelude::*, ToolbarView};
 use adw::{Toast, ToastOverlay};
@@ -178,7 +178,7 @@ mod imp {
             debug!("Closing the application…");
 
             if let Err(err) = self.obj().save_window_size() {
-                log::warn!("Failed to save window state, {}", &err);
+                warn!("Failed to save window state, {}", &err);
             }
 
             // Pass close request on to the parent
@@ -439,6 +439,8 @@ impl MainWindow {
     }
 
     fn gather_refresh_data(logical_cpus: usize, gpus: &[Gpu], npus: &[Npu]) -> RefreshData {
+        let start = Instant::now();
+
         trace!("Gathering refresh data of all devices…");
 
         let cpu_data = if ARGS.disable_cpu_monitoring {
@@ -510,7 +512,7 @@ impl MainWindow {
                 .unwrap_or_default()
         };
 
-        RefreshData {
+        let refresh_data = RefreshData {
             cpu_data,
             mem_data,
             gpu_data,
@@ -522,10 +524,16 @@ impl MainWindow {
             battery_paths,
             battery_data,
             process_data,
-        }
+        };
+
+        trace!("Finished gathering refresh data in {:.2?}", start.elapsed());
+
+        refresh_data
     }
 
     fn refresh_ui(&self, refresh_data: RefreshData) {
+        let start = Instant::now();
+
         trace!("Refreshing UI using gathered data…");
 
         let imp = self.imp();
@@ -669,6 +677,8 @@ impl MainWindow {
 
             page.refresh_page(battery_data);
         }
+
+        trace!("UI refresh done in {:.2?}", start.elapsed());
     }
 
     pub async fn periodic_refresh_all(&self) {
