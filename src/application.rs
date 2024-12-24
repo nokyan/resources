@@ -263,7 +263,7 @@ impl Application {
             .application_name(i18n("Resources"))
             .application_icon(config::APP_ID)
             .developer_name(i18n("The Nalux Team"))
-            .developers(vec!["nokyan <nokyan@tuta.io>".to_string()])
+            .developers(vec!["nokyan <hello@nokyan.net>"])
             .license_type(gtk::License::Gpl30)
             .version(config::VERSION)
             .website("https://apps.gnome.org/app/net.nokyan.Resources/")

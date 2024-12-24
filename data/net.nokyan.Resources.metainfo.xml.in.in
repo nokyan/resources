@@ -38,7 +38,7 @@
   <developer id="net.nokyan">
     <name translate="no">nokyan</name>
   </developer>
-  <update_contact>nokyan@tuta.io</update_contact>
+  <update_contact>hello@nokyan.net</update_contact>
   <translation type="gettext">@gettext-package@</translation>
   <launchable type="desktop-id">@app-id@.desktop</launchable>
   <branding>
