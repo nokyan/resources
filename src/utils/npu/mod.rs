@@ -113,6 +113,7 @@ pub trait NpuImpl {
 
     fn read_sysfs_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path().join(file);
+        trace!("Reading {path:?}…");
         std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
@@ -121,11 +122,13 @@ pub trait NpuImpl {
 
     fn read_device_file<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<String> {
         let path = self.sysfs_path().join("device").join(file);
+        trace!("Reading {path:?}…");
         Ok(std::fs::read_to_string(path)?.replace('\n', ""))
     }
 
     fn read_device_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path().join("device").join(file);
+        trace!("Reading {path:?}…");
         self.read_device_file(&path)?
             .parse::<isize>()
             .with_context(|| format!("error parsing file {}", &path.to_string_lossy()))
@@ -133,6 +136,7 @@ pub trait NpuImpl {
 
     fn read_hwmon_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.first_hwmon().context("no hwmon found")?.join(file);
+        trace!("Reading {path:?}…");
         std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
