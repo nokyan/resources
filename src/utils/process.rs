@@ -1,6 +1,6 @@
 use anyhow::{bail, Context, Result};
 use config::LIBEXECDIR;
-use log::{debug, error, info};
+use log::{debug, error, info, trace};
 use process_data::{pci_slot::PciSlot, GpuUsageStats, Niceness, ProcessData};
 use std::{
     collections::BTreeMap,
@@ -8,6 +8,7 @@ use std::{
     io::{Read, Write},
     process::{ChildStdin, ChildStdout, Command, Stdio},
     sync::{LazyLock, Mutex},
+    time::Instant,
 };
 use strum_macros::Display;
 
@@ -22,7 +23,7 @@ use super::{
     boot_time, FiniteOr, FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK, NUM_CPUS, TICK_RATE,
 };
 
-static OTHER_PROCESS: LazyLock<Mutex<(ChildStdin, ChildStdout)>> = LazyLock::new(|| {
+static COMPANION_PROCESS: LazyLock<Mutex<(ChildStdin, ChildStdout)>> = LazyLock::new(|| {
     let proxy_path = if *IS_FLATPAK {
         format!(
             "{}/libexec/resources/resources-processes",
@@ -89,24 +90,43 @@ impl Process {
     /// Will return `Err` if there are problems traversing and
     /// parsing procfs
     pub fn all_data() -> Result<Vec<ProcessData>> {
+        trace!("all_data() called");
+
+        let start = Instant::now();
         let output = {
-            let mut process = OTHER_PROCESS.lock().unwrap();
+            trace!("Acquiring companion process lock");
+            let mut process = COMPANION_PROCESS.lock().unwrap();
+            trace!("Writing b\"\\n\" into companion process stdin");
             let _ = process.0.write_all(b"\n");
+            trace!("Flushing");
             let _ = process.0.flush();
 
             let mut len_bytes = [0_u8; (usize::BITS / 8) as usize];
 
+            trace!("Reading companion process output length as little-endian");
             process.1.read_exact(&mut len_bytes)?;
 
             let len = usize::from_le_bytes(len_bytes);
+            trace!("Companion process output is {len} bytes long");
 
             let mut output_bytes = vec![0; len];
+            trace!("Reading companion process output");
             process.1.read_exact(&mut output_bytes)?;
 
             output_bytes
         };
 
-        Ok(rmp_serde::from_slice(&output)?)
+        let elapsed = start.elapsed();
+        trace!("Companion process was done in {elapsed:.2?}");
+
+        trace!("Parsing companion process output");
+        let parsed =
+            rmp_serde::from_slice(&output).context("unable to decode companion process output");
+
+        let elapsed = start.elapsed();
+        trace!("all_data() done in {elapsed:.2?}");
+
+        parsed
     }
 
     pub fn from_process_data(process_data: ProcessData) -> Self {
@@ -249,17 +269,19 @@ impl Process {
             format!("{LIBEXECDIR}/resources-adjust")
         };
 
-        let adjust_string = affinity
+        let affinity_string = affinity
             .into_iter()
             .map(|b| if b { '1' } else { '0' })
             .collect::<String>();
+
+        debug!("Trying to adjust with niceness = {niceness} and affinity = {affinity_string}");
 
         let result = Self::maybe_pkexec_command(
             adjust_path,
             [
                 self.data.pid.to_string(),
                 niceness.to_string(),
-                adjust_string,
+                affinity_string,
             ],
         );
 

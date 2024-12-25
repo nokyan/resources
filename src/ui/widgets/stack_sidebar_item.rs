@@ -4,6 +4,7 @@ use gtk::{
     glib::{self},
     Ordering,
 };
+use log::trace;
 
 use super::graph::ResGraph;
 
@@ -206,6 +207,8 @@ impl ResStackSidebarItem {
         primary_ord: u32,
         secondary_ord: u32,
     ) -> Self {
+        trace!("Creating ResStackSidebarItem GObject…");
+
         let detail = detail.unwrap_or_default();
         let this: Self = glib::Object::builder()
             .property("name", name)

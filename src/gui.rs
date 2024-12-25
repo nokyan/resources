@@ -10,6 +10,7 @@ use crate::utils::IS_FLATPAK;
 use clap::{command, Parser};
 use gettextrs::{gettext, LocaleCategory};
 use gtk::{gio, glib};
+use log::trace;
 
 use self::application::Application;
 use self::config::{GETTEXT_PACKAGE, LOCALEDIR, RESOURCES_FILE};
@@ -65,6 +66,7 @@ pub fn main() {
 
     // Initialize logger
     pretty_env_logger::init();
+    trace!("Trace logs activated. Brace yourself for *lots* of logs. Slowdowns may occur.");
 
     // reset XDG_DATA_DIRS to use absolute paths instead of relative paths because Flatpak seemingly cannot resolve them
     // this must happen now because once the GTK app is loaded, it's too late

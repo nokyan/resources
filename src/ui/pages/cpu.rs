@@ -1,6 +1,7 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone};
 use gtk::FlowBoxChild;
+use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
@@ -8,7 +9,7 @@ use crate::ui::widgets::graph_box::ResGraphBox;
 use crate::utils::cpu::{CpuData, CpuInfo};
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_frequency, convert_temperature};
-use crate::utils::{cpu, FiniteOr, NUM_CPUS};
+use crate::utils::{FiniteOr, NUM_CPUS};
 
 pub const TAB_ID: &str = "cpu";
 
@@ -192,6 +193,8 @@ impl ResCPU {
     const MAIN_GRAPH_COLOR: [u8; 3] = [0x35, 0x84, 0xe4];
 
     pub fn new() -> Self {
+        trace!("Creating ResCPU GObject…");
+
         glib::Object::new::<Self>()
     }
 
@@ -201,14 +204,31 @@ impl ResCPU {
     }
 
     pub fn setup_widgets(&self, cpu_info: CpuInfo) {
+        trace!("Setting up ResCPU widgets…");
+
         let imp = self.imp();
 
-        let old_total_usage = cpu::get_cpu_usage(None).unwrap_or((0, 0));
+        let logical_cpus = cpu_info.logical_cpus.unwrap_or(0);
+
+        let CpuData {
+            new_thread_usages,
+            temperature: _,
+            frequencies: _,
+        } = CpuData::new(logical_cpus);
+
+        let old_total_usage = new_thread_usages
+            .iter()
+            .flatten()
+            .copied()
+            .reduce(|acc, x| (acc.0 + x.0, acc.1 + x.1))
+            .unwrap_or_default();
         imp.old_total_usage.set(old_total_usage);
 
-        let logical_cpus = cpu_info.logical_cpus.unwrap_or(0);
         for i in 0..logical_cpus {
-            let old_thread_usage = cpu::get_cpu_usage(Some(i)).unwrap_or((0, 0));
+            let old_thread_usage = new_thread_usages
+                .get(i)
+                .map(|i| *i.as_ref().unwrap_or(&(0, 0)))
+                .unwrap_or((0, 0));
             imp.old_thread_usages.borrow_mut().push(old_thread_usage);
         }
 
@@ -282,6 +302,8 @@ impl ResCPU {
     }
 
     pub fn setup_signals(&self) {
+        trace!("Setting up ResCPU signals…");
+
         let imp = self.imp();
         imp.logical_switch.connect_active_notify(clone!(
             #[weak(rename_to = this)]
@@ -301,14 +323,22 @@ impl ResCPU {
     }
 
     pub fn refresh_page(&self, cpu_data: &CpuData) {
+        trace!("Refreshing ResCPU…");
+
         let CpuData {
-            new_total_usage,
             new_thread_usages,
             temperature,
             frequencies,
         } = cpu_data;
 
         let imp = self.imp();
+
+        let new_total_usage = new_thread_usages
+            .iter()
+            .flatten()
+            .copied()
+            .reduce(|acc, x| (acc.0 + x.0, acc.1 + x.1))
+            .unwrap_or_default();
 
         let idle_total_delta = new_total_usage
             .0
@@ -331,7 +361,7 @@ impl ResCPU {
         let mut percentage_string = format!("{} %", percentage.round());
         imp.total_cpu.set_subtitle(&percentage_string);
 
-        imp.old_total_usage.set(*new_total_usage);
+        imp.old_total_usage.set(new_total_usage);
 
         if imp.logical_cpus_amount.get() > 1 {
             for (i, old_thread_usage) in imp
@@ -341,7 +371,10 @@ impl ResCPU {
                 .enumerate()
                 .take(imp.logical_cpus_amount.get())
             {
-                let new_thread_usage = new_thread_usages[i];
+                let new_thread_usage = new_thread_usages
+                    .get(i)
+                    .map(|i| *i.as_ref().unwrap_or(&(0, 0)))
+                    .unwrap_or((0, 0));
                 let idle_thread_delta = new_thread_usage.0.saturating_sub(old_thread_usage.0);
                 let sum_thread_delta = new_thread_usage.1.saturating_sub(old_thread_usage.1);
                 let work_thread_time = sum_thread_delta.saturating_sub(idle_thread_delta);

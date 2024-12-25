@@ -4,7 +4,7 @@ mod nvidia;
 mod other;
 
 use anyhow::{bail, Context, Result};
-use log::{debug, info};
+use log::{debug, info, trace};
 use process_data::pci_slot::PciSlot;
 
 use std::{
@@ -56,6 +56,8 @@ impl GpuData {
     pub fn new(gpu: &Gpu) -> Self {
         let pci_slot = gpu.pci_slot();
 
+        trace!("Gathering GPU data for {}…", pci_slot);
+
         let usage_fraction = gpu.usage().map(|usage| usage.clamp(0.0, 1.0)).ok();
 
         let encode_fraction = gpu.encode_usage().map(|usage| usage.clamp(0.0, 1.0)).ok();
@@ -76,7 +78,7 @@ impl GpuData {
 
         let nvidia = matches!(gpu, Gpu::Nvidia(_));
 
-        Self {
+        let gpu_data = Self {
             pci_slot,
             usage_fraction,
             encode_fraction,
@@ -90,7 +92,11 @@ impl GpuData {
             power_cap,
             power_cap_max,
             nvidia,
-        }
+        };
+
+        trace!("Gathered GPU data for {}: {gpu_data:?}", pci_slot);
+
+        gpu_data
     }
 }
 
@@ -131,6 +137,7 @@ pub trait GpuImpl {
 
     fn read_sysfs_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path().join(file);
+        trace!("Reading {path:?}…");
         std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
@@ -139,6 +146,7 @@ pub trait GpuImpl {
 
     fn read_device_file<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<String> {
         let path = self.sysfs_path().join("device").join(file);
+        trace!("Reading {path:?}…");
         Ok(std::fs::read_to_string(path)?.replace('\n', ""))
     }
 
@@ -151,6 +159,7 @@ pub trait GpuImpl {
 
     fn read_hwmon_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.first_hwmon().context("no hwmon found")?.join(file);
+        trace!("Reading {path:?}…");
         std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
@@ -227,7 +236,11 @@ impl Gpu {
     }
 
     fn from_sysfs_path<P: AsRef<Path>>(path: P) -> Result<Gpu> {
-        let sysfs_device_path = path.as_ref().join("device");
+        let path = path.as_ref();
+
+        trace!("Creating GPU object of {path:?}…");
+
+        let sysfs_device_path = path.join("device");
         let uevent_contents = read_uevent(sysfs_device_path.join("uevent"))?;
 
         let (device, vid, pid) = if let Some(pci_line) = uevent_contents.get("PCI_ID") {
@@ -267,15 +280,13 @@ impl Gpu {
             bail!("this is a simple framebuffer");
         }
 
-        let path = path.as_ref().to_path_buf();
-
         let (gpu, gpu_category) = if vid == VID_AMD || driver == "amdgpu" {
             (
                 Gpu::Amd(AmdGpu::new(
                     device,
                     pci_slot,
                     driver,
-                    path,
+                    path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "AMD",
@@ -286,7 +297,7 @@ impl Gpu {
                     device,
                     pci_slot,
                     driver,
-                    path,
+                    path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "Intel",
@@ -297,7 +308,7 @@ impl Gpu {
                     device,
                     pci_slot,
                     driver,
-                    path,
+                    path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "NVIDIA",
@@ -308,7 +319,7 @@ impl Gpu {
                     device,
                     pci_slot,
                     driver,
-                    path,
+                    path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "Other",
@@ -320,6 +331,8 @@ impl Gpu {
             gpu.name().unwrap_or("<unknown name>".into()),
             gpu.pci_slot(),
         );
+
+        trace!("Created GPU object of {path:?}: {gpu:?}");
 
         Ok(gpu)
     }

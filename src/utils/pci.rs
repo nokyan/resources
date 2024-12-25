@@ -1,7 +1,10 @@
 use std::{collections::BTreeMap, io::BufRead, sync::LazyLock, time::Instant};
 
 use anyhow::{Context, Result};
-use log::{debug, info, warn};
+use log::{debug, info, trace, warn};
+
+const PATH_PCI_IDS: &str = "/usr/share/hwdata/pci.ids";
+const PATH_PCI_IDS_FLATPAK: &str = "/run/host/usr/share/hwdata/pci.ids";
 
 static VENDORS: LazyLock<BTreeMap<u16, Vendor>> = LazyLock::new(|| {
     init()
@@ -16,7 +19,7 @@ pub struct Subdevice {
     name: String,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct Device {
     id: u16,
     vendor_id: u16,
@@ -24,11 +27,21 @@ pub struct Device {
     sub_devices: Vec<Subdevice>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct Vendor {
     id: u16,
     name: String,
     devices: BTreeMap<u16, Device>,
+}
+
+impl std::fmt::Debug for Device {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Device")
+            .field("id", &self.id)
+            .field("vendor_id", &self.vendor_id)
+            .field("name", &self.name)
+            .finish()
+    }
 }
 
 impl Device {
@@ -52,6 +65,15 @@ impl Device {
 
     pub fn pid(&self) -> u16 {
         self.id
+    }
+}
+
+impl std::fmt::Debug for Vendor {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Vendor")
+            .field("id", &self.id)
+            .field("name", &self.name)
+            .finish()
     }
 }
 
@@ -80,11 +102,13 @@ impl Vendor {
 fn parse_pci_ids<R: BufRead>(reader: R) -> Result<BTreeMap<u16, Vendor>> {
     let mut seen: BTreeMap<u16, Vendor> = BTreeMap::new();
 
-    for line in reader.lines().map_while(Result::ok) {
+    for (number, line) in reader.lines().map_while(Result::ok).enumerate() {
         if line.starts_with('C') {
             // case 1: we've reached the classes, time to stop
+            trace!("Line {}: Classes reached, parsing done", number + 1);
             break;
         } else if line.starts_with('#') || line.is_empty() {
+            trace!("Line {}: Empty line or comment", number + 1);
             // case 2: we're seeing a comment, don't care
             // case 3: we're seeing an empty line, also don't care
             continue;
@@ -116,6 +140,8 @@ fn parse_pci_ids<R: BufRead>(reader: R) -> Result<BTreeMap<u16, Vendor>> {
                 vendor_id: sub_vid,
                 name,
             };
+
+            trace!("Line {}: New subdevice found: {subdevice:?}", number + 1);
 
             seen.values_mut()
                 .last()
@@ -151,6 +177,8 @@ fn parse_pci_ids<R: BufRead>(reader: R) -> Result<BTreeMap<u16, Vendor>> {
                 sub_devices: Vec::new(),
             };
 
+            trace!("Line {}: New device found: {device:?}", number + 1);
+
             seen.values_mut()
                 .last()
                 .with_context(|| format!("no preceding device (line: {line})"))?
@@ -178,6 +206,8 @@ fn parse_pci_ids<R: BufRead>(reader: R) -> Result<BTreeMap<u16, Vendor>> {
                 devices: BTreeMap::new(),
             };
 
+            trace!("Line {}: New vendor found: {vendor:?}", number + 1);
+
             seen.insert(vid, vendor);
         }
     }
@@ -194,11 +224,13 @@ fn init() -> Result<BTreeMap<u16, Vendor>> {
     //
     // if that doesn't work, we're either not on flatpak or we're not allowed to see the host's pci.ids for some reason,
     // so try to either access flatpak's own (probably older) pci.ids or the host's if we're not on flatpak
-    let file = std::fs::File::open("/run/host/usr/share/hwdata/pci.ids")
-        .or_else(|_| std::fs::File::open("/usr/share/hwdata/pci.ids"))?;
+    let file =
+        std::fs::File::open(PATH_PCI_IDS_FLATPAK).or_else(|_| std::fs::File::open(PATH_PCI_IDS))?;
+    trace!("pci.ids file opened");
 
     let reader = std::io::BufReader::new(file);
 
+    trace!("Calling parse_pci_ids()");
     let map = parse_pci_ids(reader)?;
 
     let vendors_count = map.len();

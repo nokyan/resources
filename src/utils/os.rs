@@ -1,4 +1,5 @@
 use lazy_regex::{lazy_regex, Lazy, Regex};
+use log::trace;
 
 use super::IS_FLATPAK;
 
@@ -20,6 +21,8 @@ impl OsInfo {
         } else {
             PATH_OS_RELEASE
         };
+
+        trace!("Path for the os-release file is determined to be `{os_path}`");
 
         let name = RE_PRETTY_NAME
             .captures(&std::fs::read_to_string(os_path).unwrap_or_default())

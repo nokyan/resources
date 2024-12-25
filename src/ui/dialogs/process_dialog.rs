@@ -1,5 +1,6 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, GString};
+use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
@@ -105,6 +106,7 @@ impl Default for ResProcessDialog {
 
 impl ResProcessDialog {
     pub fn new() -> Self {
+        trace!("Creating ResProcessDialog GObject…");
         glib::Object::new::<Self>()
     }
 
@@ -113,6 +115,8 @@ impl ResProcessDialog {
     }
 
     pub fn setup_widgets(&self, process: &ProcessEntry, user: &str) {
+        trace!("Setting up ResProcessDialog widgets…");
+
         let imp = self.imp();
 
         imp.name.set_label(&process.name());
@@ -148,6 +152,8 @@ impl ResProcessDialog {
     }
 
     pub fn update(&self, process: &ProcessEntry) {
+        trace!("Refreshing ResProcessDialog…");
+
         let imp = self.imp();
 
         imp.cpu_usage

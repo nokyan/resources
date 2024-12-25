@@ -3,7 +3,7 @@ use std::{collections::HashMap, path::Path, sync::LazyLock};
 use anyhow::{Context, Result};
 use gtk::glib::DateTime;
 use ini::Ini;
-use log::debug;
+use log::{debug, trace};
 use process_data::unix_as_millis;
 
 pub mod app;
@@ -52,6 +52,7 @@ pub static NUM_CPUS: LazyLock<usize> = LazyLock::new(num_cpus::get);
 
 // Adapted from Mission Center: https://gitlab.com/mission-center-devs/mission-center/
 pub static IS_FLATPAK: LazyLock<bool> = LazyLock::new(|| {
+    trace!("Determining whether /.flatpak-info exists…");
     let is_flatpak = std::path::Path::new("/.flatpak-info").exists();
 
     if is_flatpak {
@@ -98,6 +99,10 @@ pub fn read_uevent_contents<S: AsRef<str>>(contents: S) -> Result<HashMap<String
 }
 
 pub fn read_uevent<P: AsRef<Path>>(uevent_path: P) -> Result<HashMap<String, String>> {
+    trace!(
+        "Reading uevent contents of {}",
+        uevent_path.as_ref().to_string_lossy()
+    );
     read_uevent_contents(std::fs::read_to_string(uevent_path)?)
 }
 
