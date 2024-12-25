@@ -7,7 +7,7 @@ use std::{
     sync::LazyLock,
 };
 
-const KNOWN_HWMONS: &[&str] = &["rp1_adc", "zenpower", "coretemp", "k10temp"];
+const KNOWN_HWMONS: &[&str] = &["zenpower", "coretemp", "k10temp"];
 
 const KNOWN_THERMAL_ZONES: &[&str] = &["cpu-thermal", "x86_pkg_temp", "acpitz"];
 
