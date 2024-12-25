@@ -2,6 +2,7 @@ use std::time::{Duration, SystemTime};
 
 use adw::{glib::property::PropertySet, prelude::*, subclass::prelude::*};
 use gtk::glib;
+use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
@@ -192,6 +193,8 @@ impl ResNetwork {
     const MAIN_GRAPH_COLOR: [u8; 3] = [0x25, 0x9a, 0xab];
 
     pub fn new() -> Self {
+        trace!("Creating ResNetwork GObject…");
+
         glib::Object::new::<Self>()
     }
 
@@ -201,6 +204,11 @@ impl ResNetwork {
     }
 
     pub fn setup_widgets(&self, network_data: &NetworkData) {
+        trace!(
+            "Setting up ResNetwork ({:?}) widgets…",
+            network_data.inner.sysfs_path
+        );
+
         let imp = self.imp();
         let network_interface = &network_data.inner;
 
@@ -269,6 +277,11 @@ impl ResNetwork {
     }
 
     pub fn refresh_page(&self, network_data: NetworkData) {
+        trace!(
+            "Refreshing ResNetwork ({:?})…",
+            network_data.inner.sysfs_path
+        );
+
         let NetworkData {
             received_bytes,
             sent_bytes,

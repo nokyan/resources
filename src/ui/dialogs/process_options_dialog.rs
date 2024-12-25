@@ -10,6 +10,7 @@ use crate::{
 use adw::{prelude::*, subclass::prelude::*, ToastOverlay};
 use async_channel::Sender;
 use gtk::glib::{self, clone, MainContext};
+use log::trace;
 use process_data::Niceness;
 
 mod imp {
@@ -87,6 +88,7 @@ impl Default for ResProcessOptionsDialog {
 
 impl ResProcessOptionsDialog {
     pub fn new() -> Self {
+        trace!("Creating ResProcessOptionsDialog GObject…");
         glib::Object::new::<Self>()
     }
 
@@ -118,6 +120,8 @@ impl ResProcessOptionsDialog {
     }
 
     pub fn setup_widgets(&self, process: &ProcessEntry) {
+        trace!("Setting up ResProcessOptionsDialog widgets…");
+
         let imp = self.imp();
 
         imp.name.set_label(&process.name());
@@ -168,6 +172,8 @@ impl ResProcessOptionsDialog {
         sender: Sender<Action>,
         toast_overlay: &ToastOverlay,
     ) {
+        trace!("Setting up ResProcessOptionsDialog signals…");
+
         let imp = self.imp();
 
         imp.select_all_button.connect_clicked(clone!(

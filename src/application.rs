@@ -1,4 +1,4 @@
-use log::{debug, info};
+use log::{debug, info, trace};
 
 use adw::{prelude::*, subclass::prelude::*};
 use glib::clone;
@@ -78,6 +78,8 @@ glib::wrapper! {
 
 impl Application {
     pub fn new() -> Self {
+        trace!("Creating Application GObject…");
+
         glib::Object::builder::<Self>()
             .property("application-id", Some(APP_ID))
             .property("flags", gio::ApplicationFlags::empty())
@@ -263,7 +265,7 @@ impl Application {
             .application_name(i18n("Resources"))
             .application_icon(config::APP_ID)
             .developer_name(i18n("The Nalux Team"))
-            .developers(vec!["nokyan <nokyan@tuta.io>".to_string()])
+            .developers(vec!["nokyan <hello@nokyan.net>"])
             .license_type(gtk::License::Gpl30)
             .version(config::VERSION)
             .website("https://apps.gnome.org/app/net.nokyan.Resources/")
@@ -283,19 +285,22 @@ impl Application {
     }
 
     pub fn run(&self) {
+        trace!("Starting the application");
         info!("Resources ({APP_ID})");
-        info!("Version: {VERSION}");
-        info!("Datadir: {PKGDATADIR}");
+        info!("Version: {VERSION} ({PROFILE})");
+        info!("Datadir: `{PKGDATADIR}`");
 
-        let os_info = OsInfo::get();
-        debug!(
-            "Operating system: {}",
-            os_info.name.as_deref().unwrap_or("N/A")
-        );
-        debug!(
-            "Kernel version: {}",
-            os_info.kernel_version.as_deref().unwrap_or("N/A")
-        );
+        if log::log_enabled!(log::Level::Debug) {
+            let os_info = OsInfo::get();
+            debug!(
+                "Operating system: {}",
+                os_info.name.as_deref().unwrap_or("N/A")
+            );
+            debug!(
+                "Kernel version: {}",
+                os_info.kernel_version.as_deref().unwrap_or("N/A")
+            );
+        }
 
         if PROFILE == "Devel" {
             info!(

@@ -1,5 +1,6 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone};
+use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
@@ -172,6 +173,8 @@ impl ResMemory {
     const MAIN_GRAPH_COLOR: [u8; 3] = [0xc5, 0x2f, 0x90];
 
     pub fn new() -> Self {
+        trace!("Creating ResMemory GObject…");
+
         glib::Object::new::<Self>()
     }
 
@@ -181,6 +184,8 @@ impl ResMemory {
     }
 
     pub fn setup_widgets(&self) {
+        trace!("Setting up ResMemory widgets…");
+
         let imp = self.imp();
 
         imp.memory.set_title_label(&i18n("Memory"));
@@ -268,6 +273,8 @@ impl ResMemory {
     }
 
     pub fn setup_signals(&self) {
+        trace!("Setting up ResMemory signals…");
+
         let imp = self.imp();
 
         imp.authentication_banner.connect_button_clicked(clone!(
@@ -285,6 +292,8 @@ impl ResMemory {
     }
 
     pub fn refresh_page(&self, memdata: MemoryData) {
+        trace!("Refreshing ResMemory…");
+
         let imp = self.imp();
 
         let MemoryData {

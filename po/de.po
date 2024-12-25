@@ -1,6 +1,6 @@
 #
 # piekay <>, 2024.
-# nokyan <nokyan@tuta.io>, 2022-2024.
+# nokyan <hello@nokyan.net>, 2022-2024.
 #
 msgid ""
 msgstr ""
@@ -8,8 +8,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-19 13:51+0200\n"
 "PO-Revision-Date: 2024-10-19 13:57+0200\n"
-"Last-Translator: nokyan <nokyan@tuta.io>\n"
-"Language-Team: German <nokyan@tuta.io>\n"
+"Last-Translator: nokyan <hello@nokyan.net>\n"
+"Language-Team: German <hello@nokyan.net>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -133,7 +133,7 @@ msgstr "Probleme melden"
 #. One name per line, please do not remove previous names.
 #: src/application.rs:278
 msgid "translator-credits"
-msgstr "nokyan <nokyan@tuta.io>piekay"
+msgstr "nokyan <hello@nokyan.net>piekay"
 
 #: src/application.rs:279
 msgid "Icon by"

@@ -3,6 +3,7 @@ use std::{ops::Deref, str::FromStr, sync::LazyLock};
 use adw::prelude::*;
 
 use gtk::{gio, glib, SortType};
+use log::debug;
 use strum_macros::{Display, EnumString, FromRepr};
 
 use paste::paste;
@@ -20,6 +21,7 @@ macro_rules! bool_settings {
 
             paste! {
                 pub fn [<set_ $setting_name>](&self, value: bool) -> Result<(), glib::error::BoolError> {
+                    debug!("Setting boolean {} to {}", stringify!($setting_name).replace("_", "-"), value);
                     self.set_boolean(&stringify!($setting_name).replace("_", "-"), value)
                 }
 
@@ -45,6 +47,7 @@ macro_rules! int_settings {
 
             paste! {
                 pub fn [<set_ $setting_name>](&self, value: i32) -> Result<(), glib::error::BoolError> {
+                    debug!("Setting int {} to {}", stringify!($setting_name).replace("_", "-"), value);
                     self.set_int(&stringify!($setting_name).replace("_", "-"), value)
                 }
 
@@ -70,6 +73,7 @@ macro_rules! uint_settings {
 
             paste! {
                 pub fn [<set_ $setting_name>](&self, value: u32) -> Result<(), glib::error::BoolError> {
+                    debug!("Setting uint {} to {}", stringify!($setting_name).replace("_", "-"), value);
                     self.set_uint(&stringify!($setting_name).replace("_", "-"), value)
                 }
 
@@ -155,6 +159,7 @@ impl Settings {
         &self,
         value: TemperatureUnit,
     ) -> Result<(), glib::error::BoolError> {
+        debug!("Setting temperature-unit to {}", value);
         self.set_string("temperature-unit", &value.to_string())
     }
 
@@ -175,6 +180,7 @@ impl Settings {
     }
 
     pub fn set_base(&self, value: Base) -> Result<(), glib::error::BoolError> {
+        debug!("Setting base to {}", value);
         self.set_string("base", &value.to_string())
     }
 
@@ -192,6 +198,7 @@ impl Settings {
         &self,
         value: S,
     ) -> Result<(), glib::error::BoolError> {
+        debug!("Setting last-viewed-page to {}", value.as_ref());
         self.set_string("last-viewed-page", value.as_ref())
     }
 
@@ -206,6 +213,7 @@ impl Settings {
     }
 
     pub fn set_refresh_speed(&self, value: RefreshSpeed) -> Result<(), glib::error::BoolError> {
+        debug!("Setting refresh-speed to {}", value);
         self.set_string("refresh-speed", &value.to_string())
     }
 
@@ -229,6 +237,7 @@ impl Settings {
         &self,
         value: SidebarMeterType,
     ) -> Result<(), glib::error::BoolError> {
+        debug!("Setting sidebar-meter-type to {}", value);
         self.set_string("sidebar-meter-type", &value.to_string())
     }
 
@@ -251,6 +260,7 @@ impl Settings {
     }
 
     pub fn set_maximized(&self, value: bool) -> Result<(), glib::error::BoolError> {
+        debug!("Setting boolean is-maximized to {}", value);
         self.set_boolean("is-maximized", value)
     }
 
@@ -272,10 +282,9 @@ impl Settings {
         &self,
         value: SortType,
     ) -> Result<(), glib::error::BoolError> {
-        self.set_boolean(
-            "processes-sort-by-ascending",
-            matches!(value, SortType::Ascending),
-        )
+        let setting = matches!(value, SortType::Ascending);
+        debug!("Setting boolean processes-sort-by-ascending to {}", setting);
+        self.set_boolean("processes-sort-by-ascending", setting)
     }
 
     pub fn connect_processes_sort_by_ascending<F: Fn(SortType) + 'static>(
@@ -308,10 +317,9 @@ impl Settings {
         &self,
         value: SortType,
     ) -> Result<(), glib::error::BoolError> {
-        self.set_boolean(
-            "apps-sort-by-ascending",
-            matches!(value, SortType::Ascending),
-        )
+        let setting = matches!(value, SortType::Ascending);
+        debug!("Setting boolean apps-sort-by-ascending to {}", setting);
+        self.set_boolean("apps-sort-by-ascending", setting)
     }
 
     pub fn connect_apps_sort_by_ascending<F: Fn(SortType) + 'static>(

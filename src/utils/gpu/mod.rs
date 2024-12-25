@@ -6,7 +6,7 @@ mod v3d;
 
 use anyhow::{bail, Context, Result};
 use lazy_regex::{lazy_regex, Lazy, Regex};
-use log::{debug, info};
+use log::{debug, info, trace};
 use process_data::{pci_slot::PciSlot, GpuIdentifier};
 use v3d::V3dGpu;
 
@@ -26,9 +26,9 @@ use self::{amd::AmdGpu, intel::IntelGpu, nvidia::NvidiaGpu, other::OtherGpu};
 
 use super::pci::Vendor;
 
-pub const VID_AMD: u16 = 4098;
-pub const VID_INTEL: u16 = 32902;
-pub const VID_NVIDIA: u16 = 4318;
+pub const VID_AMD: u16 = 0x1002;
+pub const VID_INTEL: u16 = 0x8086;
+pub const VID_NVIDIA: u16 = 0x10DE;
 
 const RE_CARD_ENUMARATOR: Lazy<Regex> = lazy_regex!(r"(\d+)\/?$");
 
@@ -61,6 +61,8 @@ impl GpuData {
     pub fn new(gpu: &Gpu) -> Self {
         let gpu_identifier = gpu.gpu_identifier();
 
+        trace!("Gathering GPU data for {}…", gpu_identifier);
+
         let usage_fraction = gpu.usage().map(|usage| usage.clamp(0.0, 1.0)).ok();
 
         let encode_fraction = gpu.encode_usage().map(|usage| usage.clamp(0.0, 1.0)).ok();
@@ -81,7 +83,7 @@ impl GpuData {
 
         let nvidia = matches!(gpu, Gpu::Nvidia(_));
 
-        Self {
+        let gpu_data = Self {
             gpu_identifier,
             usage_fraction,
             encode_fraction,
@@ -95,7 +97,11 @@ impl GpuData {
             power_cap,
             power_cap_max,
             nvidia,
-        }
+        };
+
+        trace!("Gathered GPU data for {}: {gpu_data:?}", gpu_identifier);
+
+        gpu_data
     }
 }
 
@@ -137,6 +143,7 @@ pub trait GpuImpl {
 
     fn read_sysfs_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path().join(file);
+        trace!("Reading {path:?}…");
         std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
@@ -145,6 +152,7 @@ pub trait GpuImpl {
 
     fn read_device_file<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<String> {
         let path = self.sysfs_path().join("device").join(file);
+        trace!("Reading {path:?}…");
         Ok(std::fs::read_to_string(path)?.replace('\n', ""))
     }
 
@@ -157,6 +165,7 @@ pub trait GpuImpl {
 
     fn read_hwmon_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.first_hwmon().context("no hwmon found")?.join(file);
+        trace!("Reading {path:?}…");
         std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
@@ -234,6 +243,9 @@ impl Gpu {
 
     fn from_sysfs_path<P: AsRef<Path>>(path: P, i: usize) -> Result<Gpu> {
         let path = path.as_ref().to_path_buf();
+
+        trace!("Creating GPU object of {path:?}…");
+
         let enumarator = RE_CARD_ENUMARATOR
             .captures(&path.to_string_lossy())
             .and_then(|captures| captures.get(1))
@@ -292,7 +304,7 @@ impl Gpu {
                     device,
                     gpu_identifier,
                     driver,
-                    path,
+                    path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "AMD",
@@ -303,7 +315,7 @@ impl Gpu {
                     device,
                     gpu_identifier,
                     driver,
-                    path,
+                    path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "Intel",
@@ -314,7 +326,7 @@ impl Gpu {
                     device,
                     gpu_identifier,
                     driver,
-                    path,
+                    path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "NVIDIA",
@@ -325,7 +337,7 @@ impl Gpu {
                     device,
                     gpu_identifier,
                     driver,
-                    path,
+                    path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "v3d",
@@ -336,7 +348,7 @@ impl Gpu {
                     device,
                     gpu_identifier,
                     driver,
-                    path,
+                    path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "Other",
@@ -348,6 +360,8 @@ impl Gpu {
             gpu.name().unwrap_or("<unknown name>".into()),
             gpu.gpu_identifier(),
         );
+
+        trace!("Created GPU object of {path:?}: {gpu:?}");
 
         Ok(gpu)
     }

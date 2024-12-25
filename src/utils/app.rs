@@ -11,7 +11,7 @@ use gtk::{
     glib::GString,
 };
 use lazy_regex::{lazy_regex, Lazy, Regex};
-use log::{debug, info};
+use log::{debug, info, trace};
 use process_data::{Containerization, GpuIdentifier, ProcessData};
 
 use crate::i18n::i18n;
@@ -234,6 +234,7 @@ impl App {
 
     pub fn from_desktop_file<P: AsRef<Path>>(file_path: P) -> Result<App> {
         let file_path = file_path.as_ref();
+        trace!("Reading {file_path:?}…");
 
         let ini = ini::Ini::load_from_file(file_path)?;
 
@@ -249,7 +250,8 @@ impl App {
                 // if not, presume that the ID is in the file name
                 Some(file_path.file_stem()?.to_string_lossy().to_string())
             })
-            .context("unable to get ID of desktop file")?;
+            .context("unable to get ID of desktop file")
+            .inspect_err(|_| trace!("Unable to get an ID for this .desktop file"))?;
 
         if let Some(reason) = APP_ID_BLOCKLIST.get(id.as_str()) {
             debug!("Skipping {id} because it's blocklisted ({reason})");
@@ -760,9 +762,13 @@ impl AppsContext {
 
     /// Refreshes the statistics about the running applications and processes.
     pub fn refresh(&mut self, new_process_data: Vec<ProcessData>) {
+        trace!("Refreshing AppsContext…");
+        let start = Instant::now();
+
         let mut updated_processes = HashSet::new();
 
         for mut process_data in new_process_data {
+            trace!("Refreshing process {}…", process_data.pid);
             updated_processes.insert(process_data.pid);
 
             // this is awkward: since AppsContext is the only object around that knows what GPUs have combined media
@@ -772,13 +778,17 @@ impl AppsContext {
                 .gpu_usage_stats
                 .iter_mut()
                 .filter(|(pci_slot, _)| self.gpus_with_combined_media_engine.contains(pci_slot))
-                .for_each(|(_, stats)| {
+                .for_each(|(pci_slot, stats)| {
+                    trace!("Manually adjusting GPU stats of {} for {pci_slot} due to combined media engine", process_data.pid);
+
                     stats.dec = u64::max(stats.dec, stats.enc);
                     stats.enc = u64::max(stats.dec, stats.enc);
                 });
 
             // refresh our old processes
             if let Some(old_process) = self.processes.get_mut(&process_data.pid) {
+                trace!("{} has been there before, updating it", process_data.pid);
+
                 old_process.cpu_time_last = old_process
                     .data
                     .user_cpu_time
@@ -791,6 +801,7 @@ impl AppsContext {
                 old_process.data = process_data.clone();
             } else {
                 // this is a new process, see if it belongs to a graphical app
+                trace!("{} is a new process", process_data.pid);
 
                 let mut new_process = Process::from_process_data(process_data);
 
@@ -830,6 +841,13 @@ impl AppsContext {
             app.read_bytes_from_dead_processes += read_dead;
             app.write_bytes_from_dead_processes += write_dead;
 
+            if read_dead > 0 || write_dead > 0 {
+                trace!(
+                    "{} has a process which died earlier, keeping I/O stats",
+                    app.display_name
+                );
+            }
+
             app.processes.retain(|pid| updated_processes.contains(pid));
 
             if !app.is_running() {
@@ -841,5 +859,7 @@ impl AppsContext {
         // all the not-updated processes have unfortunately died, probably
         self.processes
             .retain(|pid, _| updated_processes.contains(pid));
+
+        trace!("AppsContext refresh done within {:.2?}", start.elapsed());
     }
 }

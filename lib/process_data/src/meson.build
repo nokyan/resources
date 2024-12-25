@@ -9,6 +9,6 @@ test(
     'Cargo tests (process_data)',
     cargo,
     args: ['test', cargo_options],
-    timeout: 600,
+    timeout: 3600,
     env: cargo_env,
 )

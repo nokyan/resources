@@ -1,5 +1,6 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib;
+use log::trace;
 
 use crate::config::PROFILE;
 
@@ -77,6 +78,8 @@ impl Default for ResDoubleGraphBox {
 
 impl ResDoubleGraphBox {
     pub fn new() -> Self {
+        trace!("Creating ResDoubleGraphBox GObject…");
+
         glib::Object::new::<Self>()
     }
 

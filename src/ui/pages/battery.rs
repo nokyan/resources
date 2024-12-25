@@ -1,5 +1,6 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib;
+use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
@@ -168,6 +169,8 @@ impl ResBattery {
     const MAIN_GRAPH_COLOR: [u8; 3] = [0x33, 0xd1, 0x7a];
 
     pub fn new() -> Self {
+        trace!("Creating ResBattery GObject…");
+
         glib::Object::new::<Self>()
     }
 
@@ -177,6 +180,11 @@ impl ResBattery {
     }
 
     pub fn setup_widgets(&self, battery_data: &BatteryData) {
+        trace!(
+            "Setting up ResBattery ({:?}) widgets…",
+            battery_data.inner.sysfs_path
+        );
+
         let imp = self.imp();
         let battery = &battery_data.inner;
 
@@ -231,6 +239,11 @@ impl ResBattery {
     }
 
     pub fn refresh_page(&self, battery_data: BatteryData) {
+        trace!(
+            "Refreshing ResBattery ({:?})…",
+            battery_data.inner.sysfs_path
+        );
+
         let imp = self.imp();
 
         let mut usage_string = String::new();

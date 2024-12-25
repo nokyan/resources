@@ -108,7 +108,7 @@ static NVIDIA_PROCESS_INFOS: Lazy<RwLock<HashMap<PciSlot, Vec<ProcessInfo>>>> =
 #[nutype(
     validate(less_or_equal = 19),
     validate(greater_or_equal = -20),
-    derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, Copy, FromStr, Deref, TryFrom),
+    derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, Copy, FromStr, Deref, TryFrom, Display),
     default = 0
 )]
 pub struct Niceness(i8);

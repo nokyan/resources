@@ -1,5 +1,6 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self};
+use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
@@ -172,6 +173,8 @@ impl ResNPU {
     const MAIN_GRAPH_COLOR: [u8; 3] = [0xb5, 0x27, 0xe3];
 
     pub fn new() -> Self {
+        trace!("Creating ResNPU GObject…");
+
         glib::Object::new::<Self>()
     }
 
@@ -181,6 +184,8 @@ impl ResNPU {
     }
 
     pub fn setup_widgets(&self, npu: &Npu) {
+        trace!("Setting up ResNPU ({}) widgets…", npu.pci_slot());
+
         let imp = self.imp();
 
         let tab_id = format!("{}-{}", TAB_ID_PREFIX, &npu.pci_slot().to_string());
@@ -215,6 +220,8 @@ impl ResNPU {
     }
 
     pub fn refresh_page(&self, npu_data: &NpuData) {
+        trace!("Refreshing ResNPU ({})…", npu_data.pci_slot);
+
         let imp = self.imp();
 
         let NpuData {

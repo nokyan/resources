@@ -5,6 +5,7 @@ use gtk::{
     glib::{self, clone, GString},
     Ordering,
 };
+use log::trace;
 use std::collections::HashMap;
 
 use crate::utils::settings::{SidebarMeterType, SETTINGS};
@@ -92,6 +93,8 @@ impl Default for ResStackSidebar {
 
 impl ResStackSidebar {
     pub fn new() -> Self {
+        trace!("Creating ResStackSidebar GObject…");
+
         glib::Object::new::<Self>()
     }
 

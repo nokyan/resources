@@ -2,9 +2,11 @@ use std::process::Command;
 
 use anyhow::{bail, Context, Result};
 use lazy_regex::{lazy_regex, Lazy, Regex};
-use log::debug;
+use log::{debug, trace};
 
 use super::{FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
+
+const PROC_MEMINFO: &str = "/proc/meminfo";
 
 const TEMPLATE_RE_PRESENT: &str = r"MEMORY_DEVICE_%_PRESENT=(\d)";
 
@@ -54,8 +56,12 @@ pub struct MemoryData {
 
 impl MemoryData {
     pub fn new() -> Result<Self> {
-        let proc_mem =
-            std::fs::read_to_string("/proc/meminfo").context("unable to read /proc/meminfo")?;
+        trace!("Gathering memory data…");
+
+        trace!("Reading {PROC_MEMINFO}…");
+        let proc_mem = std::fs::read_to_string("/proc/meminfo")
+            .inspect_err(|err| trace!("Unable to read {PROC_MEMINFO}: {err}"))
+            .context("unable to read /proc/meminfo")?;
 
         let total_mem = RE_MEM_TOTAL
             .captures(&proc_mem)
@@ -121,12 +127,16 @@ impl MemoryData {
                     })
             })?;
 
-        Ok(Self {
+        let memory_data = Self {
             total_mem,
             available_mem,
             total_swap,
             free_swap,
-        })
+        };
+
+        trace!("Gathered memory data: {memory_data:?}");
+
+        Ok(memory_data)
     }
 }
 
@@ -142,6 +152,7 @@ pub struct MemoryDevice {
 
 impl MemoryDevice {
     fn parse_dmidecode<S: AsRef<str>>(dmi: S) -> Vec<Self> {
+        trace!("Parsing dmidecode output…");
         let mut devices = Vec::new();
 
         let device_strings = dmi.as_ref().split("\n\n");
@@ -150,6 +161,7 @@ impl MemoryDevice {
             if device_string.is_empty() {
                 continue;
             }
+
             let memory_device = Self {
                 speed_mts: RE_CONFIGURED_SPEED
                     .captures(device_string)
@@ -171,6 +183,8 @@ impl MemoryDevice {
                     .is_some(),
             };
 
+            trace!("Found memory device: {:?}", memory_device);
+
             devices.push(memory_device);
         }
 
@@ -179,6 +193,7 @@ impl MemoryDevice {
 
     fn virtual_dmi() -> Vec<Self> {
         let command = if *IS_FLATPAK {
+            trace!("Executing udevadm outside Flatpak's sandbox…");
             Command::new(FLATPAK_SPAWN)
                 .args([
                     "--host",
@@ -189,6 +204,7 @@ impl MemoryDevice {
                 ])
                 .output()
         } else {
+            trace!("Executing udevadm…");
             Command::new("udevadm")
                 .args(["info", "-p", "/sys/devices/virtual/dmi/id"])
                 .output()
@@ -206,6 +222,7 @@ impl MemoryDevice {
     }
 
     fn parse_virtual_dmi<S: AsRef<str>>(dmi: S) -> Vec<Self> {
+        trace!("Parsing udevadm output…");
         let dmi = dmi.as_ref();
 
         let devices_amount: usize = RE_NUM_MEMORY_DEVICES
@@ -266,14 +283,18 @@ impl MemoryDevice {
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse().ok());
 
-            devices.push(Self {
+            let memory_device = Self {
                 speed_mts: speed,
                 form_factor,
                 r#type,
                 type_detail,
                 size,
                 installed,
-            });
+            };
+
+            trace!("Found memory device: {:?}", memory_device);
+
+            devices.push(memory_device);
         }
 
         devices

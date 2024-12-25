@@ -1,5 +1,6 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib;
+use log::trace;
 
 use crate::{
     config::PROFILE,
@@ -155,6 +156,8 @@ impl Default for ResSettingsDialog {
 
 impl ResSettingsDialog {
     pub fn new() -> Self {
+        trace!("Creating ResSettingsDialog GObject…");
+
         glib::Object::new::<Self>()
     }
 
@@ -164,6 +167,8 @@ impl ResSettingsDialog {
     }
 
     pub fn setup_widgets(&self) {
+        trace!("Setting up ResSettingsDialog widgets…");
+
         let imp = self.imp();
         imp.prefix_combo_row
             .set_selected((SETTINGS.base() as u8) as u32);
@@ -252,6 +257,8 @@ impl ResSettingsDialog {
     }
 
     pub fn setup_signals(&self) {
+        trace!("Setting up ResSettingsDialog signals…");
+
         let imp = self.imp();
         imp.prefix_combo_row
             .connect_selected_item_notify(|combo_row| {

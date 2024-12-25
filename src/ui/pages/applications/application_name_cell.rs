@@ -1,5 +1,6 @@
 use adw::{glib::property::PropertySet, prelude::*, subclass::prelude::*};
 use gtk::{gio::Icon, glib};
+use log::trace;
 
 mod imp {
     use std::cell::{Cell, RefCell};
@@ -160,6 +161,8 @@ impl Default for ResApplicationNameCell {
 
 impl ResApplicationNameCell {
     pub fn new() -> Self {
+        trace!("Creating ResApplicationNameCell GObject…");
+
         glib::Object::new::<Self>()
     }
 }
