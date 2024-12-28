@@ -1,5 +1,5 @@
 use anyhow::{bail, Result};
-use process_data::pci_slot::PciSlot;
+use process_data::GpuIdentifier;
 
 use std::path::PathBuf;
 
@@ -11,7 +11,7 @@ use super::GpuImpl;
 
 pub struct OtherGpu {
     pub device: Option<&'static Device>,
-    pub pci_slot: PciSlot,
+    pub gpu_identifier: GpuIdentifier,
     pub driver: String,
     sysfs_path: PathBuf,
     first_hwmon_path: Option<PathBuf>,
@@ -20,14 +20,14 @@ pub struct OtherGpu {
 impl OtherGpu {
     pub fn new(
         device: Option<&'static Device>,
-        pci_slot: PciSlot,
+        gpu_identifier: GpuIdentifier,
         driver: String,
         sysfs_path: PathBuf,
         first_hwmon_path: Option<PathBuf>,
     ) -> Self {
         Self {
             device,
-            pci_slot,
+            gpu_identifier,
             driver,
             sysfs_path,
             first_hwmon_path,
@@ -40,8 +40,8 @@ impl GpuImpl for OtherGpu {
         self.device
     }
 
-    fn pci_slot(&self) -> PciSlot {
-        self.pci_slot
+    fn gpu_identifier(&self) -> GpuIdentifier {
+        self.gpu_identifier
     }
 
     fn driver(&self) -> String {

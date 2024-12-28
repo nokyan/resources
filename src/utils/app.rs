@@ -12,7 +12,7 @@ use gtk::{
 };
 use lazy_regex::{lazy_regex, Lazy, Regex};
 use log::{debug, info, trace};
-use process_data::{pci_slot::PciSlot, Containerization, ProcessData};
+use process_data::{Containerization, GpuIdentifier, ProcessData};
 
 use crate::i18n::i18n;
 
@@ -163,7 +163,7 @@ static MESSAGE_LOCALES: LazyLock<Vec<String>> = LazyLock::new(|| {
 pub struct AppsContext {
     apps: HashMap<Option<String>, App>,
     processes: HashMap<i32, Process>,
-    gpus_with_combined_media_engine: Vec<PciSlot>,
+    gpus_with_combined_media_engine: Vec<GpuIdentifier>,
 }
 
 /// Represents an application installed on the system. It doesn't
@@ -513,7 +513,7 @@ impl AppsContext {
     /// Creates a new `AppsContext` object, this operation is quite expensive
     /// so try to do it only one time during the lifetime of the program.
     /// Please call `refresh()` immediately after this function.
-    pub fn new(gpus_with_combined_media_engine: Vec<PciSlot>) -> AppsContext {
+    pub fn new(gpus_with_combined_media_engine: Vec<GpuIdentifier>) -> AppsContext {
         let apps: HashMap<Option<String>, App> = App::all()
             .into_iter()
             .map(|app| (app.id.clone(), app))
@@ -526,7 +526,7 @@ impl AppsContext {
         }
     }
 
-    pub fn gpu_fraction(&self, pci_slot: PciSlot) -> f32 {
+    pub fn gpu_fraction(&self, gpu_identifier: GpuIdentifier) -> f32 {
         self.processes_iter()
             .map(|process| {
                 (
@@ -538,8 +538,8 @@ impl AppsContext {
             })
             .map(|(new, old, timestamp, timestamp_last)| {
                 (
-                    new.get(&pci_slot),
-                    old.get(&pci_slot),
+                    new.get(&gpu_identifier),
+                    old.get(&gpu_identifier),
                     timestamp,
                     timestamp_last,
                 )
@@ -564,7 +564,7 @@ impl AppsContext {
             .clamp(0.0, 1.0)
     }
 
-    pub fn encoder_fraction(&self, pci_slot: PciSlot) -> f32 {
+    pub fn encoder_fraction(&self, gpu_identifier: GpuIdentifier) -> f32 {
         self.processes_iter()
             .map(|process| {
                 (
@@ -576,8 +576,8 @@ impl AppsContext {
             })
             .map(|(new, old, timestamp, timestamp_last)| {
                 (
-                    new.get(&pci_slot),
-                    old.get(&pci_slot),
+                    new.get(&gpu_identifier),
+                    old.get(&gpu_identifier),
                     timestamp,
                     timestamp_last,
                 )
@@ -602,7 +602,7 @@ impl AppsContext {
             .clamp(0.0, 1.0)
     }
 
-    pub fn decoder_fraction(&self, pci_slot: PciSlot) -> f32 {
+    pub fn decoder_fraction(&self, gpu_identifier: GpuIdentifier) -> f32 {
         self.processes_iter()
             .map(|process| {
                 (
@@ -614,8 +614,8 @@ impl AppsContext {
             })
             .map(|(new, old, timestamp, timestamp_last)| {
                 (
-                    new.get(&pci_slot),
-                    old.get(&pci_slot),
+                    new.get(&gpu_identifier),
+                    old.get(&gpu_identifier),
                     timestamp,
                     timestamp_last,
                 )

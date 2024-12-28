@@ -11,7 +11,7 @@ const PROC_STAT: &str = "/proc/stat";
 
 const KNOWN_HWMONS: &[&str] = &["zenpower", "coretemp", "k10temp"];
 
-const KNOWN_THERMAL_ZONES: &[&str] = &["x86_pkg_temp", "acpitz"];
+const KNOWN_THERMAL_ZONES: &[&str] = &["cpu-thermal", "x86_pkg_temp", "acpitz"];
 
 static RE_LSCPU_MODEL_NAME: Lazy<Regex> = lazy_regex!(r"Model name:\s*(.*)");
 

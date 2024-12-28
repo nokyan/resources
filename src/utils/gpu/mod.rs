@@ -2,10 +2,13 @@ mod amd;
 mod intel;
 mod nvidia;
 mod other;
+mod v3d;
 
 use anyhow::{bail, Context, Result};
+use lazy_regex::{lazy_regex, Lazy, Regex};
 use log::{debug, info, trace};
-use process_data::pci_slot::PciSlot;
+use process_data::{pci_slot::PciSlot, GpuIdentifier};
+use v3d::V3dGpu;
 
 use std::{
     path::{Path, PathBuf},
@@ -23,13 +26,15 @@ use self::{amd::AmdGpu, intel::IntelGpu, nvidia::NvidiaGpu, other::OtherGpu};
 
 use super::pci::Vendor;
 
-pub const VID_AMD: u16 = 4098;
-pub const VID_INTEL: u16 = 32902;
-pub const VID_NVIDIA: u16 = 4318;
+pub const VID_AMD: u16 = 0x1002;
+pub const VID_INTEL: u16 = 0x8086;
+pub const VID_NVIDIA: u16 = 0x10DE;
+
+const RE_CARD_ENUMARATOR: Lazy<Regex> = lazy_regex!(r"(\d+)\/?$");
 
 #[derive(Debug)]
 pub struct GpuData {
-    pub pci_slot: PciSlot,
+    pub gpu_identifier: GpuIdentifier,
 
     pub usage_fraction: Option<f64>,
 
@@ -54,9 +59,9 @@ pub struct GpuData {
 
 impl GpuData {
     pub fn new(gpu: &Gpu) -> Self {
-        let pci_slot = gpu.pci_slot();
+        let gpu_identifier = gpu.gpu_identifier();
 
-        trace!("Gathering GPU data for {}…", pci_slot);
+        trace!("Gathering GPU data for {}…", gpu_identifier);
 
         let usage_fraction = gpu.usage().map(|usage| usage.clamp(0.0, 1.0)).ok();
 
@@ -79,7 +84,7 @@ impl GpuData {
         let nvidia = matches!(gpu, Gpu::Nvidia(_));
 
         let gpu_data = Self {
-            pci_slot,
+            gpu_identifier,
             usage_fraction,
             encode_fraction,
             decode_fraction,
@@ -94,7 +99,7 @@ impl GpuData {
             nvidia,
         };
 
-        trace!("Gathered GPU data for {}: {gpu_data:?}", pci_slot);
+        trace!("Gathered GPU data for {}: {gpu_data:?}", gpu_identifier);
 
         gpu_data
     }
@@ -103,8 +108,9 @@ impl GpuData {
 #[derive(Debug, Clone)]
 pub enum Gpu {
     Amd(AmdGpu),
-    Nvidia(NvidiaGpu),
     Intel(IntelGpu),
+    Nvidia(NvidiaGpu),
+    V3d(V3dGpu),
     Other(OtherGpu),
 }
 
@@ -116,7 +122,7 @@ impl Default for Gpu {
 
 pub trait GpuImpl {
     fn device(&self) -> Option<&'static Device>;
-    fn pci_slot(&self) -> PciSlot;
+    fn gpu_identifier(&self) -> GpuIdentifier;
     fn driver(&self) -> String;
     fn sysfs_path(&self) -> PathBuf;
     fn first_hwmon(&self) -> Option<PathBuf>;
@@ -224,8 +230,8 @@ impl Gpu {
         debug!("Searching for GPUs…");
 
         let mut gpu_vec: Vec<Gpu> = Vec::new();
-        for entry in glob("/sys/class/drm/card?")?.flatten() {
-            if let Ok(gpu) = Self::from_sysfs_path(entry) {
+        for (i, entry) in glob("/sys/class/drm/card?")?.flatten().enumerate() {
+            if let Ok(gpu) = Self::from_sysfs_path(entry, i) {
                 gpu_vec.push(gpu);
             }
         }
@@ -235,10 +241,16 @@ impl Gpu {
         Ok(gpu_vec)
     }
 
-    fn from_sysfs_path<P: AsRef<Path>>(path: P) -> Result<Gpu> {
-        let path = path.as_ref();
+    fn from_sysfs_path<P: AsRef<Path>>(path: P, i: usize) -> Result<Gpu> {
+        let path = path.as_ref().to_path_buf();
 
         trace!("Creating GPU object of {path:?}…");
+
+        let enumarator = RE_CARD_ENUMARATOR
+            .captures(&path.to_string_lossy())
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse().ok())
+            .unwrap_or(i);
 
         let sysfs_device_path = path.join("device");
         let uevent_contents = read_uevent(sysfs_device_path.join("uevent"))?;
@@ -269,7 +281,13 @@ impl Gpu {
                 .get("PCI_SLOT_NAME")
                 .map_or_else(|| i18n("N/A"), std::string::ToString::to_string),
         )
-        .context("can't turn PCI string to struct")?;
+        .context("can't turn PCI string to struct");
+
+        let gpu_identifier = if let Ok(pci_slot) = pci_slot {
+            GpuIdentifier::PciSlot(pci_slot)
+        } else {
+            GpuIdentifier::Enumerator(enumarator)
+        };
 
         let driver = uevent_contents
             .get("DRIVER")
@@ -284,7 +302,7 @@ impl Gpu {
             (
                 Gpu::Amd(AmdGpu::new(
                     device,
-                    pci_slot,
+                    gpu_identifier,
                     driver,
                     path.to_path_buf(),
                     hwmon_vec.first().cloned(),
@@ -295,7 +313,7 @@ impl Gpu {
             (
                 Gpu::Intel(IntelGpu::new(
                     device,
-                    pci_slot,
+                    gpu_identifier,
                     driver,
                     path.to_path_buf(),
                     hwmon_vec.first().cloned(),
@@ -306,18 +324,29 @@ impl Gpu {
             (
                 Gpu::Nvidia(NvidiaGpu::new(
                     device,
-                    pci_slot,
+                    gpu_identifier,
                     driver,
                     path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "NVIDIA",
             )
+        } else if driver == "v3d" {
+            (
+                Gpu::V3d(V3dGpu::new(
+                    device,
+                    gpu_identifier,
+                    driver,
+                    path.to_path_buf(),
+                    hwmon_vec.first().cloned(),
+                )),
+                "v3d",
+            )
         } else {
             (
                 Gpu::Other(OtherGpu::new(
                     device,
-                    pci_slot,
+                    gpu_identifier,
                     driver,
                     path.to_path_buf(),
                     hwmon_vec.first().cloned(),
@@ -327,9 +356,9 @@ impl Gpu {
         };
 
         info!(
-            "Found GPU \"{}\" (PCI slot: {} · PCI ID: {vid:x}:{pid:x} · Category: {gpu_category})",
+            "Found GPU \"{}\" (Identifier: {} · PCI ID: {vid:x}:{pid:x} · Category: {gpu_category})",
             gpu.name().unwrap_or("<unknown name>".into()),
-            gpu.pci_slot(),
+            gpu.gpu_identifier(),
         );
 
         trace!("Created GPU object of {path:?}: {gpu:?}");
@@ -340,28 +369,31 @@ impl Gpu {
     pub fn get_vendor(&self) -> Result<&'static Vendor> {
         Ok(match self {
             Gpu::Amd(gpu) => gpu.device(),
-            Gpu::Nvidia(gpu) => gpu.device(),
             Gpu::Intel(gpu) => gpu.device(),
+            Gpu::Nvidia(gpu) => gpu.device(),
+            Gpu::V3d(gpu) => gpu.device(),
             Gpu::Other(gpu) => gpu.device(),
         }
         .context("no device")?
         .vendor())
     }
 
-    pub fn pci_slot(&self) -> PciSlot {
+    pub fn gpu_identifier(&self) -> GpuIdentifier {
         match self {
-            Gpu::Amd(gpu) => gpu.pci_slot(),
-            Gpu::Nvidia(gpu) => gpu.pci_slot(),
-            Gpu::Intel(gpu) => gpu.pci_slot(),
-            Gpu::Other(gpu) => gpu.pci_slot(),
+            Gpu::Amd(gpu) => gpu.gpu_identifier(),
+            Gpu::Intel(gpu) => gpu.gpu_identifier(),
+            Gpu::Nvidia(gpu) => gpu.gpu_identifier(),
+            Gpu::V3d(gpu) => gpu.gpu_identifier(),
+            Gpu::Other(gpu) => gpu.gpu_identifier(),
         }
     }
 
     pub fn driver(&self) -> String {
         match self {
             Gpu::Amd(gpu) => gpu.driver(),
-            Gpu::Nvidia(gpu) => gpu.driver(),
             Gpu::Intel(gpu) => gpu.driver(),
+            Gpu::Nvidia(gpu) => gpu.driver(),
+            Gpu::V3d(gpu) => gpu.driver(),
             Gpu::Other(gpu) => gpu.driver(),
         }
     }
@@ -369,8 +401,9 @@ impl Gpu {
     pub fn name(&self) -> Result<String> {
         match self {
             Gpu::Amd(gpu) => gpu.name(),
-            Gpu::Nvidia(gpu) => gpu.name(),
             Gpu::Intel(gpu) => gpu.name(),
+            Gpu::Nvidia(gpu) => gpu.name(),
+            Gpu::V3d(gpu) => gpu.name(),
             Gpu::Other(gpu) => gpu.name(),
         }
     }
@@ -378,8 +411,9 @@ impl Gpu {
     pub fn usage(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.usage(),
-            Gpu::Nvidia(gpu) => gpu.usage(),
             Gpu::Intel(gpu) => gpu.usage(),
+            Gpu::Nvidia(gpu) => gpu.usage(),
+            Gpu::V3d(gpu) => gpu.usage(),
             Gpu::Other(gpu) => gpu.usage(),
         }
     }
@@ -387,8 +421,9 @@ impl Gpu {
     pub fn encode_usage(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.encode_usage(),
-            Gpu::Nvidia(gpu) => gpu.encode_usage(),
             Gpu::Intel(gpu) => gpu.encode_usage(),
+            Gpu::Nvidia(gpu) => gpu.encode_usage(),
+            Gpu::V3d(gpu) => gpu.encode_usage(),
             Gpu::Other(gpu) => gpu.encode_usage(),
         }
     }
@@ -396,8 +431,9 @@ impl Gpu {
     pub fn decode_usage(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.decode_usage(),
-            Gpu::Nvidia(gpu) => gpu.decode_usage(),
             Gpu::Intel(gpu) => gpu.decode_usage(),
+            Gpu::Nvidia(gpu) => gpu.decode_usage(),
+            Gpu::V3d(gpu) => gpu.decode_usage(),
             Gpu::Other(gpu) => gpu.decode_usage(),
         }
     }
@@ -405,8 +441,9 @@ impl Gpu {
     pub fn combined_media_engine(&self) -> Result<bool> {
         match self {
             Gpu::Amd(gpu) => gpu.combined_media_engine(),
-            Gpu::Nvidia(gpu) => gpu.combined_media_engine(),
             Gpu::Intel(gpu) => gpu.combined_media_engine(),
+            Gpu::Nvidia(gpu) => gpu.combined_media_engine(),
+            Gpu::V3d(gpu) => gpu.combined_media_engine(),
             Gpu::Other(gpu) => gpu.combined_media_engine(),
         }
     }
@@ -414,8 +451,9 @@ impl Gpu {
     pub fn used_vram(&self) -> Result<usize> {
         match self {
             Gpu::Amd(gpu) => gpu.used_vram(),
-            Gpu::Nvidia(gpu) => gpu.used_vram(),
             Gpu::Intel(gpu) => gpu.used_vram(),
+            Gpu::Nvidia(gpu) => gpu.used_vram(),
+            Gpu::V3d(gpu) => gpu.used_vram(),
             Gpu::Other(gpu) => gpu.used_vram(),
         }
     }
@@ -423,8 +461,9 @@ impl Gpu {
     pub fn total_vram(&self) -> Result<usize> {
         match self {
             Gpu::Amd(gpu) => gpu.total_vram(),
-            Gpu::Nvidia(gpu) => gpu.total_vram(),
             Gpu::Intel(gpu) => gpu.total_vram(),
+            Gpu::Nvidia(gpu) => gpu.total_vram(),
+            Gpu::V3d(gpu) => gpu.total_vram(),
             Gpu::Other(gpu) => gpu.total_vram(),
         }
     }
@@ -432,8 +471,9 @@ impl Gpu {
     pub fn temperature(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.temperature(),
-            Gpu::Nvidia(gpu) => gpu.temperature(),
             Gpu::Intel(gpu) => gpu.temperature(),
+            Gpu::Nvidia(gpu) => gpu.temperature(),
+            Gpu::V3d(gpu) => gpu.temperature(),
             Gpu::Other(gpu) => gpu.temperature(),
         }
     }
@@ -441,8 +481,9 @@ impl Gpu {
     pub fn power_usage(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.power_usage(),
-            Gpu::Nvidia(gpu) => gpu.power_usage(),
             Gpu::Intel(gpu) => gpu.power_usage(),
+            Gpu::Nvidia(gpu) => gpu.power_usage(),
+            Gpu::V3d(gpu) => gpu.power_usage(),
             Gpu::Other(gpu) => gpu.power_usage(),
         }
     }
@@ -450,8 +491,9 @@ impl Gpu {
     pub fn core_frequency(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.core_frequency(),
-            Gpu::Nvidia(gpu) => gpu.core_frequency(),
             Gpu::Intel(gpu) => gpu.core_frequency(),
+            Gpu::Nvidia(gpu) => gpu.core_frequency(),
+            Gpu::V3d(gpu) => gpu.core_frequency(),
             Gpu::Other(gpu) => gpu.core_frequency(),
         }
     }
@@ -459,8 +501,9 @@ impl Gpu {
     pub fn vram_frequency(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.vram_frequency(),
-            Gpu::Nvidia(gpu) => gpu.vram_frequency(),
             Gpu::Intel(gpu) => gpu.vram_frequency(),
+            Gpu::Nvidia(gpu) => gpu.vram_frequency(),
+            Gpu::V3d(gpu) => gpu.vram_frequency(),
             Gpu::Other(gpu) => gpu.vram_frequency(),
         }
     }
@@ -468,8 +511,9 @@ impl Gpu {
     pub fn power_cap(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.power_cap(),
-            Gpu::Nvidia(gpu) => gpu.power_cap(),
             Gpu::Intel(gpu) => gpu.power_cap(),
+            Gpu::Nvidia(gpu) => gpu.power_cap(),
+            Gpu::V3d(gpu) => gpu.power_cap(),
             Gpu::Other(gpu) => gpu.power_cap(),
         }
     }
@@ -477,8 +521,9 @@ impl Gpu {
     pub fn power_cap_max(&self) -> Result<f64> {
         match self {
             Gpu::Amd(gpu) => gpu.power_cap_max(),
-            Gpu::Nvidia(gpu) => gpu.power_cap_max(),
             Gpu::Intel(gpu) => gpu.power_cap_max(),
+            Gpu::Nvidia(gpu) => gpu.power_cap_max(),
+            Gpu::V3d(gpu) => gpu.power_cap_max(),
             Gpu::Other(gpu) => gpu.power_cap_max(),
         }
     }

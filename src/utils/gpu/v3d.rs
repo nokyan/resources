@@ -9,7 +9,7 @@ use super::GpuImpl;
 
 #[derive(Debug, Clone, Default)]
 
-pub struct IntelGpu {
+pub struct V3dGpu {
     pub device: Option<&'static Device>,
     pub gpu_identifier: GpuIdentifier,
     pub driver: String,
@@ -17,7 +17,7 @@ pub struct IntelGpu {
     first_hwmon_path: Option<PathBuf>,
 }
 
-impl IntelGpu {
+impl V3dGpu {
     pub fn new(
         device: Option<&'static Device>,
         gpu_identifier: GpuIdentifier,
@@ -35,7 +35,7 @@ impl IntelGpu {
     }
 }
 
-impl GpuImpl for IntelGpu {
+impl GpuImpl for V3dGpu {
     fn device(&self) -> Option<&'static Device> {
         self.device
     }
@@ -65,11 +65,11 @@ impl GpuImpl for IntelGpu {
     }
 
     fn encode_usage(&self) -> Result<f64> {
-        bail!("encode usage not implemented for Intel")
+        bail!("encode usage not implemented for v3d")
     }
 
     fn decode_usage(&self) -> Result<f64> {
-        bail!("decode usage not implemented for Intel")
+        bail!("decode usage not implemented for v3d")
     }
 
     fn combined_media_engine(&self) -> Result<bool> {
