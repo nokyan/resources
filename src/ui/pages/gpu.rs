@@ -4,7 +4,7 @@ use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
-use crate::utils::gpu::{Gpu, GpuData};
+use crate::utils::gpu::{Gpu, GpuData, PowerState};
 use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
 use crate::utils::FiniteOr;
 
@@ -277,7 +277,10 @@ impl ResGPU {
             power_cap,
             power_cap_max,
             nvidia: _,
+            power_state,
         } = gpu_data;
+
+        let power_state = power_state.unwrap_or_default();
 
         let mut usage_percentage_string = usage_fraction.map_or_else(
             || i18n("N/A"),
@@ -368,6 +371,10 @@ impl ResGPU {
             power_string.push_str(&format!(" / {}", convert_power(*power_cap)));
         }
 
+        if power_state != PowerState::Unknown {
+            power_string.push_str(&format!(" ({power_state})"));
+        }
+
         imp.power_usage.set_subtitle(&power_string);
 
         if let Some(gpu_clockspeed) = clock_speed {
@@ -418,6 +425,10 @@ impl ResGPU {
             imp.temperature.set_subtitle(&i18n("N/A"));
         }
 
-        self.set_property("tab_usage_string", &usage_percentage_string);
+        if power_state == PowerState::Suspended {
+            self.set_property("tab_usage_string", &power_state.to_string());
+        } else {
+            self.set_property("tab_usage_string", &usage_percentage_string);
+        }
     }
 }

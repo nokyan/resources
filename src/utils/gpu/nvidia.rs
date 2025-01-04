@@ -28,7 +28,7 @@ static NVML: LazyLock<Result<Nvml, NvmlError>> = LazyLock::new(|| {
 
 use crate::utils::{pci::Device, IS_FLATPAK};
 
-use super::GpuImpl;
+use super::{GpuImpl, PowerState};
 
 #[derive(Debug, Default, Clone)]
 
@@ -208,5 +208,9 @@ impl GpuImpl for NvidiaGpu {
             })
             .map(|constraints| (constraints.max_limit as f64) / 1000.0)
             .or_else(|_| self.hwmon_power_cap_max())
+    }
+
+    fn power_state(&self) -> Result<PowerState> {
+        self.drm_runtime_status()
     }
 }

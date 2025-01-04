@@ -5,7 +5,7 @@ use std::path::PathBuf;
 
 use crate::utils::pci::Device;
 
-use super::GpuImpl;
+use super::{GpuImpl, PowerState};
 
 #[derive(Debug, Clone, Default)]
 
@@ -106,5 +106,9 @@ impl GpuImpl for OtherGpu {
 
     fn power_cap_max(&self) -> Result<f64> {
         self.hwmon_power_cap_max()
+    }
+
+    fn power_state(&self) -> Result<PowerState> {
+        self.drm_runtime_status()
     }
 }

@@ -11,6 +11,7 @@ use process_data::{pci_slot::PciSlot, GpuIdentifier};
 use v3d::V3dGpu;
 
 use std::{
+    fmt::Display,
     path::{Path, PathBuf},
     str::FromStr,
 };
@@ -31,6 +32,28 @@ pub const VID_INTEL: u16 = 0x8086;
 pub const VID_NVIDIA: u16 = 0x10DE;
 
 const RE_CARD_ENUMARATOR: Lazy<Regex> = lazy_regex!(r"(\d+)\/?$");
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum PowerState {
+    Active,
+    Suspended,
+    #[default]
+    Unknown,
+}
+
+impl Display for PowerState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                PowerState::Active => i18n("Active"),
+                PowerState::Suspended => i18n("Suspended"),
+                PowerState::Unknown => i18n("Unknown"),
+            }
+        )
+    }
+}
 
 #[derive(Debug)]
 pub struct GpuData {
@@ -54,14 +77,41 @@ pub struct GpuData {
     pub power_cap: Option<f64>,
     pub power_cap_max: Option<f64>,
 
+    pub power_state: Option<PowerState>,
+
     pub nvidia: bool,
 }
 
 impl GpuData {
-    pub fn new(gpu: &Gpu) -> Self {
+    pub fn new(gpu: &Gpu, allow_wakeup: bool) -> Self {
         let gpu_identifier = gpu.gpu_identifier();
 
-        trace!("Gathering GPU data for {}…", gpu_identifier);
+        trace!("Gathering GPU data for {gpu_identifier}…");
+
+        let power_state = gpu.power_state().ok();
+
+        let nvidia = matches!(gpu, Gpu::Nvidia(_));
+
+        if !allow_wakeup && power_state.unwrap_or_default() == PowerState::Suspended {
+            trace!("GPU {gpu_identifier} is asleep and we're not allowed to wake it. Sleep well!");
+
+            return Self {
+                gpu_identifier,
+                usage_fraction: None,
+                encode_fraction: None,
+                decode_fraction: None,
+                total_vram: None,
+                used_vram: None,
+                clock_speed: None,
+                vram_speed: None,
+                temperature: None,
+                power_usage: None,
+                power_cap: None,
+                power_cap_max: None,
+                power_state,
+                nvidia,
+            };
+        }
 
         let usage_fraction = gpu.usage().map(|usage| usage.clamp(0.0, 1.0)).ok();
 
@@ -81,8 +131,6 @@ impl GpuData {
         let power_cap = gpu.power_cap().ok();
         let power_cap_max = gpu.power_cap_max().ok();
 
-        let nvidia = matches!(gpu, Gpu::Nvidia(_));
-
         let gpu_data = Self {
             gpu_identifier,
             usage_fraction,
@@ -96,10 +144,11 @@ impl GpuData {
             power_usage,
             power_cap,
             power_cap_max,
+            power_state,
             nvidia,
         };
 
-        trace!("Gathered GPU data for {}: {gpu_data:?}", gpu_identifier);
+        trace!("Gathered GPU data for {gpu_identifier}: {gpu_data:?}");
 
         gpu_data
     }
@@ -140,6 +189,7 @@ pub trait GpuImpl {
     fn vram_frequency(&self) -> Result<f64>;
     fn power_cap(&self) -> Result<f64>;
     fn power_cap_max(&self) -> Result<f64>;
+    fn power_state(&self) -> Result<PowerState>;
 
     fn read_sysfs_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path().join(file);
@@ -189,6 +239,20 @@ pub trait GpuImpl {
 
     fn drm_total_vram(&self) -> Result<isize> {
         self.read_device_int("mem_info_vram_total")
+    }
+
+    fn drm_runtime_status(&self) -> Result<PowerState> {
+        if let Ok(runtime_status) =
+            self.read_device_file(PathBuf::from("power").join("runtime_status"))
+        {
+            match runtime_status.to_lowercase().as_str() {
+                "resuming" | "active" => Ok(PowerState::Active),
+                "suspending" | "suspended" => Ok(PowerState::Suspended),
+                _ => Ok(PowerState::Unknown),
+            }
+        } else {
+            Ok(PowerState::Unknown)
+        }
     }
 
     fn hwmon_temperature(&self) -> Result<f64> {
@@ -525,6 +589,16 @@ impl Gpu {
             Gpu::Nvidia(gpu) => gpu.power_cap_max(),
             Gpu::V3d(gpu) => gpu.power_cap_max(),
             Gpu::Other(gpu) => gpu.power_cap_max(),
+        }
+    }
+
+    pub fn power_state(&self) -> Result<PowerState> {
+        match self {
+            Gpu::Amd(gpu) => gpu.power_state(),
+            Gpu::Intel(gpu) => gpu.power_state(),
+            Gpu::Nvidia(gpu) => gpu.power_state(),
+            Gpu::V3d(gpu) => gpu.power_state(),
+            Gpu::Other(gpu) => gpu.power_state(),
         }
     }
 }

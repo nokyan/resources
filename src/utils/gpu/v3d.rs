@@ -5,7 +5,7 @@ use std::path::PathBuf;
 
 use crate::utils::pci::Device;
 
-use super::GpuImpl;
+use super::{GpuImpl, PowerState};
 
 #[derive(Debug, Clone, Default)]
 
@@ -93,7 +93,7 @@ impl GpuImpl for V3dGpu {
     }
 
     fn core_frequency(&self) -> Result<f64> {
-        Ok(self.read_sysfs_int("gt_cur_freq_mhz")? as f64 * 1_000_000.0)
+        self.hwmon_core_frequency()
     }
 
     fn vram_frequency(&self) -> Result<f64> {
@@ -106,5 +106,9 @@ impl GpuImpl for V3dGpu {
 
     fn power_cap_max(&self) -> Result<f64> {
         self.hwmon_power_cap_max()
+    }
+
+    fn power_state(&self) -> Result<PowerState> {
+        Ok(PowerState::Active)
     }
 }

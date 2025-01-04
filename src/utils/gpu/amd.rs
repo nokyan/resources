@@ -10,7 +10,7 @@ use crate::utils::{
     IS_FLATPAK,
 };
 
-use super::GpuImpl;
+use super::{GpuImpl, PowerState};
 
 static RE_AMDGPU_IDS: Lazy<Regex> = lazy_regex!(r"([0-9A-F]{4}),\s*([0-9A-F]{2}),\s*(.*)");
 
@@ -178,5 +178,9 @@ impl GpuImpl for AmdGpu {
 
     fn power_cap_max(&self) -> Result<f64> {
         self.hwmon_power_cap_max()
+    }
+
+    fn power_state(&self) -> Result<PowerState> {
+        self.drm_runtime_status()
     }
 }

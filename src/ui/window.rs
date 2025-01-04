@@ -21,7 +21,7 @@ use crate::utils::app::AppsContext;
 use crate::utils::battery::{Battery, BatteryData};
 use crate::utils::cpu::{self, CpuData};
 use crate::utils::drive::{Drive, DriveData};
-use crate::utils::gpu::{Gpu, GpuData};
+use crate::utils::gpu::{Gpu, GpuData, PowerState};
 use crate::utils::memory::MemoryData;
 use crate::utils::network::{NetworkData, NetworkInterface};
 use crate::utils::npu::{Npu, NpuData};
@@ -457,7 +457,7 @@ impl MainWindow {
 
         let mut gpu_data = Vec::with_capacity(gpus.len());
         for gpu in gpus {
-            let data = GpuData::new(gpu);
+            let data = GpuData::new(gpu, false);
 
             gpu_data.push(data);
         }
@@ -569,7 +569,8 @@ impl MainWindow {
         for ((_, page), mut gpu_data) in gpu_pages.values().zip(gpu_data) {
             let page = page.content().and_downcast::<ResGPU>().unwrap();
 
-            if !gpu_data.nvidia {
+            if !gpu_data.nvidia && gpu_data.power_state.unwrap_or_default() != PowerState::Suspended
+            {
                 // for non-NVIDIA GPUs, we prefer getting the fractions from the processes because they represent the
                 // average usage during now and the last refresh, while gpu_busy_percent is a snapshot of the current
                 // usage, which might not be what we want
