@@ -1,5 +1,6 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib;
+use log::trace;
 
 use crate::config::PROFILE;
 
@@ -71,6 +72,8 @@ impl Default for ResGraphBox {
 
 impl ResGraphBox {
     pub fn new() -> Self {
+        trace!("Creating ResGraphBox GObject…");
+
         glib::Object::new::<Self>()
     }
 

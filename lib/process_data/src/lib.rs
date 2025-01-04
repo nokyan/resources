@@ -12,6 +12,7 @@ use nvml_wrapper::{Device, Nvml};
 use pci_slot::PciSlot;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap, HashSet};
+use std::fmt::Display;
 use std::os::linux::fs::MetadataExt;
 use std::path::Path;
 use std::str::FromStr;
@@ -83,7 +84,7 @@ static RE_DRM_MEMORY_VRAM: Lazy<Regex> = lazy_regex!(r"drm-memory-vram:\s*(\d+)\
 // AMD only
 static RE_DRM_MEMORY_GTT: Lazy<Regex> = lazy_regex!(r"drm-memory-gtt:\s*(\d+)\s*KiB");
 
-// Intel only
+// Intel and v3d only
 static RE_DRM_ENGINE_RENDER: Lazy<Regex> = lazy_regex!(r"drm-engine-render:\s*(\d+)\s*ns");
 
 // Intel only
@@ -129,7 +130,7 @@ static NVIDIA_PROCESS_INFOS: Lazy<RwLock<HashMap<PciSlot, Vec<ProcessInfo>>>> =
 #[nutype(
     validate(less_or_equal = 19),
     validate(greater_or_equal = -20),
-    derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, Copy, FromStr, Deref, TryFrom),
+    derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, Copy, FromStr, Deref, TryFrom, Display),
     default = 0
 )]
 pub struct Niceness(i8);
@@ -140,6 +141,27 @@ pub enum Containerization {
     None,
     Flatpak,
     Snap,
+}
+
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, Copy, PartialOrd, Ord)]
+pub enum GpuIdentifier {
+    PciSlot(PciSlot),
+    Enumerator(usize),
+}
+
+impl Default for GpuIdentifier {
+    fn default() -> Self {
+        GpuIdentifier::Enumerator(0)
+    }
+}
+
+impl Display for GpuIdentifier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            GpuIdentifier::PciSlot(pci_slot) => write!(f, "{}", pci_slot),
+            GpuIdentifier::Enumerator(e) => write!(f, "{}", e),
+        }
+    }
 }
 
 /// Represents GPU usage statistics per-process. Depending on the GPU manufacturer (which should be determined in
@@ -190,7 +212,7 @@ pub struct ProcessData {
     pub write_bytes: Option<u64>,
     pub timestamp: u64,
     /// Key: PCI Slot ID of the GPU
-    pub gpu_usage_stats: BTreeMap<PciSlot, GpuUsageStats>,
+    pub gpu_usage_stats: BTreeMap<GpuIdentifier, GpuUsageStats>,
     pub npu_usage_stats: BTreeMap<PciSlot, NpuUsageStats>,
 }
 
@@ -443,14 +465,6 @@ impl ProcessData {
         })
     }
 
-    fn gpu_usage_stats(proc_path: &Path, pid: i32) -> BTreeMap<PciSlot, GpuUsageStats> {
-        trace!("Gathering GPU stats…");
-        let nvidia_stats = Self::nvidia_gpu_stats_all(pid);
-        let mut other_stats = Self::other_gpu_usage_stats(proc_path, pid).unwrap_or_default();
-        other_stats.extend(nvidia_stats);
-        other_stats
-    }
-
     /// Returns the fd_num and the plausibility of whether this file might contain drm fdinfo data.
     /// This function is cautious and will signal plausibility if there's an error during evaluation.
     fn drm_fdinfo_plausible<P: AsRef<Path>>(
@@ -530,11 +544,18 @@ impl ProcessData {
         (true, fd_num)
     }
 
+    fn gpu_usage_stats(proc_path: &Path, pid: i32) -> BTreeMap<GpuIdentifier, GpuUsageStats> {
+        trace!("Gathering GPU stats…");
+        let nvidia_stats = Self::nvidia_gpu_stats_all(pid);
+        let mut other_stats = Self::other_gpu_usage_stats(proc_path, pid).unwrap_or_default();
+        other_stats.extend(nvidia_stats);
+        other_stats
+    }
+
     fn other_gpu_usage_stats(
         proc_path: &Path,
         pid: i32,
-    ) -> Result<BTreeMap<PciSlot, GpuUsageStats>> {
-        trace!("Gathering other GPU stats…");
+    ) -> Result<BTreeMap<GpuIdentifier, GpuUsageStats>> {
         let fdinfo_dir = proc_path.join("fdinfo");
 
         let mut seen_fds = HashSet::new();
@@ -614,6 +635,7 @@ impl ProcessData {
             "Reading and parsing {} for NPU stats…",
             fdinfo_path.as_ref().to_string_lossy()
         );
+
         let content = std::fs::read_to_string(fdinfo_path.as_ref())?;
 
         let pci_slot = RE_DRM_PDEV
@@ -656,18 +678,13 @@ impl ProcessData {
         return Ok((pci_slot, stats));
     }
 
-    fn read_gpu_fdinfo<P: AsRef<Path>>(fdinfo_path: P) -> Result<(PciSlot, GpuUsageStats)> {
+    fn read_gpu_fdinfo<P: AsRef<Path>>(fdinfo_path: P) -> Result<(GpuIdentifier, GpuUsageStats)> {
         trace!(
             "Reading and parsing {} for GPU stats…",
             fdinfo_path.as_ref().to_string_lossy()
         );
-        let content = std::fs::read_to_string(fdinfo_path.as_ref())?;
 
-        let pci_slot = RE_DRM_PDEV
-            .captures(&content)
-            .and_then(|captures| captures.get(1))
-            .and_then(|capture| PciSlot::from_str(capture.as_str()).ok())
-            .context("can't parse PCI slot ID")?;
+        let content = std::fs::read_to_string(fdinfo_path.as_ref())?;
 
         let driver = RE_DRM_DRIVER
             .captures(&content)
@@ -680,17 +697,23 @@ impl ProcessData {
             bail!("this is not a GPU");
         }
 
-        let gfx = RE_DRM_ENGINE_GFX // amd
+        let gpu_identifier = RE_DRM_PDEV
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| PciSlot::from_str(capture.as_str()).ok())
+            .map(|pci_slot| GpuIdentifier::PciSlot(pci_slot))
+            .unwrap_or_default();
+
+        let gfx = RE_DRM_ENGINE_GFX
             .captures(&content)
             .and_then(|captures| captures.get(1))
             .and_then(|capture| capture.as_str().parse::<u64>().ok())
-            .or_else(|| {
-                // intel
-                RE_DRM_ENGINE_RENDER
-                    .captures(&content)
-                    .and_then(|captures| captures.get(1))
-                    .and_then(|capture| capture.as_str().parse::<u64>().ok())
-            })
+            .unwrap_or_default();
+
+        let render = RE_DRM_ENGINE_RENDER
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse::<u64>().ok())
             .unwrap_or_default();
 
         let compute = RE_DRM_ENGINE_COMPUTE
@@ -699,17 +722,16 @@ impl ProcessData {
             .and_then(|capture| capture.as_str().parse::<u64>().ok())
             .unwrap_or_default();
 
-        let enc = RE_DRM_ENGINE_ENC // amd
+        let enc = RE_DRM_ENGINE_ENC
             .captures(&content)
             .and_then(|captures| captures.get(1))
             .and_then(|capture| capture.as_str().parse::<u64>().ok())
-            .or_else(|| {
-                // intel
-                RE_DRM_ENGINE_VIDEO
-                    .captures(&content)
-                    .and_then(|captures| captures.get(1))
-                    .and_then(|capture| capture.as_str().parse::<u64>().ok())
-            })
+            .unwrap_or_default();
+
+        let video = RE_DRM_ENGINE_VIDEO
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse::<u64>().ok())
             .unwrap_or_default();
 
         let dec = RE_DRM_ENGINE_DEC
@@ -732,27 +754,32 @@ impl ProcessData {
             .unwrap_or_default()
             .saturating_mul(1024);
 
+        let total_memory = RE_DRM_TOTAL_MEMORY
+            .captures(&content)
+            .and_then(|captures| captures.get(1))
+            .and_then(|capture| capture.as_str().parse::<u64>().ok())
+            .unwrap_or_default()
+            .saturating_mul(1024);
+
         let stats = GpuUsageStats {
-            gfx: gfx.saturating_add(compute),
-            mem: vram.saturating_add(gtt),
-            enc,
+            gfx: gfx.saturating_add(render).saturating_add(compute),
+            mem: vram.saturating_add(gtt).saturating_add(total_memory),
+            enc: enc.saturating_add(video),
             dec,
             nvidia: false,
         };
 
-        trace!("Success reading GPU data for {pci_slot}: {stats:?}");
-
-        return Ok((pci_slot, stats));
+        return Ok((gpu_identifier, stats));
     }
 
-    fn nvidia_gpu_stats_all(pid: i32) -> BTreeMap<PciSlot, GpuUsageStats> {
+    fn nvidia_gpu_stats_all(pid: i32) -> BTreeMap<GpuIdentifier, GpuUsageStats> {
         trace!("Gathering NVIDIA GPU stats…");
 
         let mut return_map = BTreeMap::new();
 
         for (pci_slot, _) in NVML_DEVICES.iter() {
             if let Ok(stats) = Self::nvidia_gpu_stats(pid, *pci_slot) {
-                return_map.insert(pci_slot.to_owned(), stats);
+                return_map.insert(GpuIdentifier::PciSlot(pci_slot.to_owned()), stats);
             }
         }
 

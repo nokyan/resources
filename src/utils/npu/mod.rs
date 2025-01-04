@@ -4,7 +4,7 @@ mod other;
 
 use amd::AmdNpu;
 use anyhow::{bail, Context, Result};
-use log::{debug, info};
+use log::{debug, info, trace};
 use process_data::pci_slot::PciSlot;
 
 use std::{
@@ -49,6 +49,8 @@ impl NpuData {
     pub fn new(npu: &Npu) -> Self {
         let pci_slot = npu.pci_slot();
 
+        trace!("Gathering NPU data for {}…", pci_slot);
+
         let usage_fraction = npu.usage().ok();
 
         let total_memory = npu.total_memory().ok();
@@ -63,7 +65,7 @@ impl NpuData {
         let power_cap = npu.power_cap().ok();
         let power_cap_max = npu.power_cap_max().ok();
 
-        Self {
+        let npu_data = Self {
             pci_slot,
             usage_fraction,
             total_memory,
@@ -74,7 +76,11 @@ impl NpuData {
             power_usage,
             power_cap,
             power_cap_max,
-        }
+        };
+
+        trace!("Gathered NPU data for {}: {npu_data:?}", pci_slot);
+
+        npu_data
     }
 }
 
@@ -111,6 +117,7 @@ pub trait NpuImpl {
 
     fn read_sysfs_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path().join(file);
+        trace!("Reading {path:?}…");
         std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
@@ -119,11 +126,13 @@ pub trait NpuImpl {
 
     fn read_device_file<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<String> {
         let path = self.sysfs_path().join("device").join(file);
+        trace!("Reading {path:?}…");
         Ok(std::fs::read_to_string(path)?.replace('\n', ""))
     }
 
     fn read_device_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path().join("device").join(file);
+        trace!("Reading {path:?}…");
         self.read_device_file(&path)?
             .parse::<isize>()
             .with_context(|| format!("error parsing file {}", &path.to_string_lossy()))
@@ -131,6 +140,7 @@ pub trait NpuImpl {
 
     fn read_hwmon_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.first_hwmon().context("no hwmon found")?.join(file);
+        trace!("Reading {path:?}…");
         std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
@@ -210,7 +220,11 @@ impl Npu {
     }
 
     fn from_sysfs_path<P: AsRef<Path>>(path: P) -> Result<Npu> {
-        let sysfs_device_path = path.as_ref().join("device");
+        let path = path.as_ref();
+
+        trace!("Creating NPU object of {path:?}…");
+
+        let sysfs_device_path = path.join("device");
         let uevent_contents = read_uevent(sysfs_device_path.join("uevent"))?;
 
         let (device, vid, pid) = if let Some(pci_line) = uevent_contents.get("PCI_ID") {
@@ -250,15 +264,13 @@ impl Npu {
             bail!("this is a simple framebuffer");
         }
 
-        let path = path.as_ref().to_path_buf();
-
         let (npu, npu_category) = if vid == VID_INTEL || driver == "intel_vpu" {
             (
                 Npu::Intel(IntelNpu::new(
                     device,
                     pci_slot,
                     driver,
-                    path,
+                    path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "Intel",
@@ -269,7 +281,7 @@ impl Npu {
                     device,
                     pci_slot,
                     driver,
-                    path,
+                    path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "AMD",
@@ -280,7 +292,7 @@ impl Npu {
                     device,
                     pci_slot,
                     driver,
-                    path,
+                    path.to_path_buf(),
                     hwmon_vec.first().cloned(),
                 )),
                 "Other",
@@ -292,6 +304,8 @@ impl Npu {
             npu.name().unwrap_or("<unknown name>".into()),
             npu.pci_slot(),
         );
+
+        trace!("Created NPU object of {path:?}: {npu:?}");
 
         Ok(npu)
     }

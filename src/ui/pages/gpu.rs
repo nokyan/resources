@@ -1,5 +1,6 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self};
+use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
@@ -181,6 +182,8 @@ impl ResGPU {
     const MAIN_GRAPH_COLOR: [u8; 3] = [0xed, 0x33, 0x3b];
 
     pub fn new() -> Self {
+        trace!("Creating ResGPU GObject…");
+
         glib::Object::new::<Self>()
     }
 
@@ -190,9 +193,11 @@ impl ResGPU {
     }
 
     pub fn setup_widgets(&self, gpu: &Gpu) {
+        trace!("Setting up ResGPU ({}) widgets…", gpu.gpu_identifier());
+
         let imp = self.imp();
 
-        let tab_id = format!("{}-{}", TAB_ID_PREFIX, &gpu.pci_slot().to_string());
+        let tab_id = format!("{}-{}", TAB_ID_PREFIX, &gpu.gpu_identifier());
         imp.set_tab_id(&tab_id);
 
         imp.gpu_usage.set_title_label(&i18n("Total Usage"));
@@ -231,7 +236,12 @@ impl ResGPU {
                 .map_or_else(|_| i18n("N/A"), |vendor| vendor.name().to_string()),
         );
 
-        imp.pci_slot.set_subtitle(&gpu.pci_slot().to_string());
+        match gpu.gpu_identifier() {
+            process_data::GpuIdentifier::PciSlot(pci_slot) => {
+                imp.pci_slot.set_subtitle(&pci_slot.to_string())
+            }
+            process_data::GpuIdentifier::Enumerator(_) => imp.pci_slot.set_subtitle(&i18n("N/A")),
+        }
 
         imp.driver_used.set_subtitle(&gpu.driver());
 
@@ -249,10 +259,12 @@ impl ResGPU {
     }
 
     pub fn refresh_page(&self, gpu_data: &GpuData) {
+        trace!("Refreshing ResGPU ({})…", gpu_data.gpu_identifier);
+
         let imp = self.imp();
 
         let GpuData {
-            pci_slot: _,
+            gpu_identifier: _,
             usage_fraction,
             encode_fraction,
             decode_fraction,

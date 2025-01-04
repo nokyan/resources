@@ -5,6 +5,7 @@ use crate::utils::units::{convert_speed, convert_storage};
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::gio::ThemedIcon;
 use gtk::glib;
+use log::trace;
 
 mod imp {
 
@@ -99,6 +100,8 @@ impl Default for ResAppDialog {
 
 impl ResAppDialog {
     pub fn new() -> Self {
+        trace!("Creating ResAppDialog GObject…");
+
         glib::Object::new::<Self>()
     }
 
@@ -107,6 +110,8 @@ impl ResAppDialog {
     }
 
     pub fn setup_widgets(&self, app: &ApplicationEntry) {
+        trace!("Setting up ResAppDialog widgets…");
+
         let imp = self.imp();
 
         if app.id().is_none() // this will be the case for System Processes
@@ -153,6 +158,8 @@ impl ResAppDialog {
     }
 
     pub fn update(&self, app: &ApplicationEntry) {
+        trace!("Refreshing ResAppDialog…");
+
         let imp = self.imp();
 
         imp.cpu_usage

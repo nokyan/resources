@@ -2,6 +2,7 @@ use gtk::{
     glib::{self, GString},
     subclass::prelude::ObjectSubclassIsExt,
 };
+use log::trace;
 use process_data::Containerization;
 
 use crate::{
@@ -200,6 +201,8 @@ glib::wrapper! {
 
 impl ProcessEntry {
     pub fn new(process: &Process) -> Self {
+        trace!("Creating ProcessEntry GObject ({})…", process.data.pid);
+
         let containerization = match process.data.containerization {
             Containerization::None => i18n("No"),
             Containerization::Flatpak => i18n("Yes (Flatpak)"),
@@ -221,6 +224,8 @@ impl ProcessEntry {
     }
 
     pub fn update(&self, process: &Process) {
+        trace!("Refreshing ProcessEntry ({})…", process.data.pid);
+
         self.set_cpu_usage(process.cpu_time_ratio());
         self.set_memory_usage(process.data.memory_usage as u64);
         self.set_swap_usage(process.data.swap_usage as u64);

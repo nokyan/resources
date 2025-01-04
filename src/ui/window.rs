@@ -1,13 +1,13 @@
 use process_data::{Niceness, ProcessData};
 use std::path::PathBuf;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use adw::{prelude::*, subclass::prelude::*, ToolbarView};
 use adw::{Toast, ToastOverlay};
 use anyhow::{Context, Result};
 use gtk::glib::{clone, timeout_future, GString, MainContext};
 use gtk::{gio, glib, Widget};
-use log::{info, warn};
+use log::{info, trace, warn};
 
 use crate::application::Application;
 use crate::config::PROFILE;
@@ -59,7 +59,8 @@ mod imp {
 
     use async_channel::{unbounded, Receiver, Sender};
     use gtk::CompositeTemplate;
-    use process_data::pci_slot::PciSlot;
+    use log::debug;
+    use process_data::{pci_slot::PciSlot, GpuIdentifier};
 
     #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/net/nokyan/Resources/ui/window.ui")]
@@ -95,7 +96,7 @@ mod imp {
 
         pub battery_pages: RefCell<HashMap<PathBuf, adw::ToolbarView>>,
 
-        pub gpu_pages: RefCell<HashMap<PciSlot, (Gpu, adw::ToolbarView)>>,
+        pub gpu_pages: RefCell<HashMap<GpuIdentifier, (Gpu, adw::ToolbarView)>>,
 
         pub npu_pages: RefCell<HashMap<PciSlot, (Npu, adw::ToolbarView)>>,
 
@@ -174,8 +175,10 @@ mod imp {
     impl WindowImpl for MainWindow {
         // Save window state on delete event
         fn close_request(&self) -> glib::Propagation {
+            debug!("Closing the application…");
+
             if let Err(err) = self.obj().save_window_size() {
-                log::warn!("Failed to save window state, {}", &err);
+                warn!("Failed to save window state, {}", &err);
             }
 
             // Pass close request on to the parent
@@ -210,6 +213,8 @@ struct RefreshData {
 
 impl MainWindow {
     pub fn new(app: &Application) -> Self {
+        trace!("Creating MainWindow GObject…");
+
         let window = glib::Object::builder::<Self>()
             .property("application", app)
             .build();
@@ -325,7 +330,7 @@ impl MainWindow {
 
             imp.gpu_pages
                 .borrow_mut()
-                .insert(gpu.pci_slot(), (gpu.clone(), added_page));
+                .insert(gpu.gpu_identifier(), (gpu.clone(), added_page));
         }
     }
 
@@ -362,6 +367,7 @@ impl MainWindow {
     }
 
     fn setup_widgets(&self) {
+        trace!("Setting up Application widgets…");
         let imp = self.imp();
 
         let gpus = Gpu::get_gpus().unwrap_or_default();
@@ -391,7 +397,7 @@ impl MainWindow {
             *imp.apps_context.borrow_mut() = AppsContext::new(
                 gpus.iter()
                     .filter(|gpu| gpu.combined_media_engine().unwrap_or_default())
-                    .map(Gpu::pci_slot)
+                    .map(Gpu::gpu_identifier)
                     .collect(),
             );
             imp.applications.init(imp.sender.clone());
@@ -433,6 +439,10 @@ impl MainWindow {
     }
 
     fn gather_refresh_data(logical_cpus: usize, gpus: &[Gpu], npus: &[Npu]) -> RefreshData {
+        let start = Instant::now();
+
+        trace!("Gathering refresh data of all devices…");
+
         let cpu_data = if ARGS.disable_cpu_monitoring {
             None
         } else {
@@ -495,14 +505,14 @@ impl MainWindow {
             Process::all_data()
                 .inspect_err(|e| {
                     warn!(
-                        "Unable to update process and app data!\n{e}\n{}",
+                        "Unable to update process and app data! Is resources-processes running?\n{e}\n{}",
                         e.backtrace()
                     );
                 })
                 .unwrap_or_default()
         };
 
-        RefreshData {
+        let refresh_data = RefreshData {
             cpu_data,
             mem_data,
             gpu_data,
@@ -514,10 +524,18 @@ impl MainWindow {
             battery_paths,
             battery_data,
             process_data,
-        }
+        };
+
+        trace!("Finished gathering refresh data in {:.2?}", start.elapsed());
+
+        refresh_data
     }
 
     fn refresh_ui(&self, refresh_data: RefreshData) {
+        let start = Instant::now();
+
+        trace!("Refreshing UI using gathered data…");
+
         let imp = self.imp();
 
         let RefreshData {
@@ -556,19 +574,21 @@ impl MainWindow {
                 // average usage during now and the last refresh, while gpu_busy_percent is a snapshot of the current
                 // usage, which might not be what we want
 
-                let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.pci_slot);
+                let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.gpu_identifier);
                 gpu_data.usage_fraction = Some(f64::max(
                     gpu_data.usage_fraction.unwrap_or(0.0),
                     processes_gpu_fraction.into(),
                 ));
 
-                let processes_encode_fraction = apps_context.encoder_fraction(gpu_data.pci_slot);
+                let processes_encode_fraction =
+                    apps_context.encoder_fraction(gpu_data.gpu_identifier);
                 gpu_data.encode_fraction = Some(f64::max(
                     gpu_data.encode_fraction.unwrap_or(0.0),
                     processes_encode_fraction.into(),
                 ));
 
-                let processes_decode_fraction = apps_context.decoder_fraction(gpu_data.pci_slot);
+                let processes_decode_fraction =
+                    apps_context.decoder_fraction(gpu_data.gpu_identifier);
                 gpu_data.decode_fraction = Some(f64::max(
                     gpu_data.decode_fraction.unwrap_or(0.0),
                     processes_decode_fraction.into(),
@@ -674,6 +694,8 @@ impl MainWindow {
 
             page.refresh_page(battery_data);
         }
+
+        trace!("UI refresh done in {:.2?}", start.elapsed());
     }
 
     pub async fn periodic_refresh_all(&self) {
@@ -707,6 +729,8 @@ impl MainWindow {
         let (tx_wait, rx_wait) = std::sync::mpsc::sync_channel(1);
 
         std::thread::spawn(move || {
+            trace!("Spawning refresh thread");
+
             loop {
                 let data = Self::gather_refresh_data(logical_cpus, &gpus, &npus);
                 tx_data.send(data).unwrap();
@@ -718,6 +742,8 @@ impl MainWindow {
         });
 
         let mut first_refresh = true;
+
+        trace!("Going into refresh loop");
 
         loop {
             // gather_refresh_data()
@@ -782,6 +808,8 @@ impl MainWindow {
 
     /// Create page for every drive that is shown
     fn refresh_drive_pages(&self, mut paths: Vec<PathBuf>, drive_data: &[DriveData]) {
+        trace!("Refreshing drive pages…");
+
         let imp = self.imp();
 
         let mut drive_pages = imp.drive_pages.borrow_mut();
@@ -855,6 +883,8 @@ impl MainWindow {
 
     /// Create page for every network interface that is shown
     fn refresh_network_pages(&self, mut paths: Vec<PathBuf>, network_data: &[NetworkData]) {
+        trace!("Refreshing network pages…");
+
         let imp = self.imp();
 
         let mut network_pages = imp.network_pages.borrow_mut();
@@ -927,6 +957,8 @@ impl MainWindow {
 
     /// Create page for every battery that is shown
     fn refresh_battery_pages(&self, paths: Vec<PathBuf>, battery_data: &[BatteryData]) {
+        trace!("Refreshing battery pages…");
+
         let imp = self.imp();
 
         let mut battery_pages = imp.battery_pages.borrow_mut();
@@ -1091,6 +1123,8 @@ impl MainWindow {
         window_title: &str,
         window_subtitle: &str,
     ) -> adw::ToolbarView {
+        trace!("Adding page {window_title} ({window_subtitle})…");
+
         let imp = self.imp();
 
         let title_widget = adw::WindowTitle::new(window_title, window_subtitle);

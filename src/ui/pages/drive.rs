@@ -2,6 +2,7 @@ use std::time::{Duration, SystemTime};
 
 use adw::{glib::property::PropertySet, prelude::*, subclass::prelude::*};
 use gtk::glib;
+use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
@@ -196,6 +197,8 @@ impl ResDrive {
     const SECTOR_SIZE: usize = 512;
 
     pub fn new() -> Self {
+        trace!("Creating ResDrive GObject…");
+
         glib::Object::new::<Self>()
     }
 
@@ -205,6 +208,11 @@ impl ResDrive {
     }
 
     pub fn setup_widgets(&self, drive_data: &DriveData) {
+        trace!(
+            "Setting up ResDrive ({:?}) widgets…",
+            drive_data.inner.sysfs_path
+        );
+
         let imp = self.imp();
         let drive = &drive_data.inner;
 
@@ -258,6 +266,8 @@ impl ResDrive {
     }
 
     pub fn refresh_page(&self, drive_data: DriveData) {
+        trace!("Refreshing ResDrive ({:?})…", drive_data.inner.sysfs_path);
+
         let imp = self.imp();
 
         let DriveData {

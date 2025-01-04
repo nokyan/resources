@@ -1,15 +1,17 @@
 use anyhow::{anyhow, bail, Context, Result};
 use glob::glob;
 use lazy_regex::{lazy_regex, Lazy, Regex};
-use log::{debug, warn};
+use log::{debug, trace, warn};
 use std::{
     path::{Path, PathBuf},
     sync::LazyLock,
 };
 
+const PROC_STAT: &str = "/proc/stat";
+
 const KNOWN_HWMONS: &[&str] = &["zenpower", "coretemp", "k10temp"];
 
-const KNOWN_THERMAL_ZONES: &[&str] = &["x86_pkg_temp", "acpitz"];
+const KNOWN_THERMAL_ZONES: &[&str] = &["cpu-thermal", "x86_pkg_temp", "acpitz"];
 
 static RE_LSCPU_MODEL_NAME: Lazy<Regex> = lazy_regex!(r"Model name:\s*(.*)");
 
@@ -26,7 +28,7 @@ static RE_LSCPU_VIRTUALIZATION: Lazy<Regex> = lazy_regex!(r"Virtualization:\s*(.
 static RE_LSCPU_MAX_MHZ: Lazy<Regex> = lazy_regex!(r"CPU max MHz:\s*(.*)");
 
 static RE_PROC_STAT: Lazy<Regex> = lazy_regex!(
-    r"cpu[0-9]* *(?P<user>[0-9]*) *(?P<nice>[0-9]*) *(?P<system>[0-9]*) *(?P<idle>[0-9]*) *(?P<iowait>[0-9]*) *(?P<irq>[0-9]*) *(?P<softirq>[0-9]*) *(?P<steal>[0-9]*) *(?P<guest>[0-9]*) *(?P<guest_nice>[0-9]*)"
+    r"cpu[0-9]+ *(?P<user>[0-9]*) *(?P<nice>[0-9]*) *(?P<system>[0-9]*) *(?P<idle>[0-9]*) *(?P<iowait>[0-9]*) *(?P<irq>[0-9]*) *(?P<softirq>[0-9]*) *(?P<steal>[0-9]*) *(?P<guest>[0-9]*) *(?P<guest_nice>[0-9]*)"
 );
 
 static CPU_TEMPERATURE_PATH: LazyLock<Option<PathBuf>> = LazyLock::new(|| {
@@ -77,36 +79,36 @@ fn search_for_thermal_zones(types: &[&'static str]) -> Option<(&'static str, Pat
     None
 }
 
+#[derive(Debug)]
 pub struct CpuData {
-    pub new_total_usage: (u64, u64),
-    pub new_thread_usages: Vec<(u64, u64)>,
+    pub new_thread_usages: Vec<Result<(u64, u64)>>,
     pub temperature: Result<f32, anyhow::Error>,
     pub frequencies: Vec<Option<u64>>,
 }
 
 impl CpuData {
     pub fn new(logical_cpus: usize) -> Self {
-        let new_total_usage = get_cpu_usage(None).unwrap_or((0, 0));
+        trace!("Gathering CPU data…");
+        let new_thread_usages = get_cpu_usage();
 
         let temperature = get_temperature();
 
         let mut frequencies = Vec::with_capacity(logical_cpus);
-        let mut new_thread_usages = Vec::with_capacity(logical_cpus);
 
         for i in 0..logical_cpus {
-            let smth = get_cpu_usage(Some(i)).unwrap_or((0, 0));
-            new_thread_usages.push(smth);
-
             let freq = get_cpu_freq(i);
             frequencies.push(freq.ok());
         }
 
-        Self {
-            new_total_usage,
+        let cpu_data = Self {
             new_thread_usages,
             temperature,
             frequencies,
-        }
+        };
+
+        trace!("Gathered CPU data: {cpu_data:?}");
+
+        cpu_data
     }
 }
 
@@ -218,31 +220,36 @@ impl CpuInfo {
 /// Will return `Err` if the are problems during reading or parsing
 /// of the corresponding file in sysfs
 pub fn get_cpu_freq(core: usize) -> Result<u64> {
+    trace!("Finding CPU frequency for core {core}…");
+
     std::fs::read_to_string(format!(
         "/sys/devices/system/cpu/cpu{core}/cpufreq/scaling_cur_freq"
     ))
+    .inspect_err(|err| trace!("Unable to get CPU frequency for core {core}: {err}"))
     .with_context(|| format!("unable to read scaling_cur_freq for core {core}"))?
     .replace('\n', "")
     .parse::<u64>()
     .context("can't parse scaling_cur_freq to usize")
     .map(|x| x * 1000)
+    .inspect(|freq| trace!("Frequency of core {core}: {freq} Hz"))
 }
 
 fn parse_proc_stat_line<S: AsRef<str>>(line: S) -> Result<(u64, u64)> {
     let captures = RE_PROC_STAT
         .captures(line.as_ref())
-        .ok_or_else(|| anyhow!("using regex to parse /proc/stat failed"))?;
-    let idle_time = captures
+        .context("using regex to parse /proc/stat failed")?;
+
+    let idle = captures
         .name("idle")
         .and_then(|x| x.as_str().parse::<u64>().ok())
-        .ok_or_else(|| anyhow!("unable to get idle time"))?
-        .saturating_add(
-            captures
-                .name("iowait")
-                .and_then(|x| x.as_str().parse::<u64>().ok())
-                .ok_or_else(|| anyhow!("unable to get iowait time"))?,
-        );
-    let sum = captures
+        .context("unable to get idle time")?;
+
+    let iowait = captures
+        .name("iowait")
+        .and_then(|x| x.as_str().parse::<u64>().ok())
+        .context("unable to get idle time")?;
+
+    let total = captures
         .iter()
         .skip(1)
         .flat_map(|cap| {
@@ -250,22 +257,19 @@ fn parse_proc_stat_line<S: AsRef<str>>(line: S) -> Result<(u64, u64)> {
                 .ok_or_else(|| anyhow!("unable to sum CPU times from /proc/stat"))
         })
         .sum();
-    Ok((idle_time, sum))
+
+    Ok((idle.saturating_add(iowait), total))
 }
 
-fn get_proc_stat(core: Option<usize>) -> Result<String> {
-    // the combined stats are in line 0, the other cores are in the following lines,
-    // since our `core` argument starts with 0, we must add 1 to it if it's not `None`.
-    let selected_line_number = core.map_or(0, |x| x + 1);
-    let proc_stat_raw =
-        std::fs::read_to_string("/proc/stat").context("unable to read /proc/stat")?;
-    let mut proc_stat = proc_stat_raw.split('\n').collect::<Vec<&str>>();
-    proc_stat.retain(|x| x.starts_with("cpu"));
-    // return an `Error` if `core` is greater than the number of cores
-    if selected_line_number >= proc_stat.len() {
-        bail!("`core` argument greater than amount of cores")
-    }
-    Ok(proc_stat[selected_line_number].to_string())
+fn parse_proc_stat<S: AsRef<str>>(stat: S) -> Vec<Result<(u64, u64)>> {
+    trace!("Parsing {PROC_STAT}…");
+
+    stat.as_ref()
+        .lines()
+        .skip(1)
+        .filter(|line| line.starts_with("cpu"))
+        .map(|line| parse_proc_stat_line(line))
+        .collect()
 }
 
 /// Returns the CPU usage of either all cores combined (if supplied argument is `None`),
@@ -277,8 +281,14 @@ fn get_proc_stat(core: Option<usize>) -> Result<String> {
 ///
 /// Will return `Err` if the are problems during reading or parsing
 /// of /proc/stat
-pub fn get_cpu_usage(core: Option<usize>) -> Result<(u64, u64)> {
-    parse_proc_stat_line(get_proc_stat(core)?)
+pub fn get_cpu_usage() -> Vec<Result<(u64, u64)>> {
+    trace!("Reading {PROC_STAT}…");
+
+    let raw = std::fs::read_to_string("/proc/stat")
+        .context("unable to read /proc/stat")
+        .unwrap_or_default();
+
+    parse_proc_stat(raw)
 }
 
 /// Returns the CPU temperature.

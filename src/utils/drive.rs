@@ -1,6 +1,7 @@
 use anyhow::{Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
 use lazy_regex::{lazy_regex, Lazy, Regex};
+use log::trace;
 use std::{
     collections::HashMap,
     fmt::Display,
@@ -10,6 +11,8 @@ use std::{
 use crate::i18n::{i18n, i18n_f};
 
 use super::units::convert_storage;
+
+const PATH_SYSFS: &str = "/sys/block";
 
 static RE_DRIVE: Lazy<Regex> = lazy_regex!(
     r" *(?P<read_ios>[0-9]*) *(?P<read_merges>[0-9]*) *(?P<read_sectors>[0-9]*) *(?P<read_ticks>[0-9]*) *(?P<write_ios>[0-9]*) *(?P<write_merges>[0-9]*) *(?P<write_sectors>[0-9]*) *(?P<write_ticks>[0-9]*) *(?P<in_flight>[0-9]*) *(?P<io_ticks>[0-9]*) *(?P<time_in_queue>[0-9]*) *(?P<discard_ios>[0-9]*) *(?P<discard_merges>[0-9]*) *(?P<discard_sectors>[0-9]*) *(?P<discard_ticks>[0-9]*) *(?P<flush_ios>[0-9]*) *(?P<flush_ticks>[0-9]*)"
@@ -26,7 +29,11 @@ pub struct DriveData {
 }
 
 impl DriveData {
-    pub fn new(path: &Path) -> Self {
+    pub fn new<P: AsRef<Path>>(path: P) -> Self {
+        let path = path.as_ref();
+
+        trace!("Gathering drive data for {path:?}…");
+
         let inner = Drive::from_sysfs(path);
         let is_virtual = inner.is_virtual();
         let writable = inner.writable();
@@ -34,14 +41,21 @@ impl DriveData {
         let disk_stats = inner.sys_stats().unwrap_or_default();
         let capacity = inner.capacity();
 
-        Self {
+        let drive_data = Self {
             inner,
             is_virtual,
             writable,
             removable,
             disk_stats,
             capacity,
-        }
+        };
+
+        trace!(
+            "Gathered drive data for {}: {drive_data:?}",
+            path.to_string_lossy()
+        );
+
+        drive_data
     }
 }
 
@@ -112,6 +126,9 @@ impl Drive {
     /// reading or parsing
     pub fn from_sysfs<P: AsRef<Path>>(sysfs_path: P) -> Drive {
         let path = sysfs_path.as_ref().to_path_buf();
+
+        trace!("Creating Drive object of {path:?}");
+
         let block_device = path
             .file_name()
             .expect("sysfs path ends with \"..\"?")
@@ -119,10 +136,13 @@ impl Drive {
             .to_string();
 
         let mut drive = Self::default();
-        drive.sysfs_path = path;
+        drive.sysfs_path = path.clone();
         drive.block_device = block_device;
         drive.model = drive.model().ok().map(|model| model.trim().to_string());
         drive.drive_type = drive.drive_type().unwrap_or_default();
+
+        trace!("Created Drive object of {path:?}: {drive:?}");
+
         drive
     }
 
@@ -134,10 +154,12 @@ impl Drive {
     /// reading or parsing
     pub fn get_sysfs_paths() -> Result<Vec<PathBuf>> {
         let mut list = Vec::new();
-        let entries = std::fs::read_dir("/sys/block")?;
+        trace!("Finding entries in {PATH_SYSFS}");
+        let entries = std::fs::read_dir(PATH_SYSFS)?;
         for entry in entries {
             let entry = entry?;
             let block_device = entry.file_name().to_string_lossy().to_string();
+            trace!("Found block device {block_device}");
             if block_device.is_empty() {
                 continue;
             }
