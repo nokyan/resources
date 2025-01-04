@@ -11,11 +11,18 @@ use std::{path::PathBuf, sync::LazyLock};
 
 static NVML: LazyLock<Result<Nvml, NvmlError>> = LazyLock::new(|| {
     Nvml::init()
-        .inspect_err(|err| warn!("Unable to connect to NVML: {err}"))
+        .inspect_err(|err| {
+            warn!("Unable to connect to NVML: {err}"); 
+            if *IS_FLATPAK {
+                warn!("This can occur when the version of the NVIDIA Flatpak runtime \
+                (org.freedesktop.Platform.GL.nvidia) and the version of the natively installed NVIDIA driver do not \
+                match. Consider updating both your system and Flatpak packages before opening an issue.");
+            }
+        })
         .inspect(|_| debug!("Successfully connected to NVML"))
 });
 
-use crate::utils::pci::Device;
+use crate::utils::{pci::Device, IS_FLATPAK};
 
 use super::GpuImpl;
 
