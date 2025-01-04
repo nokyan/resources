@@ -14,6 +14,11 @@ static NVML: LazyLock<Result<Nvml, NvmlError>> = LazyLock::new(|| {
 
     if let Err(error) = nvml.as_ref() {
         warn!("Connection to NVML failed, reason: {error}");
+        if *IS_FLATPAK {
+            warn!("This can occur when the version of the NVIDIA Flatpak runtime (org.freedesktop.Platform.GL.nvidia) \
+            and the version of the natively installed NVIDIA driver do not match. Consider updating both your system \
+            and Flatpak packages before opening an issue.")
+        }
     } else {
         debug!("Successfully connected to NVML");
     }
@@ -21,7 +26,7 @@ static NVML: LazyLock<Result<Nvml, NvmlError>> = LazyLock::new(|| {
     nvml
 });
 
-use crate::utils::pci::Device;
+use crate::utils::{pci::Device, IS_FLATPAK};
 
 use super::GpuImpl;
 
