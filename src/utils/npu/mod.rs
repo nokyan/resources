@@ -151,15 +151,20 @@ pub trait NpuImpl {
     }
 
     fn drm_usage(&self) -> Result<isize> {
-        bail!("usage fallback not implemented")
+        // No NPU driver actually implements this yet, this is a guess for the future based on drm_usage() for GPUs
+        self.read_device_int("npu_busy_percent")
     }
 
-    fn drm_used_vram(&self) -> Result<isize> {
-        self.read_device_int("mem_info_vram_used")
+    fn drm_used_memory(&self) -> Result<isize> {
+        // ivpu will implement this with kernel 6.14, using this as a fallback just in case other vendors start using
+        // this name as well
+        self.read_device_int("npu_memory_utilization")
     }
 
-    fn drm_total_vram(&self) -> Result<isize> {
-        self.read_device_int("mem_info_vram_total")
+    fn drm_total_memory(&self) -> Result<isize> {
+        // No NPU driver actually implements this yet, this is a guess for the future based on ivpu's
+        // npu_memory_utilization
+        self.read_device_int("npu_memory_total")
     }
 
     fn hwmon_temperature(&self) -> Result<f64> {
@@ -177,7 +182,7 @@ pub trait NpuImpl {
         Ok(self.read_hwmon_int("freq1_input")? as f64)
     }
 
-    fn hwmon_vram_frequency(&self) -> Result<f64> {
+    fn hwmon_memory_frequency(&self) -> Result<f64> {
         Ok(self.read_hwmon_int("freq2_input")? as f64)
     }
 

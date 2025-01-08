@@ -65,11 +65,11 @@ impl NpuImpl for OtherNpu {
     }
 
     fn used_vram(&self) -> Result<usize> {
-        self.drm_used_vram().map(|usage| usage as usize)
+        self.drm_used_memory().map(|usage| usage as usize)
     }
 
     fn total_vram(&self) -> Result<usize> {
-        self.drm_total_vram().map(|usage| usage as usize)
+        self.drm_total_memory().map(|usage| usage as usize)
     }
 
     fn temperature(&self) -> Result<f64> {
@@ -85,7 +85,7 @@ impl NpuImpl for OtherNpu {
     }
 
     fn memory_frequency(&self) -> Result<f64> {
-        self.hwmon_vram_frequency()
+        self.hwmon_memory_frequency()
     }
 
     fn power_cap(&self) -> Result<f64> {
