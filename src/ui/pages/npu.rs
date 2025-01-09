@@ -248,37 +248,57 @@ impl ResNPU {
             .push_data_point(usage_fraction.unwrap_or(0.0));
         imp.npu_usage.graph().set_visible(usage_fraction.is_some());
 
-        let used_memory_fraction =
-            if let (Some(total_memory), Some(used_memory)) = (total_memory, used_memory) {
-                Some((*used_memory as f64 / *total_memory as f64).finite_or_default())
-            } else {
-                None
-            };
+        let memory_subtitle = if let (Some(total_memory), Some(used_memory)) =
+            (total_memory, used_memory)
+        {
+            let used_memory_fraction =
+                (*used_memory as f64 / *total_memory as f64).finite_or_default();
 
-        let memory_percentage_string = used_memory_fraction.as_ref().map_or_else(
-            || i18n("N/A"),
-            |fraction| format!("{} %", (fraction * 100.0).round()),
-        );
+            imp.memory_usage
+                .graph()
+                .push_data_point(used_memory_fraction);
 
-        let memory_subtitle =
-            if let (Some(total_memory), Some(used_memory)) = (total_memory, used_memory) {
-                format!(
-                    "{} / {} · {}",
-                    convert_storage(*used_memory as f64, false),
-                    convert_storage(*total_memory as f64, false),
-                    memory_percentage_string
-                )
-            } else {
-                i18n("N/A")
-            };
+            let memory_percentage_string = format!("{} %", (used_memory_fraction * 100.0).round());
+
+            usage_percentage_string.push_str(" · ");
+            // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
+            // shorter than) 'Memory'
+            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&memory_percentage_string]));
+
+            format!(
+                "{} / {} · {}",
+                convert_storage(*used_memory as f64, false),
+                convert_storage(*total_memory as f64, false),
+                memory_percentage_string
+            )
+        } else if let Some(used_memory) = used_memory {
+            imp.memory_usage
+                .graph()
+                .push_data_point(*used_memory as f64);
+
+            let memory_string = convert_storage(*used_memory as f64, false);
+
+            let highest_memory_string =
+                convert_storage(imp.memory_usage.graph().get_highest_value(), false);
+
+            usage_percentage_string.push_str(" · ");
+            // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
+            // shorter than) 'Memory'
+            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&memory_string]));
+
+            format!(
+                "{} · {} {}",
+                &memory_string,
+                i18n("Highest:"),
+                highest_memory_string
+            )
+        } else {
+            i18n("N/A")
+        };
+
+        imp.memory_usage.graph().set_visible(used_memory.is_some());
 
         imp.memory_usage.set_subtitle(&memory_subtitle);
-        imp.memory_usage
-            .graph()
-            .push_data_point(used_memory_fraction.unwrap_or(0.0));
-        imp.memory_usage
-            .graph()
-            .set_visible(used_memory_fraction.is_some());
 
         imp.temperature.graph().set_visible(temperature.is_some());
 
@@ -308,13 +328,6 @@ impl ResNPU {
             .set_subtitle(&power_cap_max.map_or_else(|| i18n("N/A"), convert_power));
 
         self.set_property("usage", usage_fraction.unwrap_or(0.0));
-
-        if used_memory_fraction.is_some() {
-            usage_percentage_string.push_str(" · ");
-            // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
-            // shorter than) 'Memory'
-            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&memory_percentage_string]));
-        }
 
         if let Some(temperature) = temperature {
             let temperature_string = convert_temperature(*temperature);
