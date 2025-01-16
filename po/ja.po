@@ -1,15 +1,15 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Japanese translation of Resources.
+# Copyright (C) 2025 Resources's COPYRIGHT HOLDER
+# This file is distributed under the same license as the Resources package.
+# Gnuey56 <gnuey56@proton.me>, 2024-2025.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-07 13:57+0200\n"
-"PO-Revision-Date: 2024-05-05 14:39+0900\n"
+"POT-Creation-Date: 2024-10-19 13:51+0200\n"
+"PO-Revision-Date: 2025-01-16 18:48+0900\n"
 "Last-Translator: Gnuey56 <gnuey56@proton.me>\n"
 "Language-Team: \n"
 "Language: ja\n"
@@ -17,16 +17,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.5\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:3
-#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:191
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:262
+#: data/resources/ui/window.ui:22
 msgid "Resources"
 msgstr "Resources"
 
 #. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
 #: data/net.nokyan.Resources.desktop.in.in:4
-#: data/net.nokyan.Resources.metainfo.xml.in.in:6
+#: data/net.nokyan.Resources.metainfo.xml.in.in:5
 msgid "Keep an eye on system resources"
 msgstr "システムリソースを監視"
 
@@ -34,607 +35,817 @@ msgstr "システムリソースを監視"
 msgid ""
 "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 msgstr ""
-"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;シ"
-"ステム;リソース;モニター;プロセス;使用量;タスク;マネージャー;メモリー;"
+"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;シス"
+"テム;リソース;モニター;プロセス;使用量;タスク;マネージャー;メモリー;"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:18
+#: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
 "Resources allows you to check the utilization of your system resources and "
-"control your running processes and applications. It’s designed to be user-"
-"friendly and feel right at home on a modern desktop by using GNOME’s "
-"libadwaita."
+"control your running processes and apps. It’s designed to be user-friendly "
+"and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
-"Resources を使って、システムリソース使用量を確認したり、実行中のプロセスや"
-"アプリケーションをコントロールしましょう。Resources は、ユーザーフレンド"
-"リーに設計され、GNOME の Libadwaita を使用することで、モダンなデスクトップ"
-"を使っていれば違和感を感じることはありません。"
+"Resource を使うことで、お使いのシステムのリソース使用率をチェックしたり、実行"
+"中のプロセスやアプリをコントロールすることができます。Resource は、GNOME の "
+"libadwaita を使用することで、ユーザーフレンドリーでモダンなデスクトップ上では"
+"心地よく使用できるように設計されています。"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:21
+#: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
-msgstr "Resources は以下の項目のモニタリングをサポート:"
+msgstr "Resources は以下の項目のモニタリングに対応:"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+#: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
 msgstr "CPU"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:26
-#: src/ui/pages/applications/mod.rs:664 src/ui/pages/memory.rs:132
-#: src/ui/pages/memory.rs:205 src/ui/pages/processes/mod.rs:751
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+#: src/ui/pages/applications/mod.rs:811 src/ui/pages/memory.rs:105
+#: src/ui/pages/memory.rs:186 src/ui/pages/processes/mod.rs:1087
 #: data/resources/ui/window.ui:158 data/resources/ui/window.ui:165
-#: data/resources/ui/dialogs/app_dialog.ui:81
-#: data/resources/ui/dialogs/process_dialog.ui:68
-#: data/resources/ui/dialogs/settings_dialog.ui:124
-#: data/resources/ui/dialogs/settings_dialog.ui:195
+#: data/resources/ui/dialogs/app_dialog.ui:82
+#: data/resources/ui/dialogs/process_dialog.ui:64
+#: data/resources/ui/dialogs/settings_dialog.ui:133
+#: data/resources/ui/dialogs/settings_dialog.ui:220
 msgid "Memory"
 msgstr "メモリー"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:27
-#: src/ui/pages/applications/mod.rs:954 src/ui/pages/gpu.rs:146
-#: src/ui/pages/processes/mod.rs:1052 src/ui/window.rs:278
-#: data/resources/ui/dialogs/app_dialog.ui:130
-#: data/resources/ui/dialogs/process_dialog.ui:113
-#: data/resources/ui/dialogs/settings_dialog.ui:154
-#: data/resources/ui/dialogs/settings_dialog.ui:225
+#: data/net.nokyan.Resources.metainfo.xml.in.in:26
+#: src/ui/pages/applications/mod.rs:1184 src/ui/pages/gpu.rs:114
+#: src/ui/pages/processes/mod.rs:1471 src/ui/window.rs:311
+#: data/resources/ui/dialogs/app_dialog.ui:140
+#: data/resources/ui/dialogs/process_dialog.ui:118
+#: data/resources/ui/dialogs/settings_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:250
 msgid "GPU"
 msgstr "GPU"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:28
-#: data/resources/ui/dialogs/settings_dialog.ui:278
+#: data/net.nokyan.Resources.metainfo.xml.in.in:27
+#: data/resources/ui/dialogs/settings_dialog.ui:314
 msgid "Network Interfaces"
 msgstr "ネットワークインターフェイス"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:29
+#: data/net.nokyan.Resources.metainfo.xml.in.in:28
 msgid "Storage Devices"
 msgstr "ストレージデバイス"
 
-#: src/application.rs:193
+#: data/net.nokyan.Resources.metainfo.xml.in.in:29
+msgid "Batteries"
+msgstr "バッテリー"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:51
+msgid "Apps page in light theme"
+msgstr "「アプリ」のページ（ライトテーマ）"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:55
+msgid "Processes page in dark theme"
+msgstr "「プロセス」のページ（ダークテーマ）"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:59
+msgid "Processor page in light theme"
+msgstr "「プロセッサ」のページ（ライトテーマ）"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:63
+msgid "Memory page in dark theme"
+msgstr "「メモリー」のページ（ダークテーマ）"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:67
+msgid "GPU page in light theme"
+msgstr "「GPU」のページ（ライトテーマ）"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:71
+msgid "Drive page in dark theme"
+msgstr "「ドライブ」のページ（ダークテーマ）"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:75
+msgid "Network Interface page in light theme"
+msgstr "「ネットワークインターフェイス」のページ（ライトテーマ）"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:79
+msgid "Battery page in dark theme"
+msgstr "「バッテリー」のページ（ダークテーマ）"
+
+#: src/application.rs:264
 msgid "The Nalux Team"
 msgstr "The Nalux Team"
 
-#: src/application.rs:201
+#: src/application.rs:272
 msgid "Report Issues"
 msgstr "問題を報告"
 
 #. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
 #. One name per line, please do not remove previous names.
-#: src/application.rs:207
+#: src/application.rs:278
 msgid "translator-credits"
 msgstr "Gnuey56 <gnuey56@proton.me>"
 
-#: src/application.rs:208
+#: src/application.rs:279
 msgid "Icon by"
 msgstr "アイコン作成者"
 
-#: src/ui/dialogs/app_dialog.rs:161 src/ui/dialogs/process_dialog.rs:202
-#: src/ui/pages/drive.rs:295 src/ui/pages/drive.rs:301
-msgid "No"
-msgstr "いいえ"
-
-#: src/ui/dialogs/app_dialog.rs:162 src/ui/dialogs/process_dialog.rs:203
-msgid "Yes (Flatpak)"
-msgstr "はい (Flatpak)"
-
-#: src/ui/dialogs/app_dialog.rs:163 src/ui/dialogs/process_dialog.rs:204
-msgid "Yes (Snap)"
-msgstr "はい (Snap)"
-
-#: src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:140
-#: src/ui/dialogs/process_dialog.rs:147 src/ui/dialogs/process_dialog.rs:154
-#: src/ui/dialogs/process_dialog.rs:190 src/ui/dialogs/process_dialog.rs:197
-#: src/ui/dialogs/process_dialog.rs:199 src/ui/pages/applications/mod.rs:773
-#: src/ui/pages/applications/mod.rs:871 src/ui/pages/cpu.rs:237
-#: src/ui/pages/cpu.rs:252 src/ui/pages/cpu.rs:266 src/ui/pages/cpu.rs:272
-#: src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:288
-#: src/ui/pages/cpu.rs:291 src/ui/pages/cpu.rs:379 src/ui/pages/gpu.rs:251
-#: src/ui/pages/gpu.rs:296 src/ui/pages/gpu.rs:321 src/ui/pages/gpu.rs:324
-#: src/ui/pages/gpu.rs:335 src/ui/pages/gpu.rs:355 src/ui/pages/gpu.rs:367
-#: src/ui/pages/gpu.rs:381 src/ui/pages/gpu.rs:383 src/ui/pages/gpu.rs:395
-#: src/ui/pages/gpu.rs:402 src/ui/pages/gpu.rs:406 src/ui/pages/memory.rs:240
-#: src/ui/pages/memory.rs:241 src/ui/pages/memory.rs:245
-#: src/ui/pages/memory.rs:246 src/ui/pages/memory.rs:250
-#: src/ui/pages/memory.rs:251 src/ui/pages/memory.rs:279
-#: src/ui/pages/memory.rs:333 src/ui/pages/network.rs:257
-#: src/ui/pages/network.rs:264 src/ui/pages/network.rs:271
-#: src/ui/pages/network.rs:277 src/ui/pages/network.rs:280
-#: src/ui/pages/processes/mod.rs:859 src/ui/pages/processes/mod.rs:912
-#: src/ui/pages/processes/mod.rs:965 src/ui/pages/processes/mod.rs:1018
-#: src/utils/app.rs:686 src/utils/app.rs:762 src/utils/drive.rs:90
-#: src/utils/gpu/mod.rs:255 src/utils/gpu/mod.rs:261
+#: src/ui/dialogs/app_dialog.rs:148 src/ui/dialogs/process_dialog.rs:127
+#: src/ui/dialogs/process_dialog.rs:131 src/ui/dialogs/process_dialog.rs:140
+#: src/ui/dialogs/process_dialog.rs:142 src/ui/dialogs/process_dialog.rs:163
+#: src/ui/dialogs/process_dialog.rs:170 src/ui/dialogs/process_dialog.rs:177
+#: src/ui/dialogs/process_dialog.rs:184 src/ui/pages/applications/mod.rs:954
+#: src/ui/pages/applications/mod.rs:1078 src/ui/pages/battery.rs:196
+#: src/ui/pages/battery.rs:216 src/ui/pages/battery.rs:222
+#: src/ui/pages/battery.rs:225 src/ui/pages/battery.rs:251
+#: src/ui/pages/battery.rs:275 src/ui/pages/battery.rs:277
+#: src/ui/pages/battery.rs:287 src/ui/pages/cpu.rs:218 src/ui/pages/cpu.rs:233
+#: src/ui/pages/cpu.rs:248 src/ui/pages/cpu.rs:254 src/ui/pages/cpu.rs:260
+#: src/ui/pages/cpu.rs:266 src/ui/pages/cpu.rs:270 src/ui/pages/cpu.rs:273
+#: src/ui/pages/cpu.rs:370 src/ui/pages/drive.rs:298 src/ui/pages/drive.rs:329
+#: src/ui/pages/drive.rs:331 src/ui/pages/drive.rs:360
+#: src/ui/pages/drive.rs:362 src/ui/pages/drive.rs:378
+#: src/ui/pages/drive.rs:379 src/ui/pages/drive.rs:386
+#: src/ui/pages/drive.rs:396 src/ui/pages/drive.rs:406 src/ui/pages/gpu.rs:227
+#: src/ui/pages/gpu.rs:267 src/ui/pages/gpu.rs:292 src/ui/pages/gpu.rs:295
+#: src/ui/pages/gpu.rs:306 src/ui/pages/gpu.rs:326 src/ui/pages/gpu.rs:338
+#: src/ui/pages/gpu.rs:352 src/ui/pages/gpu.rs:354 src/ui/pages/gpu.rs:366
+#: src/ui/pages/gpu.rs:373 src/ui/pages/gpu.rs:377 src/ui/pages/memory.rs:221
+#: src/ui/pages/memory.rs:222 src/ui/pages/memory.rs:226
+#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:231
+#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:260
+#: src/ui/pages/memory.rs:317 src/ui/pages/network.rs:230
+#: src/ui/pages/network.rs:237 src/ui/pages/network.rs:244
+#: src/ui/pages/network.rs:250 src/ui/pages/network.rs:253
+#: src/ui/pages/network.rs:314 src/ui/pages/network.rs:317
+#: src/ui/pages/network.rs:319 src/ui/pages/network.rs:348
+#: src/ui/pages/network.rs:351 src/ui/pages/network.rs:353
+#: src/ui/pages/npu.rs:201 src/ui/pages/npu.rs:230 src/ui/pages/npu.rs:248
+#: src/ui/pages/npu.rs:260 src/ui/pages/npu.rs:274 src/ui/pages/npu.rs:276
+#: src/ui/pages/npu.rs:288 src/ui/pages/npu.rs:295 src/ui/pages/npu.rs:299
+#: src/ui/pages/processes/mod.rs:1229 src/ui/pages/processes/mod.rs:1295
+#: src/ui/pages/processes/mod.rs:1361 src/ui/pages/processes/mod.rs:1427
+#: src/ui/pages/processes/mod.rs:1909 src/ui/pages/processes/mod.rs:1911
+#: src/utils/battery.rs:136 src/utils/drive.rs:89 src/utils/gpu/mod.rs:274
+#: src/utils/gpu/mod.rs:280 src/utils/npu/mod.rs:241 src/utils/npu/mod.rs:247
 msgid "N/A"
 msgstr "なし"
 
-#: src/ui/pages/applications/mod.rs:150 data/resources/ui/window.ui:65
-#: data/resources/ui/window.ui:72
-#: data/resources/ui/dialogs/settings_dialog.ui:118
-msgid "Applications"
-msgstr "アプリケーション"
-
-#: src/ui/pages/applications/mod.rs:567
-msgid "Running Applications: {}"
-msgstr "実行中のアプリケーション: {}"
-
-#: src/ui/pages/applications/mod.rs:595 src/ui/pages/processes/mod.rs:576
-msgid "Cancel"
-msgstr "キャンセル"
-
-#: src/ui/pages/applications/mod.rs:622
-msgid "Application"
-msgstr "アプリケーション"
-
-#: src/ui/pages/applications/mod.rs:710 src/ui/pages/cpu.rs:149
-#: src/ui/pages/processes/mod.rs:796 src/ui/window.rs:317
-#: data/resources/ui/window.ui:127 data/resources/ui/window.ui:134
-#: data/resources/ui/dialogs/app_dialog.ui:72
-#: data/resources/ui/dialogs/process_dialog.ui:59
-#: data/resources/ui/dialogs/settings_dialog.ui:129
-#: data/resources/ui/dialogs/settings_dialog.ui:200
-msgid "Processor"
-msgstr "プロセッサー"
-
-#: src/ui/pages/applications/mod.rs:755 src/ui/pages/processes/mod.rs:841
-#: data/resources/ui/dialogs/app_dialog.ui:90
-#: data/resources/ui/dialogs/process_dialog.ui:73
-#: data/resources/ui/dialogs/settings_dialog.ui:134
-#: data/resources/ui/dialogs/settings_dialog.ui:205
-msgid "Drive Read"
-msgstr "ドライブ読み取り"
-
-#: src/ui/pages/applications/mod.rs:806 src/ui/pages/processes/mod.rs:894
-#: data/resources/ui/dialogs/app_dialog.ui:99
-#: data/resources/ui/dialogs/process_dialog.ui:82
-#: data/resources/ui/dialogs/settings_dialog.ui:139
-#: data/resources/ui/dialogs/settings_dialog.ui:210
-msgid "Drive Read Total"
-msgstr "ドライブ読み取りの合計"
-
-#: src/ui/pages/applications/mod.rs:853 src/ui/pages/processes/mod.rs:947
-#: data/resources/ui/dialogs/app_dialog.ui:108
-#: data/resources/ui/dialogs/process_dialog.ui:91
-#: data/resources/ui/dialogs/settings_dialog.ui:144
-#: data/resources/ui/dialogs/settings_dialog.ui:215
-msgid "Drive Write"
-msgstr "ドライブ書き込み"
-
-#: src/ui/pages/applications/mod.rs:906 src/ui/pages/processes/mod.rs:1000
-#: data/resources/ui/dialogs/app_dialog.ui:117
-#: data/resources/ui/dialogs/process_dialog.ui:100
-#: data/resources/ui/dialogs/settings_dialog.ui:149
-#: data/resources/ui/dialogs/settings_dialog.ui:220
-msgid "Drive Write Total"
-msgstr "ドライブ書き込みの合計"
-
-#: src/ui/pages/applications/mod.rs:999 src/ui/pages/processes/mod.rs:1097
-#: data/resources/ui/dialogs/app_dialog.ui:148
-#: data/resources/ui/dialogs/process_dialog.ui:131
-#: data/resources/ui/dialogs/settings_dialog.ui:164
-#: data/resources/ui/dialogs/settings_dialog.ui:235
-msgid "Video Encoder"
-msgstr "ビデオエンコーダー"
-
-#: src/ui/pages/applications/mod.rs:1046 src/ui/pages/processes/mod.rs:1144
-#: data/resources/ui/dialogs/app_dialog.ui:157
-#: data/resources/ui/dialogs/process_dialog.ui:140
-#: data/resources/ui/dialogs/settings_dialog.ui:169
-#: data/resources/ui/dialogs/settings_dialog.ui:240
-msgid "Video Decoder"
-msgstr "ビデオデコーダー"
-
-#: src/ui/pages/applications/mod.rs:1092 src/ui/pages/processes/mod.rs:1191
-#: data/resources/ui/dialogs/app_dialog.ui:139
-#: data/resources/ui/dialogs/process_dialog.ui:122
-#: data/resources/ui/dialogs/settings_dialog.ui:159
-#: data/resources/ui/dialogs/settings_dialog.ui:230
-msgid "Video Memory"
-msgstr "ビデオメモリー"
-
-#: src/ui/pages/applications/mod.rs:1136 src/ui/pages/processes/mod.rs:1374
-msgid "End {}?"
-msgstr "{} を終了しますか？"
-
-#: src/ui/pages/applications/mod.rs:1137 src/ui/pages/processes/mod.rs:1375
-msgid "Halt {}?"
-msgstr "{} を停止しますか？"
-
-#: src/ui/pages/applications/mod.rs:1138 src/ui/pages/processes/mod.rs:1376
-msgid "Kill {}?"
-msgstr "{} を強制終了 (キル) しますか？"
-
-#: src/ui/pages/applications/mod.rs:1139 src/ui/pages/processes/mod.rs:1377
-msgid "Continue {}?"
-msgstr "{} を再開しますか？"
-
-#: src/ui/pages/applications/mod.rs:1145 src/ui/pages/processes/mod.rs:1383
-msgid "Unsaved work might be lost."
-msgstr "保存されていない作業内容は失われます。"
-
-#: src/ui/pages/applications/mod.rs:1146
-msgid ""
-"Halting an application can come with serious risks such as losing data and "
-"security implications. Use with caution."
-msgstr ""
-"アプリケーションを停止すると、データの損失やセキュリティ上の問題等が生じる"
-"リスクがあります。注意して続行してください。"
-
-#: src/ui/pages/applications/mod.rs:1147
-msgid ""
-"Killing an application can come with serious risks such as losing data and "
-"security implications. Use with caution."
-msgstr ""
-"アプリケーションを強制終了すると、データの損失やセキュリティ上の問題等が生"
-"じるリスクがあります。注意して続行してください。"
-
-#: src/ui/pages/applications/mod.rs:1154
-msgid "End application"
-msgstr "アプリケーションを終了"
-
-#: src/ui/pages/applications/mod.rs:1155
-msgid "Halt application"
-msgstr "アプリケーションを停止"
-
-#: src/ui/pages/applications/mod.rs:1156
-msgid "Kill application"
-msgstr "アプリケーションを強制終了"
-
-#: src/ui/pages/applications/mod.rs:1157
-msgid "Continue application"
-msgstr "アプリケーションを再開"
-
-#: src/ui/pages/cpu.rs:236 src/ui/pages/gpu.rs:222
-msgid "Total Usage"
-msgstr "合計使用量"
-
-#: src/ui/pages/cpu.rs:251 src/ui/pages/cpu.rs:363 src/ui/pages/cpu.rs:367
+#: src/ui/dialogs/process_options_dialog.rs:141 src/ui/pages/cpu.rs:232
+#: src/ui/pages/cpu.rs:354 src/ui/pages/cpu.rs:358
 msgid "CPU {}"
 msgstr "CPU {}"
 
-#: src/ui/pages/drive.rs:151
-msgid "Drive"
-msgstr "ドライブ"
+#: src/ui/pages/applications/application_entry.rs:183 src/ui/pages/drive.rs:393
+#: src/ui/pages/drive.rs:403 src/ui/pages/processes/process_entry.rs:204
+msgid "No"
+msgstr "いいえ"
 
-#: src/ui/pages/drive.rs:244
-msgid "Drive Activity"
-msgstr "ドライブの活動"
+#: src/ui/pages/applications/application_entry.rs:184
+#: src/ui/pages/processes/process_entry.rs:205
+msgid "Yes (Flatpak)"
+msgstr "はい (Flatpak)"
 
-#: src/ui/pages/drive.rs:251
-msgid "Read Speed"
-msgstr "読み取り速度"
+#: src/ui/pages/applications/application_entry.rs:185
+#: src/ui/pages/processes/process_entry.rs:206
+msgid "Yes (Snap)"
+msgstr "はい (Snap)"
 
-#: src/ui/pages/drive.rs:255
-msgid "Write Speed"
-msgstr "書き込み速度"
+#: src/ui/pages/applications/mod.rs:134 data/resources/ui/window.ui:65
+#: data/resources/ui/window.ui:72
+#: data/resources/ui/dialogs/settings_dialog.ui:127
+msgid "Apps"
+msgstr "アプリ"
 
-#: src/ui/pages/drive.rs:293 src/ui/pages/drive.rs:299
-msgid "Yes"
-msgstr "はい"
+#. -1 because we don't want to count System Processes
+#: src/ui/pages/applications/mod.rs:668
+msgid "Running Apps: {}"
+msgstr "実行中のアプリ: {}"
 
-#: src/ui/pages/drive.rs:367 src/ui/pages/drive.rs:372
-#: src/ui/pages/network.rs:326 src/ui/pages/network.rs:335
-msgid "Highest:"
-msgstr "最高:"
+#: src/ui/pages/applications/mod.rs:708 src/ui/pages/processes/mod.rs:870
+msgid "Cancel"
+msgstr "キャンセル"
 
-#. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
-#. translation should preferably be quite short or an abbreviation
-#: src/ui/pages/drive.rs:380
-msgid "R: {} · W: {}"
-msgstr "読: {} · 書: {}"
+#: src/ui/pages/applications/mod.rs:754
+msgid "App"
+msgstr "アプリ"
 
-#: src/ui/pages/gpu.rs:230
-msgid "Video Encoder/Decoder Usage"
-msgstr "ビデオエンコーダー/デコーダーの使用量"
+#: src/ui/pages/applications/mod.rs:870 src/ui/pages/cpu.rs:122
+#: src/ui/pages/processes/mod.rs:1145 src/ui/window.rs:403
+#: data/resources/ui/window.ui:127 data/resources/ui/window.ui:134
+#: data/resources/ui/dialogs/app_dialog.ui:73
+#: data/resources/ui/dialogs/process_dialog.ui:55
+#: data/resources/ui/dialogs/settings_dialog.ui:138
+#: data/resources/ui/dialogs/settings_dialog.ui:225
+msgid "Processor"
+msgstr "プロセッサー"
 
-#: src/ui/pages/gpu.rs:236
-msgid "Video Encoder Usage"
-msgstr "ビデオエンコーダーの使用量"
+#: src/ui/pages/applications/mod.rs:933 src/ui/pages/processes/mod.rs:1208
+#: data/resources/ui/dialogs/app_dialog.ui:100
+#: data/resources/ui/dialogs/process_dialog.ui:78
+#: data/resources/ui/dialogs/settings_dialog.ui:143
+#: data/resources/ui/dialogs/settings_dialog.ui:230
+msgid "Drive Read"
+msgstr "ドライブ読み取り"
 
-#: src/ui/pages/gpu.rs:241
-msgid "Video Decoder Usage"
-msgstr "ビデオデコーダーの使用量"
+#: src/ui/pages/applications/mod.rs:997 src/ui/pages/processes/mod.rs:1274
+#: data/resources/ui/dialogs/app_dialog.ui:109
+#: data/resources/ui/dialogs/process_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:148
+#: data/resources/ui/dialogs/settings_dialog.ui:235
+msgid "Drive Read Total"
+msgstr "ドライブ読み取りの合計"
 
-#: src/ui/pages/gpu.rs:246
-msgid "Video Memory Usage"
-msgstr "ビデオメモリーの使用量"
+#: src/ui/pages/applications/mod.rs:1057 src/ui/pages/processes/mod.rs:1340
+#: data/resources/ui/dialogs/app_dialog.ui:118
+#: data/resources/ui/dialogs/process_dialog.ui:96
+#: data/resources/ui/dialogs/settings_dialog.ui:153
+#: data/resources/ui/dialogs/settings_dialog.ui:240
+msgid "Drive Write"
+msgstr "ドライブ書き込み"
 
-#: src/ui/pages/gpu.rs:412
-msgid "VRAM: {}"
-msgstr "VRAM: {}"
+#: src/ui/pages/applications/mod.rs:1123 src/ui/pages/processes/mod.rs:1406
+#: data/resources/ui/dialogs/app_dialog.ui:127
+#: data/resources/ui/dialogs/process_dialog.ui:105
+#: data/resources/ui/dialogs/settings_dialog.ui:158
+#: data/resources/ui/dialogs/settings_dialog.ui:245
+msgid "Drive Write Total"
+msgstr "ドライブ書き込みの合計"
 
-#: src/ui/pages/memory.rs:211
+#: src/ui/pages/applications/mod.rs:1242 src/ui/pages/processes/mod.rs:1529
+#: data/resources/ui/dialogs/app_dialog.ui:158
+#: data/resources/ui/dialogs/process_dialog.ui:136
+#: data/resources/ui/dialogs/settings_dialog.ui:173
+#: data/resources/ui/dialogs/settings_dialog.ui:260
+msgid "Video Encoder"
+msgstr "ビデオエンコーダー"
+
+#: src/ui/pages/applications/mod.rs:1302 src/ui/pages/processes/mod.rs:1589
+#: data/resources/ui/dialogs/app_dialog.ui:167
+#: data/resources/ui/dialogs/process_dialog.ui:145
+#: data/resources/ui/dialogs/settings_dialog.ui:178
+#: data/resources/ui/dialogs/settings_dialog.ui:265
+msgid "Video Decoder"
+msgstr "ビデオデコーダー"
+
+#: src/ui/pages/applications/mod.rs:1361 src/ui/pages/processes/mod.rs:1649
+#: data/resources/ui/dialogs/app_dialog.ui:149
+#: data/resources/ui/dialogs/process_dialog.ui:127
+#: data/resources/ui/dialogs/settings_dialog.ui:168
+#: data/resources/ui/dialogs/settings_dialog.ui:255
+msgid "Video Memory"
+msgstr "ビデオメモリー"
+
+#: src/ui/pages/applications/mod.rs:1419 src/ui/pages/memory.rs:192
+#: src/ui/pages/processes/mod.rs:1952
+#: data/resources/ui/dialogs/app_dialog.ui:91
+#: data/resources/ui/dialogs/process_dialog.ui:73
+#: data/resources/ui/dialogs/settings_dialog.ui:183
+#: data/resources/ui/dialogs/settings_dialog.ui:290
 msgid "Swap"
 msgstr "スワップ"
 
-#: src/ui/pages/memory.rs:275
+#: src/ui/pages/applications/mod.rs:1477 src/ui/pages/processes/mod.rs:2009
+msgid "End {}?"
+msgstr "{} を終了しますか？"
+
+#: src/ui/pages/applications/mod.rs:1478 src/ui/pages/processes/mod.rs:2010
+msgid "Halt {}?"
+msgstr "{} を停止しますか？"
+
+#: src/ui/pages/applications/mod.rs:1479 src/ui/pages/processes/mod.rs:2011
+msgid "Kill {}?"
+msgstr "{} を強制終了しますか？"
+
+#: src/ui/pages/applications/mod.rs:1480 src/ui/pages/processes/mod.rs:2012
+msgid "Continue {}?"
+msgstr "{} を再開しますか？"
+
+#: src/ui/pages/applications/mod.rs:1486 src/ui/pages/processes/mod.rs:2047
+msgid "Unsaved work might be lost."
+msgstr "保存されていない作業内容は失われます。"
+
+#: src/ui/pages/applications/mod.rs:1487
+msgid ""
+"Halting an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
+msgstr ""
+"アプリを停止すると、データの損失やセキュリティ上の問題等が生じるリスクがあり"
+"ます。注意して続行してください。"
+
+#: src/ui/pages/applications/mod.rs:1488
+msgid ""
+"Killing an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
+msgstr ""
+"アプリを強制終了すると、データの損失やセキュリティ上の問題等が生じるリスクが"
+"あります。注意して続行してください。"
+
+#: src/ui/pages/applications/mod.rs:1495
+#: data/resources/ui/pages/applications.ui:22
+#: data/resources/ui/pages/applications.ui:127
+msgid "End App"
+msgstr "アプリを終了"
+
+#: src/ui/pages/applications/mod.rs:1496
+#: data/resources/ui/pages/applications.ui:10
+#: data/resources/ui/pages/applications.ui:30
+msgid "Halt App"
+msgstr "アプリを停止"
+
+#: src/ui/pages/applications/mod.rs:1497
+#: data/resources/ui/pages/applications.ui:6
+#: data/resources/ui/pages/applications.ui:26
+msgid "Kill App"
+msgstr "アプリを強制終了"
+
+#: src/ui/pages/applications/mod.rs:1498
+#: data/resources/ui/pages/applications.ui:14
+#: data/resources/ui/pages/applications.ui:34
+msgid "Continue App"
+msgstr "アプリを再開"
+
+#: src/ui/pages/battery.rs:101 src/ui/pages/drive.rs:122
+msgid "Drive"
+msgstr "ドライブ"
+
+#: src/ui/pages/battery.rs:201
+msgid "Battery Charge"
+msgstr "バッテリー充電"
+
+#: src/ui/pages/battery.rs:208 data/resources/ui/pages/gpu.ui:55
+#: data/resources/ui/pages/npu.ui:49
+msgid "Power Usage"
+msgstr "電源消費量"
+
+#: src/ui/pages/battery.rs:265 src/ui/pages/drive.rs:323
+#: src/ui/pages/drive.rs:354 src/ui/pages/network.rs:306
+#: src/ui/pages/network.rs:340
+msgid "Highest:"
+msgstr "最高:"
+
+#: src/ui/pages/cpu.rs:217 src/ui/pages/gpu.rs:198 src/ui/pages/npu.rs:189
+msgid "Total Usage"
+msgstr "合計使用量"
+
+#: src/ui/pages/drive.rs:224
+msgid "Drive Activity"
+msgstr "ドライブの活動"
+
+#: src/ui/pages/drive.rs:231
+msgid "Read Speed"
+msgstr "読み取り速度"
+
+#: src/ui/pages/drive.rs:235
+msgid "Write Speed"
+msgstr "書き込み速度"
+
+#: src/ui/pages/drive.rs:391 src/ui/pages/drive.rs:401
+msgid "Yes"
+msgstr "はい"
+
+#. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
+#. translation should preferably be quite short or an abbreviation
+#: src/ui/pages/drive.rs:413
+msgid "R: {} · W: {}"
+msgstr "読: {} · 書: {}"
+
+#: src/ui/pages/gpu.rs:206
+msgid "Video Encoder/Decoder Usage"
+msgstr "ビデオエンコーダー/デコーダーの使用量"
+
+#: src/ui/pages/gpu.rs:212
+msgid "Video Encoder Usage"
+msgstr "ビデオエンコーダーの使用量"
+
+#: src/ui/pages/gpu.rs:217
+msgid "Video Decoder Usage"
+msgstr "ビデオデコーダーの使用量"
+
+#: src/ui/pages/gpu.rs:222
+msgid "Video Memory Usage"
+msgstr "ビデオメモリーの使用量"
+
+#. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
+#. shorter than) 'Memory'
+#: src/ui/pages/gpu.rs:385 src/ui/pages/npu.rs:307
+msgid "Memory: {}"
+msgstr "メモリー: {}"
+
+#: src/ui/pages/memory.rs:256
 msgid "{} of {}"
 msgstr "{} / {}"
 
-#: src/ui/pages/memory.rs:278
+#: src/ui/pages/memory.rs:259
 msgid "{} MT/s"
 msgstr "{} MT/s"
 
 #. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
 #. preferably be quite short or an abbreviation
-#: src/ui/pages/memory.rs:352
+#: src/ui/pages/memory.rs:336
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · スワップ: {} %"
 
-#: src/ui/pages/network.rs:149 src/utils/network.rs:122
+#: src/ui/pages/network.rs:114 src/utils/network.rs:128
 msgid "Network Interface"
 msgstr "ネットワークインターフェイス"
 
-#: src/ui/pages/network.rs:245
+#: src/ui/pages/network.rs:218
 msgid "Receiving"
 msgstr "受信"
 
-#: src/ui/pages/network.rs:249
+#: src/ui/pages/network.rs:222
 msgid "Sending"
 msgstr "送信"
 
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
-#: src/ui/pages/network.rs:346
+#: src/ui/pages/network.rs:363
 msgid "R: {} · S: {}"
 msgstr "受: {} · 送: {}"
 
-#: src/ui/pages/processes/mod.rs:158 data/resources/ui/window.ui:96
+#: src/ui/pages/npu.rs:105 src/ui/window.rs:343
+msgid "NPU"
+msgstr "NPU"
+
+#: src/ui/pages/npu.rs:196
+msgid "Memory Usage"
+msgstr "メモリーの使用量"
+
+#: src/ui/pages/processes/mod.rs:178 data/resources/ui/window.ui:96
 #: data/resources/ui/window.ui:103
-#: data/resources/ui/dialogs/settings_dialog.ui:179
+#: data/resources/ui/dialogs/settings_dialog.ui:193
 msgid "Processes"
 msgstr "プロセス"
 
-#: src/ui/pages/processes/mod.rs:550
+#: src/ui/pages/processes/mod.rs:523 src/ui/pages/processes/mod.rs:2056
+#: data/resources/ui/pages/processes.ui:38
+#: data/resources/ui/pages/processes.ui:186
+msgid "End Process"
+msgstr "プロセスを終了"
+
+#: src/ui/pages/processes/mod.rs:527 data/resources/ui/pages/processes.ui:70
+msgid "End Processes"
+msgstr "プロセスを終了"
+
+#: src/ui/pages/processes/mod.rs:821
 msgid "Running Processes: {}"
 msgstr "実行中のプロセス: {}"
 
-#: src/ui/pages/processes/mod.rs:612
-msgid "root"
-msgstr "ルート"
-
-#: src/ui/pages/processes/mod.rs:624
+#: src/ui/pages/processes/mod.rs:919
 msgid "Process"
 msgstr "プロセス"
 
-#: src/ui/pages/processes/mod.rs:670
-#: data/resources/ui/dialogs/process_dialog.ui:181
-#: data/resources/ui/dialogs/settings_dialog.ui:185
+#: src/ui/pages/processes/mod.rs:980
+#: data/resources/ui/dialogs/process_dialog.ui:186
+#: data/resources/ui/dialogs/settings_dialog.ui:210
 msgid "Process ID"
 msgstr "プロセス ID"
 
-#: src/ui/pages/processes/mod.rs:710
-#: data/resources/ui/dialogs/process_dialog.ui:208
-#: data/resources/ui/dialogs/settings_dialog.ui:190
+#: src/ui/pages/processes/mod.rs:1033
+#: data/resources/ui/dialogs/process_dialog.ui:213
+#: data/resources/ui/dialogs/settings_dialog.ui:215
 msgid "User"
 msgstr "ユーザー"
 
-#: src/ui/pages/processes/mod.rs:1237
-#: data/resources/ui/dialogs/process_dialog.ui:149
-#: data/resources/ui/dialogs/settings_dialog.ui:245
+#: src/ui/pages/processes/mod.rs:1708
+#: data/resources/ui/dialogs/process_dialog.ui:154
+#: data/resources/ui/dialogs/settings_dialog.ui:270
 msgid "Total CPU Time"
 msgstr "合計 CPU 時間"
 
-#: src/ui/pages/processes/mod.rs:1283
-#: data/resources/ui/dialogs/process_dialog.ui:158
-#: data/resources/ui/dialogs/settings_dialog.ui:250
+#: src/ui/pages/processes/mod.rs:1767
+#: data/resources/ui/dialogs/process_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:275
 msgid "User CPU Time"
 msgstr "ユーザーの CPU 時間"
 
-#: src/ui/pages/processes/mod.rs:1329
-#: data/resources/ui/dialogs/process_dialog.ui:167
-#: data/resources/ui/dialogs/settings_dialog.ui:255
+#: src/ui/pages/processes/mod.rs:1826
+#: data/resources/ui/dialogs/process_dialog.ui:172
+#: data/resources/ui/dialogs/settings_dialog.ui:280
 msgid "System CPU Time"
 msgstr "システムの CPU 時間"
 
-#: src/ui/pages/processes/mod.rs:1384
+#: src/ui/pages/processes/mod.rs:1885
+#: data/resources/ui/dialogs/process_options_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:285
+msgid "Priority"
+msgstr "優先度"
+
+#: src/ui/pages/processes/mod.rs:2019
+msgid "End process?"
+msgid_plural "End {} processes?"
+msgstr[0] "プロセスを終了しますか？"
+
+#: src/ui/pages/processes/mod.rs:2025
+msgid "Halt process?"
+msgid_plural "Halt {} processes?"
+msgstr[0] "プロセスを停止しますか？"
+
+#: src/ui/pages/processes/mod.rs:2031 src/ui/pages/processes/mod.rs:2037
+msgid "Kill process?"
+msgid_plural "Kill {} processes?"
+msgstr[0] "プロセスを強制終了しますか？"
+
+#: src/ui/pages/processes/mod.rs:2048
 msgid ""
 "Halting a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
-"プロセスを停止すると、データの損失やセキュリティ上の問題等が生じるリスクが"
-"あります。注意して続行してください。"
+"プロセスを停止すると、データの損失やセキュリティ上の問題等が生じるリスクがあ"
+"ります。注意して続行してください。"
 
-#: src/ui/pages/processes/mod.rs:1385
+#: src/ui/pages/processes/mod.rs:2049
 msgid ""
 "Killing a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
-"プロセスを強制終了すると、データ損失やセキュリティ上の問題等が生じるリスク"
-"があります。注意して続行してください。"
+"プロセスを強制終了すると、データ損失やセキュリティ上の問題等が生じるリスクが"
+"あります。注意して続行してください。"
 
-#: src/ui/pages/processes/mod.rs:1392
-msgid "End process"
-msgstr "プロセスを終了"
-
-#: src/ui/pages/processes/mod.rs:1393
-msgid "Halt process"
+#: src/ui/pages/processes/mod.rs:2057 data/resources/ui/pages/processes.ui:10
+#: data/resources/ui/pages/processes.ui:46
+msgid "Halt Process"
 msgstr "プロセスを停止"
 
-#: src/ui/pages/processes/mod.rs:1394
-msgid "Kill process"
+#: src/ui/pages/processes/mod.rs:2058 data/resources/ui/pages/processes.ui:6
+#: data/resources/ui/pages/processes.ui:42
+msgid "Kill Process"
 msgstr "プロセスを強制終了"
 
-#: src/ui/pages/processes/mod.rs:1395
-msgid "Continue process"
+#: src/ui/pages/processes/mod.rs:2059 data/resources/ui/pages/processes.ui:14
+#: data/resources/ui/pages/processes.ui:50
+msgid "Continue Process"
 msgstr "プロセスを再開"
 
-#: src/ui/window.rs:276
+#: src/ui/window.rs:309
 msgid "GPU {}"
 msgstr "GPU {}"
 
-#: src/ui/window.rs:813
+#: src/ui/window.rs:341
+msgid "NPU {}"
+msgstr "NPU {}"
+
+#: src/ui/window.rs:1039
+msgid "Successfully adjusted {}"
+msgstr "{} は無事調整されました"
+
+#: src/ui/window.rs:1040
+msgid "There was a problem adjusting {}"
+msgstr "{} の調整中に問題が発生しました"
+
+#: src/ui/window.rs:1120
 msgid "Successfully ended {}"
 msgstr "{} は無事終了しました"
 
-#: src/ui/window.rs:814
+#: src/ui/window.rs:1121
 msgid "Successfully halted {}"
 msgstr "{} は無事停止しました"
 
-#: src/ui/window.rs:815
+#: src/ui/window.rs:1122
 msgid "Successfully killed {}"
 msgstr "{} は無事強制終了しました"
 
-#: src/ui/window.rs:816
+#: src/ui/window.rs:1123
 msgid "Successfully continued {}"
 msgstr "{} は無事再開しました"
 
-#: src/ui/window.rs:823
+#: src/ui/window.rs:1130
+msgid "Successfully ended the process"
+msgid_plural "Successfully ended {} processes"
+msgstr[0] "プロセスは無事終了しました"
+
+#: src/ui/window.rs:1136
+msgid "Successfully halted the process"
+msgid_plural "Successfully halted {} processes"
+msgstr[0] "プロセスは無事停止しました"
+
+#: src/ui/window.rs:1142
+msgid "Successfully killed the process"
+msgid_plural "Successfully killed {} processes"
+msgstr[0] "プロセスは無事強制終了しました"
+
+#: src/ui/window.rs:1148
+msgid "Successfully continued the process"
+msgid_plural "Successfully continued {} processes"
+msgstr[0] "プロセスは無事再開しました"
+
+#: src/ui/window.rs:1159
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] "プロセスの終了中に問題が発生しました"
 
-#: src/ui/window.rs:829
+#: src/ui/window.rs:1165
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "プロセスの停止中に問題が発生しました"
 
-#: src/ui/window.rs:835
+#: src/ui/window.rs:1171
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "プロセスの強制終了中に問題が発生しました"
 
-#: src/ui/window.rs:841
+#: src/ui/window.rs:1177
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "プロセスの再開中に問題が発生しました"
 
-#: src/ui/window.rs:851
+#: src/ui/window.rs:1187
 msgid "There was a problem ending {}"
 msgstr "{} の終了に問題が発生しました"
 
-#: src/ui/window.rs:852
+#: src/ui/window.rs:1188
 msgid "There was a problem halting {}"
 msgstr "{} の停止に問題が発生しました"
 
-#: src/ui/window.rs:853
+#: src/ui/window.rs:1189
 msgid "There was a problem killing {}"
 msgstr "{} の強制終了に問題が発生しました"
 
-#: src/ui/window.rs:854
+#: src/ui/window.rs:1190
 msgid "There was a problem continuing {}"
 msgstr "{} の再開に問題が発生しました"
 
-#: src/utils/app.rs:768
+#: src/utils/app.rs:223
 msgid "System Processes"
 msgstr "システムプロセス"
 
-#: src/utils/drive.rs:82 src/utils/drive.rs:153
+#: src/utils/battery.rs:77
+msgid "Charging"
+msgstr "充電中"
+
+#: src/utils/battery.rs:78
+msgid "Discharging"
+msgstr "放電中"
+
+#: src/utils/battery.rs:79
+msgid "Empty"
+msgstr "空"
+
+#: src/utils/battery.rs:80
+msgid "Full"
+msgstr "フル充電"
+
+#: src/utils/battery.rs:81
+msgid "Unknown"
+msgstr "不明"
+
+#: src/utils/battery.rs:127
+msgid "Nickel-Metal Hydride"
+msgstr "ニッケル水素電池"
+
+#: src/utils/battery.rs:128
+msgid "Nickel-Cadmium"
+msgstr "ニッケルカドミウム電池"
+
+#: src/utils/battery.rs:129
+msgid "Nickel-Zinc"
+msgstr "ニッケル亜鉛電池"
+
+#: src/utils/battery.rs:130
+msgid "Lead-Acid"
+msgstr "鉛蓄電池"
+
+#: src/utils/battery.rs:131
+msgid "Lithium-Ion"
+msgstr "リチウムイオン電池"
+
+#: src/utils/battery.rs:132
+msgid "Lithium Iron Phosphate"
+msgstr "リン酸鉄リチウムイオン電池"
+
+#: src/utils/battery.rs:133
+msgid "Lithium Polymer"
+msgstr "リチウムポリマー電池"
+
+#: src/utils/battery.rs:135
+msgid "Rechargeable Alkaline Managanese"
+msgstr "充電式アルカリマンガン電池"
+
+#: src/utils/battery.rs:229
+msgid "{} Battery"
+msgstr "{} バッテリー"
+
+#: src/utils/battery.rs:231
+msgid "Battery"
+msgstr "バッテリー"
+
+#: src/utils/drive.rs:81 src/utils/drive.rs:152
 msgid "CD/DVD/Blu-ray Drive"
 msgstr "CD/DVD/Blue-ray ドライブ"
 
-#: src/utils/drive.rs:83
+#: src/utils/drive.rs:82
 msgid "eMMC Storage"
 msgstr "eMMC ストレージ"
 
-#: src/utils/drive.rs:84
+#: src/utils/drive.rs:83
 msgid "Flash Storage"
 msgstr "フラッシュストレージ"
 
-#: src/utils/drive.rs:85 src/utils/drive.rs:154
+#: src/utils/drive.rs:84 src/utils/drive.rs:153
 msgid "Floppy Drive"
 msgstr "フロッピードライブ"
 
-#: src/utils/drive.rs:86
+#: src/utils/drive.rs:85
 msgid "Hard Disk Drive"
 msgstr "ハードディスクドライブ"
 
-#: src/utils/drive.rs:87
+#: src/utils/drive.rs:86
 msgid "Loop Device"
 msgstr "ループデバイス"
 
-#: src/utils/drive.rs:88
+#: src/utils/drive.rs:87
 msgid "Mapped Device"
 msgstr "Mapped デバイス"
 
-#: src/utils/drive.rs:89
+#: src/utils/drive.rs:88
 msgid "NVMe Drive"
 msgstr "NVMe ドライブ"
 
-#: src/utils/drive.rs:91
+#: src/utils/drive.rs:90
 msgid "Software Raid"
 msgstr "ソフトウェア Raid"
 
-#: src/utils/drive.rs:92
+#: src/utils/drive.rs:91
 msgid "RAM Disk"
 msgstr "RAM ディスク"
 
-#: src/utils/drive.rs:93
+#: src/utils/drive.rs:92
 msgid "Solid State Drive"
 msgstr "ソリッドステートドライブ"
 
-#: src/utils/drive.rs:94
+#: src/utils/drive.rs:93
 msgid "ZFS Volume"
 msgstr "ZFS ボリューム"
 
-#: src/utils/drive.rs:95
+#: src/utils/drive.rs:94
 msgid "Compressed RAM Disk (zram)"
 msgstr "圧縮 RAM ディスク (zram)"
 
-#: src/utils/drive.rs:155
+#: src/utils/drive.rs:154
 msgid "{} Loop Device"
 msgstr "{} ループデバイス"
 
-#: src/utils/drive.rs:156
+#: src/utils/drive.rs:155
 msgid "{} Mapped Device"
 msgstr "{} Mapped デバイス"
 
-#: src/utils/drive.rs:157
+#: src/utils/drive.rs:156
 msgid "{} RAID"
 msgstr "{} RAID"
 
-#: src/utils/drive.rs:158
+#: src/utils/drive.rs:157
 msgid "{} RAM Disk"
 msgstr "{} RAM ディスク"
 
-#: src/utils/drive.rs:159
+#: src/utils/drive.rs:158
 msgid "{} zram Device"
 msgstr "{} zram デバイス"
 
-#: src/utils/drive.rs:160
+#: src/utils/drive.rs:159
 msgid "{} ZFS Volume"
 msgstr "{} ZFS ボリューム"
 
-#: src/utils/drive.rs:161
+#: src/utils/drive.rs:160
 msgid "{} Drive"
 msgstr "{} ドライブ"
 
-#: src/utils/network.rs:111
+#: src/utils/network.rs:116
 msgid "Bluetooth Tether"
 msgstr "Bluetooth テザリング"
 
-#: src/utils/network.rs:112
+#: src/utils/network.rs:117
 msgid "Network Bridge"
 msgstr "ネットワークブリッジ"
 
-#: src/utils/network.rs:113
+#: src/utils/network.rs:118
 msgid "Ethernet Connection"
 msgstr "イーサネット接続"
 
-#: src/utils/network.rs:114
+#: src/utils/network.rs:119
+msgid "Docker Bridge"
+msgstr "Docker ブリッジ"
+
+#: src/utils/network.rs:120
 msgid "InfiniBand Connection"
 msgstr "InfiniBand 接続"
 
-#: src/utils/network.rs:115
+#: src/utils/network.rs:121
 msgid "Serial Line IP Connection"
 msgstr "シリアル回線 IP 接続"
 
-#: src/utils/network.rs:116
+#: src/utils/network.rs:122
 msgid "Virtual Ethernet Device"
 msgstr "仮想イーサネットデバイス"
 
-#: src/utils/network.rs:117
+#: src/utils/network.rs:123
 msgid "VM Network Bridge"
 msgstr "VM ネットワークブリッジ"
 
-#: src/utils/network.rs:118
+#: src/utils/network.rs:124
 msgid "VPN Tunnel"
 msgstr "VPN トンネル"
 
-#: src/utils/network.rs:119
+#: src/utils/network.rs:125
 msgid "VPN Tunnel (WireGuard)"
 msgstr "VPN トンネル (WireGuard)"
 
-#: src/utils/network.rs:120
+#: src/utils/network.rs:126
 msgid "Wi-Fi Connection"
 msgstr "Wi-Fi 接続"
 
-#: src/utils/network.rs:121
+#: src/utils/network.rs:127
 msgid "WWAN Connection"
 msgstr "WWAN 接続"
 
@@ -991,6 +1202,50 @@ msgstr "{} RW"
 msgid "{} QW"
 msgstr "{} QW"
 
+#: src/utils/units.rs:270 src/utils/units.rs:284
+msgid "{} Wh"
+msgstr "{} Wh"
+
+#: src/utils/units.rs:271 src/utils/units.rs:285
+msgid "{} kWh"
+msgstr "{} kWh"
+
+#: src/utils/units.rs:272 src/utils/units.rs:286
+msgid "{} MWh"
+msgstr "{} MWh"
+
+#: src/utils/units.rs:273 src/utils/units.rs:287
+msgid "{} GWh"
+msgstr "{} GWh"
+
+#: src/utils/units.rs:274 src/utils/units.rs:288
+msgid "{} TWh"
+msgstr "{} TWh"
+
+#: src/utils/units.rs:275 src/utils/units.rs:289
+msgid "{} PWh"
+msgstr "{} PWh"
+
+#: src/utils/units.rs:276 src/utils/units.rs:290
+msgid "{} EWh"
+msgstr "{} EWh"
+
+#: src/utils/units.rs:277 src/utils/units.rs:291
+msgid "{} ZWh"
+msgstr "{} ZWh"
+
+#: src/utils/units.rs:278 src/utils/units.rs:292
+msgid "{} YWh"
+msgstr "{} YWh"
+
+#: src/utils/units.rs:279 src/utils/units.rs:293
+msgid "{} RWh"
+msgstr "{} RWh"
+
+#: src/utils/units.rs:280 src/utils/units.rs:294
+msgid "{} QWh"
+msgstr "{} QWh"
+
 #: data/resources/ui/shortcuts.ui:11
 msgctxt "shortcut window"
 msgid "General"
@@ -1018,28 +1273,33 @@ msgstr "検索欄の表示を切り替え"
 
 #: data/resources/ui/shortcuts.ui:38
 msgctxt "shortcut window"
-msgid "End Application/Process"
-msgstr "アプリケーション/プロセスを終了"
+msgid "End App/Process"
+msgstr "アプリ/プロセスを終了"
 
 #: data/resources/ui/shortcuts.ui:44
 msgctxt "shortcut window"
-msgid "Kill Application/Process"
-msgstr "アプリケーション/プロセスを強制終了"
+msgid "Kill App/Process"
+msgstr "アプリ/プロセスを強制終了"
 
 #: data/resources/ui/shortcuts.ui:50
 msgctxt "shortcut window"
-msgid "Halt Application/Process"
-msgstr "アプリケーション/プロセスを停止"
+msgid "Halt App/Process"
+msgstr "アプリ/プロセスを停止"
 
 #: data/resources/ui/shortcuts.ui:56
 msgctxt "shortcut window"
-msgid "Continue Application/Process"
-msgstr "アプリケーション/プロセスを再開"
+msgid "Continue App/Process"
+msgstr "アプリ/プロセスを再開"
 
 #: data/resources/ui/shortcuts.ui:62
 msgctxt "shortcut window"
-msgid "Show Information for Application/Process"
-msgstr "アプリケーション/プロセスの情報を表示"
+msgid "Show Information for App/Process"
+msgstr "アプリ/プロセスの情報を表示"
+
+#: data/resources/ui/shortcuts.ui:68
+msgctxt "shortcut window"
+msgid "Show Process Options"
+msgstr "プロセスのオプションを表示"
 
 #: data/resources/ui/window.ui:6
 msgid "Preferences"
@@ -1054,40 +1314,42 @@ msgid "About Resources"
 msgstr "Resources について"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
-msgid "Application Information"
-msgstr "アプリケーションの情報"
+msgid "App Information"
+msgstr "アプリの情報"
 
-#: data/resources/ui/dialogs/app_dialog.ui:69
-#: data/resources/ui/dialogs/process_dialog.ui:52
-#: data/resources/ui/pages/cpu.ui:45 data/resources/ui/pages/cpu.ui:58
-#: data/resources/ui/pages/drive.ui:22 data/resources/ui/pages/gpu.ui:22
-#: data/resources/ui/pages/memory.ui:31 data/resources/ui/pages/network.ui:22
+#: data/resources/ui/dialogs/app_dialog.ui:70
+#: data/resources/ui/dialogs/process_dialog.ui:48
+#: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37
+#: data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22
+#: data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31
+#: data/resources/ui/pages/network.ui:22 data/resources/ui/pages/npu.ui:22
 msgid "Usage"
 msgstr "使用量"
 
-#: data/resources/ui/dialogs/app_dialog.ui:164
-#: data/resources/ui/dialogs/process_dialog.ui:174
-#: data/resources/ui/pages/cpu.ui:97 data/resources/ui/pages/drive.ui:36
-#: data/resources/ui/pages/gpu.ui:80 data/resources/ui/pages/memory.ui:42
-#: data/resources/ui/pages/network.ui:51
+#: data/resources/ui/dialogs/app_dialog.ui:174
+#: data/resources/ui/dialogs/process_dialog.ui:179
+#: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:89
+#: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:80
+#: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
+#: data/resources/ui/pages/npu.ui:74
 msgid "Properties"
 msgstr "プロパティ"
 
-#: data/resources/ui/dialogs/app_dialog.ui:170
+#: data/resources/ui/dialogs/app_dialog.ui:180
 msgid "ID"
 msgstr "ID"
 
-#: data/resources/ui/dialogs/app_dialog.ui:180
-#: data/resources/ui/dialogs/process_dialog.ui:190
+#: data/resources/ui/dialogs/app_dialog.ui:190
+#: data/resources/ui/dialogs/process_dialog.ui:195
 msgid "Running Since"
 msgstr "実行開始時"
 
-#: data/resources/ui/dialogs/app_dialog.ui:188
+#: data/resources/ui/dialogs/app_dialog.ui:198
 msgid "Running Processes"
 msgstr "実行中のプロセス"
 
-#: data/resources/ui/dialogs/app_dialog.ui:197
-#: data/resources/ui/dialogs/process_dialog.ui:226
+#: data/resources/ui/dialogs/app_dialog.ui:207
+#: data/resources/ui/dialogs/process_dialog.ui:231
 msgid "Containerized"
 msgstr "コンテナ化"
 
@@ -1095,13 +1357,71 @@ msgstr "コンテナ化"
 msgid "Process Information"
 msgstr "プロセスの情報"
 
-#: data/resources/ui/dialogs/process_dialog.ui:199
+#: data/resources/ui/dialogs/process_dialog.ui:204
 msgid "Commandline"
 msgstr "コマンドライン"
 
-#: data/resources/ui/dialogs/process_dialog.ui:217
+#: data/resources/ui/dialogs/process_dialog.ui:222
 msgid "Control Group"
 msgstr "制御グループ"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:7
+#: data/resources/ui/dialogs/process_options_dialog.ui:69
+msgid "Process Options"
+msgstr "プロセスのオプション"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:29
+msgid "Apply"
+msgstr "適用"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:72
+msgid "Niceness"
+msgstr "ナイス値"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:73
+msgid ""
+"The priority of a process is given by its niceness. A lower niceness value "
+"correspond to a higher priority."
+msgstr ""
+"プロセス独自のナイス値によって与えられているプロセスの優先順位。ナイス値が低"
+"いほど、優先順位が高くなります。"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:91
+msgctxt "process priority"
+msgid "Very High"
+msgstr "かなり高い"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:92
+msgctxt "process priority"
+msgid "High"
+msgstr "高い"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:93
+msgctxt "process priority"
+msgid "Normal"
+msgstr "普通"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:94
+msgctxt "process priority"
+msgid "Low"
+msgstr "低い"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:95
+msgctxt "process priority"
+msgid "Very Low"
+msgstr "かなり低い"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:103
+msgid "Processor Affinity"
+msgstr "プロセッサー親和性"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:108
+msgid "Toggle All"
+msgstr "すべて切り替える"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:111
+msgid "Select which processor cores the process is allowed to run on"
+msgstr "プロセスの実行を許可するプロセッサーのコアを選択"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:7
 msgid "General"
@@ -1151,152 +1471,245 @@ msgstr "ユーザーインターフェイス"
 msgid "Refresh Speed"
 msgstr "更新速度"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:54
+#: data/resources/ui/dialogs/settings_dialog.ui:51
+msgid "Higher refresh speeds can lead to higher processor usage"
+msgstr "更新速度が速くなるとプロセッサー使用率が高くなる可能性があります"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:55
+msgctxt "UI refresh speed"
 msgid "Very Slow"
 msgstr "とても遅い"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:55
+#: data/resources/ui/dialogs/settings_dialog.ui:56
+msgctxt "UI refresh speed"
 msgid "Slow"
 msgstr "遅い"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:56
+#: data/resources/ui/dialogs/settings_dialog.ui:57
+msgctxt "UI refresh speed"
 msgid "Normal"
 msgstr "普通"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:57
+#: data/resources/ui/dialogs/settings_dialog.ui:58
+msgctxt "UI refresh speed"
 msgid "Fast"
 msgstr "速い"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:58
+#: data/resources/ui/dialogs/settings_dialog.ui:59
+msgctxt "UI refresh speed"
 msgid "Very Fast"
 msgstr "とても速い"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:66
+#: data/resources/ui/dialogs/settings_dialog.ui:67
 msgid "Show Graph Grids"
 msgstr "グラフに格子を表示"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:71
+#: data/resources/ui/dialogs/settings_dialog.ui:72
 msgid "Graph Data Points"
 msgstr "グラフのデータ点"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:85
+#: data/resources/ui/dialogs/settings_dialog.ui:86
 msgid "Show Search Fields on Launch"
 msgstr "起動時に検索欄を表示"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:90
+#: data/resources/ui/dialogs/settings_dialog.ui:91
 msgid "Show Usage Details in Sidebar"
 msgstr "使用量の詳細をサイドバーに表示"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:95
+#: data/resources/ui/dialogs/settings_dialog.ui:92
+msgid "If enabled, the usage along with other information will be displayed"
+msgstr "有効な場合、使用率と一緒に他の情報を表示します"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:97
 msgid "Show Device Descriptions in Sidebar"
 msgstr "デバイスの詳細をサイドバーに表示"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:100
+#: data/resources/ui/dialogs/settings_dialog.ui:98
+msgid ""
+"If enabled, a device identifier like its name or device type will be "
+"displayed"
+msgstr "有効な場合、デバイスを識別する名前やデバイスの種類が表示されます"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:103
 msgid "Sidebar Meter Type"
 msgstr "サイドバーの計測表示の型式"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:104
+#: data/resources/ui/dialogs/settings_dialog.ui:107
 msgid "Bar"
 msgstr "バー"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:105
+#: data/resources/ui/dialogs/settings_dialog.ui:108
 msgid "Graph"
 msgstr "グラフ"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:121
-#: data/resources/ui/dialogs/settings_dialog.ui:182
+#: data/resources/ui/dialogs/settings_dialog.ui:116
+msgid "Normalize Processor Usage"
+msgstr "プロセッサーの使用率を正規化"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:117
+msgid ""
+"If enabled, the total usage of all cores will be divided by the amount of "
+"cores"
+msgstr "有効な場合、全てのコアの合計使用率はコアの数で割り算されます"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:130
+#: data/resources/ui/dialogs/settings_dialog.ui:207
 msgid "Information Columns"
 msgstr "項目"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:265
+#: data/resources/ui/dialogs/settings_dialog.ui:196
+#: data/resources/ui/pages/cpu.ui:22 data/resources/ui/pages/processes.ui:56
+msgid "Options"
+msgstr "オプション"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:199
+msgid "Show Niceness Values"
+msgstr "ナイス値を表示"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:200
+msgid ""
+"Display priorities as niceness to allow for more fine-grained adjustments"
+msgstr "より細かな調整を行えるようにプロセス優先度をナイス値で表示します"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:300
 msgid "Devices"
 msgstr "デバイス"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:268
+#: data/resources/ui/dialogs/settings_dialog.ui:303
 msgid "Drives"
 msgstr "ドライブ"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:271
+#: data/resources/ui/dialogs/settings_dialog.ui:306
 msgid "Show Virtual Drives"
 msgstr "仮想ドライブ表示する"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:281
+#: data/resources/ui/dialogs/settings_dialog.ui:307
+msgid "Virtual drives are for example ZFS volumes or mapped devices"
+msgstr ""
+"仮想デバイスは、たとえばZFSボリュームやマッピングされたデバイスなどです"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:317
 msgid "Show Virtual Network Interfaces"
 msgstr "仮想ネットワークインターフェイスを表示する"
 
-#: data/resources/ui/pages/applications.ui:6
-msgid "Kill Application"
-msgstr "アプリケーションを強制終了"
+#: data/resources/ui/dialogs/settings_dialog.ui:318
+msgid "Virtual network interfaces are for example bridges or VPN tunnels"
+msgstr ""
+"バーチャルネットワークインターフェースは、たとえばブリッジやVPNトンネルなどで"
+"す"
 
-#: data/resources/ui/pages/applications.ui:10
-msgid "Halt Application"
-msgstr "アプリケーションを停止"
+#: data/resources/ui/pages/applications.ui:40
+#: data/resources/ui/pages/processes.ui:62
+msgid "Information"
+msgstr "情報"
 
-#: data/resources/ui/pages/applications.ui:14
-msgid "Continue Application"
-msgstr "アプリケーションを再開"
+#: data/resources/ui/pages/applications.ui:80
+msgid "Search applications"
+msgstr "アプリケーションを検索"
 
-#: data/resources/ui/pages/applications.ui:95
-msgid "End Application"
-msgstr "アプリケーションを終了"
+#: data/resources/ui/pages/applications.ui:98
+#: data/resources/ui/pages/processes.ui:144
+msgid "Search"
+msgstr "検索"
 
-#: data/resources/ui/pages/cpu.ui:22
-msgid "Options"
-msgstr "オプション"
+#: data/resources/ui/pages/applications.ui:100
+#: data/resources/ui/pages/processes.ui:146
+msgid "Toggle search field"
+msgstr "検索欄の表示を切り替え"
+
+#: data/resources/ui/pages/applications.ui:116
+#: data/resources/ui/pages/applications.ui:118
+msgid "Show App Information"
+msgstr "アプリの情報"
+
+#: data/resources/ui/pages/battery.ui:36
+msgid "Battery Health"
+msgstr "バッテリー性能"
+
+#: data/resources/ui/pages/battery.ui:45
+msgid "Design Capacity"
+msgstr "設計上の容量"
+
+#: data/resources/ui/pages/battery.ui:54
+msgid "Charge Cycles"
+msgstr "充電サイクル"
+
+#: data/resources/ui/pages/battery.ui:63
+msgid "Technology"
+msgstr "テクノロジー名"
+
+#: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:87
+#: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:81
+msgid "Manufacturer"
+msgstr "製造元"
+
+#: data/resources/ui/pages/battery.ui:81
+msgid "Model Name"
+msgstr "モデル名"
+
+#: data/resources/ui/pages/battery.ui:90 data/resources/ui/pages/drive.ui:66
+msgid "Device"
+msgstr "デバイス"
 
 #: data/resources/ui/pages/cpu.ui:26
 msgid "Show Usages of Logical CPUs"
 msgstr "論理 CPU 使用量を表示する"
 
-#: data/resources/ui/pages/cpu.ui:83 data/resources/ui/pages/gpu.ui:66
+#: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
+#: data/resources/ui/pages/npu.ui:60
 msgid "Sensors"
 msgstr "センサー"
 
-#: data/resources/ui/pages/cpu.ui:90 data/resources/ui/pages/gpu.ui:69
+#: data/resources/ui/pages/cpu.ui:82 data/resources/ui/pages/gpu.ui:69
+#: data/resources/ui/pages/npu.ui:63
 msgid "Temperature"
 msgstr "温度"
 
-#: data/resources/ui/pages/cpu.ui:104
+#: data/resources/ui/pages/cpu.ui:96
 msgid "Max Frequency"
 msgstr "最大周波数"
 
-#: data/resources/ui/pages/cpu.ui:113
+#: data/resources/ui/pages/cpu.ui:105
 msgid "Logical Cores"
 msgstr "論理コア数"
 
-#: data/resources/ui/pages/cpu.ui:122
+#: data/resources/ui/pages/cpu.ui:114
 msgid "Physical Cores"
 msgstr "物理コア数"
 
-#: data/resources/ui/pages/cpu.ui:131
+#: data/resources/ui/pages/cpu.ui:123
 msgid "Sockets"
 msgstr "ソケット"
 
-#: data/resources/ui/pages/cpu.ui:140
+#: data/resources/ui/pages/cpu.ui:132
 msgid "Virtualization"
 msgstr "仮想化"
 
-#: data/resources/ui/pages/cpu.ui:149
+#: data/resources/ui/pages/cpu.ui:141
 msgid "Architecture"
 msgstr "アーキテクチャ"
 
-#: data/resources/ui/pages/drive.ui:39 data/resources/ui/pages/memory.ui:72
+#: data/resources/ui/pages/drive.ui:38
+msgid "Total Read"
+msgstr "合計読み取り量"
+
+#: data/resources/ui/pages/drive.ui:47
+msgid "Total Written"
+msgstr "合計書き込み量"
+
+#: data/resources/ui/pages/drive.ui:57 data/resources/ui/pages/memory.ui:72
 msgid "Type"
 msgstr "タイプ"
 
-#: data/resources/ui/pages/drive.ui:48
-msgid "Device"
-msgstr "デバイス"
-
-#: data/resources/ui/pages/drive.ui:57
+#: data/resources/ui/pages/drive.ui:75
 msgid "Capacity"
 msgstr "容量"
 
-#: data/resources/ui/pages/drive.ui:66
+#: data/resources/ui/pages/drive.ui:84
 msgid "Writable"
 msgstr "書き込み可能"
 
-#: data/resources/ui/pages/drive.ui:75
+#: data/resources/ui/pages/drive.ui:93
 msgid "Removable"
 msgstr "取り外し可能"
 
@@ -1308,23 +1721,16 @@ msgstr "GPU 周波数"
 msgid "Video Memory Frequency"
 msgstr "ビデオメモリー周波数"
 
-#: data/resources/ui/pages/gpu.ui:55
-msgid "Power Usage"
-msgstr "電源消費量"
-
-#: data/resources/ui/pages/gpu.ui:87 data/resources/ui/pages/network.ui:58
-msgid "Manufacturer"
-msgstr "製造元"
-
-#: data/resources/ui/pages/gpu.ui:96
+#: data/resources/ui/pages/gpu.ui:96 data/resources/ui/pages/npu.ui:90
 msgid "PCI Slot"
 msgstr "PCI スロット"
 
 #: data/resources/ui/pages/gpu.ui:105 data/resources/ui/pages/network.ui:67
+#: data/resources/ui/pages/npu.ui:99
 msgid "Driver Used"
 msgstr "使用されるドライバー"
 
-#: data/resources/ui/pages/gpu.ui:114
+#: data/resources/ui/pages/gpu.ui:114 data/resources/ui/pages/npu.ui:108
 msgid "Max Power Cap"
 msgstr "最大電源出力"
 
@@ -1368,18 +1774,79 @@ msgstr "インターフェイス"
 msgid "Hardware Address"
 msgstr "ハードウェアアドレス"
 
-#: data/resources/ui/pages/processes.ui:6
-msgid "Kill Process"
+#: data/resources/ui/pages/npu.ui:31
+msgid "NPU Frequency"
+msgstr "NPU 周波数"
+
+#: data/resources/ui/pages/npu.ui:44
+msgid "Memory Frequency"
+msgstr "メモリー周波数"
+
+#: data/resources/ui/pages/processes.ui:22
+#: data/resources/ui/pages/processes.ui:74
+msgid "Kill Processes"
 msgstr "プロセスを強制終了"
 
-#: data/resources/ui/pages/processes.ui:10
-msgid "Halt Process"
+#: data/resources/ui/pages/processes.ui:26
+#: data/resources/ui/pages/processes.ui:78
+msgid "Halt Processes"
 msgstr "プロセスを停止"
 
-#: data/resources/ui/pages/processes.ui:14
-msgid "Continue Process"
+#: data/resources/ui/pages/processes.ui:30
+#: data/resources/ui/pages/processes.ui:82
+msgid "Continue Processes"
 msgstr "プロセスを再開"
 
-#: data/resources/ui/pages/processes.ui:95
-msgid "End Process"
-msgstr "プロセスを終了"
+#: data/resources/ui/pages/processes.ui:126
+msgid "Search processes"
+msgstr "プロセスを検索"
+
+#: data/resources/ui/pages/processes.ui:162
+#: data/resources/ui/pages/processes.ui:164
+msgid "Show Process Options"
+msgstr "プロセスのオプションを表示"
+
+#: data/resources/ui/pages/processes.ui:175
+#: data/resources/ui/pages/processes.ui:177
+msgid "Show Process Information"
+msgstr "プロセスの情報を表示"
+
+#~ msgid "Applications"
+#~ msgstr "アプリケーション"
+
+#~ msgid "Application"
+#~ msgstr "アプリケーション"
+
+#~ msgid "End application"
+#~ msgstr "アプリケーションを終了"
+
+#~ msgid "Kill application"
+#~ msgstr "アプリケーションを強制終了"
+
+#~ msgid "Continue application"
+#~ msgstr "アプリケーションを再開"
+
+#~ msgid "VRAM: {}"
+#~ msgstr "VRAM: {}"
+
+#~ msgid "root"
+#~ msgstr "ルート"
+
+#~ msgid "Continue process"
+#~ msgstr "プロセスを再開"
+
+#~ msgctxt "shortcut window"
+#~ msgid "End Application/Process"
+#~ msgstr "アプリケーション/プロセスを終了"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Kill Application/Process"
+#~ msgstr "アプリケーション/プロセスを強制終了"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Halt Application/Process"
+#~ msgstr "アプリケーション/プロセスを停止"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Continue Application/Process"
+#~ msgstr "アプリケーション/プロセスを再開"
