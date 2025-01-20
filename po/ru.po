@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-19 07:42+0200\n"
-"PO-Revision-Date: 2024-10-22 22:35+0300\n"
+"PO-Revision-Date: 2025-01-20 17:00+0300\n"
 "Last-Translator: Aleksandr Melman <Alexmelman88@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -452,7 +452,7 @@ msgstr "П: {} · О: {}"
 
 #: src/ui/pages/npu.rs:105 src/ui/window.rs:343
 msgid "NPU"
-msgstr "ИИ-ускоритель"
+msgstr "Нейропроцессор"
 
 #: src/ui/pages/npu.rs:196
 msgid "Memory Usage"
@@ -576,7 +576,7 @@ msgstr "Графика {}"
 
 #: src/ui/window.rs:341
 msgid "NPU {}"
-msgstr "ИИ-ускоритель {}"
+msgstr "Нейропроцессор {}"
 
 #: src/ui/window.rs:1039
 msgid "Successfully adjusted {}"
@@ -1799,7 +1799,7 @@ msgstr "Аппаратный адрес"
 
 #: data/resources/ui/pages/npu.ui:31
 msgid "NPU Frequency"
-msgstr "Частота ИИ-ускорителя"
+msgstr "Частота нейропроцессора"
 
 #: data/resources/ui/pages/npu.ui:44
 msgid "Memory Frequency"
