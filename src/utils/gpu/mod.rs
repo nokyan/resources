@@ -193,23 +193,28 @@ pub trait GpuImpl {
 
     fn read_sysfs_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path().join(file);
-        trace!("Reading {path:?}…");
+        trace!("Reading {path:?} (parsing to int)…");
         std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
+            .inspect(|int| trace!("{path:?} → {int} (size)"))
             .with_context(|| format!("error parsing file {}", &path.to_string_lossy()))
     }
 
     fn read_device_file<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<String> {
         let path = self.sysfs_path().join("device").join(file);
         trace!("Reading {path:?}…");
-        Ok(std::fs::read_to_string(path)?.replace('\n', ""))
+        std::fs::read_to_string(&path)
+            .map(|s| s.replace('\n', ""))
+            .inspect(|s| trace!("{path:?} → {s} (String)"))
+            .with_context(|| format!("error reading file {}", &path.to_string_lossy()))
     }
 
     fn read_device_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
         let path = self.sysfs_path().join("device").join(file);
         self.read_device_file(&path)?
             .parse::<isize>()
+            .inspect(|int| trace!("{path:?} → {int} (size)"))
             .with_context(|| format!("error parsing file {}", &path.to_string_lossy()))
     }
 
@@ -219,6 +224,7 @@ pub trait GpuImpl {
         std::fs::read_to_string(&path)?
             .replace('\n', "")
             .parse::<isize>()
+            .inspect(|int| trace!("{path:?} → {int} (size)"))
             .with_context(|| format!("error parsing file {}", &path.to_string_lossy()))
     }
 
