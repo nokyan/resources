@@ -81,13 +81,11 @@ mod imp {
         #[template_child]
         pub popover_menu_multiple: TemplateChild<gtk::PopoverMenu>,
         #[template_child]
-        pub search_revealer: TemplateChild<gtk::Revealer>,
+        pub search_bar: TemplateChild<gtk::SearchBar>,
         #[template_child]
         pub search_entry: TemplateChild<gtk::SearchEntry>,
         #[template_child]
         pub processes_scrolled_window: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub search_button: TemplateChild<gtk::ToggleButton>,
         #[template_child]
         pub options_button: TemplateChild<gtk::Button>,
         #[template_child]
@@ -154,10 +152,9 @@ mod imp {
                 toast_overlay: Default::default(),
                 popover_menu: Default::default(),
                 popover_menu_multiple: Default::default(),
-                search_revealer: Default::default(),
+                search_bar: Default::default(),
                 search_entry: Default::default(),
                 processes_scrolled_window: Default::default(),
-                search_button: Default::default(),
                 options_button: Default::default(),
                 information_button: Default::default(),
                 end_process_button: Default::default(),
@@ -374,12 +371,13 @@ impl ResProcesses {
 
     pub fn toggle_search(&self) {
         let imp = self.imp();
-        imp.search_button.set_active(!imp.search_button.is_active());
+        imp.search_bar
+            .set_search_mode(!imp.search_bar.is_search_mode());
     }
 
     pub fn close_search(&self) {
         let imp = self.imp();
-        imp.search_button.set_active(false);
+        imp.search_bar.set_search_mode(false);
     }
 
     pub fn init(&self, sender: Sender<Action>) {
@@ -531,20 +529,8 @@ impl ResProcesses {
                 }
             ));
 
-        imp.search_button.connect_toggled(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |button| {
-                let imp = this.imp();
-                imp.search_revealer.set_reveal_child(button.is_active());
-                if let Some(filter) = imp.filter_model.borrow().filter() {
-                    filter.changed(FilterChange::Different);
-                }
-                if button.is_active() {
-                    imp.search_entry.grab_focus();
-                }
-            }
-        ));
+        imp.search_bar
+            .set_key_capture_widget(self.parent().as_ref());
 
         imp.search_entry.connect_search_changed(clone!(
             #[strong(rename_to = this)]
@@ -648,6 +634,10 @@ impl ResProcesses {
         }
     }
 
+    pub fn get_search_bar(&self) -> &gtk::SearchBar {
+        &self.imp().search_bar
+    }
+
     pub fn open_options_dialog(&self, process: &ProcessEntry) {
         let imp = self.imp();
 
@@ -708,7 +698,7 @@ impl ResProcesses {
         let imp = self.imp();
         let item = obj.downcast_ref::<ProcessEntry>().unwrap();
         let search_string = imp.search_entry.text().to_string().to_lowercase();
-        !imp.search_revealer.reveals_child()
+        !imp.search_bar.is_search_mode()
             || item.name().to_lowercase().contains(&search_string)
             || item.commandline().to_lowercase().contains(&search_string)
     }

@@ -52,13 +52,11 @@ mod imp {
         #[template_child]
         pub popover_menu: TemplateChild<gtk::PopoverMenu>,
         #[template_child]
-        pub search_revealer: TemplateChild<gtk::Revealer>,
+        pub search_bar: TemplateChild<gtk::SearchBar>,
         #[template_child]
         pub search_entry: TemplateChild<gtk::SearchEntry>,
         #[template_child]
         pub applications_scrolled_window: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub search_button: TemplateChild<gtk::ToggleButton>,
         #[template_child]
         pub information_button: TemplateChild<gtk::Button>,
         #[template_child]
@@ -115,9 +113,8 @@ mod imp {
             Self {
                 toast_overlay: Default::default(),
                 popover_menu: Default::default(),
-                search_revealer: Default::default(),
+                search_bar: Default::default(),
                 search_entry: Default::default(),
-                search_button: Default::default(),
                 information_button: Default::default(),
                 store: gio::ListStore::new::<ApplicationEntry>().into(),
                 selection_model: Default::default(),
@@ -300,12 +297,13 @@ impl ResApplications {
 
     pub fn toggle_search(&self) {
         let imp = self.imp();
-        imp.search_button.set_active(!imp.search_button.is_active());
+        imp.search_bar
+            .set_search_mode(!imp.search_bar.is_search_mode());
     }
 
     pub fn close_search(&self) {
         let imp = self.imp();
-        imp.search_button.set_active(false);
+        imp.search_bar.set_search_mode(false);
     }
 
     pub fn init(&self, sender: Sender<Action>) {
@@ -438,20 +436,8 @@ impl ResApplications {
                 }
             ));
 
-        imp.search_button.connect_toggled(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |button| {
-                let imp = this.imp();
-                imp.search_revealer.set_reveal_child(button.is_active());
-                if let Some(filter) = imp.filter_model.borrow().filter() {
-                    filter.changed(FilterChange::Different);
-                }
-                if button.is_active() {
-                    imp.search_entry.grab_focus();
-                }
-            }
-        ));
+        imp.search_bar
+            .set_key_capture_widget(self.parent().as_ref());
 
         imp.search_entry.connect_search_changed(clone!(
             #[strong(rename_to = this)]
@@ -474,7 +460,7 @@ impl ResApplications {
                 }
             }
         ));
-        imp.search_entry.add_controller(event_controller);
+        imp.search_bar.add_controller(event_controller);
 
         imp.information_button.connect_clicked(clone!(
             #[weak(rename_to = this)]
@@ -536,6 +522,10 @@ impl ResApplications {
         }
     }
 
+    pub fn get_search_bar(&self) -> &gtk::SearchBar {
+        &self.imp().search_bar
+    }
+
     pub fn open_info_dialog(&self, app: &ApplicationEntry) {
         let imp = self.imp();
 
@@ -569,7 +559,7 @@ impl ResApplications {
         let imp = self.imp();
         let item = obj.downcast_ref::<ApplicationEntry>().unwrap();
         let search_string = imp.search_entry.text().to_string().to_lowercase();
-        !imp.search_revealer.reveals_child()
+        !imp.search_bar.is_search_mode()
             || item.name().to_lowercase().contains(&search_string)
             || item
                 .id()
