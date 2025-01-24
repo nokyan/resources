@@ -258,18 +258,6 @@ impl MainWindow {
 
         imp.resources_sidebar.set_stack(&imp.content_stack);
 
-        if SETTINGS.show_search_on_start() {
-            // we want the search bar to show up for both but also let the last viewed page grab the focus, so order is
-            // important here
-            if SETTINGS.last_viewed_page() == applications::TAB_ID {
-                imp.processes.toggle_search();
-                imp.apps.toggle_search();
-            } else if SETTINGS.last_viewed_page() == processes::TAB_ID {
-                imp.apps.toggle_search();
-                imp.processes.toggle_search();
-            }
-        }
-
         if ARGS.disable_process_monitoring {
             self.remove_page(imp.apps_page.child().downcast_ref().unwrap());
             self.remove_page(imp.processes_page.child().downcast_ref().unwrap());
