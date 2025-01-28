@@ -330,6 +330,17 @@ impl MainWindow {
             .sync_create()
             .bidirectional()
             .build();
+
+        // close the split view if we're in "mobile layout" and the user has clicked on an element
+        imp.content_stack.connect_visible_child_notify(clone!(
+            #[weak]
+            imp,
+            move |_| {
+                if imp.split_view.is_collapsed() {
+                    imp.split_view.set_show_sidebar(false);
+                }
+            }
+        ));
     }
 
     fn get_selected_page(&self) -> Option<Widget> {
