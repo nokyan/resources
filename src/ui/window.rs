@@ -28,10 +28,10 @@ use crate::utils::npu::{Npu, NpuData};
 use crate::utils::process::{Process, ProcessAction};
 use crate::utils::settings::SETTINGS;
 
+use super::pages::applications;
 use super::pages::gpu::ResGPU;
 use super::pages::network::ResNetwork;
 use super::pages::npu::ResNPU;
-use super::pages::{applications, processes};
 
 #[derive(Debug, Clone)]
 pub enum Action {
