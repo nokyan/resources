@@ -522,7 +522,7 @@ impl ResApplications {
         }
     }
 
-    pub fn get_search_bar(&self) -> &gtk::SearchBar {
+    pub fn search_bar(&self) -> &gtk::SearchBar {
         &self.imp().search_bar
     }
 

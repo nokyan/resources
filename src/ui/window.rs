@@ -310,7 +310,7 @@ impl MainWindow {
         let imp = self.imp();
 
         imp.apps
-            .get_search_bar()
+            .search_bar()
             .bind_property(
                 "search-mode-enabled",
                 &imp.apps_search_button.get(),
@@ -321,7 +321,7 @@ impl MainWindow {
             .build();
 
         imp.processes
-            .get_search_bar()
+            .search_bar()
             .bind_property(
                 "search-mode-enabled",
                 &imp.processes_search_button.get(),
@@ -331,11 +331,11 @@ impl MainWindow {
             .bidirectional()
             .build();
 
-        // close the split view if we're in "mobile layout" and the user has clicked on an element
         imp.content_stack.connect_visible_child_notify(clone!(
             #[weak]
             imp,
             move |_| {
+                // close the split view if we're in "mobile layout" and the user has clicked on an element
                 if imp.split_view.is_collapsed() {
                     imp.split_view.set_show_sidebar(false);
                 }
