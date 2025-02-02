@@ -47,6 +47,13 @@ static CPU_TEMPERATURE_PATH: LazyLock<Option<PathBuf>> = LazyLock::new(|| {
     cpu_temperature_path.map(|(_, path)| path)
 });
 
+fn search_for_first_temp<S: AsRef<str>>(base_path: S) -> Option<PathBuf> {
+    glob(&format!("{}/temp*_input", base_path.as_ref()))
+        .unwrap()
+        .flatten()
+        .next()
+}
+
 /// Looks for hwmons with the given names.
 /// This function is a bit inefficient since the `names` array is considered to be ordered by priority.
 fn search_for_hwmons(names: &[&'static str]) -> Option<(&'static str, PathBuf)> {
@@ -54,7 +61,8 @@ fn search_for_hwmons(names: &[&'static str]) -> Option<(&'static str, PathBuf)> 
         for path in (glob("/sys/class/hwmon/hwmon*").unwrap()).flatten() {
             if let Ok(read_name) = std::fs::read_to_string(path.join("name")) {
                 if &read_name.trim_end() == temp_name {
-                    return Some((temp_name, path.join("temp1_input")));
+                    return search_for_first_temp(path.to_string_lossy())
+                        .map(|first_temp| (*temp_name, first_temp));
                 }
             }
         }
