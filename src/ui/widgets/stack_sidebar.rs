@@ -314,8 +314,7 @@ impl ResStackSidebar {
                         imp.stack.borrow().set_visible_child(&child);
 
                         if let Some(page) = child
-                            .downcast::<adw::ToolbarView>()
-                            .ok()
+                            .downcast_ref::<adw::ToolbarView>()
                             .and_then(|toolbar| toolbar.content())
                         {
                             let _ = SETTINGS

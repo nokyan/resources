@@ -30,8 +30,6 @@ mod imp {
         #[template_child]
         pub graph_data_points_row: TemplateChild<adw::SpinRow>,
         #[template_child]
-        pub show_search_on_start_row: TemplateChild<adw::SwitchRow>,
-        #[template_child]
         pub sidebar_details_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub sidebar_description_row: TemplateChild<adw::SwitchRow>,
@@ -188,8 +186,6 @@ impl ResSettingsDialog {
             .set_active(SETTINGS.sidebar_description());
         imp.sidebar_meter_type_row
             .set_selected((SETTINGS.sidebar_meter_type() as u8) as u32);
-        imp.show_search_on_start_row
-            .set_active(SETTINGS.show_search_on_start());
         imp.normalize_cpu_usage_row
             .set_active(SETTINGS.normalize_cpu_usage());
 
@@ -311,11 +307,6 @@ impl ResSettingsDialog {
                 if let Some(t) = SidebarMeterType::from_repr(combo_row.selected() as u8) {
                     let _ = SETTINGS.set_sidebar_meter_type(t);
                 }
-            });
-
-        imp.show_search_on_start_row
-            .connect_active_notify(|switch_row| {
-                let _ = SETTINGS.set_show_search_on_start(switch_row.is_active());
             });
 
         imp.normalize_cpu_usage_row
