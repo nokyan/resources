@@ -1,0 +1,1815 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-19 13:51+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME aritra saha <capsaicin@tuta.io>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: bn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: data/net.nokyan.Resources.desktop.in.in:3
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:262
+#: data/resources/ui/window.ui:22
+msgid "Resources"
+msgstr "সম্পদ"
+
+#. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
+#: data/net.nokyan.Resources.desktop.in.in:4
+#: data/net.nokyan.Resources.metainfo.xml.in.in:5
+msgid "Keep an eye on system resources"
+msgstr "সিস্টেম সম্পদ পর্যবেক্ষণ করুন"
+
+#: data/net.nokyan.Resources.desktop.in.in:10
+msgid ""
+"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
+msgstr ""
+"সিস্টেম;সম্পদ;মনিটর;প্রক্রিয়া;ব্যবহার;টাস্ক;ম্যানেজার;সিপিইউ;র‍্যাম;মেমোরি;জিপিইউ;"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:17
+msgid ""
+"Resources allows you to check the utilization of your system resources and "
+"control your running processes and apps. It’s designed to be user-friendly "
+"and feel right at home on a modern desktop by using GNOME’s libadwaita."
+msgstr ""
+"সম্পদ আপনাকে আপনার সিস্টেমের সম্পদ ব্যবহার পরীক্ষা করতে এবং চলমান প্রক্রিয়া এবং অ্যাপগুলি নিয়ন্ত্রণ করতে দেয়। এটি ব্যবহারকারী-বান্ধব এবং আধুনিক ডেস্কটপে GNOME-এর libadwaita ব্যবহার করে বাড়ির মতো অনুভব করার জন্য ডিজাইন করা হয়েছে।"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:20
+msgid "Resources supports monitoring the following components:"
+msgstr "সম্পদ নিম্নলিখিত উপাদানগুলি পর্যবেক্ষণ সমর্থন করে:"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:24
+msgid "CPU"
+msgstr "সিপিইউ"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+#: src/ui/pages/applications/mod.rs:811 src/ui/pages/memory.rs:105
+#: src/ui/pages/memory.rs:186 src/ui/pages/processes/mod.rs:1087
+#: data/resources/ui/window.ui:158 data/resources/ui/window.ui:165
+#: data/resources/ui/dialogs/app_dialog.ui:82
+#: data/resources/ui/dialogs/process_dialog.ui:64
+#: data/resources/ui/dialogs/settings_dialog.ui:133
+#: data/resources/ui/dialogs/settings_dialog.ui:220
+msgid "Memory"
+msgstr "মেমোরি"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:26
+#: src/ui/pages/applications/mod.rs:1184 src/ui/pages/gpu.rs:114
+#: src/ui/pages/processes/mod.rs:1471 src/ui/window.rs:311
+#: data/resources/ui/dialogs/app_dialog.ui:140
+#: data/resources/ui/dialogs/process_dialog.ui:118
+#: data/resources/ui/dialogs/settings_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:250
+msgid "GPU"
+msgstr "জিপিইউ"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:27
+#: data/resources/ui/dialogs/settings_dialog.ui:314
+msgid "Network Interfaces"
+msgstr "নেটওয়ার্ক ইন্টারফেস"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:28
+msgid "Storage Devices"
+msgstr "স্টোরেজ ডিভাইস"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:29
+msgid "Batteries"
+msgstr "ব্যাটারি"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:51
+msgid "Apps page in light theme"
+msgstr "হালকা থিমে অ্যাপস পৃষ্ঠা"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:55
+msgid "Processes page in dark theme"
+msgstr "ডার্ক থিমে প্রক্রিয়া পৃষ্ঠা"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:59
+msgid "Processor page in light theme"
+msgstr "হালকা থিমে প্রসেসর পৃষ্ঠা"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:63
+msgid "Memory page in dark theme"
+msgstr "ডার্ক থিমে মেমোরি পৃষ্ঠা"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:67
+msgid "GPU page in light theme"
+msgstr "হালকা থিমে জিপিইউ পৃষ্ঠা"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:71
+msgid "Drive page in dark theme"
+msgstr "ডার্ক থিমে ড্রাইভ পৃষ্ঠা"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:75
+msgid "Network Interface page in light theme"
+msgstr "হালকা থিমে নেটওয়ার্ক ইন্টারফেস পৃষ্ঠা"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:79
+msgid "Battery page in dark theme"
+msgstr "ডার্ক থিমে ব্যাটারি পৃষ্ঠা"
+
+#: src/application.rs:264
+msgid "The Nalux Team"
+msgstr "নালুক্স দল"
+
+#: src/application.rs:272
+msgid "Report Issues"
+msgstr "সমস্যা রিপোর্ট করুন"
+
+#. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
+#. One name per line, please do not remove previous names.
+#: src/application.rs:278
+msgid "translator-credits"
+msgstr "অনুবাদক-ক্রেডিট"
+
+#: src/application.rs:279
+msgid "Icon by"
+msgstr "আইকন দ্বারা"
+
+#: src/ui/dialogs/app_dialog.rs:148 src/ui/dialogs/process_dialog.rs:127
+#: src/ui/dialogs/process_dialog.rs:131 src/ui/dialogs/process_dialog.rs:140
+#: src/ui/dialogs/process_dialog.rs:142 src/ui/dialogs/process_dialog.rs:163
+#: src/ui/dialogs/process_dialog.rs:170 src/ui/dialogs/process_dialog.rs:177
+#: src/ui/dialogs/process_dialog.rs:184 src/ui/pages/applications/mod.rs:954
+#: src/ui/pages/applications/mod.rs:1078 src/ui/pages/battery.rs:196
+#: src/ui/pages/battery.rs:216 src/ui/pages/battery.rs:222
+#: src/ui/pages/battery.rs:225 src/ui/pages/battery.rs:251
+#: src/ui/pages/battery.rs:275 src/ui/pages/battery.rs:277
+#: src/ui/pages/battery.rs:287 src/ui/pages/cpu.rs:218 src/ui/pages/cpu.rs:233
+#: src/ui/pages/cpu.rs:248 src/ui/pages/cpu.rs:254 src/ui/pages/cpu.rs:260
+#: src/ui/pages/cpu.rs:266 src/ui/pages/cpu.rs:270 src/ui/pages/cpu.rs:273
+#: src/ui/pages/cpu.rs:370 src/ui/pages/drive.rs:298 src/ui/pages/drive.rs:329
+#: src/ui/pages/drive.rs:331 src/ui/pages/drive.rs:360
+#: src/ui/pages/drive.rs:362 src/ui/pages/drive.rs:378
+#: src/ui/pages/drive.rs:379 src/ui/pages/drive.rs:386
+#: src/ui/pages/drive.rs:396 src/ui/pages/drive.rs:406 src/ui/pages/gpu.rs:227
+#: src/ui/pages/gpu.rs:267 src/ui/pages/gpu.rs:292 src/ui/pages/gpu.rs:295
+#: src/ui/pages/gpu.rs:306 src/ui/pages/gpu.rs:326 src/ui/pages/gpu.rs:338
+#: src/ui/pages/gpu.rs:352 src/ui/pages/gpu.rs:354 src/ui/pages/gpu.rs:366
+#: src/ui/pages/gpu.rs:373 src/ui/pages/gpu.rs:377 src/ui/pages/memory.rs:221
+#: src/ui/pages/memory.rs:222 src/ui/pages/memory.rs:226
+#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:231
+#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:260
+#: src/ui/pages/memory.rs:317 src/ui/pages/network.rs:230
+#: src/ui/pages/network.rs:237 src/ui/pages/network.rs:244
+#: src/ui/pages/network.rs:250 src/ui/pages/network.rs:253
+#: src/ui/pages/network.rs:314 src/ui/pages/network.rs:317
+#: src/ui/pages/network.rs:319 src/ui/pages/network.rs:348
+#: src/ui/pages/network.rs:351 src/ui/pages/network.rs:353
+#: src/ui/pages/npu.rs:201 src/ui/pages/npu.rs:230 src/ui/pages/npu.rs:248
+#: src/ui/pages/npu.rs:260 src/ui/pages/npu.rs:274 src/ui/pages/npu.rs:276
+#: src/ui/pages/npu.rs:288 src/ui/pages/npu.rs:295 src/ui/pages/npu.rs:299
+#: src/ui/pages/processes/mod.rs:1229 src/ui/pages/processes/mod.rs:1295
+#: src/ui/pages/processes/mod.rs:1361 src/ui/pages/processes/mod.rs:1427
+#: src/ui/pages/processes/mod.rs:1909 src/ui/pages/processes/mod.rs:1911
+#: src/utils/battery.rs:136 src/utils/drive.rs:89 src/utils/gpu/mod.rs:274
+#: src/utils/gpu/mod.rs:280 src/utils/npu/mod.rs:241 src/utils/npu/mod.rs:247
+msgid "N/A"
+msgstr "প্রযোজ্য নয়"
+
+#: src/ui/dialogs/process_options_dialog.rs:141 src/ui/pages/cpu.rs:232
+#: src/ui/pages/cpu.rs:354 src/ui/pages/cpu.rs:358
+msgid "CPU {}"
+msgstr "সিপিইউ {}"
+
+#: src/ui/pages/applications/application_entry.rs:183 src/ui/pages/drive.rs:393
+#: src/ui/pages/drive.rs:403 src/ui/pages/processes/process_entry.rs:204
+msgid "No"
+msgstr "না"
+
+#: src/ui/pages/applications/application_entry.rs:184
+#: src/ui/pages/processes/process_entry.rs:205
+msgid "Yes (Flatpak)"
+msgstr "হ্যাঁ (Flatpak)"
+
+#: src/ui/pages/applications/application_entry.rs:185
+#: src/ui/pages/processes/process_entry.rs:206
+msgid "Yes (Snap)"
+msgstr "হ্যাঁ (Snap)"
+
+#: src/ui/pages/applications/mod.rs:134 data/resources/ui/window.ui:65
+#: data/resources/ui/window.ui:72
+#: data/resources/ui/dialogs/settings_dialog.ui:127
+msgid "Apps"
+msgstr "অ্যাপস"
+
+#. -1 because we don't want to count System Processes
+#: src/ui/pages/applications/mod.rs:668
+msgid "Running Apps: {}"
+msgstr "চলমান অ্যাপস: {}"
+
+#: src/ui/pages/applications/mod.rs:708 src/ui/pages/processes/mod.rs:870
+msgid "Cancel"
+msgstr "বাতিল করুন"
+
+#: src/ui/pages/applications/mod.rs:754
+msgid "App"
+msgstr "অ্যাপ"
+
+#: src/ui/pages/applications/mod.rs:870 src/ui/pages/cpu.rs:122
+#: src/ui/pages/processes/mod.rs:1145 src/ui/window.rs:403
+#: data/resources/ui/window.ui:127 data/resources/ui/window.ui:134
+#: data/resources/ui/dialogs/app_dialog.ui:73
+#: data/resources/ui/dialogs/process_dialog.ui:55
+#: data/resources/ui/dialogs/settings_dialog.ui:138
+#: data/resources/ui/dialogs/settings_dialog.ui:225
+msgid "Processor"
+msgstr "প্রসেসর"
+
+#: src/ui/pages/applications/mod.rs:933 src/ui/pages/processes/mod.rs:1208
+#: data/resources/ui/dialogs/app_dialog.ui:100
+#: data/resources/ui/dialogs/process_dialog.ui:78
+#: data/resources/ui/dialogs/settings_dialog.ui:143
+#: data/resources/ui/dialogs/settings_dialog.ui:230
+msgid "Drive Read"
+msgstr "ড্রাইভ পড়া"
+
+#: src/ui/pages/applications/mod.rs:997 src/ui/pages/processes/mod.rs:1274
+#: data/resources/ui/dialogs/app_dialog.ui:109
+#: data/resources/ui/dialogs/process_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:148
+#: data/resources/ui/dialogs/settings_dialog.ui:235
+msgid "Drive Read Total"
+msgstr "ড্রাইভ পড়া মোট"
+
+#: src/ui/pages/applications/mod.rs:1057 src/ui/pages/processes/mod.rs:1340
+#: data/resources/ui/dialogs/app_dialog.ui:118
+#: data/resources/ui/dialogs/process_dialog.ui:96
+#: data/resources/ui/dialogs/settings_dialog.ui:153
+#: data/resources/ui/dialogs/settings_dialog.ui:240
+msgid "Drive Write"
+msgstr "ড্রাইভ লেখা"
+
+#: src/ui/pages/applications/mod.rs:1123 src/ui/pages/processes/mod.rs:1406
+#: data/resources/ui/dialogs/app_dialog.ui:127
+#: data/resources/ui/dialogs/process_dialog.ui:105
+#: data/resources/ui/dialogs/settings_dialog.ui:158
+#: data/resources/ui/dialogs/settings_dialog.ui:245
+msgid "Drive Write Total"
+msgstr "ড্রাইভ লেখা মোট"
+
+#: src/ui/pages/applications/mod.rs:1242 src/ui/pages/processes/mod.rs:1529
+#: data/resources/ui/dialogs/app_dialog.ui:158
+#: data/resources/ui/dialogs/process_dialog.ui:136
+#: data/resources/ui/dialogs/settings_dialog.ui:173
+#: data/resources/ui/dialogs/settings_dialog.ui:260
+msgid "Video Encoder"
+msgstr "ভিডিও এনকোডার"
+
+#: src/ui/pages/applications/mod.rs:1302 src/ui/pages/processes/mod.rs:1589
+#: data/resources/ui/dialogs/app_dialog.ui:167
+#: data/resources/ui/dialogs/process_dialog.ui:145
+#: data/resources/ui/dialogs/settings_dialog.ui:178
+#: data/resources/ui/dialogs/settings_dialog.ui:265
+msgid "Video Decoder"
+msgstr "ভিডিও ডিকোডার"
+
+#: src/ui/pages/applications/mod.rs:1361 src/ui/pages/processes/mod.rs:1649
+#: data/resources/ui/dialogs/app_dialog.ui:149
+#: data/resources/ui/dialogs/process_dialog.ui:127
+#: data/resources/ui/dialogs/settings_dialog.ui:168
+#: data/resources/ui/dialogs/settings_dialog.ui:255
+msgid "Video Memory"
+msgstr "ভিডিও মেমোরি"
+
+#: src/ui/pages/applications/mod.rs:1419 src/ui/pages/memory.rs:192
+#: src/ui/pages/processes/mod.rs:1952
+#: data/resources/ui/dialogs/app_dialog.ui:91
+#: data/resources/ui/dialogs/process_dialog.ui:73
+#: data/resources/ui/dialogs/settings_dialog.ui:183
+#: data/resources/ui/dialogs/settings_dialog.ui:290
+msgid "Swap"
+msgstr "সোয়াপ"
+
+#: src/ui/pages/applications/mod.rs:1477 src/ui/pages/processes/mod.rs:2009
+msgid "End {}?"
+msgstr "শেষ {}?"
+
+#: src/ui/pages/applications/mod.rs:1478 src/ui/pages/processes/mod.rs:2010
+msgid "Halt {}?"
+msgstr "বন্ধ {}?"
+
+#: src/ui/pages/applications/mod.rs:1479 src/ui/pages/processes/mod.rs:2011
+msgid "Kill {}?"
+msgstr "মেরে ফেলুন {}?"
+
+#: src/ui/pages/applications/mod.rs:1480 src/ui/pages/processes/mod.rs:2012
+msgid "Continue {}?"
+msgstr "চালিয়ে যান {}?"
+
+#: src/ui/pages/applications/mod.rs:1486 src/ui/pages/processes/mod.rs:2047
+msgid "Unsaved work might be lost."
+msgstr "সংরক্ষণ না করা কাজ হারিয়ে যেতে পারে।"
+
+#: src/ui/pages/applications/mod.rs:1487
+msgid ""
+"Halting an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
+msgstr ""
+"একটি অ্যাপ বন্ধ করা গুরুতর ঝুঁকি নিয়ে আসতে পারে যেমন ডেটা হারানো এবং নিরাপত্তা প্রভাব। সতর্কতার সাথে ব্যবহার করুন।"
+
+#: src/ui/pages/applications/mod.rs:1488
+msgid ""
+"Killing an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
+msgstr ""
+"একটি অ্যাপ মেরে ফেলা গুরুতর ঝুঁকি নিয়ে আসতে পারে যেমন ডেটা হারানো এবং নিরাপত্তা প্রভাব। সতর্কতার সাথে ব্যবহার করুন।"
+
+#: src/ui/pages/applications/mod.rs:1495
+#: data/resources/ui/pages/applications.ui:22
+#: data/resources/ui/pages/applications.ui:127
+msgid "End App"
+msgstr "অ্যাপ শেষ করুন"
+
+#: src/ui/pages/applications/mod.rs:1496
+#: data/resources/ui/pages/applications.ui:10
+#: data/resources/ui/pages/applications.ui:30
+msgid "Halt App"
+msgstr "অ্যাপ বন্ধ করুন"
+
+#: src/ui/pages/applications/mod.rs:1497
+#: data/resources/ui/pages/applications.ui:6
+#: data/resources/ui/pages/applications.ui:26
+msgid "Kill App"
+msgstr "অ্যাপ মেরে ফেলুন"
+
+#: src/ui/pages/applications/mod.rs:1498
+#: data/resources/ui/pages/applications.ui:14
+#: data/resources/ui/pages/applications.ui:34
+msgid "Continue App"
+msgstr "অ্যাপ চালিয়ে যান"
+
+#: src/ui/pages/battery.rs:101 src/ui/pages/drive.rs:122
+msgid "Drive"
+msgstr "ড্রাইভ"
+
+#: src/ui/pages/battery.rs:201
+msgid "Battery Charge"
+msgstr "ব্যাটারি চার্জ"
+
+#: src/ui/pages/battery.rs:208 data/resources/ui/pages/gpu.ui:55
+#: data/resources/ui/pages/npu.ui:49
+msgid "Power Usage"
+msgstr "পাওয়ার ব্যবহার"
+
+#: src/ui/pages/battery.rs:265 src/ui/pages/drive.rs:323
+#: src/ui/pages/drive.rs:354 src/ui/pages/network.rs:306
+#: src/ui/pages/network.rs:340
+msgid "Highest:"
+msgstr "সর্বোচ্চ:"
+
+#: src/ui/pages/cpu.rs:217 src/ui/pages/gpu.rs:198 src/ui/pages/npu.rs:189
+msgid "Total Usage"
+msgstr "মোট ব্যবহার"
+
+#: src/ui/pages/drive.rs:224
+msgid "Drive Activity"
+msgstr "ড্রাইভ কার্যকলাপ"
+
+#: src/ui/pages/drive.rs:231
+msgid "Read Speed"
+msgstr "পড়ার গতি"
+
+#: src/ui/pages/drive.rs:235
+msgid "Write Speed"
+msgstr "লেখার গতি"
+
+#: src/ui/pages/drive.rs:391 src/ui/pages/drive.rs:401
+msgid "Yes"
+msgstr "হ্যাঁ"
+
+#. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
+#. translation should preferably be quite short or an abbreviation
+#: src/ui/pages/drive.rs:413
+msgid "R: {} · W: {}"
+msgstr "প: {} · ল: {}"
+
+#: src/ui/pages/gpu.rs:206
+msgid "Video Encoder/Decoder Usage"
+msgstr "ভিডিও এনকোডার/ডিকোডার ব্যবহার"
+
+#: src/ui/pages/gpu.rs:212
+msgid "Video Encoder Usage"
+msgstr "ভিডিও এনকোডার ব্যবহার"
+
+#: src/ui/pages/gpu.rs:217
+msgid "Video Decoder Usage"
+msgstr "ভিডিও ডিকোডার ব্যবহার"
+
+#: src/ui/pages/gpu.rs:222
+msgid "Video Memory Usage"
+msgstr "ভিডিও মেমোরি ব্যবহার"
+
+#. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
+#. shorter than) 'Memory'
+#: src/ui/pages/gpu.rs:385 src/ui/pages/npu.rs:307
+msgid "Memory: {}"
+msgstr "মেমোরি: {}"
+
+#: src/ui/pages/memory.rs:256
+msgid "{} of {}"
+msgstr "{} এর {}"
+
+#: src/ui/pages/memory.rs:259
+msgid "{} MT/s"
+msgstr "{} MT/s"
+
+#. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
+#. preferably be quite short or an abbreviation
+#: src/ui/pages/memory.rs:336
+msgid "{} / {} · Swap: {} %"
+msgstr "{} / {} · সোয়াপ: {} %"
+
+#: src/ui/pages/network.rs:114 src/utils/network.rs:128
+msgid "Network Interface"
+msgstr "নেটওয়ার্ক ইন্টারফেস"
+
+#: src/ui/pages/network.rs:218
+msgid "Receiving"
+msgstr "গ্রহণ করা"
+
+#: src/ui/pages/network.rs:222
+msgid "Sending"
+msgstr "পাঠানো"
+
+#. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
+#. your translation should preferably be quite short or an abbreviation
+#: src/ui/pages/network.rs:363
+msgid "R: {} · S: {}"
+msgstr "গ: {} · প: {}"
+
+#: src/ui/pages/npu.rs:105 src/ui/window.rs:343
+msgid "NPU"
+msgstr "NPU"
+
+#: src/ui/pages/npu.rs:196
+msgid "Memory Usage"
+msgstr "মেমোরি ব্যবহার"
+
+#: src/ui/pages/processes/mod.rs:178 data/resources/ui/window.ui:96
+#: data/resources/ui/window.ui:103
+#: data/resources/ui/dialogs/settings_dialog.ui:193
+msgid "Processes"
+msgstr "প্রক্রিয়া"
+
+#: src/ui/pages/processes/mod.rs:523 src/ui/pages/processes/mod.rs:2056
+#: data/resources/ui/pages/processes.ui:38
+#: data/resources/ui/pages/processes.ui:186
+msgid "End Process"
+msgstr "প্রক্রিয়া শেষ করুন"
+
+#: src/ui/pages/processes/mod.rs:527 data/resources/ui/pages/processes.ui:70
+msgid "End Processes"
+msgstr "প্রক্রিয়া শেষ করুন"
+
+#: src/ui/pages/processes/mod.rs:821
+msgid "Running Processes: {}"
+msgstr "চলমান প্রক্রিয়া: {}"
+
+#: src/ui/pages/processes/mod.rs:919
+msgid "Process"
+msgstr "প্রক্রিয়া"
+
+#: src/ui/pages/processes/mod.rs:980
+#: data/resources/ui/dialogs/process_dialog.ui:186
+#: data/resources/ui/dialogs/settings_dialog.ui:210
+msgid "Process ID"
+msgstr "প্রক্রিয়া আইডি"
+
+#: src/ui/pages/processes/mod.rs:1033
+#: data/resources/ui/dialogs/process_dialog.ui:213
+#: data/resources/ui/dialogs/settings_dialog.ui:215
+msgid "User"
+msgstr "ব্যবহারকারী"
+
+#: src/ui/pages/processes/mod.rs:1708
+#: data/resources/ui/dialogs/process_dialog.ui:154
+#: data/resources/ui/dialogs/settings_dialog.ui:270
+msgid "Total CPU Time"
+msgstr "মোট সিপিইউ সময়"
+
+#: src/ui/pages/processes/mod.rs:1767
+#: data/resources/ui/dialogs/process_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:275
+msgid "User CPU Time"
+msgstr "ব্যবহারকারী সিপিইউ সময়"
+
+#: src/ui/pages/processes/mod.rs:1826
+#: data/resources/ui/dialogs/process_dialog.ui:172
+#: data/resources/ui/dialogs/settings_dialog.ui:280
+msgid "System CPU Time"
+msgstr "সিস্টেম সিপিইউ সময়"
+
+#: src/ui/pages/processes/mod.rs:1885
+#: data/resources/ui/dialogs/process_options_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:285
+msgid "Priority"
+msgstr "অগ্রাধিকার"
+
+#: src/ui/pages/processes/mod.rs:2019
+msgid "End process?"
+msgid_plural "End {} processes?"
+msgstr[0] "প্রক্রিয়া শেষ করুন?"
+msgstr[1] "{} প্রক্রিয়া শেষ করুন?"
+
+#: src/ui/pages/processes/mod.rs:2025
+msgid "Halt process?"
+msgid_plural "Halt {} processes?"
+msgstr[0] "প্রক্রিয়া বন্ধ করুন?"
+msgstr[1] "{} প্রক্রিয়া বন্ধ করুন?"
+
+#: src/ui/pages/processes/mod.rs:2031 src/ui/pages/processes/mod.rs:2037
+msgid "Kill process?"
+msgid_plural "Kill {} processes?"
+msgstr[0] "প্রক্রিয়া মেরে ফেলুন?"
+msgstr[1] "{} প্রক্রিয়া মেরে ফেলুন?"
+
+#: src/ui/pages/processes/mod.rs:2048
+msgid ""
+"Halting a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"একটি প্রক্রিয়া বন্ধ করা গুরুতর ঝুঁকি নিয়ে আসতে পারে যেমন ডেটা হারানো এবং নিরাপত্তা প্রভাব। সতর্কতার সাথে ব্যবহার করুন।"
+
+#: src/ui/pages/processes/mod.rs:2049
+msgid ""
+"Killing a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"একটি প্রক্রিয়া মেরে ফেলা গুরুতর ঝুঁকি নিয়ে আসতে পারে যেমন ডেটা হারানো এবং নিরাপত্তা প্রভাব। সতর্কতার সাথে ব্যবহার করুন।"
+
+#: src/ui/pages/processes/mod.rs:2057 data/resources/ui/pages/processes.ui:10
+#: data/resources/ui/pages/processes.ui:46
+msgid "Halt Process"
+msgstr "প্রক্রিয়া বন্ধ করুন"
+
+#: src/ui/pages/processes/mod.rs:2058 data/resources/ui/pages/processes.ui:6
+#: data/resources/ui/pages/processes.ui:42
+msgid "Kill Process"
+msgstr "প্রক্রিয়া মেরে ফেলুন"
+
+#: src/ui/pages/processes/mod.rs:2059 data/resources/ui/pages/processes.ui:14
+#: data/resources/ui/pages/processes.ui:50
+msgid "Continue Process"
+msgstr "প্রক্রিয়া চালিয়ে যান"
+
+#: src/ui/window.rs:309
+msgid "GPU {}"
+msgstr "জিপিইউ {}"
+
+#: src/ui/window.rs:341
+msgid "NPU {}"
+msgstr "NPU {}"
+
+#: src/ui/window.rs:1039
+msgid "Successfully adjusted {}"
+msgstr "সফলভাবে সমন্বয় করা হয়েছে {}"
+
+#: src/ui/window.rs:1040
+msgid "There was a problem adjusting {}"
+msgstr "{} সমন্বয় করতে সমস্যা হয়েছে"
+
+#: src/ui/window.rs:1120
+msgid "Successfully ended {}"
+msgstr "সফলভাবে শেষ হয়েছে {}"
+
+#: src/ui/window.rs:1121
+msgid "Successfully halted {}"
+msgstr "সফলভাবে বন্ধ হয়েছে {}"
+
+#: src/ui/window.rs:1122
+msgid "Successfully killed {}"
+msgstr "সফলভাবে মেরে ফেলা হয়েছে {}"
+
+#: src/ui/window.rs:1123
+msgid "Successfully continued {}"
+msgstr "সফলভাবে চালিয়ে যাওয়া হয়েছে {}"
+
+#: src/ui/window.rs:1130
+msgid "Successfully ended the process"
+msgid_plural "Successfully ended {} processes"
+msgstr[0] "প্রক্রিয়া সফলভাবে শেষ হয়েছে"
+msgstr[1] "{} প্রক্রিয়া সফলভাবে শেষ হয়েছে"
+
+#: src/ui/window.rs:1136
+msgid "Successfully halted the process"
+msgid_plural "Successfully halted {} processes"
+msgstr[0] "প্রক্রিয়া সফলভাবে বন্ধ হয়েছে"
+msgstr[1] "{} প্রক্রিয়া সফলভাবে বন্ধ হয়েছে"
+
+#: src/ui/window.rs:1142
+msgid "Successfully killed the process"
+msgid_plural "Successfully killed {} processes"
+msgstr[0] "প্রক্রিয়া সফলভাবে মেরে ফেলা হয়েছে"
+msgstr[1] "{} প্রক্রিয়া সফলভাবে মেরে ফেলা হয়েছে"
+
+#: src/ui/window.rs:1148
+msgid "Successfully continued the process"
+msgid_plural "Successfully continued {} processes"
+msgstr[0] "প্রক্রিয়া সফলভাবে চালিয়ে যাওয়া হয়েছে"
+msgstr[1] "{} প্রক্রিয়া সফলভাবে চালিয়ে যাওয়া হয়েছে"
+
+#: src/ui/window.rs:1159
+msgid "There was a problem ending a process"
+msgid_plural "There were problems ending {} processes"
+msgstr[0] "একটি প্রক্রিয়া শেষ করতে সমস্যা হয়েছে"
+msgstr[1] "{} প্রক্রিয়া শেষ করতে সমস্যা হয়েছে"
+
+#: src/ui/window.rs:1165
+msgid "There was a problem halting a process"
+msgid_plural "There were problems halting {} processes"
+msgstr[0] "একটি প্রক্রিয়া বন্ধ করতে সমস্যা হয়েছে"
+msgstr[1] "{} প্রক্রিয়া বন্ধ করতে সমস্যা হয়েছে"
+
+#: src/ui/window.rs:1171
+msgid "There was a problem killing a process"
+msgid_plural "There were problems killing {} processes"
+msgstr[0] "একটি প্রক্রিয়া মেরে ফেলতে সমস্যা হয়েছে"
+msgstr[1] "{} প্রক্রিয়া মেরে ফেলতে সমস্যা হয়েছে"
+
+#: src/ui/window.rs:1177
+msgid "There was a problem continuing a process"
+msgid_plural "There were problems continuing {} processes"
+msgstr[0] "একটি প্রক্রিয়া চালিয়ে যেতে সমস্যা হয়েছে"
+msgstr[1] "{} প্রক্রিয়া চালিয়ে যেতে সমস্যা হয়েছে"
+
+#: src/ui/window.rs:1187
+msgid "There was a problem ending {}"
+msgstr "{} শেষ করতে সমস্যা হয়েছে"
+
+#: src/ui/window.rs:1188
+msgid "There was a problem halting {}"
+msgstr "{} বন্ধ করতে সমস্যা হয়েছে"
+
+#: src/ui/window.rs:1189
+msgid "There was a problem killing {}"
+msgstr "{} মেরে ফেলতে সমস্যা হয়েছে"
+
+#: src/ui/window.rs:1190
+msgid "There was a problem continuing {}"
+msgstr "{} চালিয়ে যেতে সমস্যা হয়েছে"
+
+#: src/utils/app.rs:223
+msgid "System Processes"
+msgstr "সিস্টেম প্রক্রিয়া"
+
+#: src/utils/battery.rs:77
+msgid "Charging"
+msgstr "চার্জ হচ্ছে"
+
+#: src/utils/battery.rs:78
+msgid "Discharging"
+msgstr "ডিসচার্জ হচ্ছে"
+
+#: src/utils/battery.rs:79
+msgid "Empty"
+msgstr "খালি"
+
+#: src/utils/battery.rs:80
+msgid "Full"
+msgstr "পূর্ণ"
+
+#: src/utils/battery.rs:81
+msgid "Unknown"
+msgstr "অজানা"
+
+#: src/utils/battery.rs:127
+msgid "Nickel-Metal Hydride"
+msgstr "নিকেল-মেটাল হাইড্রাইড"
+
+#: src/utils/battery.rs:128
+msgid "Nickel-Cadmium"
+msgstr "নিকেল-ক্যাডমিয়াম"
+
+#: src/utils/battery.rs:129
+msgid "Nickel-Zinc"
+msgstr "নিকেল-জিঙ্ক"
+
+#: src/utils/battery.rs:130
+msgid "Lead-Acid"
+msgstr "লেড-অ্যাসিড"
+
+#: src/utils/battery.rs:131
+msgid "Lithium-Ion"
+msgstr "লিথিয়াম-আয়ন"
+
+#: src/utils/battery.rs:132
+msgid "Lithium Iron Phosphate"
+msgstr "লিথিয়াম আয়রন ফসফেট"
+
+#: src/utils/battery.rs:133
+msgid "Lithium Polymer"
+msgstr "লিথিয়াম পলিমার"
+
+#: src/utils/battery.rs:135
+msgid "Rechargeable Alkaline Managanese"
+msgstr "রিচার্জেবল অ্যালকালাইন ম্যাঙ্গানিজ"
+
+#: src/utils/battery.rs:229
+msgid "{} Battery"
+msgstr "{} ব্যাটারি"
+
+#: src/utils/battery.rs:231
+msgid "Battery"
+msgstr "ব্যাটারি"
+
+#: src/utils/drive.rs:81 src/utils/drive.rs:152
+msgid "CD/DVD/Blu-ray Drive"
+msgstr "সিডি/ডিভিডি/ব্লু-রে ড্রাইভ"
+
+#: src/utils/drive.rs:82
+msgid "eMMC Storage"
+msgstr "eMMC স্টোরেজ"
+
+#: src/utils/drive.rs:83
+msgid "Flash Storage"
+msgstr "ফ্ল্যাশ স্টোরেজ"
+
+#: src/utils/drive.rs:84 src/utils/drive.rs:153
+msgid "Floppy Drive"
+msgstr "ফ্লপি ড্রাইভ"
+
+#: src/utils/drive.rs:85
+msgid "Hard Disk Drive"
+msgstr "হার্ড ডিস্ক ড্রাইভ"
+
+#: src/utils/drive.rs:86
+msgid "Loop Device"
+msgstr "লুপ ডিভাইস"
+
+#: src/utils/drive.rs:87
+msgid "Mapped Device"
+msgstr "ম্যাপড ডিভাইস"
+
+#: src/utils/drive.rs:88
+msgid "NVMe Drive"
+msgstr "NVMe ড্রাইভ"
+
+#: src/utils/drive.rs:90
+msgid "Software Raid"
+msgstr "সফটওয়্যার রেইড"
+
+#: src/utils/drive.rs:91
+msgid "RAM Disk"
+msgstr "র্যাম ডিস্ক"
+
+#: src/utils/drive.rs:92
+msgid "Solid State Drive"
+msgstr "সলিড স্টেট ড্রাইভ"
+
+#: src/utils/drive.rs:93
+msgid "ZFS Volume"
+msgstr "ZFS ভলিউম"
+
+#: src/utils/drive.rs:94
+msgid "Compressed RAM Disk (zram)"
+msgstr "কম্প্রেসড র্যাম ডিস্ক (zram)"
+
+#: src/utils/drive.rs:154
+msgid "{} Loop Device"
+msgstr "{} লুপ ডিভাইস"
+
+#: src/utils/drive.rs:155
+msgid "{} Mapped Device"
+msgstr "{} ম্যাপড ডিভাইস"
+
+#: src/utils/drive.rs:156
+msgid "{} RAID"
+msgstr "{} RAID"
+
+#: src/utils/drive.rs:157
+msgid "{} RAM Disk"
+msgstr "{} র্যাম ডিস্ক"
+
+#: src/utils/drive.rs:158
+msgid "{} zram Device"
+msgstr "{} zram ডিভাইস"
+
+#: src/utils/drive.rs:159
+msgid "{} ZFS Volume"
+msgstr "{} ZFS ভলিউম"
+
+#: src/utils/drive.rs:160
+msgid "{} Drive"
+msgstr "{} ড্রাইভ"
+
+#: src/utils/network.rs:116
+msgid "Bluetooth Tether"
+msgstr "ব্লুটুথ টেদার"
+
+#: src/utils/network.rs:117
+msgid "Network Bridge"
+msgstr "নেটওয়ার্ক ব্রিজ"
+
+#: src/utils/network.rs:118
+msgid "Ethernet Connection"
+msgstr "ইথারনেট সংযোগ"
+
+#: src/utils/network.rs:119
+msgid "Docker Bridge"
+msgstr "ডকার ব্রিজ"
+
+#: src/utils/network.rs:120
+msgid "InfiniBand Connection"
+msgstr "ইনফিনিব্যান্ড সংযোগ"
+
+#: src/utils/network.rs:121
+msgid "Serial Line IP Connection"
+msgstr "সিরিয়াল লাইন আইপি সংযোগ"
+
+#: src/utils/network.rs:122
+msgid "Virtual Ethernet Device"
+msgstr "ভার্চুয়াল ইথারনেট ডিভাইস"
+
+#: src/utils/network.rs:123
+msgid "VM Network Bridge"
+msgstr "ভিএম নেটওয়ার্ক ব্রিজ"
+
+#: src/utils/network.rs:124
+msgid "VPN Tunnel"
+msgstr "ভিপিএন টানেল"
+
+#: src/utils/network.rs:125
+msgid "VPN Tunnel (WireGuard)"
+msgstr "ভিপিএন টানেল (ওয়্যারগার্ড)"
+
+#: src/utils/network.rs:126
+msgid "Wi-Fi Connection"
+msgstr "ওয়াই-ফাই সংযোগ"
+
+#: src/utils/network.rs:127
+msgid "WWAN Connection"
+msgstr "WWAN সংযোগ"
+
+#: src/utils/units.rs:59
+msgid "{} K"
+msgstr "{} K"
+
+#: src/utils/units.rs:61
+msgid "{} °C"
+msgstr "{} °C"
+
+#: src/utils/units.rs:63
+msgid "{} °F"
+msgstr "{} °F"
+
+#: src/utils/units.rs:81 src/utils/units.rs:95 src/utils/units.rs:115
+#: src/utils/units.rs:129
+msgid "{} B"
+msgstr "{} B"
+
+#: src/utils/units.rs:82 src/utils/units.rs:96
+msgid "{} kB"
+msgstr "{} kB"
+
+#: src/utils/units.rs:83 src/utils/units.rs:97
+msgid "{} MB"
+msgstr "{} MB"
+
+#: src/utils/units.rs:84 src/utils/units.rs:98
+msgid "{} GB"
+msgstr "{} GB"
+
+#: src/utils/units.rs:85 src/utils/units.rs:99
+msgid "{} TB"
+msgstr "{} TB"
+
+#: src/utils/units.rs:86 src/utils/units.rs:100
+msgid "{} PB"
+msgstr "{} PB"
+
+#: src/utils/units.rs:87 src/utils/units.rs:101
+msgid "{} EB"
+msgstr "{} EB"
+
+#: src/utils/units.rs:88 src/utils/units.rs:102
+msgid "{} ZB"
+msgstr "{} ZB"
+
+#: src/utils/units.rs:89 src/utils/units.rs:103
+msgid "{} YB"
+msgstr "{} YB"
+
+#: src/utils/units.rs:90 src/utils/units.rs:104
+msgid "{} RB"
+msgstr "{} RB"
+
+#: src/utils/units.rs:91 src/utils/units.rs:105
+msgid "{} QB"
+msgstr "{} QB"
+
+#: src/utils/units.rs:116 src/utils/units.rs:130
+msgid "{} KiB"
+msgstr "{} KiB"
+
+#: src/utils/units.rs:117 src/utils/units.rs:131
+msgid "{} MiB"
+msgstr "{} MiB"
+
+#: src/utils/units.rs:118 src/utils/units.rs:132
+msgid "{} GiB"
+msgstr "{} GiB"
+
+#: src/utils/units.rs:119 src/utils/units.rs:133
+msgid "{} TiB"
+msgstr "{} TiB"
+
+#: src/utils/units.rs:120 src/utils/units.rs:134
+msgid "{} PiB"
+msgstr "{} PiB"
+
+#: src/utils/units.rs:121 src/utils/units.rs:135
+msgid "{} EiB"
+msgstr "{} EiB"
+
+#: src/utils/units.rs:122 src/utils/units.rs:136
+msgid "{} ZiB"
+msgstr "{} ZiB"
+
+#: src/utils/units.rs:123 src/utils/units.rs:137
+msgid "{} YiB"
+msgstr "{} YiB"
+
+#: src/utils/units.rs:124 src/utils/units.rs:138
+msgid "{} RiB"
+msgstr "{} RiB"
+
+#: src/utils/units.rs:125 src/utils/units.rs:139
+msgid "{} QiB"
+msgstr "{} QiB"
+
+#: src/utils/units.rs:166 src/utils/units.rs:183
+msgid "{} B/s"
+msgstr "{} B/s"
+
+#: src/utils/units.rs:167
+msgid "{} kB/s"
+msgstr "{} kB/s"
+
+#: src/utils/units.rs:168
+msgid "{} MB/s"
+msgstr "{} MB/s"
+
+#: src/utils/units.rs:169
+msgid "{} GB/s"
+msgstr "{} GB/s"
+
+#: src/utils/units.rs:170
+msgid "{} TB/s"
+msgstr "{} TB/s"
+
+#: src/utils/units.rs:171
+msgid "{} PB/s"
+msgstr "{} PB/s"
+
+#: src/utils/units.rs:172
+msgid "{} EB/s"
+msgstr "{} EB/s"
+
+#: src/utils/units.rs:173
+msgid "{} ZB/s"
+msgstr "{} ZB/s"
+
+#: src/utils/units.rs:174
+msgid "{} YB/s"
+msgstr "{} YB/s"
+
+#: src/utils/units.rs:175
+msgid "{} RB/s"
+msgstr "{} RB/s"
+
+#: src/utils/units.rs:176
+msgid "{} QB/s"
+msgstr "{} QB/s"
+
+#: src/utils/units.rs:184
+msgid "{} KiB/s"
+msgstr "{} KiB/s"
+
+#: src/utils/units.rs:185
+msgid "{} MiB/s"
+msgstr "{} MiB/s"
+
+#: src/utils/units.rs:186
+msgid "{} GiB/s"
+msgstr "{} GiB/s"
+
+#: src/utils/units.rs:187
+msgid "{} TiB/s"
+msgstr "{} TiB/s"
+
+#: src/utils/units.rs:188
+msgid "{} PiB/s"
+msgstr "{} PiB/s"
+
+#: src/utils/units.rs:189
+msgid "{} EiB/s"
+msgstr "{} EiB/s"
+
+#: src/utils/units.rs:190
+msgid "{} ZiB/s"
+msgstr "{} ZiB/s"
+
+#: src/utils/units.rs:191
+msgid "{} YiB/s"
+msgstr "{} YiB/s"
+
+#: src/utils/units.rs:192
+msgid "{} RiB/s"
+msgstr "{} RiB/s"
+
+#: src/utils/units.rs:193
+msgid "{} QiB/s"
+msgstr "{} QiB/s"
+
+#: src/utils/units.rs:200 src/utils/units.rs:217
+msgid "{} b/s"
+msgstr "{} b/s"
+
+#: src/utils/units.rs:201
+msgid "{} kb/s"
+msgstr "{} kb/s"
+
+#: src/utils/units.rs:202
+msgid "{} Mb/s"
+msgstr "{} Mb/s"
+
+#: src/utils/units.rs:203
+msgid "{} Gb/s"
+msgstr "{} Gb/s"
+
+#: src/utils/units.rs:204
+msgid "{} Tb/s"
+msgstr "{} Tb/s"
+
+#: src/utils/units.rs:205
+msgid "{} Pb/s"
+msgstr "{} Pb/s"
+
+#: src/utils/units.rs:206
+msgid "{} Eb/s"
+msgstr "{} Eb/s"
+
+#: src/utils/units.rs:207
+msgid "{} Zb/s"
+msgstr "{} Zb/s"
+
+#: src/utils/units.rs:208
+msgid "{} Yb/s"
+msgstr "{} Yb/s"
+
+#: src/utils/units.rs:209
+msgid "{} Rb/s"
+msgstr "{} Rb/s"
+
+#: src/utils/units.rs:210
+msgid "{} Qb/s"
+msgstr "{} Qb/s"
+
+#: src/utils/units.rs:218
+msgid "{} Kib/s"
+msgstr "{} Kib/s"
+
+#: src/utils/units.rs:219
+msgid "{} Mib/s"
+msgstr "{} Mib/s"
+
+#: src/utils/units.rs:220
+msgid "{} Gib/s"
+msgstr "{} Gib/s"
+
+#: src/utils/units.rs:221
+msgid "{} Tib/s"
+msgstr "{} Tib/s"
+
+#: src/utils/units.rs:222
+msgid "{} Pib/s"
+msgstr "{} Pib/s"
+
+#: src/utils/units.rs:223
+msgid "{} Eib/s"
+msgstr "{} Eib/s"
+
+#: src/utils/units.rs:224
+msgid "{} Zib/s"
+msgstr "{} Zib/s"
+
+#: src/utils/units.rs:225
+msgid "{} Yib/s"
+msgstr "{} Yib/s"
+
+#: src/utils/units.rs:226
+msgid "{} Rib/s"
+msgstr "{} Rib/s"
+
+#: src/utils/units.rs:227
+msgid "{} Qib/s"
+msgstr "{} Qib/s"
+
+#: src/utils/units.rs:234
+msgid "{} Hz"
+msgstr "{} Hz"
+
+#: src/utils/units.rs:235
+msgid "{} kHz"
+msgstr "{} kHz"
+
+#: src/utils/units.rs:236
+msgid "{} MHz"
+msgstr "{} MHz"
+
+#: src/utils/units.rs:237
+msgid "{} GHz"
+msgstr "{} GHz"
+
+#: src/utils/units.rs:238
+msgid "{} THz"
+msgstr "{} THz"
+
+#: src/utils/units.rs:239
+msgid "{} PHz"
+msgstr "{} PHz"
+
+#: src/utils/units.rs:240
+msgid "{} EHz"
+msgstr "{} EHz"
+
+#: src/utils/units.rs:241
+msgid "{} ZHz"
+msgstr "{} ZHz"
+
+#: src/utils/units.rs:242
+msgid "{} YHz"
+msgstr "{} YHz"
+
+#: src/utils/units.rs:243
+msgid "{} RHz"
+msgstr "{} RHz"
+
+#: src/utils/units.rs:244
+msgid "{} QHz"
+msgstr "{} QHz"
+
+#: src/utils/units.rs:251
+msgid "{} W"
+msgstr "{} W"
+
+#: src/utils/units.rs:252
+msgid "{} kW"
+msgstr "{} kW"
+
+#: src/utils/units.rs:253
+msgid "{} MW"
+msgstr "{} MW"
+
+#: src/utils/units.rs:254
+msgid "{} GW"
+msgstr "{} GW"
+
+#: src/utils/units.rs:255
+msgid "{} TW"
+msgstr "{} TW"
+
+#: src/utils/units.rs:256
+msgid "{} PW"
+msgstr "{} PW"
+
+#: src/utils/units.rs:257
+msgid "{} EW"
+msgstr "{} EW"
+
+#: src/utils/units.rs:258
+msgid "{} ZW"
+msgstr "{} ZW"
+
+#: src/utils/units.rs:259
+msgid "{} YW"
+msgstr "{} YW"
+
+#: src/utils/units.rs:260
+msgid "{} RW"
+msgstr "{} RW"
+
+#: src/utils/units.rs:261
+msgid "{} QW"
+msgstr "{} QW"
+
+#: src/utils/units.rs:270 src/utils/units.rs:284
+msgid "{} Wh"
+msgstr "{} Wh"
+
+#: src/utils/units.rs:271 src/utils/units.rs:285
+msgid "{} kWh"
+msgstr "{} kWh"
+
+#: src/utils/units.rs:272 src/utils/units.rs:286
+msgid "{} MWh"
+msgstr "{} MWh"
+
+#: src/utils/units.rs:273 src/utils/units.rs:287
+msgid "{} GWh"
+msgstr "{} GWh"
+
+#: src/utils/units.rs:274 src/utils/units.rs:288
+msgid "{} TWh"
+msgstr "{} TWh"
+
+#: src/utils/units.rs:275 src/utils/units.rs:289
+msgid "{} PWh"
+msgstr "{} PWh"
+
+#: src/utils/units.rs:276 src/utils/units.rs:290
+msgid "{} EWh"
+msgstr "{} EWh"
+
+#: src/utils/units.rs:277 src/utils/units.rs:291
+msgid "{} ZWh"
+msgstr "{} ZWh"
+
+#: src/utils/units.rs:278 src/utils/units.rs:292
+msgid "{} YWh"
+msgstr "{} YWh"
+
+#: src/utils/units.rs:279 src/utils/units.rs:293
+msgid "{} RWh"
+msgstr "{} RWh"
+
+#: src/utils/units.rs:280 src/utils/units.rs:294
+msgid "{} QWh"
+msgstr "{} QWh"
+
+#: data/resources/ui/shortcuts.ui:11
+msgctxt "shortcut window"
+msgid "General"
+msgstr "সাধারণ"
+
+#: data/resources/ui/shortcuts.ui:14
+msgctxt "shortcut window"
+msgid "Preferences"
+msgstr "পছন্দসমূহ"
+
+#: data/resources/ui/shortcuts.ui:20
+msgctxt "shortcut window"
+msgid "Show Shortcuts"
+msgstr "শর্টকাট দেখান"
+
+#: data/resources/ui/shortcuts.ui:26
+msgctxt "shortcut window"
+msgid "Quit"
+msgstr "প্রস্থান"
+
+#: data/resources/ui/shortcuts.ui:32
+msgctxt "shortcut window"
+msgid "Toggle Search Field"
+msgstr "সার্চ ফিল্ড টগল করুন"
+
+#: data/resources/ui/shortcuts.ui:38
+msgctxt "shortcut window"
+msgid "End App/Process"
+msgstr "অ্যাপ/প্রসেস শেষ করুন"
+
+#: data/resources/ui/shortcuts.ui:44
+msgctxt "shortcut window"
+msgid "Kill App/Process"
+msgstr "অ্যাপ/প্রসেস বন্ধ করুন"
+
+#: data/resources/ui/shortcuts.ui:50
+msgctxt "shortcut window"
+msgid "Halt App/Process"
+msgstr "অ্যাপ/প্রসেস থামান"
+
+#: data/resources/ui/shortcuts.ui:56
+msgctxt "shortcut window"
+msgid "Continue App/Process"
+msgstr "অ্যাপ/প্রসেস চালিয়ে যান"
+
+#: data/resources/ui/shortcuts.ui:62
+msgctxt "shortcut window"
+msgid "Show Information for App/Process"
+msgstr "অ্যাপ/প্রসেসের তথ্য দেখান"
+
+#: data/resources/ui/shortcuts.ui:68
+msgctxt "shortcut window"
+msgid "Show Process Options"
+msgstr "প্রসেস অপশন দেখান"
+
+#: data/resources/ui/window.ui:6
+msgid "Preferences"
+msgstr "পছন্দসমূহ"
+
+#: data/resources/ui/window.ui:10
+msgid "Keyboard Shortcuts"
+msgstr "কীবোর্ড শর্টকাট"
+
+#: data/resources/ui/window.ui:14
+msgid "About Resources"
+msgstr "সম্পর্কে সম্পদ"
+
+#: data/resources/ui/dialogs/app_dialog.ui:7
+msgid "App Information"
+msgstr "অ্যাপ তথ্য"
+
+#: data/resources/ui/dialogs/app_dialog.ui:70
+#: data/resources/ui/dialogs/process_dialog.ui:48
+#: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37
+#: data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22
+#: data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31
+#: data/resources/ui/pages/network.ui:22 data/resources/ui/pages/npu.ui:22
+msgid "Usage"
+msgstr "ব্যবহার"
+
+#: data/resources/ui/dialogs/app_dialog.ui:174
+#: data/resources/ui/dialogs/process_dialog.ui:179
+#: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:89
+#: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:80
+#: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
+#: data/resources/ui/pages/npu.ui:74
+msgid "Properties"
+msgstr "বৈশিষ্ট্য"
+
+#: data/resources/ui/dialogs/app_dialog.ui:180
+msgid "ID"
+msgstr "আইডি"
+
+#: data/resources/ui/dialogs/app_dialog.ui:190
+#: data/resources/ui/dialogs/process_dialog.ui:195
+msgid "Running Since"
+msgstr "চলছে যেহেতু"
+
+#: data/resources/ui/dialogs/app_dialog.ui:198
+msgid "Running Processes"
+msgstr "চলমান প্রসেসসমূহ"
+
+#: data/resources/ui/dialogs/app_dialog.ui:207
+#: data/resources/ui/dialogs/process_dialog.ui:231
+msgid "Containerized"
+msgstr "কন্টেইনারাইজড"
+
+#: data/resources/ui/dialogs/process_dialog.ui:7
+msgid "Process Information"
+msgstr "প্রসেস তথ্য"
+
+#: data/resources/ui/dialogs/process_dialog.ui:204
+msgid "Commandline"
+msgstr "কমান্ডলাইন"
+
+#: data/resources/ui/dialogs/process_dialog.ui:222
+msgid "Control Group"
+msgstr "নিয়ন্ত্রণ গ্রুপ"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:7
+#: data/resources/ui/dialogs/process_options_dialog.ui:69
+msgid "Process Options"
+msgstr "প্রসেস অপশন"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:29
+msgid "Apply"
+msgstr "প্রয়োগ করুন"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:72
+msgid "Niceness"
+msgstr "নিসেনেস"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:73
+msgid ""
+"The priority of a process is given by its niceness. A lower niceness value "
+"correspond to a higher priority."
+msgstr ""
+"একটি প্রসেসের অগ্রাধিকার তার নিসেনেস দ্বারা দেওয়া হয়। একটি কম নিসেনেস মান "
+"একটি উচ্চ অগ্রাধিকার নির্দেশ করে।"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:91
+msgctxt "process priority"
+msgid "Very High"
+msgstr "খুব উচ্চ"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:92
+msgctxt "process priority"
+msgid "High"
+msgstr "উচ্চ"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:93
+msgctxt "process priority"
+msgid "Normal"
+msgstr "সাধারণ"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:94
+msgctxt "process priority"
+msgid "Low"
+msgstr "নিম্ন"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:95
+msgctxt "process priority"
+msgid "Very Low"
+msgstr "খুব নিম্ন"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:103
+msgid "Processor Affinity"
+msgstr "প্রসেসর অ্যাফিনিটি"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:108
+msgid "Toggle All"
+msgstr "সব টগল করুন"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:111
+msgid "Select which processor cores the process is allowed to run on"
+msgstr "নির্বাচন করুন কোন প্রসেসর কোরগুলিতে প্রসেস চালানো অনুমোদিত"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:7
+msgid "General"
+msgstr "সাধারণ"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:10
+msgid "Units"
+msgstr "একক"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:13
+msgid "Data Unit Prefix"
+msgstr "ডেটা ইউনিট প্রিফিক্স"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:17
+msgid "Decimal"
+msgstr "দশমিক"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:18
+msgid "Binary"
+msgstr "বাইনারি"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:26
+msgid "Show Network Speeds in Bits per Second"
+msgstr "নেটওয়ার্ক গতি বিট প্রতি সেকেন্ডে দেখান"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:31
+msgid "Temperature Unit"
+msgstr "তাপমাত্রা একক"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:35
+msgid "Celsius"
+msgstr "সেলসিয়াস"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:36
+msgid "Kelvin"
+msgstr "কেলভিন"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:37
+msgid "Fahrenheit"
+msgstr "ফারেনহাইট"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:47
+msgid "User Interface"
+msgstr "ব্যবহারকারী ইন্টারফেস"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:50
+msgid "Refresh Speed"
+msgstr "রিফ্রেশ গতি"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:51
+msgid "Higher refresh speeds can lead to higher processor usage"
+msgstr "উচ্চ রিফ্রেশ গতি উচ্চ প্রসেসর ব্যবহারের দিকে নিয়ে যেতে পারে"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:55
+msgctxt "UI refresh speed"
+msgid "Very Slow"
+msgstr "খুব ধীর"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:56
+msgctxt "UI refresh speed"
+msgid "Slow"
+msgstr "ধীর"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:57
+msgctxt "UI refresh speed"
+msgid "Normal"
+msgstr "সাধারণ"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:58
+msgctxt "UI refresh speed"
+msgid "Fast"
+msgstr "দ্রুত"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:59
+msgctxt "UI refresh speed"
+msgid "Very Fast"
+msgstr "খুব দ্রুত"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:67
+msgid "Show Graph Grids"
+msgstr "গ্রাফ গ্রিড দেখান"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:72
+msgid "Graph Data Points"
+msgstr "গ্রাফ ডেটা পয়েন্ট"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:86
+msgid "Show Search Fields on Launch"
+msgstr "লঞ্চে সার্চ ফিল্ড দেখান"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:91
+msgid "Show Usage Details in Sidebar"
+msgstr "সাইডবারে ব্যবহারের বিবরণ দেখান"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:92
+msgid "If enabled, the usage along with other information will be displayed"
+msgstr "যদি সক্ষম করা হয়, ব্যবহার সহ অন্যান্য তথ্য প্রদর্শিত হবে"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:97
+msgid "Show Device Descriptions in Sidebar"
+msgstr "সাইডবারে ডিভাইস বিবরণ দেখান"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:98
+msgid ""
+"If enabled, a device identifier like its name or device type will be "
+"displayed"
+msgstr ""
+"যদি সক্ষম করা হয়, একটি ডিভাইস আইডেন্টিফায়ার যেমন এর নাম বা ডিভাইস টাইপ "
+"প্রদর্শিত হবে"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:103
+msgid "Sidebar Meter Type"
+msgstr "সাইডবার মিটার টাইপ"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:107
+msgid "Bar"
+msgstr "বার"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:108
+msgid "Graph"
+msgstr "গ্রাফ"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:116
+msgid "Normalize Processor Usage"
+msgstr "প্রসেসর ব্যবহার নরমালাইজ করুন"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:117
+msgid ""
+"If enabled, the total usage of all cores will be divided by the amount of "
+"cores"
+msgstr ""
+"যদি সক্ষম করা হয়, সমস্ত কোরের মোট ব্যবহার কোরের সংখ্যা দ্বারা বিভক্ত হবে"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:130
+#: data/resources/ui/dialogs/settings_dialog.ui:207
+msgid "Information Columns"
+msgstr "তথ্য কলাম"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:196
+#: data/resources/ui/pages/cpu.ui:22 data/resources/ui/pages/processes.ui:56
+msgid "Options"
+msgstr "অপশন"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:199
+msgid "Show Niceness Values"
+msgstr "নিসেনেস মান দেখান"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:200
+msgid ""
+"Display priorities as niceness to allow for more fine-grained adjustments"
+msgstr ""
+"অগ্রাধিকারগুলি নিসেনেস হিসাবে প্রদর্শন করুন যাতে আরও সূক্ষ্ম সমন্বয় করা যায়"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:300
+msgid "Devices"
+msgstr "ডিভাইস"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:303
+msgid "Drives"
+msgstr "ড্রাইভ"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:306
+msgid "Show Virtual Drives"
+msgstr "ভার্চুয়াল ড্রাইভ দেখান"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:307
+msgid "Virtual drives are for example ZFS volumes or mapped devices"
+msgstr "ভার্চুয়াল ড্রাইভগুলি উদাহরণস্বরূপ ZFS ভলিউম বা ম্যাপড ডিভাইস"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:317
+msgid "Show Virtual Network Interfaces"
+msgstr "ভার্চুয়াল নেটওয়ার্ক ইন্টারফেস দেখান"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:318
+msgid "Virtual network interfaces are for example bridges or VPN tunnels"
+msgstr "ভার্চুয়াল নেটওয়ার্ক ইন্টারফেসগুলি উদাহরণস্বরূপ ব্রিজ বা VPN টানেল"
+
+#: data/resources/ui/pages/applications.ui:40
+#: data/resources/ui/pages/processes.ui:62
+msgid "Information"
+msgstr "তথ্য"
+
+#: data/resources/ui/pages/applications.ui:80
+msgid "Search applications"
+msgstr "অ্যাপ্লিকেশন অনুসন্ধান করুন"
+
+#: data/resources/ui/pages/applications.ui:98
+#: data/resources/ui/pages/processes.ui:144
+msgid "Search"
+msgstr "অনুসন্ধান"
+
+#: data/resources/ui/pages/applications.ui:100
+#: data/resources/ui/pages/processes.ui:146
+msgid "Toggle search field"
+msgstr "সার্চ ফিল্ড টগল করুন"
+
+#: data/resources/ui/pages/applications.ui:116
+#: data/resources/ui/pages/applications.ui:118
+msgid "Show App Information"
+msgstr "অ্যাপ তথ্য দেখান"
+
+#: data/resources/ui/pages/battery.ui:36
+msgid "Battery Health"
+msgstr "ব্যাটারি স্বাস্থ্য"
+
+#: data/resources/ui/pages/battery.ui:45
+msgid "Design Capacity"
+msgstr "ডিজাইন ক্যাপাসিটি"
+
+#: data/resources/ui/pages/battery.ui:54
+msgid "Charge Cycles"
+msgstr "চার্জ সাইকেল"
+
+#: data/resources/ui/pages/battery.ui:63
+msgid "Technology"
+msgstr "প্রযুক্তি"
+
+#: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:87
+#: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:81
+msgid "Manufacturer"
+msgstr "প্রস্তুতকারক"
+
+#: data/resources/ui/pages/battery.ui:81
+msgid "Model Name"
+msgstr "মডেল নাম"
+
+#: data/resources/ui/pages/battery.ui:90 data/resources/ui/pages/drive.ui:66
+msgid "Device"
+msgstr "ডিভাইস"
+
+#: data/resources/ui/pages/cpu.ui:26
+msgid "Show Usages of Logical CPUs"
+msgstr "লজিক্যাল সিপিইউগুলির ব্যবহার দেখান"
+
+#: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
+#: data/resources/ui/pages/npu.ui:60
+msgid "Sensors"
+msgstr "সেন্সর"
+
+#: data/resources/ui/pages/cpu.ui:82 data/resources/ui/pages/gpu.ui:69
+#: data/resources/ui/pages/npu.ui:63
+msgid "Temperature"
+msgstr "তাপমাত্রা"
+
+#: data/resources/ui/pages/cpu.ui:96
+msgid "Max Frequency"
+msgstr "সর্বোচ্চ ফ্রিকোয়েন্সি"
+
+#: data/resources/ui/pages/cpu.ui:105
+msgid "Logical Cores"
+msgstr "লজিক্যাল কোর"
+
+#: data/resources/ui/pages/cpu.ui:114
+msgid "Physical Cores"
+msgstr "ফিজিক্যাল কোর"
+
+#: data/resources/ui/pages/cpu.ui:123
+msgid "Sockets"
+msgstr "সকেট"
+
+#: data/resources/ui/pages/cpu.ui:132
+msgid "Virtualization"
+msgstr "ভার্চুয়ালাইজেশন"
+
+#: data/resources/ui/pages/cpu.ui:141
+msgid "Architecture"
+msgstr "আর্কিটেকচার"
+
+#: data/resources/ui/pages/drive.ui:38
+msgid "Total Read"
+msgstr "মোট পড়া"
+
+#: data/resources/ui/pages/drive.ui:47
+msgid "Total Written"
+msgstr "মোট লেখা"
+
+#: data/resources/ui/pages/drive.ui:57 data/resources/ui/pages/memory.ui:72
+msgid "Type"
+msgstr "ধরন"
+
+#: data/resources/ui/pages/drive.ui:75
+msgid "Capacity"
+msgstr "ক্ষমতা"
+
+#: data/resources/ui/pages/drive.ui:84
+msgid "Writable"
+msgstr "লেখনযোগ্য"
+
+#: data/resources/ui/pages/drive.ui:93
+msgid "Removable"
+msgstr "অপসারণযোগ্য"
+
+#: data/resources/ui/pages/gpu.ui:37
+msgid "GPU Frequency"
+msgstr "জিপিইউ ফ্রিকোয়েন্সি"
+
+#: data/resources/ui/pages/gpu.ui:50
+msgid "Video Memory Frequency"
+msgstr "ভিডিও মেমরি ফ্রিকোয়েন্সি"
+
+#: data/resources/ui/pages/gpu.ui:96 data/resources/ui/pages/npu.ui:90
+msgid "PCI Slot"
+msgstr "পিসিআই স্লট"
+
+#: data/resources/ui/pages/gpu.ui:105 data/resources/ui/pages/network.ui:67
+#: data/resources/ui/pages/npu.ui:99
+msgid "Driver Used"
+msgstr "ব্যবহৃত ড্রাইভার"
+
+#: data/resources/ui/pages/gpu.ui:114 data/resources/ui/pages/npu.ui:108
+msgid "Max Power Cap"
+msgstr "সর্বোচ্চ শক্তি ক্যাপ"
+
+#: data/resources/ui/pages/memory.ui:9
+msgid "You need to authenticate to see memory properties"
+msgstr "মেমরি বৈশিষ্ট্য দেখতে আপনাকে প্রমাণীকরণ করতে হবে"
+
+#: data/resources/ui/pages/memory.ui:10
+msgid "Authenticate"
+msgstr "প্রমাণীকরণ"
+
+#: data/resources/ui/pages/memory.ui:45
+msgid "Slots Used"
+msgstr "ব্যবহৃত স্লট"
+
+#: data/resources/ui/pages/memory.ui:54
+msgid "Speed"
+msgstr "গতি"
+
+#: data/resources/ui/pages/memory.ui:63
+msgid "Form Factor"
+msgstr "ফর্ম ফ্যাক্টর"
+
+#: data/resources/ui/pages/memory.ui:81
+msgid "Type Detail"
+msgstr "ধরনের বিস্তারিত"
+
+#: data/resources/ui/pages/network.ui:35
+msgid "Total Received"
+msgstr "মোট গৃহীত"
+
+#: data/resources/ui/pages/network.ui:44
+msgid "Total Sent"
+msgstr "মোট পাঠানো"
+
+#: data/resources/ui/pages/network.ui:76
+msgid "Interface"
+msgstr "ইন্টারফেস"
+
+#: data/resources/ui/pages/network.ui:85
+msgid "Hardware Address"
+msgstr "হার্ডওয়্যার ঠিকানা"
+
+#: data/resources/ui/pages/npu.ui:31
+msgid "NPU Frequency"
+msgstr "এনপিইউ ফ্রিকোয়েন্সি"
+
+#: data/resources/ui/pages/npu.ui:44
+msgid "Memory Frequency"
+msgstr "মেমরি ফ্রিকোয়েন্সি"
+
+#: data/resources/ui/pages/processes.ui:22
+#: data/resources/ui/pages/processes.ui:74
+msgid "Kill Processes"
+msgstr "প্রক্রিয়া মেরে ফেলুন"
+
+#: data/resources/ui/pages/processes.ui:26
+#: data/resources/ui/pages/processes.ui:78
+msgid "Halt Processes"
+msgstr "প্রক্রিয়া থামান"
+
+#: data/resources/ui/pages/processes.ui:30
+#: data/resources/ui/pages/processes.ui:82
+msgid "Continue Processes"
+msgstr "প্রক্রিয়া চালিয়ে যান"
+
+#: data/resources/ui/pages/processes.ui:126
+msgid "Search processes"
+msgstr "প্রক্রিয়া খুঁজুন"
+
+#: data/resources/ui/pages/processes.ui:162
+#: data/resources/ui/pages/processes.ui:164
+msgid "Show Process Options"
+msgstr "প্রক্রিয়া বিকল্প দেখান"
+
+#: data/resources/ui/pages/processes.ui:175
+#: data/resources/ui/pages/processes.ui:177
+msgid "Show Process Information"
+msgstr "প্রক্রিয়া তথ্য দেখান"
