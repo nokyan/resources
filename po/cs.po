@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-19 07:42+0200\n"
-"PO-Revision-Date: 2024-10-19 10:56+0200\n"
+"PO-Revision-Date: 2025-02-03 13:22+0100\n"
 "Last-Translator: lorduskordus <lorduskordus@gmail.com>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:3
 #: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:262
@@ -78,7 +78,7 @@ msgstr "GPU"
 #: data/net.nokyan.Resources.metainfo.xml.in.in:27
 #: data/resources/ui/dialogs/settings_dialog.ui:304
 msgid "Network Interfaces"
-msgstr "Síťová Rozhraní"
+msgstr "Síťová rozhraní"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:28
 msgid "Storage Devices"
@@ -114,7 +114,7 @@ msgstr "Stránka Úložiště v tmavém režimu"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:75
 msgid "Network Interface page in light theme"
-msgstr "Stránka Síťové Rozhraní ve světlém režimu"
+msgstr "Stránka Síťové rozhraní ve světlém režimu"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:79
 msgid "Battery page in dark theme"
@@ -132,7 +132,9 @@ msgstr "Oznámit chyby"
 #. One name per line, please do not remove previous names.
 #: src/application.rs:278
 msgid "translator-credits"
-msgstr "lorduskordus <lorduskordus@gmail.com>"
+msgstr ""
+"lorduskordus <lorduskordus@gmail.com>\n"
+"Jonáš Loskot <jonas@jonasloskot.cz>"
 
 #: src/application.rs:279
 msgid "Icon by"
@@ -208,7 +210,7 @@ msgstr "Aplikace"
 #. -1 because we don't want to count System Processes
 #: src/ui/pages/applications/mod.rs:667
 msgid "Running Apps: {}"
-msgstr "Běžící Aplikace: {}"
+msgstr "Běžící aplikace: {}"
 
 #: src/ui/pages/applications/mod.rs:707 src/ui/pages/processes/mod.rs:869
 msgid "Cancel"
@@ -234,7 +236,7 @@ msgstr "Procesor"
 #: data/resources/ui/dialogs/settings_dialog.ui:143
 #: data/resources/ui/dialogs/settings_dialog.ui:225
 msgid "Drive Read"
-msgstr "Diskové Čtení"
+msgstr "Diskové čtení"
 
 #: src/ui/pages/applications/mod.rs:996 src/ui/pages/processes/mod.rs:1273
 #: data/resources/ui/dialogs/app_dialog.ui:100
@@ -242,7 +244,7 @@ msgstr "Diskové Čtení"
 #: data/resources/ui/dialogs/settings_dialog.ui:148
 #: data/resources/ui/dialogs/settings_dialog.ui:230
 msgid "Drive Read Total"
-msgstr "Diskové Čtení Celkem"
+msgstr "Diskové čtení celkem"
 
 #: src/ui/pages/applications/mod.rs:1056 src/ui/pages/processes/mod.rs:1339
 #: data/resources/ui/dialogs/app_dialog.ui:109
@@ -250,7 +252,7 @@ msgstr "Diskové Čtení Celkem"
 #: data/resources/ui/dialogs/settings_dialog.ui:153
 #: data/resources/ui/dialogs/settings_dialog.ui:235
 msgid "Drive Write"
-msgstr "Diskový Zápis"
+msgstr "Diskový zápis"
 
 #: src/ui/pages/applications/mod.rs:1122 src/ui/pages/processes/mod.rs:1405
 #: data/resources/ui/dialogs/app_dialog.ui:118
@@ -258,7 +260,7 @@ msgstr "Diskový Zápis"
 #: data/resources/ui/dialogs/settings_dialog.ui:158
 #: data/resources/ui/dialogs/settings_dialog.ui:240
 msgid "Drive Write Total"
-msgstr "Diskový Zápis Celkem"
+msgstr "Diskový zápis celkem"
 
 #: src/ui/pages/applications/mod.rs:1241 src/ui/pages/processes/mod.rs:1528
 #: data/resources/ui/dialogs/app_dialog.ui:149
@@ -266,7 +268,7 @@ msgstr "Diskový Zápis Celkem"
 #: data/resources/ui/dialogs/settings_dialog.ui:173
 #: data/resources/ui/dialogs/settings_dialog.ui:255
 msgid "Video Encoder"
-msgstr "Video Enkodér"
+msgstr "Video enkodér"
 
 #: src/ui/pages/applications/mod.rs:1301 src/ui/pages/processes/mod.rs:1588
 #: data/resources/ui/dialogs/app_dialog.ui:158
@@ -274,7 +276,7 @@ msgstr "Video Enkodér"
 #: data/resources/ui/dialogs/settings_dialog.ui:178
 #: data/resources/ui/dialogs/settings_dialog.ui:260
 msgid "Video Decoder"
-msgstr "Video Dekodér"
+msgstr "Video dekodér"
 
 #: src/ui/pages/applications/mod.rs:1360 src/ui/pages/processes/mod.rs:1648
 #: data/resources/ui/dialogs/app_dialog.ui:140
@@ -294,7 +296,7 @@ msgstr "Zastavit {}?"
 
 #: src/ui/pages/applications/mod.rs:1419 src/ui/pages/processes/mod.rs:1952
 msgid "Kill {}?"
-msgstr "Zabít {}?"
+msgstr "Vynuceně ukončit {}?"
 
 #: src/ui/pages/applications/mod.rs:1420 src/ui/pages/processes/mod.rs:1953
 msgid "Continue {}?"
@@ -309,40 +311,40 @@ msgid ""
 "Halting an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
 msgstr ""
-"Zastavení aplikace může způsobit ztrátu dat a ovlivnit bezpečnost. Použijte "
-"obezřetně."
+"Zastavení aplikace může mít za následek vážná rizika, jako je ztráta dat a "
+"ovlivnění bezpečnosti. Používejte s opatrností."
 
 #: src/ui/pages/applications/mod.rs:1428
 msgid ""
 "Killing an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
 msgstr ""
-"Zabití aplikace může způsobit ztrátu dat a ovlivnit bezpečnost. Použijte "
-"obezřetně."
+"Vynucené ukončen aplikace může mít za následek vážná rizika, jako je ztráta "
+"dat a ovlivnění bezpečnosti. Používejte s opatrností."
 
 #: src/ui/pages/applications/mod.rs:1435
 #: data/resources/ui/pages/applications.ui:22
 #: data/resources/ui/pages/applications.ui:127
 msgid "End App"
-msgstr "Ukončit Aplikaci"
+msgstr "Ukončit aplikaci"
 
 #: src/ui/pages/applications/mod.rs:1436
 #: data/resources/ui/pages/applications.ui:10
 #: data/resources/ui/pages/applications.ui:30
 msgid "Halt App"
-msgstr "Zastavit Aplikaci"
+msgstr "Zastavit aplikaci"
 
 #: src/ui/pages/applications/mod.rs:1437
 #: data/resources/ui/pages/applications.ui:6
 #: data/resources/ui/pages/applications.ui:26
 msgid "Kill App"
-msgstr "Zabít Aplikaci"
+msgstr "Vynuceně ukončit aplikaci"
 
 #: src/ui/pages/applications/mod.rs:1438
 #: data/resources/ui/pages/applications.ui:14
 #: data/resources/ui/pages/applications.ui:34
 msgid "Continue App"
-msgstr "Obnovit Aplikaci"
+msgstr "Obnovit aplikaci"
 
 #: src/ui/pages/battery.rs:101 src/ui/pages/drive.rs:122
 msgid "Drive"
@@ -350,12 +352,12 @@ msgstr "Disk"
 
 #: src/ui/pages/battery.rs:201
 msgid "Battery Charge"
-msgstr "Nabití Baterie"
+msgstr "Nabití baterie"
 
 #: src/ui/pages/battery.rs:208 data/resources/ui/pages/gpu.ui:55
 #: data/resources/ui/pages/npu.ui:49
 msgid "Power Usage"
-msgstr "Spotřeba"
+msgstr "Spotřeba energie"
 
 #: src/ui/pages/battery.rs:265 src/ui/pages/drive.rs:323
 #: src/ui/pages/drive.rs:354 src/ui/pages/network.rs:306
@@ -365,19 +367,19 @@ msgstr "Nejvyšší:"
 
 #: src/ui/pages/cpu.rs:217 src/ui/pages/gpu.rs:198 src/ui/pages/npu.rs:189
 msgid "Total Usage"
-msgstr "Celkové Využití"
+msgstr "Celkové využití"
 
 #: src/ui/pages/drive.rs:224
 msgid "Drive Activity"
-msgstr "Aktivita Disku"
+msgstr "Aktivita disku"
 
 #: src/ui/pages/drive.rs:231
 msgid "Read Speed"
-msgstr "Rychlost Čtení"
+msgstr "Rychlost čtení"
 
 #: src/ui/pages/drive.rs:235
 msgid "Write Speed"
-msgstr "Rychlost Zápisu"
+msgstr "Rychlost zápisu"
 
 #: src/ui/pages/drive.rs:391 src/ui/pages/drive.rs:401
 msgid "Yes"
@@ -391,19 +393,19 @@ msgstr "Č: {} · Z: {}"
 
 #: src/ui/pages/gpu.rs:206
 msgid "Video Encoder/Decoder Usage"
-msgstr "Využití Video Enkodéru/Dekodéru"
+msgstr "Využití video enkodéru/dekodéru"
 
 #: src/ui/pages/gpu.rs:212
 msgid "Video Encoder Usage"
-msgstr "Využití Video Enkodéru"
+msgstr "Využití video enkodéru"
 
 #: src/ui/pages/gpu.rs:217
 msgid "Video Decoder Usage"
-msgstr "Využití Video Dekodéru"
+msgstr "Využití video dekodéru"
 
 #: src/ui/pages/gpu.rs:222
 msgid "Video Memory Usage"
-msgstr "Využití Videopaměti"
+msgstr "Využití videopaměti"
 
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
@@ -431,7 +433,7 @@ msgstr "{} / {} · Swap: {} %"
 
 #: src/ui/pages/network.rs:114 src/utils/network.rs:128
 msgid "Network Interface"
-msgstr "Síťové Rozhraní"
+msgstr "Síťové rozhraní"
 
 #: src/ui/pages/network.rs:218
 msgid "Receiving"
@@ -454,7 +456,7 @@ msgstr "NPU"
 
 #: src/ui/pages/npu.rs:196
 msgid "Memory Usage"
-msgstr "Využití Paměti"
+msgstr "Využití paměti"
 
 #: src/ui/pages/processes/mod.rs:178 data/resources/ui/window.ui:96
 #: data/resources/ui/window.ui:103
@@ -466,15 +468,15 @@ msgstr "Procesy"
 #: data/resources/ui/pages/processes.ui:38
 #: data/resources/ui/pages/processes.ui:186
 msgid "End Process"
-msgstr "Ukončit Proces"
+msgstr "Ukončit proces"
 
 #: src/ui/pages/processes/mod.rs:526 data/resources/ui/pages/processes.ui:70
 msgid "End Processes"
-msgstr "Ukončit Procesy"
+msgstr "Ukončit procesy"
 
 #: src/ui/pages/processes/mod.rs:820
 msgid "Running Processes: {}"
-msgstr "Běžící Procesy: {}"
+msgstr "Běžící procesy: {}"
 
 #: src/ui/pages/processes/mod.rs:918
 msgid "Process"
@@ -484,7 +486,7 @@ msgstr "Proces"
 #: data/resources/ui/dialogs/process_dialog.ui:177
 #: data/resources/ui/dialogs/settings_dialog.ui:205
 msgid "Process ID"
-msgstr "ID Procesu"
+msgstr "ID procesu"
 
 #: src/ui/pages/processes/mod.rs:1032
 #: data/resources/ui/dialogs/process_dialog.ui:204
@@ -496,19 +498,19 @@ msgstr "Uživatel"
 #: data/resources/ui/dialogs/process_dialog.ui:145
 #: data/resources/ui/dialogs/settings_dialog.ui:265
 msgid "Total CPU Time"
-msgstr "Celkový Čas CPU"
+msgstr "Celkový čas"
 
 #: src/ui/pages/processes/mod.rs:1766
 #: data/resources/ui/dialogs/process_dialog.ui:154
 #: data/resources/ui/dialogs/settings_dialog.ui:270
 msgid "User CPU Time"
-msgstr "Uživatelský Čas CPU"
+msgstr "Uživatelský čas CPU"
 
 #: src/ui/pages/processes/mod.rs:1825
 #: data/resources/ui/dialogs/process_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:275
 msgid "System CPU Time"
-msgstr "Systémový Čas CPU"
+msgstr "Systémový čas CPU"
 
 #: src/ui/pages/processes/mod.rs:1884
 #: data/resources/ui/dialogs/process_options_dialog.ui:87
@@ -533,40 +535,40 @@ msgstr[2] "Zastavit {} procesů?"
 #: src/ui/pages/processes/mod.rs:1972 src/ui/pages/processes/mod.rs:1978
 msgid "Kill process?"
 msgid_plural "Kill {} processes?"
-msgstr[0] "Zabít proces?"
-msgstr[1] "Zabít {} procesy?"
-msgstr[2] "Zabít {} procesů?"
+msgstr[0] "Vynutit ukončení procesu?"
+msgstr[1] "Vynutit ukončení {} procesů?"
+msgstr[2] "Vynutit ukončení {} procesů?"
 
 #: src/ui/pages/processes/mod.rs:1989
 msgid ""
 "Halting a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
-"Zastavení procesu může způsobit ztrátu dat a ovlivnit bezpečnost. Použijte "
-"obezřetně."
+"Zastavení procesu může mít za následek vážná rizika, jako je ztráta dat a "
+"ovlivnění bezpečnosti. Používejte s opatrností."
 
 #: src/ui/pages/processes/mod.rs:1990
 msgid ""
 "Killing a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
-"Zabití procesu může způsobit ztrátu dat a ovlivnit bezpečnost. Použijte "
-"obezřetně."
+"Vynucené ukončení procesu může mít za následek vážná rizika, jako je ztráta "
+"dat a ovlivnění bezpečnosti. Používejte s opatrností."
 
 #: src/ui/pages/processes/mod.rs:1998 data/resources/ui/pages/processes.ui:10
 #: data/resources/ui/pages/processes.ui:46
 msgid "Halt Process"
-msgstr "Zastavit Proces"
+msgstr "Zastavit proces"
 
 #: src/ui/pages/processes/mod.rs:1999 data/resources/ui/pages/processes.ui:6
 #: data/resources/ui/pages/processes.ui:42
 msgid "Kill Process"
-msgstr "Zabít Proces"
+msgstr "Vynutit zastavení procesu"
 
 #: src/ui/pages/processes/mod.rs:2000 data/resources/ui/pages/processes.ui:14
 #: data/resources/ui/pages/processes.ui:50
 msgid "Continue Process"
-msgstr "Obnovit Proces"
+msgstr "Obnovit proces"
 
 #: src/ui/window.rs:309
 msgid "GPU {}"
@@ -579,103 +581,103 @@ msgstr "NPU {}"
 
 #: src/ui/window.rs:1039
 msgid "Successfully adjusted {}"
-msgstr "Úspěšně upraven {}"
+msgstr "Aplikace {} úspěšně upravena"
 
 #: src/ui/window.rs:1040
 msgid "There was a problem adjusting {}"
-msgstr "Nastal problém při upravování {}"
+msgstr "Při upravování aplikace {} došlo k chybě"
 
 #: src/ui/window.rs:1120
 msgid "Successfully ended {}"
-msgstr "Úspěšně ukončen {}"
+msgstr "Aplikace {} úspěšně ukončena"
 
 #: src/ui/window.rs:1121
 msgid "Successfully halted {}"
-msgstr "Úspěšně zastaven {}"
+msgstr "Aplikace {} úspěšně zastavena"
 
 #: src/ui/window.rs:1122
 msgid "Successfully killed {}"
-msgstr "Úspěšně zabit {}"
+msgstr "Aplikace {} úspěšně vynuceně ukončena"
 
 #: src/ui/window.rs:1123
 msgid "Successfully continued {}"
-msgstr "Úspěšně obnoven {}"
+msgstr "Aplikace {} úspěšně obnovena"
 
 #: src/ui/window.rs:1130
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
-msgstr[0] "Úspěšně ukončen proces"
+msgstr[0] "Proces úspěšně ukončen"
 msgstr[1] "Úspěšně ukončeny {} procesy"
 msgstr[2] "Úspěšně ukončeno {} procesů"
 
 #: src/ui/window.rs:1136
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
-msgstr[0] "Úspěšně zastaven proces"
+msgstr[0] "Proces úspěšně zastaven"
 msgstr[1] "Úspěšně zastaveny {} procesy"
 msgstr[2] "Úspěšně zastaveno {} procesů"
 
 #: src/ui/window.rs:1142
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
-msgstr[0] "Úspěšně zabit proces"
-msgstr[1] "Úspěšně zabity {} procesy"
-msgstr[2] "Úspěšně zabito {} procesů"
+msgstr[0] "Proces úspěšně vynuceně ukončen"
+msgstr[1] "Úspěšně vynuceně ukončeny {} procesy"
+msgstr[2] "Úspěšně vynuceně ukončeno {} procesů"
 
 #: src/ui/window.rs:1148
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
-msgstr[0] "Úspěšně obnoven proces"
+msgstr[0] "Proces úspěšně obnoven"
 msgstr[1] "Úspěšně obnoveny {} procesy"
 msgstr[2] "Úspěšně obnoveno {} procesů"
 
 #: src/ui/window.rs:1159
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
-msgstr[0] "Nastal problém při ukončování procesu"
-msgstr[1] "Nastaly problémy při ukončování {} procesů"
-msgstr[2] "Nastaly problémy při ukončování {} procesů"
+msgstr[0] "Při ukončování procesu došlo k chybě"
+msgstr[1] "Při ukončování {} procesů došlo k chybě"
+msgstr[2] "Při ukončování {} procesů došlo k chybě"
 
 #: src/ui/window.rs:1165
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
-msgstr[0] "Nastal problém při zastavování procesu"
-msgstr[1] "Nastaly problémy při zastavování {} procesů"
-msgstr[2] "Nastaly problémy při zastavování {} procesů"
+msgstr[0] "Při zastavování procesu došlo k chybě"
+msgstr[1] "Při zastavování {} procesů došlo k chybě"
+msgstr[2] "Při zastavování {} procesů došlo k chybě"
 
 #: src/ui/window.rs:1171
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
-msgstr[0] "Nastal problém při zabíjení procesu"
-msgstr[1] "Nastaly problémy při zabíjení {} procesů"
-msgstr[2] "Nastaly problémy při zabíjení {} procesů"
+msgstr[0] "Při vynuceném ukončování procesu došlo k chybě"
+msgstr[1] "Při vynuceném ukončování {} procesů došlo k chybě"
+msgstr[2] "Při vynuceném ukončování {} procesů došlo k chybě"
 
 #: src/ui/window.rs:1177
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
-msgstr[0] "Nastal problém při obnovování procesu"
-msgstr[1] "Nastaly problémy při obnovování {} procesů"
-msgstr[2] "Nastaly problémy při obnovování {} procesů"
+msgstr[0] "Při obnovování procesu došlo k chybě"
+msgstr[1] "Při obnovování {} procesů došlo k chybě"
+msgstr[2] "Při obnovování {} procesů došlo k chybě"
 
 #: src/ui/window.rs:1187
 msgid "There was a problem ending {}"
-msgstr "Nastal problém při ukončování {}"
+msgstr "Při ukončování aplikace {} došlo k chybě"
 
 #: src/ui/window.rs:1188
 msgid "There was a problem halting {}"
-msgstr "Nastal problém při zastavování {}"
+msgstr "Při zastavování aplikace {} došlo k chybě"
 
 #: src/ui/window.rs:1189
 msgid "There was a problem killing {}"
-msgstr "Nastal problém při zabíjení {}"
+msgstr "Při vynuceném ukončování aplikace {} došlo k chybě"
 
 #: src/ui/window.rs:1190
 msgid "There was a problem continuing {}"
-msgstr "Nastal problém při obnovování {}"
+msgstr "Při obnovování aplikace {} došlo k chybě"
 
 #: src/utils/app.rs:223
 msgid "System Processes"
-msgstr "Systémové Procesy"
+msgstr "Systémové procesy"
 
 #: src/utils/battery.rs:77
 msgid "Charging"
@@ -687,27 +689,27 @@ msgstr "Vybíjení"
 
 #: src/utils/battery.rs:79
 msgid "Empty"
-msgstr "Prázdný"
+msgstr "Prázdná"
 
 #: src/utils/battery.rs:80
 msgid "Full"
-msgstr "Plný"
+msgstr "Plná"
 
 #: src/utils/battery.rs:81
 msgid "Unknown"
-msgstr "Neznámý"
+msgstr "Neznámé"
 
 #: src/utils/battery.rs:127
 msgid "Nickel-Metal Hydride"
-msgstr "Nikl-Metal Hydridová"
+msgstr "Nikl-metal hydridová"
 
 #: src/utils/battery.rs:128
 msgid "Nickel-Cadmium"
-msgstr "Nikl-Kadmiová"
+msgstr "Nikl-kadmiová"
 
 #: src/utils/battery.rs:129
 msgid "Nickel-Zinc"
-msgstr "Nikl-Zinková"
+msgstr "Nikl-zinková"
 
 #: src/utils/battery.rs:130
 msgid "Lead-Acid"
@@ -715,23 +717,23 @@ msgstr "Olověná"
 
 #: src/utils/battery.rs:131
 msgid "Lithium-Ion"
-msgstr "Lithium-Iontová"
+msgstr "Lithium-iontová"
 
 #: src/utils/battery.rs:132
 msgid "Lithium Iron Phosphate"
-msgstr "Lithium Železo Fosfátová"
+msgstr "Lithium železo fosfátová"
 
 #: src/utils/battery.rs:133
 msgid "Lithium Polymer"
-msgstr "Lithium Polymerová"
+msgstr "Lithium polymerová"
 
 #: src/utils/battery.rs:135
 msgid "Rechargeable Alkaline Managanese"
-msgstr "Alkalicko Manganová"
+msgstr "Dobíjecí alkalicko manganová"
 
 #: src/utils/battery.rs:229
 msgid "{} Battery"
-msgstr "{} Baterie"
+msgstr "{} baterie"
 
 #: src/utils/battery.rs:231
 msgid "Battery"
@@ -739,15 +741,15 @@ msgstr "Baterie"
 
 #: src/utils/drive.rs:81 src/utils/drive.rs:152
 msgid "CD/DVD/Blu-ray Drive"
-msgstr "CD/DVD/Blu-ray Disk"
+msgstr "CD/DVD/Blu-ray disk"
 
 #: src/utils/drive.rs:82
 msgid "eMMC Storage"
-msgstr "eMMC Úložiště"
+msgstr "eMMC úložiště"
 
 #: src/utils/drive.rs:83
 msgid "Flash Storage"
-msgstr "Flash Úložiště"
+msgstr "Flash úložiště"
 
 #: src/utils/drive.rs:84 src/utils/drive.rs:153
 msgid "Floppy Drive"
@@ -755,47 +757,47 @@ msgstr "Disketa"
 
 #: src/utils/drive.rs:85
 msgid "Hard Disk Drive"
-msgstr "Pevný Disk"
+msgstr "Pevný pisk"
 
 #: src/utils/drive.rs:86
 msgid "Loop Device"
-msgstr "Loop Zařízení"
+msgstr "Loop zařízení"
 
 #: src/utils/drive.rs:87
 msgid "Mapped Device"
-msgstr "Namapované Zařízení"
+msgstr "Namapované zařízení"
 
 #: src/utils/drive.rs:88
 msgid "NVMe Drive"
-msgstr "NVMe Disk"
+msgstr "NVMe disk"
 
 #: src/utils/drive.rs:90
 msgid "Software Raid"
-msgstr "Softwarový Raid"
+msgstr "Softwarový raid"
 
 #: src/utils/drive.rs:91
 msgid "RAM Disk"
-msgstr "RAM Disk"
+msgstr "RAM disk"
 
 #: src/utils/drive.rs:92
 msgid "Solid State Drive"
-msgstr "Solid State Disk"
+msgstr "Solid-state drive"
 
 #: src/utils/drive.rs:93
 msgid "ZFS Volume"
-msgstr "ZFS Svazek"
+msgstr "ZFS svazek"
 
 #: src/utils/drive.rs:94
 msgid "Compressed RAM Disk (zram)"
-msgstr "Komprimovaný RAM Disk (zram)"
+msgstr "Komprimovaný RAM disk (zram)"
 
 #: src/utils/drive.rs:154
 msgid "{} Loop Device"
-msgstr "{} Loop Zařízení"
+msgstr "{} loop zařízení"
 
 #: src/utils/drive.rs:155
 msgid "{} Mapped Device"
-msgstr "{} Namapované Zařízení"
+msgstr "{} namapované zařízení"
 
 #: src/utils/drive.rs:156
 msgid "{} RAID"
@@ -803,67 +805,67 @@ msgstr "{} RAID"
 
 #: src/utils/drive.rs:157
 msgid "{} RAM Disk"
-msgstr "{} RAM Disk"
+msgstr "{} RAM disk"
 
 #: src/utils/drive.rs:158
 msgid "{} zram Device"
-msgstr "{} zram Zařízení"
+msgstr "{} zram zařízení"
 
 #: src/utils/drive.rs:159
 msgid "{} ZFS Volume"
-msgstr "{} ZFS Svazek"
+msgstr "{} svazek ZFS"
 
 #: src/utils/drive.rs:160
 msgid "{} Drive"
-msgstr "{} Disk"
+msgstr "{} disk"
 
 #: src/utils/network.rs:116
 msgid "Bluetooth Tether"
-msgstr "Bluetooth Tether"
+msgstr "Bluetooth tether"
 
 #: src/utils/network.rs:117
 msgid "Network Bridge"
-msgstr "Síťový Most"
+msgstr "Síťový most"
 
 #: src/utils/network.rs:118
 msgid "Ethernet Connection"
-msgstr "Ethernet Připojení"
+msgstr "Ethernetové připojení"
 
 #: src/utils/network.rs:119
 msgid "Docker Bridge"
-msgstr "Docker Most"
+msgstr "Dockerový most"
 
 #: src/utils/network.rs:120
 msgid "InfiniBand Connection"
-msgstr "InfiniBand Připojení"
+msgstr "Připojení InfiniBand"
 
 #: src/utils/network.rs:121
 msgid "Serial Line IP Connection"
-msgstr "Připojení IP Sériové Linky"
+msgstr "Připojení Serial Line IP"
 
 #: src/utils/network.rs:122
 msgid "Virtual Ethernet Device"
-msgstr "Virtuální Ethernet Zařízení"
+msgstr "Virtuální ethernetové zařízení"
 
 #: src/utils/network.rs:123
 msgid "VM Network Bridge"
-msgstr "Síťový Most VM"
+msgstr "Síťový most VM"
 
 #: src/utils/network.rs:124
 msgid "VPN Tunnel"
-msgstr "VPN Tunel"
+msgstr "VPN tunel"
 
 #: src/utils/network.rs:125
 msgid "VPN Tunnel (WireGuard)"
-msgstr "VPN Tunel (WireGuard)"
+msgstr "VPN tunel (WireGuard)"
 
 #: src/utils/network.rs:126
 msgid "Wi-Fi Connection"
-msgstr "Wi-Fi Připojení"
+msgstr "Wi-Fi připojení"
 
 #: src/utils/network.rs:127
 msgid "WWAN Connection"
-msgstr "WWAN Připojení"
+msgstr "WWAN připojení"
 
 #: src/utils/units.rs:59
 msgid "{} K"
@@ -1275,7 +1277,7 @@ msgstr "Předvolby"
 #: data/resources/ui/shortcuts.ui:20
 msgctxt "shortcut window"
 msgid "Show Shortcuts"
-msgstr "Zobrazit Zkratky"
+msgstr "Zobrazit zkratky"
 
 #: data/resources/ui/shortcuts.ui:26
 msgctxt "shortcut window"
@@ -1285,37 +1287,37 @@ msgstr "Ukončit"
 #: data/resources/ui/shortcuts.ui:32
 msgctxt "shortcut window"
 msgid "Toggle Search Field"
-msgstr "Přepnout Vyhledávací Pole"
+msgstr "Přepnout vyhledávací pole"
 
 #: data/resources/ui/shortcuts.ui:38
 msgctxt "shortcut window"
 msgid "End App/Process"
-msgstr "Ukončit Aplikaci/Proces"
+msgstr "Ukončit aplikaci/proces"
 
 #: data/resources/ui/shortcuts.ui:44
 msgctxt "shortcut window"
 msgid "Kill App/Process"
-msgstr "Zabít Aplikaci/Proces"
+msgstr "Vynuceně ukončit aplikaci/proces"
 
 #: data/resources/ui/shortcuts.ui:50
 msgctxt "shortcut window"
 msgid "Halt App/Process"
-msgstr "Zastavit Aplikaci/Proces"
+msgstr "Zastavit aplikaci/proces"
 
 #: data/resources/ui/shortcuts.ui:56
 msgctxt "shortcut window"
 msgid "Continue App/Process"
-msgstr "Obnovit Aplikaci/Proces"
+msgstr "Obnovit aplikaci/proces"
 
 #: data/resources/ui/shortcuts.ui:62
 msgctxt "shortcut window"
 msgid "Show Information for App/Process"
-msgstr "Zobrazit Informace o Aplikaci/Procesu"
+msgstr "Zobrazit informace o aplikaci/procesu"
 
 #: data/resources/ui/shortcuts.ui:68
 msgctxt "shortcut window"
 msgid "Show Process Options"
-msgstr "Zobrazit Možnosti Procesu"
+msgstr "Zobrazit možnosti procesu"
 
 #: data/resources/ui/window.ui:6
 msgid "Preferences"
@@ -1323,7 +1325,7 @@ msgstr "Předvolby"
 
 #: data/resources/ui/window.ui:10
 msgid "Keyboard Shortcuts"
-msgstr "Klávesové Zkratky"
+msgstr "Klávesové zkratky"
 
 #: data/resources/ui/window.ui:14
 msgid "About Resources"
@@ -1331,7 +1333,7 @@ msgstr "O aplikaci Zdroje"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
 msgid "App Information"
-msgstr "Informace o Aplikaci"
+msgstr "Informace o aplikaci"
 
 #: data/resources/ui/dialogs/app_dialog.ui:70
 #: data/resources/ui/dialogs/process_dialog.ui:48
@@ -1358,11 +1360,11 @@ msgstr "ID"
 #: data/resources/ui/dialogs/app_dialog.ui:181
 #: data/resources/ui/dialogs/process_dialog.ui:186
 msgid "Running Since"
-msgstr "Běží Od"
+msgstr "Běží od"
 
 #: data/resources/ui/dialogs/app_dialog.ui:189
 msgid "Running Processes"
-msgstr "Běžící Procesy"
+msgstr "Běžící procesy"
 
 #: data/resources/ui/dialogs/app_dialog.ui:198
 #: data/resources/ui/dialogs/process_dialog.ui:222
@@ -1371,24 +1373,24 @@ msgstr "Kontejnerizováno"
 
 #: data/resources/ui/dialogs/process_dialog.ui:7
 msgid "Process Information"
-msgstr "Informace o Procesu"
+msgstr "Informace o procesu"
 
 #: data/resources/ui/dialogs/process_dialog.ui:195
 msgid "Commandline"
-msgstr "Příkazový Řádek"
+msgstr "Příkazový řádek"
 
 #: data/resources/ui/dialogs/process_dialog.ui:213
 msgid "Control Group"
-msgstr "Kontrolní Skupina"
+msgstr "Kontrolní skupina"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:7
 #: data/resources/ui/dialogs/process_options_dialog.ui:69
 msgid "Process Options"
-msgstr "Možnosti Procesu"
+msgstr "Možnosti procesu"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:29
 msgid "Apply"
-msgstr "Aplikovat"
+msgstr "Použít"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:72
 msgid "Niceness"
@@ -1399,13 +1401,13 @@ msgid ""
 "The priority of a process is given by its niceness. A lower niceness value "
 "correspond to a higher priority."
 msgstr ""
-"Priorita procesu je dána hodnotou nice. Nižší hodnota nice odpovídá vyšší "
-"prioritě."
+"Priorita procesu je dána hodnotou „nice“. Nižší hodnota „nice“ odpovídá "
+"vyšší prioritě."
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:91
 msgctxt "process priority"
 msgid "Very High"
-msgstr "Velmi Vysoká"
+msgstr "Velmi vysoká"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:92
 msgctxt "process priority"
@@ -1425,7 +1427,7 @@ msgstr "Nízká"
 #: data/resources/ui/dialogs/process_options_dialog.ui:95
 msgctxt "process priority"
 msgid "Very Low"
-msgstr "Velmi Nízká"
+msgstr "Velmi nízká"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:103
 msgid "Processor Affinity"
@@ -1433,7 +1435,7 @@ msgstr "Afinita procesoru"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:108
 msgid "Toggle All"
-msgstr "Přepnout Vše"
+msgstr "Přepnout vše"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:111
 msgid "Select which processor cores the process is allowed to run on"
@@ -1449,7 +1451,7 @@ msgstr "Jednotky"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:13
 msgid "Data Unit Prefix"
-msgstr "Předpona Datové Jednotky"
+msgstr "Předpona datové jednotky"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:17
 msgid "Decimal"
@@ -1461,11 +1463,11 @@ msgstr "Binární"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:26
 msgid "Show Network Speeds in Bits per Second"
-msgstr "Zobrazit Rychlost Sítě v Bitech za Sekundu"
+msgstr "Zobrazit rychlost sítě v bitech za sekundu"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:31
 msgid "Temperature Unit"
-msgstr "Jednotka Teploty"
+msgstr "Jednotka teploty"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:35
 msgid "Celsius"
@@ -1481,11 +1483,11 @@ msgstr "Fahrenheit"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:47
 msgid "User Interface"
-msgstr "Uživatelské Rozhraní"
+msgstr "Uživatelské rozhraní"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:50
 msgid "Refresh Speed"
-msgstr "Rychlost Obnovení"
+msgstr "Rychlost obnovování"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:51
 msgid "Higher refresh speeds can lead to higher processor usage"
@@ -1495,7 +1497,7 @@ msgstr ""
 #: data/resources/ui/dialogs/settings_dialog.ui:55
 msgctxt "UI refresh speed"
 msgid "Very Slow"
-msgstr "Velmi Pomalá"
+msgstr "Velmi pomalá"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:56
 msgctxt "UI refresh speed"
@@ -1515,42 +1517,44 @@ msgstr "Rychlá"
 #: data/resources/ui/dialogs/settings_dialog.ui:59
 msgctxt "UI refresh speed"
 msgid "Very Fast"
-msgstr "Velmi Rychlá"
+msgstr "Velmi rychlá"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:67
 msgid "Show Graph Grids"
-msgstr "Zobrazit Mřížky Grafů"
+msgstr "Zobrazit mřížky grafů"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:72
 msgid "Graph Data Points"
-msgstr "Body Dat Grafu"
+msgstr "Body dat grafu"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:86
 msgid "Show Search Fields on Launch"
-msgstr "Zobrazit Vyhledávací Pole při Startu"
+msgstr "Zobrazit vyhledávací pole po spuštění"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:91
 msgid "Show Usage Details in Sidebar"
-msgstr "Zobrazit Detaily Využití v Bočním Panelu"
+msgstr "Zobrazit podrobnosti o využití v bočním panelu"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:92
 msgid "If enabled, the usage along with other information will be displayed"
-msgstr "Pokud zapnuto, využití bude zobrazeno společně s dalšími informacemi"
+msgstr ""
+"Pokud je zapnuto, bude zobrazeno využití společně s dalšími informacemi"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:97
 msgid "Show Device Descriptions in Sidebar"
-msgstr "Zobrazit Popisky Zařízení v Bočním Panelu"
+msgstr "Zobrazit popisky zařízení v bočním panelu"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
 msgid ""
 "If enabled, a device identifier like its name or device type will be "
 "displayed"
 msgstr ""
-"Pokud zapnuto, bude zobrazen identifikátor zařízení, jako jeho jméno nebo typ"
+"Pokud je zapnuto, bude zobrazen identifikátor zařízení, jako jeho jméno nebo "
+"typ"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:103
 msgid "Sidebar Meter Type"
-msgstr "Typ Měřidla v Bočním Panelu"
+msgstr "Typ měřidla v bočním panelu"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:107
 msgid "Bar"
@@ -1562,18 +1566,19 @@ msgstr "Graf"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:116
 msgid "Normalize Processor Usage"
-msgstr "Normalizovat Využití Procesoru"
+msgstr "Normalizovat využití procesoru"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:117
 msgid ""
 "If enabled, the total usage of all cores will be divided by the amount of "
 "cores"
-msgstr "Pokud zapnuto, celkové využití všech jader se vydělí množstvím jader"
+msgstr ""
+"Pokud je zapnuto, celkové využití všech jader se vydělí množstvím jader"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:130
 #: data/resources/ui/dialogs/settings_dialog.ui:202
 msgid "Information Columns"
-msgstr "Informační Sloupce"
+msgstr "Informační sloupce"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:191
 #: data/resources/ui/pages/cpu.ui:22 data/resources/ui/pages/processes.ui:56
@@ -1582,12 +1587,12 @@ msgstr "Možnosti"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:194
 msgid "Show Niceness Values"
-msgstr "Zobrazit Hodnoty Nice"
+msgstr "Zobrazit hodnoty „nice“"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:195
 msgid ""
 "Display priorities as niceness to allow for more fine-grained adjustments"
-msgstr "Zobrazit priority jako hodnoty nice, umožňující jemnější úpravy"
+msgstr "Zobrazit priority jako hodnoty „nice“, umožňující jemnější úpravy"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:290
 msgid "Devices"
@@ -1599,15 +1604,15 @@ msgstr "Disky"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:296
 msgid "Show Virtual Drives"
-msgstr "Zobrazit Virtuální Disky"
+msgstr "Zobrazit virtuální disky"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:297
 msgid "Virtual drives are for example ZFS volumes or mapped devices"
-msgstr "Virtuální disky jsou například ZFS svazky nebo namapovaná zařízení"
+msgstr "Virtuální disky jsou například svazky ZFS nebo namapovaná zařízení"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:307
 msgid "Show Virtual Network Interfaces"
-msgstr "Zobrazit Virtuální Síťová Rozhraní"
+msgstr "Zobrazit virtuální síťová rozhraní"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:308
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
@@ -1635,19 +1640,19 @@ msgstr "Přepnout vyhledávací pole"
 #: data/resources/ui/pages/applications.ui:116
 #: data/resources/ui/pages/applications.ui:118
 msgid "Show App Information"
-msgstr "Zobrazit Informace o Aplikaci"
+msgstr "Zobrazit informace o aplikaci"
 
 #: data/resources/ui/pages/battery.ui:36
 msgid "Battery Health"
-msgstr "Zdraví Baterie"
+msgstr "Zdraví baterie"
 
 #: data/resources/ui/pages/battery.ui:45
 msgid "Design Capacity"
-msgstr "Nominální Kapacita"
+msgstr "Nominální kapacita"
 
 #: data/resources/ui/pages/battery.ui:54
 msgid "Charge Cycles"
-msgstr "Nabíjecí Cykly"
+msgstr "Nabíjecí cykly"
 
 #: data/resources/ui/pages/battery.ui:63
 msgid "Technology"
@@ -1660,7 +1665,7 @@ msgstr "Výrobce"
 
 #: data/resources/ui/pages/battery.ui:81
 msgid "Model Name"
-msgstr "Jméno Modelu"
+msgstr "Název modelu"
 
 #: data/resources/ui/pages/battery.ui:90 data/resources/ui/pages/drive.ui:66
 msgid "Device"
@@ -1668,7 +1673,7 @@ msgstr "Zařízení"
 
 #: data/resources/ui/pages/cpu.ui:26
 msgid "Show Usages of Logical CPUs"
-msgstr "Zobrazit Využití Logických CPU"
+msgstr "Zobrazit využití logických CPU"
 
 #: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
 #: data/resources/ui/pages/npu.ui:60
@@ -1682,15 +1687,15 @@ msgstr "Teplota"
 
 #: data/resources/ui/pages/cpu.ui:96
 msgid "Max Frequency"
-msgstr "Maximální Frekvence"
+msgstr "Maximální frekvence"
 
 #: data/resources/ui/pages/cpu.ui:105
 msgid "Logical Cores"
-msgstr "Logická Jádra"
+msgstr "Logická jádra"
 
 #: data/resources/ui/pages/cpu.ui:114
 msgid "Physical Cores"
-msgstr "Fyzická Jádra"
+msgstr "Fyzická jádra"
 
 #: data/resources/ui/pages/cpu.ui:123
 msgid "Sockets"
@@ -1706,11 +1711,11 @@ msgstr "Architektura"
 
 #: data/resources/ui/pages/drive.ui:38
 msgid "Total Read"
-msgstr "Celkem Přečteno"
+msgstr "Celkem přečteno"
 
 #: data/resources/ui/pages/drive.ui:47
 msgid "Total Written"
-msgstr "Celkem Zapsáno"
+msgstr "Celkem zapsáno"
 
 #: data/resources/ui/pages/drive.ui:57 data/resources/ui/pages/memory.ui:72
 msgid "Type"
@@ -1734,32 +1739,32 @@ msgstr "Frekvence GPU"
 
 #: data/resources/ui/pages/gpu.ui:50
 msgid "Video Memory Frequency"
-msgstr "Frekvence Videopaměti"
+msgstr "Frekvence videopaměti"
 
 #: data/resources/ui/pages/gpu.ui:96 data/resources/ui/pages/npu.ui:90
 msgid "PCI Slot"
-msgstr "PCI Slot"
+msgstr "Slot PCI"
 
 #: data/resources/ui/pages/gpu.ui:105 data/resources/ui/pages/network.ui:67
 #: data/resources/ui/pages/npu.ui:99
 msgid "Driver Used"
-msgstr "Použitý Ovladač"
+msgstr "Použitý ovladač"
 
 #: data/resources/ui/pages/gpu.ui:114 data/resources/ui/pages/npu.ui:108
 msgid "Max Power Cap"
-msgstr "Max Limit Spotřeby"
+msgstr "Maximální limit spotřeby"
 
 #: data/resources/ui/pages/memory.ui:9
 msgid "You need to authenticate to see memory properties"
-msgstr "Pro zobrazení vlastností paměti se musíte autentizovat"
+msgstr "Pro zobrazení vlastností paměti se musíte přihlásit"
 
 #: data/resources/ui/pages/memory.ui:10
 msgid "Authenticate"
-msgstr "Autentizovat"
+msgstr "Přihlásit"
 
 #: data/resources/ui/pages/memory.ui:45
 msgid "Slots Used"
-msgstr "Použité Sloty"
+msgstr "Použité sloty"
 
 #: data/resources/ui/pages/memory.ui:54
 msgid "Speed"
@@ -1771,15 +1776,15 @@ msgstr "Formát"
 
 #: data/resources/ui/pages/memory.ui:81
 msgid "Type Detail"
-msgstr "Detail Typu"
+msgstr "Podrobnosti o typu"
 
 #: data/resources/ui/pages/network.ui:35
 msgid "Total Received"
-msgstr "Celkem Přijato"
+msgstr "Celkem přijato"
 
 #: data/resources/ui/pages/network.ui:44
 msgid "Total Sent"
-msgstr "Celkem Odesláno"
+msgstr "Celkem odesláno"
 
 #: data/resources/ui/pages/network.ui:76
 msgid "Interface"
@@ -1787,7 +1792,7 @@ msgstr "Rozhraní"
 
 #: data/resources/ui/pages/network.ui:85
 msgid "Hardware Address"
-msgstr "Hardwarová Adresa"
+msgstr "Hardwarová adresa"
 
 #: data/resources/ui/pages/npu.ui:31
 msgid "NPU Frequency"
@@ -1795,22 +1800,22 @@ msgstr "Frekvence NPU"
 
 #: data/resources/ui/pages/npu.ui:44
 msgid "Memory Frequency"
-msgstr "Frekvence Paměti"
+msgstr "Frekvence faměti"
 
 #: data/resources/ui/pages/processes.ui:22
 #: data/resources/ui/pages/processes.ui:74
 msgid "Kill Processes"
-msgstr "Zabít Procesy"
+msgstr "Vynuceně ukončit procesy"
 
 #: data/resources/ui/pages/processes.ui:26
 #: data/resources/ui/pages/processes.ui:78
 msgid "Halt Processes"
-msgstr "Zastavit Procesy"
+msgstr "Zastavit procesy"
 
 #: data/resources/ui/pages/processes.ui:30
 #: data/resources/ui/pages/processes.ui:82
 msgid "Continue Processes"
-msgstr "Obnovit Procesy"
+msgstr "Obnovit procesy"
 
 #: data/resources/ui/pages/processes.ui:126
 msgid "Search processes"
@@ -1819,12 +1824,12 @@ msgstr "Hledat procesy"
 #: data/resources/ui/pages/processes.ui:162
 #: data/resources/ui/pages/processes.ui:164
 msgid "Show Process Options"
-msgstr "Zobrazit Možnosti Procesu"
+msgstr "Zobrazit možnosti procesu"
 
 #: data/resources/ui/pages/processes.ui:175
 #: data/resources/ui/pages/processes.ui:177
 msgid "Show Process Information"
-msgstr "Zobrazit Informace o Procesu"
+msgstr "Zobrazit informace o procesu"
 
 #~ msgid "VRAM: {}"
 #~ msgstr "VRAM: {}"
