@@ -267,9 +267,7 @@ impl Gpu {
         let mut hwmon_vec: Vec<PathBuf> = Vec::new();
         for hwmon in glob(&format!(
             "{}/hwmon/hwmon?",
-            sysfs_device_path
-                .to_str()
-                .context("error transforming PathBuf to str")?
+            sysfs_device_path.to_string_lossy()
         ))?
         .flatten()
         {
