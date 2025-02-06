@@ -82,11 +82,6 @@
               </object>
             </child>
             <child>
-              <object class="AdwSwitchRow" id="show_search_on_start_row">
-                <property name="title" translatable="yes">Show Search Fields on Launch</property>
-              </object>
-            </child>
-            <child>
               <object class="AdwSwitchRow" id="sidebar_details_row">
                 <property name="title" translatable="yes">Show Usage Details in Sidebar</property>
                 <property name="subtitle" translatable="yes">If enabled, the usage along with other information will be displayed</property>

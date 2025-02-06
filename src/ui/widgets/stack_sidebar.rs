@@ -246,6 +246,8 @@ impl ResStackSidebar {
 
             imp.list_box.append(&row);
 
+            row.set_focus_on_click(false);
+
             if let Some(visible_page) = imp.stack.borrow().visible_child() {
                 if visible_page == page.child() {
                     imp.list_box.select_row(Some(&row));
@@ -314,8 +316,7 @@ impl ResStackSidebar {
                         imp.stack.borrow().set_visible_child(&child);
 
                         if let Some(page) = child
-                            .downcast::<adw::ToolbarView>()
-                            .ok()
+                            .downcast_ref::<adw::ToolbarView>()
                             .and_then(|toolbar| toolbar.content())
                         {
                             let _ = SETTINGS

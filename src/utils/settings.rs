@@ -342,7 +342,6 @@ impl Settings {
     uint_settings!(graph_data_points, apps_sort_by, processes_sort_by);
 
     bool_settings!(
-        show_search_on_start,
         show_virtual_drives,
         show_virtual_network_interfaces,
         sidebar_details,
