@@ -6,8 +6,8 @@ use adw::{prelude::*, subclass::prelude::*, ToolbarView};
 use adw::{Toast, ToastOverlay};
 use anyhow::{Context, Result};
 use gtk::glib::{clone, timeout_future, GString, MainContext};
-use gtk::{gio, glib, Widget};
-use log::{info, trace, warn};
+use gtk::{gdk, gio, glib, Widget};
+use log::{debug, info, trace, warn};
 
 use crate::application::Application;
 use crate::config::PROFILE;
@@ -41,7 +41,10 @@ pub enum Action {
 }
 
 mod imp {
-    use std::{cell::RefCell, collections::HashMap};
+    use std::{
+        cell::{Cell, RefCell},
+        collections::HashMap,
+    };
 
     use crate::{
         config::VERSION,
@@ -106,6 +109,8 @@ mod imp {
 
         pub apps_context: RefCell<AppsContext>,
 
+        pub pause_updates: Cell<bool>,
+
         pub sender: Sender<Action>,
         pub receiver: RefCell<Option<Receiver<Action>>>,
     }
@@ -133,6 +138,7 @@ mod imp {
                 memory: TemplateChild::default(),
                 memory_page: TemplateChild::default(),
                 apps_context: Default::default(),
+                pause_updates: Default::default(),
                 sender,
                 receiver,
                 processor_window_title: TemplateChild::default(),
@@ -341,6 +347,37 @@ impl MainWindow {
                 }
             }
         ));
+
+        // if CTRL is held, don't update apps and processes like Windows Task Manager
+        let event_controller = gtk::EventControllerKey::new();
+        event_controller.connect_key_pressed(clone!(
+            #[strong(rename_to = this)]
+            self,
+            move |_, key, _, _| {
+                match key {
+                    gdk::Key::Control_L => {
+                        debug!("Ctrl is being held, halting apps and processes updates");
+                        this.imp().pause_updates.set(true);
+                    }
+                    _ => (),
+                };
+                glib::Propagation::Proceed
+            }
+        ));
+        event_controller.connect_key_released(clone!(
+            #[weak]
+            imp,
+            move |_, key, _, _| {
+                match key {
+                    gdk::Key::Control_L => {
+                        debug!("Ctrl has been released, continuing apps and processes updates");
+                        imp.pause_updates.set(false);
+                    }
+                    _ => (),
+                };
+            }
+        ));
+        self.add_controller(event_controller);
     }
 
     fn get_selected_page(&self) -> Option<Widget> {
@@ -592,8 +629,12 @@ impl MainWindow {
         let mut apps_context = imp.apps_context.borrow_mut();
         apps_context.refresh(process_data);
 
-        imp.apps.refresh_apps_list(&apps_context);
-        imp.processes.refresh_processes_list(&apps_context);
+        // if CTRL is held, don't update apps and processes like Windows Task Manager
+        if !imp.pause_updates.get() {
+            trace!("Skipping visual apps and processes updates");
+            imp.apps.refresh_apps_list(&apps_context);
+            imp.processes.refresh_processes_list(&apps_context);
+        }
 
         /*
          *  Gpu
