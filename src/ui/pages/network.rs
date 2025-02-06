@@ -205,8 +205,8 @@ impl ResNetwork {
 
     pub fn setup_widgets(&self, network_data: &NetworkData) {
         trace!(
-            "Setting up ResNetwork ({:?}) widgets…",
-            network_data.inner.sysfs_path
+            "Setting up ResNetwork ({}) widgets…",
+            network_data.inner.sysfs_path.to_string_lossy()
         );
 
         let imp = self.imp();
@@ -278,8 +278,8 @@ impl ResNetwork {
 
     pub fn refresh_page(&self, network_data: NetworkData) {
         trace!(
-            "Refreshing ResNetwork ({:?})…",
-            network_data.inner.sysfs_path
+            "Refreshing ResNetwork ({})…",
+            network_data.inner.sysfs_path.to_string_lossy()
         );
 
         let NetworkData {

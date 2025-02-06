@@ -193,7 +193,11 @@ impl ResGPU {
     }
 
     pub fn setup_widgets(&self, gpu: &Gpu) {
-        trace!("Setting up ResGPU ({}) widgets…", gpu.gpu_identifier());
+        trace!(
+            "Setting up ResGPU ({}, {}) widgets…",
+            self.tab_detail_string(),
+            gpu.gpu_identifier()
+        );
 
         let imp = self.imp();
 
@@ -259,7 +263,11 @@ impl ResGPU {
     }
 
     pub fn refresh_page(&self, gpu_data: &GpuData) {
-        trace!("Refreshing ResGPU ({})…", gpu_data.gpu_identifier);
+        trace!(
+            "Refreshing ResGPU ({}, {})…",
+            self.tab_detail_string(),
+            gpu_data.gpu_identifier
+        );
 
         let imp = self.imp();
 

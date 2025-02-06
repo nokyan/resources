@@ -181,8 +181,8 @@ impl ResBattery {
 
     pub fn setup_widgets(&self, battery_data: &BatteryData) {
         trace!(
-            "Setting up ResBattery ({:?}) widgets…",
-            battery_data.inner.sysfs_path
+            "Setting up ResBattery ({}) widgets…",
+            battery_data.inner.sysfs_path.to_string_lossy()
         );
 
         let imp = self.imp();
@@ -240,8 +240,8 @@ impl ResBattery {
 
     pub fn refresh_page(&self, battery_data: BatteryData) {
         trace!(
-            "Refreshing ResBattery ({:?})…",
-            battery_data.inner.sysfs_path
+            "Refreshing ResBattery ({})…",
+            battery_data.inner.sysfs_path.to_string_lossy()
         );
 
         let imp = self.imp();

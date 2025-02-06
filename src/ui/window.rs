@@ -648,25 +648,30 @@ impl MainWindow {
                 // average usage during now and the last refresh, while gpu_busy_percent is a snapshot of the current
                 // usage, which might not be what we want
 
-                let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.gpu_identifier);
-                gpu_data.usage_fraction = Some(f64::max(
-                    gpu_data.usage_fraction.unwrap_or(0.0),
-                    processes_gpu_fraction.into(),
-                ));
+                trace!("{} ({}) is not an NVIDIA GPU, adjusting usage values using process-based statistics", page.tab_detail_string(), gpu_data.gpu_identifier);
 
+                let drm_gpu_fraction = gpu_data.usage_fraction.unwrap_or(0.0);
+                let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.gpu_identifier);
+                let highest_gpu_fraction =
+                    f64::max(drm_gpu_fraction, processes_gpu_fraction.into());
+                trace!("DRM usage: {drm_gpu_fraction} · Process-based usage: {processes_gpu_fraction} · Using {highest_gpu_fraction}");
+                gpu_data.usage_fraction = Some(highest_gpu_fraction);
+
+                let drm_encode_fraction = gpu_data.encode_fraction.unwrap_or(0.0);
                 let processes_encode_fraction =
                     apps_context.encoder_fraction(gpu_data.gpu_identifier);
-                gpu_data.encode_fraction = Some(f64::max(
-                    gpu_data.encode_fraction.unwrap_or(0.0),
-                    processes_encode_fraction.into(),
-                ));
+                let highest_encode_fraction =
+                    f64::max(drm_encode_fraction, processes_encode_fraction.into());
+                trace!("DRM encode: {drm_encode_fraction} · Process-based encode: {processes_encode_fraction} · Using {highest_encode_fraction}");
+                gpu_data.encode_fraction = Some(highest_encode_fraction);
 
+                let drm_decode_fraction = gpu_data.decode_fraction.unwrap_or(0.0);
                 let processes_decode_fraction =
                     apps_context.decoder_fraction(gpu_data.gpu_identifier);
-                gpu_data.decode_fraction = Some(f64::max(
-                    gpu_data.decode_fraction.unwrap_or(0.0),
-                    processes_decode_fraction.into(),
-                ));
+                let highest_decode_fraction =
+                    f64::max(drm_decode_fraction, processes_decode_fraction.into());
+                trace!("DRM decode: {drm_decode_fraction} · Process-based decode: {processes_decode_fraction} · Using {highest_decode_fraction}");
+                gpu_data.decode_fraction = Some(highest_decode_fraction);
             }
 
             page.refresh_page(&gpu_data);
@@ -843,7 +848,7 @@ impl MainWindow {
 
             timeout_future(Duration::from_secs_f32(total_delay - gather_time)).await;
 
-            // Tell other threads to start gethering data
+            // Tell other threads to start gathering data
             tx_wait.send(()).unwrap();
 
             timeout_future(Duration::from_secs_f32(gather_time)).await;
@@ -852,6 +857,8 @@ impl MainWindow {
 
     /// Wrapper to remove page, and check if removed page was visible with global default behavior
     fn remove_page(&self, page: &ToolbarView) {
+        trace!("Removing page {:?}…", page);
+
         let imp = self.imp();
 
         // no visible child exists
