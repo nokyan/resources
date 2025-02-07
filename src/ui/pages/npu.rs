@@ -184,7 +184,11 @@ impl ResNPU {
     }
 
     pub fn setup_widgets(&self, npu: &Npu) {
-        trace!("Setting up ResNPU ({}) widgets…", npu.pci_slot());
+        trace!(
+            "Setting up ResNPU ({}, {}) widgets…",
+            self.tab_detail_string(),
+            npu.pci_slot()
+        );
 
         let imp = self.imp();
 
@@ -220,7 +224,11 @@ impl ResNPU {
     }
 
     pub fn refresh_page(&self, npu_data: &NpuData) {
-        trace!("Refreshing ResNPU ({})…", npu_data.pci_slot);
+        trace!(
+            "Refreshing ResNPU ({}, {})…",
+            self.tab_detail_string(),
+            npu_data.pci_slot
+        );
 
         let imp = self.imp();
 

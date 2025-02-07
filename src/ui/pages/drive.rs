@@ -209,8 +209,8 @@ impl ResDrive {
 
     pub fn setup_widgets(&self, drive_data: &DriveData) {
         trace!(
-            "Setting up ResDrive ({:?}) widgets…",
-            drive_data.inner.sysfs_path
+            "Setting up ResDrive ({}) widgets…",
+            drive_data.inner.sysfs_path.to_string_lossy()
         );
 
         let imp = self.imp();
@@ -266,7 +266,10 @@ impl ResDrive {
     }
 
     pub fn refresh_page(&self, drive_data: DriveData) {
-        trace!("Refreshing ResDrive ({:?})…", drive_data.inner.sysfs_path);
+        trace!(
+            "Refreshing ResDrive ({})…",
+            drive_data.inner.sysfs_path.to_string_lossy()
+        );
 
         let imp = self.imp();
 

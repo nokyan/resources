@@ -6,8 +6,8 @@ use adw::{prelude::*, subclass::prelude::*, ToolbarView};
 use adw::{Toast, ToastOverlay};
 use anyhow::{Context, Result};
 use gtk::glib::{clone, timeout_future, GString, MainContext};
-use gtk::{gio, glib, Widget};
-use log::{info, trace, warn};
+use gtk::{gdk, gio, glib, Widget};
+use log::{debug, info, trace, warn};
 
 use crate::application::Application;
 use crate::config::PROFILE;
@@ -41,7 +41,10 @@ pub enum Action {
 }
 
 mod imp {
-    use std::{cell::RefCell, collections::HashMap};
+    use std::{
+        cell::{Cell, RefCell},
+        collections::HashMap,
+    };
 
     use crate::{
         config::VERSION,
@@ -106,6 +109,8 @@ mod imp {
 
         pub apps_context: RefCell<AppsContext>,
 
+        pub pause_updates: Cell<bool>,
+
         pub sender: Sender<Action>,
         pub receiver: RefCell<Option<Receiver<Action>>>,
     }
@@ -133,6 +138,7 @@ mod imp {
                 memory: TemplateChild::default(),
                 memory_page: TemplateChild::default(),
                 apps_context: Default::default(),
+                pause_updates: Default::default(),
                 sender,
                 receiver,
                 processor_window_title: TemplateChild::default(),
@@ -341,6 +347,37 @@ impl MainWindow {
                 }
             }
         ));
+
+        // if CTRL is held, don't update apps and processes like Windows Task Manager
+        let event_controller = gtk::EventControllerKey::new();
+        event_controller.connect_key_pressed(clone!(
+            #[strong(rename_to = this)]
+            self,
+            move |_, key, _, _| {
+                match key {
+                    gdk::Key::Control_L => {
+                        debug!("Ctrl is being held, halting apps and processes updates");
+                        this.imp().pause_updates.set(true);
+                    }
+                    _ => (),
+                };
+                glib::Propagation::Proceed
+            }
+        ));
+        event_controller.connect_key_released(clone!(
+            #[weak]
+            imp,
+            move |_, key, _, _| {
+                match key {
+                    gdk::Key::Control_L => {
+                        debug!("Ctrl has been released, continuing apps and processes updates");
+                        imp.pause_updates.set(false);
+                    }
+                    _ => (),
+                };
+            }
+        ));
+        self.add_controller(event_controller);
     }
 
     fn get_selected_page(&self) -> Option<Widget> {
@@ -592,8 +629,12 @@ impl MainWindow {
         let mut apps_context = imp.apps_context.borrow_mut();
         apps_context.refresh(process_data);
 
-        imp.apps.refresh_apps_list(&apps_context);
-        imp.processes.refresh_processes_list(&apps_context);
+        // if CTRL is held, don't update apps and processes like Windows Task Manager
+        if !imp.pause_updates.get() {
+            trace!("Skipping visual apps and processes updates");
+            imp.apps.refresh_apps_list(&apps_context);
+            imp.processes.refresh_processes_list(&apps_context);
+        }
 
         /*
          *  Gpu
@@ -607,25 +648,30 @@ impl MainWindow {
                 // average usage during now and the last refresh, while gpu_busy_percent is a snapshot of the current
                 // usage, which might not be what we want
 
-                let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.gpu_identifier);
-                gpu_data.usage_fraction = Some(f64::max(
-                    gpu_data.usage_fraction.unwrap_or(0.0),
-                    processes_gpu_fraction.into(),
-                ));
+                trace!("{} ({}) is not an NVIDIA GPU, adjusting usage values using process-based statistics", page.tab_detail_string(), gpu_data.gpu_identifier);
 
+                let drm_gpu_fraction = gpu_data.usage_fraction.unwrap_or(0.0);
+                let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.gpu_identifier);
+                let highest_gpu_fraction =
+                    f64::max(drm_gpu_fraction, processes_gpu_fraction.into());
+                trace!("DRM usage: {drm_gpu_fraction} · Process-based usage: {processes_gpu_fraction} · Using {highest_gpu_fraction}");
+                gpu_data.usage_fraction = Some(highest_gpu_fraction);
+
+                let drm_encode_fraction = gpu_data.encode_fraction.unwrap_or(0.0);
                 let processes_encode_fraction =
                     apps_context.encoder_fraction(gpu_data.gpu_identifier);
-                gpu_data.encode_fraction = Some(f64::max(
-                    gpu_data.encode_fraction.unwrap_or(0.0),
-                    processes_encode_fraction.into(),
-                ));
+                let highest_encode_fraction =
+                    f64::max(drm_encode_fraction, processes_encode_fraction.into());
+                trace!("DRM encode: {drm_encode_fraction} · Process-based encode: {processes_encode_fraction} · Using {highest_encode_fraction}");
+                gpu_data.encode_fraction = Some(highest_encode_fraction);
 
+                let drm_decode_fraction = gpu_data.decode_fraction.unwrap_or(0.0);
                 let processes_decode_fraction =
                     apps_context.decoder_fraction(gpu_data.gpu_identifier);
-                gpu_data.decode_fraction = Some(f64::max(
-                    gpu_data.decode_fraction.unwrap_or(0.0),
-                    processes_decode_fraction.into(),
-                ));
+                let highest_decode_fraction =
+                    f64::max(drm_decode_fraction, processes_decode_fraction.into());
+                trace!("DRM decode: {drm_decode_fraction} · Process-based decode: {processes_decode_fraction} · Using {highest_decode_fraction}");
+                gpu_data.decode_fraction = Some(highest_decode_fraction);
             }
 
             page.refresh_page(&gpu_data);
@@ -802,7 +848,7 @@ impl MainWindow {
 
             timeout_future(Duration::from_secs_f32(total_delay - gather_time)).await;
 
-            // Tell other threads to start gethering data
+            // Tell other threads to start gathering data
             tx_wait.send(()).unwrap();
 
             timeout_future(Duration::from_secs_f32(gather_time)).await;
@@ -811,6 +857,8 @@ impl MainWindow {
 
     /// Wrapper to remove page, and check if removed page was visible with global default behavior
     fn remove_page(&self, page: &ToolbarView) {
+        trace!("Removing page {:?}…", page);
+
         let imp = self.imp();
 
         // no visible child exists
