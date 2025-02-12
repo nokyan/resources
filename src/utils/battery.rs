@@ -339,8 +339,8 @@ impl Battery {
             .context("unable to read power_now file")
             .and_then(|x| {
                 x.trim()
-                    .parse::<usize>()
-                    .map(|microwatts| microwatts as f64 / 1_000_000.0)
+                    .parse::<isize>()
+                    .map(|microwatts| microwatts.abs() as f64 / 1_000_000.0)
                     .context("unable to parse power_now sysfs file")
             })
             .or_else(|_| self.power_usage_from_voltage_and_current())
