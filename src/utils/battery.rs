@@ -252,11 +252,40 @@ impl Battery {
     }
 
     pub fn charge(&self) -> Result<f64> {
-        std::fs::read_to_string(self.sysfs_path.join("capacity"))?
-            .trim()
-            .parse::<u8>()
-            .map(|percent| percent as f64 / 100.0)
-            .context("unable to parse capacity sysfs file")
+        std::fs::read_to_string(self.sysfs_path.join("capacity"))
+            .context("unable to read capacity sysfs file")
+            .and_then(|capacity| {
+                capacity
+                    .trim()
+                    .parse::<u8>()
+                    .map(|percent| percent as f64 / 100.0)
+                    .context("unable to parse capacity sysfs file")
+            })
+            .or_else(|_| self.charge_from_energy())
+    }
+
+    pub fn charge_from_energy(&self) -> Result<f64> {
+        let energy_now = std::fs::read_to_string(self.sysfs_path.join("energy_now"))
+            .context("unable to read energy_now sysfs file")
+            .and_then(|x| {
+                x.trim()
+                    .parse::<usize>()
+                    .context("unable to parse energy_now sysfs file")
+            });
+
+        let energy_full = std::fs::read_to_string(self.sysfs_path.join("energy_full"))
+            .context("unable to read energy_full sysfs file")
+            .and_then(|x| {
+                x.trim()
+                    .parse::<usize>()
+                    .context("unable to parse energy_full sysfs file")
+            });
+
+        if let (Ok(energy_now), Ok(energy_full)) = (energy_now, energy_full) {
+            Ok((energy_now as f64 / energy_full as f64).ceil())
+        } else {
+            bail!("no charge from energy information found");
+        }
     }
 
     pub fn health(&self) -> Result<f64> {
