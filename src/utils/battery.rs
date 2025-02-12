@@ -282,7 +282,7 @@ impl Battery {
             });
 
         if let (Ok(energy_now), Ok(energy_full)) = (energy_now, energy_full) {
-            Ok((energy_now as f64 / energy_full as f64 * 100.0) / 100.0)
+            Ok(energy_now as f64 / energy_full as f64)
         } else {
             bail!("no charge from energy information found");
         }
