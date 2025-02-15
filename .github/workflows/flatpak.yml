@@ -15,7 +15,7 @@ jobs:
       options: --privileged
     steps:
       - uses: actions/checkout@v4
-      - uses: jochumdev/flatpak-github-actions/flatpak-builder@builder-update-deps
+      - uses: flathub-infra/flatpak-github-actions/flatpak-builder@master
         with:
           manifest-path: build-aux/net.nokyan.Resources.Devel.json
           run-tests: true
