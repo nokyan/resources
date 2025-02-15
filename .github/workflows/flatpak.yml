@@ -20,4 +20,4 @@ jobs:
           manifest-path: build-aux/net.nokyan.Resources.Devel.json
           run-tests: true
           cache-key: flatpak-builder-${{ github.sha }}
-          upload-artifacts: "false"
+          upload-artifact: "false"
