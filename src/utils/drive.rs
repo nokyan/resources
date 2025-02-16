@@ -8,9 +8,9 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use crate::i18n::{i18n, i18n_f};
-
 use super::units::convert_storage;
+use crate::i18n::{i18n, i18n_f};
+use crate::utils::link::Link;
 
 const PATH_SYSFS: &str = "/sys/block";
 
@@ -26,6 +26,7 @@ pub struct DriveData {
     pub removable: Result<bool>,
     pub disk_stats: HashMap<String, usize>,
     pub capacity: Result<u64>,
+    pub link: Option<Link>,
 }
 
 impl DriveData {
@@ -40,7 +41,7 @@ impl DriveData {
         let removable = inner.removable();
         let disk_stats = inner.sys_stats().unwrap_or_default();
         let capacity = inner.capacity();
-
+        let link = inner.link();
         let drive_data = Self {
             inner,
             is_virtual,
@@ -48,6 +49,7 @@ impl DriveData {
             removable,
             disk_stats,
             capacity,
+            link,
         };
 
         trace!(
@@ -303,6 +305,9 @@ impl Drive {
             .context("unable to parse model sysfs file")
     }
 
+    pub fn link(&self) -> Option<Link> {
+        Link::for_drive(self)
+    }
     /// Returns the World-Wide Identification of the drive
     ///
     /// # Errors

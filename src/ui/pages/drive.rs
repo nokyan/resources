@@ -51,6 +51,8 @@ mod imp {
         pub writable: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub removable: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub link: TemplateChild<adw::ActionRow>,
         pub old_stats: RefCell<HashMap<String, usize>>,
         pub last_timestamp: Cell<SystemTime>,
 
@@ -116,6 +118,7 @@ mod imp {
                 capacity: Default::default(),
                 writable: Default::default(),
                 removable: Default::default(),
+                link: Default::default(),
                 uses_progress_bar: Cell::new(true),
                 main_graph_color: glib::Bytes::from_static(&super::ResDrive::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(Drive::default_icon()),
@@ -280,6 +283,7 @@ impl ResDrive {
             removable,
             disk_stats,
             capacity,
+            link,
         } = drive_data;
 
         let time_passed = SystemTime::now()
@@ -419,6 +423,9 @@ impl ResDrive {
             imp.removable.set_subtitle(&i18n("N/A"));
         }
 
+        if let Some(link) = link {
+            imp.link.set_subtitle(&link.to_string());
+        }
         self.set_property(
             "tab_usage_string",
             // Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
