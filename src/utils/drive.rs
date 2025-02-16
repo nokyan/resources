@@ -42,6 +42,7 @@ impl DriveData {
         let disk_stats = inner.sys_stats().unwrap_or_default();
         let capacity = inner.capacity();
         let link = inner.link();
+
         let drive_data = Self {
             inner,
             is_virtual,
@@ -305,6 +306,12 @@ impl Drive {
             .context("unable to parse model sysfs file")
     }
 
+    /// Returns, whether the Link info of the drive
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the are errors during
+    /// reading or parsing, or if the drive link type is not supported
     pub fn link(&self) -> Result<Link> {
         Link::for_drive(self)
     }

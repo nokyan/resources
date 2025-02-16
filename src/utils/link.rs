@@ -19,13 +19,13 @@ pub struct PcieLink {
     pub max: Result<PcieLinkData>,
 }
 
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct PcieLinkData {
     pub speed: PcieSpeed,
     pub width: usize,
 }
 
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum PcieSpeed {
     Pcie10,
     Pcie20,
@@ -33,8 +33,6 @@ pub enum PcieSpeed {
     Pcie40,
     Pcie50,
     Pcie60,
-    #[default]
-    Unknown,
 }
 impl Link {
     pub fn for_drive(drive: &Drive) -> Result<Self> {
@@ -71,6 +69,7 @@ impl PcieLink {
         let device_path = drm_path.join("device");
         Self::read_pcie_link_data(&device_path.to_path_buf())
     }
+
     fn for_nvme(path: &PathBuf) -> Result<Self> {
         let address_path = path.join("device").join("address");
         let address = std::fs::read_to_string(address_path)
@@ -131,14 +130,14 @@ impl PcieLinkData {
 impl Display for PcieLink {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         if let Ok(current) = self.current {
-            let different_max = {
+            let has_different_max = {
                 if let Ok(max) = self.max {
                     current != max
                 } else {
                     false
                 }
             };
-            if different_max {
+            if has_different_max {
                 write!(f, "{} / {}", current, self.max.as_ref().unwrap())
             } else {
                 write!(f, "{}", current)
@@ -161,13 +160,12 @@ impl Display for PcieSpeed {
             f,
             "{}",
             match self {
-                PcieSpeed::Pcie10 => "PCIe 1.0".to_string(),
-                PcieSpeed::Pcie20 => "PCIe 2.0".to_string(),
-                PcieSpeed::Pcie30 => "PCIe 3.0".to_string(),
-                PcieSpeed::Pcie40 => "PCIe 4.0".to_string(),
-                PcieSpeed::Pcie50 => "PCIe 5.0".to_string(),
-                PcieSpeed::Pcie60 => "PCIe 6.0".to_string(),
-                PcieSpeed::Unknown => i18n("N/A"),
+                PcieSpeed::Pcie10 => "PCIe 1.0",
+                PcieSpeed::Pcie20 => "PCIe 2.0",
+                PcieSpeed::Pcie30 => "PCIe 3.0",
+                PcieSpeed::Pcie40 => "PCIe 4.0",
+                PcieSpeed::Pcie50 => "PCIe 5.0",
+                PcieSpeed::Pcie60 => "PCIe 6.0",
             }
         )
     }
@@ -183,7 +181,7 @@ impl FromStr for PcieSpeed {
             "16.0 GT/s PCIe" => Ok(PcieSpeed::Pcie40),
             "32.0 GT/s PCIe" => Ok(PcieSpeed::Pcie50),
             "64.0 GT/s PCIe" => Ok(PcieSpeed::Pcie60),
-            _ => Err(Error::msg("Could not parse PCIe speed")),
+            _ => Err(anyhow!("Could not parse PCIe speed")),
         }
     }
 }
@@ -224,6 +222,20 @@ mod test {
             assert!(result.is_ok(), "Could not parse PCIe speed for '{}'", input);
             let expected = map[input];
             pretty_assertions::assert_eq!(expected, result.unwrap());
+        }
+    }
+
+    #[test]
+    fn parse_pcie_link_speeds_failure() {
+        let invalid = vec!["128.0 GT/s PCIe", "SOMETHING_ELSE", ""];
+
+        for input in invalid {
+            let result = PcieSpeed::from_str(input);
+            assert!(
+                result.is_err(),
+                "Could parse PCIe speed for '{}' while we don't expect that",
+                input
+            );
         }
     }
 
