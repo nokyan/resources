@@ -102,7 +102,7 @@ impl Display for PcieLink {
 
 impl Display for PcieLinkData {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} x{}", self.speed, self.width)
+        write!(f, "{} ×{}", self.speed, self.width)
     }
 }
 
@@ -290,7 +290,7 @@ mod test {
             }),
         };
         let result = input.to_string();
-        let expected = "PCIe 4.0 x8 / PCIe 5.0 x16";
+        let expected = "PCIe 4.0 ×8 / PCIe 5.0 ×16";
         pretty_assertions::assert_str_eq!(expected, result);
     }
 
@@ -301,42 +301,42 @@ mod test {
                     speed: PcieSpeed::Pcie10,
                     width: 2,
                 },
-                "PCIe 1.0 x2",
+                "PCIe 1.0 ×2",
             ),
             (
                 PcieLinkData {
                     speed: PcieSpeed::Pcie20,
                     width: 4,
                 },
-                "PCIe 2.0 x4",
+                "PCIe 2.0 ×4",
             ),
             (
                 PcieLinkData {
                     speed: PcieSpeed::Pcie30,
                     width: 1,
                 },
-                "PCIe 3.0 x1",
+                "PCIe 3.0 ×1",
             ),
             (
                 PcieLinkData {
                     speed: PcieSpeed::Pcie40,
                     width: 8,
                 },
-                "PCIe 4.0 x8",
+                "PCIe 4.0 ×8",
             ),
             (
                 PcieLinkData {
                     speed: PcieSpeed::Pcie50,
                     width: 16,
                 },
-                "PCIe 5.0 x16",
+                "PCIe 5.0 ×16",
             ),
             (
                 PcieLinkData {
                     speed: PcieSpeed::Pcie60,
                     width: 1,
                 },
-                "PCIe 6.0 x1",
+                "PCIe 6.0 ×1",
             ),
         ])
     }
