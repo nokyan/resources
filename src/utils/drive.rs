@@ -2,10 +2,12 @@ use anyhow::{bail, Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
 use lazy_regex::{lazy_regex, Lazy, Regex};
 use log::trace;
+use process_data::pci_slot::PciSlot;
 use std::{
     collections::HashMap,
     fmt::Display,
     path::{Path, PathBuf},
+    str::FromStr,
 };
 
 use super::units::convert_storage;
@@ -321,10 +323,12 @@ impl Drive {
 
     fn link_for_nvme(&self) -> Result<Link> {
         let pcie_address_path = self.sysfs_path.join("device").join("address");
-        let pcie_address = std::fs::read_to_string(pcie_address_path)
-            .map(|x| x.trim().to_string())
-            .context("Could not find PCIe address in sysfs for nvme")?;
-        let pcie_link = PcieLink::new(&pcie_address)?;
+        let pci_slot = PciSlot::from_str(
+            &std::fs::read_to_string(pcie_address_path)
+                .map(|x| x.trim().to_string())
+                .context("Could not find PCIe address in sysfs for nvme")?,
+        )?;
+        let pcie_link = PcieLink::from_pci_slot(pci_slot)?;
         Ok(Link::Pcie(pcie_link))
     }
 

@@ -1,5 +1,6 @@
 use crate::i18n::i18n;
 use anyhow::{anyhow, bail, Context, Error, Result};
+use process_data::pci_slot::PciSlot;
 use std::fmt::{Display, Formatter};
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
@@ -34,13 +35,13 @@ pub enum PcieSpeed {
 }
 
 impl PcieLink {
-    pub fn new(pcie_address: &str) -> Result<PcieLink> {
-        let pcie_dir = format!("/sys/bus/pci/devices/{pcie_address}/");
+    pub fn from_pci_slot(pci_slot: PciSlot) -> Result<PcieLink> {
+        let pcie_dir = format!("/sys/bus/pci/devices/{pci_slot}/");
         let pcie_folder = Path::new(pcie_dir.as_str());
         if pcie_folder.exists() {
             return Self::read_pcie_link_data(&pcie_folder.to_path_buf());
         }
-        bail!("Could not find PCIe address entry for {pcie_address}");
+        bail!("Could not find PCIe address entry for {pci_slot}");
     }
 
     fn read_pcie_link_data(path: &PathBuf) -> Result<Self> {
