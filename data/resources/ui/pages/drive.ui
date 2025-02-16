@@ -98,7 +98,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="AdwActionRow" id="link">
+                      <object class="AdwActionRow" id="link"><!--Translators: "Link" refers to something like "PCIe 4.0 ×16"-->
                         <property name="title" translatable="yes">Link</property>
                         <style>
                           <class name="property"/>

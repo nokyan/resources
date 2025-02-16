@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-16 19:23+0100\n"
+"POT-Creation-Date: 2025-02-16 20:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -160,14 +160,15 @@ msgstr ""
 #: src/ui/pages/memory.rs:231 src/ui/pages/memory.rs:232
 #: src/ui/pages/memory.rs:236 src/ui/pages/memory.rs:237
 #: src/ui/pages/memory.rs:265 src/ui/pages/memory.rs:326
-#: src/ui/pages/network.rs:237 src/ui/pages/network.rs:244
-#: src/ui/pages/network.rs:251 src/ui/pages/network.rs:257
-#: src/ui/pages/network.rs:260 src/ui/pages/network.rs:326
-#: src/ui/pages/network.rs:329 src/ui/pages/network.rs:331
-#: src/ui/pages/network.rs:360 src/ui/pages/network.rs:363
-#: src/ui/pages/network.rs:365 src/ui/pages/npu.rs:214 src/ui/pages/npu.rs:249
-#: src/ui/pages/npu.rs:304 src/ui/pages/npu.rs:313 src/ui/pages/npu.rs:325
-#: src/ui/pages/npu.rs:332 src/ui/pages/npu.rs:336 src/ui/pages/npu.rs:357
+#: src/ui/pages/network.rs:240 src/ui/pages/network.rs:247
+#: src/ui/pages/network.rs:254 src/ui/pages/network.rs:260
+#: src/ui/pages/network.rs:263 src/ui/pages/network.rs:272
+#: src/ui/pages/network.rs:336 src/ui/pages/network.rs:339
+#: src/ui/pages/network.rs:341 src/ui/pages/network.rs:370
+#: src/ui/pages/network.rs:373 src/ui/pages/network.rs:375
+#: src/ui/pages/npu.rs:214 src/ui/pages/npu.rs:249 src/ui/pages/npu.rs:304
+#: src/ui/pages/npu.rs:313 src/ui/pages/npu.rs:325 src/ui/pages/npu.rs:332
+#: src/ui/pages/npu.rs:336 src/ui/pages/npu.rs:357
 #: src/ui/pages/processes/mod.rs:1219 src/ui/pages/processes/mod.rs:1285
 #: src/ui/pages/processes/mod.rs:1351 src/ui/pages/processes/mod.rs:1417
 #: src/ui/pages/processes/mod.rs:1899 src/ui/pages/processes/mod.rs:1901
@@ -362,7 +363,7 @@ msgstr ""
 
 #: src/ui/pages/battery.rs:278 src/ui/pages/cpu.rs:412
 #: src/ui/pages/drive.rs:340 src/ui/pages/drive.rs:371 src/ui/pages/gpu.rs:422
-#: src/ui/pages/network.rs:318 src/ui/pages/network.rs:352
+#: src/ui/pages/network.rs:328 src/ui/pages/network.rs:362
 #: src/ui/pages/npu.rs:300 src/ui/pages/npu.rs:349
 msgid "Highest:"
 msgstr ""
@@ -433,21 +434,21 @@ msgstr ""
 msgid "{} / {} · Swap: {} %"
 msgstr ""
 
-#: src/ui/pages/network.rs:115 src/utils/network.rs:136
+#: src/ui/pages/network.rs:118 src/utils/network.rs:136
 msgid "Network Interface"
 msgstr ""
 
-#: src/ui/pages/network.rs:226
+#: src/ui/pages/network.rs:229
 msgid "Receiving"
 msgstr ""
 
-#: src/ui/pages/network.rs:230
+#: src/ui/pages/network.rs:233
 msgid "Sending"
 msgstr ""
 
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
-#: src/ui/pages/network.rs:375
+#: src/ui/pages/network.rs:385
 msgid "R: {} · S: {}"
 msgstr ""
 
@@ -1700,6 +1701,7 @@ msgstr ""
 msgid "Removable"
 msgstr ""
 
+#. Translators: "Link" refers to something like "PCIe 4.0 ×16"
 #: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113
 msgid "Link"
 msgstr ""
@@ -1763,6 +1765,10 @@ msgstr ""
 
 #: data/resources/ui/pages/network.ui:85
 msgid "Hardware Address"
+msgstr ""
+
+#: data/resources/ui/pages/network.ui:94
+msgid "Link Speed"
 msgstr ""
 
 #: data/resources/ui/pages/npu.ui:31

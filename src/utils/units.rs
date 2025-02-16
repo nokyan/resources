@@ -90,7 +90,7 @@ pub fn convert_storage(bytes: f64, integer: bool) -> String {
     }
 }
 
-fn convert_storage_decimal(bytes: f64, integer: bool) -> String {
+pub fn convert_storage_decimal(bytes: f64, integer: bool) -> String {
     let (mut number, prefix) = to_largest_prefix(bytes, Base::Decimal);
     if integer {
         number = number.round();
@@ -124,7 +124,7 @@ fn convert_storage_decimal(bytes: f64, integer: bool) -> String {
     }
 }
 
-fn convert_storage_binary(bytes: f64, integer: bool) -> String {
+pub fn convert_storage_binary(bytes: f64, integer: bool) -> String {
     let (mut number, prefix) = to_largest_prefix(bytes, Base::Binary);
     if integer {
         number = number.round();
@@ -177,7 +177,7 @@ pub fn convert_speed(bytes_per_second: f64, network: bool) -> String {
     }
 }
 
-fn convert_speed_decimal(bytes_per_second: f64) -> String {
+pub fn convert_speed_decimal(bytes_per_second: f64) -> String {
     let (number, prefix) = to_largest_prefix(bytes_per_second, Base::Decimal);
     match prefix {
         Prefix::None => i18n_f("{} B/s", &[&format!("{}", number.round())]),
@@ -194,7 +194,7 @@ fn convert_speed_decimal(bytes_per_second: f64) -> String {
     }
 }
 
-fn convert_speed_binary(bytes_per_second: f64) -> String {
+pub fn convert_speed_binary(bytes_per_second: f64) -> String {
     let (number, prefix) = to_largest_prefix(bytes_per_second, Base::Binary);
     match prefix {
         Prefix::None => i18n_f("{} B/s", &[&format!("{}", number.round())]),
@@ -211,7 +211,7 @@ fn convert_speed_binary(bytes_per_second: f64) -> String {
     }
 }
 
-fn convert_speed_bits_decimal(bits_per_second: f64) -> String {
+pub fn convert_speed_bits_decimal(bits_per_second: f64) -> String {
     let (number, prefix) = to_largest_prefix(bits_per_second, Base::Decimal);
     match prefix {
         Prefix::None => i18n_f("{} b/s", &[&format!("{}", number.round())]),
@@ -228,7 +228,7 @@ fn convert_speed_bits_decimal(bits_per_second: f64) -> String {
     }
 }
 
-fn convert_speed_bits_binary(bits_per_second: f64) -> String {
+pub fn convert_speed_bits_binary(bits_per_second: f64) -> String {
     let (number, prefix) = to_largest_prefix(bits_per_second, Base::Binary);
     match prefix {
         Prefix::None => i18n_f("{} b/s", &[&format!("{}", number.round())]),
