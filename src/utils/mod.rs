@@ -11,7 +11,7 @@ pub mod battery;
 pub mod cpu;
 pub mod drive;
 pub mod gpu;
-mod link;
+pub mod link;
 pub mod memory;
 pub mod network;
 pub mod npu;
