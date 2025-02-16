@@ -1,16 +1,18 @@
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
 use lazy_regex::{lazy_regex, Lazy, Regex};
 use log::trace;
+use process_data::pci_slot::PciSlot;
 use std::{
     collections::HashMap,
     fmt::Display,
     path::{Path, PathBuf},
+    str::FromStr,
 };
 
-use crate::i18n::{i18n, i18n_f};
-
 use super::units::convert_storage;
+use crate::i18n::{i18n, i18n_f};
+use crate::utils::link::{Link, PcieLink};
 
 const PATH_SYSFS: &str = "/sys/block";
 
@@ -26,6 +28,7 @@ pub struct DriveData {
     pub removable: Result<bool>,
     pub disk_stats: HashMap<String, usize>,
     pub capacity: Result<u64>,
+    pub link: Result<Link>,
 }
 
 impl DriveData {
@@ -40,6 +43,7 @@ impl DriveData {
         let removable = inner.removable();
         let disk_stats = inner.sys_stats().unwrap_or_default();
         let capacity = inner.capacity();
+        let link = inner.link();
 
         let drive_data = Self {
             inner,
@@ -48,6 +52,7 @@ impl DriveData {
             removable,
             disk_stats,
             capacity,
+            link,
         };
 
         trace!(
@@ -301,6 +306,30 @@ impl Drive {
     pub fn model(&self) -> Result<String> {
         std::fs::read_to_string(self.sysfs_path.join("device/model"))
             .context("unable to parse model sysfs file")
+    }
+
+    /// Returns the Link info of the drive
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if there are errors during
+    /// reading or parsing, or if the drive link type is not supported
+    pub fn link(&self) -> Result<Link> {
+        match self.drive_type {
+            DriveType::Nvme => self.link_for_nvme(),
+            _ => bail!("unsupported drive type"),
+        }
+    }
+
+    fn link_for_nvme(&self) -> Result<Link> {
+        let pcie_address_path = self.sysfs_path.join("device").join("address");
+        let pci_slot = PciSlot::from_str(
+            &std::fs::read_to_string(pcie_address_path)
+                .map(|x| x.trim().to_string())
+                .context("Could not find PCIe address in sysfs for nvme")?,
+        )?;
+        let pcie_link = PcieLink::from_pci_slot(pci_slot)?;
+        Ok(Link::Pcie(pcie_link))
     }
 
     /// Returns the World-Wide Identification of the drive

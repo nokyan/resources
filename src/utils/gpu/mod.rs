@@ -15,14 +15,13 @@ use std::{
     str::FromStr,
 };
 
-use glob::glob;
-
+use self::{amd::AmdGpu, intel::IntelGpu, nvidia::NvidiaGpu, other::OtherGpu};
+use crate::utils::link::{Link, PcieLink};
 use crate::{
     i18n::i18n,
     utils::{pci::Device, read_uevent},
 };
-
-use self::{amd::AmdGpu, intel::IntelGpu, nvidia::NvidiaGpu, other::OtherGpu};
+use glob::glob;
 
 use super::pci::Vendor;
 
@@ -54,6 +53,8 @@ pub struct GpuData {
     pub power_cap: Option<f64>,
     pub power_cap_max: Option<f64>,
 
+    pub link: Option<Link>,
+
     pub nvidia: bool,
 }
 
@@ -81,6 +82,8 @@ impl GpuData {
         let power_cap = gpu.power_cap().ok();
         let power_cap_max = gpu.power_cap_max().ok();
 
+        let link = gpu.link().ok();
+
         let nvidia = matches!(gpu, Gpu::Nvidia(_));
 
         let gpu_data = Self {
@@ -96,6 +99,7 @@ impl GpuData {
             power_usage,
             power_cap,
             power_cap_max,
+            link,
             nvidia,
         };
 
@@ -523,6 +527,15 @@ impl Gpu {
             Gpu::Nvidia(gpu) => gpu.power_cap_max(),
             Gpu::V3d(gpu) => gpu.power_cap_max(),
             Gpu::Other(gpu) => gpu.power_cap_max(),
+        }
+    }
+
+    pub fn link(&self) -> Result<Link> {
+        if let GpuIdentifier::PciSlot(pci_slot) = self.gpu_identifier() {
+            let pcie_link = PcieLink::from_pci_slot(pci_slot)?;
+            Ok(Link::Pcie(pcie_link))
+        } else {
+            bail!("Could not retrieve PciSlot from Gpu");
         }
     }
 }
