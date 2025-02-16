@@ -270,6 +270,12 @@ mod test {
     }
 
     #[test]
+    fn parse_pcie_link_data_invalid_input() {
+        let result = PcieLinkData::parse("random", "noise");
+        assert!(result.is_err());
+    }
+
+    #[test]
     fn display_pcie_link_identical_current_max_only_once() {
         let map = get_test_pcie_link_data();
 
