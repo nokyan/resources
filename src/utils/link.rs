@@ -1,6 +1,8 @@
 use crate::i18n::i18n;
+use crate::utils::drive::{Drive, DriveType};
 use anyhow::Result;
 use std::fmt::{Display, Formatter};
+use std::path::PathBuf;
 
 #[derive(Debug, Default)]
 pub enum Link {
@@ -30,6 +32,19 @@ pub enum PcieSpeed {
     Pcie50,
     #[default]
     Unknown,
+}
+
+impl PcieLink {
+    pub fn from_drive(drive: &Drive) -> Option<Self> {
+        match drive.drive_type {
+            DriveType::Nvme => Self::from_nvme(&drive.sysfs_path),
+            _ => None,
+        }
+    }
+
+    fn from_nvme(path: &PathBuf) -> Option<Self> {
+        None
+    }
 }
 
 impl Display for PcieLink {
