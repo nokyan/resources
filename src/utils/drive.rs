@@ -1,7 +1,11 @@
+use super::units::convert_storage;
+use crate::i18n::{i18n, i18n_f};
+use crate::utils::link::{Link, LinkData, SataSpeed};
 use anyhow::{bail, Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
 use lazy_regex::{lazy_regex, Lazy, Regex};
 use log::trace;
+use path_dedot::ParseDot;
 use process_data::pci_slot::PciSlot;
 use std::{
     collections::HashMap,
@@ -9,10 +13,6 @@ use std::{
     path::{Path, PathBuf},
     str::FromStr,
 };
-
-use super::units::convert_storage;
-use crate::i18n::{i18n, i18n_f};
-use crate::utils::link::{Link, PcieLink};
 
 const PATH_SYSFS: &str = "/sys/block";
 
@@ -317,7 +317,7 @@ impl Drive {
     pub fn link(&self) -> Result<Link> {
         match self.drive_type {
             DriveType::Nvme => self.link_for_nvme(),
-            _ => bail!("unsupported drive type"),
+            _ => self.link_for_sata(),
         }
     }
 
@@ -328,8 +328,43 @@ impl Drive {
                 .map(|x| x.trim().to_string())
                 .context("Could not find PCIe address in sysfs for nvme")?,
         )?;
-        let pcie_link = PcieLink::from_pci_slot(pci_slot)?;
+        let pcie_link = LinkData::from_pci_slot(pci_slot)?;
         Ok(Link::Pcie(pcie_link))
+    }
+
+    fn link_for_sata(&self) -> Result<Link> {
+        let symlink = std::fs::read_link(&self.sysfs_path)
+            .context("Could not read sysfs_path as symblink")?
+            .to_string_lossy()
+            .to_string();
+        // ../../devices/pci0000:40/0000:40:08.3/0000:47:00.0/ata25/host24/target24:0:0/24:0:0:0/block/sda
+
+        let regex = Regex::new(r"(^.+?/ata\d+)/").context("Could not parse regex for ata link")?;
+        let ata_path_match = regex
+            .captures(&symlink)
+            .context("No ata match found, probably no ata device")?
+            .get(1)
+            .context("TODO")?
+            .as_str();
+
+        let ata_path = Path::new(&self.sysfs_path).join("..").join(&ata_path_match);
+        let dedotted_path = ata_path.parse_dot()?.clone();
+        let sub_dirs = std::fs::read_dir(dedotted_path).context("Could not read ata path")?;
+        let link_name = sub_dirs
+            .filter(|x| {
+                x.as_ref()
+                    .unwrap()
+                    .file_name()
+                    .to_string_lossy()
+                    .starts_with("link")
+            })
+            .next()
+            .context("No ata link name found")??
+            .file_name();
+        //Move this to Link
+        Ok(Link::Sata(LinkData::from_sata_link(
+            link_name.to_string_lossy().as_ref(),
+        )?))
     }
 
     /// Returns the World-Wide Identification of the drive
