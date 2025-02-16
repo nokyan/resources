@@ -54,6 +54,8 @@ mod imp {
         pub driver_used: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub max_power_cap: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub link: TemplateChild<adw::ActionRow>,
 
         #[property(get)]
         uses_progress_bar: Cell<bool>,
@@ -108,6 +110,7 @@ mod imp {
                 pci_slot: Default::default(),
                 driver_used: Default::default(),
                 max_power_cap: Default::default(),
+                link: Default::default(),
                 uses_progress_bar: Cell::new(true),
                 main_graph_color: glib::Bytes::from_static(&super::ResGPU::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(ThemedIcon::new("gpu-symbolic").into()),
@@ -284,6 +287,7 @@ impl ResGPU {
             power_usage,
             power_cap,
             power_cap_max,
+            link,
             nvidia: _,
         } = gpu_data;
 
@@ -424,6 +428,10 @@ impl ResGPU {
             usage_percentage_string.push_str(&temperature_string);
         } else {
             imp.temperature.set_subtitle(&i18n("N/A"));
+        }
+
+        if let Some(link) = link {
+            imp.link.set_subtitle(&link.to_string());
         }
 
         self.set_property("tab_usage_string", &usage_percentage_string);

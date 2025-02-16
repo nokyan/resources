@@ -1,5 +1,6 @@
 use crate::i18n::i18n;
 use crate::utils::drive::{Drive, DriveType};
+use crate::utils::gpu::{Gpu, GpuImpl};
 use anyhow::{anyhow, bail, Context, Error, Result};
 use std::fmt::{Display, Formatter};
 use std::path::{Path, PathBuf};
@@ -43,6 +44,14 @@ impl Link {
             Some(Link::Unknown)
         }
     }
+
+    pub fn for_gpu(gpu: &Gpu) -> Option<Self> {
+        if let Some(pcie_link) = PcieLink::for_gpu(gpu) {
+            Some(Link::Pcie(pcie_link))
+        } else {
+            Some(Link::Unknown)
+        }
+    }
 }
 impl PcieLink {
     pub fn for_drive(drive: &Drive) -> Option<Self> {
@@ -52,6 +61,17 @@ impl PcieLink {
         }
     }
 
+    pub fn for_gpu(gpu: &Gpu) -> Option<Self> {
+        let drm_path = match gpu {
+            Gpu::Amd(data) => data.sysfs_path(),
+            Gpu::Intel(data) => data.sysfs_path(),
+            Gpu::Nvidia(data) => data.sysfs_path(),
+            Gpu::V3d(data) => data.sysfs_path(),
+            Gpu::Other(data) => data.sysfs_path(),
+        };
+        let device_path = drm_path.join("device");
+        Self::read_pcie_link_data(&device_path.to_path_buf()).ok()
+    }
     fn for_nvme(path: &PathBuf) -> Result<Self> {
         let address_path = path.join("device").join("address");
         let address = std::fs::read_to_string(address_path)

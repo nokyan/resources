@@ -17,12 +17,12 @@ use std::{
 
 use glob::glob;
 
+use self::{amd::AmdGpu, intel::IntelGpu, nvidia::NvidiaGpu, other::OtherGpu};
+use crate::utils::link::Link;
 use crate::{
     i18n::i18n,
     utils::{pci::Device, read_uevent},
 };
-
-use self::{amd::AmdGpu, intel::IntelGpu, nvidia::NvidiaGpu, other::OtherGpu};
 
 use super::pci::Vendor;
 
@@ -54,6 +54,8 @@ pub struct GpuData {
     pub power_cap: Option<f64>,
     pub power_cap_max: Option<f64>,
 
+    pub link: Option<Link>,
+
     pub nvidia: bool,
 }
 
@@ -81,6 +83,8 @@ impl GpuData {
         let power_cap = gpu.power_cap().ok();
         let power_cap_max = gpu.power_cap_max().ok();
 
+        let link = gpu.link();
+
         let nvidia = matches!(gpu, Gpu::Nvidia(_));
 
         let gpu_data = Self {
@@ -96,6 +100,7 @@ impl GpuData {
             power_usage,
             power_cap,
             power_cap_max,
+            link,
             nvidia,
         };
 
@@ -524,5 +529,9 @@ impl Gpu {
             Gpu::V3d(gpu) => gpu.power_cap_max(),
             Gpu::Other(gpu) => gpu.power_cap_max(),
         }
+    }
+
+    pub fn link(&self) -> Option<Link> {
+        Link::for_gpu(self)
     }
 }
