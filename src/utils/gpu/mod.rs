@@ -15,14 +15,13 @@ use std::{
     str::FromStr,
 };
 
-use glob::glob;
-
 use self::{amd::AmdGpu, intel::IntelGpu, nvidia::NvidiaGpu, other::OtherGpu};
-use crate::utils::link::Link;
+use crate::utils::link::{Link, PcieLink};
 use crate::{
     i18n::i18n,
     utils::{pci::Device, read_uevent},
 };
+use glob::glob;
 
 use super::pci::Vendor;
 
@@ -532,6 +531,11 @@ impl Gpu {
     }
 
     pub fn link(&self) -> Result<Link> {
-        Link::for_gpu(self)
+        if let GpuIdentifier::PciSlot(pci_address) = self.gpu_identifier() {
+            let pcie_link = PcieLink::new(&pci_address.to_string())?;
+            Ok(Link::Pcie(pcie_link))
+        } else {
+            bail!("Could not retrieve PciSlot from Gpu");
+        }
     }
 }

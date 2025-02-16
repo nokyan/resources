@@ -1,6 +1,4 @@
 use crate::i18n::i18n;
-use crate::utils::drive::{Drive, DriveType};
-use crate::utils::gpu::{Gpu, GpuImpl};
 use anyhow::{anyhow, bail, Context, Error, Result};
 use std::fmt::{Display, Formatter};
 use std::path::{Path, PathBuf};
@@ -34,61 +32,15 @@ pub enum PcieSpeed {
     Pcie50,
     Pcie60,
 }
-impl Link {
-    pub fn for_drive(drive: &Drive) -> Result<Self> {
-        //For now only PCIe, later SATA
-        match PcieLink::for_drive(drive) {
-            Ok(link) => Ok(Link::Pcie(link)),
-            Err(e) => Err(e),
-        }
-    }
 
-    pub fn for_gpu(gpu: &Gpu) -> Result<Self> {
-        match PcieLink::for_gpu(gpu) {
-            Ok(link) => Ok(Link::Pcie(link)),
-            Err(e) => Err(e),
-        }
-    }
-}
 impl PcieLink {
-    pub fn for_drive(drive: &Drive) -> Result<Self> {
-        match drive.drive_type {
-            DriveType::Nvme => Self::for_nvme(&drive.sysfs_path),
-            _ => Err(anyhow!("Unsupported drive type")),
-        }
-    }
-
-    pub fn for_gpu(gpu: &Gpu) -> Result<Self> {
-        let drm_path = match gpu {
-            Gpu::Amd(data) => data.sysfs_path(),
-            Gpu::Intel(data) => data.sysfs_path(),
-            Gpu::Nvidia(data) => data.sysfs_path(),
-            Gpu::V3d(data) => data.sysfs_path(),
-            Gpu::Other(data) => data.sysfs_path(),
-        };
-        let device_path = drm_path.join("device");
-        Self::read_pcie_link_data(&device_path.to_path_buf())
-    }
-
-    fn for_nvme(path: &PathBuf) -> Result<Self> {
-        let address_path = path.join("device").join("address");
-        let address = std::fs::read_to_string(address_path)
-            .map(|x| x.trim().to_string())
-            .context("Failed to read nvme PCIe address");
-        if let Ok(address) = address {
-            Self::read_using_pcie_address(&address)
-        } else {
-            bail!("Could not find PCIe address in sysfs for nvme")
-        }
-    }
-
-    fn read_using_pcie_address(pcie_address: &str) -> Result<Self> {
+    pub fn new(pcie_address: &str) -> Result<PcieLink> {
         let pcie_dir = format!("/sys/bus/pci/devices/{pcie_address}/");
         let pcie_folder = Path::new(pcie_dir.as_str());
         if pcie_folder.exists() {
             return Self::read_pcie_link_data(&pcie_folder.to_path_buf());
         }
-        bail!("Could not find PCIe speed")
+        bail!("Could not find PCIe address entry for {pcie_address}");
     }
 
     fn read_pcie_link_data(path: &PathBuf) -> Result<Self> {

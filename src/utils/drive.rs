@@ -1,4 +1,4 @@
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
 use lazy_regex::{lazy_regex, Lazy, Regex};
 use log::trace;
@@ -10,7 +10,7 @@ use std::{
 
 use super::units::convert_storage;
 use crate::i18n::{i18n, i18n_f};
-use crate::utils::link::Link;
+use crate::utils::link::{Link, PcieLink};
 
 const PATH_SYSFS: &str = "/sys/block";
 
@@ -313,8 +313,21 @@ impl Drive {
     /// Will return `Err` if there are errors during
     /// reading or parsing, or if the drive link type is not supported
     pub fn link(&self) -> Result<Link> {
-        Link::for_drive(self)
+        match self.drive_type {
+            DriveType::Nvme => self.link_for_nvme(),
+            _ => bail!("unsupported drive type"),
+        }
     }
+
+    fn link_for_nvme(&self) -> Result<Link> {
+        let pcie_address_path = self.sysfs_path.join("device").join("address");
+        let pcie_address = std::fs::read_to_string(pcie_address_path)
+            .map(|x| x.trim().to_string())
+            .context("Could not find PCIe address in sysfs for nvme")?;
+        let pcie_link = PcieLink::new(&pcie_address)?;
+        Ok(Link::Pcie(pcie_link))
+    }
+
     /// Returns the World-Wide Identification of the drive
     ///
     /// # Errors
