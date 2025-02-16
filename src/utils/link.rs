@@ -173,6 +173,7 @@ impl Display for PcieSpeed {
 impl FromStr for PcieSpeed {
     type Err = Error;
 
+    /// https://en.wikipedia.org/wiki/PCI_Express#Comparison_table
     fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
         match s {
             "2.5 GT/s PCIe" => Ok(PcieSpeed::Pcie10),
