@@ -83,7 +83,7 @@ impl GpuData {
         let power_cap = gpu.power_cap().ok();
         let power_cap_max = gpu.power_cap_max().ok();
 
-        let link = gpu.link();
+        let link = gpu.link().ok();
 
         let nvidia = matches!(gpu, Gpu::Nvidia(_));
 
@@ -531,7 +531,7 @@ impl Gpu {
         }
     }
 
-    pub fn link(&self) -> Option<Link> {
+    pub fn link(&self) -> Result<Link> {
         Link::for_gpu(self)
     }
 }

@@ -26,7 +26,7 @@ pub struct DriveData {
     pub removable: Result<bool>,
     pub disk_stats: HashMap<String, usize>,
     pub capacity: Result<u64>,
-    pub link: Option<Link>,
+    pub link: Result<Link>,
 }
 
 impl DriveData {
@@ -305,7 +305,7 @@ impl Drive {
             .context("unable to parse model sysfs file")
     }
 
-    pub fn link(&self) -> Option<Link> {
+    pub fn link(&self) -> Result<Link> {
         Link::for_drive(self)
     }
     /// Returns the World-Wide Identification of the drive

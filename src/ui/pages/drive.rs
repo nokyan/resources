@@ -423,8 +423,10 @@ impl ResDrive {
             imp.removable.set_subtitle(&i18n("N/A"));
         }
 
-        if let Some(link) = link {
+        if let Ok(link) = link {
             imp.link.set_subtitle(&link.to_string());
+        } else {
+            imp.link.set_subtitle(&i18n("N/A"));
         }
         self.set_property(
             "tab_usage_string",
