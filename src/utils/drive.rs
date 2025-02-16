@@ -306,11 +306,11 @@ impl Drive {
             .context("unable to parse model sysfs file")
     }
 
-    /// Returns, whether the Link info of the drive
+    /// Returns the Link info of the drive
     ///
     /// # Errors
     ///
-    /// Will return `Err` if the are errors during
+    /// Will return `Err` if there are errors during
     /// reading or parsing, or if the drive link type is not supported
     pub fn link(&self) -> Result<Link> {
         Link::for_drive(self)

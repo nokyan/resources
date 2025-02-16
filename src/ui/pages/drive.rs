@@ -428,6 +428,7 @@ impl ResDrive {
         } else {
             imp.link.set_subtitle(&i18n("N/A"));
         }
+
         self.set_property(
             "tab_usage_string",
             // Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
