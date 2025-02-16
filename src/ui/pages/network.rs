@@ -7,7 +7,7 @@ use log::trace;
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::network::{NetworkData, NetworkInterface};
-use crate::utils::units::{convert_speed, convert_storage};
+use crate::utils::units::{convert_speed, convert_speed_bits_decimal, convert_storage};
 
 pub const TAB_ID_PREFIX: &str = "network";
 
@@ -44,6 +44,8 @@ mod imp {
         pub interface: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub hw_address: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub link_speed: TemplateChild<adw::ActionRow>,
         pub old_received_bytes: Cell<Option<usize>>,
         pub old_sent_bytes: Cell<Option<usize>>,
         pub last_timestamp: Cell<SystemTime>,
@@ -108,6 +110,7 @@ mod imp {
                 driver: Default::default(),
                 interface: Default::default(),
                 hw_address: Default::default(),
+                link_speed: Default::default(),
                 uses_progress_bar: Cell::new(true),
                 main_graph_color: glib::Bytes::from_static(&super::ResNetwork::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(ThemedIcon::new("unknown-network-type-symbolic").into()),
@@ -261,6 +264,13 @@ impl ResNetwork {
         } else {
             imp.hw_address.set_subtitle(&hw_address);
         }
+
+        imp.link_speed.set_subtitle(
+            &network_interface
+                .link_speed()
+                .map(|bps| convert_speed_bits_decimal(bps as f64))
+                .unwrap_or_else(|_| i18n("N/A")),
+        );
 
         imp.last_timestamp.set(
             SystemTime::now()
