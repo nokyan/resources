@@ -182,6 +182,7 @@ impl FromStr for SataSpeed {
 
     fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
         match s {
+            // https://en.wikipedia.org/wiki/SATA
             "1.5 Gbps" => Ok(Sata150),
             "3.0 Gbps" => Ok(Sata300),
             "6.0 Gbps" => Ok(Sata600),

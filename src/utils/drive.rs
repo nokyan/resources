@@ -357,6 +357,7 @@ impl Drive {
         }
         Err(anyhow!("No PCI slot detected"))
     }
+
     fn ata_slot(&self) -> Result<AtaSlot> {
         let symlink = std::fs::read_link(&self.sysfs_path)
             .context("Could not read sysfs_path as symlink")?
@@ -369,7 +370,10 @@ impl Drive {
         let ata_sub_path_match = ata_regex
             .captures(&symlink)
             .context("No ata match found, probably no ata device")?;
-        let ata_sub_path = ata_sub_path_match.get(1).context("TODO")?.as_str();
+        let ata_sub_path = ata_sub_path_match
+            .get(1)
+            .context("No ata match found, probably no ata device")?
+            .as_str();
 
         let ata_device = ata_sub_path_match
             .get(2)
@@ -378,8 +382,8 @@ impl Drive {
             .parse::<u8>()?;
 
         let ata_path = Path::new(&self.sysfs_path).join("..").join(&ata_sub_path);
-        let dedotted_path = ata_path.parse_dot()?.clone();
-        let sub_dirs = std::fs::read_dir(dedotted_path).context("Could not read ata path")?;
+        let dot_parsed_path = ata_path.parse_dot()?.clone();
+        let sub_dirs = std::fs::read_dir(dot_parsed_path).context("Could not read ata path")?;
 
         let ata_link_regex =
             Regex::new(r"(^link(\d+))$").context("Could not parse regex for ata link")?;
