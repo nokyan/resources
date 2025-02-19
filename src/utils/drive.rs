@@ -85,7 +85,7 @@ pub enum DriveType {
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub enum DriveSlot {
-    Pcie(PciSlot),
+    Pci(PciSlot),
     Ata(AtaSlot),
     #[default]
     Unknown,
@@ -160,7 +160,7 @@ impl Drive {
         drive.block_device = block_device;
         drive.model = drive.model().ok().map(|model| model.trim().to_string());
         drive.drive_type = drive.drive_type().unwrap_or_default();
-        drive.slot = drive.slot();
+        drive.slot = drive.slot().unwrap_or_default();
         trace!("Created Drive object of {path:?}: {drive:?}");
 
         drive
@@ -331,26 +331,32 @@ impl Drive {
     /// reading or parsing, or if the drive link type is not supported
     pub fn link(&self) -> Result<Link> {
         match self.slot {
-            DriveSlot::Pcie(slot) => Ok(Link::Pcie(LinkData::from_pci_slot(&slot)?)),
+            DriveSlot::Pci(slot) => Ok(Link::Pcie(LinkData::from_pci_slot(&slot)?)),
             DriveSlot::Ata(slot) => Ok(Link::Sata(LinkData::from_ata_slot(&slot)?)),
             _ => Err(anyhow!("unsupported drive connection type")),
         }
     }
 
-    pub fn slot(&self) -> DriveSlot {
+    pub fn slot(&self) -> Result<DriveSlot> {
+        if let Ok(pci_slot) = self.pci_slot() {
+            Ok(DriveSlot::Pci(pci_slot))
+        } else if let Ok(ata_slot) = self.ata_slot() {
+            Ok(DriveSlot::Ata(ata_slot))
+        } else {
+            Err(anyhow!("unsupported drive slot type"))
+        }
+    }
+
+    fn pci_slot(&self) -> Result<PciSlot> {
         let pci_address_path = self.sysfs_path.join("device").join("address");
         let pci_address = std::fs::read_to_string(pci_address_path).map(|x| x.trim().to_string());
         if let Ok(pci_address) = pci_address {
             if let Ok(pci_slot) = PciSlot::from_str(&pci_address) {
-                return DriveSlot::Pcie(pci_slot);
+                return Ok(pci_slot);
             }
         }
-        if let Ok(ata_slot) = self.ata_slot() {
-            return DriveSlot::Ata(ata_slot);
-        }
-        DriveSlot::Unknown
+        Err(anyhow!("No PCI slot detected"))
     }
-
     fn ata_slot(&self) -> Result<AtaSlot> {
         let symlink = std::fs::read_link(&self.sysfs_path)
             .context("Could not read sysfs_path as symlink")?
