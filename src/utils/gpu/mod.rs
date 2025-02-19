@@ -532,7 +532,7 @@ impl Gpu {
 
     pub fn link(&self) -> Result<Link> {
         if let GpuIdentifier::PciSlot(pci_slot) = self.gpu_identifier() {
-            let pcie_link = LinkData::from_pci_slot(pci_slot)?;
+            let pcie_link = LinkData::from_pci_slot(&pci_slot)?;
             Ok(Link::Pcie(pcie_link))
         } else {
             bail!("Could not retrieve PciSlot from Gpu");

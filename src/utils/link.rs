@@ -1,4 +1,5 @@
 use crate::i18n::i18n;
+use crate::utils::drive::AtaSlot;
 use crate::utils::link::SataSpeed::{Sata150, Sata300, Sata600};
 use anyhow::{anyhow, bail, Context, Error, Result};
 use process_data::pci_slot::PciSlot;
@@ -42,7 +43,7 @@ pub enum SataSpeed {
 }
 
 impl LinkData<PcieLinkData> {
-    pub fn from_pci_slot(pci_slot: PciSlot) -> Result<Self> {
+    pub fn from_pci_slot(pci_slot: &PciSlot) -> Result<Self> {
         let pcie_dir = format!("/sys/bus/pci/devices/{pci_slot}/");
         let pcie_folder = Path::new(pcie_dir.as_str());
         if pcie_folder.exists() {
@@ -114,8 +115,9 @@ where
 }
 
 impl LinkData<SataSpeed> {
-    pub fn from_sata_link(sata_link: &str) -> Result<Self> {
-        let ata_link_path = Path::new("/sys/class/ata_link").join(sata_link);
+    pub fn from_ata_slot(ata_slot: &AtaSlot) -> Result<Self> {
+        let ata_link_path =
+            Path::new("/sys/class/ata_link").join(format!("link{}", ata_slot.ata_link));
         if std::fs::exists(&ata_link_path)? {
             let current_sata_speed_raw = std::fs::read_to_string(ata_link_path.join("sata_spd"))
                 .map(|x| x.trim().to_string())
@@ -132,7 +134,7 @@ impl LinkData<SataSpeed> {
             };
             return Ok(Self { current, max });
         }
-        bail!("ata link path not found for '{}'", sata_link);
+        bail!("ata link path not found for '{:?}'", ata_slot);
     }
 }
 

@@ -1,7 +1,7 @@
 use super::units::convert_storage;
 use crate::i18n::{i18n, i18n_f};
-use crate::utils::link::{Link, LinkData, SataSpeed};
-use anyhow::{bail, Context, Result};
+use crate::utils::link::{Link, LinkData};
+use anyhow::{anyhow, Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
 use lazy_regex::{lazy_regex, Lazy, Regex};
 use log::trace;
@@ -83,11 +83,26 @@ pub enum DriveType {
     Unknown,
 }
 
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
+pub enum DriveSlot {
+    Pcie(PciSlot),
+    Ata(AtaSlot),
+    #[default]
+    Unknown,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct AtaSlot {
+    pub ata_device: u8,
+    pub ata_link: u8,
+}
+
 #[derive(Debug, Clone, Default, Eq)]
 pub struct Drive {
     pub model: Option<String>,
     pub drive_type: DriveType,
     pub block_device: String,
+    pub slot: DriveSlot,
     pub sysfs_path: PathBuf,
 }
 
@@ -145,7 +160,7 @@ impl Drive {
         drive.block_device = block_device;
         drive.model = drive.model().ok().map(|model| model.trim().to_string());
         drive.drive_type = drive.drive_type().unwrap_or_default();
-
+        drive.slot = drive.slot();
         trace!("Created Drive object of {path:?}: {drive:?}");
 
         drive
@@ -315,56 +330,74 @@ impl Drive {
     /// Will return `Err` if there are errors during
     /// reading or parsing, or if the drive link type is not supported
     pub fn link(&self) -> Result<Link> {
-        match self.drive_type {
-            DriveType::Nvme => self.link_for_nvme(),
-            _ => self.link_for_sata(),
+        match self.slot {
+            DriveSlot::Pcie(slot) => Ok(Link::Pcie(LinkData::from_pci_slot(&slot)?)),
+            DriveSlot::Ata(slot) => Ok(Link::Sata(LinkData::from_ata_slot(&slot)?)),
+            _ => Err(anyhow!("unsupported drive connection type")),
         }
     }
 
-    fn link_for_nvme(&self) -> Result<Link> {
-        let pcie_address_path = self.sysfs_path.join("device").join("address");
-        let pci_slot = PciSlot::from_str(
-            &std::fs::read_to_string(pcie_address_path)
-                .map(|x| x.trim().to_string())
-                .context("Could not find PCIe address in sysfs for nvme")?,
-        )?;
-        let pcie_link = LinkData::from_pci_slot(pci_slot)?;
-        Ok(Link::Pcie(pcie_link))
+    pub fn slot(&self) -> DriveSlot {
+        let pci_address_path = self.sysfs_path.join("device").join("address");
+        let pci_address = std::fs::read_to_string(pci_address_path).map(|x| x.trim().to_string());
+        if let Ok(pci_address) = pci_address {
+            if let Ok(pci_slot) = PciSlot::from_str(&pci_address) {
+                return DriveSlot::Pcie(pci_slot);
+            }
+        }
+        if let Ok(ata_slot) = self.ata_slot() {
+            return DriveSlot::Ata(ata_slot);
+        }
+        DriveSlot::Unknown
     }
 
-    fn link_for_sata(&self) -> Result<Link> {
+    fn ata_slot(&self) -> Result<AtaSlot> {
         let symlink = std::fs::read_link(&self.sysfs_path)
-            .context("Could not read sysfs_path as symblink")?
+            .context("Could not read sysfs_path as symlink")?
             .to_string_lossy()
             .to_string();
         // ../../devices/pci0000:40/0000:40:08.3/0000:47:00.0/ata25/host24/target24:0:0/24:0:0:0/block/sda
 
-        let regex = Regex::new(r"(^.+?/ata\d+)/").context("Could not parse regex for ata link")?;
-        let ata_path_match = regex
+        let ata_regex =
+            Regex::new(r"(^.+?/ata(\d+))/").context("Could not parse regex for ata slot")?;
+        let ata_sub_path_match = ata_regex
             .captures(&symlink)
-            .context("No ata match found, probably no ata device")?
-            .get(1)
-            .context("TODO")?
-            .as_str();
+            .context("No ata match found, probably no ata device")?;
+        let ata_sub_path = ata_sub_path_match.get(1).context("TODO")?.as_str();
 
-        let ata_path = Path::new(&self.sysfs_path).join("..").join(&ata_path_match);
+        let ata_device = ata_sub_path_match
+            .get(2)
+            .context("could not match digits in ata")?
+            .as_str()
+            .parse::<u8>()?;
+
+        let ata_path = Path::new(&self.sysfs_path).join("..").join(&ata_sub_path);
         let dedotted_path = ata_path.parse_dot()?.clone();
         let sub_dirs = std::fs::read_dir(dedotted_path).context("Could not read ata path")?;
-        let link_name = sub_dirs
-            .filter(|x| {
-                x.as_ref()
-                    .unwrap()
+
+        let ata_link_regex =
+            Regex::new(r"(^link(\d+))$").context("Could not parse regex for ata link")?;
+        let ata_link = sub_dirs
+            .filter_map(|x| {
+                let file_name = x
+                    .as_ref()
+                    .unwrap() //TODO
                     .file_name()
                     .to_string_lossy()
-                    .starts_with("link")
+                    .to_string();
+                if let Some(capture) = ata_link_regex.captures(&file_name) {
+                    capture.get(2).unwrap().as_str().parse::<u8>().ok()
+                } else {
+                    None
+                }
             })
             .next()
-            .context("No ata link name found")??
-            .file_name();
-        //Move this to Link
-        Ok(Link::Sata(LinkData::from_sata_link(
-            link_name.to_string_lossy().as_ref(),
-        )?))
+            .context("No ata link number found")?;
+
+        Ok(AtaSlot {
+            ata_device,
+            ata_link,
+        })
     }
 
     /// Returns the World-Wide Identification of the drive
