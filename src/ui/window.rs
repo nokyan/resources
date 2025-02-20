@@ -354,12 +354,9 @@ impl MainWindow {
             #[strong(rename_to = this)]
             self,
             move |_, key, _, _| {
-                match key {
-                    gdk::Key::Control_L => {
-                        debug!("Ctrl is being held, halting apps and processes updates");
-                        this.imp().pause_updates.set(true);
-                    }
-                    _ => (),
+                if key == gdk::Key::Control_L {
+                    debug!("Ctrl is being held, halting apps and processes updates");
+                    this.imp().pause_updates.set(true);
                 };
                 glib::Propagation::Proceed
             }
@@ -368,12 +365,9 @@ impl MainWindow {
             #[weak]
             imp,
             move |_, key, _, _| {
-                match key {
-                    gdk::Key::Control_L => {
-                        debug!("Ctrl has been released, continuing apps and processes updates");
-                        imp.pause_updates.set(false);
-                    }
-                    _ => (),
+                if key == gdk::Key::Control_L {
+                    debug!("Ctrl has been released, continuing apps and processes updates");
+                    imp.pause_updates.set(false);
                 };
             }
         ));

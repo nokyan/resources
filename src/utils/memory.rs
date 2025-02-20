@@ -241,7 +241,7 @@ impl MemoryDevice {
                 .and_then(|regex| regex.captures(dmi))
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<usize>().ok())
-                .map_or(true, |int| int != 0);
+                != Some(0);
 
             let speed = if installed {
                 Regex::new(&TEMPLATE_RE_CONFIGURED_SPEED_MTS.replace('%', &i))

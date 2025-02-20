@@ -4,7 +4,7 @@ use crate::utils::link::SataSpeed::{Sata150, Sata300, Sata600};
 use anyhow::{anyhow, bail, Context, Error, Result};
 use process_data::pci_slot::PciSlot;
 use std::fmt::{Display, Formatter};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::str::FromStr;
 
 #[derive(Debug, Default)]
@@ -52,7 +52,9 @@ impl LinkData<PcieLinkData> {
         bail!("Could not find PCIe address entry for {pci_slot}");
     }
 
-    fn read_pcie_link_data(path: &PathBuf) -> Result<Self> {
+    fn read_pcie_link_data<P: AsRef<Path>>(path: P) -> Result<Self> {
+        let path = path.as_ref();
+
         let current_pcie_speed_raw = std::fs::read_to_string(path.join("current_link_speed"))
             .map(|x| x.trim().to_string())
             .context("Could not read current link speed")?;
@@ -79,9 +81,10 @@ impl LinkData<PcieLinkData> {
 }
 
 impl PcieLinkData {
-    pub fn parse(speed_raw: &str, width_raw: &str) -> Result<Self> {
-        let speed = PcieSpeed::from_str(speed_raw)?;
+    pub fn parse<S: AsRef<str>>(speed_raw: S, width_raw: S) -> Result<Self> {
+        let speed = PcieSpeed::from_str(speed_raw.as_ref())?;
         let width = width_raw
+            .as_ref()
             .parse::<usize>()
             .context("Could not parse PCIe width")?;
         Ok(PcieLinkData { speed, width })
@@ -118,23 +121,18 @@ impl LinkData<SataSpeed> {
     pub fn from_ata_slot(ata_slot: &AtaSlot) -> Result<Self> {
         let ata_link_path =
             Path::new("/sys/class/ata_link").join(format!("link{}", ata_slot.ata_link));
-        if std::fs::exists(&ata_link_path)? {
-            let current_sata_speed_raw = std::fs::read_to_string(ata_link_path.join("sata_spd"))
-                .map(|x| x.trim().to_string())
-                .context("Could not read sata_spd")?;
-            let max_sata_speed_raw = std::fs::read_to_string(ata_link_path.join("sata_spd_max"))
-                .map(|x| x.trim().to_string())
-                .context("Could not read sata_spd_max");
 
-            let current = SataSpeed::from_str(&current_sata_speed_raw);
-            let max = if let Ok(max_sata_speed_raw) = max_sata_speed_raw {
-                SataSpeed::from_str(&max_sata_speed_raw)
-            } else {
-                Err(anyhow::anyhow!("Could not read sata_spd_max"))
-            };
-            return Ok(Self { current, max });
-        }
-        bail!("ata link path not found for '{:?}'", ata_slot);
+        let current_sata_speed_raw = std::fs::read_to_string(ata_link_path.join("sata_spd"))
+            .map(|x| x.trim().to_string())
+            .context("Could not read sata_spd")?;
+        let max_sata_speed_raw = std::fs::read_to_string(ata_link_path.join("sata_spd_max"))
+            .map(|x| x.trim().to_string())
+            .context("Could not read sata_spd_max");
+
+        let current = SataSpeed::from_str(&current_sata_speed_raw);
+        let max = max_sata_speed_raw.and_then(|raw| SataSpeed::from_str(&raw));
+
+        Ok(Self { current, max })
     }
 }
 

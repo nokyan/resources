@@ -29,7 +29,7 @@ pub const VID_AMD: u16 = 0x1002;
 pub const VID_INTEL: u16 = 0x8086;
 pub const VID_NVIDIA: u16 = 0x10DE;
 
-const RE_CARD_ENUMARATOR: Lazy<Regex> = lazy_regex!(r"(\d+)\/?$");
+static RE_CARD_ENUMARATOR: Lazy<Regex> = lazy_regex!(r"(\d+)\/?$");
 
 #[derive(Debug)]
 pub struct GpuData {

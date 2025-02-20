@@ -1,7 +1,7 @@
 use super::units::convert_storage;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::link::{Link, LinkData};
-use anyhow::{anyhow, Context, Result};
+use anyhow::{bail, Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
 use lazy_regex::{lazy_regex, Lazy, Regex};
 use log::trace;
@@ -19,6 +19,10 @@ const PATH_SYSFS: &str = "/sys/block";
 static RE_DRIVE: Lazy<Regex> = lazy_regex!(
     r" *(?P<read_ios>[0-9]*) *(?P<read_merges>[0-9]*) *(?P<read_sectors>[0-9]*) *(?P<read_ticks>[0-9]*) *(?P<write_ios>[0-9]*) *(?P<write_merges>[0-9]*) *(?P<write_sectors>[0-9]*) *(?P<write_ticks>[0-9]*) *(?P<in_flight>[0-9]*) *(?P<io_ticks>[0-9]*) *(?P<time_in_queue>[0-9]*) *(?P<discard_ios>[0-9]*) *(?P<discard_merges>[0-9]*) *(?P<discard_sectors>[0-9]*) *(?P<discard_ticks>[0-9]*) *(?P<flush_ios>[0-9]*) *(?P<flush_ticks>[0-9]*)"
 );
+
+static RE_ATA_LINK: Lazy<Regex> = lazy_regex!(r"(^link(\d+))$");
+
+static RE_ATA_SLOT: Lazy<Regex> = lazy_regex!(r"(^.+?/ata(\d+))/");
 
 #[derive(Debug)]
 pub struct DriveData {
@@ -333,7 +337,7 @@ impl Drive {
         match self.slot {
             DriveSlot::Pci(slot) => Ok(Link::Pcie(LinkData::from_pci_slot(&slot)?)),
             DriveSlot::Ata(slot) => Ok(Link::Sata(LinkData::from_ata_slot(&slot)?)),
-            _ => Err(anyhow!("unsupported drive connection type")),
+            _ => bail!("unsupported drive connection type"),
         }
     }
 
@@ -343,19 +347,16 @@ impl Drive {
         } else if let Ok(ata_slot) = self.ata_slot() {
             Ok(DriveSlot::Ata(ata_slot))
         } else {
-            Err(anyhow!("unsupported drive slot type"))
+            bail!("unsupported drive slot type")
         }
     }
 
     fn pci_slot(&self) -> Result<PciSlot> {
         let pci_address_path = self.sysfs_path.join("device").join("address");
-        let pci_address = std::fs::read_to_string(pci_address_path).map(|x| x.trim().to_string());
-        if let Ok(pci_address) = pci_address {
-            if let Ok(pci_slot) = PciSlot::from_str(&pci_address) {
-                return Ok(pci_slot);
-            }
-        }
-        Err(anyhow!("No PCI slot detected"))
+        let pci_address =
+            std::fs::read_to_string(pci_address_path).map(|x| x.trim().to_string())?;
+
+        Ok(PciSlot::from_str(&pci_address)?)
     }
 
     fn ata_slot(&self) -> Result<AtaSlot> {
@@ -365,11 +366,10 @@ impl Drive {
             .to_string();
         // ../../devices/pci0000:40/0000:40:08.3/0000:47:00.0/ata25/host24/target24:0:0/24:0:0:0/block/sda
 
-        let ata_regex =
-            Regex::new(r"(^.+?/ata(\d+))/").context("Could not parse regex for ata slot")?;
-        let ata_sub_path_match = ata_regex
+        let ata_sub_path_match = RE_ATA_SLOT
             .captures(&symlink)
             .context("No ata match found, probably no ata device")?;
+
         let ata_sub_path = ata_sub_path_match
             .get(1)
             .context("No ata match found, probably no ata device")?
@@ -381,25 +381,18 @@ impl Drive {
             .as_str()
             .parse::<u8>()?;
 
-        let ata_path = Path::new(&self.sysfs_path).join("..").join(&ata_sub_path);
+        let ata_path = Path::new(&self.sysfs_path).join("..").join(ata_sub_path);
         let dot_parsed_path = ata_path.parse_dot()?.clone();
         let sub_dirs = std::fs::read_dir(dot_parsed_path).context("Could not read ata path")?;
 
-        let ata_link_regex =
-            Regex::new(r"(^link(\d+))$").context("Could not parse regex for ata link")?;
         let ata_link = sub_dirs
             .filter_map(|x| {
-                let file_name = x
-                    .as_ref()
-                    .unwrap() //TODO
-                    .file_name()
-                    .to_string_lossy()
-                    .to_string();
-                if let Some(capture) = ata_link_regex.captures(&file_name) {
-                    capture.get(2).unwrap().as_str().parse::<u8>().ok()
-                } else {
-                    None
-                }
+                x.ok().and_then(|x| {
+                    RE_ATA_LINK
+                        .captures(&x.file_name().to_string_lossy())
+                        .and_then(|captures| captures.get(2))
+                        .and_then(|capture| capture.as_str().parse::<u8>().ok())
+                })
             })
             .next()
             .context("No ata link number found")?;
