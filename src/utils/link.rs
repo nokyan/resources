@@ -1,13 +1,14 @@
 use crate::i18n::i18n;
 use crate::utils::drive::{AtaSlot, UsbSlot};
 use crate::utils::link::SataSpeed::{Sata150, Sata300, Sata600};
-use crate::utils::units::{convert_speed_bits_decimal, convert_speed_bits_decimal_with_places};
+use crate::utils::units::convert_speed_bits_decimal_with_places;
 use anyhow::{anyhow, bail, Context, Error, Result};
 use plotters::prelude::LogScalable;
 use process_data::pci_slot::PciSlot;
 use std::fmt::{Display, Formatter};
 use std::path::Path;
 use std::str::FromStr;
+
 #[derive(Debug, Default)]
 pub enum Link {
     Pcie(LinkData<PcieLinkData>),
@@ -44,19 +45,36 @@ pub enum SataSpeed {
     Sata600,
 }
 
+trait WithBits {
+    fn get_bits(&self) -> f64;
+}
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum UsbSpeed {
     // https://en.wikipedia.org/wiki/USB#Release_versions
     Usb1_0,
-    Usb1_1(usize),
-    Usb2_0(usize),
-    Usb3_0(usize),
-    Usb3_1(usize),
-    Usb3_2(usize),
-    Usb4(usize),
+    Usb1_1,
+    Usb2_0,
+    Usb3_0,
+    Usb3_1,
+    Usb3_2,
+    Usb4,
     Usb4_2_0(usize),
 }
 
+impl WithBits for UsbSpeed {
+    fn get_bits(&self) -> f64 {
+        return match (self) {
+            UsbSpeed::Usb1_0 => 1.5,
+            UsbSpeed::Usb1_1 => 12.0,
+            UsbSpeed::Usb2_0 => 480.0,
+            UsbSpeed::Usb3_0 => 5_000.0,
+            UsbSpeed::Usb3_1 => 10_000.0,
+            UsbSpeed::Usb3_2 => 20_000.0,
+            UsbSpeed::Usb4 => 40_000.0,
+            UsbSpeed::Usb4_2_0(mbit) => mbit.as_f64(),
+        } * 1_000_000.0;
+    }
+}
 impl LinkData<PcieLinkData> {
     pub fn from_pci_slot(pci_slot: &PciSlot) -> Result<Self> {
         let pcie_dir = format!("/sys/bus/pci/devices/{pci_slot}/");
@@ -250,28 +268,18 @@ impl Display for UsbSpeed {
             // https://en.wikipedia.org/wiki/USB#Release_versions
             match self {
                 UsbSpeed::Usb1_0 => "USB 1.0",
-                UsbSpeed::Usb1_1(_) => "USB 1.1",
-                UsbSpeed::Usb2_0(_) => "USB 2.0",
-                UsbSpeed::Usb3_0(_) => "USB 3.0",
-                UsbSpeed::Usb3_1(_) => "USB 3.1",
-                UsbSpeed::Usb3_2(_) => "USB 3.2",
-                UsbSpeed::Usb4(_) => "USB4",
+                UsbSpeed::Usb1_1 => "USB 1.1",
+                UsbSpeed::Usb2_0 => "USB 2.0",
+                UsbSpeed::Usb3_0 => "USB 3.0",
+                UsbSpeed::Usb3_1 => "USB 3.1",
+                UsbSpeed::Usb3_2 => "USB 3.2",
+                UsbSpeed::Usb4 => "USB4",
                 UsbSpeed::Usb4_2_0(_) => "USB4 2.0",
             },
-            convert_speed_bits_decimal_with_places(
-                match self {
-                    UsbSpeed::Usb1_0 => 1.5,
-                    UsbSpeed::Usb1_1(mbit) => mbit.as_f64(),
-                    UsbSpeed::Usb2_0(mbit) => mbit.as_f64(),
-                    UsbSpeed::Usb3_0(mbit) => mbit.as_f64(),
-                    UsbSpeed::Usb3_1(mbit) => mbit.as_f64(),
-                    UsbSpeed::Usb3_2(mbit) => mbit.as_f64(),
-                    UsbSpeed::Usb4(mbit) => mbit.as_f64(),
-                    UsbSpeed::Usb4_2_0(mbit) => mbit.as_f64(),
-                } * 1000.0
-                    * 1000.0,
-                0
-            )
+            match self {
+                UsbSpeed::Usb1_0 => convert_speed_bits_decimal_with_places(self.get_bits(), 1),
+                _ => convert_speed_bits_decimal_with_places(self.get_bits(), 0),
+            }
         )
     }
 }
@@ -283,14 +291,14 @@ impl FromStr for UsbSpeed {
             // https://en.wikipedia.org/wiki/USB#Release_versions
             //https://www.kernel.org/doc/Documentation/ABI/stable/sysfs-bus-usb
             "1.5" => Ok(UsbSpeed::Usb1_0),
-            "12" => Ok(UsbSpeed::Usb1_1(12)),
-            "480" => Ok(UsbSpeed::Usb2_0(480)),
-            "5000" => Ok(UsbSpeed::Usb3_0(5000)),
-            "10000" => Ok(UsbSpeed::Usb3_1(10000)),
-            "20000" => Ok(UsbSpeed::Usb3_2(20000)),
-            "40000" => Ok(UsbSpeed::Usb4(40000)),
-            "80000" => Ok(UsbSpeed::Usb4_2_0(80000)),
-            "120000" => Ok(UsbSpeed::Usb4_2_0(120000)),
+            "12" => Ok(UsbSpeed::Usb1_1),
+            "480" => Ok(UsbSpeed::Usb2_0),
+            "5000" => Ok(UsbSpeed::Usb3_0),
+            "10000" => Ok(UsbSpeed::Usb3_1),
+            "20000" => Ok(UsbSpeed::Usb3_2),
+            "40000" => Ok(UsbSpeed::Usb4),
+            "80000" => Ok(UsbSpeed::Usb4_2_0(80_000)),
+            "120000" => Ok(UsbSpeed::Usb4_2_0(120_000)),
             _ => Err(anyhow!("Could not parse USB speed: '{s}'")),
         }
     }
@@ -313,7 +321,7 @@ impl Display for Link {
 
 #[cfg(test)]
 mod test {
-    use crate::utils::link::{LinkData, PcieLinkData, PcieSpeed, SataSpeed};
+    use crate::utils::link::{LinkData, PcieLinkData, PcieSpeed, SataSpeed, UsbSpeed};
     use anyhow::anyhow;
     use std::collections::HashMap;
     use std::str::FromStr;
@@ -407,7 +415,7 @@ mod test {
 
         for link_data in map.keys() {
             let input = LinkData {
-                current: Ok(link_data.clone()),
+                current: link_data.clone(),
                 max: Err(anyhow!("No max")),
             };
             let result = input.to_string();
@@ -536,6 +544,63 @@ mod test {
             (SataSpeed::Sata150, "SATA-150"),
             (SataSpeed::Sata300, "SATA-300"),
             (SataSpeed::Sata600, "SATA-600"),
+        ]);
+
+        for input in map.keys() {
+            let result = input.to_string();
+            let expected = map[input];
+            pretty_assertions::assert_str_eq!(expected, result);
+        }
+    }
+
+    #[test]
+    fn parse_usb_link_speeds() {
+        let map = HashMap::from([
+            ("1.5", UsbSpeed::Usb1_0),
+            ("12", UsbSpeed::Usb1_1),
+            ("480", UsbSpeed::Usb2_0),
+            ("5000", UsbSpeed::Usb3_0),
+            ("10000", UsbSpeed::Usb3_1),
+            ("20000", UsbSpeed::Usb3_2),
+            ("40000", UsbSpeed::Usb4),
+            ("80000", UsbSpeed::Usb4_2_0(80_000)),
+            ("120000", UsbSpeed::Usb4_2_0(120_000)),
+        ]);
+
+        for input in map.keys() {
+            let result = UsbSpeed::from_str(input);
+            assert!(result.is_ok(), "Could not parse USB speed for '{}'", input);
+            let expected = map[input];
+            pretty_assertions::assert_eq!(expected, result.unwrap());
+        }
+    }
+
+    #[test]
+    fn parse_usb_link_speeds_failure() {
+        let invalid = vec!["4000", "160000", "SOMETHING_ELSE", ""];
+
+        for input in invalid {
+            let result = UsbSpeed::from_str(input);
+            assert!(
+                result.is_err(),
+                "Could parse USB speed for '{}' while we don't expect that",
+                input
+            );
+        }
+    }
+
+    #[test]
+    fn display_usb_link_speeds() {
+        let map = HashMap::from([
+            (UsbSpeed::Usb1_0, "USB 1.0 (1.5 Mb/s)"),
+            (UsbSpeed::Usb1_1, "USB 1.1 (12 Mb/s)"),
+            (UsbSpeed::Usb2_0, "USB 2.0 (480 Mb/s)"),
+            (UsbSpeed::Usb3_0, "USB 3.0 (5 Gb/s)"),
+            (UsbSpeed::Usb3_1, "USB 3.1 (10 Gb/s)"),
+            (UsbSpeed::Usb3_2, "USB 3.2 (20 Gb/s)"),
+            (UsbSpeed::Usb4, "USB4 (40 Gb/s)"),
+            (UsbSpeed::Usb4_2_0(80_000), "USB4 2.0 (80 Gb/s)"),
+            (UsbSpeed::Usb4_2_0(120_000), "USB4 2.0 (120 Gb/s)"),
         ]);
 
         for input in map.keys() {
