@@ -45,9 +45,6 @@ pub enum SataSpeed {
     Sata600,
 }
 
-trait WithBits {
-    fn get_bits(&self) -> f64;
-}
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum UsbSpeed {
     // https://en.wikipedia.org/wiki/USB#Release_versions
