@@ -52,29 +52,15 @@ trait WithBits {
 pub enum UsbSpeed {
     // https://en.wikipedia.org/wiki/USB#Release_versions
     Usb1_0,
-    Usb1_1,
-    Usb2_0,
-    Usb3_0,
-    Usb3_1,
-    Usb3_2,
-    Usb4,
+    Usb1_1(usize),
+    Usb2_0(usize),
+    Usb3_0(usize),
+    Usb3_1(usize),
+    Usb3_2(usize),
+    Usb4(usize),
     Usb4_2_0(usize),
 }
 
-impl WithBits for UsbSpeed {
-    fn get_bits(&self) -> f64 {
-        (match self {
-            UsbSpeed::Usb1_0 => 1.5,
-            UsbSpeed::Usb1_1 => 12.0,
-            UsbSpeed::Usb2_0 => 480.0,
-            UsbSpeed::Usb3_0 => 5_000.0,
-            UsbSpeed::Usb3_1 => 10_000.0,
-            UsbSpeed::Usb3_2 => 20_000.0,
-            UsbSpeed::Usb4 => 40_000.0,
-            UsbSpeed::Usb4_2_0(mbit) => mbit.as_f64(),
-        } * 1_000_000.0)
-    }
-}
 impl LinkData<PcieLinkData> {
     pub fn from_pci_slot(pci_slot: &PciSlot) -> Result<Self> {
         let pcie_dir = format!("/sys/bus/pci/devices/{pci_slot}/");
@@ -268,17 +254,24 @@ impl Display for UsbSpeed {
             // https://en.wikipedia.org/wiki/USB#Release_versions
             match self {
                 UsbSpeed::Usb1_0 => "USB 1.0",
-                UsbSpeed::Usb1_1 => "USB 1.1",
-                UsbSpeed::Usb2_0 => "USB 2.0",
-                UsbSpeed::Usb3_0 => "USB 3.0",
-                UsbSpeed::Usb3_1 => "USB 3.1",
-                UsbSpeed::Usb3_2 => "USB 3.2",
-                UsbSpeed::Usb4 => "USB4",
+                UsbSpeed::Usb1_1(_) => "USB 1.1",
+                UsbSpeed::Usb2_0(_) => "USB 2.0",
+                UsbSpeed::Usb3_0(_) => "USB 3.0",
+                UsbSpeed::Usb3_1(_) => "USB 3.1",
+                UsbSpeed::Usb3_2(_) => "USB 3.2",
+                UsbSpeed::Usb4(_) => "USB4",
                 UsbSpeed::Usb4_2_0(_) => "USB4 2.0",
             },
             match self {
-                UsbSpeed::Usb1_0 => convert_speed_bits_decimal_with_places(self.get_bits(), 1),
-                _ => convert_speed_bits_decimal_with_places(self.get_bits(), 0),
+                UsbSpeed::Usb1_0 => convert_speed_bits_decimal_with_places(1.5 * 1_000_000.0, 1),
+                UsbSpeed::Usb1_1(mbit)
+                | UsbSpeed::Usb2_0(mbit)
+                | UsbSpeed::Usb3_0(mbit)
+                | UsbSpeed::Usb3_1(mbit)
+                | UsbSpeed::Usb3_2(mbit)
+                | UsbSpeed::Usb4(mbit)
+                | UsbSpeed::Usb4_2_0(mbit) =>
+                    convert_speed_bits_decimal_with_places(mbit.as_f64() * 1_000_000.0, 0),
             }
         )
     }
@@ -291,12 +284,12 @@ impl FromStr for UsbSpeed {
             // https://en.wikipedia.org/wiki/USB#Release_versions
             //https://www.kernel.org/doc/Documentation/ABI/stable/sysfs-bus-usb
             "1.5" => Ok(UsbSpeed::Usb1_0),
-            "12" => Ok(UsbSpeed::Usb1_1),
-            "480" => Ok(UsbSpeed::Usb2_0),
-            "5000" => Ok(UsbSpeed::Usb3_0),
-            "10000" => Ok(UsbSpeed::Usb3_1),
-            "20000" => Ok(UsbSpeed::Usb3_2),
-            "40000" => Ok(UsbSpeed::Usb4),
+            "12" => Ok(UsbSpeed::Usb1_1(12)),
+            "480" => Ok(UsbSpeed::Usb2_0(480)),
+            "5000" => Ok(UsbSpeed::Usb3_0(5_000)),
+            "10000" => Ok(UsbSpeed::Usb3_1(10_000)),
+            "20000" => Ok(UsbSpeed::Usb3_2(20_000)),
+            "40000" => Ok(UsbSpeed::Usb4(40_000)),
             "80000" => Ok(UsbSpeed::Usb4_2_0(80_000)),
             "120000" => Ok(UsbSpeed::Usb4_2_0(120_000)),
             _ => Err(anyhow!("Could not parse USB speed: '{s}'")),
@@ -557,12 +550,12 @@ mod test {
     fn parse_usb_link_speeds() {
         let map = HashMap::from([
             ("1.5", UsbSpeed::Usb1_0),
-            ("12", UsbSpeed::Usb1_1),
-            ("480", UsbSpeed::Usb2_0),
-            ("5000", UsbSpeed::Usb3_0),
-            ("10000", UsbSpeed::Usb3_1),
-            ("20000", UsbSpeed::Usb3_2),
-            ("40000", UsbSpeed::Usb4),
+            ("12", UsbSpeed::Usb1_1(12)),
+            ("480", UsbSpeed::Usb2_0(480)),
+            ("5000", UsbSpeed::Usb3_0(5_000)),
+            ("10000", UsbSpeed::Usb3_1(10_000)),
+            ("20000", UsbSpeed::Usb3_2(20_000)),
+            ("40000", UsbSpeed::Usb4(40_000)),
             ("80000", UsbSpeed::Usb4_2_0(80_000)),
             ("120000", UsbSpeed::Usb4_2_0(120_000)),
         ]);
@@ -593,12 +586,12 @@ mod test {
     fn display_usb_link_speeds() {
         let map = HashMap::from([
             (UsbSpeed::Usb1_0, "USB 1.0 (1.5 Mb/s)"),
-            (UsbSpeed::Usb1_1, "USB 1.1 (12 Mb/s)"),
-            (UsbSpeed::Usb2_0, "USB 2.0 (480 Mb/s)"),
-            (UsbSpeed::Usb3_0, "USB 3.0 (5 Gb/s)"),
-            (UsbSpeed::Usb3_1, "USB 3.1 (10 Gb/s)"),
-            (UsbSpeed::Usb3_2, "USB 3.2 (20 Gb/s)"),
-            (UsbSpeed::Usb4, "USB4 (40 Gb/s)"),
+            (UsbSpeed::Usb1_1(12), "USB 1.1 (12 Mb/s)"),
+            (UsbSpeed::Usb2_0(480), "USB 2.0 (480 Mb/s)"),
+            (UsbSpeed::Usb3_0(5_000), "USB 3.0 (5 Gb/s)"),
+            (UsbSpeed::Usb3_1(10_000), "USB 3.1 (10 Gb/s)"),
+            (UsbSpeed::Usb3_2(20_000), "USB 3.2 (20 Gb/s)"),
+            (UsbSpeed::Usb4(40_000), "USB4 (40 Gb/s)"),
             (UsbSpeed::Usb4_2_0(80_000), "USB4 2.0 (80 Gb/s)"),
             (UsbSpeed::Usb4_2_0(120_000), "USB4 2.0 (120 Gb/s)"),
         ]);
