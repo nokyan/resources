@@ -63,7 +63,7 @@ pub enum UsbSpeed {
 
 impl WithBits for UsbSpeed {
     fn get_bits(&self) -> f64 {
-        return match (self) {
+        (match self {
             UsbSpeed::Usb1_0 => 1.5,
             UsbSpeed::Usb1_1 => 12.0,
             UsbSpeed::Usb2_0 => 480.0,
@@ -72,7 +72,7 @@ impl WithBits for UsbSpeed {
             UsbSpeed::Usb3_2 => 20_000.0,
             UsbSpeed::Usb4 => 40_000.0,
             UsbSpeed::Usb4_2_0(mbit) => mbit.as_f64(),
-        } * 1_000_000.0;
+        } * 1_000_000.0)
     }
 }
 impl LinkData<PcieLinkData> {
