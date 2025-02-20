@@ -16,7 +16,7 @@ use std::{
 };
 
 use self::{amd::AmdGpu, intel::IntelGpu, nvidia::NvidiaGpu, other::OtherGpu};
-use crate::utils::link::{Link, PcieLink};
+use crate::utils::link::{Link, LinkData};
 use crate::{
     i18n::i18n,
     utils::{pci::Device, read_uevent},
@@ -29,7 +29,7 @@ pub const VID_AMD: u16 = 0x1002;
 pub const VID_INTEL: u16 = 0x8086;
 pub const VID_NVIDIA: u16 = 0x10DE;
 
-const RE_CARD_ENUMARATOR: Lazy<Regex> = lazy_regex!(r"(\d+)\/?$");
+static RE_CARD_ENUMARATOR: Lazy<Regex> = lazy_regex!(r"(\d+)\/?$");
 
 #[derive(Debug)]
 pub struct GpuData {
@@ -532,7 +532,7 @@ impl Gpu {
 
     pub fn link(&self) -> Result<Link> {
         if let GpuIdentifier::PciSlot(pci_slot) = self.gpu_identifier() {
-            let pcie_link = PcieLink::from_pci_slot(pci_slot)?;
+            let pcie_link = LinkData::from_pci_slot(&pci_slot)?;
             Ok(Link::Pcie(pcie_link))
         } else {
             bail!("Could not retrieve PciSlot from Gpu");

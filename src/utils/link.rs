@@ -1,23 +1,25 @@
 use crate::i18n::i18n;
+use crate::utils::drive::AtaSlot;
+use crate::utils::link::SataSpeed::{Sata150, Sata300, Sata600};
 use anyhow::{anyhow, bail, Context, Error, Result};
 use process_data::pci_slot::PciSlot;
 use std::fmt::{Display, Formatter};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::str::FromStr;
 
 #[derive(Debug, Default)]
 pub enum Link {
-    Pcie(PcieLink),
+    Pcie(LinkData<PcieLinkData>),
+    Sata(LinkData<SataSpeed>),
     #[default]
     Unknown,
 }
 
 #[derive(Debug)]
-pub struct PcieLink {
-    pub current: Result<PcieLinkData>,
-    pub max: Result<PcieLinkData>,
+pub struct LinkData<T> {
+    pub current: Result<T>,
+    pub max: Result<T>,
 }
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct PcieLinkData {
     pub speed: PcieSpeed,
@@ -33,9 +35,15 @@ pub enum PcieSpeed {
     Pcie50,
     Pcie60,
 }
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum SataSpeed {
+    Sata150,
+    Sata300,
+    Sata600,
+}
 
-impl PcieLink {
-    pub fn from_pci_slot(pci_slot: PciSlot) -> Result<PcieLink> {
+impl LinkData<PcieLinkData> {
+    pub fn from_pci_slot(pci_slot: &PciSlot) -> Result<Self> {
         let pcie_dir = format!("/sys/bus/pci/devices/{pci_slot}/");
         let pcie_folder = Path::new(pcie_dir.as_str());
         if pcie_folder.exists() {
@@ -44,7 +52,9 @@ impl PcieLink {
         bail!("Could not find PCIe address entry for {pci_slot}");
     }
 
-    fn read_pcie_link_data(path: &PathBuf) -> Result<Self> {
+    fn read_pcie_link_data<P: AsRef<Path>>(path: P) -> Result<Self> {
+        let path = path.as_ref();
+
         let current_pcie_speed_raw = std::fs::read_to_string(path.join("current_link_speed"))
             .map(|x| x.trim().to_string())
             .context("Could not read current link speed")?;
@@ -66,21 +76,27 @@ impl PcieLink {
         } else {
             Err(anyhow!("Could not parse max PCIe link"))
         };
-        Ok(PcieLink { current, max })
+        Ok(Self { current, max })
     }
 }
 
 impl PcieLinkData {
-    pub fn parse(speed_raw: &str, width_raw: &str) -> Result<Self> {
-        let speed = PcieSpeed::from_str(speed_raw)?;
+    pub fn parse<S: AsRef<str>>(speed_raw: S, width_raw: S) -> Result<Self> {
+        let speed = PcieSpeed::from_str(speed_raw.as_ref())?;
         let width = width_raw
+            .as_ref()
             .parse::<usize>()
             .context("Could not parse PCIe width")?;
         Ok(PcieLinkData { speed, width })
     }
 }
 
-impl Display for PcieLink {
+impl<T> Display for LinkData<T>
+where
+    T: Display,
+    T: Copy,
+    T: PartialEq,
+{
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         if let Ok(current) = self.current {
             let has_different_max = {
@@ -98,6 +114,25 @@ impl Display for PcieLink {
         } else {
             write!(f, "{}", i18n("N/A"))
         }
+    }
+}
+
+impl LinkData<SataSpeed> {
+    pub fn from_ata_slot(ata_slot: &AtaSlot) -> Result<Self> {
+        let ata_link_path =
+            Path::new("/sys/class/ata_link").join(format!("link{}", ata_slot.ata_link));
+
+        let current_sata_speed_raw = std::fs::read_to_string(ata_link_path.join("sata_spd"))
+            .map(|x| x.trim().to_string())
+            .context("Could not read sata_spd")?;
+        let max_sata_speed_raw = std::fs::read_to_string(ata_link_path.join("sata_spd_max"))
+            .map(|x| x.trim().to_string())
+            .context("Could not read sata_spd_max");
+
+        let current = SataSpeed::from_str(&current_sata_speed_raw);
+        let max = max_sata_speed_raw.and_then(|raw| SataSpeed::from_str(&raw));
+
+        Ok(Self { current, max })
     }
 }
 
@@ -135,11 +170,38 @@ impl FromStr for PcieSpeed {
             "16.0 GT/s PCIe" => Ok(PcieSpeed::Pcie40),
             "32.0 GT/s PCIe" => Ok(PcieSpeed::Pcie50),
             "64.0 GT/s PCIe" => Ok(PcieSpeed::Pcie60),
-            _ => Err(anyhow!("Could not parse PCIe speed")),
+            _ => Err(anyhow!("Could not parse PCIe speed: '{s}'")),
         }
     }
 }
 
+impl FromStr for SataSpeed {
+    type Err = Error;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s {
+            // https://en.wikipedia.org/wiki/SATA
+            "1.5 Gbps" => Ok(Sata150),
+            "3.0 Gbps" => Ok(Sata300),
+            "6.0 Gbps" => Ok(Sata600),
+            _ => Err(anyhow!("Could not parse SATA speed: '{s}'")),
+        }
+    }
+}
+
+impl Display for SataSpeed {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Sata150 => "SATA-150",
+                Sata300 => "SATA-300",
+                Sata600 => "SATA-600",
+            }
+        )
+    }
+}
 impl Display for Link {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -147,6 +209,7 @@ impl Display for Link {
             "{}",
             match self {
                 Link::Pcie(data) => data.to_string(),
+                Link::Sata(data) => data.to_string(),
                 Link::Unknown => i18n("N/A"),
             }
         )
@@ -155,7 +218,7 @@ impl Display for Link {
 
 #[cfg(test)]
 mod test {
-    use crate::utils::link::{PcieLink, PcieLinkData, PcieSpeed};
+    use crate::utils::link::{LinkData, PcieLinkData, PcieSpeed, SataSpeed};
     use anyhow::anyhow;
     use std::collections::HashMap;
     use std::str::FromStr;
@@ -233,7 +296,7 @@ mod test {
         let map = get_test_pcie_link_data();
 
         for link_data in map.keys() {
-            let input = PcieLink {
+            let input = LinkData {
                 current: Ok(link_data.clone()),
                 max: Ok(link_data.clone()),
             };
@@ -248,7 +311,7 @@ mod test {
         let map = get_test_pcie_link_data();
 
         for link_data in map.keys() {
-            let input = PcieLink {
+            let input = LinkData {
                 current: Ok(link_data.clone()),
                 max: Err(anyhow!("No max")),
             };
@@ -265,7 +328,7 @@ mod test {
         for current_data in map.keys() {
             for max_data in map.keys() {
                 if current_data != max_data {
-                    let input = PcieLink {
+                    let input = LinkData {
                         current: Ok(current_data.clone()),
                         max: Ok(max_data.clone()),
                     };
@@ -280,7 +343,7 @@ mod test {
 
     #[test]
     fn display_pcie_link_different_max_2() {
-        let input = PcieLink {
+        let input = LinkData {
             current: Ok(PcieLinkData {
                 speed: PcieSpeed::Pcie40,
                 width: 8,
@@ -340,5 +403,50 @@ mod test {
                 "PCIe 6.0 ×1",
             ),
         ])
+    }
+
+    #[test]
+    fn parse_sata_link_speeds() {
+        let map = HashMap::from([
+            ("1.5 Gbps", SataSpeed::Sata150),
+            ("3.0 Gbps", SataSpeed::Sata300),
+            ("6.0 Gbps", SataSpeed::Sata600),
+        ]);
+
+        for input in map.keys() {
+            let result = SataSpeed::from_str(input);
+            assert!(result.is_ok(), "Could not parse SATA speed for '{}'", input);
+            let expected = map[input];
+            pretty_assertions::assert_eq!(expected, result.unwrap());
+        }
+    }
+
+    #[test]
+    fn parse_sata_link_speeds_failure() {
+        let invalid = vec!["4.0 Gbps", "SOMETHING_ELSE", ""];
+
+        for input in invalid {
+            let result = SataSpeed::from_str(input);
+            assert!(
+                result.is_err(),
+                "Could parse SATA speed for '{}' while we don't expect that",
+                input
+            );
+        }
+    }
+
+    #[test]
+    fn display_sata_link_speeds() {
+        let map = HashMap::from([
+            (SataSpeed::Sata150, "SATA-150"),
+            (SataSpeed::Sata300, "SATA-300"),
+            (SataSpeed::Sata600, "SATA-600"),
+        ]);
+
+        for input in map.keys() {
+            let result = input.to_string();
+            let expected = map[input];
+            pretty_assertions::assert_str_eq!(expected, result);
+        }
     }
 }

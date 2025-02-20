@@ -295,7 +295,7 @@ fn parse_proc_stat<S: AsRef<str>>(stat: S) -> Vec<Result<(u64, u64)>> {
         .lines()
         .skip(1)
         .filter(|line| line.starts_with("cpu"))
-        .map(|line| parse_proc_stat_line(line))
+        .map(parse_proc_stat_line)
         .collect()
 }
 
