@@ -24,6 +24,8 @@ static RE_ATA_LINK: Lazy<Regex> = lazy_regex!(r"(^link(\d+))$");
 
 static RE_ATA_SLOT: Lazy<Regex> = lazy_regex!(r"(^.+?/ata(\d+))/");
 
+static RE_USB_SLOT: Lazy<Regex> = lazy_regex!(r"(^.+?/usb(\d+))/(.+?)/");
+
 #[derive(Debug)]
 pub struct DriveData {
     pub inner: Drive,
@@ -87,10 +89,11 @@ pub enum DriveType {
     Unknown,
 }
 
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
 pub enum DriveSlot {
     Pci(PciSlot),
     Ata(AtaSlot),
+    Usb(UsbSlot),
     #[default]
     Unknown,
 }
@@ -99,6 +102,12 @@ pub enum DriveSlot {
 pub struct AtaSlot {
     pub ata_device: u8,
     pub ata_link: u8,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct UsbSlot {
+    pub usb_bus: u8,
+    pub usb_device: String,
 }
 
 #[derive(Debug, Clone, Default, Eq)]
@@ -334,10 +343,11 @@ impl Drive {
     /// Will return `Err` if there are errors during
     /// reading or parsing, or if the drive link type is not supported
     pub fn link(&self) -> Result<Link> {
-        match self.slot {
-            DriveSlot::Pci(slot) => Ok(Link::Pcie(LinkData::from_pci_slot(&slot)?)),
-            DriveSlot::Ata(slot) => Ok(Link::Sata(LinkData::from_ata_slot(&slot)?)),
-            _ => bail!("unsupported drive connection type"),
+        match &self.slot {
+            DriveSlot::Pci(slot) => Ok(Link::Pcie(LinkData::from_pci_slot(slot)?)),
+            DriveSlot::Ata(slot) => Ok(Link::Sata(LinkData::from_ata_slot(slot)?)),
+            DriveSlot::Usb(slot) => Ok(Link::Usb(LinkData::from_usb_slot(slot)?)),
+            DriveSlot::Unknown => bail!("unsupported drive connection type"),
         }
     }
 
@@ -346,6 +356,8 @@ impl Drive {
             Ok(DriveSlot::Pci(pci_slot))
         } else if let Ok(ata_slot) = self.ata_slot() {
             Ok(DriveSlot::Ata(ata_slot))
+        } else if let Ok(usb_slot) = self.usb_slot() {
+            Ok(DriveSlot::Usb(usb_slot))
         } else {
             bail!("unsupported drive slot type")
         }
@@ -400,6 +412,34 @@ impl Drive {
         Ok(AtaSlot {
             ata_device,
             ata_link,
+        })
+    }
+
+    fn usb_slot(&self) -> Result<UsbSlot> {
+        let symlink = std::fs::read_link(&self.sysfs_path)
+            .context("Could not read sysfs_path as symlink")?
+            .to_string_lossy()
+            .to_string();
+        //  ../../devices/pci0000:00/0000:00:08.1/0000:0e:00.3/usb4/4-2/4-2:1.0/host6/target6:0:0/6:0:0:0/block/sdb
+
+        let usb_match = RE_USB_SLOT
+            .captures(&symlink)
+            .context("No usb match found, probably no usb device")?;
+
+        let usb_bus = usb_match
+            .get(2)
+            .and_then(|capture| capture.as_str().parse::<u8>().ok())
+            .context("could not match digits in usb")?;
+
+        let usb_device = usb_match
+            .get(3)
+            .context("could not find usb device")?
+            .as_str()
+            .to_string();
+
+        Ok(UsbSlot {
+            usb_bus,
+            usb_device,
         })
     }
 
