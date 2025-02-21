@@ -263,6 +263,12 @@ impl ResDrive {
             imp.set_tab_detail_string(&drive_data.inner.block_device);
         }
 
+        if let Ok(link) = drive.link() {
+            imp.link.set_subtitle(&link.to_string());
+        } else {
+            imp.link.set_subtitle(&i18n("N/A"));
+        }
+
         imp.old_stats
             .borrow_mut()
             .clone_from(&drive_data.disk_stats);
@@ -283,7 +289,6 @@ impl ResDrive {
             removable,
             disk_stats,
             capacity,
-            link,
         } = drive_data;
 
         let time_passed = SystemTime::now()
@@ -421,12 +426,6 @@ impl ResDrive {
             }
         } else {
             imp.removable.set_subtitle(&i18n("N/A"));
-        }
-
-        if let Ok(link) = link {
-            imp.link.set_subtitle(&link.to_string());
-        } else {
-            imp.link.set_subtitle(&i18n("N/A"));
         }
 
         self.set_property(

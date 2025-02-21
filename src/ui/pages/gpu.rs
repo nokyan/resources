@@ -260,6 +260,12 @@ impl ResGPU {
             imp.encode_decode_usage.set_visible(true);
         }
 
+        if let Ok(link) = gpu.link() {
+            imp.link.set_subtitle(&link.to_string());
+        } else {
+            imp.link.set_subtitle(&i18n("N/A"));
+        }
+
         if let Ok(model_name) = gpu.name() {
             imp.set_tab_detail_string(&model_name);
         }
@@ -287,7 +293,6 @@ impl ResGPU {
             power_usage,
             power_cap,
             power_cap_max,
-            link,
             nvidia: _,
         } = gpu_data;
 
@@ -428,12 +433,6 @@ impl ResGPU {
             usage_percentage_string.push_str(&temperature_string);
         } else {
             imp.temperature.set_subtitle(&i18n("N/A"));
-        }
-
-        if let Some(link) = link {
-            imp.link.set_subtitle(&link.to_string());
-        } else {
-            imp.link.set_subtitle(&i18n("N/A"));
         }
 
         self.set_property("tab_usage_string", &usage_percentage_string);
