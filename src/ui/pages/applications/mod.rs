@@ -6,21 +6,21 @@ use std::collections::HashSet;
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
 use async_channel::Sender;
-use gtk::glib::{self, clone, closure, MainContext, Object};
+use gtk::glib::{self, MainContext, Object, clone, closure};
 use gtk::{
-    gio, ColumnView, ColumnViewColumn, EventControllerKey, FilterChange, ListItem, NumericSorter,
-    SortType, StringSorter, Widget,
+    ColumnView, ColumnViewColumn, EventControllerKey, FilterChange, ListItem, NumericSorter,
+    SortType, StringSorter, Widget, gio,
 };
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::ui::dialogs::app_dialog::ResAppDialog;
 use crate::ui::window::{Action, MainWindow};
+use crate::utils::NUM_CPUS;
 use crate::utils::app::AppsContext;
 use crate::utils::process::ProcessAction;
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_speed, convert_storage};
-use crate::utils::NUM_CPUS;
 
 use self::application_entry::ApplicationEntry;
 use self::application_name_cell::ResApplicationNameCell;
@@ -38,9 +38,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        ColumnViewColumn, CompositeTemplate,
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        ColumnViewColumn, CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]
@@ -422,7 +422,7 @@ impl ResApplications {
                 self,
                 move |model, _, _| {
                     let imp = this.imp();
-                    let is_system_processes = model.selected_item().map_or(false, |object| {
+                    let is_system_processes = model.selected_item().is_some_and(|object| {
                         object
                             .downcast::<ApplicationEntry>()
                             .unwrap()
@@ -1473,11 +1473,15 @@ fn get_action_name(action: ProcessAction, name: &str) -> String {
 
 fn get_action_warning(action: ProcessAction) -> String {
     match action {
-            ProcessAction::TERM => i18n("Unsaved work might be lost."),
-            ProcessAction::STOP => i18n("Halting an app can come with serious risks such as losing data and security implications. Use with caution."),
-            ProcessAction::KILL => i18n("Killing an app can come with serious risks such as losing data and security implications. Use with caution."),
-            ProcessAction::CONT => String::new(),
-        }
+        ProcessAction::TERM => i18n("Unsaved work might be lost."),
+        ProcessAction::STOP => i18n(
+            "Halting an app can come with serious risks such as losing data and security implications. Use with caution.",
+        ),
+        ProcessAction::KILL => i18n(
+            "Killing an app can come with serious risks such as losing data and security implications. Use with caution.",
+        ),
+        ProcessAction::CONT => String::new(),
+    }
 }
 
 fn get_action_description(action: ProcessAction) -> String {

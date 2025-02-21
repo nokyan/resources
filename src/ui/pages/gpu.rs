@@ -4,9 +4,9 @@ use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
+use crate::utils::FiniteOr;
 use crate::utils::gpu::{Gpu, GpuData};
 use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
-use crate::utils::FiniteOr;
 
 pub const TAB_ID_PREFIX: &str = "gpu";
 
@@ -21,9 +21,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        CompositeTemplate,
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]
@@ -245,7 +245,7 @@ impl ResGPU {
 
         match gpu.gpu_identifier() {
             process_data::GpuIdentifier::PciSlot(pci_slot) => {
-                imp.pci_slot.set_subtitle(&pci_slot.to_string())
+                imp.pci_slot.set_subtitle(&pci_slot.to_string());
             }
             process_data::GpuIdentifier::Enumerator(_) => imp.pci_slot.set_subtitle(&i18n("N/A")),
         }

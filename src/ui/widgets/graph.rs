@@ -103,15 +103,11 @@ mod imp {
                     .range(start_point..(MAX_DATA_POINTS as usize))
                     .max_by(|x, y| x.total_cmp(y))
                     .unwrap_or(&0.0);
-                if max == 0.0 {
-                    f64::EPSILON
-                } else {
-                    max
-                }
+                if max == 0.0 { f64::EPSILON } else { max }
             });
 
             let mut chart = ChartBuilder::on(&root).build_cartesian_2d(
-                0f64..(SETTINGS.graph_data_points() as f64 - 1.0),
+                0f64..(f64::from(SETTINGS.graph_data_points()) - 1.0),
                 0f64..y_max,
             )?;
 
@@ -128,7 +124,7 @@ mod imp {
                 AreaSeries::new(
                     (0..)
                         .zip(data_points.range(start_point..(MAX_DATA_POINTS as usize)))
-                        .map(|(x, y)| (x as f64, *y)),
+                        .map(|(x, y)| (f64::from(x), *y)),
                     0.0,
                     color.mix(0.4),
                 )

@@ -1,6 +1,6 @@
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone};
 use gtk::FlowBoxChild;
+use gtk::glib::{self, clone};
 use log::trace;
 
 use crate::config::PROFILE;
@@ -21,9 +21,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        CompositeTemplate,
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]
@@ -227,8 +227,7 @@ impl ResCPU {
         for i in 0..logical_cpus {
             let old_thread_usage = new_thread_usages
                 .get(i)
-                .map(|i| *i.as_ref().unwrap_or(&(0, 0)))
-                .unwrap_or((0, 0));
+                .map_or((0, 0), |i| *i.as_ref().unwrap_or(&(0, 0)));
             imp.old_thread_usages.borrow_mut().push(old_thread_usage);
         }
 
@@ -373,8 +372,7 @@ impl ResCPU {
             {
                 let new_thread_usage = new_thread_usages
                     .get(i)
-                    .map(|i| *i.as_ref().unwrap_or(&(0, 0)))
-                    .unwrap_or((0, 0));
+                    .map_or((0, 0), |i| *i.as_ref().unwrap_or(&(0, 0)));
                 let idle_thread_delta = new_thread_usage.0.saturating_sub(old_thread_usage.0);
                 let sum_thread_delta = new_thread_usage.1.saturating_sub(old_thread_usage.1);
                 let work_thread_time = sum_thread_delta.saturating_sub(idle_thread_delta);
@@ -401,7 +399,7 @@ impl ResCPU {
         imp.temperature.graph().set_visible(temperature.is_ok());
 
         if let Ok(temperature) = temperature {
-            let temperature_string = convert_temperature(*temperature as f64);
+            let temperature_string = convert_temperature(f64::from(*temperature));
 
             let highest_temperature_string =
                 convert_temperature(imp.temperature.graph().get_highest_value());
@@ -412,7 +410,9 @@ impl ResCPU {
                 i18n("Highest:"),
                 highest_temperature_string
             ));
-            imp.temperature.graph().push_data_point(*temperature as f64);
+            imp.temperature
+                .graph()
+                .push_data_point(f64::from(*temperature));
 
             percentage_string.push_str(" · ");
             percentage_string.push_str(&temperature_string);

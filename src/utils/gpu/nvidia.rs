@@ -1,9 +1,9 @@
 use anyhow::{Context, Result};
 use log::{debug, warn};
 use nvml_wrapper::{
+    Nvml,
     enum_wrappers::device::{Clock, TemperatureSensor},
     error::NvmlError,
-    Nvml,
 };
 use process_data::GpuIdentifier;
 
@@ -15,9 +15,11 @@ static NVML: LazyLock<Result<Nvml, NvmlError>> = LazyLock::new(|| {
     if let Err(error) = nvml.as_ref() {
         warn!("Connection to NVML failed, reason: {error}");
         if *IS_FLATPAK {
-            warn!("This can occur when the version of the NVIDIA Flatpak runtime (org.freedesktop.Platform.GL.nvidia) \
+            warn!(
+                "This can occur when the version of the NVIDIA Flatpak runtime (org.freedesktop.Platform.GL.nvidia) \
             and the version of the natively installed NVIDIA driver do not match. Consider updating both your system \
-            and Flatpak packages before opening an issue.")
+            and Flatpak packages before opening an issue."
+            );
         }
     } else {
         debug!("Successfully connected to NVML");
@@ -26,7 +28,7 @@ static NVML: LazyLock<Result<Nvml, NvmlError>> = LazyLock::new(|| {
     nvml
 });
 
-use crate::utils::{pci::Device, IS_FLATPAK};
+use crate::utils::{IS_FLATPAK, pci::Device};
 
 use super::GpuImpl;
 
@@ -102,7 +104,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.utilization_rates()
                     .context("unable to get utilization rates through NVML")
             })
-            .map(|usage| usage.gpu as f64 / 100.0)
+            .map(|usage| f64::from(usage.gpu) as f64 / 100.0)
             .or_else(|_| self.drm_usage().map(|usage| usage as f64 / 100.0))
     }
 
@@ -112,7 +114,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.encoder_utilization()
                     .context("unable to get utilization rates through NVML")
             })
-            .map(|usage| usage.utilization as f64 / 100.0)
+            .map(|usage| f64::from(usage.utilization) as f64 / 100.0)
             .context("encode usage not implemented for NVIDIA not using the nvidia driver")
     }
 
@@ -122,7 +124,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.decoder_utilization()
                     .context("unable to get utilization rates through NVML")
             })
-            .map(|usage| usage.utilization as f64 / 100.0)
+            .map(|usage| f64::from(usage.utilization) / 100.0)
             .context("decode usage not implemented for NVIDIA not using the nvidia driver")
     }
 
@@ -156,7 +158,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.temperature(TemperatureSensor::Gpu)
                     .context("unable to get temperatures through NVML")
             })
-            .map(|temp| temp as f64)
+            .map(|temp| f64::from(temp))
             .or_else(|_| self.hwmon_temperature())
     }
 
@@ -166,7 +168,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.power_usage()
                     .context("unable to get power usage through NVML")
             })
-            .map(|power_usage| (power_usage as f64) / 1000.0)
+            .map(|power_usage| (f64::from(power_usage)) / 1000.0)
             .or_else(|_| self.hwmon_power_usage())
     }
 
@@ -176,7 +178,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.clock_info(Clock::Graphics)
                     .context("unable to get core frequency through NVML")
             })
-            .map(|frequency| (frequency as f64) * 1_000_000.0)
+            .map(|frequency| (f64::from(frequency)) * 1_000_000.0)
             .or_else(|_| self.hwmon_core_frequency())
     }
 
@@ -186,7 +188,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.clock_info(Clock::Memory)
                     .context("unable to get vram frequency through NVML")
             })
-            .map(|frequency| (frequency as f64) * 1_000_000.0)
+            .map(|frequency| (f64::from(frequency)) * 1_000_000.0)
             .or_else(|_| self.hwmon_vram_frequency())
     }
 
@@ -196,7 +198,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.power_management_limit()
                     .context("unable to get power cap through NVML")
             })
-            .map(|cap| (cap as f64) / 1000.0)
+            .map(|cap| (f64::from(cap)) / 1000.0)
             .or_else(|_| self.hwmon_power_usage())
     }
 
@@ -206,7 +208,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.power_management_limit_constraints()
                     .context("unable to get temperatures through NVML")
             })
-            .map(|constraints| (constraints.max_limit as f64) / 1000.0)
+            .map(|constraints| (f64::from(constraints.max_limit)) / 1000.0)
             .or_else(|_| self.hwmon_power_cap_max())
     }
 }

@@ -1,8 +1,8 @@
 use adw::{glib::property::PropertySet, prelude::*, subclass::prelude::*};
 use gtk::{
+    Ordering,
     gio::Icon,
     glib::{self},
-    Ordering,
 };
 use log::trace;
 
@@ -16,9 +16,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        CompositeTemplate,
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]

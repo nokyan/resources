@@ -7,7 +7,7 @@ use process_data::Containerization;
 
 use crate::{
     i18n::i18n,
-    utils::{process::Process, TICK_RATE},
+    utils::{TICK_RATE, process::Process},
 };
 
 mod imp {
@@ -251,7 +251,7 @@ impl ProcessEntry {
         self.set_system_cpu_time((process.data.system_cpu_time as f64) / (*TICK_RATE as f64));
         self.set_total_cpu_time(self.user_cpu_time() + self.system_cpu_time());
         self.set_niceness(*process.data.niceness);
-        *self.imp().affinity.borrow_mut() = process.data.affinity.clone();
+        (*self.imp().affinity.borrow_mut()).clone_from(&process.data.affinity);
     }
 
     pub fn affinity(&self) -> Vec<bool> {

@@ -40,7 +40,7 @@ impl std::fmt::Debug for Device {
             .field("id", &self.id)
             .field("vendor_id", &self.vendor_id)
             .field("name", &self.name)
-            .finish()
+            .finish_non_exhaustive()
     }
 }
 
@@ -73,7 +73,7 @@ impl std::fmt::Debug for Vendor {
         f.debug_struct("Vendor")
             .field("id", &self.id)
             .field("name", &self.name)
-            .finish()
+            .finish_non_exhaustive()
     }
 }
 
@@ -248,7 +248,9 @@ fn init() -> Result<BTreeMap<u16, Vendor>> {
 
     let elapsed = start.elapsed();
 
-    info!("Successfully parsed pci.ids within {elapsed:.2?} (vendors: {vendors_count}, devices: {devices_count}, subdevices: {subdevices_count})");
+    info!(
+        "Successfully parsed pci.ids within {elapsed:.2?} (vendors: {vendors_count}, devices: {devices_count}, subdevices: {subdevices_count})"
+    );
 
     Ok(map)
 }
@@ -258,7 +260,7 @@ mod test {
     use pretty_assertions::assert_eq;
     use std::{collections::BTreeMap, io::BufReader};
 
-    use crate::utils::pci::{parse_pci_ids, Device, Subdevice, Vendor};
+    use crate::utils::pci::{Device, Subdevice, Vendor, parse_pci_ids};
 
     #[test]
     fn valid_empty() {

@@ -1,7 +1,7 @@
 mod intel;
 mod other;
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use log::{debug, info, trace};
 use process_data::pci_slot::PciSlot;
 

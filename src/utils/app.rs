@@ -5,21 +5,20 @@ use std::{
     time::Instant,
 };
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use gtk::{
     gio::{File, FileIcon, Icon, ThemedIcon},
     glib::GString,
 };
-use lazy_regex::{lazy_regex, Lazy, Regex};
+use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, info, trace};
 use process_data::{Containerization, GpuIdentifier, ProcessData};
 
 use crate::i18n::i18n;
 
 use super::{
-    boot_time,
+    FiniteOr, boot_time,
     process::{Process, ProcessAction},
-    FiniteOr,
 };
 
 /// This contains the cgroups of desktop environments. If a process has this as its cgroup, its parent's cgroup will be
@@ -660,21 +659,27 @@ impl AppsContext {
         {
             debug!(
                 "Associating process {} with app {:?} (ID: {:?}) based on process cgroup matching with app ID",
-                process.data.pid, app.display_name, app.id.as_deref().unwrap_or("N/A")
+                process.data.pid,
+                app.display_name,
+                app.id.as_deref().unwrap_or("N/A")
             );
             app.id.clone()
         } else if let Some(app) = self.apps.get(&Some(process.executable_path.clone())) {
             // ↑ look for whether we can find an ID in the executable path of the process
             debug!(
                 "Associating process {} with app {:?} (ID: {:?}) based on process executable path matching with app ID",
-                process.data.pid, app.display_name, app.id.as_deref().unwrap_or("N/A")
+                process.data.pid,
+                app.display_name,
+                app.id.as_deref().unwrap_or("N/A")
             );
             app.id.clone()
         } else if let Some(app) = self.apps.get(&Some(process.executable_name.clone())) {
             // ↑ look for whether we can find an ID in the executable name of the process
             debug!(
                 "Associating process {} with app {:?} (ID: {:?}) based on process executable name matching with app ID",
-                process.data.pid, app.display_name, app.id.as_deref().unwrap_or("N/A")
+                process.data.pid,
+                app.display_name,
+                app.id.as_deref().unwrap_or("N/A")
             );
             app.id.clone()
         } else {

@@ -3,7 +3,7 @@ use strum_macros::{Display, EnumIter, EnumString};
 
 use crate::i18n::i18n_f;
 
-use super::settings::{Base, TemperatureUnit, SETTINGS};
+use super::settings::{Base, SETTINGS, TemperatureUnit};
 
 #[repr(u8)]
 #[derive(
@@ -324,7 +324,7 @@ pub fn convert_energy(watthours: f64, integer: bool) -> String {
 mod test {
     use crate::utils::{
         settings::Base,
-        units::{celsius_to_fahrenheit, celsius_to_kelvin, to_largest_prefix, Prefix},
+        units::{Prefix, celsius_to_fahrenheit, celsius_to_kelvin, to_largest_prefix},
     };
     use pretty_assertions::assert_eq;
 

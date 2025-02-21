@@ -1,9 +1,9 @@
 use super::units::convert_storage;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::link::{Link, LinkData};
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use gtk::gio::{Icon, ThemedIcon};
-use lazy_regex::{lazy_regex, Lazy, Regex};
+use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::trace;
 use path_dedot::ParseDot;
 use process_data::pci_slot::PciSlot;
@@ -392,10 +392,10 @@ impl Drive {
 
         let ata_path = Path::new(&self.sysfs_path).join("..").join(ata_sub_path);
         let dot_parsed_path = ata_path.parse_dot()?.clone();
-        let sub_dirs = std::fs::read_dir(dot_parsed_path).context("Could not read ata path")?;
+        let mut sub_dirs = std::fs::read_dir(dot_parsed_path).context("Could not read ata path")?;
 
         let ata_link = sub_dirs
-            .filter_map(|x| {
+            .find_map(|x| {
                 x.ok().and_then(|x| {
                     RE_ATA_LINK
                         .captures(&x.file_name().to_string_lossy())
@@ -403,7 +403,6 @@ impl Drive {
                         .and_then(|capture| capture.as_str().parse::<u8>().ok())
                 })
             })
-            .next()
             .context("No ata link number found")?;
 
         Ok(AtaSlot {

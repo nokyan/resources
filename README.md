@@ -72,7 +72,7 @@ You can also build Resources yourself using either Meson directly or preferably 
 - `cargo`
 
 Other dependencies are handled by `cargo`.
-Resources’ minimum supported Rust version (MSRV) is **1.80.0**.
+Resources’ minimum supported Rust version (MSRV) is **1.85.0**.
 
 ### Runtime Dependencies
 

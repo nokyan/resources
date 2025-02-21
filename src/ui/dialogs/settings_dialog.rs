@@ -4,7 +4,7 @@ use log::trace;
 
 use crate::{
     config::PROFILE,
-    utils::settings::{Base, RefreshSpeed, SidebarMeterType, TemperatureUnit, SETTINGS},
+    utils::settings::{Base, RefreshSpeed, SETTINGS, SidebarMeterType, TemperatureUnit},
 };
 
 mod imp {

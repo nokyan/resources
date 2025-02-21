@@ -2,8 +2,8 @@ use crate::i18n::i18n;
 use crate::utils::drive::{AtaSlot, UsbSlot};
 use crate::utils::link::SataSpeed::{Sata150, Sata300, Sata600};
 use crate::utils::units::convert_speed_bits_decimal_with_places;
-use anyhow::{anyhow, bail, Context, Error, Result};
-use plotters::prelude::LogScalable;
+use anyhow::{Context, Error, Result, anyhow, bail};
+use log::trace;
 use process_data::pci_slot::PciSlot;
 use std::fmt::{Display, Formatter};
 use std::path::Path;
@@ -63,17 +63,19 @@ impl LinkData<PcieLinkData> {
         let pcie_dir = format!("/sys/bus/pci/devices/{pci_slot}/");
         let pcie_folder = Path::new(pcie_dir.as_str());
         if pcie_folder.exists() {
-            return Self::read_pcie_link_data(&pcie_folder.to_path_buf());
+            return Self::read_pcie_link_data(pcie_folder);
         }
         bail!("Could not find PCIe address entry for {pci_slot}");
     }
 
     fn read_pcie_link_data<P: AsRef<Path>>(path: P) -> Result<Self> {
         let path = path.as_ref();
+        trace!("Reading PCIe link data for {path:?}…");
 
         let current_pcie_speed_raw = std::fs::read_to_string(path.join("current_link_speed"))
             .map(|x| x.trim().to_string())
             .context("Could not read current link speed")?;
+
         let current_pcie_width_raw = std::fs::read_to_string(path.join("current_link_width"))
             .map(|x| x.trim().to_string())
             .context("Could not read current link width")?;
@@ -82,6 +84,7 @@ impl LinkData<PcieLinkData> {
         let max_pcie_speed_raw = std::fs::read_to_string(path.join("max_link_speed"))
             .map(|x| x.trim().to_string())
             .context("Could not read max link speed");
+
         let max_pcie_width_raw = std::fs::read_to_string(path.join("max_link_width"))
             .map(|x| x.trim().to_string())
             .context("Could not read max link width");
@@ -132,12 +135,15 @@ where
 
 impl LinkData<SataSpeed> {
     pub fn from_ata_slot(ata_slot: &AtaSlot) -> Result<Self> {
+        trace!("Reading ATA link data for {ata_slot:?}…");
+
         let ata_link_path =
             Path::new("/sys/class/ata_link").join(format!("link{}", ata_slot.ata_link));
 
         let current_sata_speed_raw = std::fs::read_to_string(ata_link_path.join("sata_spd"))
             .map(|x| x.trim().to_string())
             .context("Could not read sata_spd")?;
+
         let max_sata_speed_raw = std::fs::read_to_string(ata_link_path.join("sata_spd_max"))
             .map(|x| x.trim().to_string())
             .context("Could not read sata_spd_max");
@@ -152,6 +158,8 @@ impl LinkData<SataSpeed> {
 
 impl LinkData<UsbSpeed> {
     pub fn from_usb_slot(usb_slot: &UsbSlot) -> Result<Self> {
+        trace!("Reading USB link data for {usb_slot:?}…");
+
         let usb_bus_path =
             Path::new("/sys/bus/usb/devices/").join(format!("usb{}", usb_slot.usb_bus));
 
@@ -268,7 +276,7 @@ impl Display for UsbSpeed {
                 | UsbSpeed::Usb3_2(mbit)
                 | UsbSpeed::Usb4(mbit)
                 | UsbSpeed::Usb4_2_0(mbit) =>
-                    convert_speed_bits_decimal_with_places(mbit.as_f64() * 1_000_000.0, 0),
+                    convert_speed_bits_decimal_with_places(*mbit as f64 * 1_000_000.0, 0),
             }
         )
     }

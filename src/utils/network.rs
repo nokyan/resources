@@ -91,7 +91,7 @@ pub enum InterfaceType {
 
 impl InterfaceType {
     pub fn from_interface_name<S: AsRef<str>>(interface_name: S) -> Self {
-        for (name, interface_type) in INTERFACE_TYPE_MAP.iter() {
+        for (name, interface_type) in INTERFACE_TYPE_MAP {
             if interface_name.as_ref().starts_with(name) {
                 return *interface_type;
             }
@@ -276,7 +276,7 @@ impl NetworkInterface {
     ///
     /// Will return `Err` if the link speed couldn't be determined (e. g. for Wi-Fi connections)
     pub fn link_speed(&self) -> Result<usize> {
-        std::fs::read_to_string(&self.sysfs_path.join("speed"))
+        std::fs::read_to_string(self.sysfs_path.join("speed"))
             .context("read failure")?
             .replace('\n', "")
             .parse::<usize>()

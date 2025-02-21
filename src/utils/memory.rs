@@ -1,7 +1,7 @@
 use std::process::Command;
 
-use anyhow::{bail, Context, Result};
-use lazy_regex::{lazy_regex, Lazy, Regex};
+use anyhow::{Context, Result, bail};
+use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, trace};
 
 use super::{FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};

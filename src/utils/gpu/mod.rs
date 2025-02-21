@@ -4,10 +4,10 @@ mod nvidia;
 mod other;
 mod v3d;
 
-use anyhow::{bail, Context, Result};
-use lazy_regex::{lazy_regex, Lazy, Regex};
+use anyhow::{Context, Result, bail};
+use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, info, trace};
-use process_data::{pci_slot::PciSlot, GpuIdentifier};
+use process_data::{GpuIdentifier, pci_slot::PciSlot};
 use v3d::V3dGpu;
 
 use std::{

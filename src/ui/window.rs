@@ -2,11 +2,11 @@ use process_data::{Niceness, ProcessData};
 use std::path::PathBuf;
 use std::time::{Duration, Instant};
 
-use adw::{prelude::*, subclass::prelude::*, ToolbarView};
 use adw::{Toast, ToastOverlay};
+use adw::{ToolbarView, prelude::*, subclass::prelude::*};
 use anyhow::{Context, Result};
-use gtk::glib::{clone, timeout_future, GString, MainContext};
-use gtk::{gdk, gio, glib, Widget};
+use gtk::glib::{GString, MainContext, clone, timeout_future};
+use gtk::{Widget, gdk, gio, glib};
 use log::{debug, info, trace, warn};
 
 use crate::application::Application;
@@ -60,10 +60,10 @@ mod imp {
 
     use super::*;
 
-    use async_channel::{unbounded, Receiver, Sender};
+    use async_channel::{Receiver, Sender, unbounded};
     use gtk::CompositeTemplate;
     use log::debug;
-    use process_data::{pci_slot::PciSlot, GpuIdentifier};
+    use process_data::{GpuIdentifier, pci_slot::PciSlot};
 
     #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/net/nokyan/Resources/ui/window.ui")]
@@ -173,7 +173,7 @@ mod imp {
             if PROFILE == "Devel" {
                 obj.add_css_class("devel");
                 obj.set_title(Some(
-                    &format!("{} ({})", obj.title().unwrap_or_default(), VERSION).trim(),
+                    format!("{} ({})", obj.title().unwrap_or_default(), VERSION).trim(),
                 ));
             }
 
@@ -642,13 +642,19 @@ impl MainWindow {
                 // average usage during now and the last refresh, while gpu_busy_percent is a snapshot of the current
                 // usage, which might not be what we want
 
-                trace!("{} ({}) is not an NVIDIA GPU, adjusting usage values using process-based statistics", page.tab_detail_string(), gpu_data.gpu_identifier);
+                trace!(
+                    "{} ({}) is not an NVIDIA GPU, adjusting usage values using process-based statistics",
+                    page.tab_detail_string(),
+                    gpu_data.gpu_identifier
+                );
 
                 let drm_gpu_fraction = gpu_data.usage_fraction.unwrap_or(0.0);
                 let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.gpu_identifier);
                 let highest_gpu_fraction =
                     f64::max(drm_gpu_fraction, processes_gpu_fraction.into());
-                trace!("DRM usage: {drm_gpu_fraction} · Process-based usage: {processes_gpu_fraction} · Using {highest_gpu_fraction}");
+                trace!(
+                    "DRM usage: {drm_gpu_fraction} · Process-based usage: {processes_gpu_fraction} · Using {highest_gpu_fraction}"
+                );
                 gpu_data.usage_fraction = Some(highest_gpu_fraction);
 
                 let drm_encode_fraction = gpu_data.encode_fraction.unwrap_or(0.0);
@@ -656,7 +662,9 @@ impl MainWindow {
                     apps_context.encoder_fraction(gpu_data.gpu_identifier);
                 let highest_encode_fraction =
                     f64::max(drm_encode_fraction, processes_encode_fraction.into());
-                trace!("DRM encode: {drm_encode_fraction} · Process-based encode: {processes_encode_fraction} · Using {highest_encode_fraction}");
+                trace!(
+                    "DRM encode: {drm_encode_fraction} · Process-based encode: {processes_encode_fraction} · Using {highest_encode_fraction}"
+                );
                 gpu_data.encode_fraction = Some(highest_encode_fraction);
 
                 let drm_decode_fraction = gpu_data.decode_fraction.unwrap_or(0.0);
@@ -664,7 +672,9 @@ impl MainWindow {
                     apps_context.decoder_fraction(gpu_data.gpu_identifier);
                 let highest_decode_fraction =
                     f64::max(drm_decode_fraction, processes_decode_fraction.into());
-                trace!("DRM decode: {drm_decode_fraction} · Process-based decode: {processes_decode_fraction} · Using {highest_decode_fraction}");
+                trace!(
+                    "DRM decode: {drm_decode_fraction} · Process-based decode: {processes_decode_fraction} · Using {highest_decode_fraction}"
+                );
                 gpu_data.decode_fraction = Some(highest_decode_fraction);
             }
 

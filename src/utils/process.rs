@@ -1,4 +1,4 @@
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use config::LIBEXECDIR;
 use log::{debug, error, info, trace};
 use process_data::{GpuIdentifier, GpuUsageStats, Niceness, ProcessData};
@@ -20,7 +20,7 @@ use gtk::{
 use crate::config;
 
 use super::{
-    boot_time, FiniteOr, FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK, NUM_CPUS, TICK_RATE,
+    FLATPAK_APP_PATH, FLATPAK_SPAWN, FiniteOr, IS_FLATPAK, NUM_CPUS, TICK_RATE, boot_time,
 };
 
 static COMPANION_PROCESS: LazyLock<Mutex<(ChildStdin, ChildStdout)>> = LazyLock::new(|| {
@@ -220,7 +220,7 @@ impl Process {
         if status_code == libc::EPERM || status_code == libc::EACCES {
             let pkexec_status_code = if *IS_FLATPAK {
                 debug!(
-                    "Received EPERM, executing command: {} --host pkexec --disable-internal-agent {} {}", 
+                    "Received EPERM, executing command: {} --host pkexec --disable-internal-agent {} {}",
                     FLATPAK_SPAWN,
                     command.as_ref().to_string_lossy(),
                     args.join(&OsString::from(" ")).to_string_lossy()
@@ -235,7 +235,7 @@ impl Process {
                     .context("no status code?")?
             } else {
                 debug!(
-                    "Received EPERM or EACCES, executing command: pkexec --disable-internal-agent {} {}", 
+                    "Received EPERM or EACCES, executing command: pkexec --disable-internal-agent {} {}",
                     command.as_ref().to_string_lossy(),
                     args.join(&OsString::from(" ")).to_string_lossy()
                 );

@@ -1,13 +1,13 @@
-use anyhow::{bail, Result};
-use lazy_regex::{lazy_regex, Lazy, Regex};
+use anyhow::{Result, bail};
+use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, trace, warn};
 use process_data::GpuIdentifier;
 
 use std::{collections::HashMap, path::PathBuf, sync::LazyLock, time::Instant};
 
 use crate::utils::{
-    pci::{self, Device},
     IS_FLATPAK,
+    pci::{self, Device},
 };
 
 use super::GpuImpl;
