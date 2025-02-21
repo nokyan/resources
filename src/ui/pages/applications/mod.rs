@@ -422,7 +422,7 @@ impl ResApplications {
                 self,
                 move |model, _, _| {
                     let imp = this.imp();
-                    let is_system_processes = model.selected_item().map_or(false, |object| {
+                    let is_system_processes = model.selected_item().is_some_and(|object| {
                         object
                             .downcast::<ApplicationEntry>()
                             .unwrap()

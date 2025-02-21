@@ -183,8 +183,7 @@ impl Battery {
         //scope != "Device" (HID device batteries)
 
         let power_supply_type_is_battery = std::fs::read_to_string(path.join("type"))
-            .map(|ps_type| ps_type.trim() == "Battery")
-            .unwrap_or_default();
+            .is_ok_and(|ps_type| ps_type.trim() == "Battery");
 
         let power_supply_scope_is_not_device = std::fs::read_to_string(path.join("scope"))
             .map(|ps_scope| ps_scope.trim() != "Device")
@@ -270,7 +269,7 @@ impl Battery {
                 capacity
                     .trim()
                     .parse::<u8>()
-                    .map(|percent| percent as f64 / 100.0)
+                    .map(|percent| f64::from(percent) / 100.0)
                     .context("unable to parse capacity sysfs file")
             })
             .or_else(|_| self.charge_from_energy())

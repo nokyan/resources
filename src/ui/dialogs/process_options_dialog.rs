@@ -126,7 +126,7 @@ impl ResProcessOptionsDialog {
 
         imp.name.set_label(&process.name());
 
-        imp.nice_row.set_value(process.niceness() as f64);
+        imp.nice_row.set_value(f64::from(process.niceness()));
 
         imp.priority_row.set_selected(
             NICE_TO_LABEL

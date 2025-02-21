@@ -40,7 +40,7 @@ impl std::fmt::Debug for Device {
             .field("id", &self.id)
             .field("vendor_id", &self.vendor_id)
             .field("name", &self.name)
-            .finish()
+            .finish_non_exhaustive()
     }
 }
 
@@ -73,7 +73,7 @@ impl std::fmt::Debug for Vendor {
         f.debug_struct("Vendor")
             .field("id", &self.id)
             .field("name", &self.name)
-            .finish()
+            .finish_non_exhaustive()
     }
 }
 

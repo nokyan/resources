@@ -245,7 +245,7 @@ impl ResGPU {
 
         match gpu.gpu_identifier() {
             process_data::GpuIdentifier::PciSlot(pci_slot) => {
-                imp.pci_slot.set_subtitle(&pci_slot.to_string())
+                imp.pci_slot.set_subtitle(&pci_slot.to_string());
             }
             process_data::GpuIdentifier::Enumerator(_) => imp.pci_slot.set_subtitle(&i18n("N/A")),
         }

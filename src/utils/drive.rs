@@ -383,10 +383,10 @@ impl Drive {
 
         let ata_path = Path::new(&self.sysfs_path).join("..").join(ata_sub_path);
         let dot_parsed_path = ata_path.parse_dot()?.clone();
-        let sub_dirs = std::fs::read_dir(dot_parsed_path).context("Could not read ata path")?;
+        let mut sub_dirs = std::fs::read_dir(dot_parsed_path).context("Could not read ata path")?;
 
         let ata_link = sub_dirs
-            .filter_map(|x| {
+            .find_map(|x| {
                 x.ok().and_then(|x| {
                     RE_ATA_LINK
                         .captures(&x.file_name().to_string_lossy())
@@ -394,7 +394,6 @@ impl Drive {
                         .and_then(|capture| capture.as_str().parse::<u8>().ok())
                 })
             })
-            .next()
             .context("No ata link number found")?;
 
         Ok(AtaSlot {

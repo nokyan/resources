@@ -123,7 +123,7 @@ impl ResStackSidebar {
         return_map
     }
 
-    fn populate_list(&self, last_data_points: HashMap<String, Vec<f64>>) {
+    fn populate_list(&self, last_data_points: &HashMap<String, Vec<f64>>) {
         let imp = self.imp();
         imp.populating.set(true);
 
@@ -289,7 +289,7 @@ impl ResStackSidebar {
             #[weak(rename_to = this)]
             self,
             move |_, _, _, _| {
-                this.populate_list(this.clear());
+                this.populate_list(&this.clear());
             }
         ));
 
@@ -317,7 +317,7 @@ impl ResStackSidebar {
 
                         if let Some(page) = child
                             .downcast_ref::<adw::ToolbarView>()
-                            .and_then(|toolbar| toolbar.content())
+                            .and_then(adw::ToolbarView::content)
                         {
                             let _ = SETTINGS
                                 .set_last_viewed_page(page.property::<GString>("tab-id").as_str());

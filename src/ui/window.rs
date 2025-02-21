@@ -173,7 +173,7 @@ mod imp {
             if PROFILE == "Devel" {
                 obj.add_css_class("devel");
                 obj.set_title(Some(
-                    &format!("{} ({})", obj.title().unwrap_or_default(), VERSION).trim(),
+                    format!("{} ({})", obj.title().unwrap_or_default(), VERSION).trim(),
                 ));
             }
 

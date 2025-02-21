@@ -265,12 +265,11 @@ impl ResNetwork {
             imp.hw_address.set_subtitle(&hw_address);
         }
 
-        imp.link_speed.set_subtitle(
-            &network_interface
-                .link_speed()
-                .map(|bps| convert_speed_bits_decimal(bps as f64))
-                .unwrap_or_else(|_| i18n("N/A")),
-        );
+        imp.link_speed
+            .set_subtitle(&network_interface.link_speed().map_or_else(
+                |_| i18n("N/A"),
+                |bps| convert_speed_bits_decimal(bps as f64),
+            ));
 
         imp.last_timestamp.set(
             SystemTime::now()

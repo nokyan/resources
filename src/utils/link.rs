@@ -47,7 +47,7 @@ impl LinkData<PcieLinkData> {
         let pcie_dir = format!("/sys/bus/pci/devices/{pci_slot}/");
         let pcie_folder = Path::new(pcie_dir.as_str());
         if pcie_folder.exists() {
-            return Self::read_pcie_link_data(&pcie_folder.to_path_buf());
+            return Self::read_pcie_link_data(pcie_folder);
         }
         bail!("Could not find PCIe address entry for {pci_slot}");
     }
@@ -107,9 +107,9 @@ where
                 }
             };
             if has_different_max {
-                write!(f, "{} / {}", current, self.max.as_ref().unwrap())
+                write!(f, "{current} / {}", self.max.as_ref().unwrap())
             } else {
-                write!(f, "{}", current)
+                write!(f, "{current}")
             }
         } else {
             write!(f, "{}", i18n("N/A"))
