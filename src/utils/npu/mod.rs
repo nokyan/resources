@@ -19,7 +19,10 @@ use crate::{
 
 use self::{intel::IntelNpu, other::OtherNpu};
 
-use super::pci::Vendor;
+use super::{
+    link::{Link, LinkData},
+    pci::Vendor,
+};
 
 pub const VID_INTEL: u16 = 0x8086;
 
@@ -388,5 +391,9 @@ impl Npu {
             Npu::Intel(npu) => npu.power_cap_max(),
             Npu::Other(npu) => npu.power_cap_max(),
         }
+    }
+
+    pub fn link(&self) -> Result<Link> {
+        Ok(Link::Pcie(LinkData::from_pci_slot(&self.pci_slot())?))
     }
 }

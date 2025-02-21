@@ -212,19 +212,26 @@ pub fn convert_speed_binary(bytes_per_second: f64) -> String {
 }
 
 pub fn convert_speed_bits_decimal(bits_per_second: f64) -> String {
+    convert_speed_bits_decimal_with_places(bits_per_second, 2)
+}
+
+pub fn convert_speed_bits_decimal_with_places(
+    bits_per_second: f64,
+    decimal_places: usize,
+) -> String {
     let (number, prefix) = to_largest_prefix(bits_per_second, Base::Decimal);
     match prefix {
         Prefix::None => i18n_f("{} b/s", &[&format!("{}", number.round())]),
-        Prefix::Kilo => i18n_f("{} kb/s", &[&format!("{number:.2}")]),
-        Prefix::Mega => i18n_f("{} Mb/s", &[&format!("{number:.2}")]),
-        Prefix::Giga => i18n_f("{} Gb/s", &[&format!("{number:.2}")]),
-        Prefix::Tera => i18n_f("{} Tb/s", &[&format!("{number:.2}")]),
-        Prefix::Peta => i18n_f("{} Pb/s", &[&format!("{number:.2}")]),
-        Prefix::Exa => i18n_f("{} Eb/s", &[&format!("{number:.2}")]),
-        Prefix::Zetta => i18n_f("{} Zb/s", &[&format!("{number:.2}")]),
-        Prefix::Yotta => i18n_f("{} Yb/s", &[&format!("{number:.2}")]),
-        Prefix::Ronna => i18n_f("{} Rb/s", &[&format!("{number:.2}")]),
-        Prefix::Quetta => i18n_f("{} Qb/s", &[&format!("{number:.2}")]),
+        Prefix::Kilo => i18n_f("{} kb/s", &[&format!("{number:.0$}", decimal_places)]),
+        Prefix::Mega => i18n_f("{} Mb/s", &[&format!("{number:.0$}", decimal_places)]),
+        Prefix::Giga => i18n_f("{} Gb/s", &[&format!("{number:.0$}", decimal_places)]),
+        Prefix::Tera => i18n_f("{} Tb/s", &[&format!("{number:.0$}", decimal_places)]),
+        Prefix::Peta => i18n_f("{} Pb/s", &[&format!("{number:.0$}", decimal_places)]),
+        Prefix::Exa => i18n_f("{} Eb/s", &[&format!("{number:.0$}", decimal_places)]),
+        Prefix::Zetta => i18n_f("{} Zb/s", &[&format!("{number:.0$}", decimal_places)]),
+        Prefix::Yotta => i18n_f("{} Yb/s", &[&format!("{number:.0$}", decimal_places)]),
+        Prefix::Ronna => i18n_f("{} Rb/s", &[&format!("{number:.0$}", decimal_places)]),
+        Prefix::Quetta => i18n_f("{} Qb/s", &[&format!("{number:.0$}", decimal_places)]),
     }
 }
 
