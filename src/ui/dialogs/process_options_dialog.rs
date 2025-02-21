@@ -2,14 +2,14 @@ use crate::{
     config::PROFILE,
     i18n::i18n_f,
     ui::{
-        pages::{processes::process_entry::ProcessEntry, NICE_TO_LABEL},
+        pages::{NICE_TO_LABEL, processes::process_entry::ProcessEntry},
         window::Action,
     },
     utils::settings::SETTINGS,
 };
-use adw::{prelude::*, subclass::prelude::*, ToastOverlay};
+use adw::{ToastOverlay, prelude::*, subclass::prelude::*};
 use async_channel::Sender;
-use gtk::glib::{self, clone, MainContext};
+use gtk::glib::{self, MainContext, clone};
 use log::trace;
 use process_data::Niceness;
 

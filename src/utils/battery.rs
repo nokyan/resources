@@ -5,8 +5,8 @@ use std::{
 };
 
 use crate::i18n::{i18n, i18n_f};
-use anyhow::{bail, Context, Result};
-use lazy_regex::{lazy_regex, Lazy, Regex};
+use anyhow::{Context, Result, bail};
+use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::trace;
 
 use super::units::convert_energy;

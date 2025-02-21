@@ -22,9 +22,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        CompositeTemplate,
         gio::Icon,
         glib::{ParamSpec, Properties, Value},
-        CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]

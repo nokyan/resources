@@ -2,13 +2,13 @@ use std::rc::Rc;
 
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::{
-    glib::{self, clone, GString},
     Ordering,
+    glib::{self, GString, clone},
 };
 use log::trace;
 use std::collections::HashMap;
 
-use crate::utils::settings::{SidebarMeterType, SETTINGS};
+use crate::utils::settings::{SETTINGS, SidebarMeterType};
 
 use super::stack_sidebar_item::ResStackSidebarItem;
 
@@ -21,7 +21,7 @@ mod imp {
 
     use super::*;
 
-    use gtk::{gio, CompositeTemplate, SingleSelection};
+    use gtk::{CompositeTemplate, SingleSelection, gio};
 
     #[derive(CompositeTemplate)]
     #[template(resource = "/net/nokyan/Resources/ui/widgets/stack_sidebar.ui")]

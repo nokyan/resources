@@ -1,9 +1,9 @@
 use super::units::convert_storage;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::link::{Link, LinkData};
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use gtk::gio::{Icon, ThemedIcon};
-use lazy_regex::{lazy_regex, Lazy, Regex};
+use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::trace;
 use path_dedot::ParseDot;
 use process_data::pci_slot::PciSlot;

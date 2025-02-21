@@ -1,7 +1,7 @@
 use std::{env, path::PathBuf};
 
 use nix::{
-    sched::{sched_setaffinity, CpuSet},
+    sched::{CpuSet, sched_setaffinity},
     unistd::Pid,
 };
 

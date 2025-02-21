@@ -4,9 +4,9 @@ use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
+use crate::utils::FiniteOr;
 use crate::utils::npu::{Npu, NpuData};
 use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
-use crate::utils::FiniteOr;
 
 pub const TAB_ID_PREFIX: &str = "npu";
 
@@ -18,9 +18,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        CompositeTemplate,
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]

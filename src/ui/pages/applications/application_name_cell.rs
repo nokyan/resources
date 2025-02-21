@@ -8,9 +8,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        Box, CompositeTemplate,
         gio::ThemedIcon,
         glib::{ParamSpec, Properties, Value},
-        Box, CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]

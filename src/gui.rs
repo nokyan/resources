@@ -4,11 +4,11 @@ use std::sync::LazyLock;
 use crate::application;
 #[rustfmt::skip]
 use crate::config;
-use crate::utils::app::DATA_DIRS;
 use crate::utils::IS_FLATPAK;
+use crate::utils::app::DATA_DIRS;
 
-use clap::{command, Parser};
-use gettextrs::{gettext, LocaleCategory};
+use clap::{Parser, command};
+use gettextrs::{LocaleCategory, gettext};
 use gtk::{gio, glib};
 use log::trace;
 
@@ -71,14 +71,16 @@ pub fn main() {
     // reset XDG_DATA_DIRS to use absolute paths instead of relative paths because Flatpak seemingly cannot resolve them
     // this must happen now because once the GTK app is loaded, it's too late
     if *IS_FLATPAK {
-        std::env::set_var(
-            "XDG_DATA_DIRS",
-            DATA_DIRS
-                .iter()
-                .map(|pathbuf| pathbuf.as_os_str().to_owned())
-                .collect::<Vec<OsString>>()
-                .join(&OsString::from(":")),
-        );
+        unsafe {
+            std::env::set_var(
+                "XDG_DATA_DIRS",
+                DATA_DIRS
+                    .iter()
+                    .map(|pathbuf| pathbuf.as_os_str().to_owned())
+                    .collect::<Vec<OsString>>()
+                    .join(&OsString::from(":")),
+            );
+        }
     }
 
     // Prepare i18n

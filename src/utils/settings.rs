@@ -2,7 +2,7 @@ use std::{ops::Deref, str::FromStr, sync::LazyLock};
 
 use adw::prelude::*;
 
-use gtk::{gio, glib, SortType};
+use gtk::{SortType, gio, glib};
 use log::debug;
 use strum_macros::{Display, EnumString, FromRepr};
 

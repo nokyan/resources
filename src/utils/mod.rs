@@ -124,11 +124,7 @@ pub trait FiniteOr {
 
 impl FiniteOr for f64 {
     fn finite_or(&self, x: Self) -> Self {
-        if self.is_finite() {
-            *self
-        } else {
-            x
-        }
+        if self.is_finite() { *self } else { x }
     }
 
     fn finite_or_default(&self) -> Self {
@@ -143,21 +139,13 @@ impl FiniteOr for f64 {
     where
         Self: Sized,
     {
-        if self.is_finite() {
-            *self
-        } else {
-            f(*self)
-        }
+        if self.is_finite() { *self } else { f(*self) }
     }
 }
 
 impl FiniteOr for f32 {
     fn finite_or(&self, x: Self) -> Self {
-        if self.is_finite() {
-            *self
-        } else {
-            x
-        }
+        if self.is_finite() { *self } else { x }
     }
 
     fn finite_or_default(&self) -> Self {
@@ -172,11 +160,7 @@ impl FiniteOr for f32 {
     where
         Self: Sized,
     {
-        if self.is_finite() {
-            *self
-        } else {
-            f(*self)
-        }
+        if self.is_finite() { *self } else { f(*self) }
     }
 }
 
@@ -186,7 +170,7 @@ mod test {
     use pretty_assertions::assert_eq;
     use std::collections::HashMap;
 
-    use crate::utils::{read_uevent_contents, FiniteOr};
+    use crate::utils::{FiniteOr, read_uevent_contents};
 
     #[test]
     fn read_uevent_contents_valid_simple() {

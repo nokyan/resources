@@ -1,9 +1,9 @@
 use anyhow::{Context, Result};
 use log::{debug, warn};
 use nvml_wrapper::{
+    Nvml,
     enum_wrappers::device::{Clock, TemperatureSensor},
     error::NvmlError,
-    Nvml,
 };
 use process_data::GpuIdentifier;
 
@@ -15,9 +15,11 @@ static NVML: LazyLock<Result<Nvml, NvmlError>> = LazyLock::new(|| {
     if let Err(error) = nvml.as_ref() {
         warn!("Connection to NVML failed, reason: {error}");
         if *IS_FLATPAK {
-            warn!("This can occur when the version of the NVIDIA Flatpak runtime (org.freedesktop.Platform.GL.nvidia) \
+            warn!(
+                "This can occur when the version of the NVIDIA Flatpak runtime (org.freedesktop.Platform.GL.nvidia) \
             and the version of the natively installed NVIDIA driver do not match. Consider updating both your system \
-            and Flatpak packages before opening an issue.")
+            and Flatpak packages before opening an issue."
+            )
         }
     } else {
         debug!("Successfully connected to NVML");
@@ -26,7 +28,7 @@ static NVML: LazyLock<Result<Nvml, NvmlError>> = LazyLock::new(|| {
     nvml
 });
 
-use crate::utils::{pci::Device, IS_FLATPAK};
+use crate::utils::{IS_FLATPAK, pci::Device};
 
 use super::GpuImpl;
 

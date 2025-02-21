@@ -7,10 +7,10 @@ use std::sync::LazyLock;
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
 use async_channel::Sender;
-use gtk::glib::{self, clone, closure, MainContext, Object};
+use gtk::glib::{self, MainContext, Object, clone, closure};
 use gtk::{
-    gio, BitsetIter, ColumnView, ColumnViewColumn, EventControllerKey, FilterChange, ListItem,
-    NumericSorter, SortType, StringSorter, Widget,
+    BitsetIter, ColumnView, ColumnViewColumn, EventControllerKey, FilterChange, ListItem,
+    NumericSorter, SortType, StringSorter, Widget, gio,
 };
 use process_data::Niceness;
 
@@ -20,11 +20,11 @@ use crate::ui::dialogs::process_dialog::ResProcessDialog;
 use crate::ui::dialogs::process_options_dialog::ResProcessOptionsDialog;
 use crate::ui::pages::NICE_TO_LABEL;
 use crate::ui::window::{Action, MainWindow};
+use crate::utils::NUM_CPUS;
 use crate::utils::app::AppsContext;
 use crate::utils::process::ProcessAction;
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_speed, convert_storage, format_time};
-use crate::utils::NUM_CPUS;
 
 use self::process_entry::ProcessEntry;
 use self::process_name_cell::ResProcessNameCell;
@@ -65,9 +65,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        CompositeTemplate,
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]
@@ -2034,11 +2034,15 @@ fn get_action_name_multiple(action: ProcessAction, count: usize) -> String {
 
 fn get_action_warning(action: ProcessAction) -> String {
     match action {
-            ProcessAction::TERM => i18n("Unsaved work might be lost."),
-            ProcessAction::STOP => i18n("Halting a process can come with serious risks such as losing data and security implications. Use with caution."),
-            ProcessAction::KILL => i18n("Killing a process can come with serious risks such as losing data and security implications. Use with caution."),
-            ProcessAction::CONT => String::new(),
-        }
+        ProcessAction::TERM => i18n("Unsaved work might be lost."),
+        ProcessAction::STOP => i18n(
+            "Halting a process can come with serious risks such as losing data and security implications. Use with caution.",
+        ),
+        ProcessAction::KILL => i18n(
+            "Killing a process can come with serious risks such as losing data and security implications. Use with caution.",
+        ),
+        ProcessAction::CONT => String::new(),
+    }
 }
 
 fn get_action_description(action: ProcessAction) -> String {

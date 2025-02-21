@@ -1,4 +1,4 @@
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use process_data::GpuIdentifier;
 
 use std::path::PathBuf;

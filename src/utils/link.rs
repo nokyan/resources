@@ -1,7 +1,7 @@
 use crate::i18n::i18n;
 use crate::utils::drive::AtaSlot;
 use crate::utils::link::SataSpeed::{Sata150, Sata300, Sata600};
-use anyhow::{anyhow, bail, Context, Error, Result};
+use anyhow::{Context, Error, Result, anyhow, bail};
 use process_data::pci_slot::PciSlot;
 use std::fmt::{Display, Formatter};
 use std::path::Path;

@@ -7,7 +7,7 @@ use process_data::Containerization;
 
 use crate::{
     i18n::i18n,
-    utils::{process::Process, TICK_RATE},
+    utils::{TICK_RATE, process::Process},
 };
 
 mod imp {

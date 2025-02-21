@@ -1,4 +1,4 @@
-use lazy_regex::{lazy_regex, Lazy, Regex};
+use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::trace;
 
 use super::IS_FLATPAK;

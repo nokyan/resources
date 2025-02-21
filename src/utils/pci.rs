@@ -248,7 +248,9 @@ fn init() -> Result<BTreeMap<u16, Vendor>> {
 
     let elapsed = start.elapsed();
 
-    info!("Successfully parsed pci.ids within {elapsed:.2?} (vendors: {vendors_count}, devices: {devices_count}, subdevices: {subdevices_count})");
+    info!(
+        "Successfully parsed pci.ids within {elapsed:.2?} (vendors: {vendors_count}, devices: {devices_count}, subdevices: {subdevices_count})"
+    );
 
     Ok(map)
 }
@@ -258,7 +260,7 @@ mod test {
     use pretty_assertions::assert_eq;
     use std::{collections::BTreeMap, io::BufReader};
 
-    use crate::utils::pci::{parse_pci_ids, Device, Subdevice, Vendor};
+    use crate::utils::pci::{Device, Subdevice, Vendor, parse_pci_ids};
 
     #[test]
     fn valid_empty() {

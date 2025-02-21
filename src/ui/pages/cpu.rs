@@ -1,6 +1,6 @@
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone};
 use gtk::FlowBoxChild;
+use gtk::glib::{self, clone};
 use log::trace;
 
 use crate::config::PROFILE;
@@ -21,9 +21,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        CompositeTemplate,
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]
