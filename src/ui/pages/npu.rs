@@ -47,6 +47,8 @@ mod imp {
         pub driver_used: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub max_power_cap: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub link: TemplateChild<adw::ActionRow>,
 
         #[property(get)]
         uses_progress_bar: Cell<bool>,
@@ -99,6 +101,7 @@ mod imp {
                 pci_slot: Default::default(),
                 driver_used: Default::default(),
                 max_power_cap: Default::default(),
+                link: Default::default(),
                 uses_progress_bar: Cell::new(true),
                 main_graph_color: glib::Bytes::from_static(&super::ResNPU::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(ThemedIcon::new("npu-symbolic").into()),
@@ -217,6 +220,12 @@ impl ResNPU {
         imp.pci_slot.set_subtitle(&npu.pci_slot().to_string());
 
         imp.driver_used.set_subtitle(&npu.driver());
+
+        if let Ok(link) = npu.link() {
+            imp.link.set_subtitle(&link.to_string());
+        } else {
+            imp.link.set_subtitle(&i18n("N/A"));
+        }
 
         if let Ok(model_name) = npu.name() {
             imp.set_tab_detail_string(&model_name);
