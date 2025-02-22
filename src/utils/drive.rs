@@ -34,6 +34,7 @@ pub struct DriveData {
     pub removable: Result<bool>,
     pub disk_stats: HashMap<String, usize>,
     pub capacity: Result<u64>,
+    pub link: Result<Link>,
 }
 
 impl DriveData {
@@ -48,6 +49,7 @@ impl DriveData {
         let removable = inner.removable();
         let disk_stats = inner.sys_stats().unwrap_or_default();
         let capacity = inner.capacity();
+        let link = inner.link();
 
         let drive_data = Self {
             inner,
@@ -56,6 +58,7 @@ impl DriveData {
             removable,
             disk_stats,
             capacity,
+            link,
         };
 
         trace!(

@@ -43,6 +43,8 @@ pub struct NpuData {
     pub power_usage: Option<f64>,
     pub power_cap: Option<f64>,
     pub power_cap_max: Option<f64>,
+
+    pub link: Option<Link>,
 }
 
 impl NpuData {
@@ -65,6 +67,8 @@ impl NpuData {
         let power_cap = npu.power_cap().ok();
         let power_cap_max = npu.power_cap_max().ok();
 
+        let link = npu.link().ok();
+
         let npu_data = Self {
             pci_slot,
             usage_fraction,
@@ -76,6 +80,7 @@ impl NpuData {
             power_usage,
             power_cap,
             power_cap_max,
+            link,
         };
 
         trace!("Gathered NPU data for {}: {npu_data:?}", pci_slot);
