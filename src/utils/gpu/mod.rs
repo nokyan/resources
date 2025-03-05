@@ -202,7 +202,8 @@ pub trait GpuImpl {
     fn hwmon_power_usage(&self) -> Result<f64> {
         Ok(self
             .read_hwmon_int("power1_average")
-            .or_else(|_| self.read_hwmon_int("power1_input"))? as f64
+            .or_else(|_| self.read_hwmon_int("power1_input"))
+            .or_else(|_| self.read_hwmon_int("power1"))? as f64
             / 1_000_000.0)
     }
 
@@ -311,7 +312,7 @@ impl Gpu {
                 )),
                 "AMD",
             )
-        } else if vid == VID_INTEL || driver == "i915" {
+        } else if vid == VID_INTEL || intel::DRIVER_NAMES.contains(&driver.as_str()) {
             (
                 Gpu::Intel(IntelGpu::new(
                     device,

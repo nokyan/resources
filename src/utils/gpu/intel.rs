@@ -1,18 +1,38 @@
 use anyhow::{Result, bail};
 use process_data::GpuIdentifier;
+use strum_macros::{Display, EnumString};
 
-use std::path::PathBuf;
+use std::{path::PathBuf, str::FromStr};
 
 use crate::utils::pci::Device;
 
 use super::GpuImpl;
 
-#[derive(Debug, Clone, Default)]
+pub const DRIVER_NAMES: &[&str] = &["i915", "xe"];
+
+#[derive(Debug, Clone, Display, EnumString, PartialEq, PartialOrd, Eq, Ord)]
+#[strum(ascii_case_insensitive)]
+#[strum(serialize_all = "lowercase")]
+pub enum IntelGpuDriver {
+    I915,
+    Xe,
+    #[strum(transparent)]
+    #[strum(default)]
+    Other(String),
+}
+
+impl Default for IntelGpuDriver {
+    fn default() -> Self {
+        Self::Other(String::new())
+    }
+}
+
+#[derive(Debug, Clone)]
 
 pub struct IntelGpu {
     pub device: Option<&'static Device>,
     pub gpu_identifier: GpuIdentifier,
-    pub driver: String,
+    pub driver: IntelGpuDriver,
     sysfs_path: PathBuf,
     first_hwmon_path: Option<PathBuf>,
 }
@@ -28,7 +48,7 @@ impl IntelGpu {
         Self {
             device,
             gpu_identifier,
-            driver,
+            driver: IntelGpuDriver::from_str(&driver).unwrap_or_default(),
             sysfs_path,
             first_hwmon_path,
         }
@@ -45,7 +65,7 @@ impl GpuImpl for IntelGpu {
     }
 
     fn driver(&self) -> String {
-        self.driver.clone()
+        self.driver.to_string()
     }
 
     fn sysfs_path(&self) -> PathBuf {
@@ -89,11 +109,21 @@ impl GpuImpl for IntelGpu {
     }
 
     fn power_usage(&self) -> Result<f64> {
-        self.hwmon_power_usage()
+        match self.driver {
+            IntelGpuDriver::Xe => {
+                Ok(self.read_sysfs_int("tile0/gt0/freq0/cur_freq")? as f64 * 1_000_000.0)
+            }
+            _ => Ok(self.read_sysfs_int("gt_cur_freq_mhz")? as f64 * 1_000_000.0),
+        }
     }
 
     fn core_frequency(&self) -> Result<f64> {
-        Ok(self.read_sysfs_int("gt_cur_freq_mhz")? as f64 * 1_000_000.0)
+        match self.driver {
+            IntelGpuDriver::Xe => {
+                Ok(self.read_sysfs_int("tile0/gt0/freq0/cur_freq")? as f64 * 1_000_000.0)
+            }
+            _ => Ok(self.read_sysfs_int("gt_cur_freq_mhz")? as f64 * 1_000_000.0),
+        }
     }
 
     fn vram_frequency(&self) -> Result<f64> {
@@ -106,5 +136,56 @@ impl GpuImpl for IntelGpu {
 
     fn power_cap_max(&self) -> Result<f64> {
         self.hwmon_power_cap_max()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use std::str::FromStr;
+
+    use super::IntelGpuDriver;
+    use pretty_assertions::assert_eq;
+
+    const I915_NAME: &str = "i915";
+    const XE_NAME: &str = "xe";
+    const OTHER_NAME: &str = "other_driver";
+
+    #[test]
+    fn i915_driver_from_str() {
+        let driver = IntelGpuDriver::from_str(I915_NAME).unwrap();
+
+        assert_eq!(driver, IntelGpuDriver::I915);
+    }
+
+    #[test]
+    fn xe_driver_from_str() {
+        let driver = IntelGpuDriver::from_str(XE_NAME).unwrap();
+
+        assert_eq!(driver, IntelGpuDriver::Xe);
+    }
+
+    #[test]
+    fn other_driver_from_str() {
+        let driver = IntelGpuDriver::from_str(OTHER_NAME).unwrap();
+
+        assert_eq!(driver, IntelGpuDriver::Other(OTHER_NAME.to_string()));
+    }
+
+    #[test]
+    fn i915_driver_to_str() {
+        assert_eq!(IntelGpuDriver::I915.to_string(), I915_NAME);
+    }
+
+    #[test]
+    fn xe_driver_to_str() {
+        assert_eq!(IntelGpuDriver::Xe.to_string(), XE_NAME);
+    }
+
+    #[test]
+    fn other_driver_to_str() {
+        assert_eq!(
+            IntelGpuDriver::Other(OTHER_NAME.to_string()).to_string(),
+            OTHER_NAME
+        );
     }
 }
