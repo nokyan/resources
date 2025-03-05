@@ -50,6 +50,9 @@ mod imp {
         swap_usage: Cell<u64>,
 
         #[property(get, set)]
+        combined_memory_usage: Cell<u64>,
+
+        #[property(get, set)]
         read_speed: Cell<f64>, // will be -1.0 if read data is not available
 
         #[property(get, set)]
@@ -113,6 +116,7 @@ mod imp {
                 cpu_usage: Cell::new(0.0),
                 memory_usage: Cell::new(0),
                 swap_usage: Cell::new(0),
+                combined_memory_usage: Cell::new(0),
                 read_speed: Cell::new(0.0),
                 read_total: Cell::new(0),
                 write_speed: Cell::new(0.0),
@@ -229,6 +233,12 @@ impl ProcessEntry {
         self.set_cpu_usage(process.cpu_time_ratio());
         self.set_memory_usage(process.data.memory_usage as u64);
         self.set_swap_usage(process.data.swap_usage as u64);
+        self.set_combined_memory_usage(
+            process
+                .data
+                .memory_usage
+                .saturating_add(process.data.swap_usage) as u64,
+        );
         self.set_read_speed(process.read_speed().unwrap_or(-1.0));
         self.set_read_total(
             process
