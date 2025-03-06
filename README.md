@@ -1,6 +1,6 @@
 # Resources
 
-<a href='https://flathub.org/apps/net.nokyan.Resources'><img width='240' alt='Download on Flathub' src='https://dl.flathub.org/assets/badges/flathub-badge-en.png'/></a>
+<a href='https://flathub.org/apps/net.nokyan.Resources'><img width='240' alt='Download on Flathub' src='https://flathub.org/api/badge?svg&locale=en'/></a>
 
 [![GNOME Circle](https://circle.gnome.org/assets/button/badge.svg
 )](https://apps.gnome.org/app/net.nokyan.Resources/) [![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app)  
