@@ -45,7 +45,7 @@ static RE_UID: Lazy<Regex> = lazy_regex!(r"Uid:\s*(\d+)");
 
 static RE_AFFINITY: Lazy<Regex> = lazy_regex!(r"Cpus_allowed:\s*([0-9A-Fa-f]+)");
 
-static RE_SWAP_USAGGE: Lazy<Regex> = lazy_regex!(r"VmSwap:\s*([0-9]+)\s*kB");
+static RE_SWAP_USAGE: Lazy<Regex> = lazy_regex!(r"VmSwap:\s*([0-9]+)\s*kB");
 
 static RE_IO_READ: Lazy<Regex> = lazy_regex!(r"read_bytes:\s*(\d+)");
 
@@ -242,71 +242,51 @@ impl GpuUsageStats {
     pub fn gfx_fraction(&self, old: &Self, time_delta: u64) -> Option<f32> {
         match (self, old) {
             (
-                &Self::AmdgpuStats {
-                    gfx_ns: a_gfx_ns,
-                    enc_ns: _,
-                    dec_ns: _,
-                    mem_bytes: _,
+                Self::AmdgpuStats {
+                    gfx_ns: a_gfx_ns, ..
                 },
-                &Self::AmdgpuStats {
-                    gfx_ns: b_gfx_ns,
-                    enc_ns: _,
-                    dec_ns: _,
-                    mem_bytes: _,
+                Self::AmdgpuStats {
+                    gfx_ns: b_gfx_ns, ..
                 },
-            ) => Some((a_gfx_ns.saturating_sub(b_gfx_ns)) as f32 / (time_delta * 1_000_000) as f32),
-            (
-                &Self::I915Stats {
-                    gfx_ns: a_gfx_ns,
-                    video_ns: _,
+            )
+            | (
+                Self::I915Stats {
+                    gfx_ns: a_gfx_ns, ..
                 },
-                &Self::I915Stats {
-                    gfx_ns: b_gfx_ns,
-                    video_ns: _,
+                Self::I915Stats {
+                    gfx_ns: b_gfx_ns, ..
                 },
-            ) => Some((a_gfx_ns.saturating_sub(b_gfx_ns)) as f32 / (time_delta * 1_000_000) as f32),
-            (
-                &Self::NvidiaStats {
-                    gfx_percentage,
-                    enc_percentage: _,
-                    dec_percentage: _,
-                    mem_bytes: _,
+            )
+            | (
+                Self::V3dStats {
+                    gfx_ns: a_gfx_ns, ..
                 },
-                &Self::NvidiaStats { .. },
-            ) => Some(gfx_percentage.fraction()),
-            (
-                &Self::V3dStats {
-                    gfx_ns: a_gfx_ns,
-                    mem_bytes: _,
-                },
-                &Self::V3dStats {
-                    gfx_ns: b_gfx_ns,
-                    mem_bytes: _,
-                },
-            ) => Some((a_gfx_ns.saturating_sub(b_gfx_ns)) as f32 / (time_delta * 1_000_000) as f32),
-            (
-                &Self::XeStats {
-                    gfx_cycles: a_gfx_cycles,
-                    gfx_total_cycles: a_gfx_total_cycles,
-                    video_cycles: _,
-                    video_cycles_total: _,
-                    mem_bytes: _,
-                },
-                &Self::XeStats {
-                    gfx_cycles: b_gfx_cycles,
-                    gfx_total_cycles: b_gfx_total_cycles,
-                    video_cycles: _,
-                    video_cycles_total: _,
-                    mem_bytes: _,
+                Self::V3dStats {
+                    gfx_ns: b_gfx_ns, ..
                 },
             ) => {
-                let gfx_cycles_delta = a_gfx_cycles.saturating_sub(b_gfx_cycles) as f64;
+                Some((a_gfx_ns.saturating_sub(*b_gfx_ns)) as f32 / (time_delta * 1_000_000) as f32)
+            }
+            (Self::NvidiaStats { gfx_percentage, .. }, Self::NvidiaStats { .. }) => {
+                Some(gfx_percentage.fraction())
+            }
+            (
+                Self::XeStats {
+                    gfx_cycles: a_gfx_cycles,
+                    gfx_total_cycles: a_gfx_total_cycles,
+                    ..
+                },
+                Self::XeStats {
+                    gfx_cycles: b_gfx_cycles,
+                    gfx_total_cycles: b_gfx_total_cycles,
+                    ..
+                },
+            ) => {
+                let gfx_cycles_delta = a_gfx_cycles.saturating_sub(*b_gfx_cycles) as f64;
                 let gfx_total_cycles_delta =
-                    a_gfx_total_cycles.saturating_sub(b_gfx_total_cycles) as f64;
-
+                    a_gfx_total_cycles.saturating_sub(*b_gfx_total_cycles) as f64;
                 Some((gfx_cycles_delta / gfx_total_cycles_delta) as f32)
             }
-
             _ => None,
         }
     }
@@ -314,157 +294,92 @@ impl GpuUsageStats {
     pub fn enc_fraction(&self, old: &Self, time_delta: u64) -> Option<f32> {
         match (self, old) {
             (
-                &Self::AmdgpuStats {
-                    gfx_ns: _,
-                    enc_ns: a_enc_ns,
-                    dec_ns: _,
-                    mem_bytes: _,
+                Self::AmdgpuStats {
+                    enc_ns: a_enc_ns, ..
                 },
-                &Self::AmdgpuStats {
-                    gfx_ns: _,
-                    enc_ns: b_enc_ns,
-                    dec_ns: _,
-                    mem_bytes: _,
+                Self::AmdgpuStats {
+                    enc_ns: b_enc_ns, ..
                 },
-            ) => Some((a_enc_ns.saturating_sub(b_enc_ns)) as f32 / (time_delta * 1_000_000) as f32),
-            (
-                &Self::I915Stats {
-                    gfx_ns: _,
-                    video_ns: a_video_ns,
+            )
+            | (
+                Self::I915Stats {
+                    video_ns: a_enc_ns, ..
                 },
-                &Self::I915Stats {
-                    gfx_ns: _,
-                    video_ns: b_video_ns,
-                },
-            ) => Some(
-                (a_video_ns.saturating_sub(b_video_ns)) as f32 / (time_delta * 1_000_000) as f32,
-            ),
-            (
-                &Self::NvidiaStats {
-                    gfx_percentage: _,
-                    enc_percentage,
-                    dec_percentage: _,
-                    mem_bytes: _,
-                },
-                &Self::NvidiaStats { .. },
-            ) => Some(enc_percentage.fraction()),
-            (
-                &Self::XeStats {
-                    gfx_cycles: _,
-                    gfx_total_cycles: _,
-                    video_cycles: a_enc_cycles,
-                    video_cycles_total: a_enc_total_cycles,
-                    mem_bytes: _,
-                },
-                &Self::XeStats {
-                    gfx_cycles: _,
-                    gfx_total_cycles: _,
-                    video_cycles: b_enc_cycles,
-                    video_cycles_total: b_enc_total_cycles,
-                    mem_bytes: _,
+                Self::I915Stats {
+                    video_ns: b_enc_ns, ..
                 },
             ) => {
-                let enc_cycles_delta = a_enc_cycles.saturating_sub(b_enc_cycles) as f64;
+                Some((a_enc_ns.saturating_sub(*b_enc_ns)) as f32 / (time_delta * 1_000_000) as f32)
+            }
+            (Self::NvidiaStats { enc_percentage, .. }, Self::NvidiaStats { .. }) => {
+                Some(enc_percentage.fraction())
+            }
+            (
+                Self::XeStats {
+                    video_cycles: a_enc_cycles,
+                    video_cycles_total: a_enc_total_cycles,
+                    ..
+                },
+                Self::XeStats {
+                    video_cycles: b_enc_cycles,
+                    video_cycles_total: b_enc_total_cycles,
+                    ..
+                },
+            ) => {
+                let enc_cycles_delta = a_enc_cycles.saturating_sub(*b_enc_cycles) as f64;
                 let enc_total_cycles_delta =
-                    a_enc_total_cycles.saturating_sub(b_enc_total_cycles) as f64;
-
+                    a_enc_total_cycles.saturating_sub(*b_enc_total_cycles) as f64;
                 Some((enc_cycles_delta / enc_total_cycles_delta) as f32)
             }
-
             _ => None,
         }
     }
 
+    /// For cards with a unified media engine (i.e. no seperated encode/decode stats), this will either be 0 (in case of
+    /// some AMD GPUs) or the same as enc_fraction()
     pub fn dec_fraction(&self, old: &Self, time_delta: u64) -> Option<f32> {
         match (self, old) {
             (
-                &Self::AmdgpuStats {
-                    gfx_ns: _,
-                    enc_ns: _,
-                    dec_ns: a_dec_ns,
-                    mem_bytes: _,
+                Self::AmdgpuStats {
+                    dec_ns: a_dec_ns, ..
                 },
-                &Self::AmdgpuStats {
-                    gfx_ns: _,
-                    enc_ns: _,
-                    dec_ns: b_dec_ns,
-                    mem_bytes: _,
-                },
-            ) => Some((a_dec_ns.saturating_sub(b_dec_ns)) as f32 / (time_delta * 1_000_000) as f32),
-            (
-                &Self::I915Stats {
-                    gfx_ns: _,
-                    video_ns: a_video_ns,
-                },
-                &Self::I915Stats {
-                    gfx_ns: _,
-                    video_ns: b_video_ns,
-                },
-            ) => Some(
-                (a_video_ns.saturating_sub(b_video_ns)) as f32 / (time_delta * 1_000_000) as f32,
-            ),
-            (
-                &Self::NvidiaStats {
-                    gfx_percentage: _,
-                    enc_percentage: _,
-                    dec_percentage,
-                    mem_bytes: _,
-                },
-                &Self::NvidiaStats { .. },
-            ) => Some(dec_percentage.fraction()),
-            (
-                &Self::XeStats {
-                    gfx_cycles: _,
-                    gfx_total_cycles: _,
-                    video_cycles: a_enc_cycles,
-                    video_cycles_total: a_enc_total_cycles,
-                    mem_bytes: _,
-                },
-                &Self::XeStats {
-                    gfx_cycles: _,
-                    gfx_total_cycles: _,
-                    video_cycles: b_enc_cycles,
-                    video_cycles_total: b_enc_total_cycles,
-                    mem_bytes: _,
+                Self::AmdgpuStats {
+                    dec_ns: b_dec_ns, ..
                 },
             ) => {
-                let enc_cycles_delta = a_enc_cycles.saturating_sub(b_enc_cycles) as f64;
+                Some((a_dec_ns.saturating_sub(*b_dec_ns)) as f32 / (time_delta * 1_000_000) as f32)
+            }
+            (Self::NvidiaStats { dec_percentage, .. }, Self::NvidiaStats { .. }) => {
+                Some(dec_percentage.fraction())
+            }
+            (
+                Self::XeStats {
+                    video_cycles: a_enc_cycles,
+                    video_cycles_total: a_enc_total_cycles,
+                    ..
+                },
+                Self::XeStats {
+                    video_cycles: b_enc_cycles,
+                    video_cycles_total: b_enc_total_cycles,
+                    ..
+                },
+            ) => {
+                let enc_cycles_delta = a_enc_cycles.saturating_sub(*b_enc_cycles) as f64;
                 let enc_total_cycles_delta =
-                    a_enc_total_cycles.saturating_sub(b_enc_total_cycles) as f64;
-
+                    a_enc_total_cycles.saturating_sub(*b_enc_total_cycles) as f64;
                 Some((enc_cycles_delta / enc_total_cycles_delta) as f32)
             }
-
             _ => None,
         }
     }
 
     pub fn mem(&self) -> Option<u64> {
         match self {
-            GpuUsageStats::AmdgpuStats {
-                gfx_ns: _,
-                enc_ns: _,
-                dec_ns: _,
-                mem_bytes,
-            } => Some(*mem_bytes),
-            GpuUsageStats::I915Stats { .. } => None,
-            GpuUsageStats::NvidiaStats {
-                gfx_percentage: _,
-                enc_percentage: _,
-                dec_percentage: _,
-                mem_bytes,
-            } => Some(*mem_bytes),
-            GpuUsageStats::V3dStats {
-                gfx_ns: _,
-                mem_bytes,
-            } => Some(*mem_bytes),
-            GpuUsageStats::XeStats {
-                gfx_cycles: _,
-                gfx_total_cycles: _,
-                video_cycles: _,
-                video_cycles_total: _,
-                mem_bytes,
-            } => Some(*mem_bytes),
+            Self::AmdgpuStats { mem_bytes, .. }
+            | Self::NvidiaStats { mem_bytes, .. }
+            | Self::V3dStats { mem_bytes, .. }
+            | Self::XeStats { mem_bytes, .. } => Some(*mem_bytes),
+            Self::I915Stats { .. } => None,
         }
     }
 
@@ -472,78 +387,78 @@ impl GpuUsageStats {
     pub fn greater(&self, other: &Self) -> Self {
         match (self, other) {
             (
-                &Self::AmdgpuStats {
+                Self::AmdgpuStats {
                     gfx_ns: a_gfx_ns,
                     enc_ns: a_enc_ns,
                     dec_ns: a_dec_ns,
                     mem_bytes: a_mem_bytes,
                 },
-                &Self::AmdgpuStats {
+                Self::AmdgpuStats {
                     gfx_ns: b_gfx_ns,
                     enc_ns: b_enc_ns,
                     dec_ns: b_dec_ns,
                     mem_bytes: b_mem_bytes,
                 },
             ) => Self::AmdgpuStats {
-                gfx_ns: std::cmp::max(a_gfx_ns, b_gfx_ns),
-                enc_ns: std::cmp::max(a_enc_ns, b_enc_ns),
-                dec_ns: std::cmp::max(a_dec_ns, b_dec_ns),
-                mem_bytes: std::cmp::max(a_mem_bytes, b_mem_bytes),
+                gfx_ns: std::cmp::max(*a_gfx_ns, *b_gfx_ns),
+                enc_ns: std::cmp::max(*a_enc_ns, *b_enc_ns),
+                dec_ns: std::cmp::max(*a_dec_ns, *b_dec_ns),
+                mem_bytes: std::cmp::max(*a_mem_bytes, *b_mem_bytes),
             },
             (
-                &Self::I915Stats {
+                Self::I915Stats {
                     gfx_ns: a_gfx_ns,
                     video_ns: a_video_ns,
                 },
-                &Self::I915Stats {
+                Self::I915Stats {
                     gfx_ns: b_gfx_ns,
                     video_ns: b_video_ns,
                 },
             ) => Self::I915Stats {
-                gfx_ns: std::cmp::max(a_gfx_ns, b_gfx_ns),
-                video_ns: std::cmp::max(a_video_ns, b_video_ns),
+                gfx_ns: std::cmp::max(*a_gfx_ns, *b_gfx_ns),
+                video_ns: std::cmp::max(*a_video_ns, *b_video_ns),
             },
             (
-                &Self::NvidiaStats {
+                Self::NvidiaStats {
                     gfx_percentage: a_gfx_percentage,
                     enc_percentage: a_enc_percentage,
                     dec_percentage: a_dec_percentage,
                     mem_bytes: a_mem_bytes,
                 },
-                &Self::NvidiaStats {
+                Self::NvidiaStats {
                     gfx_percentage: b_gfx_percentage,
                     enc_percentage: b_enc_percentage,
                     dec_percentage: b_dec_percentage,
                     mem_bytes: b_mem_bytes,
                 },
             ) => Self::NvidiaStats {
-                gfx_percentage: std::cmp::max(a_gfx_percentage, b_gfx_percentage),
-                enc_percentage: std::cmp::max(a_enc_percentage, b_enc_percentage),
-                dec_percentage: std::cmp::max(a_dec_percentage, b_dec_percentage),
-                mem_bytes: std::cmp::max(a_mem_bytes, b_mem_bytes),
+                gfx_percentage: std::cmp::max(*a_gfx_percentage, *b_gfx_percentage),
+                enc_percentage: std::cmp::max(*a_enc_percentage, *b_enc_percentage),
+                dec_percentage: std::cmp::max(*a_dec_percentage, *b_dec_percentage),
+                mem_bytes: std::cmp::max(*a_mem_bytes, *b_mem_bytes),
             },
             (
-                &Self::V3dStats {
+                Self::V3dStats {
                     gfx_ns: a_gfx_ns,
                     mem_bytes: a_mem_bytes,
                 },
-                &Self::V3dStats {
+                Self::V3dStats {
                     gfx_ns: b_gfx_ns,
                     mem_bytes: b_mem_bytes,
                 },
             ) => Self::V3dStats {
-                gfx_ns: std::cmp::max(a_gfx_ns, b_gfx_ns),
-                mem_bytes: std::cmp::max(a_mem_bytes, b_mem_bytes),
+                gfx_ns: std::cmp::max(*a_gfx_ns, *b_gfx_ns),
+                mem_bytes: std::cmp::max(*a_mem_bytes, *b_mem_bytes),
             },
             (
-                &Self::XeStats {
+                Self::XeStats {
                     gfx_cycles: a_gfx_cycles,
                     gfx_total_cycles: a_gfx_cycles_total,
                     video_cycles: a_video_cycles,
                     video_cycles_total: a_video_cycles_total,
                     mem_bytes: a_mem_bytes,
                 },
-                &Self::XeStats {
+                Self::XeStats {
                     gfx_cycles: b_gfx_cycles,
                     gfx_total_cycles: b_gfx_cycles_total,
                     video_cycles: b_video_cycles,
@@ -551,18 +466,18 @@ impl GpuUsageStats {
                     mem_bytes: b_mem_bytes,
                 },
             ) => Self::XeStats {
-                gfx_cycles: std::cmp::max(a_gfx_cycles, b_gfx_cycles),
-                gfx_total_cycles: std::cmp::max(a_gfx_cycles_total, b_gfx_cycles_total),
-                video_cycles: std::cmp::max(a_video_cycles, b_video_cycles),
-                video_cycles_total: std::cmp::max(a_video_cycles_total, b_video_cycles_total),
-                mem_bytes: std::cmp::max(a_mem_bytes, b_mem_bytes),
+                gfx_cycles: std::cmp::max(*a_gfx_cycles, *b_gfx_cycles),
+                gfx_total_cycles: std::cmp::max(*a_gfx_cycles_total, *b_gfx_cycles_total),
+                video_cycles: std::cmp::max(*a_video_cycles, *b_video_cycles),
+                video_cycles_total: std::cmp::max(*a_video_cycles_total, *b_video_cycles_total),
+                mem_bytes: std::cmp::max(*a_mem_bytes, *b_mem_bytes),
             },
             _ => *self,
         }
     }
 }
 
-/// Data that could be transferred using `resources-processes`, separated from
+/// Data that could be transferred us>ing `resources-processes`, separated from
 /// `Process` mainly due to `Icon` not being able to derive `Serialize` and
 /// `Deserialize`.
 #[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
@@ -584,7 +499,6 @@ pub struct ProcessData {
     pub read_bytes: Option<u64>,
     pub write_bytes: Option<u64>,
     pub timestamp: u64,
-    /// Key: PCI Slot ID of the GPU
     pub gpu_usage_stats: BTreeMap<GpuIdentifier, GpuUsageStats>,
 }
 
@@ -696,7 +610,6 @@ impl ProcessData {
 
         let comm = comm.replace('\n', "");
 
-        // -2 to accommodate for only collecting after the second item (which is the executable name as mentioned above)
         let parent_pid = stat
             .get(STAT_PARENT_PID)
             .context("wrong stat file format")
@@ -737,13 +650,13 @@ impl ProcessData {
                 });
             });
 
-        let swap_usage = RE_SWAP_USAGGE
+        let swap_usage = RE_SWAP_USAGE
             .captures(&status)
             .and_then(|captures| captures.get(1))
             .map(|capture| capture.as_str())
             .unwrap_or_default()
             .parse::<usize>()
-            .unwrap_or_default() // kworkers don't have swap usage
+            .unwrap_or_default()
             .saturating_mul(1000);
 
         let memory_usage = statm
@@ -885,8 +798,7 @@ impl ProcessData {
             seen_fds.insert(fd_num);
 
             let mut buffer = String::new();
-
-            let _ = file.read_to_string(&mut buffer);
+            file.read_to_string(&mut buffer)?;
 
             return_vec.push(Self::parse_fdinfo(buffer));
         }
@@ -953,7 +865,8 @@ impl ProcessData {
                     mem_bytes: MEM_DRM_FIELDS
                         .get(driver.as_str())
                         .map(|names| {
-                            Self::parse_drm_fields::<u64, &str>(fdinfo, names, &RE_DRM_KIB) * 1024
+                            Self::parse_drm_fields::<u64, _>(fdinfo, names, &RE_DRM_KIB)
+                                .saturating_mul(1024)
                         })
                         .unwrap_or_default(),
                 },
@@ -975,7 +888,8 @@ impl ProcessData {
                     mem_bytes: MEM_DRM_FIELDS
                         .get(driver.as_str())
                         .map(|names| {
-                            Self::parse_drm_fields::<u64, &str>(fdinfo, names, &RE_DRM_KIB) * 1024
+                            Self::parse_drm_fields::<u64, _>(fdinfo, names, &RE_DRM_KIB)
+                                .saturating_mul(1024)
                         })
                         .unwrap_or_default(),
                 },
@@ -999,7 +913,8 @@ impl ProcessData {
                     mem_bytes: MEM_DRM_FIELDS
                         .get(driver.as_str())
                         .map(|names| {
-                            Self::parse_drm_fields::<u64, &str>(fdinfo, names, &RE_DRM_KIB) * 1024
+                            Self::parse_drm_fields::<u64, _>(fdinfo, names, &RE_DRM_KIB)
+                                .saturating_mul(1024)
                         })
                         .unwrap_or_default(),
                 },
