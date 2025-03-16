@@ -463,6 +463,7 @@ impl ResProcesses {
         columns.push(self.add_system_cpu_time_column(&column_view));
         columns.push(self.add_priority_column(&column_view));
         columns.push(self.add_swap_column(&column_view));
+        columns.push(self.add_combined_memory_column(&column_view));
 
         let store = gio::ListStore::new::<ProcessEntry>();
 
@@ -1991,6 +1992,66 @@ impl ResProcesses {
         ));
 
         swap_col
+    }
+
+    fn add_combined_memory_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+        let combined_memory_col_factory = gtk::SignalListItemFactory::new();
+
+        let combined_memory_col = gtk::ColumnViewColumn::new(
+            Some(&i18n("Combined Memory")),
+            Some(combined_memory_col_factory.clone()),
+        );
+
+        combined_memory_col.set_resizable(true);
+
+        combined_memory_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(9);
+
+                item.set_child(Some(&row));
+
+                item.property_expression("item")
+                    .chain_property::<ProcessEntry>("combined_memory_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, swap_usage: u64| {
+                        convert_storage(swap_usage as f64, false)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        combined_memory_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
+        });
+
+        let combined_memory_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "combined_memory_usage",
+            ))
+            .build();
+
+        combined_memory_col.set_sorter(Some(&combined_memory_col_sorter));
+        combined_memory_col.set_visible(SETTINGS.processes_show_combined_memory());
+
+        column_view.append_column(&combined_memory_col);
+
+        SETTINGS.connect_processes_show_combined_memory(clone!(
+            #[weak]
+            combined_memory_col,
+            move |visible| combined_memory_col.set_visible(visible)
+        ));
+
+        combined_memory_col
     }
 }
 

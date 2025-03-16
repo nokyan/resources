@@ -178,6 +178,11 @@
                 <property name="title" translatable="yes">Swap</property>
               </object>
             </child>
+            <child>
+              <object class="AdwSwitchRow" id="apps_show_combined_memory_row">
+                <property name="title" translatable="yes">Combined Memory</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
@@ -283,6 +288,11 @@
             <child>
               <object class="AdwSwitchRow" id="processes_show_swap_row">
                 <property name="title" translatable="yes">Swap</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_combined_memory_row">
+                <property name="title" translatable="yes">Combined Memory</property>
               </object>
             </child>
           </object>

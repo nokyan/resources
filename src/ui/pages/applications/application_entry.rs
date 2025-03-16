@@ -47,6 +47,9 @@ mod imp {
         swap_usage: Cell<u64>,
 
         #[property(get, set)]
+        combined_memory_usage: Cell<u64>,
+
+        #[property(get, set)]
         read_speed: Cell<f64>,
 
         #[property(get, set)]
@@ -94,6 +97,7 @@ mod imp {
                 icon: Cell::new(ThemedIcon::new("generic-process").into()),
                 cpu_usage: Cell::new(0.0),
                 memory_usage: Cell::new(0),
+                combined_memory_usage: Cell::new(0),
                 swap_usage: Cell::new(0),
                 read_speed: Cell::new(0.0),
                 read_total: Cell::new(0),
@@ -206,6 +210,10 @@ impl ApplicationEntry {
         self.set_cpu_usage(app.cpu_time_ratio(apps_context));
         self.set_memory_usage(app.memory_usage(apps_context) as u64);
         self.set_swap_usage(app.swap_usage(apps_context) as u64);
+        self.set_combined_memory_usage(
+            app.memory_usage(apps_context)
+                .saturating_add(app.swap_usage(apps_context)) as u64,
+        );
         self.set_read_speed(app.read_speed(apps_context));
         self.set_read_total(app.read_total(apps_context));
         self.set_write_speed(app.write_speed(apps_context));
