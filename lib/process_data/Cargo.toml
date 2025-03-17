@@ -27,6 +27,7 @@ nvml-wrapper = "0.10.0"
 serde = { version = "1.0.215", features = ["serde_derive"] }
 syscalls = { version = "0.6.18", features = ["all"] }
 sysconf = "0.3.4"
+thiserror = "2.0.12"
 unescape = "0.1.0"
 uzers = "0.12.1"
 
