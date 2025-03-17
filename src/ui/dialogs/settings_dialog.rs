@@ -172,14 +172,13 @@ impl ResSettingsDialog {
         trace!("Setting up ResSettingsDialog widgets…");
 
         let imp = self.imp();
-        imp.prefix_combo_row
-            .set_selected((SETTINGS.base() as u8) as u32);
+        imp.prefix_combo_row.set_selected(SETTINGS.base() as u32);
         imp.network_bits_row.set_active(SETTINGS.network_bits());
         imp.temperature_combo_row
-            .set_selected((SETTINGS.temperature_unit() as u8) as u32);
+            .set_selected(SETTINGS.temperature_unit() as u32);
 
         imp.refresh_speed_combo_row
-            .set_selected((SETTINGS.refresh_speed() as u8) as u32);
+            .set_selected(SETTINGS.refresh_speed() as u32);
         imp.show_graph_grids_row
             .set_active(SETTINGS.show_graph_grids());
         imp.graph_data_points_row
@@ -189,7 +188,7 @@ impl ResSettingsDialog {
         imp.sidebar_description_row
             .set_active(SETTINGS.sidebar_description());
         imp.sidebar_meter_type_row
-            .set_selected((SETTINGS.sidebar_meter_type() as u8) as u32);
+            .set_selected(SETTINGS.sidebar_meter_type() as u32);
         imp.normalize_cpu_usage_row
             .set_active(SETTINGS.normalize_cpu_usage());
 

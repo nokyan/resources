@@ -104,7 +104,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.utilization_rates()
                     .context("unable to get utilization rates through NVML")
             })
-            .map(|usage| f64::from(usage.gpu) as f64 / 100.0)
+            .map(|usage| f64::from(usage.gpu) / 100.0)
             .or_else(|_| self.drm_usage().map(|usage| usage as f64 / 100.0))
     }
 
@@ -114,7 +114,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.encoder_utilization()
                     .context("unable to get utilization rates through NVML")
             })
-            .map(|usage| f64::from(usage.utilization) as f64 / 100.0)
+            .map(|usage| f64::from(usage.utilization) / 100.0)
             .context("encode usage not implemented for NVIDIA not using the nvidia driver")
     }
 
