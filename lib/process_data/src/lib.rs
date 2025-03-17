@@ -1,8 +1,8 @@
 pub mod pci_slot;
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use glob::glob;
-use lazy_regex::{lazy_regex, Lazy, Regex};
+use lazy_regex::{Lazy, Regex, lazy_regex};
 use nutype::nutype;
 use nvml_wrapper::enums::device::UsedGpuMemory;
 use nvml_wrapper::error::NvmlError;
@@ -136,8 +136,8 @@ impl Default for GpuIdentifier {
 impl Display for GpuIdentifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            GpuIdentifier::PciSlot(pci_slot) => write!(f, "{}", pci_slot),
-            GpuIdentifier::Enumerator(e) => write!(f, "{}", e),
+            GpuIdentifier::PciSlot(pci_slot) => write!(f, "{pci_slot}"),
+            GpuIdentifier::Enumerator(e) => write!(f, "{e}"),
         }
     }
 }
