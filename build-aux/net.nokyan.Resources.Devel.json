@@ -1,11 +1,11 @@
 {
     "id": "net.nokyan.Resources.Devel",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "47",
+    "runtime-version": "48",
     "sdk": "org.gnome.Sdk",
     "sdk-extensions": [
         "org.freedesktop.Sdk.Extension.rust-stable",
-        "org.freedesktop.Sdk.Extension.llvm18"
+        "org.freedesktop.Sdk.Extension.llvm20"
     ],
     "command": "resources",
     "finish-args": [
@@ -25,9 +25,19 @@
         "--socket=wayland",
         "--talk-name=org.freedesktop.Flatpak"
     ],
-    "cleanup": ["/include", "/lib/pkconfig", "/man", "/share/gtk-doc", "/share/man", "/share/pkgconfig", "*.la", "*.a", "/share/doc"],
+    "cleanup": [
+        "/include",
+        "/lib/pkconfig",
+        "/man",
+        "/share/gtk-doc",
+        "/share/man",
+        "/share/pkgconfig",
+        "*.la",
+        "*.a",
+        "/share/doc"
+    ],
     "build-options": {
-        "append-path": "/usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/llvm18/bin",
+        "append-path": "/usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/llvm20/bin",
         "env": {
             "CARGO_HOME": "/run/build/resources/cargo",
             "CARGO_REGISTRIES_CRATES_IO_PROTOCOL": "sparse",
