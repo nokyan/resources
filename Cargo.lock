@@ -1283,7 +1283,7 @@ dependencies = [
 
 [[package]]
 name = "process-data"
-version = "1.7.1"
+version = "1.8.0"
 dependencies = [
  "anyhow",
  "glob",
@@ -1340,7 +1340,7 @@ checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 
 [[package]]
 name = "resources"
-version = "1.7.1"
+version = "1.8.0"
 dependencies = [
  "anyhow",
  "async-channel",

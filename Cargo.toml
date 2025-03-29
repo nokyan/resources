@@ -1,6 +1,6 @@
 [package]
 name = "resources"
-version = "1.7.1"
+version = "1.8.0"
 authors = ["nokyan <hello@nokyan.net>"]
 edition = "2024"
 rust-version = "1.85.0"
