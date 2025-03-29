@@ -466,7 +466,7 @@ impl ProcessData {
             let fd_path = fdinfo_path.to_str().map(|s| s.replace("fdinfo", "fd"));
             if let Some(fd_path) = fd_path {
                 if let Ok(fd_metadata) = std::fs::metadata(fd_path) {
-                    let major = unsafe { libc::major(fd_metadata.st_rdev()) };
+                    let major = libc::major(fd_metadata.st_rdev());
                     if (fd_metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR || major != 226 {
                         continue;
                     }
