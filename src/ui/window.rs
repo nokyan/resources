@@ -271,7 +271,7 @@ impl MainWindow {
             *imp.apps_context.borrow_mut() = AppsContext::new(
                 gpus.iter()
                     .filter(|gpu| gpu.combined_media_engine().unwrap_or_default())
-                    .map(Gpu::gpu_identifier)
+                    .map(|gpu| gpu.gpu_identifier())
                     .collect(),
             );
             imp.apps.init(imp.sender.clone());

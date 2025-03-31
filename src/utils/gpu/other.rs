@@ -1,7 +1,7 @@
 use anyhow::{Result, bail};
 use process_data::GpuIdentifier;
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use crate::utils::pci::Device;
 
@@ -44,16 +44,16 @@ impl GpuImpl for OtherGpu {
         self.gpu_identifier
     }
 
-    fn driver(&self) -> String {
-        self.driver.clone()
+    fn driver(&self) -> &str {
+        &self.driver
     }
 
-    fn sysfs_path(&self) -> PathBuf {
-        self.sysfs_path.clone()
+    fn sysfs_path(&self) -> &Path {
+        &self.sysfs_path
     }
 
-    fn first_hwmon(&self) -> Option<PathBuf> {
-        self.first_hwmon_path.clone()
+    fn first_hwmon(&self) -> Option<&Path> {
+        self.first_hwmon_path.as_deref()
     }
 
     fn name(&self) -> Result<String> {

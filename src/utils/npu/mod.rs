@@ -14,7 +14,7 @@ use glob::glob;
 
 use crate::{
     i18n::i18n,
-    utils::{pci::Device, read_uevent},
+    utils::{pci::Device, read_sysfs, read_uevent},
 };
 
 use self::{intel::IntelNpu, other::OtherNpu};
@@ -104,9 +104,9 @@ impl Default for Npu {
 pub trait NpuImpl {
     fn device(&self) -> Option<&'static Device>;
     fn pci_slot(&self) -> PciSlot;
-    fn driver(&self) -> String;
-    fn sysfs_path(&self) -> PathBuf;
-    fn first_hwmon(&self) -> Option<PathBuf>;
+    fn driver(&self) -> &str;
+    fn sysfs_path(&self) -> &Path;
+    fn first_hwmon(&self) -> Option<&Path>;
 
     fn name(&self) -> Result<String>;
     fn usage(&self) -> Result<f64>;
@@ -119,38 +119,6 @@ pub trait NpuImpl {
     fn power_cap(&self) -> Result<f64>;
     fn power_cap_max(&self) -> Result<f64>;
 
-    fn read_sysfs_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
-        let path = self.sysfs_path().join(file);
-        trace!("Reading {path:?}…");
-        std::fs::read_to_string(&path)?
-            .replace('\n', "")
-            .parse::<isize>()
-            .with_context(|| format!("error parsing file {}", &path.to_string_lossy()))
-    }
-
-    fn read_device_file<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<String> {
-        let path = self.sysfs_path().join("device").join(file);
-        trace!("Reading {path:?}…");
-        Ok(std::fs::read_to_string(path)?.replace('\n', ""))
-    }
-
-    fn read_device_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
-        let path = self.sysfs_path().join("device").join(file);
-        trace!("Reading {path:?}…");
-        self.read_device_file(&path)?
-            .parse::<isize>()
-            .with_context(|| format!("error parsing file {}", &path.to_string_lossy()))
-    }
-
-    fn read_hwmon_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
-        let path = self.first_hwmon().context("no hwmon found")?.join(file);
-        trace!("Reading {path:?}…");
-        std::fs::read_to_string(&path)?
-            .replace('\n', "")
-            .parse::<isize>()
-            .with_context(|| format!("error parsing file {}", &path.to_string_lossy()))
-    }
-
     // These are preimplemented ways of getting information through the DRM and hwmon interface.
     // It's also used as a fallback.
 
@@ -160,46 +128,61 @@ pub trait NpuImpl {
 
     fn drm_usage(&self) -> Result<isize> {
         // No NPU driver actually implements this yet, this is a guess for the future based on drm_usage() for GPUs
-        self.read_device_int("npu_busy_percent")
+        read_sysfs(self.sysfs_path().join("device/npu_busy_percent"))
     }
 
     fn drm_used_memory(&self) -> Result<isize> {
         // ivpu will implement this with kernel 6.14, using this as a fallback just in case other vendors start using
         // this name as well
-        self.read_device_int("npu_memory_utilization")
+        read_sysfs(self.sysfs_path().join("device/npu_memory_utilization"))
     }
 
     fn drm_total_memory(&self) -> Result<isize> {
         // No NPU driver actually implements this yet, this is a guess for the future based on ivpu's
         // npu_memory_utilization
-        self.read_device_int("npu_memory_total")
+        read_sysfs(self.sysfs_path().join("device/npu_memory_total"))
+    }
+
+    fn hwmon_path(&self) -> Result<&Path> {
+        self.first_hwmon().context("no hwmon found")
     }
 
     fn hwmon_temperature(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("temp1_input")? as f64 / 1000.0)
+        read_sysfs::<isize>(self.hwmon_path()?.join("temp1_input")).map(|temp| temp as f64 / 1000.0)
     }
 
     fn hwmon_power_usage(&self) -> Result<f64> {
-        Ok(self
-            .read_hwmon_int("power1_average")
-            .or_else(|_| self.read_hwmon_int("power1_input"))? as f64
-            / 1_000_000.0)
+        read_sysfs::<isize>(self.hwmon_path()?.join("power1_average"))
+            .map(|power| power as f64 / 1_000_000.0)
     }
 
     fn hwmon_core_frequency(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("freq1_input")? as f64)
+        read_sysfs::<isize>(self.hwmon_path()?.join("freq1_input")).map(|freq| freq as f64)
     }
 
     fn hwmon_memory_frequency(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("freq2_input")? as f64)
+        read_sysfs::<isize>(self.hwmon_path()?.join("freq2_input")).map(|freq| freq as f64)
     }
 
     fn hwmon_power_cap(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("power1_cap")? as f64 / 1_000_000.0)
+        read_sysfs::<isize>(self.hwmon_path()?.join("power1_cap"))
+            .map(|power| power as f64 / 1_000_000.0)
     }
 
     fn hwmon_power_cap_max(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("power1_cap_max")? as f64 / 1_000_000.0)
+        read_sysfs::<isize>(self.hwmon_path()?.join("power1_cap_max"))
+            .map(|power| power as f64 / 1_000_000.0)
+    }
+}
+
+impl std::ops::Deref for Npu {
+    type Target = dyn NpuImpl;
+
+    fn deref(&self) -> &Self::Target {
+        match self {
+            Npu::Intel(npu) => npu,
+            Npu::Other(npu) => npu,
+        }
     }
 }
 
@@ -306,96 +289,7 @@ impl Npu {
     }
 
     pub fn get_vendor(&self) -> Result<&'static Vendor> {
-        Ok(match self {
-            Npu::Intel(npu) => npu.device(),
-            Npu::Other(npu) => npu.device(),
-        }
-        .context("no device")?
-        .vendor())
-    }
-
-    pub fn pci_slot(&self) -> PciSlot {
-        match self {
-            Npu::Intel(npu) => npu.pci_slot(),
-            Npu::Other(npu) => npu.pci_slot(),
-        }
-    }
-
-    pub fn driver(&self) -> String {
-        match self {
-            Npu::Intel(npu) => npu.driver(),
-            Npu::Other(npu) => npu.driver(),
-        }
-    }
-
-    pub fn name(&self) -> Result<String> {
-        match self {
-            Npu::Intel(npu) => npu.name(),
-            Npu::Other(npu) => npu.name(),
-        }
-    }
-
-    pub fn usage(&self) -> Result<f64> {
-        match self {
-            Npu::Intel(npu) => npu.usage(),
-            Npu::Other(npu) => npu.usage(),
-        }
-    }
-
-    pub fn used_vram(&self) -> Result<usize> {
-        match self {
-            Npu::Intel(npu) => npu.used_vram(),
-            Npu::Other(npu) => npu.used_vram(),
-        }
-    }
-
-    pub fn total_vram(&self) -> Result<usize> {
-        match self {
-            Npu::Intel(npu) => npu.total_vram(),
-            Npu::Other(npu) => npu.total_vram(),
-        }
-    }
-
-    pub fn temperature(&self) -> Result<f64> {
-        match self {
-            Npu::Intel(npu) => npu.temperature(),
-            Npu::Other(npu) => npu.temperature(),
-        }
-    }
-
-    pub fn power_usage(&self) -> Result<f64> {
-        match self {
-            Npu::Intel(npu) => npu.power_usage(),
-            Npu::Other(npu) => npu.power_usage(),
-        }
-    }
-
-    pub fn core_frequency(&self) -> Result<f64> {
-        match self {
-            Npu::Intel(npu) => npu.core_frequency(),
-            Npu::Other(npu) => npu.core_frequency(),
-        }
-    }
-
-    pub fn memory_frequency(&self) -> Result<f64> {
-        match self {
-            Npu::Intel(npu) => npu.memory_frequency(),
-            Npu::Other(npu) => npu.memory_frequency(),
-        }
-    }
-
-    pub fn power_cap(&self) -> Result<f64> {
-        match self {
-            Npu::Intel(npu) => npu.power_cap(),
-            Npu::Other(npu) => npu.power_cap(),
-        }
-    }
-
-    pub fn power_cap_max(&self) -> Result<f64> {
-        match self {
-            Npu::Intel(npu) => npu.power_cap_max(),
-            Npu::Other(npu) => npu.power_cap_max(),
-        }
+        Ok(self.device().context("no device")?.vendor())
     }
 
     pub fn link(&self) -> Result<Link> {

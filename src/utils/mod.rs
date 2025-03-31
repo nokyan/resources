@@ -1,4 +1,4 @@
-use std::{collections::HashMap, path::Path, sync::LazyLock};
+use std::{collections::HashMap, path::Path, str::FromStr, sync::LazyLock};
 
 use anyhow::{Context, Result};
 use gtk::glib::DateTime;
@@ -87,7 +87,7 @@ pub fn boot_time() -> Result<DateTime> {
         })
 }
 
-pub fn read_uevent_contents<S: AsRef<str>>(contents: S) -> Result<HashMap<String, String>> {
+pub fn read_uevent_contents(contents: impl AsRef<str>) -> Result<HashMap<String, String>> {
     contents
         .as_ref()
         .lines()
@@ -99,12 +99,24 @@ pub fn read_uevent_contents<S: AsRef<str>>(contents: S) -> Result<HashMap<String
         .collect()
 }
 
-pub fn read_uevent<P: AsRef<Path>>(uevent_path: P) -> Result<HashMap<String, String>> {
-    trace!(
-        "Reading uevent contents of {}",
-        uevent_path.as_ref().to_string_lossy()
-    );
-    read_uevent_contents(std::fs::read_to_string(uevent_path)?)
+pub fn read_uevent(path: impl AsRef<Path>) -> Result<HashMap<String, String>> {
+    let path = path.as_ref();
+
+    trace!("Reading uevent contents of {}", path.display());
+
+    read_uevent_contents(std::fs::read_to_string(path)?)
+}
+
+pub fn read_sysfs<T: FromStr>(path: impl AsRef<Path>) -> Result<T>
+where
+    <T as FromStr>::Err: std::error::Error + Send + Sync + 'static,
+{
+    let path = path.as_ref();
+
+    std::fs::read_to_string(path)?
+        .trim_ascii_end()
+        .parse::<T>()
+        .with_context(|| format!("error parsing file {}", path.display()))
 }
 
 pub trait FiniteOr {

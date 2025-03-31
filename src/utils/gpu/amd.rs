@@ -1,13 +1,19 @@
-use anyhow::{Result, bail};
+use anyhow::{Context, Result, bail};
 use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, trace, warn};
 use process_data::GpuIdentifier;
 
-use std::{collections::HashMap, path::PathBuf, sync::LazyLock, time::Instant};
+use std::{
+    collections::HashMap,
+    path::{Path, PathBuf},
+    sync::LazyLock,
+    time::Instant,
+};
 
 use crate::utils::{
     IS_FLATPAK,
     pci::{self, Device},
+    read_sysfs,
 };
 
 use super::GpuImpl;
@@ -48,7 +54,10 @@ impl AmdGpu {
             combined_media_engine: false,
         };
 
-        if let Ok(vcn_version) = gpu.read_device_int("ip_discovery/die/0/UVD/0/major") {
+        if let Ok(vcn_version) = read_sysfs::<isize>(
+            gpu.sysfs_path()
+                .join("device/ip_discovery/die/0/UVD/0/major"),
+        ) {
             if vcn_version >= 4 {
                 gpu.combined_media_engine = true;
             }
@@ -105,21 +114,25 @@ impl GpuImpl for AmdGpu {
         self.gpu_identifier
     }
 
-    fn driver(&self) -> String {
-        self.driver.clone()
+    fn driver(&self) -> &str {
+        &self.driver
     }
 
-    fn sysfs_path(&self) -> PathBuf {
-        self.sysfs_path.clone()
+    fn sysfs_path(&self) -> &Path {
+        &self.sysfs_path
     }
 
-    fn first_hwmon(&self) -> Option<PathBuf> {
-        self.first_hwmon_path.clone()
+    fn first_hwmon(&self) -> Option<&Path> {
+        self.first_hwmon_path.as_deref()
     }
 
     fn name(&self) -> Result<String> {
-        let revision =
-            u8::from_str_radix(&self.read_device_file("revision")?.replace("0x", ""), 16)?;
+        let revision = u8::from_str_radix(
+            read_sysfs::<String>(self.sysfs_path().join("device/revision"))?
+                .strip_prefix("0x")
+                .context("missing hex prefix")?,
+            16,
+        )?;
         Ok((*AMDGPU_IDS)
             .get(&(self.device().map_or(0, pci::Device::pid), revision))
             .cloned()

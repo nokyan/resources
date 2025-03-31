@@ -1,9 +1,9 @@
 use anyhow::{Result, bail};
 use process_data::GpuIdentifier;
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
-use crate::utils::pci::Device;
+use crate::utils::{pci::Device, read_sysfs};
 
 use super::GpuImpl;
 
@@ -44,16 +44,16 @@ impl GpuImpl for V3dGpu {
         self.gpu_identifier
     }
 
-    fn driver(&self) -> String {
-        self.driver.clone()
+    fn driver(&self) -> &str {
+        &self.driver
     }
 
-    fn sysfs_path(&self) -> PathBuf {
-        self.sysfs_path.clone()
+    fn sysfs_path(&self) -> &Path {
+        &self.sysfs_path
     }
 
-    fn first_hwmon(&self) -> Option<PathBuf> {
-        self.first_hwmon_path.clone()
+    fn first_hwmon(&self) -> Option<&Path> {
+        self.first_hwmon_path.as_deref()
     }
 
     fn name(&self) -> Result<String> {
@@ -93,7 +93,8 @@ impl GpuImpl for V3dGpu {
     }
 
     fn core_frequency(&self) -> Result<f64> {
-        Ok(self.read_sysfs_int("gt_cur_freq_mhz")? as f64 * 1_000_000.0)
+        read_sysfs::<isize>(self.sysfs_path().join("gt_cur_freq_mhz"))
+            .map(|freq| freq as f64 * 1_000_000.0)
     }
 
     fn vram_frequency(&self) -> Result<f64> {
