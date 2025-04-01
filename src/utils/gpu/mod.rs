@@ -16,7 +16,10 @@ use std::{
 };
 
 use self::{amd::AmdGpu, intel::IntelGpu, nvidia::NvidiaGpu, other::OtherGpu};
-use crate::utils::link::{Link, LinkData};
+use crate::utils::{
+    link::{Link, LinkData},
+    read_sysfs,
+};
 use crate::{
     i18n::i18n,
     utils::{pci::Device, read_uevent},
@@ -127,9 +130,9 @@ impl Default for Gpu {
 pub trait GpuImpl {
     fn device(&self) -> Option<&'static Device>;
     fn gpu_identifier(&self) -> GpuIdentifier;
-    fn driver(&self) -> String;
-    fn sysfs_path(&self) -> PathBuf;
-    fn first_hwmon(&self) -> Option<PathBuf>;
+    fn driver(&self) -> &str;
+    fn sysfs_path(&self) -> &Path;
+    fn first_hwmon(&self) -> Option<&Path>;
 
     fn name(&self) -> Result<String>;
     fn usage(&self) -> Result<f64>;
@@ -145,37 +148,6 @@ pub trait GpuImpl {
     fn power_cap(&self) -> Result<f64>;
     fn power_cap_max(&self) -> Result<f64>;
 
-    fn read_sysfs_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
-        let path = self.sysfs_path().join(file);
-        trace!("Reading {path:?}…");
-        std::fs::read_to_string(&path)?
-            .replace('\n', "")
-            .parse::<isize>()
-            .with_context(|| format!("error parsing file {}", &path.to_string_lossy()))
-    }
-
-    fn read_device_file<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<String> {
-        let path = self.sysfs_path().join("device").join(file);
-        trace!("Reading {path:?}…");
-        Ok(std::fs::read_to_string(path)?.replace('\n', ""))
-    }
-
-    fn read_device_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
-        let path = self.sysfs_path().join("device").join(file);
-        self.read_device_file(&path)?
-            .parse::<isize>()
-            .with_context(|| format!("error parsing file {}", &path.to_string_lossy()))
-    }
-
-    fn read_hwmon_int<P: AsRef<Path> + std::marker::Send>(&self, file: P) -> Result<isize> {
-        let path = self.first_hwmon().context("no hwmon found")?.join(file);
-        trace!("Reading {path:?}…");
-        std::fs::read_to_string(&path)?
-            .replace('\n', "")
-            .parse::<isize>()
-            .with_context(|| format!("error parsing file {}", &path.to_string_lossy()))
-    }
-
     // These are preimplemented ways of getting information through the DRM and hwmon interface.
     // It's also used as a fallback.
 
@@ -184,42 +156,60 @@ pub trait GpuImpl {
     }
 
     fn drm_usage(&self) -> Result<isize> {
-        self.read_device_int("gpu_busy_percent")
+        read_sysfs(self.sysfs_path().join("device/gpu_busy_percent"))
     }
 
     fn drm_used_vram(&self) -> Result<isize> {
-        self.read_device_int("mem_info_vram_used")
+        read_sysfs(self.sysfs_path().join("device/mem_info_vram_used"))
     }
 
     fn drm_total_vram(&self) -> Result<isize> {
-        self.read_device_int("mem_info_vram_total")
+        read_sysfs(self.sysfs_path().join("device/mem_info_vram_total"))
+    }
+
+    fn hwmon_path(&self) -> Result<&Path> {
+        self.first_hwmon().context("no hwmon found")
     }
 
     fn hwmon_temperature(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("temp1_input")? as f64 / 1000.0)
+        read_sysfs::<isize>(self.hwmon_path()?.join("temp1_input")).map(|temp| temp as f64 / 1000.0)
     }
 
     fn hwmon_power_usage(&self) -> Result<f64> {
-        Ok(self
-            .read_hwmon_int("power1_average")
-            .or_else(|_| self.read_hwmon_int("power1_input"))? as f64
-            / 1_000_000.0)
+        read_sysfs::<isize>(self.hwmon_path()?.join("power1_average"))
+            .map(|power| power as f64 / 1_000_000.0)
     }
 
     fn hwmon_core_frequency(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("freq1_input")? as f64)
+        read_sysfs::<isize>(self.hwmon_path()?.join("freq1_input")).map(|freq| freq as f64)
     }
 
     fn hwmon_vram_frequency(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("freq2_input")? as f64)
+        read_sysfs::<isize>(self.hwmon_path()?.join("freq2_input")).map(|freq| freq as f64)
     }
 
     fn hwmon_power_cap(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("power1_cap")? as f64 / 1_000_000.0)
+        read_sysfs::<isize>(self.hwmon_path()?.join("power1_cap"))
+            .map(|power| power as f64 / 1_000_000.0)
     }
 
     fn hwmon_power_cap_max(&self) -> Result<f64> {
-        Ok(self.read_hwmon_int("power1_cap_max")? as f64 / 1_000_000.0)
+        read_sysfs::<isize>(self.hwmon_path()?.join("power1_cap_max"))
+            .map(|power| power as f64 / 1_000_000.0)
+    }
+}
+
+impl std::ops::Deref for Gpu {
+    type Target = dyn GpuImpl;
+
+    fn deref(&self) -> &Self::Target {
+        match self {
+            Gpu::Amd(gpu) => gpu,
+            Gpu::Intel(gpu) => gpu,
+            Gpu::Nvidia(gpu) => gpu,
+            Gpu::V3d(gpu) => gpu,
+            Gpu::Other(gpu) => gpu,
+        }
     }
 }
 
@@ -369,165 +359,7 @@ impl Gpu {
     }
 
     pub fn get_vendor(&self) -> Result<&'static Vendor> {
-        Ok(match self {
-            Gpu::Amd(gpu) => gpu.device(),
-            Gpu::Intel(gpu) => gpu.device(),
-            Gpu::Nvidia(gpu) => gpu.device(),
-            Gpu::V3d(gpu) => gpu.device(),
-            Gpu::Other(gpu) => gpu.device(),
-        }
-        .context("no device")?
-        .vendor())
-    }
-
-    pub fn gpu_identifier(&self) -> GpuIdentifier {
-        match self {
-            Gpu::Amd(gpu) => gpu.gpu_identifier(),
-            Gpu::Intel(gpu) => gpu.gpu_identifier(),
-            Gpu::Nvidia(gpu) => gpu.gpu_identifier(),
-            Gpu::V3d(gpu) => gpu.gpu_identifier(),
-            Gpu::Other(gpu) => gpu.gpu_identifier(),
-        }
-    }
-
-    pub fn driver(&self) -> String {
-        match self {
-            Gpu::Amd(gpu) => gpu.driver(),
-            Gpu::Intel(gpu) => gpu.driver(),
-            Gpu::Nvidia(gpu) => gpu.driver(),
-            Gpu::V3d(gpu) => gpu.driver(),
-            Gpu::Other(gpu) => gpu.driver(),
-        }
-    }
-
-    pub fn name(&self) -> Result<String> {
-        match self {
-            Gpu::Amd(gpu) => gpu.name(),
-            Gpu::Intel(gpu) => gpu.name(),
-            Gpu::Nvidia(gpu) => gpu.name(),
-            Gpu::V3d(gpu) => gpu.name(),
-            Gpu::Other(gpu) => gpu.name(),
-        }
-    }
-
-    pub fn usage(&self) -> Result<f64> {
-        match self {
-            Gpu::Amd(gpu) => gpu.usage(),
-            Gpu::Intel(gpu) => gpu.usage(),
-            Gpu::Nvidia(gpu) => gpu.usage(),
-            Gpu::V3d(gpu) => gpu.usage(),
-            Gpu::Other(gpu) => gpu.usage(),
-        }
-    }
-
-    pub fn encode_usage(&self) -> Result<f64> {
-        match self {
-            Gpu::Amd(gpu) => gpu.encode_usage(),
-            Gpu::Intel(gpu) => gpu.encode_usage(),
-            Gpu::Nvidia(gpu) => gpu.encode_usage(),
-            Gpu::V3d(gpu) => gpu.encode_usage(),
-            Gpu::Other(gpu) => gpu.encode_usage(),
-        }
-    }
-
-    pub fn decode_usage(&self) -> Result<f64> {
-        match self {
-            Gpu::Amd(gpu) => gpu.decode_usage(),
-            Gpu::Intel(gpu) => gpu.decode_usage(),
-            Gpu::Nvidia(gpu) => gpu.decode_usage(),
-            Gpu::V3d(gpu) => gpu.decode_usage(),
-            Gpu::Other(gpu) => gpu.decode_usage(),
-        }
-    }
-
-    pub fn combined_media_engine(&self) -> Result<bool> {
-        match self {
-            Gpu::Amd(gpu) => gpu.combined_media_engine(),
-            Gpu::Intel(gpu) => gpu.combined_media_engine(),
-            Gpu::Nvidia(gpu) => gpu.combined_media_engine(),
-            Gpu::V3d(gpu) => gpu.combined_media_engine(),
-            Gpu::Other(gpu) => gpu.combined_media_engine(),
-        }
-    }
-
-    pub fn used_vram(&self) -> Result<usize> {
-        match self {
-            Gpu::Amd(gpu) => gpu.used_vram(),
-            Gpu::Intel(gpu) => gpu.used_vram(),
-            Gpu::Nvidia(gpu) => gpu.used_vram(),
-            Gpu::V3d(gpu) => gpu.used_vram(),
-            Gpu::Other(gpu) => gpu.used_vram(),
-        }
-    }
-
-    pub fn total_vram(&self) -> Result<usize> {
-        match self {
-            Gpu::Amd(gpu) => gpu.total_vram(),
-            Gpu::Intel(gpu) => gpu.total_vram(),
-            Gpu::Nvidia(gpu) => gpu.total_vram(),
-            Gpu::V3d(gpu) => gpu.total_vram(),
-            Gpu::Other(gpu) => gpu.total_vram(),
-        }
-    }
-
-    pub fn temperature(&self) -> Result<f64> {
-        match self {
-            Gpu::Amd(gpu) => gpu.temperature(),
-            Gpu::Intel(gpu) => gpu.temperature(),
-            Gpu::Nvidia(gpu) => gpu.temperature(),
-            Gpu::V3d(gpu) => gpu.temperature(),
-            Gpu::Other(gpu) => gpu.temperature(),
-        }
-    }
-
-    pub fn power_usage(&self) -> Result<f64> {
-        match self {
-            Gpu::Amd(gpu) => gpu.power_usage(),
-            Gpu::Intel(gpu) => gpu.power_usage(),
-            Gpu::Nvidia(gpu) => gpu.power_usage(),
-            Gpu::V3d(gpu) => gpu.power_usage(),
-            Gpu::Other(gpu) => gpu.power_usage(),
-        }
-    }
-
-    pub fn core_frequency(&self) -> Result<f64> {
-        match self {
-            Gpu::Amd(gpu) => gpu.core_frequency(),
-            Gpu::Intel(gpu) => gpu.core_frequency(),
-            Gpu::Nvidia(gpu) => gpu.core_frequency(),
-            Gpu::V3d(gpu) => gpu.core_frequency(),
-            Gpu::Other(gpu) => gpu.core_frequency(),
-        }
-    }
-
-    pub fn vram_frequency(&self) -> Result<f64> {
-        match self {
-            Gpu::Amd(gpu) => gpu.vram_frequency(),
-            Gpu::Intel(gpu) => gpu.vram_frequency(),
-            Gpu::Nvidia(gpu) => gpu.vram_frequency(),
-            Gpu::V3d(gpu) => gpu.vram_frequency(),
-            Gpu::Other(gpu) => gpu.vram_frequency(),
-        }
-    }
-
-    pub fn power_cap(&self) -> Result<f64> {
-        match self {
-            Gpu::Amd(gpu) => gpu.power_cap(),
-            Gpu::Intel(gpu) => gpu.power_cap(),
-            Gpu::Nvidia(gpu) => gpu.power_cap(),
-            Gpu::V3d(gpu) => gpu.power_cap(),
-            Gpu::Other(gpu) => gpu.power_cap(),
-        }
-    }
-
-    pub fn power_cap_max(&self) -> Result<f64> {
-        match self {
-            Gpu::Amd(gpu) => gpu.power_cap_max(),
-            Gpu::Intel(gpu) => gpu.power_cap_max(),
-            Gpu::Nvidia(gpu) => gpu.power_cap_max(),
-            Gpu::V3d(gpu) => gpu.power_cap_max(),
-            Gpu::Other(gpu) => gpu.power_cap_max(),
-        }
+        Ok(self.device().context("no device")?.vendor())
     }
 
     pub fn link(&self) -> Result<Link> {
