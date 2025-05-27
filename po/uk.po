@@ -7,7 +7,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues\n"
 "POT-Creation-Date: 2024-10-19 07:42+0200\n"
 "PO-Revision-Date: 2024-10-19 18:50+0300\n"
-"Last-Translator: volkov <volkovissocool@gmail.com>\n"
+"Last-Translator: Oleksii \"Grinka\" <grinka@tuta.io>\n"
 "Language-Team: volkov <volkovissocool@gmail.com>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -411,7 +411,7 @@ msgstr "Використання відеопам'яті"
 #. shorter than) 'Memory'
 #: src/ui/pages/gpu.rs:385 src/ui/pages/npu.rs:307
 msgid "Memory: {}"
-msgstr "Пам'ять"
+msgstr "Пам'ять: {}"
 
 #: src/ui/pages/memory.rs:192
 msgid "Swap"
