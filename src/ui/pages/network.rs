@@ -272,9 +272,9 @@ impl ResNetwork {
                 |network_link_data| match (network_link_data) {
                     NetworkLinkData::Wifi(wifi_link_data) => {
                         format!(
-                            "{} {}",
+                            "{} - {}",
                             wifi_link_data.generation.to_string(),
-                            convert_speed_bits_decimal(wifi_link_data.bps as f64)
+                            convert_speed_bits_decimal(wifi_link_data.rx_bps as f64),
                         )
                     }
                     NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps as f64),
@@ -383,6 +383,21 @@ impl ResNetwork {
 
             (0.0, i18n("N/A"))
         };
+        let network_interface = &network_data.inner;
+        imp.link_speed
+            .set_subtitle(&network_interface.link_speed().map_or_else(
+                |_| i18n("N/A"),
+                |network_link_data| match (network_link_data) {
+                    NetworkLinkData::Wifi(wifi_link_data) => {
+                        format!(
+                            "{} - {}",
+                            wifi_link_data.generation.to_string(),
+                            convert_speed_bits_decimal(wifi_link_data.rx_bps as f64),
+                        )
+                    }
+                    NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps as f64),
+                },
+            ));
 
         self.set_property("usage", f64::max(received_delta, sent_delta));
 

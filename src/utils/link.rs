@@ -7,6 +7,8 @@ use anyhow::{Context, Error, Result, anyhow, bail};
 use log::{info, trace};
 use neli_wifi::{Nl80211Cmd, Socket};
 use process_data::pci_slot::PciSlot;
+use std::cmp::Ordering;
+use std::ffi::CString;
 use std::fmt::{Display, Formatter};
 use std::path::Path;
 use std::str::FromStr;
@@ -55,7 +57,8 @@ pub enum NetworkLinkData {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct WifiLinkData {
     pub generation: WifiGeneration,
-    pub bps: usize,
+    pub rx_bps: usize,
+    pub tx_bps: usize,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum WifiGeneration {
@@ -210,18 +213,28 @@ impl LinkData<WifiLinkData> {
         if interface.interface_type != InterfaceType::Wlan {
             bail!("Wifi interface type is required for wifi generation detection");
         }
+        let name = interface.interface_name.to_str().unwrap();
+        info!("Wifi interface '{name}'");
         let mut socket = Socket::connect()?;
         let interfaces = socket
             .get_interfaces_info()
             .context("Could not get interfaces")?;
-        let interface = interfaces.iter().filter(|x| x.index.is_some()).next();
-        if let Some(interface) = interface {
-            info!(
-                "Found interface {}: {:?}",
-                String::from_utf8_lossy(interface.name.as_ref().unwrap()),
-                interface
-            );
-            let index = interface.index.unwrap();
+        let wifi_interface = interfaces
+            .iter()
+            .filter(|x| {
+                x.name.is_some()
+                    && name
+                        == CString::from_vec_with_nul(x.name.clone().unwrap())
+                            .unwrap()
+                            .to_str()
+                            .unwrap()
+            })
+            .next();
+        if let Some(wifi_interface) = wifi_interface {
+            let wifi_interface_name =
+                String::from_utf8_lossy(wifi_interface.name.as_ref().unwrap());
+            info!("Found interface '{}': {:?}", wifi_interface_name, interface);
+            let index = wifi_interface.index.unwrap();
             if let Some(station_info) = socket.get_station_info(index)?.first() {
                 info!("Found station: {:?}", station_info,);
                 let mut wifi_generation: WifiGeneration = WifiGeneration::Unknown;
@@ -238,11 +251,13 @@ impl LinkData<WifiLinkData> {
                 if station_info.eht_mcs.is_some() {
                     wifi_generation = WifiGeneration::WIFI_7
                 }
-                let bps = station_info.tx_bitrate.unwrap_or(0).saturating_mul(100_000) as usize;
+                let rx = station_info.rx_bitrate.unwrap_or(0).saturating_mul(100_000) as usize;
+                let tx = station_info.tx_bitrate.unwrap_or(0).saturating_mul(100_000) as usize;
                 return Ok(LinkData {
                     current: WifiLinkData {
                         generation: wifi_generation,
-                        bps,
+                        rx_bps: rx,
+                        tx_bps: tx,
                     },
                     max: Err(anyhow!("No max yet supported")),
                 });
