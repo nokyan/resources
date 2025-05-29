@@ -8,7 +8,9 @@ use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::link::NetworkLinkData;
 use crate::utils::network::{NetworkData, NetworkInterface};
-use crate::utils::units::{convert_speed, convert_speed_bits_decimal, convert_storage};
+use crate::utils::units::{
+    convert_frequency, convert_speed, convert_speed_bits_decimal, convert_storage,
+};
 
 pub const TAB_ID_PREFIX: &str = "network";
 
@@ -392,6 +394,7 @@ impl ResNetwork {
                         format!(
                             "{} - {}",
                             wifi_link_data.generation.to_string(),
+                            // convert_frequency(wifi_link_data.frequency_mhz.as_f64() * 1_000_000.0),
                             convert_speed_bits_decimal(wifi_link_data.rx_bps as f64),
                         )
                     }
