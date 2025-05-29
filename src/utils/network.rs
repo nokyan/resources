@@ -8,9 +8,9 @@ use anyhow::{Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
 use log::trace;
 
-use crate::i18n::i18n;
-
 use super::{pci::Device, read_uevent};
+use crate::i18n::i18n;
+use crate::utils::link::{LinkData, NetworkLinkData, WifiGeneration};
 
 const PATH_SYSFS: &str = "/sys/class/net";
 
@@ -53,7 +53,7 @@ impl NetworkData {
         let received_bytes = inner.received_bytes();
         let sent_bytes = inner.sent_bytes();
         let display_name = inner.display_name();
-
+        let link = LinkData::from_wifi_adapter(&inner);
         let network_data = Self {
             inner,
             is_virtual,
@@ -71,7 +71,7 @@ impl NetworkData {
     }
 }
 
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub enum InterfaceType {
     Bluetooth,
     Bridge,
@@ -275,13 +275,19 @@ impl NetworkInterface {
     /// # Errors
     ///
     /// Will return `Err` if the link speed couldn't be determined (e. g. for Wi-Fi connections)
-    pub fn link_speed(&self) -> Result<usize> {
-        std::fs::read_to_string(self.sysfs_path.join("speed"))
-            .context("read failure")?
-            .replace('\n', "")
-            .parse::<usize>()
-            .context("parsing failure")
-            .map(|mbps| mbps.saturating_mul(1_000_000))
+    pub fn link_speed(&self) -> Result<NetworkLinkData> {
+        if self.interface_type == InterfaceType::Wlan {
+            let generation = LinkData::from_wifi_adapter(self)?;
+            Ok(NetworkLinkData::Wifi(generation.current))
+        } else {
+            let mpbs = std::fs::read_to_string(self.sysfs_path.join("speed"))
+                .context("read failure")?
+                .replace('\n', "")
+                .parse::<usize>()
+                .context("parsing failure")
+                .map(|mbps| mbps.saturating_mul(1_000_000))?;
+            Ok(NetworkLinkData::Other(mpbs))
+        }
     }
 
     /// Returns the appropriate Icon for the type of drive

@@ -6,6 +6,7 @@ use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
+use crate::utils::link::NetworkLinkData;
 use crate::utils::network::{NetworkData, NetworkInterface};
 use crate::utils::units::{convert_speed, convert_speed_bits_decimal, convert_storage};
 
@@ -268,7 +269,16 @@ impl ResNetwork {
         imp.link_speed
             .set_subtitle(&network_interface.link_speed().map_or_else(
                 |_| i18n("N/A"),
-                |bps| convert_speed_bits_decimal(bps as f64),
+                |network_link_data| match (network_link_data) {
+                    NetworkLinkData::Wifi(wifi_link_data) => {
+                        format!(
+                            "{} {}",
+                            wifi_link_data.generation.to_string(),
+                            convert_speed_bits_decimal(wifi_link_data.bps as f64)
+                        )
+                    }
+                    NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps as f64),
+                },
             ));
 
         imp.last_timestamp.set(

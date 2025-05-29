@@ -1,9 +1,11 @@
 use crate::i18n::i18n;
 use crate::utils::drive::{AtaSlot, UsbSlot};
 use crate::utils::link::SataSpeed::{Sata150, Sata300, Sata600};
+use crate::utils::network::{InterfaceType, NetworkInterface};
 use crate::utils::units::convert_speed_bits_decimal_with_places;
 use anyhow::{Context, Error, Result, anyhow, bail};
-use log::trace;
+use log::{info, trace};
+use neli_wifi::{Nl80211Cmd, Socket};
 use process_data::pci_slot::PciSlot;
 use std::fmt::{Display, Formatter};
 use std::path::Path;
@@ -14,6 +16,7 @@ pub enum Link {
     Pcie(LinkData<PcieLinkData>),
     Sata(LinkData<SataSpeed>),
     Usb(LinkData<UsbSpeed>),
+    Wifi(LinkData<WifiGeneration>),
     #[default]
     Unknown,
 }
@@ -43,6 +46,24 @@ pub enum SataSpeed {
     Sata150,
     Sata300,
     Sata600,
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum NetworkLinkData {
+    Wifi(WifiLinkData),
+    Other(usize),
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct WifiLinkData {
+    pub generation: WifiGeneration,
+    pub bps: usize,
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum WifiGeneration {
+    WIFI_4,
+    WIFI_5,
+    WIFI_6,
+    WIFI_7,
+    Unknown,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -184,6 +205,53 @@ impl LinkData<UsbSpeed> {
     }
 }
 
+impl LinkData<WifiLinkData> {
+    pub fn from_wifi_adapter(interface: &NetworkInterface) -> Result<Self> {
+        if interface.interface_type != InterfaceType::Wlan {
+            bail!("Wifi interface type is required for wifi generation detection");
+        }
+        let mut socket = Socket::connect()?;
+        let interfaces = socket
+            .get_interfaces_info()
+            .context("Could not get interfaces")?;
+        let interface = interfaces.iter().filter(|x| x.index.is_some()).next();
+        if let Some(interface) = interface {
+            info!(
+                "Found interface {}: {:?}",
+                String::from_utf8_lossy(interface.name.as_ref().unwrap()),
+                interface
+            );
+            let index = interface.index.unwrap();
+            if let Some(station_info) = socket.get_station_info(index)?.first() {
+                info!("Found station: {:?}", station_info,);
+                let mut wifi_generation: WifiGeneration = WifiGeneration::Unknown;
+
+                if station_info.ht_mcs.is_some() {
+                    wifi_generation = WifiGeneration::WIFI_4
+                }
+                if station_info.vht_mcs.is_some() {
+                    wifi_generation = WifiGeneration::WIFI_5
+                }
+                if station_info.he_mcs.is_some() {
+                    wifi_generation = WifiGeneration::WIFI_6
+                }
+                if station_info.eht_mcs.is_some() {
+                    wifi_generation = WifiGeneration::WIFI_7
+                }
+                let bps = station_info.tx_bitrate.unwrap_or(0).saturating_mul(100_000) as usize;
+                return Ok(LinkData {
+                    current: WifiLinkData {
+                        generation: wifi_generation,
+                        bps,
+                    },
+                    max: Err(anyhow!("No max yet supported")),
+                });
+            }
+        }
+        bail!("Could not find interface");
+    }
+}
+
 impl Display for PcieLinkData {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{} ×{}", self.speed, self.width)
@@ -281,7 +349,21 @@ impl Display for UsbSpeed {
         )
     }
 }
-
+impl Display for WifiGeneration {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                WifiGeneration::WIFI_4 => "Wi-Fi 4 (802.11n)",
+                WifiGeneration::WIFI_5 => "Wi-Fi 5 (802.11ac)",
+                WifiGeneration::WIFI_6 => "Wi-Fi 6 (802.11ax)",
+                WifiGeneration::WIFI_7 => "Wi-Fi 6 (802.11be)",
+                WifiGeneration::Unknown => "Unknown",
+            }
+        )
+    }
+}
 impl FromStr for UsbSpeed {
     type Err = Error;
     fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
@@ -311,6 +393,7 @@ impl Display for Link {
                 Link::Pcie(data) => data.to_string(),
                 Link::Sata(data) => data.to_string(),
                 Link::Usb(data) => data.to_string(),
+                Link::Wifi(data) => data.to_string(),
                 Link::Unknown => i18n("N/A"),
             }
         )
