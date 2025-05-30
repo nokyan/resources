@@ -56,7 +56,7 @@ pub enum NetworkLinkData {
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct WifiLinkData {
-    pub generation: WifiGeneration,
+    pub generation: Option<WifiGeneration>,
     pub frequency_mhz: u32,
     pub rx_bps: usize,
     pub tx_bps: usize,
@@ -68,7 +68,6 @@ pub enum WifiGeneration {
     Wifi6,
     Wifi6e,
     Wifi7,
-    Unknown,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -239,24 +238,24 @@ impl LinkData<WifiLinkData> {
             let index = wifi_interface.index.unwrap();
             if let Some(station_info) = socket.get_station_info(index)?.first() {
                 info!("Found station: {:?}", station_info,);
-                let mut wifi_generation: WifiGeneration = WifiGeneration::Unknown;
+                let mut wifi_generation: Option<WifiGeneration> = None;
 
                 if station_info.ht_mcs.is_some() {
-                    wifi_generation = WifiGeneration::Wifi4
+                    wifi_generation = Some(WifiGeneration::Wifi4)
                 }
                 if station_info.vht_mcs.is_some() {
-                    wifi_generation = WifiGeneration::Wifi5
+                    wifi_generation = Some(WifiGeneration::Wifi5)
                 }
                 if station_info.he_mcs.is_some() {
                     let mhz = wifi_interface.frequency.unwrap_or(0);
-                    if (mhz >= 6000 && mhz <= 7000) {
-                        wifi_generation = WifiGeneration::Wifi6e
+                    if mhz >= 6000 && mhz <= 7000 {
+                        wifi_generation = Some(WifiGeneration::Wifi6e)
                     } else {
-                        wifi_generation = WifiGeneration::Wifi6
+                        wifi_generation = Some(WifiGeneration::Wifi6)
                     }
                 }
                 if station_info.eht_mcs.is_some() {
-                    wifi_generation = WifiGeneration::Wifi7
+                    wifi_generation = Some(WifiGeneration::Wifi7)
                 }
                 let rx = station_info.rx_bitrate.unwrap_or(0).saturating_mul(100_000) as usize;
                 let tx = station_info.tx_bitrate.unwrap_or(0).saturating_mul(100_000) as usize;
@@ -383,7 +382,6 @@ impl Display for WifiGeneration {
                 WifiGeneration::Wifi6 => "Wi-Fi 6 (802.11ax)",
                 WifiGeneration::Wifi6e => "Wi-Fi 6E (802.11ax)",
                 WifiGeneration::Wifi7 => "Wi-Fi 6 (802.11be)",
-                WifiGeneration::Unknown => "Unknown",
             }
         )
     }

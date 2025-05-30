@@ -1,16 +1,17 @@
 use std::time::{Duration, SystemTime};
 
-use adw::{glib::property::PropertySet, prelude::*, subclass::prelude::*};
-use gtk::glib;
-use log::trace;
-
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::link::NetworkLinkData;
 use crate::utils::network::{NetworkData, NetworkInterface};
 use crate::utils::units::{
-    convert_frequency, convert_speed, convert_speed_bits_decimal, convert_storage,
+    convert_frequency, convert_speed, convert_speed_bits_decimal,
+    convert_speed_bits_decimal_with_places, convert_storage,
 };
+use adw::{glib::property::PropertySet, prelude::*, subclass::prelude::*};
+use gtk::glib;
+use log::trace;
+use plotters::prelude::LogScalable;
 
 pub const TAB_ID_PREFIX: &str = "network";
 
@@ -48,6 +49,8 @@ mod imp {
         #[template_child]
         pub hw_address: TemplateChild<adw::ActionRow>,
         #[template_child]
+        pub link: TemplateChild<adw::ActionRow>,
+        #[template_child]
         pub link_speed: TemplateChild<adw::ActionRow>,
         pub old_received_bytes: Cell<Option<usize>>,
         pub old_sent_bytes: Cell<Option<usize>>,
@@ -68,10 +71,12 @@ mod imp {
         #[property(get = Self::tab_name, set = Self::set_tab_name, type = glib::GString)]
         tab_name: Cell<glib::GString>,
 
-        #[property(get = Self::tab_detail_string, set = Self::set_tab_detail_string, type = glib::GString)]
+        #[property(get = Self::tab_detail_string, set = Self::set_tab_detail_string, type = glib::GString
+        )]
         tab_detail_string: Cell<glib::GString>,
 
-        #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
+        #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString
+        )]
         tab_usage_string: Cell<glib::GString>,
 
         #[property(get = Self::tab_id, set = Self::set_tab_id, type = glib::GString)]
@@ -113,6 +118,7 @@ mod imp {
                 driver: Default::default(),
                 interface: Default::default(),
                 hw_address: Default::default(),
+                link: Default::default(),
                 link_speed: Default::default(),
                 uses_progress_bar: Cell::new(true),
                 main_graph_color: glib::Bytes::from_static(&super::ResNetwork::MAIN_GRAPH_COLOR),
@@ -268,15 +274,55 @@ impl ResNetwork {
             imp.hw_address.set_subtitle(&hw_address);
         }
 
+        imp.link
+            .set_subtitle(&network_interface.link_speed().map_or_else(
+                |_| i18n("N/A"),
+                |network_link_data| match (network_link_data) {
+                    NetworkLinkData::Wifi(wifi_link_data) => {
+                        format!(
+                            "{} · {}",
+                            if wifi_link_data.generation.is_some() {
+                                wifi_link_data.generation.unwrap().to_string()
+                            } else {
+                                i18n("N/A")
+                            },
+                            match (wifi_link_data.frequency_mhz) {
+                                2400..2500 => {
+                                    "2.4 Ghz".to_string()
+                                }
+                                5000..6000 => {
+                                    "5 Ghz".to_string()
+                                }
+                                6000..7000 => {
+                                    "6 Ghz".to_string()
+                                }
+                                _ => convert_frequency(
+                                    (wifi_link_data.frequency_mhz / 1000).as_f64()
+                                        * 1_000.0
+                                        * 1_00_000.0
+                                ),
+                            }
+                        )
+                    }
+                    NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps as f64),
+                },
+            ));
+
         imp.link_speed
             .set_subtitle(&network_interface.link_speed().map_or_else(
                 |_| i18n("N/A"),
                 |network_link_data| match (network_link_data) {
                     NetworkLinkData::Wifi(wifi_link_data) => {
                         format!(
-                            "{} - {}",
-                            wifi_link_data.generation.to_string(),
-                            convert_speed_bits_decimal(wifi_link_data.rx_bps as f64),
+                            "{} · {}",
+                            convert_speed_bits_decimal_with_places(
+                                wifi_link_data.rx_bps.as_f64(),
+                                0
+                            ),
+                            convert_speed_bits_decimal_with_places(
+                                wifi_link_data.tx_bps.as_f64(),
+                                0
+                            )
                         )
                     }
                     NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps as f64),
@@ -386,16 +432,55 @@ impl ResNetwork {
             (0.0, i18n("N/A"))
         };
         let network_interface = &network_data.inner;
+        imp.link
+            .set_subtitle(&network_interface.link_speed().map_or_else(
+                |_| i18n("N/A"),
+                |network_link_data| match (network_link_data) {
+                    NetworkLinkData::Wifi(wifi_link_data) => {
+                        format!(
+                            "{} · {}",
+                            if wifi_link_data.generation.is_some() {
+                                wifi_link_data.generation.unwrap().to_string()
+                            } else {
+                                i18n("N/A")
+                            },
+                            match (wifi_link_data.frequency_mhz) {
+                                2400..2500 => {
+                                    "2.4 Ghz".to_string()
+                                }
+                                5000..6000 => {
+                                    "5 Ghz".to_string()
+                                }
+                                6000..7000 => {
+                                    "6 Ghz".to_string()
+                                }
+                                _ => convert_frequency(
+                                    (wifi_link_data.frequency_mhz / 1000).as_f64()
+                                        * 1_000.0
+                                        * 1_00_000.0
+                                ),
+                            }
+                        )
+                    }
+                    NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps as f64),
+                },
+            ));
+
         imp.link_speed
             .set_subtitle(&network_interface.link_speed().map_or_else(
                 |_| i18n("N/A"),
                 |network_link_data| match (network_link_data) {
                     NetworkLinkData::Wifi(wifi_link_data) => {
                         format!(
-                            "{} - {}",
-                            wifi_link_data.generation.to_string(),
-                            // convert_frequency(wifi_link_data.frequency_mhz.as_f64() * 1_000_000.0),
-                            convert_speed_bits_decimal(wifi_link_data.rx_bps as f64),
+                            "Rx: {} · Tx: {}",
+                            convert_speed_bits_decimal_with_places(
+                                wifi_link_data.rx_bps.as_f64(),
+                                0
+                            ),
+                            convert_speed_bits_decimal_with_places(
+                                wifi_link_data.tx_bps.as_f64(),
+                                0
+                            )
                         )
                     }
                     NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps as f64),

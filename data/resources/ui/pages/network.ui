@@ -86,6 +86,15 @@
                       </object>
                     </child>
                     <child>
+                      <object class="AdwActionRow" id="link">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
+                        <property name="title" translatable="yes">Link</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="AdwActionRow" id="link_speed">
                         <style>
                           <class name="property"/>
