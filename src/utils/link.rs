@@ -381,7 +381,7 @@ impl Display for WifiGeneration {
                 WifiGeneration::Wifi5 => "Wi-Fi 5 (802.11ac)",
                 WifiGeneration::Wifi6 => "Wi-Fi 6 (802.11ax)",
                 WifiGeneration::Wifi6e => "Wi-Fi 6E (802.11ax)",
-                WifiGeneration::Wifi7 => "Wi-Fi 6 (802.11be)",
+                WifiGeneration::Wifi7 => "Wi-Fi 7 (802.11be)",
             }
         )
     }
