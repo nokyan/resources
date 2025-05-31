@@ -208,6 +208,10 @@ impl LinkData<UsbSpeed> {
         })
     }
 }
+use std::sync::{LazyLock, Mutex};
+
+static NELI_SOCKET: LazyLock<Mutex<Socket>> =
+    LazyLock::new(|| Mutex::new(Socket::connect().unwrap()));
 
 impl LinkData<WifiLinkData> {
     pub fn from_wifi_adapter(interface: &NetworkInterface) -> Result<Self> {
@@ -216,7 +220,7 @@ impl LinkData<WifiLinkData> {
         }
         let name = interface.interface_name.to_str().unwrap();
         info!("Wifi interface '{name}'");
-        let mut socket = Socket::connect()?;
+        let mut socket = NELI_SOCKET.lock().unwrap();
         let interfaces = socket
             .get_interfaces_info()
             .context("Could not get interfaces")?;
