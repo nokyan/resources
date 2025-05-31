@@ -472,13 +472,13 @@ impl ResNetwork {
                 |network_link_data| match (network_link_data) {
                     NetworkLinkData::Wifi(wifi_link_data) => {
                         format!(
-                            "Rx: {} · Tx: {}",
+                            "Send: {} · Receive: {}",
                             convert_speed_bits_decimal_with_places(
-                                wifi_link_data.rx_bps.as_f64(),
+                                wifi_link_data.tx_bps.as_f64(),
                                 0
                             ),
                             convert_speed_bits_decimal_with_places(
-                                wifi_link_data.tx_bps.as_f64(),
+                                wifi_link_data.rx_bps.as_f64(),
                                 0
                             )
                         )
