@@ -258,7 +258,10 @@ impl ResDrive {
         );
 
         if let Some(model_name) = &drive_data.inner.model {
-            imp.set_tab_detail_string(model_name);
+            imp.set_tab_detail_string(&format!(
+                "{model_name} ({})",
+                &drive_data.inner.block_device
+            ));
         } else {
             imp.set_tab_detail_string(&drive_data.inner.block_device);
         }
