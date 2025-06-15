@@ -118,6 +118,15 @@
                       </object>
                     </child>
                     <child>
+                      <object class="AdwActionRow" id="uptime">
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
+                        <property name="title" translatable="yes">Uptime</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="AdwActionRow" id="virtualization">
                         <style>
                           <class name="property"/>

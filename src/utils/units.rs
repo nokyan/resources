@@ -43,6 +43,21 @@ pub fn format_time(time_in_seconds: f64) -> String {
     }
 }
 
+pub fn format_time_integer(time_in_seconds: isize) -> String {
+    let negative = time_in_seconds.is_negative();
+    let time_in_seconds = time_in_seconds.abs();
+
+    let seconds = (time_in_seconds % 60) as u8;
+    let minutes = ((time_in_seconds / 60) % 60) as u8;
+    let hours = (time_in_seconds / (60 * 60)) as usize;
+
+    if negative {
+        format!("-{hours}∶{minutes:02}∶{seconds:02}")
+    } else {
+        format!("{hours}∶{minutes:02}∶{seconds:02}")
+    }
+}
+
 fn to_largest_prefix(amount: f64, prefix_base: Base) -> (f64, Prefix) {
     if amount.is_nan() || amount.is_infinite() {
         return (amount, Prefix::None);
