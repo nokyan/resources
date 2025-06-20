@@ -1054,7 +1054,7 @@ dependencies = [
 [[package]]
 name = "neli-wifi"
 version = "0.6.0"
-source = "git+https://github.com/peterdk/neli-wifi.git?branch=resources#3a23a5551d4ff2a04a57037bca8bcb2ff001f19e"
+source = "git+https://github.com/peterdk/neli-wifi.git?branch=feature%2Fstation-mcs#08ab09deff7f2cbcc14fc903bff841f68f493032"
 dependencies = [
  "neli",
  "neli-proc-macros",
