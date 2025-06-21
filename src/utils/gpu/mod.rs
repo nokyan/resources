@@ -177,6 +177,7 @@ pub trait GpuImpl {
 
     fn hwmon_power_usage(&self) -> Result<f64> {
         read_sysfs::<isize>(self.hwmon_path()?.join("power1_average"))
+            .or_else(|_| read_sysfs::<isize>(self.hwmon_path()?.join("power1_input")))
             .map(|power| power as f64 / 1_000_000.0)
     }
 
