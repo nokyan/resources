@@ -1053,8 +1053,9 @@ dependencies = [
 
 [[package]]
 name = "neli-wifi"
-version = "0.6.0"
-source = "git+https://github.com/peterdk/neli-wifi.git?branch=feature%2Fstation-mcs#08ab09deff7f2cbcc14fc903bff841f68f493032"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7a72cd90a5d1ab54ed62cfe032972cb78303cfffd7d82c87c5da889a353fc451"
 dependencies = [
  "neli",
  "neli-proc-macros",
