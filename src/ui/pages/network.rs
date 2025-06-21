@@ -278,32 +278,7 @@ impl ResNetwork {
             .set_subtitle(&network_interface.link_speed().map_or_else(
                 |_| i18n("N/A"),
                 |network_link_data| match (network_link_data) {
-                    NetworkLinkData::Wifi(wifi_link_data) => {
-                        format!(
-                            "{} · {}",
-                            if wifi_link_data.generation.is_some() {
-                                wifi_link_data.generation.unwrap().to_string()
-                            } else {
-                                i18n("N/A")
-                            },
-                            match (wifi_link_data.frequency_mhz) {
-                                2400..2500 => {
-                                    "2.4 Ghz".to_string()
-                                }
-                                5000..6000 => {
-                                    "5 Ghz".to_string()
-                                }
-                                6000..7000 => {
-                                    "6 Ghz".to_string()
-                                }
-                                _ => convert_frequency(
-                                    (wifi_link_data.frequency_mhz / 1000).as_f64()
-                                        * 1_000.0
-                                        * 1_00_000.0
-                                ),
-                            }
-                        )
-                    }
+                    NetworkLinkData::Wifi(wifi_link_data) => wifi_link_data.to_string(),
                     NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps as f64),
                 },
             ));
@@ -436,32 +411,7 @@ impl ResNetwork {
             .set_subtitle(&network_interface.link_speed().map_or_else(
                 |_| i18n("N/A"),
                 |network_link_data| match (network_link_data) {
-                    NetworkLinkData::Wifi(wifi_link_data) => {
-                        format!(
-                            "{} · {}",
-                            if wifi_link_data.generation.is_some() {
-                                wifi_link_data.generation.unwrap().to_string()
-                            } else {
-                                i18n("N/A")
-                            },
-                            match (wifi_link_data.frequency_mhz) {
-                                2400..2500 => {
-                                    "2.4 Ghz".to_string()
-                                }
-                                5000..6000 => {
-                                    "5 Ghz".to_string()
-                                }
-                                6000..7000 => {
-                                    "6 Ghz".to_string()
-                                }
-                                _ => convert_frequency(
-                                    (wifi_link_data.frequency_mhz / 1000).as_f64()
-                                        * 1_000.0
-                                        * 1_00_000.0
-                                ),
-                            }
-                        )
-                    }
+                    NetworkLinkData::Wifi(wifi_link_data) => wifi_link_data.to_string(),
                     NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps as f64),
                 },
             ));

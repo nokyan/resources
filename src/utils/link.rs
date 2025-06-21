@@ -2,10 +2,11 @@ use crate::i18n::i18n;
 use crate::utils::drive::{AtaSlot, UsbSlot};
 use crate::utils::link::SataSpeed::{Sata150, Sata300, Sata600};
 use crate::utils::network::{InterfaceType, NetworkInterface};
-use crate::utils::units::convert_speed_bits_decimal_with_places;
+use crate::utils::units::{convert_frequency, convert_speed_bits_decimal_with_places};
 use anyhow::{Context, Error, Result, anyhow, bail};
 use log::{info, trace};
 use neli_wifi::{Nl80211Cmd, Socket};
+use plotters::prelude::LogScalable;
 use process_data::pci_slot::PciSlot;
 use std::cmp::Ordering;
 use std::ffi::CString;
@@ -83,6 +84,31 @@ pub enum UsbSpeed {
     Usb4_2_0(usize),
 }
 
+impl WifiLinkData {
+    pub fn frequency_display(&self) -> String {
+        //TODO find a good source
+        match (self.frequency_mhz) {
+            2400..2500 => "2.4 Ghz".to_string(),
+            5000..5925 => "5 Ghz".to_string(),
+            5925..=7125 => "6 Ghz".to_string(),
+            _ => convert_frequency((self.frequency_mhz / 1000).as_f64() * 1_000.0 * 1_00_000.0),
+        }
+    }
+}
+impl Display for WifiLinkData {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{} · {}",
+            if let Some(generation) = self.generation {
+                generation.to_string()
+            } else {
+                i18n("N/A")
+            },
+            self.frequency_display()
+        )
+    }
+}
 impl LinkData<PcieLinkData> {
     pub fn from_pci_slot(pci_slot: &PciSlot) -> Result<Self> {
         let pcie_dir = format!("/sys/bus/pci/devices/{pci_slot}/");
@@ -208,7 +234,6 @@ impl LinkData<UsbSpeed> {
         })
     }
 }
-use std::sync::{LazyLock, Mutex};
 
 impl LinkData<WifiLinkData> {
     pub fn from_wifi_adapter(interface: &NetworkInterface) -> Result<Self> {
@@ -216,7 +241,6 @@ impl LinkData<WifiLinkData> {
             bail!("Wifi interface type is required for wifi generation detection");
         }
         let name = interface.interface_name.to_str().unwrap();
-        info!("Wifi interface '{name}'");
         let mut socket = Socket::connect()?;
         let interfaces = socket
             .get_interfaces_info()
