@@ -287,19 +287,7 @@ impl ResNetwork {
             .set_subtitle(&network_interface.link_speed().map_or_else(
                 |_| i18n("N/A"),
                 |network_link_data| match (network_link_data) {
-                    NetworkLinkData::Wifi(wifi_link_data) => {
-                        format!(
-                            "{} · {}",
-                            convert_speed_bits_decimal_with_places(
-                                wifi_link_data.rx_bps.as_f64(),
-                                0
-                            ),
-                            convert_speed_bits_decimal_with_places(
-                                wifi_link_data.tx_bps.as_f64(),
-                                0
-                            )
-                        )
-                    }
+                    NetworkLinkData::Wifi(wifi_link_data) => wifi_link_data.link_speed_display(),
                     NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps as f64),
                 },
             ));
@@ -420,19 +408,7 @@ impl ResNetwork {
             .set_subtitle(&network_interface.link_speed().map_or_else(
                 |_| i18n("N/A"),
                 |network_link_data| match (network_link_data) {
-                    NetworkLinkData::Wifi(wifi_link_data) => {
-                        format!(
-                            "Send: {} · Receive: {}",
-                            convert_speed_bits_decimal_with_places(
-                                wifi_link_data.tx_bps.as_f64(),
-                                0
-                            ),
-                            convert_speed_bits_decimal_with_places(
-                                wifi_link_data.rx_bps.as_f64(),
-                                0
-                            )
-                        )
-                    }
+                    NetworkLinkData::Wifi(wifi_link_data) => wifi_link_data.link_speed_display(),
                     NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps as f64),
                 },
             ));

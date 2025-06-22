@@ -1,4 +1,4 @@
-use crate::i18n::i18n;
+use crate::i18n::{i18n, i18n_f};
 use crate::utils::drive::{AtaSlot, UsbSlot};
 use crate::utils::link::SataSpeed::{Sata150, Sata300, Sata600};
 use crate::utils::network::{InterfaceType, NetworkInterface};
@@ -93,6 +93,18 @@ impl WifiLinkData {
             5925..=7125 => "6 Ghz".to_string(),
             _ => convert_frequency((self.frequency_mhz / 1000).as_f64() * 1_000.0 * 1_00_000.0),
         }
+    }
+
+    pub fn link_speed_display(&self) -> String {
+        let send_string = convert_speed_bits_decimal_with_places(self.tx_bps.as_f64(), 0);
+        let receive_string = convert_speed_bits_decimal_with_places(self.rx_bps.as_f64(), 0);
+
+        i18n_f(
+            // Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
+            // your translation should preferably be quite short or an abbreviation
+            "R: {} · S: {}",
+            &[&receive_string, &send_string],
+        )
     }
 }
 impl Display for WifiLinkData {
