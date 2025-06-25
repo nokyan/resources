@@ -549,6 +549,7 @@ impl MainWindow {
             NetworkInterface::get_sysfs_paths().unwrap_or_default()
         };
         let mut network_data = Vec::with_capacity(network_paths.len());
+
         for path in &network_paths {
             network_data.push(NetworkData::new(path));
         }
