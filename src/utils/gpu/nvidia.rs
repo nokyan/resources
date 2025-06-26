@@ -161,7 +161,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.temperature(TemperatureSensor::Gpu)
                     .context("unable to get temperatures through NVML")
             })
-            .map(|temp| f64::from(temp))
+            .map(f64::from)
             .or_else(|_| self.hwmon_temperature())
     }
 

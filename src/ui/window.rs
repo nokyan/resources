@@ -357,7 +357,7 @@ impl MainWindow {
                 if key == gdk::Key::Control_L {
                     debug!("Ctrl is being held, halting apps and processes updates");
                     this.imp().pause_updates.set(true);
-                };
+                }
                 glib::Propagation::Proceed
             }
         ));
@@ -861,7 +861,7 @@ impl MainWindow {
 
     /// Wrapper to remove page, and check if removed page was visible with global default behavior
     fn remove_page(&self, page: &ToolbarView) {
-        trace!("Removing page {:?}…", page);
+        trace!("Removing page {page:?}…");
 
         let imp = self.imp();
 
@@ -891,10 +891,7 @@ impl MainWindow {
             .max()
             .unwrap_or_default();
 
-        let old_page_paths: Vec<PathBuf> = drive_pages
-            .iter()
-            .map(|(path, _)| path.to_owned())
-            .collect();
+        let old_page_paths: Vec<PathBuf> = drive_pages.keys().map(ToOwned::to_owned).collect();
 
         // Filter hidden drives
         for data in drive_data {
@@ -966,10 +963,7 @@ impl MainWindow {
             .max()
             .unwrap_or_default();
 
-        let old_page_paths: Vec<PathBuf> = network_pages
-            .iter()
-            .map(|(path, _)| path.to_owned())
-            .collect();
+        let old_page_paths: Vec<PathBuf> = network_pages.keys().map(ToOwned::to_owned).collect();
 
         // Filter hidden networks
         for data in network_data {
@@ -1161,7 +1155,7 @@ impl MainWindow {
                     toast_overlay.add_toast(Toast::new(&toast_message));
                 }
             }
-        };
+        }
     }
 
     fn save_window_size(&self) -> Result<(), glib::BoolError> {

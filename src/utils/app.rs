@@ -192,10 +192,7 @@ impl App {
             .map(|path| path.join("applications"))
             .collect();
 
-        debug!(
-            "Using the following directories for app detection: {:?}",
-            applications_dir
-        );
+        debug!("Using the following directories for app detection: {applications_dir:?}",);
 
         let mut apps: Vec<_> = applications_dir
             .iter()

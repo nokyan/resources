@@ -169,7 +169,7 @@ impl Drive {
             .to_string();
 
         let mut drive = Self::default();
-        drive.sysfs_path = path.clone();
+        drive.sysfs_path.clone_from(&path);
         drive.block_device = block_device;
         drive.model = drive.model().ok().map(|model| model.trim().to_string());
         drive.drive_type = drive.drive_type().unwrap_or_default();
