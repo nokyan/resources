@@ -66,10 +66,7 @@ fn search_for_hwmons(names: &[&'static str]) -> Option<PathBuf> {
 
     for name in names {
         if let Some(hwmon) = hwmon_map.remove(*name) {
-            debug!(
-                "CPU temperature sensor located at {:?} ({name}, type: hwmon)",
-                hwmon
-            );
+            debug!("CPU temperature sensor located at {hwmon:?} ({name}, type: hwmon)");
             return Some(hwmon);
         }
     }
