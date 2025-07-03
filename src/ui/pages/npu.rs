@@ -219,7 +219,7 @@ impl ResNPU {
 
         imp.pci_slot.set_subtitle(&npu.pci_slot().to_string());
 
-        imp.driver_used.set_subtitle(&npu.driver());
+        imp.driver_used.set_subtitle(npu.driver());
 
         if let Ok(model_name) = npu.name() {
             imp.set_tab_detail_string(&model_name);

@@ -91,10 +91,7 @@ fn search_for_thermal_zones(types: &[&'static str]) -> Option<PathBuf> {
 
     for r#type in types {
         if let Some(hwmon) = thermal_zone_map.remove(*r#type) {
-            debug!(
-                "CPU temperature sensor located at {:?} ({}, type: thermal zone)",
-                hwmon, r#type
-            );
+            debug!("CPU temperature sensor located at {hwmon:?} ({type}, type: thermal zone)");
             return Some(hwmon);
         }
     }
