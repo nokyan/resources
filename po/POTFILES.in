@@ -7,13 +7,16 @@ data/net.nokyan.Resources.policy.in.in
 
 data/resources/ui/dialogs/app_dialog.ui
 data/resources/ui/dialogs/process_dialog.ui
+data/resources/ui/dialogs/process_options_dialog.ui
 data/resources/ui/dialogs/settings_dialog.ui
 data/resources/ui/pages/applications.ui
+data/resources/ui/pages/battery.ui
 data/resources/ui/pages/cpu.ui
 data/resources/ui/pages/drive.ui
 data/resources/ui/pages/gpu.ui
 data/resources/ui/pages/memory.ui
 data/resources/ui/pages/network.ui
+data/resources/ui/pages/npu.ui
 data/resources/ui/pages/processes.ui
 data/resources/ui/shortcuts.ui
 data/resources/ui/window.ui
@@ -29,5 +32,3 @@ src/ui/pages/memory.rs
 src/ui/pages/network.rs
 src/ui/pages/processes/mod.rs
 src/ui/window.rs
-src/utils/gpu.rs
-src/utils/processes.rs

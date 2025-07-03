@@ -337,7 +337,7 @@ mod test {
 
         for input in map.keys() {
             let result = PcieSpeed::from_str(input);
-            assert!(result.is_ok(), "Could not parse PCIe speed for '{}'", input);
+            assert!(result.is_ok(), "Could not parse PCIe speed for '{input}'");
             let expected = map[input];
             pretty_assertions::assert_eq!(expected, result.unwrap());
         }
@@ -351,8 +351,7 @@ mod test {
             let result = PcieSpeed::from_str(input);
             assert!(
                 result.is_err(),
-                "Could parse PCIe speed for '{}' while we don't expect that",
-                input
+                "Could parse PCIe speed for '{input}' while we don't expect that"
             );
         }
     }
@@ -398,8 +397,8 @@ mod test {
 
         for link_data in map.keys() {
             let input = LinkData {
-                current: link_data.clone(),
-                max: Ok(link_data.clone()),
+                current: *link_data,
+                max: Ok(*link_data),
             };
             let result = input.to_string();
             let expected = map[link_data];
@@ -413,7 +412,7 @@ mod test {
 
         for link_data in map.keys() {
             let input = LinkData {
-                current: link_data.clone(),
+                current: *link_data,
                 max: Err(anyhow!("No max")),
             };
             let result = input.to_string();
@@ -430,12 +429,11 @@ mod test {
             for max_data in map.keys() {
                 if current_data != max_data {
                     let input = LinkData {
-                        current: current_data.clone(),
-                        max: Ok(max_data.clone()),
+                        current: *current_data,
+                        max: Ok(*max_data),
                     };
                     let result = input.to_string();
-                    let expected =
-                        format!("{} / {}", current_data.to_string(), max_data.to_string());
+                    let expected = format!("{} / {}", current_data, max_data);
                     pretty_assertions::assert_str_eq!(expected, result);
                 }
             }
@@ -516,7 +514,7 @@ mod test {
 
         for input in map.keys() {
             let result = SataSpeed::from_str(input);
-            assert!(result.is_ok(), "Could not parse SATA speed for '{}'", input);
+            assert!(result.is_ok(), "Could not parse SATA speed for '{input}'");
             let expected = map[input];
             pretty_assertions::assert_eq!(expected, result.unwrap());
         }
@@ -530,8 +528,7 @@ mod test {
             let result = SataSpeed::from_str(input);
             assert!(
                 result.is_err(),
-                "Could parse SATA speed for '{}' while we don't expect that",
-                input
+                "Could parse SATA speed for '{input}' while we don't expect that"
             );
         }
     }
@@ -567,7 +564,7 @@ mod test {
 
         for input in map.keys() {
             let result = UsbSpeed::from_str(input);
-            assert!(result.is_ok(), "Could not parse USB speed for '{}'", input);
+            assert!(result.is_ok(), "Could not parse USB speed for '{input}'");
             let expected = map[input];
             pretty_assertions::assert_eq!(expected, result.unwrap());
         }
@@ -581,8 +578,7 @@ mod test {
             let result = UsbSpeed::from_str(input);
             assert!(
                 result.is_err(),
-                "Could parse USB speed for '{}' while we don't expect that",
-                input
+                "Could parse USB speed for '{input}' while we don't expect that"
             );
         }
     }

@@ -250,7 +250,7 @@ impl ResGPU {
             process_data::GpuIdentifier::Enumerator(_) => imp.pci_slot.set_subtitle(&i18n("N/A")),
         }
 
-        imp.driver_used.set_subtitle(&gpu.driver());
+        imp.driver_used.set_subtitle(gpu.driver());
 
         if gpu.combined_media_engine().unwrap_or_default() {
             imp.encode_decode_combined_usage.set_visible(true);
