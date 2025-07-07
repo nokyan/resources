@@ -18,7 +18,7 @@ use std::{
 use self::{amd::AmdGpu, intel::IntelGpu, nvidia::NvidiaGpu, other::OtherGpu};
 use crate::utils::{
     link::{Link, LinkData},
-    read_sysfs,
+    read_parsed,
 };
 use crate::{
     i18n::i18n,
@@ -156,15 +156,15 @@ pub trait GpuImpl {
     }
 
     fn drm_usage(&self) -> Result<isize> {
-        read_sysfs(self.sysfs_path().join("device/gpu_busy_percent"))
+        read_parsed(self.sysfs_path().join("device/gpu_busy_percent"))
     }
 
     fn drm_used_vram(&self) -> Result<isize> {
-        read_sysfs(self.sysfs_path().join("device/mem_info_vram_used"))
+        read_parsed(self.sysfs_path().join("device/mem_info_vram_used"))
     }
 
     fn drm_total_vram(&self) -> Result<isize> {
-        read_sysfs(self.sysfs_path().join("device/mem_info_vram_total"))
+        read_parsed(self.sysfs_path().join("device/mem_info_vram_total"))
     }
 
     fn hwmon_path(&self) -> Result<&Path> {
@@ -172,31 +172,30 @@ pub trait GpuImpl {
     }
 
     fn hwmon_temperature(&self) -> Result<f64> {
-        read_sysfs::<isize>(self.hwmon_path()?.join("temp1_input")).map(|temp| temp as f64 / 1000.0)
+        read_parsed::<f64>(self.hwmon_path()?.join("temp1_input")).map(|temp| temp / 1000.0)
     }
 
     fn hwmon_power_usage(&self) -> Result<f64> {
-        read_sysfs::<isize>(self.hwmon_path()?.join("power1_average"))
-            .or_else(|_| read_sysfs::<isize>(self.hwmon_path()?.join("power1_input")))
-            .map(|power| power as f64 / 1_000_000.0)
+        read_parsed::<f64>(self.hwmon_path()?.join("power1_average"))
+            .or_else(|_| read_parsed::<f64>(self.hwmon_path()?.join("power1_input")))
+            .map(|power| power / 1_000_000.0)
     }
 
     fn hwmon_core_frequency(&self) -> Result<f64> {
-        read_sysfs::<isize>(self.hwmon_path()?.join("freq1_input")).map(|freq| freq as f64)
+        read_parsed::<f64>(self.hwmon_path()?.join("freq1_input"))
     }
 
     fn hwmon_vram_frequency(&self) -> Result<f64> {
-        read_sysfs::<isize>(self.hwmon_path()?.join("freq2_input")).map(|freq| freq as f64)
+        read_parsed::<f64>(self.hwmon_path()?.join("freq2_input"))
     }
 
     fn hwmon_power_cap(&self) -> Result<f64> {
-        read_sysfs::<isize>(self.hwmon_path()?.join("power1_cap"))
-            .map(|power| power as f64 / 1_000_000.0)
+        read_parsed::<f64>(self.hwmon_path()?.join("power1_cap")).map(|power| power / 1_000_000.0)
     }
 
     fn hwmon_power_cap_max(&self) -> Result<f64> {
-        read_sysfs::<isize>(self.hwmon_path()?.join("power1_cap_max"))
-            .map(|power| power as f64 / 1_000_000.0)
+        read_parsed::<f64>(self.hwmon_path()?.join("power1_cap_max"))
+            .map(|power| power / 1_000_000.0)
     }
 }
 

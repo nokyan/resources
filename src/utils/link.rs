@@ -1,6 +1,7 @@
 use crate::i18n::i18n;
 use crate::utils::drive::{AtaSlot, UsbSlot};
 use crate::utils::link::SataSpeed::{Sata150, Sata300, Sata600};
+use crate::utils::read_parsed;
 use crate::utils::units::convert_speed_bits_decimal_with_places;
 use anyhow::{Context, Error, Result, anyhow, bail};
 use log::trace;
@@ -72,22 +73,14 @@ impl LinkData<PcieLinkData> {
         let path = path.as_ref();
         trace!("Reading PCIe link data for {path:?}…");
 
-        let current_pcie_speed_raw = std::fs::read_to_string(path.join("current_link_speed"))
-            .map(|x| x.trim().to_string())
-            .context("Could not read current link speed")?;
+        let current_pcie_speed_raw = read_parsed::<String>(path.join("current_link_speed"))?;
 
-        let current_pcie_width_raw = std::fs::read_to_string(path.join("current_link_width"))
-            .map(|x| x.trim().to_string())
-            .context("Could not read current link width")?;
+        let current_pcie_width_raw = read_parsed::<String>(path.join("current_link_width"))?;
 
         //Consider max values as optional
-        let max_pcie_speed_raw = std::fs::read_to_string(path.join("max_link_speed"))
-            .map(|x| x.trim().to_string())
-            .context("Could not read max link speed");
+        let max_pcie_speed_raw = read_parsed::<String>(path.join("max_link_speed"));
 
-        let max_pcie_width_raw = std::fs::read_to_string(path.join("max_link_width"))
-            .map(|x| x.trim().to_string())
-            .context("Could not read max link width");
+        let max_pcie_width_raw = read_parsed::<String>(path.join("max_link_width"));
 
         let current = PcieLinkData::parse(&current_pcie_speed_raw, &current_pcie_width_raw)
             .context("Could not parse PCIE link data")?;
@@ -140,13 +133,9 @@ impl LinkData<SataSpeed> {
         let ata_link_path =
             Path::new("/sys/class/ata_link").join(format!("link{}", ata_slot.ata_link));
 
-        let current_sata_speed_raw = std::fs::read_to_string(ata_link_path.join("sata_spd"))
-            .map(|x| x.trim().to_string())
-            .context("Could not read sata_spd")?;
+        let current_sata_speed_raw = read_parsed::<String>(ata_link_path.join("sata_spd"))?;
 
-        let max_sata_speed_raw = std::fs::read_to_string(ata_link_path.join("sata_spd_max"))
-            .map(|x| x.trim().to_string())
-            .context("Could not read sata_spd_max");
+        let max_sata_speed_raw = read_parsed::<String>(ata_link_path.join("sata_spd_max"));
 
         let current = SataSpeed::from_str(&current_sata_speed_raw)
             .context("Could not parse current sata speed")?;
@@ -163,14 +152,10 @@ impl LinkData<UsbSpeed> {
         let usb_bus_path =
             Path::new("/sys/bus/usb/devices/").join(format!("usb{}", usb_slot.usb_bus));
 
-        let max_usb_port_speed_raw = std::fs::read_to_string(usb_bus_path.join("speed"))
-            .map(|x| x.trim().to_string())
-            .context("Could not read usb port speed");
+        let max_usb_port_speed_raw = read_parsed::<String>(usb_bus_path.join("speed"));
 
         let usb_device_speed =
-            std::fs::read_to_string(usb_bus_path.join(&usb_slot.usb_device).join("speed"))
-                .map(|x| x.trim().to_string())
-                .context("Could not read usb device speed")?;
+            read_parsed::<String>(usb_bus_path.join(&usb_slot.usb_device).join("speed"))?;
 
         let usb_port_speed = max_usb_port_speed_raw.and_then(|x| UsbSpeed::from_str(&x));
 
@@ -433,7 +418,7 @@ mod test {
                         max: Ok(*max_data),
                     };
                     let result = input.to_string();
-                    let expected = format!("{} / {}", current_data, max_data);
+                    let expected = format!("{current_data} / {max_data}");
                     pretty_assertions::assert_str_eq!(expected, result);
                 }
             }

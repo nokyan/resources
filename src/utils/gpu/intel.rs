@@ -7,7 +7,7 @@ use std::{
     str::FromStr,
 };
 
-use crate::utils::{pci::Device, read_sysfs};
+use crate::utils::{pci::Device, read_parsed};
 
 use super::GpuImpl;
 
@@ -115,16 +115,13 @@ impl GpuImpl for IntelGpu {
 
     fn power_usage(&self) -> Result<f64> {
         match self.driver {
-            IntelGpuDriver::Xe => {
-                Ok(read_sysfs::<isize>("tile0/gt0/freq0/cur_freq")? as f64 * 1_000_000.0)
-            }
-            _ => Ok(read_sysfs::<isize>("gt_cur_freq_mhz")? as f64 * 1_000_000.0),
+            IntelGpuDriver::Xe => Ok(read_parsed::<f64>("tile0/gt0/freq0/cur_freq")? * 1_000_000.0),
+            _ => Ok(read_parsed::<f64>("gt_cur_freq_mhz")? * 1_000_000.0),
         }
     }
 
     fn core_frequency(&self) -> Result<f64> {
-        read_sysfs::<isize>(self.sysfs_path().join("gt_cur_freq_mhz"))
-            .map(|freq| freq as f64 * 1_000_000.0)
+        read_parsed::<f64>(self.sysfs_path().join("gt_cur_freq_mhz")).map(|freq| freq * 1_000_000.0)
     }
 
     fn vram_frequency(&self) -> Result<f64> {

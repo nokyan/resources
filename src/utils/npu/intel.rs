@@ -6,7 +6,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use crate::utils::{pci::Device, read_sysfs};
+use crate::utils::{pci::Device, read_parsed};
 
 use super::NpuImpl;
 
@@ -72,7 +72,7 @@ impl NpuImpl for IntelNpu {
         let last_busy_time = self.last_busy_time_us.get();
 
         let new_timestamp = unix_as_millis();
-        let new_busy_time = read_sysfs(self.sysfs_path().join("device/npu_busy_time_us"))?;
+        let new_busy_time = read_parsed(self.sysfs_path().join("device/npu_busy_time_us"))?;
 
         self.last_busy_time_timestamp.set(new_timestamp);
         self.last_busy_time_us.set(new_busy_time);

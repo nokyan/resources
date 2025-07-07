@@ -13,7 +13,7 @@ use std::{
 use crate::utils::{
     IS_FLATPAK,
     pci::{self, Device},
-    read_sysfs,
+    read_parsed,
 };
 
 use super::GpuImpl;
@@ -54,7 +54,7 @@ impl AmdGpu {
             combined_media_engine: false,
         };
 
-        if let Ok(vcn_version) = read_sysfs::<isize>(
+        if let Ok(vcn_version) = read_parsed::<isize>(
             gpu.sysfs_path()
                 .join("device/ip_discovery/die/0/UVD/0/major"),
         ) {
@@ -79,7 +79,7 @@ impl AmdGpu {
 
         let mut map = HashMap::new();
 
-        let amdgpu_ids_raw = std::fs::read_to_string(&path)?;
+        let amdgpu_ids_raw = read_parsed::<String>(&path)?;
 
         for capture in RE_AMDGPU_IDS.captures_iter(&amdgpu_ids_raw) {
             if let (Some(device_id), Some(revision), Some(name)) =
@@ -128,7 +128,7 @@ impl GpuImpl for AmdGpu {
 
     fn name(&self) -> Result<String> {
         let revision = u8::from_str_radix(
-            read_sysfs::<String>(self.sysfs_path().join("device/revision"))?
+            read_parsed::<String>(self.sysfs_path().join("device/revision"))?
                 .strip_prefix("0x")
                 .context("missing hex prefix")?,
             16,
