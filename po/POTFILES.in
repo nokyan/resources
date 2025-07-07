@@ -35,7 +35,7 @@ src/ui/pages/memory.rs
 src/ui/pages/mod.rs
 src/ui/pages/network.rs
 src/ui/pages/processes/mod.rs
-src/ui/pages/processes/processes_entry.rs
+src/ui/pages/processes/process_entry.rs
 src/ui/window.rs
 src/utils/app.rs
 src/utils/battery.rs
