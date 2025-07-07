@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources-main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2025-07-04 19:58+0000\n"
-"PO-Revision-Date: 2025-07-06 16:58+0800\n"
+"POT-Creation-Date: 2025-07-07 03:30+0000\n"
+"PO-Revision-Date: 2025-07-07 18:13+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -680,6 +680,7 @@ msgid "Video Memory Frequency"
 msgstr "显存频率"
 
 #: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49
+#: src/ui/pages/battery.rs:216
 msgid "Power Usage"
 msgstr "功耗"
 
@@ -903,35 +904,61 @@ msgstr "图标作者"
 #: src/ui/dialogs/process_dialog.rs:146 src/ui/dialogs/process_dialog.rs:169
 #: src/ui/dialogs/process_dialog.rs:176 src/ui/dialogs/process_dialog.rs:183
 #: src/ui/dialogs/process_dialog.rs:190 src/ui/pages/applications/mod.rs:945
-#: src/ui/pages/applications/mod.rs:1069 src/ui/pages/cpu.rs:242
-#: src/ui/pages/cpu.rs:257 src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:282
-#: src/ui/pages/cpu.rs:288 src/ui/pages/cpu.rs:294 src/ui/pages/cpu.rs:298
-#: src/ui/pages/cpu.rs:301 src/ui/pages/cpu.rs:339 src/ui/pages/cpu.rs:446
-#: src/ui/pages/drive.rs:318 src/ui/pages/drive.rs:349
-#: src/ui/pages/drive.rs:351 src/ui/pages/drive.rs:380
-#: src/ui/pages/drive.rs:382 src/ui/pages/drive.rs:398
-#: src/ui/pages/drive.rs:399 src/ui/pages/drive.rs:406
-#: src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426
-#: src/ui/pages/drive.rs:432 src/ui/pages/gpu.rs:243 src/ui/pages/gpu.rs:250
-#: src/ui/pages/gpu.rs:295 src/ui/pages/gpu.rs:320 src/ui/pages/gpu.rs:323
-#: src/ui/pages/gpu.rs:334 src/ui/pages/gpu.rs:354 src/ui/pages/gpu.rs:366
-#: src/ui/pages/gpu.rs:377 src/ui/pages/gpu.rs:389 src/ui/pages/gpu.rs:396
-#: src/ui/pages/gpu.rs:400 src/ui/pages/gpu.rs:430 src/ui/pages/gpu.rs:436
-#: src/ui/pages/memory.rs:226 src/ui/pages/memory.rs:227
-#: src/ui/pages/memory.rs:231 src/ui/pages/memory.rs:232
-#: src/ui/pages/memory.rs:236 src/ui/pages/memory.rs:237
-#: src/ui/pages/memory.rs:265 src/ui/pages/memory.rs:326
-#: src/ui/pages/network.rs:240 src/ui/pages/network.rs:247
-#: src/ui/pages/network.rs:254 src/ui/pages/network.rs:260
-#: src/ui/pages/network.rs:263 src/ui/pages/network.rs:270
-#: src/ui/pages/network.rs:335 src/ui/pages/network.rs:338
-#: src/ui/pages/network.rs:340 src/ui/pages/network.rs:369
-#: src/ui/pages/network.rs:372 src/ui/pages/network.rs:374
-#: src/ui/pages/processes/mod.rs:1220 src/ui/pages/processes/mod.rs:1286
-#: src/ui/pages/processes/mod.rs:1352 src/ui/pages/processes/mod.rs:1418
-#: src/ui/pages/processes/mod.rs:1900 src/ui/pages/processes/mod.rs:1902
+#: src/ui/pages/applications/mod.rs:1069 src/ui/pages/battery.rs:204
+#: src/ui/pages/battery.rs:224 src/ui/pages/battery.rs:230
+#: src/ui/pages/battery.rs:233 src/ui/pages/battery.rs:264
+#: src/ui/pages/battery.rs:288 src/ui/pages/battery.rs:290
+#: src/ui/pages/battery.rs:300 src/ui/pages/cpu.rs:242 src/ui/pages/cpu.rs:257
+#: src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:282 src/ui/pages/cpu.rs:288
+#: src/ui/pages/cpu.rs:294 src/ui/pages/cpu.rs:298 src/ui/pages/cpu.rs:301
+#: src/ui/pages/cpu.rs:339 src/ui/pages/cpu.rs:446 src/ui/pages/drive.rs:318
+#: src/ui/pages/drive.rs:349 src/ui/pages/drive.rs:351
+#: src/ui/pages/drive.rs:380 src/ui/pages/drive.rs:382
+#: src/ui/pages/drive.rs:398 src/ui/pages/drive.rs:399
+#: src/ui/pages/drive.rs:406 src/ui/pages/drive.rs:416
+#: src/ui/pages/drive.rs:426 src/ui/pages/drive.rs:432 src/ui/pages/gpu.rs:243
+#: src/ui/pages/gpu.rs:250 src/ui/pages/gpu.rs:295 src/ui/pages/gpu.rs:320
+#: src/ui/pages/gpu.rs:323 src/ui/pages/gpu.rs:334 src/ui/pages/gpu.rs:354
+#: src/ui/pages/gpu.rs:366 src/ui/pages/gpu.rs:377 src/ui/pages/gpu.rs:389
+#: src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:400 src/ui/pages/gpu.rs:430
+#: src/ui/pages/gpu.rs:436 src/ui/pages/memory.rs:226
+#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:231
+#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:236
+#: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:265
+#: src/ui/pages/memory.rs:326 src/ui/pages/network.rs:240
+#: src/ui/pages/network.rs:247 src/ui/pages/network.rs:254
+#: src/ui/pages/network.rs:260 src/ui/pages/network.rs:263
+#: src/ui/pages/network.rs:270 src/ui/pages/network.rs:335
+#: src/ui/pages/network.rs:338 src/ui/pages/network.rs:340
+#: src/ui/pages/network.rs:369 src/ui/pages/network.rs:372
+#: src/ui/pages/network.rs:374 src/ui/pages/processes/mod.rs:1220
+#: src/ui/pages/processes/mod.rs:1286 src/ui/pages/processes/mod.rs:1352
+#: src/ui/pages/processes/mod.rs:1418 src/ui/pages/processes/mod.rs:1900
+#: src/ui/pages/processes/mod.rs:1902 src/utils/battery.rs:149
+#: src/utils/drive.rs:136 src/utils/gpu/mod.rs:275 src/utils/gpu/mod.rs:287
+#: src/utils/link.rs:314 src/utils/npu/mod.rs:243 src/utils/npu/mod.rs:249
 msgid "N/A"
 msgstr "不可用"
+
+#: src/ui/dialogs/process_options_dialog.rs:145 src/ui/pages/cpu.rs:256
+#: src/ui/pages/cpu.rs:415 src/ui/pages/cpu.rs:419
+msgid "CPU {}"
+msgstr "处理器 {}"
+
+#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:413
+#: src/ui/pages/drive.rs:423 src/ui/pages/processes/process_entry.rs:211
+msgid "No"
+msgstr "否"
+
+#: src/ui/pages/applications/application_entry.rs:191
+#: src/ui/pages/processes/process_entry.rs:212
+msgid "Yes (Flatpak)"
+msgstr "是 (Flatpak)"
+
+#: src/ui/pages/applications/application_entry.rs:192
+#: src/ui/pages/processes/process_entry.rs:213
+msgid "Yes (Snap)"
+msgstr "是 (Snap)"
 
 #: src/ui/pages/applications/mod.rs:659
 msgid "Running Apps: {}"
@@ -977,27 +1004,27 @@ msgid ""
 "implications. Use with caution."
 msgstr "杀死应用可能会带来严重的风险，例如数据丢失和安全问题。请谨慎使用。"
 
+#: src/ui/pages/battery.rs:102 src/ui/pages/drive.rs:126
+msgid "Drive"
+msgstr "驱动器"
+
+#: src/ui/pages/battery.rs:209
+msgid "Battery Charge"
+msgstr "电池电量"
+
+#: src/ui/pages/battery.rs:278 src/ui/pages/cpu.rs:436
+#: src/ui/pages/drive.rs:343 src/ui/pages/drive.rs:374 src/ui/pages/gpu.rs:422
+#: src/ui/pages/network.rs:327 src/ui/pages/network.rs:361
+msgid "Highest:"
+msgstr "最高："
+
 #: src/ui/pages/cpu.rs:241 src/ui/pages/gpu.rs:210
 msgid "Total Usage"
 msgstr "总使用量"
 
-#: src/ui/pages/cpu.rs:256 src/ui/pages/cpu.rs:415 src/ui/pages/cpu.rs:419
-msgid "CPU {}"
-msgstr "处理器 {}"
-
 #: src/ui/pages/cpu.rs:269 src/ui/pages/gpu.rs:237
 msgid "Temperature"
 msgstr "温度"
-
-#: src/ui/pages/cpu.rs:436 src/ui/pages/drive.rs:343 src/ui/pages/drive.rs:374
-#: src/ui/pages/gpu.rs:422 src/ui/pages/network.rs:327
-#: src/ui/pages/network.rs:361
-msgid "Highest:"
-msgstr "最高："
-
-#: src/ui/pages/drive.rs:126
-msgid "Drive"
-msgstr "驱动器"
 
 #: src/ui/pages/drive.rs:235
 msgid "Drive Activity"
@@ -1014,10 +1041,6 @@ msgstr "写入速度"
 #: src/ui/pages/drive.rs:411 src/ui/pages/drive.rs:421
 msgid "Yes"
 msgstr "是"
-
-#: src/ui/pages/drive.rs:413 src/ui/pages/drive.rs:423
-msgid "No"
-msgstr "否"
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
@@ -1061,7 +1084,7 @@ msgstr "{} MT/s"
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · 交换：{} %"
 
-#: src/ui/pages/network.rs:118
+#: src/ui/pages/network.rs:118 src/utils/network.rs:136
 msgid "Network Interface"
 msgstr "网络接口"
 
@@ -1206,452 +1229,597 @@ msgstr "杀死 {} 时出现问题"
 msgid "There was a problem continuing {}"
 msgstr "继续 {} 时出现问题"
 
-#~ msgid "Yes (Flatpak)"
-#~ msgstr "是 (Flatpak)"
+#: src/utils/app.rs:219
+msgid "System Processes"
+msgstr "系统进程"
 
-#~ msgid "Yes (Snap)"
-#~ msgstr "是 (Snap)"
+#: src/utils/battery.rs:90
+msgid "Charging"
+msgstr "充电中"
+
+#: src/utils/battery.rs:91
+msgid "Discharging"
+msgstr "放电中"
+
+#: src/utils/battery.rs:92
+msgid "Empty"
+msgstr "已耗尽"
+
+#: src/utils/battery.rs:93
+msgid "Full"
+msgstr "已充满"
+
+#: src/utils/battery.rs:94
+msgid "Unknown"
+msgstr "未知"
+
+#: src/utils/battery.rs:140
+msgid "Nickel-Metal Hydride"
+msgstr "镍氢"
+
+#: src/utils/battery.rs:141
+msgid "Nickel-Cadmium"
+msgstr "镍镉"
+
+#: src/utils/battery.rs:142
+msgid "Nickel-Zinc"
+msgstr "镍锌"
+
+#: src/utils/battery.rs:143
+msgid "Lead-Acid"
+msgstr "铅酸"
+
+#: src/utils/battery.rs:144
+msgid "Lithium-Ion"
+msgstr "锂离子"
+
+#: src/utils/battery.rs:145
+msgid "Lithium Iron Phosphate"
+msgstr "磷酸铁锂"
+
+#: src/utils/battery.rs:146
+msgid "Lithium Polymer"
+msgstr "锂离子聚合物"
+
+#: src/utils/battery.rs:148
+msgid "Rechargeable Alkaline Managanese"
+msgstr "可充电碱性"
+
+#: src/utils/battery.rs:259
+msgid "{} Battery"
+msgstr "{}电池"
+
+#: src/utils/battery.rs:261
+msgid "Battery"
+msgstr "电池"
+
+#: src/utils/units.rs:91
+msgid "{} K"
+msgstr "{} K"
+
+#: src/utils/units.rs:93
+msgid "{} °C"
+msgstr "{} °C"
+
+#: src/utils/units.rs:95
+msgid "{} °F"
+msgstr "{} °F"
+
+#: src/utils/units.rs:113 src/utils/units.rs:127 src/utils/units.rs:147
+#: src/utils/units.rs:161
+msgid "{} B"
+msgstr "{} B"
+
+#: src/utils/units.rs:114 src/utils/units.rs:128
+msgid "{} kB"
+msgstr "{} kB"
+
+#: src/utils/units.rs:115 src/utils/units.rs:129
+msgid "{} MB"
+msgstr "{} MB"
+
+#: src/utils/units.rs:116 src/utils/units.rs:130
+msgid "{} GB"
+msgstr "{} GB"
+
+#: src/utils/units.rs:117 src/utils/units.rs:131
+msgid "{} TB"
+msgstr "{} TB"
+
+#: src/utils/units.rs:118 src/utils/units.rs:132
+msgid "{} PB"
+msgstr "{} PB"
+
+#: src/utils/units.rs:119 src/utils/units.rs:133
+msgid "{} EB"
+msgstr "{} EB"
+
+#: src/utils/units.rs:120 src/utils/units.rs:134
+msgid "{} ZB"
+msgstr "{} ZB"
+
+#: src/utils/units.rs:121 src/utils/units.rs:135
+msgid "{} YB"
+msgstr "{} YB"
+
+#: src/utils/units.rs:122 src/utils/units.rs:136
+msgid "{} RB"
+msgstr "{} RB"
+
+#: src/utils/units.rs:123 src/utils/units.rs:137
+msgid "{} QB"
+msgstr "{} QB"
+
+#: src/utils/units.rs:148 src/utils/units.rs:162
+msgid "{} KiB"
+msgstr "{} KiB"
+
+#: src/utils/units.rs:149 src/utils/units.rs:163
+msgid "{} MiB"
+msgstr "{} MiB"
+
+#: src/utils/units.rs:150 src/utils/units.rs:164
+msgid "{} GiB"
+msgstr "{} GiB"
+
+#: src/utils/units.rs:151 src/utils/units.rs:165
+msgid "{} TiB"
+msgstr "{} TiB"
+
+#: src/utils/units.rs:152 src/utils/units.rs:166
+msgid "{} PiB"
+msgstr "{} PiB"
+
+#: src/utils/units.rs:153 src/utils/units.rs:167
+msgid "{} EiB"
+msgstr "{} EiB"
+
+#: src/utils/units.rs:154 src/utils/units.rs:168
+msgid "{} ZiB"
+msgstr "{} ZiB"
+
+#: src/utils/units.rs:155 src/utils/units.rs:169
+msgid "{} YiB"
+msgstr "{} YiB"
+
+#: src/utils/units.rs:156 src/utils/units.rs:170
+msgid "{} RiB"
+msgstr "{} RiB"
+
+#: src/utils/units.rs:157 src/utils/units.rs:171
+msgid "{} QiB"
+msgstr "{} QiB"
+
+#: src/utils/units.rs:198 src/utils/units.rs:215
+msgid "{} B/s"
+msgstr "{} B/s"
+
+#: src/utils/units.rs:199
+msgid "{} kB/s"
+msgstr "{} kB/s"
+
+#: src/utils/units.rs:200
+msgid "{} MB/s"
+msgstr "{} MB/s"
+
+#: src/utils/units.rs:201
+msgid "{} GB/s"
+msgstr "{} GB/s"
+
+#: src/utils/units.rs:202
+msgid "{} TB/s"
+msgstr "{} TB/s"
+
+#: src/utils/units.rs:203
+msgid "{} PB/s"
+msgstr "{} PB/s"
+
+#: src/utils/units.rs:204
+msgid "{} EB/s"
+msgstr "{} EB/s"
+
+#: src/utils/units.rs:205
+msgid "{} ZB/s"
+msgstr "{} ZB/s"
+
+#: src/utils/units.rs:206
+msgid "{} YB/s"
+msgstr "{} YB/s"
+
+#: src/utils/units.rs:207
+msgid "{} RB/s"
+msgstr "{} RB/s"
+
+#: src/utils/units.rs:208
+msgid "{} QB/s"
+msgstr "{} QB/s"
+
+#: src/utils/units.rs:216
+msgid "{} KiB/s"
+msgstr "{} KiB/s"
+
+#: src/utils/units.rs:217
+msgid "{} MiB/s"
+msgstr "{} MiB/s"
+
+#: src/utils/units.rs:218
+msgid "{} GiB/s"
+msgstr "{} GiB/s"
+
+#: src/utils/units.rs:219
+msgid "{} TiB/s"
+msgstr "{} TiB/s"
+
+#: src/utils/units.rs:220
+msgid "{} PiB/s"
+msgstr "{} PiB/s"
+
+#: src/utils/units.rs:221
+msgid "{} EiB/s"
+msgstr "{} EiB/s"
+
+#: src/utils/units.rs:222
+msgid "{} ZiB/s"
+msgstr "{} ZiB/s"
+
+#: src/utils/units.rs:223
+msgid "{} YiB/s"
+msgstr "{} YiB/s"
+
+#: src/utils/units.rs:224
+msgid "{} RiB/s"
+msgstr "{} RiB/s"
+
+#: src/utils/units.rs:225
+msgid "{} QiB/s"
+msgstr "{} QiB/s"
+
+#: src/utils/units.rs:239 src/utils/units.rs:256
+msgid "{} b/s"
+msgstr "{} b/s"
+
+#: src/utils/units.rs:240
+msgid "{} kb/s"
+msgstr "{} kb/s"
+
+#: src/utils/units.rs:241
+msgid "{} Mb/s"
+msgstr "{} Mb/s"
+
+#: src/utils/units.rs:242
+msgid "{} Gb/s"
+msgstr "{} Gb/s"
+
+#: src/utils/units.rs:243
+msgid "{} Tb/s"
+msgstr "{} Tb/s"
+
+#: src/utils/units.rs:244
+msgid "{} Pb/s"
+msgstr "{} Pb/s"
+
+#: src/utils/units.rs:245
+msgid "{} Eb/s"
+msgstr "{} Eb/s"
+
+#: src/utils/units.rs:246
+msgid "{} Zb/s"
+msgstr "{} Zb/s"
+
+#: src/utils/units.rs:247
+msgid "{} Yb/s"
+msgstr "{} Yb/s"
+
+#: src/utils/units.rs:248
+msgid "{} Rb/s"
+msgstr "{} Rb/s"
+
+#: src/utils/units.rs:249
+msgid "{} Qb/s"
+msgstr "{} Qb/s"
+
+#: src/utils/units.rs:257
+msgid "{} Kib/s"
+msgstr "{} Kib/s"
+
+#: src/utils/units.rs:258
+msgid "{} Mib/s"
+msgstr "{} Mib/s"
+
+#: src/utils/units.rs:259
+msgid "{} Gib/s"
+msgstr "{} Gib/s"
+
+#: src/utils/units.rs:260
+msgid "{} Tib/s"
+msgstr "{} Tib/s"
+
+#: src/utils/units.rs:261
+msgid "{} Pib/s"
+msgstr "{} Pib/s"
+
+#: src/utils/units.rs:262
+msgid "{} Eib/s"
+msgstr "{} Eib/s"
+
+#: src/utils/units.rs:263
+msgid "{} Zib/s"
+msgstr "{} Zib/s"
+
+#: src/utils/units.rs:264
+msgid "{} Yib/s"
+msgstr "{} Yib/s"
+
+#: src/utils/units.rs:265
+msgid "{} Rib/s"
+msgstr "{} Rib/s"
+
+#: src/utils/units.rs:266
+msgid "{} Qib/s"
+msgstr "{} Qib/s"
+
+#: src/utils/units.rs:273
+msgid "{} Hz"
+msgstr "{} Hz"
+
+#: src/utils/units.rs:274
+msgid "{} kHz"
+msgstr "{} kHz"
+
+#: src/utils/units.rs:275
+msgid "{} MHz"
+msgstr "{} MHz"
+
+#: src/utils/units.rs:276
+msgid "{} GHz"
+msgstr "{} GHz"
+
+#: src/utils/units.rs:277
+msgid "{} THz"
+msgstr "{} THz"
+
+#: src/utils/units.rs:278
+msgid "{} PHz"
+msgstr "{} PHz"
+
+#: src/utils/units.rs:279
+msgid "{} EHz"
+msgstr "{} EHz"
+
+#: src/utils/units.rs:280
+msgid "{} ZHz"
+msgstr "{} ZHz"
+
+#: src/utils/units.rs:281
+msgid "{} YHz"
+msgstr "{} YHz"
+
+#: src/utils/units.rs:282
+msgid "{} RHz"
+msgstr "{} RHz"
+
+#: src/utils/units.rs:283
+msgid "{} QHz"
+msgstr "{} QHz"
+
+#: src/utils/units.rs:290
+msgid "{} W"
+msgstr "{} W"
+
+#: src/utils/units.rs:291
+msgid "{} kW"
+msgstr "{} kW"
+
+#: src/utils/units.rs:292
+msgid "{} MW"
+msgstr "{} MW"
+
+#: src/utils/units.rs:293
+msgid "{} GW"
+msgstr "{} GW"
+
+#: src/utils/units.rs:294
+msgid "{} TW"
+msgstr "{} TW"
+
+#: src/utils/units.rs:295
+msgid "{} PW"
+msgstr "{} PW"
+
+#: src/utils/units.rs:296
+msgid "{} EW"
+msgstr "{} EW"
+
+#: src/utils/units.rs:297
+msgid "{} ZW"
+msgstr "{} ZW"
+
+#: src/utils/units.rs:298
+msgid "{} YW"
+msgstr "{} YW"
+
+#: src/utils/units.rs:299
+msgid "{} RW"
+msgstr "{} RW"
+
+#: src/utils/units.rs:300
+msgid "{} QW"
+msgstr "{} QW"
+
+#: src/utils/units.rs:309 src/utils/units.rs:323
+msgid "{} Wh"
+msgstr "{} Wh"
+
+#: src/utils/units.rs:310 src/utils/units.rs:324
+msgid "{} kWh"
+msgstr "{} kWh"
+
+#: src/utils/units.rs:311 src/utils/units.rs:325
+msgid "{} MWh"
+msgstr "{} MWh"
+
+#: src/utils/units.rs:312 src/utils/units.rs:326
+msgid "{} GWh"
+msgstr "{} GWh"
+
+#: src/utils/units.rs:313 src/utils/units.rs:327
+msgid "{} TWh"
+msgstr "{} TWh"
+
+#: src/utils/units.rs:314 src/utils/units.rs:328
+msgid "{} PWh"
+msgstr "{} PWh"
+
+#: src/utils/units.rs:315 src/utils/units.rs:329
+msgid "{} EWh"
+msgstr "{} EWh"
+
+#: src/utils/units.rs:316 src/utils/units.rs:330
+msgid "{} ZWh"
+msgstr "{} ZWh"
+
+#: src/utils/units.rs:317 src/utils/units.rs:331
+msgid "{} YWh"
+msgstr "{} YWh"
+
+#: src/utils/units.rs:318 src/utils/units.rs:332
+msgid "{} RWh"
+msgstr "{} RWh"
+
+#: src/utils/units.rs:319 src/utils/units.rs:333
+msgid "{} QWh"
+msgstr "{} QWh"
+
+#: src/utils/drive.rs:128 src/utils/drive.rs:207
+msgid "CD/DVD/Blu-ray Drive"
+msgstr "CD/DVD/蓝光光驱"
+
+#: src/utils/drive.rs:129
+msgid "eMMC Storage"
+msgstr "eMMC 存储"
+
+#: src/utils/drive.rs:130
+msgid "Flash Storage"
+msgstr "闪存"
+
+#: src/utils/drive.rs:131 src/utils/drive.rs:208
+msgid "Floppy Drive"
+msgstr "软盘"
+
+#: src/utils/drive.rs:132
+msgid "Hard Disk Drive"
+msgstr "硬盘"
+
+#: src/utils/drive.rs:133
+msgid "Loop Device"
+msgstr "Loop 设备"
+
+#: src/utils/drive.rs:134
+msgid "Mapped Device"
+msgstr "映射设备"
+
+#: src/utils/drive.rs:135
+msgid "NVMe Drive"
+msgstr "NVMe 磁盘"
+
+#: src/utils/drive.rs:137
+msgid "Software Raid"
+msgstr "软 RAID"
+
+#: src/utils/drive.rs:138
+msgid "RAM Disk"
+msgstr "RAM 盘"
+
+#: src/utils/drive.rs:139
+msgid "Solid State Drive"
+msgstr "固态硬盘"
+
+#: src/utils/drive.rs:140
+msgid "ZFS Volume"
+msgstr "ZFS 卷"
+
+#: src/utils/drive.rs:141
+msgid "Compressed RAM Disk (zram)"
+msgstr "压缩 RAM 盘（ZRAM）"
+
+#: src/utils/drive.rs:209
+msgid "{} Loop Device"
+msgstr "{} Loop 设备"
+
+#: src/utils/drive.rs:210
+msgid "{} Mapped Device"
+msgstr "{} 映射设备"
+
+#: src/utils/drive.rs:211
+msgid "{} RAID"
+msgstr "{} RAID"
+
+#: src/utils/drive.rs:212
+msgid "{} RAM Disk"
+msgstr "{} RAM 盘"
+
+#: src/utils/drive.rs:213
+msgid "{} zram Device"
+msgstr "{} ZRAM 设备"
+
+#: src/utils/drive.rs:214
+msgid "{} ZFS Volume"
+msgstr "{} ZFS 卷"
+
+#: src/utils/drive.rs:215
+msgid "{} Drive"
+msgstr "{} 磁盘"
+
+#: src/utils/network.rs:124
+msgid "Bluetooth Tether"
+msgstr "蓝牙共享网络"
+
+#: src/utils/network.rs:125
+msgid "Network Bridge"
+msgstr "桥接器"
+
+#: src/utils/network.rs:126
+msgid "Ethernet Connection"
+msgstr "以太网络连接"
+
+#: src/utils/network.rs:127
+msgid "Docker Bridge"
+msgstr "Docker 网桥"
+
+#: src/utils/network.rs:128
+msgid "InfiniBand Connection"
+msgstr "InfiniBand 连接"
+
+#: src/utils/network.rs:129
+msgid "Serial Line IP Connection"
+msgstr "串行线路 IP 连接"
+
+#: src/utils/network.rs:130
+msgid "Virtual Ethernet Device"
+msgstr "虚拟网卡设备"
+
+#: src/utils/network.rs:131
+msgid "VM Network Bridge"
+msgstr "VM 桥接网络"
+
+#: src/utils/network.rs:132
+msgid "VPN Tunnel"
+msgstr "VPN 隧道"
+
+#: src/utils/network.rs:133
+msgid "VPN Tunnel (WireGuard)"
+msgstr "VPN 隧道 (WireGuard)"
+
+#: src/utils/network.rs:134
+msgid "Wi-Fi Connection"
+msgstr "Wi-Fi 连接"
+
+#: src/utils/network.rs:135
+msgid "WWAN Connection"
+msgstr "WWAN 连接"
 
 #~ msgid "Memory Usage"
 #~ msgstr "内存占用"
-
-#~ msgid "System Processes"
-#~ msgstr "系统进程"
-
-#~ msgid "Charging"
-#~ msgstr "充电中"
-
-#~ msgid "Discharging"
-#~ msgstr "放电中"
-
-#~ msgid "Full"
-#~ msgstr "已充满"
-
-#~ msgid "Unknown"
-#~ msgstr "未知"
-
-#~ msgid "Nickel-Metal Hydride"
-#~ msgstr "镍氢"
-
-#~ msgid "Nickel-Cadmium"
-#~ msgstr "镍镉"
-
-#~ msgid "Nickel-Zinc"
-#~ msgstr "镍锌"
-
-#~ msgid "Lead-Acid"
-#~ msgstr "铅酸"
-
-#~ msgid "Lithium-Ion"
-#~ msgstr "锂离子"
-
-#~ msgid "Lithium Iron Phosphate"
-#~ msgstr "磷酸铁锂"
-
-#~ msgid "Lithium Polymer"
-#~ msgstr "锂离子聚合物"
-
-#~ msgid "Rechargeable Alkaline Managanese"
-#~ msgstr "可充电碱性"
-
-#~ msgid "{} Battery"
-#~ msgstr "{}电池"
-
-#~ msgid "Battery"
-#~ msgstr "电池"
-
-#~ msgid "CD/DVD/Blu-ray Drive"
-#~ msgstr "CD/DVD/蓝光光驱"
-
-#~ msgid "eMMC Storage"
-#~ msgstr "eMMC 存储"
-
-#~ msgid "Flash Storage"
-#~ msgstr "闪存"
-
-#~ msgid "Floppy Drive"
-#~ msgstr "软盘"
-
-#~ msgid "Hard Disk Drive"
-#~ msgstr "硬盘"
-
-#~ msgid "Loop Device"
-#~ msgstr "Loop 设备"
-
-#~ msgid "Mapped Device"
-#~ msgstr "映射设备"
-
-#~ msgid "NVMe Drive"
-#~ msgstr "NVMe 磁盘"
-
-#~ msgid "Software Raid"
-#~ msgstr "软 RAID"
-
-#~ msgid "RAM Disk"
-#~ msgstr "RAM 盘"
-
-#~ msgid "Solid State Drive"
-#~ msgstr "固态硬盘"
-
-#~ msgid "ZFS Volume"
-#~ msgstr "ZFS 卷"
-
-#~ msgid "Compressed RAM Disk (zram)"
-#~ msgstr "压缩 RAM 盘（ZRAM）"
-
-#~ msgid "{} Loop Device"
-#~ msgstr "{} Loop 设备"
-
-#~ msgid "{} Mapped Device"
-#~ msgstr "{} 映射设备"
-
-#~ msgid "{} RAID"
-#~ msgstr "{} RAID"
-
-#~ msgid "{} RAM Disk"
-#~ msgstr "{} RAM 盘"
-
-#~ msgid "{} zram Device"
-#~ msgstr "{} ZRAM 设备"
-
-#~ msgid "{} ZFS Volume"
-#~ msgstr "{} ZFS 卷"
-
-#~ msgid "{} Drive"
-#~ msgstr "{} 磁盘"
-
-#~ msgid "Bluetooth Tether"
-#~ msgstr "蓝牙共享网络"
-
-#~ msgid "Network Bridge"
-#~ msgstr "桥接器"
-
-#~ msgid "Ethernet Connection"
-#~ msgstr "以太网络连接"
-
-#~ msgid "Docker Bridge"
-#~ msgstr "Docker 网桥"
-
-#~ msgid "InfiniBand Connection"
-#~ msgstr "InfiniBand 连接"
-
-#~ msgid "Serial Line IP Connection"
-#~ msgstr "串行线路 IP 连接"
-
-#~ msgid "Virtual Ethernet Device"
-#~ msgstr "虚拟网卡设备"
-
-#~ msgid "VM Network Bridge"
-#~ msgstr "VM 桥接网络"
-
-#~ msgid "VPN Tunnel"
-#~ msgstr "VPN 隧道"
-
-#~ msgid "VPN Tunnel (WireGuard)"
-#~ msgstr "VPN 隧道 (WireGuard)"
-
-#~ msgid "Wi-Fi Connection"
-#~ msgstr "Wi-Fi 连接"
-
-#~ msgid "WWAN Connection"
-#~ msgstr "WWAN 连接"
-
-#~ msgid "{} K"
-#~ msgstr "{} K"
-
-#~ msgid "{} °C"
-#~ msgstr "{} °C"
-
-#~ msgid "{} °F"
-#~ msgstr "{} °F"
-
-#~ msgid "{} B"
-#~ msgstr "{} B"
-
-#~ msgid "{} kB"
-#~ msgstr "{} kB"
-
-#~ msgid "{} MB"
-#~ msgstr "{} MB"
-
-#~ msgid "{} GB"
-#~ msgstr "{} GB"
-
-#~ msgid "{} TB"
-#~ msgstr "{} TB"
-
-#~ msgid "{} PB"
-#~ msgstr "{} PB"
-
-#~ msgid "{} EB"
-#~ msgstr "{} EB"
-
-#~ msgid "{} ZB"
-#~ msgstr "{} ZB"
-
-#~ msgid "{} YB"
-#~ msgstr "{} YB"
-
-#~ msgid "{} RB"
-#~ msgstr "{} RB"
-
-#~ msgid "{} QB"
-#~ msgstr "{} QB"
-
-#~ msgid "{} KiB"
-#~ msgstr "{} KiB"
-
-#~ msgid "{} MiB"
-#~ msgstr "{} MiB"
-
-#~ msgid "{} GiB"
-#~ msgstr "{} GiB"
-
-#~ msgid "{} TiB"
-#~ msgstr "{} TiB"
-
-#~ msgid "{} PiB"
-#~ msgstr "{} PiB"
-
-#~ msgid "{} EiB"
-#~ msgstr "{} EiB"
-
-#~ msgid "{} ZiB"
-#~ msgstr "{} ZiB"
-
-#~ msgid "{} YiB"
-#~ msgstr "{} YiB"
-
-#~ msgid "{} RiB"
-#~ msgstr "{} RiB"
-
-#~ msgid "{} QiB"
-#~ msgstr "{} QiB"
-
-#~ msgid "{} B/s"
-#~ msgstr "{} B/s"
-
-#~ msgid "{} kB/s"
-#~ msgstr "{} kB/s"
-
-#~ msgid "{} MB/s"
-#~ msgstr "{} MB/s"
-
-#~ msgid "{} GB/s"
-#~ msgstr "{} GB/s"
-
-#~ msgid "{} TB/s"
-#~ msgstr "{} TB/s"
-
-#~ msgid "{} PB/s"
-#~ msgstr "{} PB/s"
-
-#~ msgid "{} EB/s"
-#~ msgstr "{} EB/s"
-
-#~ msgid "{} ZB/s"
-#~ msgstr "{} ZB/s"
-
-#~ msgid "{} YB/s"
-#~ msgstr "{} YB/s"
-
-#~ msgid "{} RB/s"
-#~ msgstr "{} RB/s"
-
-#~ msgid "{} QB/s"
-#~ msgstr "{} QB/s"
-
-#~ msgid "{} KiB/s"
-#~ msgstr "{} KiB/s"
-
-#~ msgid "{} MiB/s"
-#~ msgstr "{} MiB/s"
-
-#~ msgid "{} GiB/s"
-#~ msgstr "{} GiB/s"
-
-#~ msgid "{} TiB/s"
-#~ msgstr "{} TiB/s"
-
-#~ msgid "{} PiB/s"
-#~ msgstr "{} PiB/s"
-
-#~ msgid "{} EiB/s"
-#~ msgstr "{} EiB/s"
-
-#~ msgid "{} ZiB/s"
-#~ msgstr "{} ZiB/s"
-
-#~ msgid "{} YiB/s"
-#~ msgstr "{} YiB/s"
-
-#~ msgid "{} RiB/s"
-#~ msgstr "{} RiB/s"
-
-#~ msgid "{} QiB/s"
-#~ msgstr "{} QiB/s"
-
-#~ msgid "{} b/s"
-#~ msgstr "{} b/s"
-
-#~ msgid "{} kb/s"
-#~ msgstr "{} kb/s"
-
-#~ msgid "{} Mb/s"
-#~ msgstr "{} Mb/s"
-
-#~ msgid "{} Gb/s"
-#~ msgstr "{} Gb/s"
-
-#~ msgid "{} Tb/s"
-#~ msgstr "{} Tb/s"
-
-#~ msgid "{} Pb/s"
-#~ msgstr "{} Pb/s"
-
-#~ msgid "{} Eb/s"
-#~ msgstr "{} Eb/s"
-
-#~ msgid "{} Zb/s"
-#~ msgstr "{} Zb/s"
-
-#~ msgid "{} Yb/s"
-#~ msgstr "{} Yb/s"
-
-#~ msgid "{} Rb/s"
-#~ msgstr "{} Rb/s"
-
-#~ msgid "{} Qb/s"
-#~ msgstr "{} Qb/s"
-
-#~ msgid "{} Kib/s"
-#~ msgstr "{} Kib/s"
-
-#~ msgid "{} Mib/s"
-#~ msgstr "{} Mib/s"
-
-#~ msgid "{} Gib/s"
-#~ msgstr "{} Gib/s"
-
-#~ msgid "{} Tib/s"
-#~ msgstr "{} Tib/s"
-
-#~ msgid "{} Pib/s"
-#~ msgstr "{} Pib/s"
-
-#~ msgid "{} Eib/s"
-#~ msgstr "{} Eib/s"
-
-#~ msgid "{} Zib/s"
-#~ msgstr "{} Zib/s"
-
-#~ msgid "{} Yib/s"
-#~ msgstr "{} Yib/s"
-
-#~ msgid "{} Rib/s"
-#~ msgstr "{} Rib/s"
-
-#~ msgid "{} Qib/s"
-#~ msgstr "{} Qib/s"
-
-#~ msgid "{} Hz"
-#~ msgstr "{} Hz"
-
-#~ msgid "{} kHz"
-#~ msgstr "{} kHz"
-
-#~ msgid "{} MHz"
-#~ msgstr "{} MHz"
-
-#~ msgid "{} GHz"
-#~ msgstr "{} GHz"
-
-#~ msgid "{} THz"
-#~ msgstr "{} THz"
-
-#~ msgid "{} PHz"
-#~ msgstr "{} PHz"
-
-#~ msgid "{} EHz"
-#~ msgstr "{} EHz"
-
-#~ msgid "{} ZHz"
-#~ msgstr "{} ZHz"
-
-#~ msgid "{} YHz"
-#~ msgstr "{} YHz"
-
-#~ msgid "{} RHz"
-#~ msgstr "{} RHz"
-
-#~ msgid "{} QHz"
-#~ msgstr "{} QHz"
-
-#~ msgid "{} W"
-#~ msgstr "{} W"
-
-#~ msgid "{} kW"
-#~ msgstr "{} kW"
-
-#~ msgid "{} MW"
-#~ msgstr "{} MW"
-
-#~ msgid "{} GW"
-#~ msgstr "{} GW"
-
-#~ msgid "{} TW"
-#~ msgstr "{} TW"
-
-#~ msgid "{} PW"
-#~ msgstr "{} PW"
-
-#~ msgid "{} EW"
-#~ msgstr "{} EW"
-
-#~ msgid "{} ZW"
-#~ msgstr "{} ZW"
-
-#~ msgid "{} YW"
-#~ msgstr "{} YW"
-
-#~ msgid "{} RW"
-#~ msgstr "{} RW"
-
-#~ msgid "{} QW"
-#~ msgstr "{} QW"
-
-#~ msgid "{} Wh"
-#~ msgstr "{} Wh"
-
-#~ msgid "{} kWh"
-#~ msgstr "{} kWh"
-
-#~ msgid "{} MWh"
-#~ msgstr "{} MWh"
-
-#~ msgid "{} GWh"
-#~ msgstr "{} GWh"
-
-#~ msgid "{} TWh"
-#~ msgstr "{} TWh"
-
-#~ msgid "{} PWh"
-#~ msgstr "{} PWh"
-
-#~ msgid "{} EWh"
-#~ msgstr "{} EWh"
-
-#~ msgid "{} ZWh"
-#~ msgstr "{} ZWh"
-
-#~ msgid "{} YWh"
-#~ msgstr "{} YWh"
-
-#~ msgid "{} RWh"
-#~ msgstr "{} RWh"
-
-#~ msgid "{} QWh"
-#~ msgstr "{} QWh"
 
 #~ msgid "Show Search Fields on Launch"
 #~ msgstr "在启动时显示搜索框"
