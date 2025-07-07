@@ -80,6 +80,21 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.8.0" date="2025-03-29">
+      <url type="details">https://github.com/nokyan/resources/releases/tag/v1.8.0</url>
+      <description translate="no">
+        <p>
+          Resources 1.8 has landed with new features, quality of life updates and better support for more hardware. Here are the highlights:
+        </p>
+        <ul>
+          <li>GPUs, drives and network interfaces can now show their link types and speeds</li>
+          <li>Added support for Raspberry Pi’s GPUs</li>
+          <li>Type to search is now supported in the Apps and Processes views</li>
+          <li>Holding Ctrl now pauses updates to the Apps and Processes views</li>
+          <li>Added a column for combined memory and swap usage to the Apps and Processes views</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.7.1" date="2024-12-06">
       <url type="details">https://github.com/nokyan/resources/releases/tag/v1.7.1</url>
       <description translate="no">

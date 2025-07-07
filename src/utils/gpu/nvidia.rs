@@ -7,7 +7,10 @@ use nvml_wrapper::{
 };
 use process_data::GpuIdentifier;
 
-use std::{path::PathBuf, sync::LazyLock};
+use std::{
+    path::{Path, PathBuf},
+    sync::LazyLock,
+};
 
 static NVML: LazyLock<Result<Nvml, NvmlError>> = LazyLock::new(|| {
     let nvml = Nvml::init();
@@ -80,16 +83,16 @@ impl GpuImpl for NvidiaGpu {
         self.gpu_identifier
     }
 
-    fn driver(&self) -> String {
-        self.driver.clone()
+    fn driver(&self) -> &str {
+        &self.driver
     }
 
-    fn sysfs_path(&self) -> PathBuf {
-        self.sysfs_path.clone()
+    fn sysfs_path(&self) -> &Path {
+        &self.sysfs_path
     }
 
-    fn first_hwmon(&self) -> Option<PathBuf> {
-        self.first_hwmon_path.clone()
+    fn first_hwmon(&self) -> Option<&Path> {
+        self.first_hwmon_path.as_deref()
     }
 
     fn name(&self) -> Result<String> {
@@ -104,7 +107,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.utilization_rates()
                     .context("unable to get utilization rates through NVML")
             })
-            .map(|usage| f64::from(usage.gpu) as f64 / 100.0)
+            .map(|usage| f64::from(usage.gpu) / 100.0)
             .or_else(|_| self.drm_usage().map(|usage| usage as f64 / 100.0))
     }
 
@@ -114,7 +117,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.encoder_utilization()
                     .context("unable to get utilization rates through NVML")
             })
-            .map(|usage| f64::from(usage.utilization) as f64 / 100.0)
+            .map(|usage| f64::from(usage.utilization) / 100.0)
             .context("encode usage not implemented for NVIDIA not using the nvidia driver")
     }
 
@@ -158,7 +161,7 @@ impl GpuImpl for NvidiaGpu {
                 dev.temperature(TemperatureSensor::Gpu)
                     .context("unable to get temperatures through NVML")
             })
-            .map(|temp| f64::from(temp))
+            .map(f64::from)
             .or_else(|_| self.hwmon_temperature())
     }
 

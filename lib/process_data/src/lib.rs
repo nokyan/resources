@@ -1,8 +1,8 @@
 pub mod pci_slot;
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use glob::glob;
-use lazy_regex::{lazy_regex, Lazy, Regex};
+use lazy_regex::{Lazy, Regex, lazy_regex};
 use nutype::nutype;
 use nvml_wrapper::enums::device::UsedGpuMemory;
 use nvml_wrapper::error::NvmlError;
@@ -201,8 +201,8 @@ impl Default for GpuIdentifier {
 impl Display for GpuIdentifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            GpuIdentifier::PciSlot(pci_slot) => write!(f, "{}", pci_slot),
-            GpuIdentifier::Enumerator(e) => write!(f, "{}", e),
+            GpuIdentifier::PciSlot(pci_slot) => write!(f, "{pci_slot}"),
+            GpuIdentifier::Enumerator(e) => write!(f, "{e}"),
         }
     }
 }
@@ -776,7 +776,7 @@ impl ProcessData {
             let fd_path = fdinfo_path.to_str().map(|s| s.replace("fdinfo", "fd"));
             if let Some(fd_path) = fd_path {
                 if let Ok(fd_metadata) = std::fs::metadata(fd_path) {
-                    let major = unsafe { libc::major(fd_metadata.st_rdev()) };
+                    let major = libc::major(fd_metadata.st_rdev());
                     if (fd_metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR || major != 226 {
                         continue;
                     }

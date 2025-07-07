@@ -21,7 +21,7 @@ macro_rules! bool_settings {
 
             paste! {
                 pub fn [<set_ $setting_name>](&self, value: bool) -> Result<(), glib::error::BoolError> {
-                    debug!("Setting boolean {} to {}", stringify!($setting_name).replace("_", "-"), value);
+                    debug!("Setting boolean {} to {value}", stringify!($setting_name).replace("_", "-"));
                     self.set_boolean(&stringify!($setting_name).replace("_", "-"), value)
                 }
 
@@ -47,7 +47,7 @@ macro_rules! int_settings {
 
             paste! {
                 pub fn [<set_ $setting_name>](&self, value: i32) -> Result<(), glib::error::BoolError> {
-                    debug!("Setting int {} to {}", stringify!($setting_name).replace("_", "-"), value);
+                    debug!("Setting int {} to {value}", stringify!($setting_name).replace("_", "-"));
                     self.set_int(&stringify!($setting_name).replace("_", "-"), value)
                 }
 
@@ -73,7 +73,7 @@ macro_rules! uint_settings {
 
             paste! {
                 pub fn [<set_ $setting_name>](&self, value: u32) -> Result<(), glib::error::BoolError> {
-                    debug!("Setting uint {} to {}", stringify!($setting_name).replace("_", "-"), value);
+                    debug!("Setting uint {} to {value}", stringify!($setting_name).replace("_", "-"));
                     self.set_uint(&stringify!($setting_name).replace("_", "-"), value)
                 }
 
@@ -159,7 +159,7 @@ impl Settings {
         &self,
         value: TemperatureUnit,
     ) -> Result<(), glib::error::BoolError> {
-        debug!("Setting temperature-unit to {}", value);
+        debug!("Setting temperature-unit to {value}");
         self.set_string("temperature-unit", &value.to_string())
     }
 
@@ -180,7 +180,7 @@ impl Settings {
     }
 
     pub fn set_base(&self, value: Base) -> Result<(), glib::error::BoolError> {
-        debug!("Setting base to {}", value);
+        debug!("Setting base to {value}");
         self.set_string("base", &value.to_string())
     }
 
@@ -213,7 +213,7 @@ impl Settings {
     }
 
     pub fn set_refresh_speed(&self, value: RefreshSpeed) -> Result<(), glib::error::BoolError> {
-        debug!("Setting refresh-speed to {}", value);
+        debug!("Setting refresh-speed to {value}");
         self.set_string("refresh-speed", &value.to_string())
     }
 
@@ -237,7 +237,7 @@ impl Settings {
         &self,
         value: SidebarMeterType,
     ) -> Result<(), glib::error::BoolError> {
-        debug!("Setting sidebar-meter-type to {}", value);
+        debug!("Setting sidebar-meter-type to {value}");
         self.set_string("sidebar-meter-type", &value.to_string())
     }
 
@@ -260,7 +260,7 @@ impl Settings {
     }
 
     pub fn set_maximized(&self, value: bool) -> Result<(), glib::error::BoolError> {
-        debug!("Setting boolean is-maximized to {}", value);
+        debug!("Setting boolean is-maximized to {value}");
         self.set_boolean("is-maximized", value)
     }
 
@@ -283,7 +283,7 @@ impl Settings {
         value: SortType,
     ) -> Result<(), glib::error::BoolError> {
         let setting = matches!(value, SortType::Ascending);
-        debug!("Setting boolean processes-sort-by-ascending to {}", setting);
+        debug!("Setting boolean processes-sort-by-ascending to {setting}");
         self.set_boolean("processes-sort-by-ascending", setting)
     }
 
@@ -318,7 +318,7 @@ impl Settings {
         value: SortType,
     ) -> Result<(), glib::error::BoolError> {
         let setting = matches!(value, SortType::Ascending);
-        debug!("Setting boolean apps-sort-by-ascending to {}", setting);
+        debug!("Setting boolean apps-sort-by-ascending to {setting}");
         self.set_boolean("apps-sort-by-ascending", setting)
     }
 
@@ -358,6 +358,7 @@ impl Settings {
         apps_show_encoder,
         apps_show_decoder,
         apps_show_swap,
+        apps_show_combined_memory,
         processes_show_id,
         processes_show_user,
         processes_show_memory,
@@ -375,6 +376,7 @@ impl Settings {
         processes_show_system_cpu_time,
         processes_show_priority,
         processes_show_swap,
+        processes_show_combined_memory,
         show_logical_cpus,
         show_graph_grids,
         normalize_cpu_usage,

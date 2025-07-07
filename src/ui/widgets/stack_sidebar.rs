@@ -82,7 +82,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResStackSidebar(ObjectSubclass<imp::ResStackSidebar>)
-        @extends gtk::Widget;
+        @extends gtk::Widget, adw::Bin, adw::PreferencesRow;
 }
 
 impl Default for ResStackSidebar {

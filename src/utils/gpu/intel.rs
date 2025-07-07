@@ -2,9 +2,12 @@ use anyhow::{Result, bail};
 use process_data::GpuIdentifier;
 use strum_macros::{Display, EnumString};
 
-use std::{path::PathBuf, str::FromStr};
+use std::{
+    path::{Path, PathBuf},
+    str::FromStr,
+};
 
-use crate::utils::pci::Device;
+use crate::utils::{pci::Device, read_sysfs};
 
 use super::GpuImpl;
 
@@ -33,6 +36,7 @@ pub struct IntelGpu {
     pub device: Option<&'static Device>,
     pub gpu_identifier: GpuIdentifier,
     pub driver: IntelGpuDriver,
+    driver_string: String,
     sysfs_path: PathBuf,
     first_hwmon_path: Option<PathBuf>,
 }
@@ -49,6 +53,7 @@ impl IntelGpu {
             device,
             gpu_identifier,
             driver: IntelGpuDriver::from_str(&driver).unwrap_or_default(),
+            driver_string: driver,
             sysfs_path,
             first_hwmon_path,
         }
@@ -64,16 +69,16 @@ impl GpuImpl for IntelGpu {
         self.gpu_identifier
     }
 
-    fn driver(&self) -> String {
-        self.driver.to_string()
+    fn driver(&self) -> &str {
+        &self.driver_string
     }
 
-    fn sysfs_path(&self) -> PathBuf {
-        self.sysfs_path.clone()
+    fn sysfs_path(&self) -> &Path {
+        &self.sysfs_path
     }
 
-    fn first_hwmon(&self) -> Option<PathBuf> {
-        self.first_hwmon_path.clone()
+    fn first_hwmon(&self) -> Option<&Path> {
+        self.first_hwmon_path.as_deref()
     }
 
     fn name(&self) -> Result<String> {
@@ -111,19 +116,15 @@ impl GpuImpl for IntelGpu {
     fn power_usage(&self) -> Result<f64> {
         match self.driver {
             IntelGpuDriver::Xe => {
-                Ok(self.read_sysfs_int("tile0/gt0/freq0/cur_freq")? as f64 * 1_000_000.0)
+                Ok(read_sysfs::<isize>("tile0/gt0/freq0/cur_freq")? as f64 * 1_000_000.0)
             }
-            _ => Ok(self.read_sysfs_int("gt_cur_freq_mhz")? as f64 * 1_000_000.0),
+            _ => Ok(read_sysfs::<isize>("gt_cur_freq_mhz")? as f64 * 1_000_000.0),
         }
     }
 
     fn core_frequency(&self) -> Result<f64> {
-        match self.driver {
-            IntelGpuDriver::Xe => {
-                Ok(self.read_sysfs_int("tile0/gt0/freq0/cur_freq")? as f64 * 1_000_000.0)
-            }
-            _ => Ok(self.read_sysfs_int("gt_cur_freq_mhz")? as f64 * 1_000_000.0),
-        }
+        read_sysfs::<isize>(self.sysfs_path().join("gt_cur_freq_mhz"))
+            .map(|freq| freq as f64 * 1_000_000.0)
     }
 
     fn vram_frequency(&self) -> Result<f64> {
