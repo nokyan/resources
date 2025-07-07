@@ -1,0 +1,1413 @@
+# Slovenian translation for resources.
+# Copyright (C) 2025 resources's COPYRIGHT HOLDER
+# This file is distributed under the same license as the resources package.
+# Martin <miles@filmsi.net>,  2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: resources main\n"
+"Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
+"POT-Creation-Date: 2025-07-04 19:58+0000\n"
+"PO-Revision-Date: 2025-07-06 13:04+0200\n"
+"Language-Team: Slovenian <Slovenian>\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || "
+"n%100==4 ? 3 : 0);\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
+"X-Generator: Poedit 2.2.1\n"
+
+#: data/net.nokyan.Resources.desktop.in.in:3
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4
+#: data/resources/ui/window.ui:22 src/application.rs:265
+msgid "Resources"
+msgstr "Viri"
+
+#. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
+#: data/net.nokyan.Resources.desktop.in.in:4
+#: data/net.nokyan.Resources.metainfo.xml.in.in:5
+#, fuzzy
+msgid "Keep an eye on system resources"
+msgstr "Bodite pozorni na sistemske vire"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: data/net.nokyan.Resources.desktop.in.in:10
+#, fuzzy
+msgid ""
+"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
+msgstr ""
+"Sistem; Sredstva; Monitor; Procesov; Navada; Opravilo; Menedžer; CPE; OVEN; "
+"Spomin; GPU;"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:17
+#, fuzzy
+msgid ""
+"Resources allows you to check the utilization of your system resources and "
+"control your running processes and apps. It’s designed to be user-friendly "
+"and feel right at home on a modern desktop by using GNOME’s libadwaita."
+msgstr ""
+"Viri vam omogočajo, da preverite izkoriščenost sistemskih virov in "
+"nadzirate tekoče procese in aplikacije. Zasnovan je tako, da je uporabniku "
+"prijazen in se počuti kot doma na sodobnem namizju z uporabo GNOME-jeve "
+"libadwaite."
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:20
+#, fuzzy
+msgid "Resources supports monitoring the following components:"
+msgstr "Viri podpirajo nadzor teh komponent:"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:24
+msgid "CPU"
+msgstr "CPE"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+#: data/resources/ui/dialogs/app_dialog.ui:82
+#: data/resources/ui/dialogs/process_dialog.ui:64
+#: data/resources/ui/dialogs/settings_dialog.ui:128
+#: data/resources/ui/dialogs/settings_dialog.ui:220
+#: data/resources/ui/window.ui:176 data/resources/ui/window.ui:183
+#: src/ui/pages/applications/mod.rs:802 src/ui/pages/memory.rs:106
+#: src/ui/pages/memory.rs:191 src/ui/pages/processes/mod.rs:1078
+msgid "Memory"
+msgstr "Pomnilnik"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:26
+#: data/resources/ui/dialogs/app_dialog.ui:140
+#: data/resources/ui/dialogs/process_dialog.ui:118
+#: data/resources/ui/dialogs/settings_dialog.ui:158
+#: data/resources/ui/dialogs/settings_dialog.ui:250
+#: src/ui/pages/applications/mod.rs:1175 src/ui/pages/gpu.rs:118
+#: src/ui/pages/processes/mod.rs:1462 src/ui/window.rs:454
+msgid "GPU"
+msgstr "GPE"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:27
+#: data/resources/ui/dialogs/settings_dialog.ui:319
+msgid "Network Interfaces"
+msgstr "Omrežni vmesniki"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:28
+#, fuzzy
+msgid "Storage Devices"
+msgstr "Naprave za shranjevanje"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:29
+#, fuzzy
+msgid "Batteries"
+msgstr "Baterije"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:51
+#, fuzzy
+msgid "Apps page in light theme"
+msgstr "Stran »Programi« v svetli temi"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:55
+#, fuzzy
+msgid "Processes page in dark theme"
+msgstr "Stran »Procesi« v temni temi"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:59
+#, fuzzy
+msgid "Processor page in light theme"
+msgstr "Stran »Procesor« v svetli temi"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:63
+#, fuzzy
+msgid "Memory page in dark theme"
+msgstr "Spominska stran v temni temi"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:67
+#, fuzzy
+msgid "GPU page in light theme"
+msgstr "Stran GPU v svetli temi"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:71
+#, fuzzy
+msgid "Drive page in dark theme"
+msgstr "Stran pogona v temni temi"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:75
+#, fuzzy
+msgid "Network Interface page in light theme"
+msgstr "Stran »Omrežni vmesnik« v svetli temi"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:79
+#, fuzzy
+msgid "Battery page in dark theme"
+msgstr "Stran z baterijo v temni temi"
+
+#: data/net.nokyan.Resources.policy.in.in:9
+#, fuzzy
+msgid "Control Process"
+msgstr "Postopek nadzora"
+
+#: data/net.nokyan.Resources.policy.in.in:10
+#, fuzzy
+msgid ""
+"Authentication is required to control superuser’s or other users’ processes"
+msgstr ""
+"Preverjanje pristnosti je potrebno za nadzor nad procesi superuporabnika "
+"ali drugih uporabnikov"
+
+#: data/resources/ui/dialogs/app_dialog.ui:7
+msgid "App Information"
+msgstr "Informacije o programu"
+
+#: data/resources/ui/dialogs/app_dialog.ui:70
+#: data/resources/ui/dialogs/process_dialog.ui:48
+#: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37
+#: data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22
+#: data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31
+#: data/resources/ui/pages/network.ui:22 data/resources/ui/pages/npu.ui:22
+msgid "Usage"
+msgstr "Raba"
+
+#: data/resources/ui/dialogs/app_dialog.ui:73
+#: data/resources/ui/dialogs/process_dialog.ui:55
+#: data/resources/ui/dialogs/settings_dialog.ui:133
+#: data/resources/ui/dialogs/settings_dialog.ui:225
+#: data/resources/ui/window.ui:145 data/resources/ui/window.ui:152
+#: src/ui/pages/applications/mod.rs:861 src/ui/pages/cpu.rs:128
+#: src/ui/pages/processes/mod.rs:1136 src/ui/window.rs:289
+msgid "Processor"
+msgstr "Procesor"
+
+#: data/resources/ui/dialogs/app_dialog.ui:91
+#: data/resources/ui/dialogs/process_dialog.ui:73
+#: data/resources/ui/dialogs/settings_dialog.ui:178
+#: data/resources/ui/dialogs/settings_dialog.ui:290
+#: src/ui/pages/applications/mod.rs:1410 src/ui/pages/memory.rs:197
+#: src/ui/pages/processes/mod.rs:1943
+msgid "Swap"
+msgstr "Izmenjalna datoteka"
+
+#: data/resources/ui/dialogs/app_dialog.ui:100
+#: data/resources/ui/dialogs/process_dialog.ui:78
+#: data/resources/ui/dialogs/settings_dialog.ui:138
+#: data/resources/ui/dialogs/settings_dialog.ui:230
+#: src/ui/pages/applications/mod.rs:924 src/ui/pages/processes/mod.rs:1199
+#, fuzzy
+msgid "Drive Read"
+msgstr "Vozi branje"
+
+#: data/resources/ui/dialogs/app_dialog.ui:109
+#: data/resources/ui/dialogs/process_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:143
+#: data/resources/ui/dialogs/settings_dialog.ui:235
+#: src/ui/pages/applications/mod.rs:988 src/ui/pages/processes/mod.rs:1265
+#, fuzzy
+msgid "Drive Read Total"
+msgstr "Vozite skupaj za branje"
+
+#: data/resources/ui/dialogs/app_dialog.ui:118
+#: data/resources/ui/dialogs/process_dialog.ui:96
+#: data/resources/ui/dialogs/settings_dialog.ui:148
+#: data/resources/ui/dialogs/settings_dialog.ui:240
+#: src/ui/pages/applications/mod.rs:1048 src/ui/pages/processes/mod.rs:1331
+#, fuzzy
+msgid "Drive Write"
+msgstr "Vožnja za pisanje"
+
+#: data/resources/ui/dialogs/app_dialog.ui:127
+#: data/resources/ui/dialogs/process_dialog.ui:105
+#: data/resources/ui/dialogs/settings_dialog.ui:153
+#: data/resources/ui/dialogs/settings_dialog.ui:245
+#: src/ui/pages/applications/mod.rs:1114 src/ui/pages/processes/mod.rs:1397
+#, fuzzy
+msgid "Drive Write Total"
+msgstr "Skupno število zapisov pogona"
+
+#: data/resources/ui/dialogs/app_dialog.ui:149
+#: data/resources/ui/dialogs/process_dialog.ui:127
+#: data/resources/ui/dialogs/settings_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:255
+#: src/ui/pages/applications/mod.rs:1352 src/ui/pages/processes/mod.rs:1640
+#, fuzzy
+msgid "Video Memory"
+msgstr "Video pomnilnik"
+
+#: data/resources/ui/dialogs/app_dialog.ui:158
+#: data/resources/ui/dialogs/process_dialog.ui:136
+#: data/resources/ui/dialogs/settings_dialog.ui:168
+#: data/resources/ui/dialogs/settings_dialog.ui:260
+#: src/ui/pages/applications/mod.rs:1233 src/ui/pages/processes/mod.rs:1520
+#, fuzzy
+msgid "Video Encoder"
+msgstr "Video kodirnik"
+
+#: data/resources/ui/dialogs/app_dialog.ui:167
+#: data/resources/ui/dialogs/process_dialog.ui:145
+#: data/resources/ui/dialogs/settings_dialog.ui:173
+#: data/resources/ui/dialogs/settings_dialog.ui:265
+#: src/ui/pages/applications/mod.rs:1293 src/ui/pages/processes/mod.rs:1580
+#, fuzzy
+msgid "Video Decoder"
+msgstr "Video dekodirnik"
+
+#: data/resources/ui/dialogs/app_dialog.ui:174
+#: data/resources/ui/dialogs/process_dialog.ui:179
+#: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:83
+#: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:74
+#: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
+#: data/resources/ui/pages/npu.ui:68
+msgid "Properties"
+msgstr "Lastnosti"
+
+#: data/resources/ui/dialogs/app_dialog.ui:180
+msgid "ID"
+msgstr "ID"
+
+#: data/resources/ui/dialogs/app_dialog.ui:190
+#: data/resources/ui/dialogs/process_dialog.ui:195
+#, fuzzy
+msgid "Running Since"
+msgstr "Teče od"
+
+#: data/resources/ui/dialogs/app_dialog.ui:198
+msgid "Running Processes"
+msgstr "Procesi v teku"
+
+#: data/resources/ui/dialogs/app_dialog.ui:207
+#: data/resources/ui/dialogs/process_dialog.ui:231
+#, fuzzy
+msgid "Containerized"
+msgstr "Zabojniki"
+
+#: data/resources/ui/dialogs/process_dialog.ui:7
+msgid "Process Information"
+msgstr "Informacije o procesu"
+
+#: data/resources/ui/dialogs/process_dialog.ui:154
+#: data/resources/ui/dialogs/settings_dialog.ui:270
+#: src/ui/pages/processes/mod.rs:1699
+#, fuzzy
+msgid "Total CPU Time"
+msgstr "Skupni čas procesorja"
+
+#: data/resources/ui/dialogs/process_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:275
+#: src/ui/pages/processes/mod.rs:1758
+#, fuzzy
+msgid "User CPU Time"
+msgstr "Čas uporabniškega CPU-ja"
+
+#: data/resources/ui/dialogs/process_dialog.ui:172
+#: data/resources/ui/dialogs/settings_dialog.ui:280
+#: src/ui/pages/processes/mod.rs:1817
+#, fuzzy
+msgid "System CPU Time"
+msgstr "Čas sistemskega CPU-ja"
+
+#: data/resources/ui/dialogs/process_dialog.ui:186
+#: data/resources/ui/dialogs/settings_dialog.ui:210
+#: src/ui/pages/processes/mod.rs:971
+msgid "Process ID"
+msgstr "ID procesa"
+
+#: data/resources/ui/dialogs/process_dialog.ui:204
+#, fuzzy
+msgid "Commandline"
+msgstr "Shrani zgodovino ukazne vrstice ob končanju"
+
+#: data/resources/ui/dialogs/process_dialog.ui:213
+#: data/resources/ui/dialogs/settings_dialog.ui:215
+#: src/ui/pages/processes/mod.rs:1024
+msgid "User"
+msgstr "Uporabnik"
+
+#: data/resources/ui/dialogs/process_dialog.ui:222
+msgid "Control Group"
+msgstr "Primerjalna skupina"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:7
+#: data/resources/ui/dialogs/process_options_dialog.ui:69
+#, fuzzy
+msgid "Process Options"
+msgstr "Možnosti procesa"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:29
+msgid "Apply"
+msgstr "Uveljavi"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:72
+#, fuzzy
+msgid "Niceness"
+msgstr "Prijaznost"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:73
+#, fuzzy
+msgid ""
+"The priority of a process is given by its niceness. A lower niceness value "
+"correspond to a higher priority."
+msgstr ""
+"Prednost procesa je dana zaradi njegove prijaznosti. Nižja vrednost "
+"prijaznosti ustreza višji prioriteti."
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:285
+#: src/ui/pages/processes/mod.rs:1876
+msgid "Priority"
+msgstr "Prioriteta"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:91
+msgctxt "process priority"
+msgid "Very High"
+msgstr "Zelo visoka"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:92
+msgctxt "process priority"
+msgid "High"
+msgstr "Visoka"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:93
+msgctxt "process priority"
+msgid "Normal"
+msgstr "Navadna"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:94
+msgctxt "process priority"
+msgid "Low"
+msgstr "Nizka"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:95
+msgctxt "process priority"
+msgid "Very Low"
+msgstr "Zelo nizka"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:103
+#, fuzzy
+msgid "Processor Affinity"
+msgstr "Afiniteta procesorja"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:108
+#, fuzzy
+msgid "Toggle All"
+msgstr "Preklopi vse tipke krmarjenja"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:111
+#, fuzzy
+msgid "Select which processor cores the process is allowed to run on"
+msgstr "Izberite, na katerih procesorskih jedrih se lahko izvaja proces"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:7
+msgid "General"
+msgstr "Splošno"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:10
+msgid "Units"
+msgstr "Enote"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:13
+#, fuzzy
+msgid "Data Unit Prefix"
+msgstr "Predpona podatkovne enote"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:17
+msgid "Decimal"
+msgstr "Desetiško"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:18
+msgid "Binary"
+msgstr "Dvojiško"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:26
+#, fuzzy
+msgid "Show Network Speeds in Bits per Second"
+msgstr "Prikaz hitrosti omrežja v bitih na sekundo"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:31
+#, fuzzy
+msgid "Temperature Unit"
+msgstr "Enota temperature"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:35
+msgid "Celsius"
+msgstr "Celziji"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:36
+msgid "Kelvin"
+msgstr "Kelvini"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:37
+msgid "Fahrenheit"
+msgstr "Fahrenheiti"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:47
+msgid "User Interface"
+msgstr "Uporabniški vmesnik"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:50
+#, fuzzy
+msgid "Refresh Speed"
+msgstr "Hitrost osveževanja"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:51
+#, fuzzy
+msgid "Higher refresh speeds can lead to higher processor usage"
+msgstr "Višje hitrosti osveževanja lahko povzročijo večjo porabo procesorja"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:55
+#, fuzzy
+msgctxt "UI refresh speed"
+msgid "Very Slow"
+msgstr "Zelo počasi"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:56
+msgctxt "UI refresh speed"
+msgid "Slow"
+msgstr "Počasi"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:57
+msgctxt "UI refresh speed"
+msgid "Normal"
+msgstr "Običajno"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:58
+msgctxt "UI refresh speed"
+msgid "Fast"
+msgstr "Hitro"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:59
+#, fuzzy
+msgctxt "UI refresh speed"
+msgid "Very Fast"
+msgstr "Zelo hitro"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:67
+#, fuzzy
+msgid "Show Graph Grids"
+msgstr "Prikaz mrež grafov"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:72
+#, fuzzy
+msgid "Graph Data Points"
+msgstr "Podatkovne točke grafa"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:86
+#, fuzzy
+msgid "Show Usage Details in Sidebar"
+msgstr "Pokaži podrobnosti uporabe v stranski vrstici"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:87
+#, fuzzy
+msgid "If enabled, the usage along with other information will be displayed"
+msgstr "Če je omogočeno, bo prikazana uporaba skupaj z drugimi informacijami"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:92
+#, fuzzy
+msgid "Show Device Descriptions in Sidebar"
+msgstr "Pokaži opise naprav v stranski vrstici"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:93
+#, fuzzy
+msgid ""
+"If enabled, a device identifier like its name or device type will be "
+"displayed"
+msgstr ""
+"Če je omogočeno, bo prikazan identifikator naprave, kot je ime ali vrsta "
+"naprave"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:98
+#, fuzzy
+msgid "Sidebar Meter Type"
+msgstr "Vrsta merilnika stranske vrstice"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:102
+msgid "Bar"
+msgstr "Vrstica"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:103
+#, fuzzy
+msgid "Graph"
+msgstr "Napredek"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:111
+#, fuzzy
+msgid "Normalize Processor Usage"
+msgstr "Normalizirajte uporabo procesorja"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:112
+#, fuzzy
+msgid ""
+"If enabled, the total usage of all cores will be divided by the amount of "
+"cores"
+msgstr "Če je omogočeno, se skupna poraba vseh jeder deli s številom jeder"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:122
+#: data/resources/ui/window.ui:65 data/resources/ui/window.ui:72
+#: src/ui/pages/applications/mod.rs:131
+msgid "Apps"
+msgstr "Programi"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:125
+#: data/resources/ui/dialogs/settings_dialog.ui:207
+#, fuzzy
+msgid "Information Columns"
+msgstr "Stolpci z informacijami"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:183
+#: data/resources/ui/dialogs/settings_dialog.ui:295
+#: src/ui/pages/applications/mod.rs:1469 src/ui/pages/processes/mod.rs:2001
+#, fuzzy
+msgid "Combined Memory"
+msgstr "Kombinirani pomnilnik"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:193
+#: data/resources/ui/window.ui:105 data/resources/ui/window.ui:112
+#: src/ui/pages/processes/mod.rs:175
+msgid "Processes"
+msgstr "Procesi"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:196
+#: data/resources/ui/pages/cpu.ui:22 data/resources/ui/pages/processes.ui:56
+msgid "Options"
+msgstr "Možnosti"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:199
+#, fuzzy
+msgid "Show Niceness Values"
+msgstr "Pokažite vrednote prijaznosti"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:200
+#, fuzzy
+msgid ""
+"Display priorities as niceness to allow for more fine-grained adjustments"
+msgstr ""
+"Prikažite prednostne naloge kot prijaznost, da omogočite bolj natančne "
+"prilagoditve"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:305
+msgid "Devices"
+msgstr "Naprave"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:308
+#, fuzzy
+msgid "Drives"
+msgstr "Pogoni"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:311
+#, fuzzy
+msgid "Show Virtual Drives"
+msgstr "Pokaži navidezne pogone"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:312
+#, fuzzy
+msgid "Virtual drives are for example ZFS volumes or mapped devices"
+msgstr "Navidezni pogoni so na primer ZFS nosilci ali preslikane naprave"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:322
+#, fuzzy
+msgid "Show Virtual Network Interfaces"
+msgstr "Pokaži virtualne omrežne vmesnike"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:323
+#, fuzzy
+msgid "Virtual network interfaces are for example bridges or VPN tunnels"
+msgstr "Virtualni omrežni vmesniki so na primer mostovi ali tuneli VPN"
+
+#: data/resources/ui/pages/applications.ui:6
+#: data/resources/ui/pages/applications.ui:26
+#: src/ui/pages/applications/mod.rs:1552
+#, fuzzy
+msgid "Kill App"
+msgstr "Aplikacija Kill"
+
+#: data/resources/ui/pages/applications.ui:10
+#: data/resources/ui/pages/applications.ui:30
+#: src/ui/pages/applications/mod.rs:1551
+#, fuzzy
+msgid "Halt App"
+msgstr "Aplikacija Halt"
+
+#: data/resources/ui/pages/applications.ui:14
+#: data/resources/ui/pages/applications.ui:34
+#: src/ui/pages/applications/mod.rs:1553
+#, fuzzy
+msgid "Continue App"
+msgstr "Nadaljuj aplikacijo"
+
+#: data/resources/ui/pages/applications.ui:22
+#: data/resources/ui/pages/applications.ui:98
+#: src/ui/pages/applications/mod.rs:1550
+#, fuzzy
+msgid "End App"
+msgstr "Končanje aplikacije"
+
+#: data/resources/ui/pages/applications.ui:40
+#: data/resources/ui/pages/processes.ui:62
+msgid "Information"
+msgstr "Podrobnosti"
+
+#: data/resources/ui/pages/applications.ui:57
+#, fuzzy
+msgid "Search applications"
+msgstr "Poišči program …"
+
+#: data/resources/ui/pages/applications.ui:87
+#: data/resources/ui/pages/applications.ui:89
+#, fuzzy
+msgid "Show App Information"
+msgstr "Pokaži informacije o aplikaciji"
+
+#: data/resources/ui/pages/battery.ui:36
+#, fuzzy
+msgid "Battery Health"
+msgstr "Stanje baterije"
+
+#: data/resources/ui/pages/battery.ui:45
+#, fuzzy
+msgid "Design Capacity"
+msgstr "Projektna zmogljivost"
+
+#: data/resources/ui/pages/battery.ui:54
+#, fuzzy
+msgid "Charge Cycles"
+msgstr "Cikli polnjenja"
+
+#: data/resources/ui/pages/battery.ui:63
+#, fuzzy
+msgid "Technology"
+msgstr "Tehnologija LibreOffice"
+
+#: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:81
+#: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:75
+msgid "Manufacturer"
+msgstr "Proizvajalec"
+
+#: data/resources/ui/pages/battery.ui:81
+msgid "Model Name"
+msgstr "Ime modela"
+
+#: data/resources/ui/pages/battery.ui:90 data/resources/ui/pages/drive.ui:66
+msgid "Device"
+msgstr "Naprava"
+
+#: data/resources/ui/pages/cpu.ui:26
+#, fuzzy
+msgid "Show Usages of Logical CPUs"
+msgstr "Prikaz uporabe logičnih CPE-jev"
+
+#: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
+#: data/resources/ui/pages/npu.ui:60
+msgid "Sensors"
+msgstr "Tipala"
+
+#: data/resources/ui/pages/cpu.ui:90
+#, fuzzy
+msgid "Max Frequency"
+msgstr "Največja frekvenca"
+
+#: data/resources/ui/pages/cpu.ui:99
+#, fuzzy
+msgid "Logical Cores"
+msgstr "Logična jedra"
+
+#: data/resources/ui/pages/cpu.ui:108
+#, fuzzy
+msgid "Physical Cores"
+msgstr "Fizična jedra"
+
+#: data/resources/ui/pages/cpu.ui:117
+#, fuzzy
+msgid "Sockets"
+msgstr "Vtičnice"
+
+#: data/resources/ui/pages/cpu.ui:126
+msgid "Uptime"
+msgstr "Čas delovanja"
+
+#: data/resources/ui/pages/cpu.ui:135
+msgid "Virtualization"
+msgstr "Virtualizacija"
+
+#: data/resources/ui/pages/cpu.ui:144
+msgid "Architecture"
+msgstr "Arhitektura"
+
+#: data/resources/ui/pages/drive.ui:38
+msgid "Total Read"
+msgstr "Skupaj prebrano"
+
+#: data/resources/ui/pages/drive.ui:47
+msgid "Total Written"
+msgstr "Skupaj zapisano"
+
+#: data/resources/ui/pages/drive.ui:57 data/resources/ui/pages/memory.ui:72
+msgid "Type"
+msgstr "Vrsta"
+
+#: data/resources/ui/pages/drive.ui:75
+#, fuzzy
+msgid "Capacity"
+msgstr "Zmogljivost diska"
+
+#: data/resources/ui/pages/drive.ui:84
+#, fuzzy
+msgid "Writable"
+msgstr "Zapisljivo"
+
+#: data/resources/ui/pages/drive.ui:93
+#, fuzzy
+msgid "Removable"
+msgstr "Odstranljivi nosilci"
+
+#. Translators: "Link" refers to something like "PCIe 4.0 ×16"
+#: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113
+#: data/resources/ui/pages/npu.ui:107
+msgid "Link"
+msgstr "Povezava"
+
+#: data/resources/ui/pages/gpu.ui:37
+#, fuzzy
+msgid "GPU Frequency"
+msgstr "Frekvenca GPU"
+
+#: data/resources/ui/pages/gpu.ui:50
+#, fuzzy
+msgid "Video Memory Frequency"
+msgstr "Frekvenca video pomnilnika"
+
+#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49
+#, fuzzy
+msgid "Power Usage"
+msgstr "Poraba energije"
+
+#: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:84
+#, fuzzy
+msgid "PCI Slot"
+msgstr "Reža PCI"
+
+#: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
+#: data/resources/ui/pages/npu.ui:93
+#, fuzzy
+msgid "Driver Used"
+msgstr "Uporabljeni gonilnik"
+
+#: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
+#, fuzzy
+msgid "Max Power Cap"
+msgstr "Zgornja meja največje moči"
+
+#: data/resources/ui/pages/memory.ui:9
+#, fuzzy
+msgid "You need to authenticate to see memory properties"
+msgstr "Če želite videti lastnosti pomnilnika, morate preveriti pristnost"
+
+#: data/resources/ui/pages/memory.ui:10
+msgid "Authenticate"
+msgstr "Overi"
+
+#: data/resources/ui/pages/memory.ui:45
+#, fuzzy
+msgid "Slots Used"
+msgstr "Uporabljeni sloti"
+
+#: data/resources/ui/pages/memory.ui:54
+msgid "Speed"
+msgstr "Hitrost"
+
+#: data/resources/ui/pages/memory.ui:63
+#, fuzzy
+msgid "Form Factor"
+msgstr "Faktor oblike"
+
+#: data/resources/ui/pages/memory.ui:81
+#, fuzzy
+msgid "Type Detail"
+msgstr "Podrobnosti o vrsti"
+
+#: data/resources/ui/pages/network.ui:35
+msgid "Total Received"
+msgstr "Skupaj prejeto"
+
+#: data/resources/ui/pages/network.ui:44
+msgid "Total Sent"
+msgstr "Skupaj poslano"
+
+#: data/resources/ui/pages/network.ui:76
+msgid "Interface"
+msgstr "Vmesnik"
+
+#: data/resources/ui/pages/network.ui:85
+msgid "Hardware Address"
+msgstr "Strojni naslov"
+
+#: data/resources/ui/pages/network.ui:94
+#, fuzzy
+msgid "Link Speed"
+msgstr "Hitrost povezave"
+
+#: data/resources/ui/pages/npu.ui:31
+#, fuzzy
+msgid "NPU Frequency"
+msgstr "Pogostost NPU"
+
+#: data/resources/ui/pages/npu.ui:44
+#, fuzzy
+msgid "Memory Frequency"
+msgstr "Frekvenca pomnilnika"
+
+#: data/resources/ui/pages/processes.ui:6
+#: data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2113
+#, fuzzy
+msgid "Kill Process"
+msgstr "Uniči opravilo"
+
+#: data/resources/ui/pages/processes.ui:10
+#: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2112
+#, fuzzy
+msgid "Halt Process"
+msgstr "Postopek zaustavitve"
+
+#: data/resources/ui/pages/processes.ui:14
+#: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2114
+#, fuzzy
+msgid "Continue Process"
+msgstr "Nadaljuj postopek"
+
+#: data/resources/ui/pages/processes.ui:22
+#: data/resources/ui/pages/processes.ui:74
+#, fuzzy
+msgid "Kill Processes"
+msgstr "Ubijanje procesov"
+
+#: data/resources/ui/pages/processes.ui:26
+#: data/resources/ui/pages/processes.ui:78
+#, fuzzy
+msgid "Halt Processes"
+msgstr "Zaustavitev procesov"
+
+#: data/resources/ui/pages/processes.ui:30
+#: data/resources/ui/pages/processes.ui:82
+#, fuzzy
+msgid "Continue Processes"
+msgstr "Nadaljujte s postopki"
+
+#: data/resources/ui/pages/processes.ui:38
+#: data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:522
+#: src/ui/pages/processes/mod.rs:2111
+#, fuzzy
+msgid "End Process"
+msgstr "_Končaj opravilo"
+
+#: data/resources/ui/pages/processes.ui:70 src/ui/pages/processes/mod.rs:526
+#, fuzzy
+msgid "End Processes"
+msgstr "Končni procesi"
+
+#: data/resources/ui/pages/processes.ui:103
+#, fuzzy
+msgid "Search processes"
+msgstr "Iskanje opravil in uporabnikov"
+
+#: data/resources/ui/pages/processes.ui:133
+#: data/resources/ui/pages/processes.ui:135
+#, fuzzy
+msgid "Show Process Options"
+msgstr "Pokaži možnosti procesa"
+
+#: data/resources/ui/pages/processes.ui:146
+#: data/resources/ui/pages/processes.ui:148
+#, fuzzy
+msgid "Show Process Information"
+msgstr "Pokaži informacije o procesu"
+
+#: data/resources/ui/shortcuts.ui:11
+msgctxt "shortcut window"
+msgid "General"
+msgstr "Splošno"
+
+#: data/resources/ui/shortcuts.ui:14
+msgctxt "shortcut window"
+msgid "Preferences"
+msgstr "Nastavitve"
+
+#: data/resources/ui/shortcuts.ui:20
+msgctxt "shortcut window"
+msgid "Show Shortcuts"
+msgstr "Pokaže tipkovne bližnjice‫"
+
+#: data/resources/ui/shortcuts.ui:26
+msgctxt "shortcut window"
+msgid "Quit"
+msgstr "Konča program"
+
+#: data/resources/ui/shortcuts.ui:32
+#, fuzzy
+msgctxt "shortcut window"
+msgid "Toggle Search Field"
+msgstr "Preklopi iskalno polje"
+
+#: data/resources/ui/shortcuts.ui:38
+#, fuzzy
+msgctxt "shortcut window"
+msgid "End App/Process"
+msgstr "Končanje aplikacije/procesa"
+
+#: data/resources/ui/shortcuts.ui:44
+#, fuzzy
+msgctxt "shortcut window"
+msgid "Kill App/Process"
+msgstr "Uničite aplikacijo/proces"
+
+#: data/resources/ui/shortcuts.ui:50
+#, fuzzy
+msgctxt "shortcut window"
+msgid "Halt App/Process"
+msgstr "Zaustavitev aplikacije/procesa"
+
+#: data/resources/ui/shortcuts.ui:56
+#, fuzzy
+msgctxt "shortcut window"
+msgid "Continue App/Process"
+msgstr "Nadaljuj z aplikacijo/procesom"
+
+#: data/resources/ui/shortcuts.ui:62
+#, fuzzy
+msgctxt "shortcut window"
+msgid "Show Information for App/Process"
+msgstr "Pokaži informacije za aplikacijo/proces"
+
+#: data/resources/ui/shortcuts.ui:68
+#, fuzzy
+msgctxt "shortcut window"
+msgid "Show Process Options"
+msgstr "Pokaži možnosti procesa"
+
+#: data/resources/ui/window.ui:6
+msgid "Preferences"
+msgstr "Nastavitve"
+
+#: data/resources/ui/window.ui:10
+msgid "Keyboard Shortcuts"
+msgstr "Tipkovne bližnjice‫"
+
+#: data/resources/ui/window.ui:14
+msgid "About Resources"
+msgstr "O programu Viri"
+
+#: data/resources/ui/window.ui:88 data/resources/ui/window.ui:128
+msgid "Search"
+msgstr "Išči"
+
+#: data/resources/ui/window.ui:90 data/resources/ui/window.ui:130
+#, fuzzy
+msgid "Toggle search field"
+msgstr "Preklopi iskalno polje"
+
+#: src/application.rs:267
+msgid "The Nalux Team"
+msgstr "Ekipa Nalux"
+
+#: src/application.rs:275
+msgid "Report Issues"
+msgstr "Poročaj o težavah"
+
+#. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
+#. One name per line, please do not remove previous names.
+#: src/application.rs:281
+msgid "translator-credits"
+msgstr "Martin Srebotnjak <miles@filmsi.net>"
+
+#: src/application.rs:282
+#, fuzzy
+msgid "Icon by"
+msgstr "_Ikona:"
+
+#: src/ui/dialogs/app_dialog.rs:153 src/ui/dialogs/process_dialog.rs:131
+#: src/ui/dialogs/process_dialog.rs:135 src/ui/dialogs/process_dialog.rs:144
+#: src/ui/dialogs/process_dialog.rs:146 src/ui/dialogs/process_dialog.rs:169
+#: src/ui/dialogs/process_dialog.rs:176 src/ui/dialogs/process_dialog.rs:183
+#: src/ui/dialogs/process_dialog.rs:190 src/ui/pages/applications/mod.rs:945
+#: src/ui/pages/applications/mod.rs:1069 src/ui/pages/cpu.rs:242
+#: src/ui/pages/cpu.rs:257 src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:282
+#: src/ui/pages/cpu.rs:288 src/ui/pages/cpu.rs:294 src/ui/pages/cpu.rs:298
+#: src/ui/pages/cpu.rs:301 src/ui/pages/cpu.rs:339 src/ui/pages/cpu.rs:446
+#: src/ui/pages/drive.rs:318 src/ui/pages/drive.rs:349
+#: src/ui/pages/drive.rs:351 src/ui/pages/drive.rs:380
+#: src/ui/pages/drive.rs:382 src/ui/pages/drive.rs:398
+#: src/ui/pages/drive.rs:399 src/ui/pages/drive.rs:406
+#: src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426
+#: src/ui/pages/drive.rs:432 src/ui/pages/gpu.rs:243 src/ui/pages/gpu.rs:250
+#: src/ui/pages/gpu.rs:295 src/ui/pages/gpu.rs:320 src/ui/pages/gpu.rs:323
+#: src/ui/pages/gpu.rs:334 src/ui/pages/gpu.rs:354 src/ui/pages/gpu.rs:366
+#: src/ui/pages/gpu.rs:377 src/ui/pages/gpu.rs:389 src/ui/pages/gpu.rs:396
+#: src/ui/pages/gpu.rs:400 src/ui/pages/gpu.rs:430 src/ui/pages/gpu.rs:436
+#: src/ui/pages/memory.rs:226 src/ui/pages/memory.rs:227
+#: src/ui/pages/memory.rs:231 src/ui/pages/memory.rs:232
+#: src/ui/pages/memory.rs:236 src/ui/pages/memory.rs:237
+#: src/ui/pages/memory.rs:265 src/ui/pages/memory.rs:326
+#: src/ui/pages/network.rs:240 src/ui/pages/network.rs:247
+#: src/ui/pages/network.rs:254 src/ui/pages/network.rs:260
+#: src/ui/pages/network.rs:263 src/ui/pages/network.rs:270
+#: src/ui/pages/network.rs:335 src/ui/pages/network.rs:338
+#: src/ui/pages/network.rs:340 src/ui/pages/network.rs:369
+#: src/ui/pages/network.rs:372 src/ui/pages/network.rs:374
+#: src/ui/pages/processes/mod.rs:1220 src/ui/pages/processes/mod.rs:1286
+#: src/ui/pages/processes/mod.rs:1352 src/ui/pages/processes/mod.rs:1418
+#: src/ui/pages/processes/mod.rs:1900 src/ui/pages/processes/mod.rs:1902
+msgid "N/A"
+msgstr "Ni na voljo"
+
+#: src/ui/pages/applications/mod.rs:659
+msgid "Running Apps: {}"
+msgstr "Programi v teku: {}"
+
+#: src/ui/pages/applications/mod.rs:699 src/ui/pages/processes/mod.rs:861
+msgid "Cancel"
+msgstr "Prekliči"
+
+#: src/ui/pages/applications/mod.rs:745
+msgid "App"
+msgstr "Program"
+
+#: src/ui/pages/applications/mod.rs:1528 src/ui/pages/processes/mod.rs:2060
+msgid "End {}?"
+msgstr "Ali želite končati {}?"
+
+#: src/ui/pages/applications/mod.rs:1529 src/ui/pages/processes/mod.rs:2061
+msgid "Halt {}?"
+msgstr "Ali želite ustaviti {}?"
+
+#: src/ui/pages/applications/mod.rs:1530 src/ui/pages/processes/mod.rs:2062
+msgid "Kill {}?"
+msgstr "Ali želite ubiti {}?"
+
+#: src/ui/pages/applications/mod.rs:1531 src/ui/pages/processes/mod.rs:2063
+msgid "Continue {}?"
+msgstr "Ali želite nadaljevati z {}?"
+
+#: src/ui/pages/applications/mod.rs:1537 src/ui/pages/processes/mod.rs:2098
+#, fuzzy
+msgid "Unsaved work might be lost."
+msgstr "Neshranjeno delo je morda izgubljeno."
+
+#: src/ui/pages/applications/mod.rs:1539
+#, fuzzy
+msgid ""
+"Halting an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
+msgstr ""
+"Zaustavitev aplikacije lahko povzroči resna tveganja, kot so izguba "
+"podatkov in varnostne posledice. Uporabljajte previdno."
+
+#: src/ui/pages/applications/mod.rs:1542
+#, fuzzy
+msgid ""
+"Killing an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
+msgstr ""
+"Uničevanje aplikacije lahko prinese resna tveganja, kot so izguba podatkov "
+"in varnostne posledice. Uporabljajte previdno."
+
+#: src/ui/pages/cpu.rs:241 src/ui/pages/gpu.rs:210
+msgid "Total Usage"
+msgstr "Skupna uporaba"
+
+#: src/ui/pages/cpu.rs:256 src/ui/pages/cpu.rs:415 src/ui/pages/cpu.rs:419
+#, fuzzy
+msgid "CPU {}"
+msgstr "CPU {}"
+
+#: src/ui/pages/cpu.rs:269 src/ui/pages/gpu.rs:237
+msgid "Temperature"
+msgstr "Temperatura"
+
+#: src/ui/pages/cpu.rs:436 src/ui/pages/drive.rs:343 src/ui/pages/drive.rs:374
+#: src/ui/pages/gpu.rs:422 src/ui/pages/network.rs:327
+#: src/ui/pages/network.rs:361
+#, fuzzy
+msgid "Highest:"
+msgstr "_ali najvišji"
+
+#: src/ui/pages/drive.rs:126
+#, fuzzy
+msgid "Drive"
+msgstr "Zaustavi pogon"
+
+#: src/ui/pages/drive.rs:235
+#, fuzzy
+msgid "Drive Activity"
+msgstr "Dejavnost vožnje"
+
+#: src/ui/pages/drive.rs:242
+#, fuzzy
+msgid "Read Speed"
+msgstr "Hitrost branja"
+
+#: src/ui/pages/drive.rs:246
+#, fuzzy
+msgid "Write Speed"
+msgstr "Hitrost pisanja"
+
+#: src/ui/pages/drive.rs:411 src/ui/pages/drive.rs:421
+msgid "Yes"
+msgstr "Da"
+
+#: src/ui/pages/drive.rs:413 src/ui/pages/drive.rs:423
+msgid "No"
+msgstr "Ne"
+
+#. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
+#. translation should preferably be quite short or an abbreviation
+#: src/ui/pages/drive.rs:439
+#, fuzzy
+msgid "R: {} · W: {}"
+msgstr "R: {} · W: {}"
+
+#: src/ui/pages/gpu.rs:218
+#, fuzzy
+msgid "Video Encoder/Decoder Usage"
+msgstr "Uporaba video kodirnika/dekoderja"
+
+#: src/ui/pages/gpu.rs:224
+#, fuzzy
+msgid "Video Encoder Usage"
+msgstr "Uporaba video kodirnika"
+
+#: src/ui/pages/gpu.rs:229
+#, fuzzy
+msgid "Video Decoder Usage"
+msgstr "Uporaba video dekoderja"
+
+#: src/ui/pages/gpu.rs:234
+#, fuzzy
+msgid "Video Memory Usage"
+msgstr "Uporaba video pomnilnika"
+
+#. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
+#. shorter than) 'Memory'
+#: src/ui/pages/gpu.rs:408
+#, fuzzy
+msgid "Memory: {}"
+msgstr "V pomnilniku"
+
+#: src/ui/pages/memory.rs:261
+#, fuzzy
+msgid "{} of {}"
+msgstr "{} od {}"
+
+#: src/ui/pages/memory.rs:264
+#, fuzzy
+msgid "{} MT/s"
+msgstr "{} MT/s"
+
+#. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
+#. preferably be quite short or an abbreviation
+#: src/ui/pages/memory.rs:345
+#, fuzzy
+msgid "{} / {} · Swap: {} %"
+msgstr "{} / {} · Zamenjava: {} %"
+
+#: src/ui/pages/network.rs:118
+#, fuzzy
+msgid "Network Interface"
+msgstr "Dodaj omrežni vmesnik"
+
+#: src/ui/pages/network.rs:229
+msgid "Receiving"
+msgstr "Prejemanje"
+
+#: src/ui/pages/network.rs:233
+msgid "Sending"
+msgstr "Pošiljanje"
+
+#. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
+#. your translation should preferably be quite short or an abbreviation
+#: src/ui/pages/network.rs:384
+#, fuzzy
+msgid "R: {} · S: {}"
+msgstr "D_rugo (%s) ..."
+
+#: src/ui/pages/processes/mod.rs:812
+#, fuzzy
+msgid "Running Processes: {}"
+msgstr "Tekoči procesi: {}"
+
+#: src/ui/pages/processes/mod.rs:910
+msgid "Process"
+msgstr "Proces"
+
+#: src/ui/pages/processes/mod.rs:2070
+#, fuzzy
+msgid "End process?"
+msgid_plural "End {} processes?"
+msgstr[0] "_Končaj opravilo"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/ui/pages/processes/mod.rs:2076
+#, fuzzy
+msgid "Halt process?"
+msgid_plural "Halt {} processes?"
+msgstr[0] "Zaustaviti postopek?"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/ui/pages/processes/mod.rs:2082 src/ui/pages/processes/mod.rs:2088
+#, fuzzy
+msgid "Kill process?"
+msgid_plural "Kill {} processes?"
+msgstr[0] "Uniči opravilo"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/ui/pages/processes/mod.rs:2100
+#, fuzzy
+msgid ""
+"Halting a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"Zaustavitev procesa lahko prinese resna tveganja, kot so izguba podatkov in "
+"varnostne posledice. Uporabljajte previdno."
+
+#: src/ui/pages/processes/mod.rs:2103
+#, fuzzy
+msgid ""
+"Killing a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"Uničevanje procesa lahko prinese resna tveganja, kot so izguba podatkov in "
+"varnostne posledice. Uporabljajte previdno."
+
+#: src/ui/window.rs:452
+#, fuzzy
+msgid "GPU {}"
+msgstr "GPU {}"
+
+#: src/ui/window.rs:482
+#, fuzzy
+msgid "NPU {}"
+msgstr "NPU {}"
+
+#: src/ui/window.rs:484
+#, fuzzy
+msgid "NPU"
+msgstr "NPU"
+
+#: src/ui/window.rs:1152
+#, fuzzy
+msgid "Successfully adjusted {}"
+msgstr "Uspešno prilagojeno {}"
+
+#: src/ui/window.rs:1153
+#, fuzzy
+msgid "There was a problem adjusting {}"
+msgstr "Prišlo je do težave pri prilagajanju {}"
+
+#: src/ui/window.rs:1235
+#, fuzzy
+msgid "Successfully ended {}"
+msgstr "Uspešno končano {}"
+
+#: src/ui/window.rs:1236
+#, fuzzy
+msgid "Successfully halted {}"
+msgstr "Uspešno ustavljen {}"
+
+#: src/ui/window.rs:1237
+#, fuzzy
+msgid "Successfully killed {}"
+msgstr "Uspešno ubit {}"
+
+#: src/ui/window.rs:1238
+#, fuzzy
+msgid "Successfully continued {}"
+msgstr "Uspešno nadaljevanje {}"
+
+#: src/ui/window.rs:1245
+#, fuzzy
+msgid "Successfully ended the process"
+msgid_plural "Successfully ended {} processes"
+msgstr[0] "Uspešno zaključen postopek"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/ui/window.rs:1251
+#, fuzzy
+msgid "Successfully halted the process"
+msgid_plural "Successfully halted {} processes"
+msgstr[0] "Uspešno ustavljen postopek"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/ui/window.rs:1257
+#, fuzzy
+msgid "Successfully killed the process"
+msgid_plural "Successfully killed {} processes"
+msgstr[0] "Uspešno je ubil proces"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/ui/window.rs:1263
+#, fuzzy
+msgid "Successfully continued the process"
+msgid_plural "Successfully continued {} processes"
+msgstr[0] "Uspešno nadaljevanje procesa"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/ui/window.rs:1274
+#, fuzzy
+msgid "There was a problem ending a process"
+msgid_plural "There were problems ending {} processes"
+msgstr[0] "Prišlo je do težave pri končanju postopka"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/ui/window.rs:1280
+#, fuzzy
+msgid "There was a problem halting a process"
+msgid_plural "There were problems halting {} processes"
+msgstr[0] "Prišlo je do težave pri zaustavitvi procesa"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/ui/window.rs:1286
+#, fuzzy
+msgid "There was a problem killing a process"
+msgid_plural "There were problems killing {} processes"
+msgstr[0] "Prišlo je do težave, ki je uničila proces"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/ui/window.rs:1292
+#, fuzzy
+msgid "There was a problem continuing a process"
+msgid_plural "There were problems continuing {} processes"
+msgstr[0] "Prišlo je do težav pri nadaljevanju procesa"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/ui/window.rs:1302
+#, fuzzy
+msgid "There was a problem ending {}"
+msgstr "Prišlo je do težave, ki se je končala {}"
+
+#: src/ui/window.rs:1303
+#, fuzzy
+msgid "There was a problem halting {}"
+msgstr "Prišlo je do težave pri zaustavitvi {}"
+
+#: src/ui/window.rs:1304
+#, fuzzy
+msgid "There was a problem killing {}"
+msgstr "Prišlo je do težave z ubijanjem {}"
+
+#: src/ui/window.rs:1305
+#, fuzzy
+msgid "There was a problem continuing {}"
+msgstr "Težava se je nadaljevala {}"
