@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2025-07-04 19:58+0000\n"
-"PO-Revision-Date: 2025-07-06 13:04+0200\n"
+"POT-Creation-Date: 2025-07-07 16:45+0000\n"
+"PO-Revision-Date: 2025-07-07 23:51+0200\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <Slovenian>\n"
 "Language: sl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || "
-"n%100==4 ? 3 : 0);\n"
-"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
 "X-Generator: Poedit 2.2.1\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:3
@@ -28,35 +28,30 @@ msgstr "Viri"
 #. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
 #: data/net.nokyan.Resources.desktop.in.in:4
 #: data/net.nokyan.Resources.metainfo.xml.in.in:5
-#, fuzzy
 msgid "Keep an eye on system resources"
-msgstr "Bodite pozorni na sistemske vire"
+msgstr "Pozorno spremljajte sistemske vire"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/net.nokyan.Resources.desktop.in.in:10
-#, fuzzy
 msgid ""
 "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 msgstr ""
-"Sistem; Sredstva; Monitor; Procesov; Navada; Opravilo; Menedžer; CPE; OVEN; "
-"Spomin; GPU;"
+"Sistem;Viri;Sredstva;Monitor;Procesi;Raba;Opravilo;Upravitelj;CPE;RAM;"
+"Pomnilnik;GPE;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
-#, fuzzy
 msgid ""
 "Resources allows you to check the utilization of your system resources and "
 "control your running processes and apps. It’s designed to be user-friendly "
 "and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
-"Viri vam omogočajo, da preverite izkoriščenost sistemskih virov in "
-"nadzirate tekoče procese in aplikacije. Zasnovan je tako, da je uporabniku "
-"prijazen in se počuti kot doma na sodobnem namizju z uporabo GNOME-jeve "
-"libadwaite."
+"Viri vam omogočajo, da preverite izkoriščenost sistemskih virov in nadzirate "
+"tekoče procese in programe. Zasnovan je uporabniku prijazno in se počuti kot "
+"doma na sodobnem namizju z uporabo programa libadwaita v GNOME."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
-#, fuzzy
 msgid "Resources supports monitoring the following components:"
-msgstr "Viri podpirajo nadzor teh komponent:"
+msgstr "Viri podpirajo nadzor naslednjih komponent:"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
@@ -89,67 +84,57 @@ msgid "Network Interfaces"
 msgstr "Omrežni vmesniki"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:28
-#, fuzzy
 msgid "Storage Devices"
 msgstr "Naprave za shranjevanje"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:29
-#, fuzzy
 msgid "Batteries"
 msgstr "Baterije"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:51
-#, fuzzy
 msgid "Apps page in light theme"
 msgstr "Stran »Programi« v svetli temi"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:55
-#, fuzzy
 msgid "Processes page in dark theme"
 msgstr "Stran »Procesi« v temni temi"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:59
-#, fuzzy
 msgid "Processor page in light theme"
 msgstr "Stran »Procesor« v svetli temi"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:63
-#, fuzzy
 msgid "Memory page in dark theme"
-msgstr "Spominska stran v temni temi"
+msgstr "Stran pomnilnika v temni temi"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:67
-#, fuzzy
 msgid "GPU page in light theme"
-msgstr "Stran GPU v svetli temi"
+msgstr "Stran GPE v svetli temi"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:71
-#, fuzzy
 msgid "Drive page in dark theme"
 msgstr "Stran pogona v temni temi"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:75
-#, fuzzy
 msgid "Network Interface page in light theme"
 msgstr "Stran »Omrežni vmesnik« v svetli temi"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:79
-#, fuzzy
 msgid "Battery page in dark theme"
-msgstr "Stran z baterijo v temni temi"
+msgstr "Stran baterije v temni temi"
 
 #: data/net.nokyan.Resources.policy.in.in:9
 #, fuzzy
 msgid "Control Process"
-msgstr "Postopek nadzora"
+msgstr "Nadzorni postopki"
 
 #: data/net.nokyan.Resources.policy.in.in:10
 #, fuzzy
 msgid ""
 "Authentication is required to control superuser’s or other users’ processes"
 msgstr ""
-"Preverjanje pristnosti je potrebno za nadzor nad procesi superuporabnika "
-"ali drugih uporabnikov"
+"Preverjanje pristnosti je potrebno za nadzor nad procesi superuporabnika ali "
+"drugih uporabnikov"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
 msgid "App Information"
@@ -190,7 +175,7 @@ msgstr "Izmenjalna datoteka"
 #: src/ui/pages/applications/mod.rs:924 src/ui/pages/processes/mod.rs:1199
 #, fuzzy
 msgid "Drive Read"
-msgstr "Vozi branje"
+msgstr "Branj pogona"
 
 #: data/resources/ui/dialogs/app_dialog.ui:109
 #: data/resources/ui/dialogs/process_dialog.ui:87
@@ -199,7 +184,7 @@ msgstr "Vozi branje"
 #: src/ui/pages/applications/mod.rs:988 src/ui/pages/processes/mod.rs:1265
 #, fuzzy
 msgid "Drive Read Total"
-msgstr "Vozite skupaj za branje"
+msgstr "Skupaj branj pogona"
 
 #: data/resources/ui/dialogs/app_dialog.ui:118
 #: data/resources/ui/dialogs/process_dialog.ui:96
@@ -208,7 +193,7 @@ msgstr "Vozite skupaj za branje"
 #: src/ui/pages/applications/mod.rs:1048 src/ui/pages/processes/mod.rs:1331
 #, fuzzy
 msgid "Drive Write"
-msgstr "Vožnja za pisanje"
+msgstr "Pisanja po pogonu"
 
 #: data/resources/ui/dialogs/app_dialog.ui:127
 #: data/resources/ui/dialogs/process_dialog.ui:105
@@ -217,14 +202,13 @@ msgstr "Vožnja za pisanje"
 #: src/ui/pages/applications/mod.rs:1114 src/ui/pages/processes/mod.rs:1397
 #, fuzzy
 msgid "Drive Write Total"
-msgstr "Skupno število zapisov pogona"
+msgstr "Skupaj pisanj po pogonu"
 
 #: data/resources/ui/dialogs/app_dialog.ui:149
 #: data/resources/ui/dialogs/process_dialog.ui:127
 #: data/resources/ui/dialogs/settings_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:255
 #: src/ui/pages/applications/mod.rs:1352 src/ui/pages/processes/mod.rs:1640
-#, fuzzy
 msgid "Video Memory"
 msgstr "Video pomnilnik"
 
@@ -233,7 +217,6 @@ msgstr "Video pomnilnik"
 #: data/resources/ui/dialogs/settings_dialog.ui:168
 #: data/resources/ui/dialogs/settings_dialog.ui:260
 #: src/ui/pages/applications/mod.rs:1233 src/ui/pages/processes/mod.rs:1520
-#, fuzzy
 msgid "Video Encoder"
 msgstr "Video kodirnik"
 
@@ -242,7 +225,6 @@ msgstr "Video kodirnik"
 #: data/resources/ui/dialogs/settings_dialog.ui:173
 #: data/resources/ui/dialogs/settings_dialog.ui:265
 #: src/ui/pages/applications/mod.rs:1293 src/ui/pages/processes/mod.rs:1580
-#, fuzzy
 msgid "Video Decoder"
 msgstr "Video dekodirnik"
 
@@ -282,23 +264,20 @@ msgstr "Informacije o procesu"
 #: data/resources/ui/dialogs/process_dialog.ui:154
 #: data/resources/ui/dialogs/settings_dialog.ui:270
 #: src/ui/pages/processes/mod.rs:1699
-#, fuzzy
 msgid "Total CPU Time"
-msgstr "Skupni čas procesorja"
+msgstr "Skupni čas CPE"
 
 #: data/resources/ui/dialogs/process_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:275
 #: src/ui/pages/processes/mod.rs:1758
-#, fuzzy
 msgid "User CPU Time"
-msgstr "Čas uporabniškega CPU-ja"
+msgstr "Skupni čas CPE uporabnika"
 
 #: data/resources/ui/dialogs/process_dialog.ui:172
 #: data/resources/ui/dialogs/settings_dialog.ui:280
 #: src/ui/pages/processes/mod.rs:1817
-#, fuzzy
 msgid "System CPU Time"
-msgstr "Čas sistemskega CPU-ja"
+msgstr "Sistemski čas CPE"
 
 #: data/resources/ui/dialogs/process_dialog.ui:186
 #: data/resources/ui/dialogs/settings_dialog.ui:210
@@ -307,9 +286,8 @@ msgid "Process ID"
 msgstr "ID procesa"
 
 #: data/resources/ui/dialogs/process_dialog.ui:204
-#, fuzzy
 msgid "Commandline"
-msgstr "Shrani zgodovino ukazne vrstice ob končanju"
+msgstr "Ukazna vrstica"
 
 #: data/resources/ui/dialogs/process_dialog.ui:213
 #: data/resources/ui/dialogs/settings_dialog.ui:215
@@ -323,7 +301,6 @@ msgstr "Primerjalna skupina"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:7
 #: data/resources/ui/dialogs/process_options_dialog.ui:69
-#, fuzzy
 msgid "Process Options"
 msgstr "Možnosti procesa"
 
@@ -332,7 +309,6 @@ msgid "Apply"
 msgstr "Uveljavi"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:72
-#, fuzzy
 msgid "Niceness"
 msgstr "Prijaznost"
 
@@ -382,9 +358,8 @@ msgid "Processor Affinity"
 msgstr "Afiniteta procesorja"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:108
-#, fuzzy
 msgid "Toggle All"
-msgstr "Preklopi vse tipke krmarjenja"
+msgstr "Preklopi vse"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:111
 #, fuzzy
@@ -400,7 +375,6 @@ msgid "Units"
 msgstr "Enote"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:13
-#, fuzzy
 msgid "Data Unit Prefix"
 msgstr "Predpona podatkovne enote"
 
@@ -413,12 +387,10 @@ msgid "Binary"
 msgstr "Dvojiško"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:26
-#, fuzzy
 msgid "Show Network Speeds in Bits per Second"
-msgstr "Prikaz hitrosti omrežja v bitih na sekundo"
+msgstr "Pokaži hitrosti omrežja v bitih na sekundo"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:31
-#, fuzzy
 msgid "Temperature Unit"
 msgstr "Enota temperature"
 
@@ -439,17 +411,14 @@ msgid "User Interface"
 msgstr "Uporabniški vmesnik"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:50
-#, fuzzy
 msgid "Refresh Speed"
 msgstr "Hitrost osveževanja"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:51
-#, fuzzy
 msgid "Higher refresh speeds can lead to higher processor usage"
-msgstr "Višje hitrosti osveževanja lahko povzročijo večjo porabo procesorja"
+msgstr "Višje hitrosti osveževanja lahko povzročijo večjo rabo procesorja"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:55
-#, fuzzy
 msgctxt "UI refresh speed"
 msgid "Very Slow"
 msgstr "Zelo počasi"
@@ -470,23 +439,19 @@ msgid "Fast"
 msgstr "Hitro"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:59
-#, fuzzy
 msgctxt "UI refresh speed"
 msgid "Very Fast"
 msgstr "Zelo hitro"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:67
-#, fuzzy
 msgid "Show Graph Grids"
-msgstr "Prikaz mrež grafov"
+msgstr "Pokaži mreže grafa"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:72
-#, fuzzy
 msgid "Graph Data Points"
 msgstr "Podatkovne točke grafa"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:86
-#, fuzzy
 msgid "Show Usage Details in Sidebar"
 msgstr "Pokaži podrobnosti uporabe v stranski vrstici"
 
@@ -496,7 +461,6 @@ msgid "If enabled, the usage along with other information will be displayed"
 msgstr "Če je omogočeno, bo prikazana uporaba skupaj z drugimi informacijami"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:92
-#, fuzzy
 msgid "Show Device Descriptions in Sidebar"
 msgstr "Pokaži opise naprav v stranski vrstici"
 
@@ -510,7 +474,6 @@ msgstr ""
 "naprave"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
-#, fuzzy
 msgid "Sidebar Meter Type"
 msgstr "Vrsta merilnika stranske vrstice"
 
@@ -519,14 +482,13 @@ msgid "Bar"
 msgstr "Vrstica"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:103
-#, fuzzy
 msgid "Graph"
-msgstr "Napredek"
+msgstr "Graf"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:111
 #, fuzzy
 msgid "Normalize Processor Usage"
-msgstr "Normalizirajte uporabo procesorja"
+msgstr "Normaliziraj uporabo procesorja"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:112
 #, fuzzy
@@ -543,14 +505,12 @@ msgstr "Programi"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:125
 #: data/resources/ui/dialogs/settings_dialog.ui:207
-#, fuzzy
 msgid "Information Columns"
 msgstr "Stolpci z informacijami"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:183
 #: data/resources/ui/dialogs/settings_dialog.ui:295
 #: src/ui/pages/applications/mod.rs:1469 src/ui/pages/processes/mod.rs:2001
-#, fuzzy
 msgid "Combined Memory"
 msgstr "Kombinirani pomnilnik"
 
@@ -566,9 +526,8 @@ msgid "Options"
 msgstr "Možnosti"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:199
-#, fuzzy
 msgid "Show Niceness Values"
-msgstr "Pokažite vrednote prijaznosti"
+msgstr "Pokaži vrednosti prijaznosti"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:200
 #, fuzzy
@@ -583,12 +542,10 @@ msgid "Devices"
 msgstr "Naprave"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:308
-#, fuzzy
 msgid "Drives"
 msgstr "Pogoni"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:311
-#, fuzzy
 msgid "Show Virtual Drives"
 msgstr "Pokaži navidezne pogone"
 
@@ -598,7 +555,6 @@ msgid "Virtual drives are for example ZFS volumes or mapped devices"
 msgstr "Navidezni pogoni so na primer ZFS nosilci ali preslikane naprave"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:322
-#, fuzzy
 msgid "Show Virtual Network Interfaces"
 msgstr "Pokaži virtualne omrežne vmesnike"
 
@@ -695,17 +651,14 @@ msgid "Sensors"
 msgstr "Tipala"
 
 #: data/resources/ui/pages/cpu.ui:90
-#, fuzzy
 msgid "Max Frequency"
 msgstr "Največja frekvenca"
 
 #: data/resources/ui/pages/cpu.ui:99
-#, fuzzy
 msgid "Logical Cores"
 msgstr "Logična jedra"
 
 #: data/resources/ui/pages/cpu.ui:108
-#, fuzzy
 msgid "Physical Cores"
 msgstr "Fizična jedra"
 
@@ -744,14 +697,13 @@ msgid "Capacity"
 msgstr "Zmogljivost diska"
 
 #: data/resources/ui/pages/drive.ui:84
-#, fuzzy
 msgid "Writable"
 msgstr "Zapisljivo"
 
 #: data/resources/ui/pages/drive.ui:93
 #, fuzzy
 msgid "Removable"
-msgstr "Odstranljivi nosilci"
+msgstr "Odstranljivo"
 
 #. Translators: "Link" refers to something like "PCIe 4.0 ×16"
 #: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113
@@ -760,28 +712,24 @@ msgid "Link"
 msgstr "Povezava"
 
 #: data/resources/ui/pages/gpu.ui:37
-#, fuzzy
 msgid "GPU Frequency"
-msgstr "Frekvenca GPU"
+msgstr "Frekvenca GPE"
 
 #: data/resources/ui/pages/gpu.ui:50
-#, fuzzy
 msgid "Video Memory Frequency"
 msgstr "Frekvenca video pomnilnika"
 
 #: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49
-#, fuzzy
+#: src/ui/pages/battery.rs:216
 msgid "Power Usage"
 msgstr "Poraba energije"
 
 #: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:84
-#, fuzzy
 msgid "PCI Slot"
 msgstr "Reža PCI"
 
 #: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
 #: data/resources/ui/pages/npu.ui:93
-#, fuzzy
 msgid "Driver Used"
 msgstr "Uporabljeni gonilnik"
 
@@ -791,7 +739,6 @@ msgid "Max Power Cap"
 msgstr "Zgornja meja največje moči"
 
 #: data/resources/ui/pages/memory.ui:9
-#, fuzzy
 msgid "You need to authenticate to see memory properties"
 msgstr "Če želite videti lastnosti pomnilnika, morate preveriti pristnost"
 
@@ -800,9 +747,8 @@ msgid "Authenticate"
 msgstr "Overi"
 
 #: data/resources/ui/pages/memory.ui:45
-#, fuzzy
 msgid "Slots Used"
-msgstr "Uporabljeni sloti"
+msgstr "Uporabljene reže"
 
 #: data/resources/ui/pages/memory.ui:54
 msgid "Speed"
@@ -835,7 +781,6 @@ msgid "Hardware Address"
 msgstr "Strojni naslov"
 
 #: data/resources/ui/pages/network.ui:94
-#, fuzzy
 msgid "Link Speed"
 msgstr "Hitrost povezave"
 
@@ -845,7 +790,6 @@ msgid "NPU Frequency"
 msgstr "Pogostost NPU"
 
 #: data/resources/ui/pages/npu.ui:44
-#, fuzzy
 msgid "Memory Frequency"
 msgstr "Frekvenca pomnilnika"
 
@@ -853,13 +797,13 @@ msgstr "Frekvenca pomnilnika"
 #: data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2113
 #, fuzzy
 msgid "Kill Process"
-msgstr "Uniči opravilo"
+msgstr "Uniči proces"
 
 #: data/resources/ui/pages/processes.ui:10
 #: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2112
 #, fuzzy
 msgid "Halt Process"
-msgstr "Postopek zaustavitve"
+msgstr "Zaustavi postopek"
 
 #: data/resources/ui/pages/processes.ui:14
 #: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2114
@@ -871,48 +815,46 @@ msgstr "Nadaljuj postopek"
 #: data/resources/ui/pages/processes.ui:74
 #, fuzzy
 msgid "Kill Processes"
-msgstr "Ubijanje procesov"
+msgstr "Ubij procese"
 
 #: data/resources/ui/pages/processes.ui:26
 #: data/resources/ui/pages/processes.ui:78
 #, fuzzy
 msgid "Halt Processes"
-msgstr "Zaustavitev procesov"
+msgstr "Zaustavi procese"
 
 #: data/resources/ui/pages/processes.ui:30
 #: data/resources/ui/pages/processes.ui:82
 #, fuzzy
 msgid "Continue Processes"
-msgstr "Nadaljujte s postopki"
+msgstr "Nadaljuj s postopki"
 
 #: data/resources/ui/pages/processes.ui:38
 #: data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:522
 #: src/ui/pages/processes/mod.rs:2111
 #, fuzzy
 msgid "End Process"
-msgstr "_Končaj opravilo"
+msgstr "Končaj opravilo"
 
 #: data/resources/ui/pages/processes.ui:70 src/ui/pages/processes/mod.rs:526
 #, fuzzy
 msgid "End Processes"
-msgstr "Končni procesi"
+msgstr "Končaj procese"
 
 #: data/resources/ui/pages/processes.ui:103
 #, fuzzy
 msgid "Search processes"
-msgstr "Iskanje opravil in uporabnikov"
+msgstr "Iskanje opravil"
 
 #: data/resources/ui/pages/processes.ui:133
 #: data/resources/ui/pages/processes.ui:135
-#, fuzzy
 msgid "Show Process Options"
 msgstr "Pokaži možnosti procesa"
 
 #: data/resources/ui/pages/processes.ui:146
 #: data/resources/ui/pages/processes.ui:148
-#, fuzzy
 msgid "Show Process Information"
-msgstr "Pokaži informacije o procesu"
+msgstr "Pokaži podatke o procesu"
 
 #: data/resources/ui/shortcuts.ui:11
 msgctxt "shortcut window"
@@ -935,7 +877,6 @@ msgid "Quit"
 msgstr "Konča program"
 
 #: data/resources/ui/shortcuts.ui:32
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Toggle Search Field"
 msgstr "Preklopi iskalno polje"
@@ -965,13 +906,11 @@ msgid "Continue App/Process"
 msgstr "Nadaljuj z aplikacijo/procesom"
 
 #: data/resources/ui/shortcuts.ui:62
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Show Information for App/Process"
-msgstr "Pokaži informacije za aplikacijo/proces"
+msgstr "Pokaži informacije za program/proces"
 
 #: data/resources/ui/shortcuts.ui:68
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Show Process Options"
 msgstr "Pokaži možnosti procesa"
@@ -993,7 +932,6 @@ msgid "Search"
 msgstr "Išči"
 
 #: data/resources/ui/window.ui:90 data/resources/ui/window.ui:130
-#, fuzzy
 msgid "Toggle search field"
 msgstr "Preklopi iskalno polje"
 
@@ -1014,42 +952,68 @@ msgstr "Martin Srebotnjak <miles@filmsi.net>"
 #: src/application.rs:282
 #, fuzzy
 msgid "Icon by"
-msgstr "_Ikona:"
+msgstr "Ikona"
 
 #: src/ui/dialogs/app_dialog.rs:153 src/ui/dialogs/process_dialog.rs:131
 #: src/ui/dialogs/process_dialog.rs:135 src/ui/dialogs/process_dialog.rs:144
 #: src/ui/dialogs/process_dialog.rs:146 src/ui/dialogs/process_dialog.rs:169
 #: src/ui/dialogs/process_dialog.rs:176 src/ui/dialogs/process_dialog.rs:183
 #: src/ui/dialogs/process_dialog.rs:190 src/ui/pages/applications/mod.rs:945
-#: src/ui/pages/applications/mod.rs:1069 src/ui/pages/cpu.rs:242
-#: src/ui/pages/cpu.rs:257 src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:282
-#: src/ui/pages/cpu.rs:288 src/ui/pages/cpu.rs:294 src/ui/pages/cpu.rs:298
-#: src/ui/pages/cpu.rs:301 src/ui/pages/cpu.rs:339 src/ui/pages/cpu.rs:446
-#: src/ui/pages/drive.rs:318 src/ui/pages/drive.rs:349
-#: src/ui/pages/drive.rs:351 src/ui/pages/drive.rs:380
-#: src/ui/pages/drive.rs:382 src/ui/pages/drive.rs:398
-#: src/ui/pages/drive.rs:399 src/ui/pages/drive.rs:406
-#: src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426
-#: src/ui/pages/drive.rs:432 src/ui/pages/gpu.rs:243 src/ui/pages/gpu.rs:250
-#: src/ui/pages/gpu.rs:295 src/ui/pages/gpu.rs:320 src/ui/pages/gpu.rs:323
-#: src/ui/pages/gpu.rs:334 src/ui/pages/gpu.rs:354 src/ui/pages/gpu.rs:366
-#: src/ui/pages/gpu.rs:377 src/ui/pages/gpu.rs:389 src/ui/pages/gpu.rs:396
-#: src/ui/pages/gpu.rs:400 src/ui/pages/gpu.rs:430 src/ui/pages/gpu.rs:436
-#: src/ui/pages/memory.rs:226 src/ui/pages/memory.rs:227
-#: src/ui/pages/memory.rs:231 src/ui/pages/memory.rs:232
-#: src/ui/pages/memory.rs:236 src/ui/pages/memory.rs:237
-#: src/ui/pages/memory.rs:265 src/ui/pages/memory.rs:326
-#: src/ui/pages/network.rs:240 src/ui/pages/network.rs:247
-#: src/ui/pages/network.rs:254 src/ui/pages/network.rs:260
-#: src/ui/pages/network.rs:263 src/ui/pages/network.rs:270
-#: src/ui/pages/network.rs:335 src/ui/pages/network.rs:338
-#: src/ui/pages/network.rs:340 src/ui/pages/network.rs:369
-#: src/ui/pages/network.rs:372 src/ui/pages/network.rs:374
-#: src/ui/pages/processes/mod.rs:1220 src/ui/pages/processes/mod.rs:1286
-#: src/ui/pages/processes/mod.rs:1352 src/ui/pages/processes/mod.rs:1418
-#: src/ui/pages/processes/mod.rs:1900 src/ui/pages/processes/mod.rs:1902
+#: src/ui/pages/applications/mod.rs:1069 src/ui/pages/battery.rs:204
+#: src/ui/pages/battery.rs:224 src/ui/pages/battery.rs:230
+#: src/ui/pages/battery.rs:233 src/ui/pages/battery.rs:264
+#: src/ui/pages/battery.rs:288 src/ui/pages/battery.rs:290
+#: src/ui/pages/battery.rs:300 src/ui/pages/cpu.rs:242 src/ui/pages/cpu.rs:257
+#: src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:282 src/ui/pages/cpu.rs:288
+#: src/ui/pages/cpu.rs:294 src/ui/pages/cpu.rs:298 src/ui/pages/cpu.rs:301
+#: src/ui/pages/cpu.rs:339 src/ui/pages/cpu.rs:446 src/ui/pages/drive.rs:318
+#: src/ui/pages/drive.rs:349 src/ui/pages/drive.rs:351
+#: src/ui/pages/drive.rs:380 src/ui/pages/drive.rs:382
+#: src/ui/pages/drive.rs:398 src/ui/pages/drive.rs:399
+#: src/ui/pages/drive.rs:406 src/ui/pages/drive.rs:416
+#: src/ui/pages/drive.rs:426 src/ui/pages/drive.rs:432 src/ui/pages/gpu.rs:243
+#: src/ui/pages/gpu.rs:250 src/ui/pages/gpu.rs:295 src/ui/pages/gpu.rs:320
+#: src/ui/pages/gpu.rs:323 src/ui/pages/gpu.rs:334 src/ui/pages/gpu.rs:354
+#: src/ui/pages/gpu.rs:366 src/ui/pages/gpu.rs:377 src/ui/pages/gpu.rs:389
+#: src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:400 src/ui/pages/gpu.rs:430
+#: src/ui/pages/gpu.rs:436 src/ui/pages/memory.rs:226
+#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:231
+#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:236
+#: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:265
+#: src/ui/pages/memory.rs:326 src/ui/pages/network.rs:240
+#: src/ui/pages/network.rs:247 src/ui/pages/network.rs:254
+#: src/ui/pages/network.rs:260 src/ui/pages/network.rs:263
+#: src/ui/pages/network.rs:270 src/ui/pages/network.rs:335
+#: src/ui/pages/network.rs:338 src/ui/pages/network.rs:340
+#: src/ui/pages/network.rs:369 src/ui/pages/network.rs:372
+#: src/ui/pages/network.rs:374 src/ui/pages/processes/mod.rs:1220
+#: src/ui/pages/processes/mod.rs:1286 src/ui/pages/processes/mod.rs:1352
+#: src/ui/pages/processes/mod.rs:1418 src/ui/pages/processes/mod.rs:1900
+#: src/ui/pages/processes/mod.rs:1902 src/utils/battery.rs:149
+#: src/utils/drive.rs:136 src/utils/gpu/mod.rs:275 src/utils/gpu/mod.rs:287
+#: src/utils/link.rs:314 src/utils/npu/mod.rs:243 src/utils/npu/mod.rs:249
 msgid "N/A"
 msgstr "Ni na voljo"
+
+#: src/ui/dialogs/process_options_dialog.rs:145 src/ui/pages/cpu.rs:256
+#: src/ui/pages/cpu.rs:415 src/ui/pages/cpu.rs:419
+msgid "CPU {}"
+msgstr "CPE {}"
+
+#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:413
+#: src/ui/pages/drive.rs:423 src/ui/pages/processes/process_entry.rs:211
+msgid "No"
+msgstr "Ne"
+
+#: src/ui/pages/applications/application_entry.rs:191
+#: src/ui/pages/processes/process_entry.rs:212
+msgid "Yes (Flatpak)"
+msgstr "Da (Flatpak)"
+
+#: src/ui/pages/applications/application_entry.rs:192
+#: src/ui/pages/processes/process_entry.rs:213
+msgid "Yes (Snap)"
+msgstr "Da (Snap)"
 
 #: src/ui/pages/applications/mod.rs:659
 msgid "Running Apps: {}"
@@ -1080,7 +1044,6 @@ msgid "Continue {}?"
 msgstr "Ali želite nadaljevati z {}?"
 
 #: src/ui/pages/applications/mod.rs:1537 src/ui/pages/processes/mod.rs:2098
-#, fuzzy
 msgid "Unsaved work might be lost."
 msgstr "Neshranjeno delo je morda izgubljeno."
 
@@ -1090,8 +1053,8 @@ msgid ""
 "Halting an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
 msgstr ""
-"Zaustavitev aplikacije lahko povzroči resna tveganja, kot so izguba "
-"podatkov in varnostne posledice. Uporabljajte previdno."
+"Zaustavitev aplikacije lahko povzroči resna tveganja, kot so izguba podatkov "
+"in varnostne posledice. Uporabljajte previdno."
 
 #: src/ui/pages/applications/mod.rs:1542
 #, fuzzy
@@ -1102,43 +1065,37 @@ msgstr ""
 "Uničevanje aplikacije lahko prinese resna tveganja, kot so izguba podatkov "
 "in varnostne posledice. Uporabljajte previdno."
 
+#: src/ui/pages/battery.rs:102 src/ui/pages/drive.rs:126
+msgid "Drive"
+msgstr "Pogon"
+
+#: src/ui/pages/battery.rs:209
+msgid "Battery Charge"
+msgstr "Napolnjenost baterije"
+
+#: src/ui/pages/battery.rs:278 src/ui/pages/cpu.rs:436
+#: src/ui/pages/drive.rs:343 src/ui/pages/drive.rs:374 src/ui/pages/gpu.rs:422
+#: src/ui/pages/network.rs:327 src/ui/pages/network.rs:361
+msgid "Highest:"
+msgstr "Najvišja:"
+
 #: src/ui/pages/cpu.rs:241 src/ui/pages/gpu.rs:210
 msgid "Total Usage"
 msgstr "Skupna uporaba"
-
-#: src/ui/pages/cpu.rs:256 src/ui/pages/cpu.rs:415 src/ui/pages/cpu.rs:419
-#, fuzzy
-msgid "CPU {}"
-msgstr "CPU {}"
 
 #: src/ui/pages/cpu.rs:269 src/ui/pages/gpu.rs:237
 msgid "Temperature"
 msgstr "Temperatura"
 
-#: src/ui/pages/cpu.rs:436 src/ui/pages/drive.rs:343 src/ui/pages/drive.rs:374
-#: src/ui/pages/gpu.rs:422 src/ui/pages/network.rs:327
-#: src/ui/pages/network.rs:361
-#, fuzzy
-msgid "Highest:"
-msgstr "_ali najvišji"
-
-#: src/ui/pages/drive.rs:126
-#, fuzzy
-msgid "Drive"
-msgstr "Zaustavi pogon"
-
 #: src/ui/pages/drive.rs:235
-#, fuzzy
 msgid "Drive Activity"
-msgstr "Dejavnost vožnje"
+msgstr "Dejavnost pogona"
 
 #: src/ui/pages/drive.rs:242
-#, fuzzy
 msgid "Read Speed"
 msgstr "Hitrost branja"
 
 #: src/ui/pages/drive.rs:246
-#, fuzzy
 msgid "Write Speed"
 msgstr "Hitrost pisanja"
 
@@ -1146,51 +1103,39 @@ msgstr "Hitrost pisanja"
 msgid "Yes"
 msgstr "Da"
 
-#: src/ui/pages/drive.rs:413 src/ui/pages/drive.rs:423
-msgid "No"
-msgstr "Ne"
-
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
 #: src/ui/pages/drive.rs:439
-#, fuzzy
 msgid "R: {} · W: {}"
-msgstr "R: {} · W: {}"
+msgstr "B: {} · P: {}"
 
 #: src/ui/pages/gpu.rs:218
-#, fuzzy
 msgid "Video Encoder/Decoder Usage"
-msgstr "Uporaba video kodirnika/dekoderja"
+msgstr "Uporaba kodirnika/dekodirnika videa"
 
 #: src/ui/pages/gpu.rs:224
-#, fuzzy
 msgid "Video Encoder Usage"
-msgstr "Uporaba video kodirnika"
+msgstr "Uporaba kodirnika videa"
 
 #: src/ui/pages/gpu.rs:229
-#, fuzzy
 msgid "Video Decoder Usage"
-msgstr "Uporaba video dekoderja"
+msgstr "Uporaba dekodirnika videa"
 
 #: src/ui/pages/gpu.rs:234
-#, fuzzy
 msgid "Video Memory Usage"
-msgstr "Uporaba video pomnilnika"
+msgstr "Uporaba videopomnilnika"
 
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
 #: src/ui/pages/gpu.rs:408
-#, fuzzy
 msgid "Memory: {}"
-msgstr "V pomnilniku"
+msgstr "Pomnilnik: {}"
 
 #: src/ui/pages/memory.rs:261
-#, fuzzy
 msgid "{} of {}"
 msgstr "{} od {}"
 
 #: src/ui/pages/memory.rs:264
-#, fuzzy
 msgid "{} MT/s"
 msgstr "{} MT/s"
 
@@ -1201,10 +1146,9 @@ msgstr "{} MT/s"
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · Zamenjava: {} %"
 
-#: src/ui/pages/network.rs:118
-#, fuzzy
+#: src/ui/pages/network.rs:118 src/utils/network.rs:136
 msgid "Network Interface"
-msgstr "Dodaj omrežni vmesnik"
+msgstr "Omrežni vmesnik"
 
 #: src/ui/pages/network.rs:229
 msgid "Receiving"
@@ -1217,9 +1161,8 @@ msgstr "Pošiljanje"
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
 #: src/ui/pages/network.rs:384
-#, fuzzy
 msgid "R: {} · S: {}"
-msgstr "D_rugo (%s) ..."
+msgstr "Prej: {} · Posl: {}"
 
 #: src/ui/pages/processes/mod.rs:812
 #, fuzzy
@@ -1276,9 +1219,8 @@ msgstr ""
 "varnostne posledice. Uporabljajte previdno."
 
 #: src/ui/window.rs:452
-#, fuzzy
 msgid "GPU {}"
-msgstr "GPU {}"
+msgstr "GPE {}"
 
 #: src/ui/window.rs:482
 #, fuzzy
@@ -1330,13 +1272,12 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: src/ui/window.rs:1251
-#, fuzzy
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
-msgstr[0] "Uspešno ustavljen postopek"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Uspešno ustavljenih {} postopkov"
+msgstr[1] "Uspešno ustavljen {} postopek"
+msgstr[2] "Uspešno ustavljena {} postopka"
+msgstr[3] "Uspešno ustavljeni {} postopki"
 
 #: src/ui/window.rs:1257
 #, fuzzy
@@ -1411,3 +1352,631 @@ msgstr "Prišlo je do težave z ubijanjem {}"
 #, fuzzy
 msgid "There was a problem continuing {}"
 msgstr "Težava se je nadaljevala {}"
+
+#: src/utils/app.rs:219
+msgid "System Processes"
+msgstr "Sistemski procesi"
+
+#: src/utils/battery.rs:90
+msgid "Charging"
+msgstr "Polnjenje"
+
+#: src/utils/battery.rs:91
+msgid "Discharging"
+msgstr "Praznjenje"
+
+#: src/utils/battery.rs:92
+msgid "Empty"
+msgstr "Prazno"
+
+#: src/utils/battery.rs:93
+msgid "Full"
+msgstr "Polno"
+
+#: src/utils/battery.rs:94
+msgid "Unknown"
+msgstr "Neznano"
+
+#: src/utils/battery.rs:140
+#, fuzzy
+msgid "Nickel-Metal Hydride"
+msgstr "Nikelj-kovinski hidrid"
+
+#: src/utils/battery.rs:141
+#, fuzzy
+msgid "Nickel-Cadmium"
+msgstr "Nikelj-kadmij"
+
+#: src/utils/battery.rs:142
+#, fuzzy
+msgid "Nickel-Zinc"
+msgstr "Nikelj-cink"
+
+#: src/utils/battery.rs:143
+#, fuzzy
+msgid "Lead-Acid"
+msgstr "Svinčena kislina"
+
+#: src/utils/battery.rs:144
+#, fuzzy
+msgid "Lithium-Ion"
+msgstr "Litij-ionski"
+
+#: src/utils/battery.rs:145
+#, fuzzy
+msgid "Lithium Iron Phosphate"
+msgstr "Litijev železov fosfat"
+
+#: src/utils/battery.rs:146
+#, fuzzy
+msgid "Lithium Polymer"
+msgstr "Litijev polimer"
+
+#: src/utils/battery.rs:148
+#, fuzzy
+msgid "Rechargeable Alkaline Managanese"
+msgstr "Alkalna managanska za polnjenje"
+
+#: src/utils/battery.rs:259
+msgid "{} Battery"
+msgstr "Baterija {}"
+
+#: src/utils/battery.rs:261
+msgid "Battery"
+msgstr "Baterija"
+
+#: src/utils/units.rs:91
+msgid "{} K"
+msgstr "{} K"
+
+#: src/utils/units.rs:93
+msgid "{} °C"
+msgstr "{} °C"
+
+#: src/utils/units.rs:95
+msgid "{} °F"
+msgstr "{} °F"
+
+#: src/utils/units.rs:113 src/utils/units.rs:127 src/utils/units.rs:147
+#: src/utils/units.rs:161
+msgid "{} B"
+msgstr "{} B"
+
+#: src/utils/units.rs:114 src/utils/units.rs:128
+msgid "{} kB"
+msgstr "{} kB"
+
+#: src/utils/units.rs:115 src/utils/units.rs:129
+msgid "{} MB"
+msgstr "{} MB"
+
+#: src/utils/units.rs:116 src/utils/units.rs:130
+msgid "{} GB"
+msgstr "{} GB"
+
+#: src/utils/units.rs:117 src/utils/units.rs:131
+msgid "{} TB"
+msgstr "{} TB"
+
+#: src/utils/units.rs:118 src/utils/units.rs:132
+msgid "{} PB"
+msgstr "{} PB"
+
+#: src/utils/units.rs:119 src/utils/units.rs:133
+msgid "{} EB"
+msgstr "{} EB"
+
+#: src/utils/units.rs:120 src/utils/units.rs:134
+msgid "{} ZB"
+msgstr "{} ZB"
+
+#: src/utils/units.rs:121 src/utils/units.rs:135
+#, fuzzy
+msgid "{} YB"
+msgstr "{} YB"
+
+#: src/utils/units.rs:122 src/utils/units.rs:136
+msgid "{} RB"
+msgstr "{} RB"
+
+#: src/utils/units.rs:123 src/utils/units.rs:137
+#, fuzzy
+msgid "{} QB"
+msgstr "{} QB"
+
+#: src/utils/units.rs:148 src/utils/units.rs:162
+msgid "{} KiB"
+msgstr "{} KiB"
+
+#: src/utils/units.rs:149 src/utils/units.rs:163
+msgid "{} MiB"
+msgstr "{} MiB"
+
+#: src/utils/units.rs:150 src/utils/units.rs:164
+msgid "{} GiB"
+msgstr "{} GiB"
+
+#: src/utils/units.rs:151 src/utils/units.rs:165
+msgid "{} TiB"
+msgstr "{} TiB"
+
+#: src/utils/units.rs:152 src/utils/units.rs:166
+msgid "{} PiB"
+msgstr "{} PiB"
+
+#: src/utils/units.rs:153 src/utils/units.rs:167
+msgid "{} EiB"
+msgstr "{} EiB"
+
+#: src/utils/units.rs:154 src/utils/units.rs:168
+msgid "{} ZiB"
+msgstr "{} ZiB"
+
+#: src/utils/units.rs:155 src/utils/units.rs:169
+#, fuzzy
+msgid "{} YiB"
+msgstr "{} YiB"
+
+#: src/utils/units.rs:156 src/utils/units.rs:170
+msgid "{} RiB"
+msgstr "{} RiB"
+
+#: src/utils/units.rs:157 src/utils/units.rs:171
+#, fuzzy
+msgid "{} QiB"
+msgstr "{} QiB"
+
+#: src/utils/units.rs:198 src/utils/units.rs:215
+msgid "{} B/s"
+msgstr "{} B/s"
+
+#: src/utils/units.rs:199
+msgid "{} kB/s"
+msgstr "{} kB/s"
+
+#: src/utils/units.rs:200
+msgid "{} MB/s"
+msgstr "{} MB/s"
+
+#: src/utils/units.rs:201
+msgid "{} GB/s"
+msgstr "{} GB/s"
+
+#: src/utils/units.rs:202
+msgid "{} TB/s"
+msgstr "{} TB/s"
+
+#: src/utils/units.rs:203
+msgid "{} PB/s"
+msgstr "{} PB/s"
+
+#: src/utils/units.rs:204
+msgid "{} EB/s"
+msgstr "{} EB/s"
+
+#: src/utils/units.rs:205
+msgid "{} ZB/s"
+msgstr "{} ZB/s"
+
+#: src/utils/units.rs:206
+#, fuzzy
+msgid "{} YB/s"
+msgstr "{} YB/s"
+
+#: src/utils/units.rs:207
+msgid "{} RB/s"
+msgstr "{} RB/s"
+
+#: src/utils/units.rs:208
+#, fuzzy
+msgid "{} QB/s"
+msgstr "{} QB/s"
+
+#: src/utils/units.rs:216
+msgid "{} KiB/s"
+msgstr "{} KiB/s"
+
+#: src/utils/units.rs:217
+msgid "{} MiB/s"
+msgstr "{} MiB/s"
+
+#: src/utils/units.rs:218
+msgid "{} GiB/s"
+msgstr "{} GiB/s"
+
+#: src/utils/units.rs:219
+msgid "{} TiB/s"
+msgstr "{} TiB/s"
+
+#: src/utils/units.rs:220
+msgid "{} PiB/s"
+msgstr "{} PiB/s"
+
+#: src/utils/units.rs:221
+msgid "{} EiB/s"
+msgstr "{} EiB/s"
+
+#: src/utils/units.rs:222
+msgid "{} ZiB/s"
+msgstr "{} ZiB/s"
+
+#: src/utils/units.rs:223
+#, fuzzy
+msgid "{} YiB/s"
+msgstr "{} YiB/s"
+
+#: src/utils/units.rs:224
+msgid "{} RiB/s"
+msgstr "{} RiB/s"
+
+#: src/utils/units.rs:225
+#, fuzzy
+msgid "{} QiB/s"
+msgstr "{} QiB/s"
+
+#: src/utils/units.rs:239 src/utils/units.rs:256
+msgid "{} b/s"
+msgstr "{} b/s"
+
+#: src/utils/units.rs:240
+msgid "{} kb/s"
+msgstr "{} kb/s"
+
+#: src/utils/units.rs:241
+msgid "{} Mb/s"
+msgstr "{} Mb/s"
+
+#: src/utils/units.rs:242
+msgid "{} Gb/s"
+msgstr "{} Gb/s"
+
+#: src/utils/units.rs:243
+msgid "{} Tb/s"
+msgstr "{} Tb/s"
+
+#: src/utils/units.rs:244
+msgid "{} Pb/s"
+msgstr "{} Pb/s"
+
+#: src/utils/units.rs:245
+msgid "{} Eb/s"
+msgstr "{} Eb/s"
+
+#: src/utils/units.rs:246
+msgid "{} Zb/s"
+msgstr "{} Zb/s"
+
+#: src/utils/units.rs:247
+#, fuzzy
+msgid "{} Yb/s"
+msgstr "{} Yb/s"
+
+#: src/utils/units.rs:248
+msgid "{} Rb/s"
+msgstr "{} Rb/s"
+
+#: src/utils/units.rs:249
+#, fuzzy
+msgid "{} Qb/s"
+msgstr "{} Qb/s"
+
+#: src/utils/units.rs:257
+msgid "{} Kib/s"
+msgstr "{} Kib/s"
+
+#: src/utils/units.rs:258
+msgid "{} Mib/s"
+msgstr "{} Mib/s"
+
+#: src/utils/units.rs:259
+msgid "{} Gib/s"
+msgstr "{} Gib/s"
+
+#: src/utils/units.rs:260
+msgid "{} Tib/s"
+msgstr "{} Tib/s"
+
+#: src/utils/units.rs:261
+msgid "{} Pib/s"
+msgstr "{} Pib/s"
+
+#: src/utils/units.rs:262
+msgid "{} Eib/s"
+msgstr "{} Eib/s"
+
+#: src/utils/units.rs:263
+msgid "{} Zib/s"
+msgstr "{} Zib/s"
+
+#: src/utils/units.rs:264
+#, fuzzy
+msgid "{} Yib/s"
+msgstr "{} Yib/s"
+
+#: src/utils/units.rs:265
+msgid "{} Rib/s"
+msgstr "{} Rib/s"
+
+#: src/utils/units.rs:266
+#, fuzzy
+msgid "{} Qib/s"
+msgstr "{} Qib/s"
+
+#: src/utils/units.rs:273
+msgid "{} Hz"
+msgstr "{} Hz"
+
+#: src/utils/units.rs:274
+msgid "{} kHz"
+msgstr "{} kHz"
+
+#: src/utils/units.rs:275
+msgid "{} MHz"
+msgstr "{} MHz"
+
+#: src/utils/units.rs:276
+msgid "{} GHz"
+msgstr "{} GHz"
+
+#: src/utils/units.rs:277
+msgid "{} THz"
+msgstr "{} THz"
+
+#: src/utils/units.rs:278
+msgid "{} PHz"
+msgstr "{} PHz"
+
+#: src/utils/units.rs:279
+msgid "{} EHz"
+msgstr "{} EHz"
+
+#: src/utils/units.rs:280
+msgid "{} ZHz"
+msgstr "{} ZHz"
+
+#: src/utils/units.rs:281
+#, fuzzy
+msgid "{} YHz"
+msgstr "{} YHz"
+
+#: src/utils/units.rs:282
+msgid "{} RHz"
+msgstr "{} RHz"
+
+#: src/utils/units.rs:283
+#, fuzzy
+msgid "{} QHz"
+msgstr "{} QHz"
+
+#: src/utils/units.rs:290
+msgid "{} W"
+msgstr "{} W"
+
+#: src/utils/units.rs:291
+msgid "{} kW"
+msgstr "{} kW"
+
+#: src/utils/units.rs:292
+msgid "{} MW"
+msgstr "{} MW"
+
+#: src/utils/units.rs:293
+msgid "{} GW"
+msgstr "{} GW"
+
+#: src/utils/units.rs:294
+msgid "{} TW"
+msgstr "{} TW"
+
+#: src/utils/units.rs:295
+msgid "{} PW"
+msgstr "{} PW"
+
+#: src/utils/units.rs:296
+msgid "{} EW"
+msgstr "{} EW"
+
+#: src/utils/units.rs:297
+msgid "{} ZW"
+msgstr "{} ZW"
+
+#: src/utils/units.rs:298
+#, fuzzy
+msgid "{} YW"
+msgstr "{} YW"
+
+#: src/utils/units.rs:299
+msgid "{} RW"
+msgstr "{} RW"
+
+#: src/utils/units.rs:300
+#, fuzzy
+msgid "{} QW"
+msgstr "{} QW"
+
+#: src/utils/units.rs:309 src/utils/units.rs:323
+msgid "{} Wh"
+msgstr "{} Wh"
+
+#: src/utils/units.rs:310 src/utils/units.rs:324
+msgid "{} kWh"
+msgstr "{} kWh"
+
+#: src/utils/units.rs:311 src/utils/units.rs:325
+msgid "{} MWh"
+msgstr "{} MWh"
+
+#: src/utils/units.rs:312 src/utils/units.rs:326
+msgid "{} GWh"
+msgstr "{} GWh"
+
+#: src/utils/units.rs:313 src/utils/units.rs:327
+msgid "{} TWh"
+msgstr "{} TWh"
+
+#: src/utils/units.rs:314 src/utils/units.rs:328
+msgid "{} PWh"
+msgstr "{} PWh"
+
+#: src/utils/units.rs:315 src/utils/units.rs:329
+msgid "{} EWh"
+msgstr "{} EWh"
+
+#: src/utils/units.rs:316 src/utils/units.rs:330
+msgid "{} ZWh"
+msgstr "{} ZWh"
+
+#: src/utils/units.rs:317 src/utils/units.rs:331
+#, fuzzy
+msgid "{} YWh"
+msgstr "{} YWh"
+
+#: src/utils/units.rs:318 src/utils/units.rs:332
+msgid "{} RWh"
+msgstr "{} RWh"
+
+#: src/utils/units.rs:319 src/utils/units.rs:333
+#, fuzzy
+msgid "{} QWh"
+msgstr "{} QWh"
+
+#: src/utils/drive.rs:128 src/utils/drive.rs:207
+msgid "CD/DVD/Blu-ray Drive"
+msgstr "Pogon CD/DVD/Blu-ray"
+
+#: src/utils/drive.rs:129
+msgid "eMMC Storage"
+msgstr "Shramba eMMC"
+
+#: src/utils/drive.rs:130
+msgid "Flash Storage"
+msgstr "Bliskovni pogon"
+
+#: src/utils/drive.rs:131 src/utils/drive.rs:208
+msgid "Floppy Drive"
+msgstr "Disketni pogon"
+
+#: src/utils/drive.rs:132
+msgid "Hard Disk Drive"
+msgstr "Pogon trdega diska"
+
+#: src/utils/drive.rs:133
+#, fuzzy
+#| msgid "Device"
+msgid "Loop Device"
+msgstr "Naprava"
+
+#: src/utils/drive.rs:134
+msgid "Mapped Device"
+msgstr "Preslikana naprava"
+
+#: src/utils/drive.rs:135
+#, fuzzy
+msgid "NVMe Drive"
+msgstr "Zaustavi pogon"
+
+#: src/utils/drive.rs:137
+msgid "Software Raid"
+msgstr "Programsko diskovno polje"
+
+#: src/utils/drive.rs:138
+msgid "RAM Disk"
+msgstr "Disk RAM"
+
+#: src/utils/drive.rs:139
+#, fuzzy
+msgid "Solid State Drive"
+msgstr "Pokaži navidezne pogone"
+
+#: src/utils/drive.rs:140
+msgid "ZFS Volume"
+msgstr "Nosilec ZFS"
+
+#: src/utils/drive.rs:141
+msgid "Compressed RAM Disk (zram)"
+msgstr "Stisnjeni disk RAM (zram)"
+
+#: src/utils/drive.rs:209
+#, fuzzy
+#| msgid "Device"
+msgid "{} Loop Device"
+msgstr "Naprava"
+
+#: src/utils/drive.rs:210
+msgid "{} Mapped Device"
+msgstr "Preslikana naprava {}"
+
+#: src/utils/drive.rs:211
+msgid "{} RAID"
+msgstr "{} RAID"
+
+#: src/utils/drive.rs:212
+msgid "{} RAM Disk"
+msgstr "Disk RAM {}"
+
+#: src/utils/drive.rs:213
+msgid "{} zram Device"
+msgstr "Naprava zram {}"
+
+#: src/utils/drive.rs:214
+msgid "{} ZFS Volume"
+msgstr "Nosilec ZFS {}"
+
+#: src/utils/drive.rs:215
+msgid "{} Drive"
+msgstr "Pogon {}"
+
+#: src/utils/network.rs:124
+#, fuzzy
+msgid "Bluetooth Tether"
+msgstr "Privez Bluetooth"
+
+#: src/utils/network.rs:125
+#, fuzzy
+msgid "Network Bridge"
+msgstr "Dodaj omrežni vmesnik"
+
+#: src/utils/network.rs:126
+#, fuzzy
+msgid "Ethernet Connection"
+msgstr "Žična omrežna povezava"
+
+#: src/utils/network.rs:127
+#, fuzzy
+msgid "Docker Bridge"
+msgstr "Most za docker"
+
+#: src/utils/network.rs:128
+msgid "InfiniBand Connection"
+msgstr "Povezava InfiniBand"
+
+#: src/utils/network.rs:129
+#, fuzzy
+msgid "Serial Line IP Connection"
+msgstr "Serijska povezava IP"
+
+#: src/utils/network.rs:130
+msgid "Virtual Ethernet Device"
+msgstr "Virtualna omrežna naprava"
+
+#: src/utils/network.rs:131
+msgid "VM Network Bridge"
+msgstr "Omrežni most VM"
+
+#: src/utils/network.rs:132
+#, fuzzy
+msgid "VPN Tunnel"
+msgstr "Tunel VPN"
+
+#: src/utils/network.rs:133
+#, fuzzy
+msgid "VPN Tunnel (WireGuard)"
+msgstr "Tunel VPN (WireGuard)"
+
+#: src/utils/network.rs:134
+msgid "Wi-Fi Connection"
+msgstr "Povezava Wi-Fi"
+
+#: src/utils/network.rs:135
+msgid "WWAN Connection"
+msgstr "Povezava WWAN"
