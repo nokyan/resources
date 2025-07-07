@@ -162,7 +162,7 @@ msgstr "Trukatze-espazioa"
 #: data/resources/ui/dialogs/settings_dialog.ui:230
 #: src/ui/pages/applications/mod.rs:924 src/ui/pages/processes/mod.rs:1199
 msgid "Drive Read"
-msgstr ""
+msgstr "Unitatetik irakurrita"
 
 #: data/resources/ui/dialogs/app_dialog.ui:109
 #: data/resources/ui/dialogs/process_dialog.ui:87
@@ -170,7 +170,7 @@ msgstr ""
 #: data/resources/ui/dialogs/settings_dialog.ui:235
 #: src/ui/pages/applications/mod.rs:988 src/ui/pages/processes/mod.rs:1265
 msgid "Drive Read Total"
-msgstr ""
+msgstr "Unitatetik irakurrita guztira"
 
 #: data/resources/ui/dialogs/app_dialog.ui:118
 #: data/resources/ui/dialogs/process_dialog.ui:96
@@ -178,7 +178,7 @@ msgstr ""
 #: data/resources/ui/dialogs/settings_dialog.ui:240
 #: src/ui/pages/applications/mod.rs:1048 src/ui/pages/processes/mod.rs:1331
 msgid "Drive Write"
-msgstr ""
+msgstr "Unitatean idatzita"
 
 #: data/resources/ui/dialogs/app_dialog.ui:127
 #: data/resources/ui/dialogs/process_dialog.ui:105
@@ -186,7 +186,7 @@ msgstr ""
 #: data/resources/ui/dialogs/settings_dialog.ui:245
 #: src/ui/pages/applications/mod.rs:1114 src/ui/pages/processes/mod.rs:1397
 msgid "Drive Write Total"
-msgstr ""
+msgstr "Unitatean idatzita guztira"
 
 #: data/resources/ui/dialogs/app_dialog.ui:149
 #: data/resources/ui/dialogs/process_dialog.ui:127
@@ -194,7 +194,7 @@ msgstr ""
 #: data/resources/ui/dialogs/settings_dialog.ui:255
 #: src/ui/pages/applications/mod.rs:1352 src/ui/pages/processes/mod.rs:1640
 msgid "Video Memory"
-msgstr ""
+msgstr "Bideo-memoria"
 
 #: data/resources/ui/dialogs/app_dialog.ui:158
 #: data/resources/ui/dialogs/process_dialog.ui:136
@@ -202,7 +202,7 @@ msgstr ""
 #: data/resources/ui/dialogs/settings_dialog.ui:260
 #: src/ui/pages/applications/mod.rs:1233 src/ui/pages/processes/mod.rs:1520
 msgid "Video Encoder"
-msgstr ""
+msgstr "Bideo-kodetzailea"
 
 #: data/resources/ui/dialogs/app_dialog.ui:167
 #: data/resources/ui/dialogs/process_dialog.ui:145
@@ -210,7 +210,7 @@ msgstr ""
 #: data/resources/ui/dialogs/settings_dialog.ui:265
 #: src/ui/pages/applications/mod.rs:1293 src/ui/pages/processes/mod.rs:1580
 msgid "Video Decoder"
-msgstr ""
+msgstr "Bideo-deskodetzailea"
 
 #: data/resources/ui/dialogs/app_dialog.ui:174
 #: data/resources/ui/dialogs/process_dialog.ui:179
@@ -228,38 +228,38 @@ msgstr "IDa"
 #: data/resources/ui/dialogs/app_dialog.ui:190
 #: data/resources/ui/dialogs/process_dialog.ui:195
 msgid "Running Since"
-msgstr ""
+msgstr "Exekuzioa noiztik"
 
 #: data/resources/ui/dialogs/app_dialog.ui:198
 msgid "Running Processes"
-msgstr ""
+msgstr "Exekuzioan dauden prozesuak"
 
 #: data/resources/ui/dialogs/app_dialog.ui:207
 #: data/resources/ui/dialogs/process_dialog.ui:231
 msgid "Containerized"
-msgstr ""
+msgstr "Edukiontzian"
 
 #: data/resources/ui/dialogs/process_dialog.ui:7
 msgid "Process Information"
-msgstr ""
+msgstr "Prozesu-informazioa"
 
 #: data/resources/ui/dialogs/process_dialog.ui:154
 #: data/resources/ui/dialogs/settings_dialog.ui:270
 #: src/ui/pages/processes/mod.rs:1699
 msgid "Total CPU Time"
-msgstr ""
+msgstr "PUZ denbora guztira"
 
 #: data/resources/ui/dialogs/process_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:275
 #: src/ui/pages/processes/mod.rs:1758
 msgid "User CPU Time"
-msgstr ""
+msgstr "Erabiltzailearen PUZ denbora"
 
 #: data/resources/ui/dialogs/process_dialog.ui:172
 #: data/resources/ui/dialogs/settings_dialog.ui:280
 #: src/ui/pages/processes/mod.rs:1817
 msgid "System CPU Time"
-msgstr ""
+msgstr "Sistemaren PUZ denbora"
 
 #: data/resources/ui/dialogs/process_dialog.ui:186
 #: data/resources/ui/dialogs/settings_dialog.ui:210
@@ -269,7 +269,7 @@ msgstr "Prozesuaren IDa"
 
 #: data/resources/ui/dialogs/process_dialog.ui:204
 msgid "Commandline"
-msgstr ""
+msgstr "Komando-lerroa"
 
 #: data/resources/ui/dialogs/process_dialog.ui:213
 #: data/resources/ui/dialogs/settings_dialog.ui:215
@@ -284,7 +284,7 @@ msgstr "Kontrol taldea"
 #: data/resources/ui/dialogs/process_options_dialog.ui:7
 #: data/resources/ui/dialogs/process_options_dialog.ui:69
 msgid "Process Options"
-msgstr ""
+msgstr "Prozesu-aukerak"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:29
 msgid "Apply"
@@ -292,13 +292,13 @@ msgstr "Aplikatu"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:72
 msgid "Niceness"
-msgstr ""
+msgstr "Jatortasuna"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:73
 msgid ""
 "The priority of a process is given by its niceness. A lower niceness value "
 "correspond to a higher priority."
-msgstr ""
+msgstr "Prozesu baten lehentasuna bere jatortasunaren araberakoa da. Jatortasun-balioa baxuagoa bada, lehentasuna altuagoa da."
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:87
 #: data/resources/ui/dialogs/settings_dialog.ui:285
@@ -333,15 +333,15 @@ msgstr "Oso baxu"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:103
 msgid "Processor Affinity"
-msgstr ""
+msgstr "Prozesatzaile-afinitatea"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:108
 msgid "Toggle All"
-msgstr ""
+msgstr "Txandakatu dena"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:111
 msgid "Select which processor cores the process is allowed to run on"
-msgstr ""
+msgstr "Hautatu zein prozesatzaile-nukleotan exekutatu daitekeen prozesua"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:7
 msgid "General"
@@ -353,7 +353,7 @@ msgstr "Unitateak"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:13
 msgid "Data Unit Prefix"
-msgstr ""
+msgstr "Data-unitatearen aurrizkia"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:17
 msgid "Decimal"
@@ -365,7 +365,7 @@ msgstr "Bitarra"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:26
 msgid "Show Network Speeds in Bits per Second"
-msgstr ""
+msgstr "Erakutsi sareko abiadura bite segundotan"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:31
 msgid "Temperature Unit"
@@ -389,11 +389,11 @@ msgstr "Erabiltzaile-interfazea"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:50
 msgid "Refresh Speed"
-msgstr ""
+msgstr "Freskatu abiadura"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:51
 msgid "Higher refresh speeds can lead to higher processor usage"
-msgstr ""
+msgstr "Freskatze-abiadura altuagoek prozesatzaile-erabilera handiagoa eragin dezakete"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:55
 msgctxt "UI refresh speed"
@@ -422,29 +422,29 @@ msgstr "Oso azkarra"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:67
 msgid "Show Graph Grids"
-msgstr ""
+msgstr "Erakutsi grafiko-saretak"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:72
 msgid "Graph Data Points"
-msgstr ""
+msgstr "Datu-puntuen grafikoa"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:86
 msgid "Show Usage Details in Sidebar"
-msgstr ""
+msgstr "Erakutsi erabilera-xehetasunak alboko barran"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:87
 msgid "If enabled, the usage along with other information will be displayed"
-msgstr ""
+msgstr "Gaituta badago, erabilera eta beste datu batzuk bistaratuko dira"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:92
 msgid "Show Device Descriptions in Sidebar"
-msgstr ""
+msgstr "Erakutsi gailu-deskribapenak alboko barran"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:93
 msgid ""
 "If enabled, a device identifier like its name or device type will be "
 "displayed"
-msgstr ""
+msgstr "Gaituta badago, gailu-identifikatzaile bat, adibidez izena edo gailu mota, bistaratuko dira"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
 msgid "Sidebar Meter Type"
@@ -456,17 +456,17 @@ msgstr "Barrak"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:103
 msgid "Graph"
-msgstr ""
+msgstr "Grafikoa"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:111
 msgid "Normalize Processor Usage"
-msgstr ""
+msgstr "Normalizatu prozesatzaile-erabilera"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:112
 msgid ""
 "If enabled, the total usage of all cores will be divided by the amount of "
 "cores"
-msgstr ""
+msgstr "Gaituta badago, nukleo guztien erabilera osoa nukleo kopuruarekin zatituko da"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:122
 #: data/resources/ui/window.ui:65 data/resources/ui/window.ui:72
@@ -498,12 +498,12 @@ msgstr "Aukerak"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:199
 msgid "Show Niceness Values"
-msgstr ""
+msgstr "Erakutsi jatortasun-balioak"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:200
 msgid ""
 "Display priorities as niceness to allow for more fine-grained adjustments"
-msgstr ""
+msgstr "Bistaratu lehentasunak jatortasun gisa, doikuntza finagoak egin ahal izateko"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:305
 msgid "Devices"
@@ -623,7 +623,7 @@ msgstr "Socket-ak"
 
 #: data/resources/ui/pages/cpu.ui:126
 msgid "Uptime"
-msgstr ""
+msgstr "Jarduera-denbora"
 
 #: data/resources/ui/pages/cpu.ui:135
 msgid "Virtualization"
@@ -677,12 +677,12 @@ msgstr "Energia-erabilera"
 
 #: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:84
 msgid "PCI Slot"
-msgstr ""
+msgstr "PCI arteka"
 
 #: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
 #: data/resources/ui/pages/npu.ui:93
 msgid "Driver Used"
-msgstr ""
+msgstr "Erabilitako kontrolatzailea"
 
 #: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
 msgid "Max Power Cap"
@@ -690,7 +690,7 @@ msgstr ""
 
 #: data/resources/ui/pages/memory.ui:9
 msgid "You need to authenticate to see memory properties"
-msgstr ""
+msgstr "Autentifikatu behar duzu memoria-propietateak ikusteko"
 
 #: data/resources/ui/pages/memory.ui:10
 msgid "Authenticate"
@@ -698,7 +698,7 @@ msgstr "Autentifikatu"
 
 #: data/resources/ui/pages/memory.ui:45
 msgid "Slots Used"
-msgstr ""
+msgstr "Erabilitako artekak"
 
 #: data/resources/ui/pages/memory.ui:54
 msgid "Speed"
@@ -710,7 +710,7 @@ msgstr ""
 
 #: data/resources/ui/pages/memory.ui:81
 msgid "Type Detail"
-msgstr ""
+msgstr "Motaren xehetasuna"
 
 #: data/resources/ui/pages/network.ui:35
 msgid "Total Received"
@@ -730,69 +730,69 @@ msgstr "Hardwarearen helbidea"
 
 #: data/resources/ui/pages/network.ui:94
 msgid "Link Speed"
-msgstr ""
+msgstr "Esteka-abiadura"
 
 #: data/resources/ui/pages/npu.ui:31
 msgid "NPU Frequency"
-msgstr ""
+msgstr "NPU maiztasuna"
 
 #: data/resources/ui/pages/npu.ui:44
 msgid "Memory Frequency"
-msgstr ""
+msgstr "Memoria-maiztasuna"
 
 #: data/resources/ui/pages/processes.ui:6
 #: data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2113
 msgid "Kill Process"
-msgstr ""
+msgstr "Hil prozesua"
 
 #: data/resources/ui/pages/processes.ui:10
 #: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2112
 msgid "Halt Process"
-msgstr ""
+msgstr "Gelditu prozesua"
 
 #: data/resources/ui/pages/processes.ui:14
 #: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2114
 msgid "Continue Process"
-msgstr ""
+msgstr "Jarraitu prozesuarekin"
 
 #: data/resources/ui/pages/processes.ui:22
 #: data/resources/ui/pages/processes.ui:74
 msgid "Kill Processes"
-msgstr ""
+msgstr "Hil prozesuak"
 
 #: data/resources/ui/pages/processes.ui:26
 #: data/resources/ui/pages/processes.ui:78
 msgid "Halt Processes"
-msgstr ""
+msgstr "Gelditu prozesuak"
 
 #: data/resources/ui/pages/processes.ui:30
 #: data/resources/ui/pages/processes.ui:82
 msgid "Continue Processes"
-msgstr ""
+msgstr "Jarraitu prozesuekin"
 
 #: data/resources/ui/pages/processes.ui:38
 #: data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:522
 #: src/ui/pages/processes/mod.rs:2111
 msgid "End Process"
-msgstr ""
+msgstr "Amaitu prozesua"
 
 #: data/resources/ui/pages/processes.ui:70 src/ui/pages/processes/mod.rs:526
 msgid "End Processes"
-msgstr ""
+msgstr "Amaitu prozesuak"
 
 #: data/resources/ui/pages/processes.ui:103
 msgid "Search processes"
-msgstr ""
+msgstr "Bilatu prozesuak"
 
 #: data/resources/ui/pages/processes.ui:133
 #: data/resources/ui/pages/processes.ui:135
 msgid "Show Process Options"
-msgstr ""
+msgstr "Erakutsi prozesu-aukerak"
 
 #: data/resources/ui/pages/processes.ui:146
 #: data/resources/ui/pages/processes.ui:148
 msgid "Show Process Information"
-msgstr ""
+msgstr "Erakutsi prozesu-informazioa"
 
 #: data/resources/ui/shortcuts.ui:11
 msgctxt "shortcut window"
@@ -817,37 +817,37 @@ msgstr "Irten"
 #: data/resources/ui/shortcuts.ui:32
 msgctxt "shortcut window"
 msgid "Toggle Search Field"
-msgstr ""
+msgstr "Erakutsi/ezkutatu bilaketa-eremua"
 
 #: data/resources/ui/shortcuts.ui:38
 msgctxt "shortcut window"
 msgid "End App/Process"
-msgstr ""
+msgstr "Amaitu aplikazioa/prozesua"
 
 #: data/resources/ui/shortcuts.ui:44
 msgctxt "shortcut window"
 msgid "Kill App/Process"
-msgstr ""
+msgstr "Hil aplikazioa/prozesua"
 
 #: data/resources/ui/shortcuts.ui:50
 msgctxt "shortcut window"
 msgid "Halt App/Process"
-msgstr ""
+msgstr "Gelditu aplikazioa/prozesua"
 
 #: data/resources/ui/shortcuts.ui:56
 msgctxt "shortcut window"
 msgid "Continue App/Process"
-msgstr ""
+msgstr "Jarraitu aplikazioarekin/prozesuarekin"
 
 #: data/resources/ui/shortcuts.ui:62
 msgctxt "shortcut window"
 msgid "Show Information for App/Process"
-msgstr ""
+msgstr "Erakutsi aplikazioaren/prozesuaren informazioa"
 
 #: data/resources/ui/shortcuts.ui:68
 msgctxt "shortcut window"
 msgid "Show Process Options"
-msgstr ""
+msgstr "Erakutsi prozesu-aukerak"
 
 #: data/resources/ui/window.ui:6
 msgid "Preferences"
@@ -859,7 +859,7 @@ msgstr "Laster-teklak"
 
 #: data/resources/ui/window.ui:14
 msgid "About Resources"
-msgstr ""
+msgstr "Baliabideak aplikazioari buruz"
 
 #: data/resources/ui/window.ui:88 data/resources/ui/window.ui:128
 msgid "Search"
@@ -867,15 +867,15 @@ msgstr "Bilatu"
 
 #: data/resources/ui/window.ui:90 data/resources/ui/window.ui:130
 msgid "Toggle search field"
-msgstr ""
+msgstr "Erakutsi/ezkutatu bilaketa-eremua"
 
 #: src/application.rs:267
 msgid "The Nalux Team"
-msgstr ""
+msgstr "Nalux taldea"
 
 #: src/application.rs:275
 msgid "Report Issues"
-msgstr ""
+msgstr "Jakinarazi akatsak"
 
 #. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
 #. One name per line, please do not remove previous names.
@@ -924,7 +924,7 @@ msgstr "E/E"
 
 #: src/ui/pages/applications/mod.rs:659
 msgid "Running Apps: {}"
-msgstr ""
+msgstr "Exekuzioan dauden aplikazioak: {}"
 
 #: src/ui/pages/applications/mod.rs:699 src/ui/pages/processes/mod.rs:861
 msgid "Cancel"
@@ -936,43 +936,43 @@ msgstr "Aplikazioa"
 
 #: src/ui/pages/applications/mod.rs:1528 src/ui/pages/processes/mod.rs:2060
 msgid "End {}?"
-msgstr ""
+msgstr "Amaitu {}?"
 
 #: src/ui/pages/applications/mod.rs:1529 src/ui/pages/processes/mod.rs:2061
 msgid "Halt {}?"
-msgstr ""
+msgstr "Gelditu {}?"
 
 #: src/ui/pages/applications/mod.rs:1530 src/ui/pages/processes/mod.rs:2062
 msgid "Kill {}?"
-msgstr ""
+msgstr "Hil {}?"
 
 #: src/ui/pages/applications/mod.rs:1531 src/ui/pages/processes/mod.rs:2063
 msgid "Continue {}?"
-msgstr ""
+msgstr "Jarraitu {}?"
 
 #: src/ui/pages/applications/mod.rs:1537 src/ui/pages/processes/mod.rs:2098
 msgid "Unsaved work might be lost."
-msgstr ""
+msgstr "Gorde gabeko lana galdu egin daiteke."
 
 #: src/ui/pages/applications/mod.rs:1539
 msgid ""
 "Halting an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
-msgstr ""
+msgstr "Aplikazioa gelditzen bada, datuak galdu daitezke eta segurtasuna murriztu daiteke. Erabili kontuz."
 
 #: src/ui/pages/applications/mod.rs:1542
 msgid ""
 "Killing an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
-msgstr ""
+msgstr "Aplikazioa hiltzen bada, datuak galdu daitezke eta segurtasuna murriztu daiteke. Erabili kontuz."
 
 #: src/ui/pages/cpu.rs:241 src/ui/pages/gpu.rs:210
 msgid "Total Usage"
-msgstr ""
+msgstr "Erabilera guztira"
 
 #: src/ui/pages/cpu.rs:256 src/ui/pages/cpu.rs:415 src/ui/pages/cpu.rs:419
 msgid "CPU {}"
-msgstr ""
+msgstr "PUZ {}"
 
 #: src/ui/pages/cpu.rs:269 src/ui/pages/gpu.rs:237
 msgid "Temperature"
@@ -982,7 +982,7 @@ msgstr "Tenperatura"
 #: src/ui/pages/gpu.rs:422 src/ui/pages/network.rs:327
 #: src/ui/pages/network.rs:361
 msgid "Highest:"
-msgstr ""
+msgstr "Altuena:"
 
 #: src/ui/pages/drive.rs:126
 msgid "Drive"
@@ -990,15 +990,15 @@ msgstr "Unitatea"
 
 #: src/ui/pages/drive.rs:235
 msgid "Drive Activity"
-msgstr ""
+msgstr "Unitate-jarduera"
 
 #: src/ui/pages/drive.rs:242
 msgid "Read Speed"
-msgstr ""
+msgstr "Irakurtze-abiadura"
 
 #: src/ui/pages/drive.rs:246
 msgid "Write Speed"
-msgstr ""
+msgstr "Idazte-abiadura"
 
 #: src/ui/pages/drive.rs:411 src/ui/pages/drive.rs:421
 msgid "Yes"
@@ -1012,29 +1012,29 @@ msgstr "Ez"
 #. translation should preferably be quite short or an abbreviation
 #: src/ui/pages/drive.rs:439
 msgid "R: {} · W: {}"
-msgstr ""
+msgstr "R: {} · W: {}"
 
 #: src/ui/pages/gpu.rs:218
 msgid "Video Encoder/Decoder Usage"
-msgstr ""
+msgstr "Bideo-kodetzailearen/deskodetzailearen erabilera"
 
 #: src/ui/pages/gpu.rs:224
 msgid "Video Encoder Usage"
-msgstr ""
+msgstr "Bideo-kodetzailearen erabilera"
 
 #: src/ui/pages/gpu.rs:229
 msgid "Video Decoder Usage"
-msgstr ""
+msgstr "Bideo-deskodetzailearen erabilera"
 
 #: src/ui/pages/gpu.rs:234
 msgid "Video Memory Usage"
-msgstr ""
+msgstr "Bideo-memoriaren erabilera"
 
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
 #: src/ui/pages/gpu.rs:408
 msgid "Memory: {}"
-msgstr ""
+msgstr "Memoria: {}"
 
 #: src/ui/pages/memory.rs:261
 msgid "{} of {}"
@@ -1042,17 +1042,17 @@ msgstr "{} / {}"
 
 #: src/ui/pages/memory.rs:264
 msgid "{} MT/s"
-msgstr ""
+msgstr "{} MT/s"
 
 #. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
 #. preferably be quite short or an abbreviation
 #: src/ui/pages/memory.rs:345
 msgid "{} / {} · Swap: {} %"
-msgstr ""
+msgstr "{} / {} · Trukatze-espazioa: {} %"
 
 #: src/ui/pages/network.rs:118
 msgid "Network Interface"
-msgstr ""
+msgstr "Sareko interfazea"
 
 #: src/ui/pages/network.rs:229
 msgid "Receiving"
@@ -1098,29 +1098,29 @@ msgstr[1] "Hil {} prozesu?"
 msgid ""
 "Halting a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
-msgstr ""
+msgstr "Prozesua gelditzen bada, datuak galdu daitezke eta segurtasuna murriztu daiteke. Erabili kontuz."
 
 #: src/ui/pages/processes/mod.rs:2103
 msgid ""
 "Killing a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
-msgstr ""
+msgstr "Prozesua hiltzen bada, datuak galdu daitezke eta segurtasuna murriztu daiteke. Erabili kontuz."
 
 #: src/ui/window.rs:452
 msgid "GPU {}"
-msgstr ""
+msgstr "PUG {}"
 
 #: src/ui/window.rs:482
 msgid "NPU {}"
-msgstr ""
+msgstr "NPU {}"
 
 #: src/ui/window.rs:484
 msgid "NPU"
-msgstr ""
+msgstr "NPU"
 
 #: src/ui/window.rs:1152
 msgid "Successfully adjusted {}"
-msgstr ""
+msgstr "{} ongi doitu da"
 
 #: src/ui/window.rs:1153
 msgid "There was a problem adjusting {}"
