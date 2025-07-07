@@ -12,7 +12,10 @@ use gtk::{
 };
 use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, info, trace};
-use process_data::{Containerization, GpuIdentifier, GpuUsageStats, ProcessData};
+use process_data::{
+    Containerization, ProcessData,
+    gpu_usage::{GpuIdentifier, GpuUsageStats},
+};
 
 use crate::i18n::i18n;
 

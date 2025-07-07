@@ -1,6 +1,7 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self};
 use log::trace;
+use process_data::gpu_usage::GpuIdentifier;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
@@ -244,10 +245,10 @@ impl ResGPU {
         );
 
         match gpu.gpu_identifier() {
-            process_data::GpuIdentifier::PciSlot(pci_slot) => {
+            GpuIdentifier::PciSlot(pci_slot) => {
                 imp.pci_slot.set_subtitle(&pci_slot.to_string());
             }
-            process_data::GpuIdentifier::Enumerator(_) => imp.pci_slot.set_subtitle(&i18n("N/A")),
+            GpuIdentifier::Enumerator(_) => imp.pci_slot.set_subtitle(&i18n("N/A")),
         }
 
         imp.driver_used.set_subtitle(gpu.driver());

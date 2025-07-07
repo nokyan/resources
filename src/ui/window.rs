@@ -63,7 +63,7 @@ mod imp {
     use async_channel::{Receiver, Sender, unbounded};
     use gtk::CompositeTemplate;
     use log::debug;
-    use process_data::{GpuIdentifier, pci_slot::PciSlot};
+    use process_data::{gpu_usage::GpuIdentifier, pci_slot::PciSlot};
 
     #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/net/nokyan/Resources/ui/window.ui")]

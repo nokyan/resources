@@ -1,7 +1,7 @@
 use anyhow::{Context, Result, bail};
 use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, trace, warn};
-use process_data::GpuIdentifier;
+use process_data::gpu_usage::GpuIdentifier;
 
 use std::{
     collections::HashMap,

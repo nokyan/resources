@@ -5,7 +5,7 @@ use nvml_wrapper::{
     enum_wrappers::device::{Clock, TemperatureSensor},
     error::NvmlError,
 };
-use process_data::GpuIdentifier;
+use process_data::gpu_usage::GpuIdentifier;
 
 use std::{
     path::{Path, PathBuf},

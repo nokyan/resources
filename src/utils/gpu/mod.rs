@@ -7,7 +7,7 @@ mod v3d;
 use anyhow::{Context, Result, bail};
 use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, info, trace};
-use process_data::{GpuIdentifier, pci_slot::PciSlot};
+use process_data::{gpu_usage::GpuIdentifier, pci_slot::PciSlot};
 use v3d::V3dGpu;
 
 use std::{

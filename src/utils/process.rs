@@ -1,7 +1,10 @@
 use anyhow::{Context, Result, bail};
 use config::LIBEXECDIR;
 use log::{debug, error, info, trace};
-use process_data::{GpuIdentifier, GpuUsageStats, Niceness, ProcessData};
+use process_data::{
+    Niceness, ProcessData,
+    gpu_usage::{GpuIdentifier, GpuUsageStats},
+};
 use std::{
     collections::BTreeMap,
     ffi::{OsStr, OsString},

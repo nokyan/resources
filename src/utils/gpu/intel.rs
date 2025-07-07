@@ -1,5 +1,5 @@
 use anyhow::{Result, bail};
-use process_data::GpuIdentifier;
+use process_data::gpu_usage::GpuIdentifier;
 use strum_macros::{Display, EnumString};
 
 use std::{
