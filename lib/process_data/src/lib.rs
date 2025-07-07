@@ -587,7 +587,7 @@ impl ProcessData {
                         .get(driver.as_str())
                         .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
-                    video_cycles_total: ENC_TOTAL_CYCLES_DRM_FIELDS
+                    video_total_cycles: ENC_TOTAL_CYCLES_DRM_FIELDS
                         .get(driver.as_str())
                         .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
