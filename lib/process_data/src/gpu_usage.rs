@@ -27,9 +27,9 @@ use crate::pci_slot::PciSlot;
     ),
     default = 0
 )]
-pub struct Percentage(u8);
+pub struct IntegerPercentage(u8);
 
-impl Percentage {
+impl IntegerPercentage {
     fn fraction(self) -> f32 {
         self.into_inner() as f32 / 100.0
     }
@@ -69,9 +69,9 @@ pub enum GpuUsageStats {
         video_ns: u64,
     },
     NvidiaStats {
-        gfx_percentage: Percentage,
-        enc_percentage: Percentage,
-        dec_percentage: Percentage,
+        gfx_percentage: IntegerPercentage,
+        enc_percentage: IntegerPercentage,
+        dec_percentage: IntegerPercentage,
         mem_bytes: u64,
     },
     V3dStats {
@@ -81,6 +81,8 @@ pub enum GpuUsageStats {
     XeStats {
         gfx_cycles: u64,
         gfx_total_cycles: u64,
+        compute_cycles: u64,
+        compute_total_cycles: u64,
         video_cycles: u64,
         video_total_cycles: u64,
         mem_bytes: u64,
@@ -96,14 +98,23 @@ impl GpuUsageStats {
         }
     }
 
-    fn delta_ratio(a_num: u64, b_num: u64, a_den: u64, b_den: u64) -> Option<f32> {
-        let num = a_num.saturating_sub(b_num) as f64;
-        let den = a_den.saturating_sub(b_den) as f64;
-        if den == 0.0 {
+    fn delta_ratio(
+        a_cycles: u64,
+        b_cycles: u64,
+        a_total_cycles: u64,
+        b_total_cycles: u64,
+    ) -> Option<f32> {
+        let cycles = a_cycles.saturating_sub(b_cycles) as f64;
+        let total_cycles = a_total_cycles.saturating_sub(b_total_cycles) as f64;
+        if total_cycles == 0.0 {
             None
         } else {
-            Some((num / den) as f32)
+            Some((cycles / total_cycles) as f32)
         }
+    }
+
+    fn max_option(a: Option<f32>, b: Option<f32>) -> Option<f32> {
+        a.zip(b).map(|(x, y)| x.max(y)).or(a.or(b))
     }
 
     #[must_use]
@@ -119,16 +130,35 @@ impl GpuUsageStats {
             }
             (
                 Self::XeStats {
-                    gfx_cycles: a_cycles,
-                    gfx_total_cycles: a_total_cycles,
+                    gfx_cycles: a_gfx_cycles,
+                    gfx_total_cycles: a_gfx_total_cycles,
+                    compute_cycles: a_compute_cycles,
+                    compute_total_cycles: a_compute_total_cycles,
                     ..
                 },
                 Self::XeStats {
-                    gfx_cycles: b_cycles,
-                    gfx_total_cycles: b_total_cycles,
+                    gfx_cycles: b_gfx_cycles,
+                    gfx_total_cycles: b_gfx_total_cycles,
+                    compute_cycles: b_compute_cycles,
+                    compute_total_cycles: b_compute_total_cycles,
                     ..
                 },
-            ) => Self::delta_ratio(*a_cycles, *b_cycles, *a_total_cycles, *b_total_cycles),
+            ) => Self::max_option(
+                // Right now, Resources doesn't differentiate between compute and gfx load, and since xe gives us cycles
+                // instead of ns for whatever reason, we need to do this hack :/
+                Self::delta_ratio(
+                    *a_gfx_cycles,
+                    *b_gfx_cycles,
+                    *a_gfx_total_cycles,
+                    *b_gfx_total_cycles,
+                ),
+                Self::delta_ratio(
+                    *a_compute_cycles,
+                    *b_compute_cycles,
+                    *a_compute_total_cycles,
+                    *b_compute_total_cycles,
+                ),
+            ),
             _ => None,
         }
     }
@@ -268,6 +298,8 @@ impl GpuUsageStats {
                 Self::XeStats {
                     gfx_cycles: a_gfx_cycles,
                     gfx_total_cycles: a_gfx_total_cycles,
+                    compute_cycles: a_compute_cycles,
+                    compute_total_cycles: a_compute_total_cycles,
                     video_cycles: a_video_cycles,
                     video_total_cycles: a_video_total_cycles,
                     mem_bytes: a_mem_bytes,
@@ -275,6 +307,8 @@ impl GpuUsageStats {
                 Self::XeStats {
                     gfx_cycles: b_gfx_cycles,
                     gfx_total_cycles: b_gfx_total_cycles,
+                    compute_cycles: b_compute_cycles,
+                    compute_total_cycles: b_compute_total_cycles,
                     video_cycles: b_video_cycles,
                     video_total_cycles: b_video_total_cycles,
                     mem_bytes: b_mem_bytes,
@@ -282,6 +316,8 @@ impl GpuUsageStats {
             ) => Self::XeStats {
                 gfx_cycles: *a_gfx_cycles.max(b_gfx_cycles),
                 gfx_total_cycles: *a_gfx_total_cycles.max(b_gfx_total_cycles),
+                compute_cycles: *a_compute_cycles.max(b_compute_cycles),
+                compute_total_cycles: *a_compute_total_cycles.max(b_compute_total_cycles),
                 video_cycles: *a_video_cycles.max(b_video_cycles),
                 video_total_cycles: *a_video_total_cycles.max(b_video_total_cycles),
                 mem_bytes: *a_mem_bytes.max(b_mem_bytes),

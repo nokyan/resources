@@ -20,7 +20,7 @@ use std::str::FromStr;
 use std::sync::{LazyLock, RwLock};
 use std::time::SystemTime;
 
-use crate::gpu_usage::{GpuIdentifier, GpuUsageStats, Percentage};
+use crate::gpu_usage::{GpuIdentifier, GpuUsageStats, IntegerPercentage};
 
 const STAT_OFFSET: usize = 2; // we split the stat contents where the executable name ends, which is the second element
 const STAT_PARENT_PID: usize = 3 - STAT_OFFSET;
@@ -68,11 +68,16 @@ static GFX_NS_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> = Lazy::new(|| {
 });
 
 static GFX_CYCLES_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> =
-    Lazy::new(|| HashMap::from_iter([("xe", vec!["drm-cycles-rcs", "drm-cycles-ccs"])]));
+    Lazy::new(|| HashMap::from_iter([("xe", vec!["drm-cycles-rcs"])]));
 
-static GFX_TOTAL_CYCLES_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> = Lazy::new(|| {
-    HashMap::from_iter([("xe", vec!["drm-total-cycles-rcs", "drm-total-cycles-ccs"])])
-});
+static GFX_TOTAL_CYCLES_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> =
+    Lazy::new(|| HashMap::from_iter([("xe", vec!["drm-total-cycles-rcs"])]));
+
+static COMPUTE_CYCLES_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> =
+    Lazy::new(|| HashMap::from_iter([("xe", vec!["drm-cycles-ccs"])]));
+
+static COMPUTE_TOTAL_CYCLES_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> =
+    Lazy::new(|| HashMap::from_iter([("xe", vec!["drm-total-cycles-ccs"])]));
 
 static ENC_NS_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> = Lazy::new(|| {
     HashMap::from_iter([
@@ -583,6 +588,14 @@ impl ProcessData {
                         .get(driver.as_str())
                         .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
+                    compute_cycles: COMPUTE_CYCLES_DRM_FIELDS
+                        .get(driver.as_str())
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
+                        .unwrap_or_default(),
+                    compute_total_cycles: COMPUTE_TOTAL_CYCLES_DRM_FIELDS
+                        .get(driver.as_str())
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
+                        .unwrap_or_default(),
                     video_cycles: ENC_CYCLES_DRM_FIELDS
                         .get(driver.as_str())
                         .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
@@ -663,10 +676,16 @@ impl ProcessData {
             .sum();
 
         let gpu_stats = GpuUsageStats::NvidiaStats {
-            gfx_percentage: Percentage::try_new(this_process_stats.unwrap_or_default().0 as u8)?,
+            gfx_percentage: IntegerPercentage::try_new(
+                this_process_stats.unwrap_or_default().0 as u8,
+            )?,
             mem_bytes: this_process_mem_stats,
-            enc_percentage: Percentage::try_new(this_process_stats.unwrap_or_default().1 as u8)?,
-            dec_percentage: Percentage::try_new(this_process_stats.unwrap_or_default().2 as u8)?,
+            enc_percentage: IntegerPercentage::try_new(
+                this_process_stats.unwrap_or_default().1 as u8,
+            )?,
+            dec_percentage: IntegerPercentage::try_new(
+                this_process_stats.unwrap_or_default().2 as u8,
+            )?,
         };
         Ok(gpu_stats)
     }
