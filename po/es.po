@@ -131,7 +131,9 @@ msgstr "Reportar problemas"
 #. One name per line, please do not remove previous names.
 #: src/application.rs:281
 msgid "translator-credits"
-msgstr "haggen88"
+msgstr ""
+"haggen88\n"
+"Alejandro Pinar Ruiz <alejandropinarruiz@gmail.com>, 2025."
 
 #: src/application.rs:282
 msgid "Icon by"
@@ -218,7 +220,7 @@ msgstr "Cancelar"
 
 #: src/ui/pages/applications/mod.rs:745
 msgid "App"
-msgstr "Aplicacion"
+msgstr "Aplicación"
 
 #: src/ui/pages/applications/mod.rs:861 src/ui/pages/cpu.rs:123
 #: src/ui/pages/processes/mod.rs:1136 src/ui/window.rs:289
@@ -1663,7 +1665,7 @@ msgstr "Tecnología"
 #: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:81
 #: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:75
 msgid "Manufacturer"
-msgstr "Productor"
+msgstr "Fabricante"
 
 #: data/resources/ui/pages/battery.ui:81
 msgid "Model Name"
@@ -1767,7 +1769,7 @@ msgstr "Autenticar"
 
 #: data/resources/ui/pages/memory.ui:45
 msgid "Slots Used"
-msgstr "Slots usados"
+msgstr "Ranuras usadas"
 
 #: data/resources/ui/pages/memory.ui:54
 msgid "Speed"
