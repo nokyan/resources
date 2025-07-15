@@ -172,13 +172,14 @@ pub trait GpuImpl {
     }
 
     fn hwmon_temperature(&self) -> Result<f64> {
-        read_parsed::<f64>(self.hwmon_path()?.join("temp1_input")).map(|temp| temp / 1000.0)
+        read_parsed::<f64>(self.hwmon_path()?.join("temp1_input"))
+            .map(|millicelsius| millicelsius / 1000.0)
     }
 
     fn hwmon_power_usage(&self) -> Result<f64> {
         read_parsed::<f64>(self.hwmon_path()?.join("power1_average"))
             .or_else(|_| read_parsed::<f64>(self.hwmon_path()?.join("power1_input")))
-            .map(|power| power / 1_000_000.0)
+            .map(|microwatts| microwatts / 1_000_000.0)
     }
 
     fn hwmon_core_frequency(&self) -> Result<f64> {
@@ -190,12 +191,13 @@ pub trait GpuImpl {
     }
 
     fn hwmon_power_cap(&self) -> Result<f64> {
-        read_parsed::<f64>(self.hwmon_path()?.join("power1_cap")).map(|power| power / 1_000_000.0)
+        read_parsed::<f64>(self.hwmon_path()?.join("power1_cap"))
+            .map(|microwatts| microwatts / 1_000_000.0)
     }
 
     fn hwmon_power_cap_max(&self) -> Result<f64> {
         read_parsed::<f64>(self.hwmon_path()?.join("power1_cap_max"))
-            .map(|power| power / 1_000_000.0)
+            .map(|microwatts| microwatts / 1_000_000.0)
     }
 }
 
@@ -265,6 +267,7 @@ impl Gpu {
         ))?
         .flatten()
         {
+            trace!("Found hwmon at {hwmon:?}");
             hwmon_vec.push(hwmon);
         }
 
