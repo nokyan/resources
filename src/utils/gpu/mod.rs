@@ -182,6 +182,11 @@ pub trait GpuImpl {
             .map(|microwatts| microwatts / 1_000_000.0)
     }
 
+    fn hwmon_energy_usage(&self) -> Result<f64> {
+        read_parsed::<f64>(self.hwmon_path()?.join("energy1_input"))
+            .map(|microjoules| microjoules / 1_000_000.0)
+    }
+
     fn hwmon_core_frequency(&self) -> Result<f64> {
         read_parsed::<f64>(self.hwmon_path()?.join("freq1_input"))
     }
