@@ -105,7 +105,7 @@ If you’ve built Resources as a Flatpak, type `flatpak-builder --run flatpak_ap
 
 ## Contributing
 
-If you have an idea, bug report, question or something else, don’t hesitate to [open an issue](https://github.com/nokyan/resources/issues)! Translations are always welcome.
+If you have an idea, bug report, question or something else, don’t hesitate to [open an issue](https://github.com/nokyan/resources/issues)! Translations are always welcome but need to go through [GNOME Damned Lies](https://l10n.gnome.org/module/resources/), ordinary pull requests for translation changes cannot be accepted anymore.
 
 ## Code of Conduct
 
