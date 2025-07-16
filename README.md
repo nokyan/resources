@@ -7,6 +7,8 @@
 
 Resources is a simple yet powerful monitor for your system resources and processes, written in Rust and using GTK 4 and libadwaita for its GUI. It’s capable of displaying usage and details of your CPU, memory, GPUs, NPUs, network interfaces and block devices. It’s also capable of listing and terminating running graphical applications as well as processes.
 
+Resources is *not* a program that will try to display every single possible piece of information about each tiny part of your device. Instead, it aims to strike a balance between information richness, user-friendliness and a balanced user interface — showing you most of the information most of you need most of the time.
+
 <details>
   <summary><b>Click me for screenshots!</b></summary>
 
