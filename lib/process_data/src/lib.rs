@@ -12,9 +12,7 @@ use nvml_wrapper::{Device, Nvml};
 use pci_slot::PciSlot;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap, HashSet};
-use std::io::Read;
 use std::iter::Sum;
-use std::os::linux::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::sync::{LazyLock, RwLock};
@@ -163,6 +161,12 @@ pub enum Containerization {
     Snap,
 }
 
+struct Fdinfo {
+    pub pid: libc::pid_t,
+    pub fdinfo_num: usize,
+    pub content: HashMap<String, String>,
+}
+
 /// Data that could be transferred us>ing `resources-processes`, separated from
 /// `Process` mainly due to `Icon` not being able to derive `Serialize` and
 /// `Deserialize`.
@@ -248,12 +252,14 @@ impl ProcessData {
         }
     }
 
-    pub fn all_process_data() -> Result<Vec<Self>> {
+    pub fn all_process_data(
+        known_non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+    ) -> Result<Vec<Self>> {
         Self::update_nvidia_stats();
 
         let mut process_data = vec![];
         for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-            let data = ProcessData::try_from_path(&entry);
+            let data = ProcessData::try_from_path(&entry, known_non_gpu_fdinfos);
 
             if let Ok(data) = data {
                 process_data.push(data);
@@ -263,7 +269,10 @@ impl ProcessData {
         Ok(process_data)
     }
 
-    pub fn try_from_path<P: AsRef<Path>>(proc_path: P) -> Result<Self> {
+    pub fn try_from_path<P: AsRef<Path>>(
+        proc_path: P,
+        known_non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+    ) -> Result<Self> {
         let proc_path = proc_path.as_ref();
         let stat = std::fs::read_to_string(proc_path.join("stat"))?;
         let statm = std::fs::read_to_string(proc_path.join("statm"))?;
@@ -389,10 +398,11 @@ impl ProcessData {
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
         });
 
-        let fdinfos = Self::collect_fdinfos(pid).unwrap_or_default();
+        let fdinfos = Self::collect_fdinfos(pid, known_non_gpu_fdinfos).unwrap_or_default();
 
         let nvidia_stats = Self::nvidia_gpu_stats_all(pid);
-        let mut gpu_usage_stats = Self::other_gpu_usage_stats(&fdinfos).unwrap_or_default();
+        let mut gpu_usage_stats =
+            Self::other_gpu_usage_stats(&fdinfos, known_non_gpu_fdinfos).unwrap_or_default();
         gpu_usage_stats.extend(nvidia_stats);
 
         let timestamp = unix_as_millis();
@@ -419,7 +429,10 @@ impl ProcessData {
         })
     }
 
-    fn collect_fdinfos(pid: libc::pid_t) -> Result<Vec<HashMap<String, String>>> {
+    fn collect_fdinfos(
+        pid: libc::pid_t,
+        known_non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+    ) -> Result<Vec<Fdinfo>> {
         let fdinfo_dir = PathBuf::from(format!("/proc/{pid}/fdinfo"));
 
         let mut seen_fds = HashSet::new();
@@ -429,12 +442,6 @@ impl ProcessData {
         for entry in std::fs::read_dir(fdinfo_dir)? {
             let entry = entry?;
             let fdinfo_path = entry.path();
-
-            let _file = std::fs::File::open(&fdinfo_path);
-            if _file.is_err() {
-                continue;
-            }
-            let mut file = _file.unwrap();
 
             // if our fd is 0, 1 or 2 it's probably just a std stream so skip it
             let fd_num = fdinfo_path
@@ -447,26 +454,8 @@ impl ProcessData {
                 continue;
             }
 
-            let _metadata = file.metadata();
-            if _metadata.is_err() {
+            if known_non_gpu_fdinfos.contains(&(pid, fd_num)) {
                 continue;
-            }
-            let metadata = _metadata.unwrap();
-
-            if !metadata.is_file() {
-                continue;
-            }
-
-            // Adapted from nvtop's `is_drm_fd()`
-            // https://github.com/Syllo/nvtop/blob/master/src/extract_processinfo_fdinfo.c
-            let fd_path = fdinfo_path.to_str().map(|s| s.replace("fdinfo", "fd"));
-            if let Some(fd_path) = fd_path {
-                if let Ok(fd_metadata) = std::fs::metadata(fd_path) {
-                    let major = libc::major(fd_metadata.st_rdev());
-                    if (fd_metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR || major != 226 {
-                        continue;
-                    }
-                }
             }
 
             // Adapted from nvtop's `processinfo_sweep_fdinfos()`
@@ -484,9 +473,15 @@ impl ProcessData {
             seen_fds.insert(fd_num);
 
             let mut buffer = String::new();
-            file.read_to_string(&mut buffer)?;
+            if std::fs::read_to_string(&mut buffer).is_err() {
+                known_non_gpu_fdinfos.insert((pid, fd_num));
+            }
 
-            return_vec.push(Self::parse_fdinfo(buffer));
+            return_vec.push(Fdinfo {
+                pid,
+                fdinfo_num: fd_num,
+                content: Self::parse_fdinfo(buffer),
+            });
         }
 
         Ok(return_vec)
@@ -503,7 +498,8 @@ impl ProcessData {
     }
 
     fn other_gpu_usage_stats(
-        fdinfos: &[HashMap<String, String>],
+        fdinfos: &[Fdinfo],
+        known_non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
     ) -> Result<BTreeMap<GpuIdentifier, GpuUsageStats>> {
         let mut return_map = BTreeMap::new();
 
@@ -515,19 +511,20 @@ impl ProcessData {
                         *existing_value = existing_value.greater(&stats)
                     })
                     .or_insert(stats);
+            } else {
+                known_non_gpu_fdinfos.insert((fdinfo.pid, fdinfo.fdinfo_num));
             }
         }
 
         Ok(return_map)
     }
 
-    fn extract_gpu_usage_from_fdinfo(
-        fdinfo: &HashMap<String, String>,
-    ) -> Result<(GpuIdentifier, GpuUsageStats)> {
-        let driver = fdinfo.get(DRM_DRIVER);
+    fn extract_gpu_usage_from_fdinfo(fdinfo: &Fdinfo) -> Result<(GpuIdentifier, GpuUsageStats)> {
+        let driver = fdinfo.content.get(DRM_DRIVER);
 
         if let Some(driver) = driver {
             let gpu_identifier = fdinfo
+                .content
                 .get(DRM_PDEV)
                 .and_then(|field| PciSlot::from_str(field).ok())
                 .map(GpuIdentifier::PciSlot)
@@ -538,20 +535,20 @@ impl ProcessData {
                 "amdgpu" => GpuUsageStats::AmdgpuStats {
                     gfx_ns: GFX_NS_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
+                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_TIME))
                         .unwrap_or_default(),
                     enc_ns: ENC_NS_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
+                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_TIME))
                         .unwrap_or_default(),
                     dec_ns: DEC_NS_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
+                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_TIME))
                         .unwrap_or_default(),
                     mem_bytes: MEM_DRM_FIELDS
                         .get(driver.as_str())
                         .map(|names| {
-                            Self::parse_drm_fields::<u64, _>(fdinfo, names, &RE_DRM_KIB)
+                            Self::parse_drm_fields::<u64, _>(&fdinfo, names, &RE_DRM_KIB)
                                 .saturating_mul(1024)
                         })
                         .unwrap_or_default(),
@@ -559,22 +556,22 @@ impl ProcessData {
                 "i915" => GpuUsageStats::I915Stats {
                     gfx_ns: GFX_NS_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
+                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_TIME))
                         .unwrap_or_default(),
                     video_ns: ENC_NS_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
+                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_TIME))
                         .unwrap_or_default(),
                 },
                 "v3d" => GpuUsageStats::V3dStats {
                     gfx_ns: GFX_NS_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
+                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_TIME))
                         .unwrap_or_default(),
                     mem_bytes: MEM_DRM_FIELDS
                         .get(driver.as_str())
                         .map(|names| {
-                            Self::parse_drm_fields::<u64, _>(fdinfo, names, &RE_DRM_KIB)
+                            Self::parse_drm_fields::<u64, _>(&fdinfo, names, &RE_DRM_KIB)
                                 .saturating_mul(1024)
                         })
                         .unwrap_or_default(),
@@ -582,32 +579,32 @@ impl ProcessData {
                 "xe" => GpuUsageStats::XeStats {
                     gfx_cycles: GFX_CYCLES_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
+                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
                     gfx_total_cycles: GFX_TOTAL_CYCLES_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
+                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
                     compute_cycles: COMPUTE_CYCLES_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
+                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
                     compute_total_cycles: COMPUTE_TOTAL_CYCLES_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
+                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
                     video_cycles: ENC_CYCLES_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
+                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
                     video_total_cycles: ENC_TOTAL_CYCLES_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
+                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
                     mem_bytes: MEM_DRM_FIELDS
                         .get(driver.as_str())
                         .map(|names| {
-                            Self::parse_drm_fields::<u64, _>(fdinfo, names, &RE_DRM_KIB)
+                            Self::parse_drm_fields::<u64, _>(&fdinfo, names, &RE_DRM_KIB)
                                 .saturating_mul(1024)
                         })
                         .unwrap_or_default(),
@@ -622,14 +619,14 @@ impl ProcessData {
     }
 
     fn parse_drm_fields<T: FromStr + Sum, S: AsRef<str>>(
-        fdinfo: &HashMap<String, String>,
+        fdinfo: &Fdinfo,
         field_names: &[S],
         regex: &Regex,
     ) -> T {
         field_names
             .iter()
             .filter_map(|name| {
-                fdinfo.get(name.as_ref()).and_then(|value| {
+                fdinfo.content.get(name.as_ref()).and_then(|value| {
                     regex
                         .captures(&value)
                         .and_then(|captures| captures.get(1))

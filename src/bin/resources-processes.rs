@@ -1,7 +1,10 @@
 use anyhow::Result;
 use process_data::ProcessData;
 use ron::ser::PrettyConfig;
-use std::io::{Read, Write};
+use std::{
+    collections::HashSet,
+    io::{Read, Write},
+};
 
 use clap::Parser;
 
@@ -20,8 +23,10 @@ struct Args {
 fn main() -> Result<()> {
     let args = Args::parse();
 
+    let mut known_non_gpu_fdinfos = HashSet::new();
+
     if args.once {
-        output(args.ron)?;
+        output(args.ron, &mut known_non_gpu_fdinfos)?;
         return Ok(());
     }
 
@@ -30,12 +35,12 @@ fn main() -> Result<()> {
 
         std::io::stdin().read_exact(&mut buffer)?;
 
-        output(args.ron)?;
+        output(args.ron, &mut known_non_gpu_fdinfos)?;
     }
 }
 
-fn output(ron: bool) -> Result<()> {
-    let data = ProcessData::all_process_data()?;
+fn output(ron: bool, known_non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>) -> Result<()> {
+    let data = ProcessData::all_process_data(known_non_gpu_fdinfos)?;
 
     let encoded = if ron {
         ron::ser::to_string_pretty(&data, PrettyConfig::default())?
