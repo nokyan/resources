@@ -423,9 +423,9 @@ impl WifiLinkData {
     pub fn frequency_display(&self) -> String {
         // https://en.wikipedia.org/wiki/List_of_WLAN_channels
         match (self.frequency_mhz) {
-            2400..=2495 => "2.4 Ghz".to_string(),
-            5150..=5895 => "5 Ghz".to_string(),
-            5925..=7125 => "6 Ghz".to_string(),
+            2400..=2495 => "2.4 GHz".to_string(),
+            5150..=5895 => "5 GHz".to_string(),
+            5925..=7125 => "6 GHz".to_string(),
             _ => convert_frequency((self.frequency_mhz.as_f64() / 1_000.0) * 1_000.0 * 1_000_000.0),
         }
     }
@@ -471,7 +471,7 @@ impl Display for Link {
 #[cfg(test)]
 mod test {
     use crate::utils::link::{
-        LinkData, PcieLinkData, PcieSpeed, SataSpeed, UsbSpeed, WifiGeneration,
+        LinkData, PcieLinkData, PcieSpeed, SataSpeed, UsbSpeed, WifiGeneration, WifiLinkData,
     };
     use anyhow::anyhow;
     use neli_wifi::Station;
@@ -869,6 +869,43 @@ mod test {
         }
     }
 
+    #[test]
+    fn display_wifi_link_frequencies() {
+        let map = HashMap::from([
+            (2401u32..=2495u32, "2.4 GHz"),
+            (5150u32..=5895, "5 GHz"),
+            (5925u32..=7125, "6 GHz"),
+        ]);
+        for mhz_range in map.keys() {
+            for step in mhz_range.clone().into_iter() {
+                let input = WifiLinkData {
+                    generation: None,
+                    frequency_mhz: step,
+                    rx_bps: 0,
+                    tx_bps: 0,
+                };
+                let result = input.frequency_display();
+                let expected = map[mhz_range];
+                pretty_assertions::assert_eq!(expected, result);
+            }
+        }
+    }
+
+    #[test]
+    fn display_unsupported_wifi_link_frequencies() {
+        let map = HashMap::from([(2400, "2.4 GHz"), (5000, "5.00 GHz"), (8000, "8.00 GHz")]);
+        for mhz in map.keys() {
+            let input = WifiLinkData {
+                generation: None,
+                frequency_mhz: *mhz,
+                rx_bps: 0,
+                tx_bps: 0,
+            };
+            let result = input.frequency_display();
+            let expected = map[mhz];
+            pretty_assertions::assert_eq!(expected, result);
+        }
+    }
     fn generate_wifi_station(
         ht_mcs: Option<u8>,
         vht_mcs: Option<u8>,
