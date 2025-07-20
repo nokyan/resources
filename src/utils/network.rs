@@ -278,13 +278,12 @@ impl NetworkInterface {
     ///
     /// Will return `Err` if the link speed couldn't be determined (e. g. for Wi-Fi connections)
     pub fn link_speed(&self) -> Result<usize> {
-        let mpbs = std::fs::read_to_string(self.sysfs_path.join("speed"))
+        std::fs::read_to_string(self.sysfs_path.join("speed"))
             .context("read failure")?
             .replace('\n', "")
             .parse::<usize>()
             .context("parsing failure")
-            .map(|mbps| mbps.saturating_mul(1_000_000))?;
-        Ok(mpbs)
+            .map(|mbps| mbps.saturating_mul(1_000_000))
     }
 
     /// Returns the appropriate Icon for the type of drive
