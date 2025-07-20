@@ -219,8 +219,8 @@ impl ResNetwork {
         );
 
         let imp = self.imp();
-        let link_speed = &network_data.link_speed;
         let network_interface = &network_data.inner;
+        let link_speed = network_interface.link_speed();
         let wifi_link = LinkData::from_wifi_adapter(network_interface);
 
         let tab_id = format!(
@@ -314,11 +314,10 @@ impl ResNetwork {
             inner: _,
             is_virtual: _,
             display_name: _,
-            link_speed: _,
         } = network_data;
 
-        let link_speed = &network_data.link_speed;
         let wifi_link = LinkData::from_wifi_adapter(&network_data.inner);
+        let link_speed = network_data.inner.link_speed();
 
         let imp = self.imp();
         let time_passed = SystemTime::now()

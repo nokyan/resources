@@ -39,7 +39,6 @@ pub struct NetworkData {
     pub received_bytes: Result<usize>,
     pub sent_bytes: Result<usize>,
     pub display_name: String,
-    pub link_speed: Result<usize>,
 }
 
 impl NetworkData {
@@ -53,7 +52,6 @@ impl NetworkData {
         let received_bytes = inner.received_bytes();
         let sent_bytes = inner.sent_bytes();
         let display_name = inner.display_name();
-        let link_speed = inner.link_speed();
 
         let network_data = Self {
             inner,
@@ -61,7 +59,6 @@ impl NetworkData {
             received_bytes,
             sent_bytes,
             display_name,
-            link_speed,
         };
 
         trace!(
