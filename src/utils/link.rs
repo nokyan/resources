@@ -434,8 +434,8 @@ impl WifiLinkData {
     }
 
     pub fn link_speed_display(&self) -> String {
-        let send_string = convert_speed_bits_decimal_with_places(self.tx_bps.as_f64(), 0);
-        let receive_string = convert_speed_bits_decimal_with_places(self.rx_bps.as_f64(), 0);
+        let send_string = convert_speed_bits_decimal_with_places(self.tx_bps.as_f64(), 2);
+        let receive_string = convert_speed_bits_decimal_with_places(self.rx_bps.as_f64(), 2);
 
         i18n_f("R: {} · S: {}", &[&receive_string, &send_string])
     }
@@ -918,11 +918,17 @@ mod test {
     fn display_wifi_link_speed() {
         let map = HashMap::from([
             ("R: 200 b/s · S: 100 b/s", (200, 100)),
-            ("R: 200 kb/s · S: 100 kb/s", (200_000, 100_000)),
-            ("R: 200 Mb/s · S: 100 Mb/s", (200_000_000, 100_000_000)),
-            ("R: 235 Mb/s · S: 124 Mb/s", (235_000_000, 124_000_000)),
-            ("R: 2 kb/s · S: 124 Mb/s", (2_000, 124_000_000)),
-            ("R: 124 Mb/s · S: 2 kb/s", (124_000_000, 2_000)),
+            ("R: 200.00 kb/s · S: 100.00 kb/s", (200_000, 100_000)),
+            (
+                "R: 200.00 Mb/s · S: 100.00 Mb/s",
+                (200_000_000, 100_000_000),
+            ),
+            (
+                "R: 235.00 Mb/s · S: 124.00 Mb/s",
+                (235_000_000, 124_000_000),
+            ),
+            ("R: 2.00 kb/s · S: 124.00 Mb/s", (2_000, 124_000_000)),
+            ("R: 124.25 Mb/s · S: 2.30 kb/s", (124_250_000, 2_300)),
         ]);
 
         for expected in map.keys() {
