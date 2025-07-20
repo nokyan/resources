@@ -10,7 +10,6 @@ use log::trace;
 
 use super::{pci::Device, read_uevent};
 use crate::i18n::i18n;
-use crate::utils::link::{LinkData, NetworkLinkData, WifiLinkData};
 
 const PATH_SYSFS: &str = "/sys/class/net";
 
@@ -40,8 +39,7 @@ pub struct NetworkData {
     pub received_bytes: Result<usize>,
     pub sent_bytes: Result<usize>,
     pub display_name: String,
-    pub link: Result<LinkData<WifiLinkData>>,
-    pub link_speed: Result<NetworkLinkData>,
+    pub link_speed: Result<usize>,
 }
 
 impl NetworkData {
@@ -55,11 +53,7 @@ impl NetworkData {
         let received_bytes = inner.received_bytes();
         let sent_bytes = inner.sent_bytes();
         let display_name = inner.display_name();
-        let link: Result<LinkData<WifiLinkData>> = LinkData::from_wifi_adapter(&inner);
-        let link_speed = match &link {
-            Ok(wifi_link) => Ok(NetworkLinkData::Wifi(wifi_link.current)),
-            Err(_) => inner.link_speed(),
-        };
+        let link_speed = inner.link_speed();
 
         let network_data = Self {
             inner,
@@ -67,7 +61,6 @@ impl NetworkData {
             received_bytes,
             sent_bytes,
             display_name,
-            link,
             link_speed,
         };
 
@@ -284,14 +277,14 @@ impl NetworkInterface {
     /// # Errors
     ///
     /// Will return `Err` if the link speed couldn't be determined (e. g. for Wi-Fi connections)
-    pub fn link_speed(&self) -> Result<NetworkLinkData> {
+    pub fn link_speed(&self) -> Result<usize> {
         let mpbs = std::fs::read_to_string(self.sysfs_path.join("speed"))
             .context("read failure")?
             .replace('\n', "")
             .parse::<usize>()
             .context("parsing failure")
             .map(|mbps| mbps.saturating_mul(1_000_000))?;
-        Ok(NetworkLinkData::Other(mpbs))
+        Ok(mpbs)
     }
 
     /// Returns the appropriate Icon for the type of drive

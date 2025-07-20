@@ -2,7 +2,7 @@ use std::time::{Duration, SystemTime};
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
-use crate::utils::link::NetworkLinkData;
+use crate::utils::link::LinkData;
 use crate::utils::network::{NetworkData, NetworkInterface};
 use crate::utils::units::{convert_speed, convert_speed_bits_decimal, convert_storage};
 use adw::{glib::property::PropertySet, prelude::*, subclass::prelude::*};
@@ -219,9 +219,9 @@ impl ResNetwork {
         );
 
         let imp = self.imp();
-        let link = &network_data.link;
         let link_speed = &network_data.link_speed;
         let network_interface = &network_data.inner;
+        let wifi_link = LinkData::from_wifi_adapter(network_interface);
 
         let tab_id = format!(
             "{}-{}",
@@ -273,20 +273,20 @@ impl ResNetwork {
             imp.hw_address.set_subtitle(&hw_address);
         }
 
-        imp.link.set_subtitle(
-            &link
-                .as_ref()
-                .map_or_else(|_| i18n("N/A"), |l| l.to_string()),
-        );
+        imp.link.set_subtitle(&wifi_link.as_ref().map_or_else(
+            |_| i18n("N/A"),
+            |network_link_data| network_link_data.to_string(),
+        ));
 
-        imp.link_speed
-            .set_subtitle(&link_speed.as_ref().map_or_else(
-                |_| i18n("N/A"),
-                |network_link_data| match network_link_data {
-                    NetworkLinkData::Wifi(wifi_link_data) => wifi_link_data.link_speed_display(),
-                    NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps.as_f64()),
-                },
-            ));
+        imp.link_speed.set_subtitle(
+            &(if let Ok(wifi_link) = wifi_link {
+                wifi_link.current.link_speed_display()
+            } else if let Ok(link_speed) = link_speed {
+                convert_speed_bits_decimal(link_speed.as_f64())
+            } else {
+                i18n("N/A")
+            }),
+        );
 
         imp.last_timestamp.set(
             SystemTime::now()
@@ -314,12 +314,11 @@ impl ResNetwork {
             inner: _,
             is_virtual: _,
             display_name: _,
-            link: _,
             link_speed: _,
         } = network_data;
 
-        let link = &network_data.link;
         let link_speed = &network_data.link_speed;
+        let wifi_link = LinkData::from_wifi_adapter(&network_data.inner);
 
         let imp = self.imp();
         let time_passed = SystemTime::now()
@@ -395,19 +394,20 @@ impl ResNetwork {
 
             (0.0, i18n("N/A"))
         };
-        imp.link.set_subtitle(&link.as_ref().map_or_else(
+        imp.link.set_subtitle(&wifi_link.as_ref().map_or_else(
             |_| i18n("N/A"),
             |network_link_data| network_link_data.to_string(),
         ));
 
-        imp.link_speed
-            .set_subtitle(&link_speed.as_ref().map_or_else(
-                |_| i18n("N/A"),
-                |network_link_data| match network_link_data {
-                    NetworkLinkData::Wifi(wifi_link_data) => wifi_link_data.link_speed_display(),
-                    NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps.as_f64()),
-                },
-            ));
+        imp.link_speed.set_subtitle(
+            &(if let Ok(wifi_link) = wifi_link {
+                wifi_link.current.link_speed_display()
+            } else if let Ok(link_speed) = link_speed {
+                convert_speed_bits_decimal(link_speed.as_f64())
+            } else {
+                i18n("N/A")
+            }),
+        );
 
         self.set_property("usage", f64::max(received_delta, sent_delta));
 
