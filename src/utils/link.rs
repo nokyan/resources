@@ -893,7 +893,12 @@ mod test {
 
     #[test]
     fn display_unsupported_wifi_link_frequencies() {
-        let map = HashMap::from([(2400, "2.4 GHz"), (5000, "5.00 GHz"), (8000, "8.00 GHz")]);
+        let map = HashMap::from([
+            (2400, "2.4 GHz"),
+            (5000, "5.00 GHz"),
+            (8000, "8.00 GHz"),
+            (8123, "8.12 GHz"),
+        ]);
         for mhz in map.keys() {
             let input = WifiLinkData {
                 generation: None,
