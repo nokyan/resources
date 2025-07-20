@@ -423,6 +423,7 @@ impl WifiLinkData {
     pub fn frequency_display(&self) -> String {
         // https://en.wikipedia.org/wiki/List_of_WLAN_channels
         match (self.frequency_mhz) {
+            0 => "".to_string(),
             2400..=2495 => "2.4 GHz".to_string(),
             5150..=5895 => "5 GHz".to_string(),
             5925..=7125 => "6 GHz".to_string(),
@@ -898,6 +899,7 @@ mod test {
             (5000, "5.00 GHz"),
             (8000, "8.00 GHz"),
             (8123, "8.12 GHz"),
+            (0, ""),
         ]);
         for mhz in map.keys() {
             let input = WifiLinkData {
@@ -909,6 +911,29 @@ mod test {
             let result = input.frequency_display();
             let expected = map[mhz];
             pretty_assertions::assert_eq!(expected, result);
+        }
+    }
+
+    #[test]
+    fn display_wifi_link_speed() {
+        let map = HashMap::from([
+            ("R: 200 b/s · S: 100 b/s", (200, 100)),
+            ("R: 200 kb/s · S: 100 kb/s", (200_000, 100_000)),
+            ("R: 200 Mb/s · S: 100 Mb/s", (200_000_000, 100_000_000)),
+            ("R: 235 Mb/s · S: 124 Mb/s", (235_000_000, 124_000_000)),
+            ("R: 2 kb/s · S: 124 Mb/s", (2_000, 124_000_000)),
+            ("R: 124 Mb/s · S: 2 kb/s", (124_000_000, 2_000)),
+        ]);
+        for expected in map.keys() {
+            let (receive, send) = map[expected];
+            let input = WifiLinkData {
+                generation: None,
+                frequency_mhz: 0,
+                rx_bps: receive,
+                tx_bps: send,
+            };
+            let result = input.link_speed_display();
+            pretty_assertions::assert_eq!(*expected, result);
         }
     }
     fn generate_wifi_station(
