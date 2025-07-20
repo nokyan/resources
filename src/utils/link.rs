@@ -5,10 +5,9 @@ use crate::utils::network::{InterfaceType, NetworkInterface};
 use crate::utils::units::{convert_frequency, convert_speed_bits_decimal_with_places};
 use anyhow::{Context, Error, Result, anyhow, bail};
 use log::{info, trace};
-use neli_wifi::{Nl80211Cmd, Socket, Station};
+use neli_wifi::{Socket, Station};
 use plotters::prelude::LogScalable;
 use process_data::pci_slot::PciSlot;
-use std::cmp::Ordering;
 use std::ffi::CString;
 use std::fmt::{Display, Formatter};
 use std::path::Path;
@@ -422,7 +421,7 @@ impl LinkData<WifiLinkData> {
 impl WifiLinkData {
     pub fn frequency_display(&self) -> String {
         // https://en.wikipedia.org/wiki/List_of_WLAN_channels
-        match (self.frequency_mhz) {
+        match self.frequency_mhz {
             0 => "".to_string(),
             2400..=2495 => "2.4 GHz".to_string(),
             5150..=5895 => "5 GHz".to_string(),
@@ -924,6 +923,7 @@ mod test {
             ("R: 2 kb/s · S: 124 Mb/s", (2_000, 124_000_000)),
             ("R: 124 Mb/s · S: 2 kb/s", (124_000_000, 2_000)),
         ]);
+
         for expected in map.keys() {
             let (receive, send) = map[expected];
             let input = WifiLinkData {

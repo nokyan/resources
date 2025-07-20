@@ -4,13 +4,13 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anyhow::{Context, Result, anyhow};
+use anyhow::{Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
 use log::trace;
 
 use super::{pci::Device, read_uevent};
 use crate::i18n::i18n;
-use crate::utils::link::{LinkData, NetworkLinkData, WifiGeneration, WifiLinkData};
+use crate::utils::link::{LinkData, NetworkLinkData, WifiLinkData};
 
 const PATH_SYSFS: &str = "/sys/class/net";
 

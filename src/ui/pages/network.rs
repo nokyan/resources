@@ -4,10 +4,7 @@ use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::link::NetworkLinkData;
 use crate::utils::network::{NetworkData, NetworkInterface};
-use crate::utils::units::{
-    convert_frequency, convert_speed, convert_speed_bits_decimal,
-    convert_speed_bits_decimal_with_places, convert_storage,
-};
+use crate::utils::units::{convert_speed, convert_speed_bits_decimal, convert_storage};
 use adw::{glib::property::PropertySet, prelude::*, subclass::prelude::*};
 use gtk::glib;
 use log::trace;
@@ -285,7 +282,7 @@ impl ResNetwork {
         imp.link_speed
             .set_subtitle(&link_speed.as_ref().map_or_else(
                 |_| i18n("N/A"),
-                |network_link_data| match (network_link_data) {
+                |network_link_data| match network_link_data {
                     NetworkLinkData::Wifi(wifi_link_data) => wifi_link_data.link_speed_display(),
                     NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps.as_f64()),
                 },
@@ -398,7 +395,6 @@ impl ResNetwork {
 
             (0.0, i18n("N/A"))
         };
-        let network_interface = &network_data.inner;
         imp.link.set_subtitle(&link.as_ref().map_or_else(
             |_| i18n("N/A"),
             |network_link_data| network_link_data.to_string(),
@@ -407,7 +403,7 @@ impl ResNetwork {
         imp.link_speed
             .set_subtitle(&link_speed.as_ref().map_or_else(
                 |_| i18n("N/A"),
-                |network_link_data| match (network_link_data) {
+                |network_link_data| match network_link_data {
                     NetworkLinkData::Wifi(wifi_link_data) => wifi_link_data.link_speed_display(),
                     NetworkLinkData::Other(bps) => convert_speed_bits_decimal(bps.as_f64()),
                 },
