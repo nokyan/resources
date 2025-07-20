@@ -183,7 +183,7 @@ impl MemoryDevice {
                     .is_some(),
             };
 
-            trace!("Found memory device: {:?}", memory_device);
+            trace!("Found memory device: {memory_device:?}");
 
             devices.push(memory_device);
         }
@@ -292,7 +292,7 @@ impl MemoryDevice {
                 installed,
             };
 
-            trace!("Found memory device: {:?}", memory_device);
+            trace!("Found memory device: {memory_device:?}");
 
             devices.push(memory_device);
         }

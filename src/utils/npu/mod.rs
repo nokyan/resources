@@ -51,7 +51,7 @@ impl NpuData {
     pub fn new(npu: &Npu) -> Self {
         let pci_slot = npu.pci_slot();
 
-        trace!("Gathering NPU data for {}…", pci_slot);
+        trace!("Gathering NPU data for {pci_slot}…");
 
         let usage_fraction = npu.usage().ok();
 
@@ -83,7 +83,7 @@ impl NpuData {
             link,
         };
 
-        trace!("Gathered NPU data for {}: {npu_data:?}", pci_slot);
+        trace!("Gathered NPU data for {pci_slot}: {npu_data:?}");
 
         npu_data
     }

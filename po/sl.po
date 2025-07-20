@@ -1,44 +1,43 @@
-# Chinese translation of Resources.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Slovenian translation for resources.
+# Copyright (C) 2025 resources's COPYRIGHT HOLDER
 # This file is distributed under the same license as the resources package.
-# Alex3236 <awa@alex3236.top>, 2024.
-# nicolasyang <bill.lee.y@gmail.com>, 2024.
-# lumingzh <lumingzh@qq.com>, 2025.
+# Martin <miles@filmsi.net>,  2025.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: resources-main\n"
+"Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2025-07-07 03:30+0000\n"
-"PO-Revision-Date: 2025-07-07 18:13+0800\n"
-"Last-Translator: lumingzh <lumingzh@qq.com>\n"
-"Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
-"Language: zh_CN\n"
+"POT-Creation-Date: 2025-07-07 16:45+0000\n"
+"PO-Revision-Date: 2025-07-07 23:51+0200\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
+"Language-Team: Slovenian <Slovenian>\n"
+"Language: sl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 48.0\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:3
 #: data/net.nokyan.Resources.metainfo.xml.in.in:4
 #: data/resources/ui/window.ui:22 src/application.rs:265
 msgid "Resources"
-msgstr "资源"
+msgstr "Viri"
 
 #. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
 #: data/net.nokyan.Resources.desktop.in.in:4
 #: data/net.nokyan.Resources.metainfo.xml.in.in:5
 msgid "Keep an eye on system resources"
-msgstr "随时关注系统资源占用"
+msgstr "Pozorno spremljajte sistemske vire"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/net.nokyan.Resources.desktop.in.in:10
 msgid ""
 "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 msgstr ""
-"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;系"
-"统;资源;监视器;进程;占用;使用情况;任务;管理器;处理器;内存;显卡;"
+"Sistem;Viri;Sredstva;Monitor;Procesi;Raba;Opravilo;Upravitelj;CPE;RAM;"
+"Pomnilnik;GPE;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
@@ -46,16 +45,17 @@ msgid ""
 "control your running processes and apps. It’s designed to be user-friendly "
 "and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
-"资源可让您查看系统资源的使用情况，并控制正在运行的应用与进程。其通过使用 "
-"GNOME 的 libadwaita 使其设计为用户友好且易于在现代桌面上使用。"
+"Viri vam omogočajo, da preverite izkoriščenost sistemskih virov in nadzirate "
+"tekoče procese in programe. Zasnovan je uporabniku prijazno in se počuti kot "
+"doma na sodobnem namizju z uporabo programa libadwaita v GNOME."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
-msgstr "资源支持监控以下组件："
+msgstr "Viri podpirajo nadzor naslednjih komponent:"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
-msgstr "处理器"
+msgstr "CPE"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:25
 #: data/resources/ui/dialogs/app_dialog.ui:82
@@ -66,7 +66,7 @@ msgstr "处理器"
 #: src/ui/pages/applications/mod.rs:802 src/ui/pages/memory.rs:106
 #: src/ui/pages/memory.rs:191 src/ui/pages/processes/mod.rs:1078
 msgid "Memory"
-msgstr "内存"
+msgstr "Pomnilnik"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:26
 #: data/resources/ui/dialogs/app_dialog.ui:140
@@ -76,65 +76,69 @@ msgstr "内存"
 #: src/ui/pages/applications/mod.rs:1175 src/ui/pages/gpu.rs:118
 #: src/ui/pages/processes/mod.rs:1462 src/ui/window.rs:454
 msgid "GPU"
-msgstr "显卡"
+msgstr "GPE"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:27
 #: data/resources/ui/dialogs/settings_dialog.ui:319
 msgid "Network Interfaces"
-msgstr "网络接口"
+msgstr "Omrežni vmesniki"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:28
 msgid "Storage Devices"
-msgstr "存储设备"
+msgstr "Naprave za shranjevanje"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:29
 msgid "Batteries"
-msgstr "电池"
+msgstr "Baterije"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:51
 msgid "Apps page in light theme"
-msgstr "亮色主题的应用页面"
+msgstr "Stran »Programi« v svetli temi"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:55
 msgid "Processes page in dark theme"
-msgstr "暗色主题的进程页面"
+msgstr "Stran »Procesi« v temni temi"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:59
 msgid "Processor page in light theme"
-msgstr "亮色主题的处理器页面"
+msgstr "Stran »Procesor« v svetli temi"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:63
 msgid "Memory page in dark theme"
-msgstr "暗色主题的内存页面"
+msgstr "Stran pomnilnika v temni temi"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:67
 msgid "GPU page in light theme"
-msgstr "亮色主题的显卡页面"
+msgstr "Stran GPE v svetli temi"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:71
 msgid "Drive page in dark theme"
-msgstr "暗色主题的驱动器页面"
+msgstr "Stran pogona v temni temi"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:75
 msgid "Network Interface page in light theme"
-msgstr "亮色主题的网络接口页面"
+msgstr "Stran »Omrežni vmesnik« v svetli temi"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:79
 msgid "Battery page in dark theme"
-msgstr "暗色主题的电池页面"
+msgstr "Stran baterije v temni temi"
 
 #: data/net.nokyan.Resources.policy.in.in:9
+#, fuzzy
 msgid "Control Process"
-msgstr "控制进程"
+msgstr "Nadzorni postopki"
 
 #: data/net.nokyan.Resources.policy.in.in:10
+#, fuzzy
 msgid ""
 "Authentication is required to control superuser’s or other users’ processes"
-msgstr "需要认证以控制超级用户或其他用户的进程"
+msgstr ""
+"Preverjanje pristnosti je potrebno za nadzor nad procesi superuporabnika ali "
+"drugih uporabnikov"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
 msgid "App Information"
-msgstr "应用信息"
+msgstr "Informacije o programu"
 
 #: data/resources/ui/dialogs/app_dialog.ui:70
 #: data/resources/ui/dialogs/process_dialog.ui:48
@@ -143,7 +147,7 @@ msgstr "应用信息"
 #: data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31
 #: data/resources/ui/pages/network.ui:22 data/resources/ui/pages/npu.ui:22
 msgid "Usage"
-msgstr "占用"
+msgstr "Raba"
 
 #: data/resources/ui/dialogs/app_dialog.ui:73
 #: data/resources/ui/dialogs/process_dialog.ui:55
@@ -153,7 +157,7 @@ msgstr "占用"
 #: src/ui/pages/applications/mod.rs:861 src/ui/pages/cpu.rs:128
 #: src/ui/pages/processes/mod.rs:1136 src/ui/window.rs:289
 msgid "Processor"
-msgstr "处理器"
+msgstr "Procesor"
 
 #: data/resources/ui/dialogs/app_dialog.ui:91
 #: data/resources/ui/dialogs/process_dialog.ui:73
@@ -162,39 +166,43 @@ msgstr "处理器"
 #: src/ui/pages/applications/mod.rs:1410 src/ui/pages/memory.rs:197
 #: src/ui/pages/processes/mod.rs:1943
 msgid "Swap"
-msgstr "交换空间"
+msgstr "Izmenjalna datoteka"
 
 #: data/resources/ui/dialogs/app_dialog.ui:100
 #: data/resources/ui/dialogs/process_dialog.ui:78
 #: data/resources/ui/dialogs/settings_dialog.ui:138
 #: data/resources/ui/dialogs/settings_dialog.ui:230
 #: src/ui/pages/applications/mod.rs:924 src/ui/pages/processes/mod.rs:1199
+#, fuzzy
 msgid "Drive Read"
-msgstr "驱动器读取"
+msgstr "Branj pogona"
 
 #: data/resources/ui/dialogs/app_dialog.ui:109
 #: data/resources/ui/dialogs/process_dialog.ui:87
 #: data/resources/ui/dialogs/settings_dialog.ui:143
 #: data/resources/ui/dialogs/settings_dialog.ui:235
 #: src/ui/pages/applications/mod.rs:988 src/ui/pages/processes/mod.rs:1265
+#, fuzzy
 msgid "Drive Read Total"
-msgstr "驱动器总读取量"
+msgstr "Skupaj branj pogona"
 
 #: data/resources/ui/dialogs/app_dialog.ui:118
 #: data/resources/ui/dialogs/process_dialog.ui:96
 #: data/resources/ui/dialogs/settings_dialog.ui:148
 #: data/resources/ui/dialogs/settings_dialog.ui:240
 #: src/ui/pages/applications/mod.rs:1048 src/ui/pages/processes/mod.rs:1331
+#, fuzzy
 msgid "Drive Write"
-msgstr "驱动器写入"
+msgstr "Pisanja po pogonu"
 
 #: data/resources/ui/dialogs/app_dialog.ui:127
 #: data/resources/ui/dialogs/process_dialog.ui:105
 #: data/resources/ui/dialogs/settings_dialog.ui:153
 #: data/resources/ui/dialogs/settings_dialog.ui:245
 #: src/ui/pages/applications/mod.rs:1114 src/ui/pages/processes/mod.rs:1397
+#, fuzzy
 msgid "Drive Write Total"
-msgstr "驱动器总写入量"
+msgstr "Skupaj pisanj po pogonu"
 
 #: data/resources/ui/dialogs/app_dialog.ui:149
 #: data/resources/ui/dialogs/process_dialog.ui:127
@@ -202,7 +210,7 @@ msgstr "驱动器总写入量"
 #: data/resources/ui/dialogs/settings_dialog.ui:255
 #: src/ui/pages/applications/mod.rs:1352 src/ui/pages/processes/mod.rs:1640
 msgid "Video Memory"
-msgstr "显存"
+msgstr "Video pomnilnik"
 
 #: data/resources/ui/dialogs/app_dialog.ui:158
 #: data/resources/ui/dialogs/process_dialog.ui:136
@@ -210,7 +218,7 @@ msgstr "显存"
 #: data/resources/ui/dialogs/settings_dialog.ui:260
 #: src/ui/pages/applications/mod.rs:1233 src/ui/pages/processes/mod.rs:1520
 msgid "Video Encoder"
-msgstr "视频编码器"
+msgstr "Video kodirnik"
 
 #: data/resources/ui/dialogs/app_dialog.ui:167
 #: data/resources/ui/dialogs/process_dialog.ui:145
@@ -218,7 +226,7 @@ msgstr "视频编码器"
 #: data/resources/ui/dialogs/settings_dialog.ui:265
 #: src/ui/pages/applications/mod.rs:1293 src/ui/pages/processes/mod.rs:1580
 msgid "Video Decoder"
-msgstr "视频解码器"
+msgstr "Video dekodirnik"
 
 #: data/resources/ui/dialogs/app_dialog.ui:174
 #: data/resources/ui/dialogs/process_dialog.ui:179
@@ -227,7 +235,7 @@ msgstr "视频解码器"
 #: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
 #: data/resources/ui/pages/npu.ui:68
 msgid "Properties"
-msgstr "属性"
+msgstr "Lastnosti"
 
 #: data/resources/ui/dialogs/app_dialog.ui:180
 msgid "ID"
@@ -235,669 +243,716 @@ msgstr "ID"
 
 #: data/resources/ui/dialogs/app_dialog.ui:190
 #: data/resources/ui/dialogs/process_dialog.ui:195
+#, fuzzy
 msgid "Running Since"
-msgstr "启动时间"
+msgstr "Teče od"
 
 #: data/resources/ui/dialogs/app_dialog.ui:198
 msgid "Running Processes"
-msgstr "正在运行的进程"
+msgstr "Procesi v teku"
 
 #: data/resources/ui/dialogs/app_dialog.ui:207
 #: data/resources/ui/dialogs/process_dialog.ui:231
+#, fuzzy
 msgid "Containerized"
-msgstr "已容器化"
+msgstr "Zabojniki"
 
 #: data/resources/ui/dialogs/process_dialog.ui:7
 msgid "Process Information"
-msgstr "进程信息"
+msgstr "Informacije o procesu"
 
 #: data/resources/ui/dialogs/process_dialog.ui:154
 #: data/resources/ui/dialogs/settings_dialog.ui:270
 #: src/ui/pages/processes/mod.rs:1699
 msgid "Total CPU Time"
-msgstr "总处理器时间"
+msgstr "Skupni čas CPE"
 
 #: data/resources/ui/dialogs/process_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:275
 #: src/ui/pages/processes/mod.rs:1758
 msgid "User CPU Time"
-msgstr "用户处理器时间"
+msgstr "Skupni čas CPE uporabnika"
 
 #: data/resources/ui/dialogs/process_dialog.ui:172
 #: data/resources/ui/dialogs/settings_dialog.ui:280
 #: src/ui/pages/processes/mod.rs:1817
 msgid "System CPU Time"
-msgstr "系统处理器时间"
+msgstr "Sistemski čas CPE"
 
 #: data/resources/ui/dialogs/process_dialog.ui:186
 #: data/resources/ui/dialogs/settings_dialog.ui:210
 #: src/ui/pages/processes/mod.rs:971
 msgid "Process ID"
-msgstr "进程 ID"
+msgstr "ID procesa"
 
 #: data/resources/ui/dialogs/process_dialog.ui:204
 msgid "Commandline"
-msgstr "命令行"
+msgstr "Ukazna vrstica"
 
 #: data/resources/ui/dialogs/process_dialog.ui:213
 #: data/resources/ui/dialogs/settings_dialog.ui:215
 #: src/ui/pages/processes/mod.rs:1024
 msgid "User"
-msgstr "用户"
+msgstr "Uporabnik"
 
 #: data/resources/ui/dialogs/process_dialog.ui:222
 msgid "Control Group"
-msgstr "控制组"
+msgstr "Primerjalna skupina"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:7
 #: data/resources/ui/dialogs/process_options_dialog.ui:69
 msgid "Process Options"
-msgstr "进程选项"
+msgstr "Možnosti procesa"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:29
 msgid "Apply"
-msgstr "应用"
+msgstr "Uveljavi"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:72
 msgid "Niceness"
-msgstr "友好度"
+msgstr "Prijaznost"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:73
+#, fuzzy
 msgid ""
 "The priority of a process is given by its niceness. A lower niceness value "
 "correspond to a higher priority."
-msgstr "进程的优先级由友好度决定。友好度数值越低，优先级越高。"
+msgstr ""
+"Prednost procesa je dana zaradi njegove prijaznosti. Nižja vrednost "
+"prijaznosti ustreza višji prioriteti."
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:87
 #: data/resources/ui/dialogs/settings_dialog.ui:285
 #: src/ui/pages/processes/mod.rs:1876
 msgid "Priority"
-msgstr "优先级"
+msgstr "Prioriteta"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:91
 msgctxt "process priority"
 msgid "Very High"
-msgstr "非常高"
+msgstr "Zelo visoka"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:92
 msgctxt "process priority"
 msgid "High"
-msgstr "高"
+msgstr "Visoka"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:93
 msgctxt "process priority"
 msgid "Normal"
-msgstr "正常"
+msgstr "Navadna"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:94
 msgctxt "process priority"
 msgid "Low"
-msgstr "低"
+msgstr "Nizka"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:95
 msgctxt "process priority"
 msgid "Very Low"
-msgstr "非常低"
+msgstr "Zelo nizka"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:103
+#, fuzzy
 msgid "Processor Affinity"
-msgstr "处理器亲和性"
+msgstr "Afiniteta procesorja"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:108
 msgid "Toggle All"
-msgstr "切换全部"
+msgstr "Preklopi vse"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:111
+#, fuzzy
 msgid "Select which processor cores the process is allowed to run on"
-msgstr "选择允许该进程运行在哪些处理器核心上"
+msgstr "Izberite, na katerih procesorskih jedrih se lahko izvaja proces"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:7
 msgid "General"
-msgstr "常规"
+msgstr "Splošno"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:10
 msgid "Units"
-msgstr "单位"
+msgstr "Enote"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:13
 msgid "Data Unit Prefix"
-msgstr "数据单位前缀"
+msgstr "Predpona podatkovne enote"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:17
 msgid "Decimal"
-msgstr "十进制"
+msgstr "Desetiško"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:18
 msgid "Binary"
-msgstr "二进制"
+msgstr "Dvojiško"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:26
 msgid "Show Network Speeds in Bits per Second"
-msgstr "以 bits/s 形式显示网络速率"
+msgstr "Pokaži hitrosti omrežja v bitih na sekundo"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:31
 msgid "Temperature Unit"
-msgstr "温度单位"
+msgstr "Enota temperature"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:35
 msgid "Celsius"
-msgstr "摄氏度"
+msgstr "Celziji"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:36
 msgid "Kelvin"
-msgstr "开尔文"
+msgstr "Kelvini"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:37
 msgid "Fahrenheit"
-msgstr "华氏度"
+msgstr "Fahrenheiti"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:47
 msgid "User Interface"
-msgstr "用户界面"
+msgstr "Uporabniški vmesnik"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:50
 msgid "Refresh Speed"
-msgstr "刷新速率"
+msgstr "Hitrost osveževanja"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:51
 msgid "Higher refresh speeds can lead to higher processor usage"
-msgstr "较高的刷新速率可导致较高的处理器占用"
+msgstr "Višje hitrosti osveževanja lahko povzročijo večjo rabo procesorja"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:55
 msgctxt "UI refresh speed"
 msgid "Very Slow"
-msgstr "非常慢"
+msgstr "Zelo počasi"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:56
 msgctxt "UI refresh speed"
 msgid "Slow"
-msgstr "慢"
+msgstr "Počasi"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:57
 msgctxt "UI refresh speed"
 msgid "Normal"
-msgstr "正常"
+msgstr "Običajno"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:58
 msgctxt "UI refresh speed"
 msgid "Fast"
-msgstr "快"
+msgstr "Hitro"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:59
 msgctxt "UI refresh speed"
 msgid "Very Fast"
-msgstr "非常快"
+msgstr "Zelo hitro"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:67
 msgid "Show Graph Grids"
-msgstr "显示图表网格"
+msgstr "Pokaži mreže grafa"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:72
 msgid "Graph Data Points"
-msgstr "图表数据点"
+msgstr "Podatkovne točke grafa"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:86
 msgid "Show Usage Details in Sidebar"
-msgstr "在侧边栏显示占用详情"
+msgstr "Pokaži podrobnosti uporabe v stranski vrstici"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:87
+#, fuzzy
 msgid "If enabled, the usage along with other information will be displayed"
-msgstr "如果启用，将会在其它信息旁显示占用情况"
+msgstr "Če je omogočeno, bo prikazana uporaba skupaj z drugimi informacijami"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:92
 msgid "Show Device Descriptions in Sidebar"
-msgstr "在侧边栏显示设备描述"
+msgstr "Pokaži opise naprav v stranski vrstici"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:93
+#, fuzzy
 msgid ""
 "If enabled, a device identifier like its name or device type will be "
 "displayed"
-msgstr "如果启用，将会显示设备标识符如名称或设备类型"
+msgstr ""
+"Če je omogočeno, bo prikazan identifikator naprave, kot je ime ali vrsta "
+"naprave"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
 msgid "Sidebar Meter Type"
-msgstr "侧边栏仪表类型"
+msgstr "Vrsta merilnika stranske vrstice"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:102
 msgid "Bar"
-msgstr "条形图"
+msgstr "Vrstica"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:103
 msgid "Graph"
-msgstr "图表"
+msgstr "Graf"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:111
+#, fuzzy
 msgid "Normalize Processor Usage"
-msgstr "标准化处理器占用"
+msgstr "Normaliziraj uporabo procesorja"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:112
+#, fuzzy
 msgid ""
 "If enabled, the total usage of all cores will be divided by the amount of "
 "cores"
-msgstr "如果启用，所有核心的总占用会除以核心数量"
+msgstr "Če je omogočeno, se skupna poraba vseh jeder deli s številom jeder"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:122
 #: data/resources/ui/window.ui:65 data/resources/ui/window.ui:72
 #: src/ui/pages/applications/mod.rs:131
 msgid "Apps"
-msgstr "应用"
+msgstr "Programi"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:125
 #: data/resources/ui/dialogs/settings_dialog.ui:207
 msgid "Information Columns"
-msgstr "信息栏"
+msgstr "Stolpci z informacijami"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:183
 #: data/resources/ui/dialogs/settings_dialog.ui:295
 #: src/ui/pages/applications/mod.rs:1469 src/ui/pages/processes/mod.rs:2001
 msgid "Combined Memory"
-msgstr "聚合内存"
+msgstr "Kombinirani pomnilnik"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:193
 #: data/resources/ui/window.ui:105 data/resources/ui/window.ui:112
 #: src/ui/pages/processes/mod.rs:175
 msgid "Processes"
-msgstr "进程"
+msgstr "Procesi"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:196
 #: data/resources/ui/pages/cpu.ui:22 data/resources/ui/pages/processes.ui:56
 msgid "Options"
-msgstr "选项"
+msgstr "Možnosti"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:199
 msgid "Show Niceness Values"
-msgstr "显示友好度数值"
+msgstr "Pokaži vrednosti prijaznosti"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:200
+#, fuzzy
 msgid ""
 "Display priorities as niceness to allow for more fine-grained adjustments"
-msgstr "将优先级显示为友好度以允许更精细的调整"
+msgstr ""
+"Prikažite prednostne naloge kot prijaznost, da omogočite bolj natančne "
+"prilagoditve"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:305
 msgid "Devices"
-msgstr "设备"
+msgstr "Naprave"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:308
 msgid "Drives"
-msgstr "驱动器"
+msgstr "Pogoni"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:311
 msgid "Show Virtual Drives"
-msgstr "显示虚拟驱动器"
+msgstr "Pokaži navidezne pogone"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:312
+#, fuzzy
 msgid "Virtual drives are for example ZFS volumes or mapped devices"
-msgstr "虚拟驱动器指的是如 ZFS 卷或映射的设备等"
+msgstr "Navidezni pogoni so na primer ZFS nosilci ali preslikane naprave"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:322
 msgid "Show Virtual Network Interfaces"
-msgstr "显示虚拟网络接口"
+msgstr "Pokaži virtualne omrežne vmesnike"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:323
+#, fuzzy
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
-msgstr "虚拟网络接口指的是如网桥或 VPN 隧道等"
+msgstr "Virtualni omrežni vmesniki so na primer mostovi ali tuneli VPN"
 
 #: data/resources/ui/pages/applications.ui:6
 #: data/resources/ui/pages/applications.ui:26
 #: src/ui/pages/applications/mod.rs:1552
+#, fuzzy
 msgid "Kill App"
-msgstr "杀死应用"
+msgstr "Aplikacija Kill"
 
 #: data/resources/ui/pages/applications.ui:10
 #: data/resources/ui/pages/applications.ui:30
 #: src/ui/pages/applications/mod.rs:1551
+#, fuzzy
 msgid "Halt App"
-msgstr "暂停应用"
+msgstr "Aplikacija Halt"
 
 #: data/resources/ui/pages/applications.ui:14
 #: data/resources/ui/pages/applications.ui:34
 #: src/ui/pages/applications/mod.rs:1553
+#, fuzzy
 msgid "Continue App"
-msgstr "继续应用"
+msgstr "Nadaljuj aplikacijo"
 
 #: data/resources/ui/pages/applications.ui:22
 #: data/resources/ui/pages/applications.ui:98
 #: src/ui/pages/applications/mod.rs:1550
+#, fuzzy
 msgid "End App"
-msgstr "结束应用"
+msgstr "Končanje aplikacije"
 
 #: data/resources/ui/pages/applications.ui:40
 #: data/resources/ui/pages/processes.ui:62
 msgid "Information"
-msgstr "信息"
+msgstr "Podrobnosti"
 
 #: data/resources/ui/pages/applications.ui:57
+#, fuzzy
 msgid "Search applications"
-msgstr "搜索应用程序"
+msgstr "Poišči program …"
 
 #: data/resources/ui/pages/applications.ui:87
 #: data/resources/ui/pages/applications.ui:89
+#, fuzzy
 msgid "Show App Information"
-msgstr "显示应用信息"
+msgstr "Pokaži informacije o aplikaciji"
 
 #: data/resources/ui/pages/battery.ui:36
+#, fuzzy
 msgid "Battery Health"
-msgstr "电池健康"
+msgstr "Stanje baterije"
 
 #: data/resources/ui/pages/battery.ui:45
+#, fuzzy
 msgid "Design Capacity"
-msgstr "设计容量"
+msgstr "Projektna zmogljivost"
 
 #: data/resources/ui/pages/battery.ui:54
+#, fuzzy
 msgid "Charge Cycles"
-msgstr "充电循环"
+msgstr "Cikli polnjenja"
 
 #: data/resources/ui/pages/battery.ui:63
+#, fuzzy
 msgid "Technology"
-msgstr "技术"
+msgstr "Tehnologija LibreOffice"
 
 #: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:81
 #: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:75
 msgid "Manufacturer"
-msgstr "制造商"
+msgstr "Proizvajalec"
 
 #: data/resources/ui/pages/battery.ui:81
 msgid "Model Name"
-msgstr "型号名称"
+msgstr "Ime modela"
 
 #: data/resources/ui/pages/battery.ui:90 data/resources/ui/pages/drive.ui:66
 msgid "Device"
-msgstr "设备"
+msgstr "Naprava"
 
 #: data/resources/ui/pages/cpu.ui:26
+#, fuzzy
 msgid "Show Usages of Logical CPUs"
-msgstr "显示逻辑处理器占用"
+msgstr "Prikaz uporabe logičnih CPE-jev"
 
 #: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
 #: data/resources/ui/pages/npu.ui:60
 msgid "Sensors"
-msgstr "传感器"
+msgstr "Tipala"
 
 #: data/resources/ui/pages/cpu.ui:90
 msgid "Max Frequency"
-msgstr "最大频率"
+msgstr "Največja frekvenca"
 
 #: data/resources/ui/pages/cpu.ui:99
 msgid "Logical Cores"
-msgstr "逻辑核心"
+msgstr "Logična jedra"
 
 #: data/resources/ui/pages/cpu.ui:108
 msgid "Physical Cores"
-msgstr "物理核心"
+msgstr "Fizična jedra"
 
 #: data/resources/ui/pages/cpu.ui:117
+#, fuzzy
 msgid "Sockets"
-msgstr "插槽"
+msgstr "Vtičnice"
 
 #: data/resources/ui/pages/cpu.ui:126
 msgid "Uptime"
-msgstr "运行时间"
+msgstr "Čas delovanja"
 
 #: data/resources/ui/pages/cpu.ui:135
 msgid "Virtualization"
-msgstr "虚拟化"
+msgstr "Virtualizacija"
 
 #: data/resources/ui/pages/cpu.ui:144
 msgid "Architecture"
-msgstr "架构"
+msgstr "Arhitektura"
 
 #: data/resources/ui/pages/drive.ui:38
 msgid "Total Read"
-msgstr "总读取量"
+msgstr "Skupaj prebrano"
 
 #: data/resources/ui/pages/drive.ui:47
 msgid "Total Written"
-msgstr "总写入量"
+msgstr "Skupaj zapisano"
 
 #: data/resources/ui/pages/drive.ui:57 data/resources/ui/pages/memory.ui:72
 msgid "Type"
-msgstr "类型"
+msgstr "Vrsta"
 
 #: data/resources/ui/pages/drive.ui:75
+#, fuzzy
 msgid "Capacity"
-msgstr "容量"
+msgstr "Zmogljivost diska"
 
 #: data/resources/ui/pages/drive.ui:84
 msgid "Writable"
-msgstr "可写入"
+msgstr "Zapisljivo"
 
 #: data/resources/ui/pages/drive.ui:93
+#, fuzzy
 msgid "Removable"
-msgstr "可移除"
+msgstr "Odstranljivo"
 
 #. Translators: "Link" refers to something like "PCIe 4.0 ×16"
 #: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113
 #: data/resources/ui/pages/npu.ui:107
 msgid "Link"
-msgstr "接口"
+msgstr "Povezava"
 
 #: data/resources/ui/pages/gpu.ui:37
 msgid "GPU Frequency"
-msgstr "显卡频率"
+msgstr "Frekvenca GPE"
 
 #: data/resources/ui/pages/gpu.ui:50
 msgid "Video Memory Frequency"
-msgstr "显存频率"
+msgstr "Frekvenca video pomnilnika"
 
 #: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49
 #: src/ui/pages/battery.rs:216
 msgid "Power Usage"
-msgstr "功耗"
+msgstr "Poraba energije"
 
 #: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:84
 msgid "PCI Slot"
-msgstr "PCI 插槽"
+msgstr "Reža PCI"
 
 #: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
 #: data/resources/ui/pages/npu.ui:93
 msgid "Driver Used"
-msgstr "使用的驱动程序"
+msgstr "Uporabljeni gonilnik"
 
 #: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
+#, fuzzy
 msgid "Max Power Cap"
-msgstr "最大功耗"
+msgstr "Zgornja meja največje moči"
 
 #: data/resources/ui/pages/memory.ui:9
 msgid "You need to authenticate to see memory properties"
-msgstr "您需要认证以查看内存属性"
+msgstr "Če želite videti lastnosti pomnilnika, morate preveriti pristnost"
 
 #: data/resources/ui/pages/memory.ui:10
 msgid "Authenticate"
-msgstr "认证"
+msgstr "Overi"
 
 #: data/resources/ui/pages/memory.ui:45
 msgid "Slots Used"
-msgstr "已使用插槽"
+msgstr "Uporabljene reže"
 
 #: data/resources/ui/pages/memory.ui:54
 msgid "Speed"
-msgstr "速度"
+msgstr "Hitrost"
 
 #: data/resources/ui/pages/memory.ui:63
+#, fuzzy
 msgid "Form Factor"
-msgstr "规格参数"
+msgstr "Faktor oblike"
 
 #: data/resources/ui/pages/memory.ui:81
+#, fuzzy
 msgid "Type Detail"
-msgstr "类型详情"
+msgstr "Podrobnosti o vrsti"
 
 #: data/resources/ui/pages/network.ui:35
 msgid "Total Received"
-msgstr "总接收量"
+msgstr "Skupaj prejeto"
 
 #: data/resources/ui/pages/network.ui:44
 msgid "Total Sent"
-msgstr "总发送量"
+msgstr "Skupaj poslano"
 
 #: data/resources/ui/pages/network.ui:76
 msgid "Interface"
-msgstr "接口"
+msgstr "Vmesnik"
 
 #: data/resources/ui/pages/network.ui:85
 msgid "Hardware Address"
-msgstr "硬件地址"
+msgstr "Strojni naslov"
 
 #: data/resources/ui/pages/network.ui:94
 msgid "Link Speed"
-msgstr "连接速度"
+msgstr "Hitrost povezave"
 
 #: data/resources/ui/pages/npu.ui:31
+#, fuzzy
 msgid "NPU Frequency"
-msgstr "NPU 频率"
+msgstr "Pogostost NPU"
 
 #: data/resources/ui/pages/npu.ui:44
 msgid "Memory Frequency"
-msgstr "内存频率"
+msgstr "Frekvenca pomnilnika"
 
 #: data/resources/ui/pages/processes.ui:6
 #: data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2113
+#, fuzzy
 msgid "Kill Process"
-msgstr "杀死进程"
+msgstr "Uniči proces"
 
 #: data/resources/ui/pages/processes.ui:10
 #: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2112
+#, fuzzy
 msgid "Halt Process"
-msgstr "暂停进程"
+msgstr "Zaustavi postopek"
 
 #: data/resources/ui/pages/processes.ui:14
 #: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2114
+#, fuzzy
 msgid "Continue Process"
-msgstr "继续进程"
+msgstr "Nadaljuj postopek"
 
 #: data/resources/ui/pages/processes.ui:22
 #: data/resources/ui/pages/processes.ui:74
+#, fuzzy
 msgid "Kill Processes"
-msgstr "杀死进程"
+msgstr "Ubij procese"
 
 #: data/resources/ui/pages/processes.ui:26
 #: data/resources/ui/pages/processes.ui:78
+#, fuzzy
 msgid "Halt Processes"
-msgstr "暂停进程"
+msgstr "Zaustavi procese"
 
 #: data/resources/ui/pages/processes.ui:30
 #: data/resources/ui/pages/processes.ui:82
+#, fuzzy
 msgid "Continue Processes"
-msgstr "继续进程"
+msgstr "Nadaljuj s postopki"
 
 #: data/resources/ui/pages/processes.ui:38
 #: data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:522
 #: src/ui/pages/processes/mod.rs:2111
+#, fuzzy
 msgid "End Process"
-msgstr "结束进程"
+msgstr "Končaj opravilo"
 
 #: data/resources/ui/pages/processes.ui:70 src/ui/pages/processes/mod.rs:526
+#, fuzzy
 msgid "End Processes"
-msgstr "结束进程"
+msgstr "Končaj procese"
 
 #: data/resources/ui/pages/processes.ui:103
+#, fuzzy
 msgid "Search processes"
-msgstr "搜索进程"
+msgstr "Iskanje opravil"
 
 #: data/resources/ui/pages/processes.ui:133
 #: data/resources/ui/pages/processes.ui:135
 msgid "Show Process Options"
-msgstr "显示进程选项"
+msgstr "Pokaži možnosti procesa"
 
 #: data/resources/ui/pages/processes.ui:146
 #: data/resources/ui/pages/processes.ui:148
 msgid "Show Process Information"
-msgstr "显示进程信息"
+msgstr "Pokaži podatke o procesu"
 
 #: data/resources/ui/shortcuts.ui:11
 msgctxt "shortcut window"
 msgid "General"
-msgstr "常规"
+msgstr "Splošno"
 
 #: data/resources/ui/shortcuts.ui:14
 msgctxt "shortcut window"
 msgid "Preferences"
-msgstr "首选项"
+msgstr "Nastavitve"
 
 #: data/resources/ui/shortcuts.ui:20
 msgctxt "shortcut window"
 msgid "Show Shortcuts"
-msgstr "显示快捷键"
+msgstr "Pokaže tipkovne bližnjice‫"
 
 #: data/resources/ui/shortcuts.ui:26
 msgctxt "shortcut window"
 msgid "Quit"
-msgstr "退出"
+msgstr "Konča program"
 
 #: data/resources/ui/shortcuts.ui:32
 msgctxt "shortcut window"
 msgid "Toggle Search Field"
-msgstr "切换搜索栏"
+msgstr "Preklopi iskalno polje"
 
 #: data/resources/ui/shortcuts.ui:38
+#, fuzzy
 msgctxt "shortcut window"
 msgid "End App/Process"
-msgstr "结束应用/进程"
+msgstr "Končanje aplikacije/procesa"
 
 #: data/resources/ui/shortcuts.ui:44
+#, fuzzy
 msgctxt "shortcut window"
 msgid "Kill App/Process"
-msgstr "杀死应用/进程"
+msgstr "Uničite aplikacijo/proces"
 
 #: data/resources/ui/shortcuts.ui:50
+#, fuzzy
 msgctxt "shortcut window"
 msgid "Halt App/Process"
-msgstr "暂停应用/进程"
+msgstr "Zaustavitev aplikacije/procesa"
 
 #: data/resources/ui/shortcuts.ui:56
+#, fuzzy
 msgctxt "shortcut window"
 msgid "Continue App/Process"
-msgstr "继续应用/进程"
+msgstr "Nadaljuj z aplikacijo/procesom"
 
 #: data/resources/ui/shortcuts.ui:62
 msgctxt "shortcut window"
 msgid "Show Information for App/Process"
-msgstr "显示应用/进程信息"
+msgstr "Pokaži informacije za program/proces"
 
 #: data/resources/ui/shortcuts.ui:68
 msgctxt "shortcut window"
 msgid "Show Process Options"
-msgstr "显示进程选项"
+msgstr "Pokaži možnosti procesa"
 
 #: data/resources/ui/window.ui:6
 msgid "Preferences"
-msgstr "首选项"
+msgstr "Nastavitve"
 
 #: data/resources/ui/window.ui:10
 msgid "Keyboard Shortcuts"
-msgstr "键盘快捷键"
+msgstr "Tipkovne bližnjice‫"
 
 #: data/resources/ui/window.ui:14
 msgid "About Resources"
-msgstr "关于资源"
+msgstr "O programu Viri"
 
 #: data/resources/ui/window.ui:88 data/resources/ui/window.ui:128
 msgid "Search"
-msgstr "搜索"
+msgstr "Išči"
 
 #: data/resources/ui/window.ui:90 data/resources/ui/window.ui:130
 msgid "Toggle search field"
-msgstr "切换搜索栏"
+msgstr "Preklopi iskalno polje"
 
 #: src/application.rs:267
 msgid "The Nalux Team"
-msgstr "Nalux 团队"
+msgstr "Ekipa Nalux"
 
 #: src/application.rs:275
 msgid "Report Issues"
-msgstr "报告问题"
+msgstr "Poročaj o težavah"
 
 #. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
 #. One name per line, please do not remove previous names.
 #: src/application.rs:281
 msgid "translator-credits"
-msgstr ""
-"Alex3236 <awa@alex3236.top>, 2024.\n"
-"nicolasyang <bill.lee.y@gmail.com>, 2024.\n"
-"lumingzh <lumingzh@qq.com>, 2025."
+msgstr "Martin Srebotnjak <miles@filmsi.net>"
 
 #: src/application.rs:282
+#, fuzzy
 msgid "Icon by"
-msgstr "图标作者"
+msgstr "Ikona"
 
 #: src/ui/dialogs/app_dialog.rs:153 src/ui/dialogs/process_dialog.rs:131
 #: src/ui/dialogs/process_dialog.rs:135 src/ui/dialogs/process_dialog.rs:144
@@ -938,360 +993,437 @@ msgstr "图标作者"
 #: src/utils/drive.rs:136 src/utils/gpu/mod.rs:275 src/utils/gpu/mod.rs:287
 #: src/utils/link.rs:314 src/utils/npu/mod.rs:243 src/utils/npu/mod.rs:249
 msgid "N/A"
-msgstr "不可用"
+msgstr "Ni na voljo"
 
 #: src/ui/dialogs/process_options_dialog.rs:145 src/ui/pages/cpu.rs:256
 #: src/ui/pages/cpu.rs:415 src/ui/pages/cpu.rs:419
 msgid "CPU {}"
-msgstr "处理器 {}"
+msgstr "CPE {}"
 
 #: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:413
 #: src/ui/pages/drive.rs:423 src/ui/pages/processes/process_entry.rs:211
 msgid "No"
-msgstr "否"
+msgstr "Ne"
 
 #: src/ui/pages/applications/application_entry.rs:191
 #: src/ui/pages/processes/process_entry.rs:212
 msgid "Yes (Flatpak)"
-msgstr "是 (Flatpak)"
+msgstr "Da (Flatpak)"
 
 #: src/ui/pages/applications/application_entry.rs:192
 #: src/ui/pages/processes/process_entry.rs:213
 msgid "Yes (Snap)"
-msgstr "是 (Snap)"
+msgstr "Da (Snap)"
 
 #: src/ui/pages/applications/mod.rs:659
 msgid "Running Apps: {}"
-msgstr "正在运行的应用：{}"
+msgstr "Programi v teku: {}"
 
 #: src/ui/pages/applications/mod.rs:699 src/ui/pages/processes/mod.rs:861
 msgid "Cancel"
-msgstr "取消"
+msgstr "Prekliči"
 
 #: src/ui/pages/applications/mod.rs:745
 msgid "App"
-msgstr "应用"
+msgstr "Program"
 
 #: src/ui/pages/applications/mod.rs:1528 src/ui/pages/processes/mod.rs:2060
 msgid "End {}?"
-msgstr "结束 {}？"
+msgstr "Ali želite končati {}?"
 
 #: src/ui/pages/applications/mod.rs:1529 src/ui/pages/processes/mod.rs:2061
 msgid "Halt {}?"
-msgstr "暂停 {}？"
+msgstr "Ali želite ustaviti {}?"
 
 #: src/ui/pages/applications/mod.rs:1530 src/ui/pages/processes/mod.rs:2062
 msgid "Kill {}?"
-msgstr "杀死 {}？"
+msgstr "Ali želite ubiti {}?"
 
 #: src/ui/pages/applications/mod.rs:1531 src/ui/pages/processes/mod.rs:2063
 msgid "Continue {}?"
-msgstr "继续 {}？"
+msgstr "Ali želite nadaljevati z {}?"
 
 #: src/ui/pages/applications/mod.rs:1537 src/ui/pages/processes/mod.rs:2098
 msgid "Unsaved work might be lost."
-msgstr "可能会丢失未保存的工作。"
+msgstr "Neshranjeno delo je morda izgubljeno."
 
 #: src/ui/pages/applications/mod.rs:1539
+#, fuzzy
 msgid ""
 "Halting an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
-msgstr "暂停应用可能会带来严重的风险，例如数据丢失和安全问题。请谨慎使用。"
+msgstr ""
+"Zaustavitev aplikacije lahko povzroči resna tveganja, kot so izguba podatkov "
+"in varnostne posledice. Uporabljajte previdno."
 
 #: src/ui/pages/applications/mod.rs:1542
+#, fuzzy
 msgid ""
 "Killing an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
-msgstr "杀死应用可能会带来严重的风险，例如数据丢失和安全问题。请谨慎使用。"
+msgstr ""
+"Uničevanje aplikacije lahko prinese resna tveganja, kot so izguba podatkov "
+"in varnostne posledice. Uporabljajte previdno."
 
 #: src/ui/pages/battery.rs:102 src/ui/pages/drive.rs:126
 msgid "Drive"
-msgstr "驱动器"
+msgstr "Pogon"
 
 #: src/ui/pages/battery.rs:209
 msgid "Battery Charge"
-msgstr "电池电量"
+msgstr "Napolnjenost baterije"
 
 #: src/ui/pages/battery.rs:278 src/ui/pages/cpu.rs:436
 #: src/ui/pages/drive.rs:343 src/ui/pages/drive.rs:374 src/ui/pages/gpu.rs:422
 #: src/ui/pages/network.rs:327 src/ui/pages/network.rs:361
 msgid "Highest:"
-msgstr "最高："
+msgstr "Najvišja:"
 
 #: src/ui/pages/cpu.rs:241 src/ui/pages/gpu.rs:210
 msgid "Total Usage"
-msgstr "总使用量"
+msgstr "Skupna uporaba"
 
 #: src/ui/pages/cpu.rs:269 src/ui/pages/gpu.rs:237
 msgid "Temperature"
-msgstr "温度"
+msgstr "Temperatura"
 
 #: src/ui/pages/drive.rs:235
 msgid "Drive Activity"
-msgstr "驱动器活动"
+msgstr "Dejavnost pogona"
 
 #: src/ui/pages/drive.rs:242
 msgid "Read Speed"
-msgstr "读取速度"
+msgstr "Hitrost branja"
 
 #: src/ui/pages/drive.rs:246
 msgid "Write Speed"
-msgstr "写入速度"
+msgstr "Hitrost pisanja"
 
 #: src/ui/pages/drive.rs:411 src/ui/pages/drive.rs:421
 msgid "Yes"
-msgstr "是"
+msgstr "Da"
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
 #: src/ui/pages/drive.rs:439
 msgid "R: {} · W: {}"
-msgstr "读：{} · 写：{}"
+msgstr "B: {} · P: {}"
 
 #: src/ui/pages/gpu.rs:218
 msgid "Video Encoder/Decoder Usage"
-msgstr "视频编解码器占用"
+msgstr "Uporaba kodirnika/dekodirnika videa"
 
 #: src/ui/pages/gpu.rs:224
 msgid "Video Encoder Usage"
-msgstr "视频编码器占用"
+msgstr "Uporaba kodirnika videa"
 
 #: src/ui/pages/gpu.rs:229
 msgid "Video Decoder Usage"
-msgstr "视频解码器占用"
+msgstr "Uporaba dekodirnika videa"
 
 #: src/ui/pages/gpu.rs:234
 msgid "Video Memory Usage"
-msgstr "显存占用"
+msgstr "Uporaba videopomnilnika"
 
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
 #: src/ui/pages/gpu.rs:408
 msgid "Memory: {}"
-msgstr "内存：{}"
+msgstr "Pomnilnik: {}"
 
 #: src/ui/pages/memory.rs:261
 msgid "{} of {}"
-msgstr "{} 共 {}"
+msgstr "{} od {}"
 
 #: src/ui/pages/memory.rs:264
 msgid "{} MT/s"
-msgstr "{} MT/s"
+msgstr "{} MT/s"
 
 #. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
 #. preferably be quite short or an abbreviation
 #: src/ui/pages/memory.rs:345
+#, fuzzy
 msgid "{} / {} · Swap: {} %"
-msgstr "{} / {} · 交换：{} %"
+msgstr "{} / {} · Zamenjava: {} %"
 
 #: src/ui/pages/network.rs:118 src/utils/network.rs:136
 msgid "Network Interface"
-msgstr "网络接口"
+msgstr "Omrežni vmesnik"
 
 #: src/ui/pages/network.rs:229
 msgid "Receiving"
-msgstr "正在接收"
+msgstr "Prejemanje"
 
 #: src/ui/pages/network.rs:233
 msgid "Sending"
-msgstr "正在发送"
+msgstr "Pošiljanje"
 
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
 #: src/ui/pages/network.rs:384
 msgid "R: {} · S: {}"
-msgstr "收：{} · 发：{}"
+msgstr "Prej: {} · Posl: {}"
 
 #: src/ui/pages/processes/mod.rs:812
+#, fuzzy
 msgid "Running Processes: {}"
-msgstr "正在运行的进程：{}"
+msgstr "Tekoči procesi: {}"
 
 #: src/ui/pages/processes/mod.rs:910
 msgid "Process"
-msgstr "进程"
+msgstr "Proces"
 
 #: src/ui/pages/processes/mod.rs:2070
+#, fuzzy
 msgid "End process?"
 msgid_plural "End {} processes?"
-msgstr[0] "结束 {} 个进程？"
+msgstr[0] "_Končaj opravilo"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: src/ui/pages/processes/mod.rs:2076
+#, fuzzy
 msgid "Halt process?"
 msgid_plural "Halt {} processes?"
-msgstr[0] "暂停 {} 个进程？"
+msgstr[0] "Zaustaviti postopek?"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: src/ui/pages/processes/mod.rs:2082 src/ui/pages/processes/mod.rs:2088
+#, fuzzy
 msgid "Kill process?"
 msgid_plural "Kill {} processes?"
-msgstr[0] "杀死 {} 个进程？"
+msgstr[0] "Uniči opravilo"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: src/ui/pages/processes/mod.rs:2100
+#, fuzzy
 msgid ""
 "Halting a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
-msgstr "暂停进程可能会带来严重的风险，例如数据丢失和安全问题。请谨慎使用。"
+msgstr ""
+"Zaustavitev procesa lahko prinese resna tveganja, kot so izguba podatkov in "
+"varnostne posledice. Uporabljajte previdno."
 
 #: src/ui/pages/processes/mod.rs:2103
+#, fuzzy
 msgid ""
 "Killing a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
-msgstr "杀死进程可能会带来严重的风险，例如数据丢失和安全问题。请谨慎使用。"
+msgstr ""
+"Uničevanje procesa lahko prinese resna tveganja, kot so izguba podatkov in "
+"varnostne posledice. Uporabljajte previdno."
 
 #: src/ui/window.rs:452
 msgid "GPU {}"
-msgstr "显卡 {}"
+msgstr "GPE {}"
 
 #: src/ui/window.rs:482
+#, fuzzy
 msgid "NPU {}"
 msgstr "NPU {}"
 
 #: src/ui/window.rs:484
+#, fuzzy
 msgid "NPU"
 msgstr "NPU"
 
 #: src/ui/window.rs:1152
+#, fuzzy
 msgid "Successfully adjusted {}"
-msgstr "已成功调整 {}"
+msgstr "Uspešno prilagojeno {}"
 
 #: src/ui/window.rs:1153
+#, fuzzy
 msgid "There was a problem adjusting {}"
-msgstr "调整 {} 时出现问题"
+msgstr "Prišlo je do težave pri prilagajanju {}"
 
 #: src/ui/window.rs:1235
+#, fuzzy
 msgid "Successfully ended {}"
-msgstr "已成功结束 {}"
+msgstr "Uspešno končano {}"
 
 #: src/ui/window.rs:1236
+#, fuzzy
 msgid "Successfully halted {}"
-msgstr "已成功暂停 {}"
+msgstr "Uspešno ustavljen {}"
 
 #: src/ui/window.rs:1237
+#, fuzzy
 msgid "Successfully killed {}"
-msgstr "已成功杀死 {}"
+msgstr "Uspešno ubit {}"
 
 #: src/ui/window.rs:1238
+#, fuzzy
 msgid "Successfully continued {}"
-msgstr "已成功继续 {}"
+msgstr "Uspešno nadaljevanje {}"
 
 #: src/ui/window.rs:1245
+#, fuzzy
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
-msgstr[0] "已成功结束 {} 个进程"
+msgstr[0] "Uspešno zaključen postopek"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: src/ui/window.rs:1251
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
-msgstr[0] "已成功暂停 {} 个进程"
+msgstr[0] "Uspešno ustavljenih {} postopkov"
+msgstr[1] "Uspešno ustavljen {} postopek"
+msgstr[2] "Uspešno ustavljena {} postopka"
+msgstr[3] "Uspešno ustavljeni {} postopki"
 
 #: src/ui/window.rs:1257
+#, fuzzy
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
-msgstr[0] "已成功杀死 {} 个进程"
+msgstr[0] "Uspešno je ubil proces"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: src/ui/window.rs:1263
+#, fuzzy
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
-msgstr[0] "已成功继续 {} 个进程"
+msgstr[0] "Uspešno nadaljevanje procesa"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: src/ui/window.rs:1274
+#, fuzzy
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
-msgstr[0] "结束 {} 个进程时出现问题"
+msgstr[0] "Prišlo je do težave pri končanju postopka"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: src/ui/window.rs:1280
+#, fuzzy
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
-msgstr[0] "暂停 {} 个进程时出现问题"
+msgstr[0] "Prišlo je do težave pri zaustavitvi procesa"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: src/ui/window.rs:1286
+#, fuzzy
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
-msgstr[0] "杀死 {} 个进程时出现问题"
+msgstr[0] "Prišlo je do težave, ki je uničila proces"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: src/ui/window.rs:1292
+#, fuzzy
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
-msgstr[0] "继续 {} 个进程时出现问题"
+msgstr[0] "Prišlo je do težav pri nadaljevanju procesa"
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: src/ui/window.rs:1302
+#, fuzzy
 msgid "There was a problem ending {}"
-msgstr "结束 {} 时出现问题"
+msgstr "Prišlo je do težave, ki se je končala {}"
 
 #: src/ui/window.rs:1303
+#, fuzzy
 msgid "There was a problem halting {}"
-msgstr "暂停 {} 时出现问题"
+msgstr "Prišlo je do težave pri zaustavitvi {}"
 
 #: src/ui/window.rs:1304
+#, fuzzy
 msgid "There was a problem killing {}"
-msgstr "杀死 {} 时出现问题"
+msgstr "Prišlo je do težave z ubijanjem {}"
 
 #: src/ui/window.rs:1305
+#, fuzzy
 msgid "There was a problem continuing {}"
-msgstr "继续 {} 时出现问题"
+msgstr "Težava se je nadaljevala {}"
 
 #: src/utils/app.rs:219
 msgid "System Processes"
-msgstr "系统进程"
+msgstr "Sistemski procesi"
 
 #: src/utils/battery.rs:90
 msgid "Charging"
-msgstr "充电中"
+msgstr "Polnjenje"
 
 #: src/utils/battery.rs:91
 msgid "Discharging"
-msgstr "放电中"
+msgstr "Praznjenje"
 
 #: src/utils/battery.rs:92
 msgid "Empty"
-msgstr "已耗尽"
+msgstr "Prazno"
 
 #: src/utils/battery.rs:93
 msgid "Full"
-msgstr "已充满"
+msgstr "Polno"
 
 #: src/utils/battery.rs:94
 msgid "Unknown"
-msgstr "未知"
+msgstr "Neznano"
 
 #: src/utils/battery.rs:140
+#, fuzzy
 msgid "Nickel-Metal Hydride"
-msgstr "镍氢"
+msgstr "Nikelj-kovinski hidrid"
 
 #: src/utils/battery.rs:141
+#, fuzzy
 msgid "Nickel-Cadmium"
-msgstr "镍镉"
+msgstr "Nikelj-kadmij"
 
 #: src/utils/battery.rs:142
+#, fuzzy
 msgid "Nickel-Zinc"
-msgstr "镍锌"
+msgstr "Nikelj-cink"
 
 #: src/utils/battery.rs:143
+#, fuzzy
 msgid "Lead-Acid"
-msgstr "铅酸"
+msgstr "Svinčena kislina"
 
 #: src/utils/battery.rs:144
+#, fuzzy
 msgid "Lithium-Ion"
-msgstr "锂离子"
+msgstr "Litij-ionski"
 
 #: src/utils/battery.rs:145
+#, fuzzy
 msgid "Lithium Iron Phosphate"
-msgstr "磷酸铁锂"
+msgstr "Litijev železov fosfat"
 
 #: src/utils/battery.rs:146
+#, fuzzy
 msgid "Lithium Polymer"
-msgstr "锂离子聚合物"
+msgstr "Litijev polimer"
 
 #: src/utils/battery.rs:148
+#, fuzzy
 msgid "Rechargeable Alkaline Managanese"
-msgstr "可充电碱性"
+msgstr "Alkalna managanska za polnjenje"
 
 #: src/utils/battery.rs:259
 msgid "{} Battery"
-msgstr "{}电池"
+msgstr "Baterija {}"
 
 #: src/utils/battery.rs:261
 msgid "Battery"
-msgstr "电池"
+msgstr "Baterija"
 
 #: src/utils/units.rs:91
 msgid "{} K"
@@ -1339,6 +1471,7 @@ msgid "{} ZB"
 msgstr "{} ZB"
 
 #: src/utils/units.rs:121 src/utils/units.rs:135
+#, fuzzy
 msgid "{} YB"
 msgstr "{} YB"
 
@@ -1347,6 +1480,7 @@ msgid "{} RB"
 msgstr "{} RB"
 
 #: src/utils/units.rs:123 src/utils/units.rs:137
+#, fuzzy
 msgid "{} QB"
 msgstr "{} QB"
 
@@ -1379,6 +1513,7 @@ msgid "{} ZiB"
 msgstr "{} ZiB"
 
 #: src/utils/units.rs:155 src/utils/units.rs:169
+#, fuzzy
 msgid "{} YiB"
 msgstr "{} YiB"
 
@@ -1387,6 +1522,7 @@ msgid "{} RiB"
 msgstr "{} RiB"
 
 #: src/utils/units.rs:157 src/utils/units.rs:171
+#, fuzzy
 msgid "{} QiB"
 msgstr "{} QiB"
 
@@ -1423,6 +1559,7 @@ msgid "{} ZB/s"
 msgstr "{} ZB/s"
 
 #: src/utils/units.rs:206
+#, fuzzy
 msgid "{} YB/s"
 msgstr "{} YB/s"
 
@@ -1431,6 +1568,7 @@ msgid "{} RB/s"
 msgstr "{} RB/s"
 
 #: src/utils/units.rs:208
+#, fuzzy
 msgid "{} QB/s"
 msgstr "{} QB/s"
 
@@ -1463,6 +1601,7 @@ msgid "{} ZiB/s"
 msgstr "{} ZiB/s"
 
 #: src/utils/units.rs:223
+#, fuzzy
 msgid "{} YiB/s"
 msgstr "{} YiB/s"
 
@@ -1471,6 +1610,7 @@ msgid "{} RiB/s"
 msgstr "{} RiB/s"
 
 #: src/utils/units.rs:225
+#, fuzzy
 msgid "{} QiB/s"
 msgstr "{} QiB/s"
 
@@ -1507,6 +1647,7 @@ msgid "{} Zb/s"
 msgstr "{} Zb/s"
 
 #: src/utils/units.rs:247
+#, fuzzy
 msgid "{} Yb/s"
 msgstr "{} Yb/s"
 
@@ -1515,6 +1656,7 @@ msgid "{} Rb/s"
 msgstr "{} Rb/s"
 
 #: src/utils/units.rs:249
+#, fuzzy
 msgid "{} Qb/s"
 msgstr "{} Qb/s"
 
@@ -1547,6 +1689,7 @@ msgid "{} Zib/s"
 msgstr "{} Zib/s"
 
 #: src/utils/units.rs:264
+#, fuzzy
 msgid "{} Yib/s"
 msgstr "{} Yib/s"
 
@@ -1555,6 +1698,7 @@ msgid "{} Rib/s"
 msgstr "{} Rib/s"
 
 #: src/utils/units.rs:266
+#, fuzzy
 msgid "{} Qib/s"
 msgstr "{} Qib/s"
 
@@ -1591,6 +1735,7 @@ msgid "{} ZHz"
 msgstr "{} ZHz"
 
 #: src/utils/units.rs:281
+#, fuzzy
 msgid "{} YHz"
 msgstr "{} YHz"
 
@@ -1599,6 +1744,7 @@ msgid "{} RHz"
 msgstr "{} RHz"
 
 #: src/utils/units.rs:283
+#, fuzzy
 msgid "{} QHz"
 msgstr "{} QHz"
 
@@ -1635,6 +1781,7 @@ msgid "{} ZW"
 msgstr "{} ZW"
 
 #: src/utils/units.rs:298
+#, fuzzy
 msgid "{} YW"
 msgstr "{} YW"
 
@@ -1643,6 +1790,7 @@ msgid "{} RW"
 msgstr "{} RW"
 
 #: src/utils/units.rs:300
+#, fuzzy
 msgid "{} QW"
 msgstr "{} QW"
 
@@ -1679,6 +1827,7 @@ msgid "{} ZWh"
 msgstr "{} ZWh"
 
 #: src/utils/units.rs:317 src/utils/units.rs:331
+#, fuzzy
 msgid "{} YWh"
 msgstr "{} YWh"
 
@@ -1687,68 +1836,75 @@ msgid "{} RWh"
 msgstr "{} RWh"
 
 #: src/utils/units.rs:319 src/utils/units.rs:333
+#, fuzzy
 msgid "{} QWh"
 msgstr "{} QWh"
 
 #: src/utils/drive.rs:128 src/utils/drive.rs:207
 msgid "CD/DVD/Blu-ray Drive"
-msgstr "CD/DVD/蓝光光驱"
+msgstr "Pogon CD/DVD/Blu-ray"
 
 #: src/utils/drive.rs:129
 msgid "eMMC Storage"
-msgstr "eMMC 存储"
+msgstr "Shramba eMMC"
 
 #: src/utils/drive.rs:130
 msgid "Flash Storage"
-msgstr "闪存"
+msgstr "Bliskovni pogon"
 
 #: src/utils/drive.rs:131 src/utils/drive.rs:208
 msgid "Floppy Drive"
-msgstr "软盘"
+msgstr "Disketni pogon"
 
 #: src/utils/drive.rs:132
 msgid "Hard Disk Drive"
-msgstr "硬盘"
+msgstr "Pogon trdega diska"
 
 #: src/utils/drive.rs:133
+#, fuzzy
+#| msgid "Device"
 msgid "Loop Device"
-msgstr "Loop 设备"
+msgstr "Naprava"
 
 #: src/utils/drive.rs:134
 msgid "Mapped Device"
-msgstr "映射设备"
+msgstr "Preslikana naprava"
 
 #: src/utils/drive.rs:135
+#, fuzzy
 msgid "NVMe Drive"
-msgstr "NVMe 磁盘"
+msgstr "Zaustavi pogon"
 
 #: src/utils/drive.rs:137
 msgid "Software Raid"
-msgstr "软 RAID"
+msgstr "Programsko diskovno polje"
 
 #: src/utils/drive.rs:138
 msgid "RAM Disk"
-msgstr "RAM 盘"
+msgstr "Disk RAM"
 
 #: src/utils/drive.rs:139
+#, fuzzy
 msgid "Solid State Drive"
-msgstr "固态硬盘"
+msgstr "Pokaži navidezne pogone"
 
 #: src/utils/drive.rs:140
 msgid "ZFS Volume"
-msgstr "ZFS 卷"
+msgstr "Nosilec ZFS"
 
 #: src/utils/drive.rs:141
 msgid "Compressed RAM Disk (zram)"
-msgstr "压缩 RAM 盘（ZRAM）"
+msgstr "Stisnjeni disk RAM (zram)"
 
 #: src/utils/drive.rs:209
+#, fuzzy
+#| msgid "Device"
 msgid "{} Loop Device"
-msgstr "{} Loop 设备"
+msgstr "Naprava"
 
 #: src/utils/drive.rs:210
 msgid "{} Mapped Device"
-msgstr "{} 映射设备"
+msgstr "Preslikana naprava {}"
 
 #: src/utils/drive.rs:211
 msgid "{} RAID"
@@ -1756,70 +1912,71 @@ msgstr "{} RAID"
 
 #: src/utils/drive.rs:212
 msgid "{} RAM Disk"
-msgstr "{} RAM 盘"
+msgstr "Disk RAM {}"
 
 #: src/utils/drive.rs:213
 msgid "{} zram Device"
-msgstr "{} ZRAM 设备"
+msgstr "Naprava zram {}"
 
 #: src/utils/drive.rs:214
 msgid "{} ZFS Volume"
-msgstr "{} ZFS 卷"
+msgstr "Nosilec ZFS {}"
 
 #: src/utils/drive.rs:215
 msgid "{} Drive"
-msgstr "{} 磁盘"
+msgstr "Pogon {}"
 
 #: src/utils/network.rs:124
+#, fuzzy
 msgid "Bluetooth Tether"
-msgstr "蓝牙共享网络"
+msgstr "Privez Bluetooth"
 
 #: src/utils/network.rs:125
+#, fuzzy
 msgid "Network Bridge"
-msgstr "桥接器"
+msgstr "Dodaj omrežni vmesnik"
 
 #: src/utils/network.rs:126
+#, fuzzy
 msgid "Ethernet Connection"
-msgstr "以太网络连接"
+msgstr "Žična omrežna povezava"
 
 #: src/utils/network.rs:127
+#, fuzzy
 msgid "Docker Bridge"
-msgstr "Docker 网桥"
+msgstr "Most za docker"
 
 #: src/utils/network.rs:128
 msgid "InfiniBand Connection"
-msgstr "InfiniBand 连接"
+msgstr "Povezava InfiniBand"
 
 #: src/utils/network.rs:129
+#, fuzzy
 msgid "Serial Line IP Connection"
-msgstr "串行线路 IP 连接"
+msgstr "Serijska povezava IP"
 
 #: src/utils/network.rs:130
 msgid "Virtual Ethernet Device"
-msgstr "虚拟网卡设备"
+msgstr "Virtualna omrežna naprava"
 
 #: src/utils/network.rs:131
 msgid "VM Network Bridge"
-msgstr "VM 桥接网络"
+msgstr "Omrežni most VM"
 
 #: src/utils/network.rs:132
+#, fuzzy
 msgid "VPN Tunnel"
-msgstr "VPN 隧道"
+msgstr "Tunel VPN"
 
 #: src/utils/network.rs:133
+#, fuzzy
 msgid "VPN Tunnel (WireGuard)"
-msgstr "VPN 隧道 (WireGuard)"
+msgstr "Tunel VPN (WireGuard)"
 
 #: src/utils/network.rs:134
 msgid "Wi-Fi Connection"
-msgstr "Wi-Fi 连接"
+msgstr "Povezava Wi-Fi"
 
 #: src/utils/network.rs:135
 msgid "WWAN Connection"
-msgstr "WWAN 连接"
-
-#~ msgid "Memory Usage"
-#~ msgstr "内存占用"
-
-#~ msgid "Show Search Fields on Launch"
-#~ msgstr "在启动时显示搜索框"
+msgstr "Povezava WWAN"

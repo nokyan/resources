@@ -65,7 +65,7 @@ impl GpuData {
     pub fn new(gpu: &Gpu) -> Self {
         let gpu_identifier = gpu.gpu_identifier();
 
-        trace!("Gathering GPU data for {}…", gpu_identifier);
+        trace!("Gathering GPU data for {gpu_identifier}…");
 
         let usage_fraction = gpu.usage().map(|usage| usage.clamp(0.0, 1.0)).ok();
 
@@ -106,7 +106,7 @@ impl GpuData {
             nvidia,
         };
 
-        trace!("Gathered GPU data for {}: {gpu_data:?}", gpu_identifier);
+        trace!("Gathered GPU data for {gpu_identifier}: {gpu_data:?}");
 
         gpu_data
     }
