@@ -800,6 +800,60 @@ mod test {
     }
 
     #[test]
+    fn parse_wifi_generations_detection_order() {
+        let map: HashMap<WifiGeneration, (Station, u32)> = HashMap::from([
+            (
+                WifiGeneration::Wifi4,
+                (generate_wifi_station(Some(1), None, None, None), 2400),
+            ),
+            (
+                WifiGeneration::Wifi5,
+                (generate_wifi_station(Some(1), Some(1), None, None), 2400),
+            ),
+            (
+                WifiGeneration::Wifi6,
+                (generate_wifi_station(Some(1), Some(1), Some(1), None), 2400),
+            ),
+            (
+                WifiGeneration::Wifi6e,
+                (generate_wifi_station(Some(1), Some(1), Some(1), None), 6000),
+            ),
+            (
+                WifiGeneration::Wifi7,
+                (
+                    generate_wifi_station(Some(1), Some(1), Some(1), Some(1)),
+                    5000,
+                ),
+            ),
+        ]);
+
+        for expected in map.keys() {
+            let (station, mhz) = &map[expected];
+            let result = WifiGeneration::get_wifi_generation(station, *mhz);
+            assert_eq!(
+                result,
+                Some(*expected),
+                "Could not parse Wifi generation properly for {}",
+                expected
+            );
+        }
+    }
+
+    #[test]
+    fn parse_wifi_generations_failures() {
+        let map = HashMap::from([(None, (generate_wifi_station(None, None, None, None), 2400))]);
+
+        for expected in map.keys() {
+            let (station, mhz) = &map[expected];
+            let result = WifiGeneration::get_wifi_generation(station, *mhz);
+            assert_eq!(
+                result, *expected,
+                "Could parse Wifi generation properly while it should fail"
+            )
+        }
+    }
+
+    #[test]
     fn display_wifi_generations() {
         let map: HashMap<WifiGeneration, &str> = HashMap::from([
             (WifiGeneration::Wifi4, "Wi-Fi 4 (802.11n)"),
