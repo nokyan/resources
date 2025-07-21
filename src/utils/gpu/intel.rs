@@ -126,12 +126,9 @@ impl GpuImpl for IntelGpu {
     /// For Intel GPUs, this returns the average power usage since last time this function was called.
     /// First call will always return Err
     fn power_usage(&self) -> Result<f64> {
-        let new_energy = match self.driver {
-            IntelGpuDriver::Xe => {
-                Ok(read_parsed::<f64>(self.hwmon_path()?.join("energy2_input"))? / 1_000_000.0)
-            }
-            _ => self.hwmon_energy_usage(),
-        }?;
+        let new_energy = read_parsed::<f64>(self.hwmon_path()?.join("energy1_input"))
+            .or_else(|_| read_parsed::<f64>(self.hwmon_path()?.join("energy2_input")))
+            .map(|microjoules| microjoules / 1_000_000.0)?;
         let new_timestamp = unix_as_millis();
         let old_energy = self.last_energy_usage.get();
         let old_timestamp = self.last_energy_usage_timestamp.get();
@@ -139,7 +136,7 @@ impl GpuImpl for IntelGpu {
         self.last_energy_usage.set(new_energy);
         self.last_energy_usage_timestamp.set(new_timestamp);
 
-        if self.last_energy_usage.get() == 0.0 || self.last_energy_usage_timestamp.get() == 0 {
+        if self.last_energy_usage_timestamp.get() == 0 {
             bail!("first check")
         }
 
@@ -165,9 +162,11 @@ impl GpuImpl for IntelGpu {
         match self.driver {
             IntelGpuDriver::I915 => read_parsed::<f64>(self.hwmon_path()?.join("power1_max"))
                 .or_else(|_| read_parsed::<f64>(self.hwmon_path()?.join("power1_crit")))
+                .or_else(|_| read_parsed::<f64>(self.hwmon_path()?.join("power1_rated_max")))
                 .map(|microwatts| microwatts / 1_000_000.0),
             IntelGpuDriver::Xe => read_parsed::<f64>(self.hwmon_path()?.join("power2_max"))
                 .or_else(|_| read_parsed::<f64>(self.hwmon_path()?.join("power2_crit")))
+                .or_else(|_| read_parsed::<f64>(self.hwmon_path()?.join("power2_rated_max")))
                 .map(|microwatts| microwatts / 1_000_000.0),
             _ => self.hwmon_temperature(),
         }
