@@ -397,7 +397,9 @@ impl LinkData<WifiLinkData> {
             let wifi_interface_name =
                 String::from_utf8_lossy(wifi_interface.name.as_ref().unwrap());
             info!("Found interface '{}': {:?}", wifi_interface_name, interface);
-            let index = wifi_interface.index.unwrap();
+            let index = wifi_interface
+                .index
+                .ok_or(anyhow!("Could not get index of wifi_interface"))?;
             let stations = socket.get_station_info(index)?;
             info!("Stations found: {}", stations.len());
             if let Some(station_info) = stations.first() {
