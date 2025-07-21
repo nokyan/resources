@@ -151,7 +151,7 @@ impl GpuImpl for IntelGpu {
     fn core_frequency(&self) -> Result<f64> {
         match self.driver {
             IntelGpuDriver::Xe => Ok(read_parsed::<f64>(
-                self.sysfs_path().join("tile0/gt0/freq0/cur_freq"),
+                self.sysfs_path().join("device/tile0/gt0/freq0/cur_freq"),
             )? * 1_000_000.0),
             _ => Ok(read_parsed::<f64>(self.sysfs_path().join("gt_cur_freq_mhz"))? * 1_000_000.0),
         }
