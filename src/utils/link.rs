@@ -930,17 +930,26 @@ mod test {
     fn display_wifi_link_speed() {
         let map = HashMap::from([
             ("Receive: 200 b/s · Send: 100 b/s", (200, 100)),
-            ("Receive: 200 kb/s · Send: 100 kb/s", (200_000, 100_000)),
             (
-                "Receive: 200 Mb/s · Send: 100 Mb/s",
+                "Receive: 200.00 kb/s · Send: 100.00 kb/s",
+                (200_000, 100_000),
+            ),
+            (
+                "Receive: 200.00 Mb/s · Send: 100.00 Mb/s",
                 (200_000_000, 100_000_000),
             ),
             (
-                "Receive: 235 Mb/s · Send: 124 Mb/s",
+                "Receive: 235.00 Mb/s · Send: 124.00 Mb/s",
                 (235_000_000, 124_000_000),
             ),
-            ("Receive: 2 kb/s · Send: 124 Mb/s", (2_000, 124_000_000)),
-            ("Receive: 124 Mb/s · Send: 2 kb/s", (124_000_000, 2_000)),
+            (
+                "Receive: 2.00 kb/s · Send: 124.00 Mb/s",
+                (2_000, 124_000_000),
+            ),
+            (
+                "Receive: 124.25 Mb/s · Send: 2.30 kb/s",
+                (124_250_000, 2_300),
+            ),
         ]);
 
         for expected in map.keys() {
