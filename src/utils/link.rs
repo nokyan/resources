@@ -2,7 +2,9 @@ use crate::i18n::{i18n, i18n_f};
 use crate::utils::drive::{AtaSlot, UsbSlot};
 use crate::utils::link::SataSpeed::{Sata150, Sata300, Sata600};
 use crate::utils::network::{InterfaceType, NetworkInterface};
-use crate::utils::units::{convert_frequency, convert_speed_bits_decimal_with_places};
+use crate::utils::units::{
+    convert_frequency, convert_speed_bits_decimal, convert_speed_bits_decimal_with_places,
+};
 use anyhow::{Context, Error, Result, anyhow, bail};
 use log::{info, trace};
 use neli_wifi::{Socket, Station};
@@ -436,8 +438,8 @@ impl WifiLinkData {
     }
 
     pub fn link_speed_display(&self) -> String {
-        let send_string = convert_speed_bits_decimal_with_places(self.tx_bps.as_f64(), 2);
-        let receive_string = convert_speed_bits_decimal_with_places(self.rx_bps.as_f64(), 2);
+        let send_string = convert_speed_bits_decimal(self.tx_bps.as_f64());
+        let receive_string = convert_speed_bits_decimal(self.rx_bps.as_f64());
 
         i18n_f(
             "{}: {} · {}: {}",
