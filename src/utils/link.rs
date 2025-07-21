@@ -436,8 +436,8 @@ impl WifiLinkData {
     }
 
     pub fn link_speed_display(&self) -> String {
-        let send_string = convert_speed_bits_decimal_with_places(self.tx_bps.as_f64(), 0);
-        let receive_string = convert_speed_bits_decimal_with_places(self.rx_bps.as_f64(), 0);
+        let send_string = convert_speed_bits_decimal_with_places(self.tx_bps.as_f64(), 2);
+        let receive_string = convert_speed_bits_decimal_with_places(self.rx_bps.as_f64(), 2);
 
         i18n_f(
             "{}: {} · {}: {}",
