@@ -366,12 +366,25 @@ impl MainWindow {
             imp,
             move |_, key, _, _| {
                 if key == gdk::Key::Control_L {
-                    debug!("Ctrl has been released, continuing apps and processes updates");
+                    debug!("Ctrl has been released, resuming apps and processes updates");
                     imp.pause_updates.set(false);
                 };
             }
         ));
         self.add_controller(event_controller);
+
+        self.connect_suspended_notify(clone!(
+            #[weak]
+            imp,
+            move |window| {
+                imp.pause_updates.set(window.is_suspended());
+                if window.is_suspended() {
+                    debug!("Resources has been suspended, halting graphical updates")
+                } else {
+                    debug!("Resources is not suspended anymore, resuming graphical updates")
+                }
+            }
+        ));
     }
 
     fn get_selected_page(&self) -> Option<Widget> {

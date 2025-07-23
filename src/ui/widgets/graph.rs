@@ -1,11 +1,13 @@
 use adw::prelude::WidgetExt;
 use gtk::glib::{self};
+use gtk::prelude::GtkWindowExt;
 use gtk::subclass::prelude::*;
 use log::trace;
 use plotters::style::RGBColor;
 
 use std::f64;
 
+use crate::application::Application;
 use crate::utils::settings::SETTINGS;
 
 const MAX_DATA_POINTS: u32 = 600;
@@ -70,8 +72,8 @@ mod imp {
 
     impl WidgetImpl for ResGraph {
         fn snapshot(&self, snapshot: &gtk::Snapshot) {
-            let width = self.obj().allocation().width() as u32;
-            let height = self.obj().allocation().height() as u32;
+            let width = self.obj().width() as u32;
+            let height = self.obj().height() as u32;
             if width == 0 || height == 0 {
                 return;
             }
@@ -157,13 +159,13 @@ impl ResGraph {
     pub fn set_graph_color(&self, r: u8, g: u8, b: u8) {
         let imp = self.imp();
         imp.graph_color.set(RGBColor(r, g, b));
-        imp.obj().queue_draw();
+        self.queue_draw_if_not_suspended();
     }
 
     pub fn set_locked_max_y(&self, y_max: Option<f64>) {
         let imp = self.imp();
         imp.max_y.set(y_max);
-        imp.obj().queue_draw();
+        self.queue_draw_if_not_suspended();
     }
 
     pub fn get_highest_value(&self) -> f64 {
@@ -185,7 +187,7 @@ impl ResGraph {
             data_points.pop_front();
         }
         data_points.push_back(data);
-        imp.obj().queue_draw();
+        self.queue_draw_if_not_suspended();
     }
 
     pub fn data_points(&self) -> Vec<f64> {
@@ -201,10 +203,22 @@ impl ResGraph {
             }
             data_points.push_back(*data_point);
         }
-        imp.obj().queue_draw();
+        self.queue_draw_if_not_suspended();
     }
 
     pub fn clear_data_points(&self) {
         self.imp().data_points.borrow_mut().clear();
+    }
+
+    pub fn queue_draw_if_not_suspended(&self) {
+        if Application::try_default()
+            .and_then(|app| app.try_main_window())
+            .map(|main_window| main_window.is_suspended())
+            .unwrap_or_default()
+        {
+            trace!("Graph refresh skipped due to app being suspended");
+        } else {
+            self.imp().obj().queue_draw();
+        }
     }
 }

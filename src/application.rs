@@ -91,6 +91,10 @@ impl Application {
         self.imp().window.get().unwrap().upgrade().unwrap()
     }
 
+    pub fn try_main_window(&self) -> Option<MainWindow> {
+        self.imp().window.get().and_then(|window| window.upgrade())
+    }
+
     fn setup_gactions(&self) {
         // Quit
         let action_quit = gio::SimpleAction::new("quit", None);
@@ -309,6 +313,10 @@ impl Application {
         }
 
         ApplicationExtManual::run_with_args::<&str>(self, &[]);
+    }
+
+    pub fn try_default() -> Option<Self> {
+        gio::Application::default().and_then(|app| app.downcast().ok())
     }
 }
 
