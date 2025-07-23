@@ -810,8 +810,8 @@ impl ResApplications {
                 let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
                 let row = gtk::Inscription::new(None);
-
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -870,6 +870,7 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(7);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -935,6 +936,7 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(11);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -999,6 +1001,7 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1059,6 +1062,7 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(11);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1125,6 +1129,7 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1184,6 +1189,7 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(7);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1244,6 +1250,7 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(7);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1304,6 +1311,7 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(7);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1362,6 +1370,7 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
                 item.property_expression("item")
@@ -1418,8 +1427,8 @@ impl ResApplications {
                 let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
                 let row = gtk::Inscription::new(None);
-
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1480,6 +1489,7 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
