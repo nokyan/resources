@@ -3,7 +3,7 @@ use crate::utils::link::{LinkData, WifiGeneration, WifiLinkData};
 use crate::utils::network::{InterfaceType, NetworkInterface};
 use crate::utils::units::{convert_frequency, convert_speed_bits_decimal};
 use anyhow::{Context, anyhow, bail};
-use log::{debug, info, warn};
+use log::{debug, info, trace, warn};
 use neli::consts::genl::{CtrlAttr, CtrlCmd};
 use neli::consts::nl::GenlId;
 use neli::err::NlError;
@@ -101,14 +101,14 @@ impl LinkData<WifiLinkData> {
         if let Some(wifi_interface) = wifi_interface {
             let wifi_interface_name =
                 String::from_utf8_lossy(wifi_interface.name.as_ref().unwrap());
-            info!("Found interface '{}': {:?}", wifi_interface_name, interface);
+            trace!("Found interface '{}': {:?}", wifi_interface_name, interface);
             let index = wifi_interface
                 .index
                 .ok_or(anyhow!("Could not get index of wifi_interface"))?;
             let stations = socket.get_station_info(index)?;
-            info!("Stations found: {}", stations.len());
+            trace!("Stations found: {}", stations.len());
             if let Some(station_info) = stations.first() {
-                info!("Found station: {:?}", station_info,);
+                trace!("Found station: {:?}", station_info,);
                 let mhz = wifi_interface.frequency.unwrap_or(0);
                 let wifi_generation = WifiGeneration::get_wifi_generation(station_info, mhz);
                 let rx = station_info.rx_bitrate.unwrap_or(0).saturating_mul(100_000) as usize;
