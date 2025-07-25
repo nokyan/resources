@@ -441,14 +441,10 @@ impl WifiLinkData {
         let send_string = convert_speed_bits_decimal(self.tx_bps.as_f64());
         let receive_string = convert_speed_bits_decimal(self.rx_bps.as_f64());
 
-        i18n_f(
-            "{}: {} · {}: {}",
-            &[
-                &i18n("Receive"),
-                &receive_string,
-                &i18n("Send"),
-                &send_string,
-            ],
+        format!(
+            "{} · {}",
+            &i18n_f("Receive: {}", &[&receive_string]),
+            &i18n_f("Send: {}", &[&send_string]),
         )
     }
 }
