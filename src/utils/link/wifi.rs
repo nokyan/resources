@@ -4,10 +4,6 @@ use crate::utils::network::{InterfaceType, NetworkInterface};
 use crate::utils::units::{convert_frequency, convert_speed_bits_decimal};
 use anyhow::{Context, anyhow, bail};
 use log::{debug, info, trace, warn};
-use neli::consts::genl::{CtrlAttr, CtrlCmd};
-use neli::consts::nl::GenlId;
-use neli::err::NlError;
-use neli::genl::Genlmsghdr;
 use neli_wifi::{Socket, Station};
 use plotters::prelude::LogScalable;
 use std::error::Error;
@@ -16,17 +12,14 @@ use std::fmt::{Display, Formatter};
 use std::ops::Deref;
 use std::sync::{LazyLock, Mutex};
 
-static NeliWifiSocket: LazyLock<
-    Result<Mutex<Socket>, NlError<GenlId, Genlmsghdr<CtrlCmd, CtrlAttr>>>,
-> = LazyLock::new(|| {
+static NeliWifiSocket: LazyLock<anyhow::Result<Mutex<Socket>>> = LazyLock::new(|| {
     let socket = Socket::connect();
 
     return match socket {
         Ok(socket) => Ok(Mutex::new(socket)),
-        Err(error) => {
-            warn!("Connection to 80211 kernel socket using neli-wifi failed, reason: {error}");
-            Err(error)
-        }
+        Err(error) => Err(anyhow!(
+            "Connection to 80211 kernel socket using neli-wifi failed, reason: {error}"
+        )),
     };
 });
 
@@ -79,7 +72,7 @@ impl LinkData<WifiLinkData> {
             .interface_name
             .to_str()
             .ok_or(anyhow!("No name"))?;
-        let neli = NeliWifiSocket.as_ref()?;
+        let neli = NeliWifiSocket.as_ref().map_err(|e| anyhow!(e))?;
         let mut socket = neli
             .lock()
             .map_err(|_| anyhow!("Could not lock neli-wifi socket"))?;

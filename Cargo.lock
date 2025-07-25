@@ -1416,7 +1416,6 @@ dependencies = [
  "libadwaita",
  "libc",
  "log",
- "neli",
  "neli-wifi",
  "nix",
  "num_cpus",
