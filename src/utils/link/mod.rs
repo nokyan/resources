@@ -1,9 +1,12 @@
+mod wifi;
+
 use crate::i18n::i18n;
 use crate::utils::drive::{AtaSlot, UsbSlot};
 use crate::utils::link::SataSpeed::{Sata150, Sata300, Sata600};
 use crate::utils::units::convert_speed_bits_decimal_with_places;
 use anyhow::{Context, Error, Result, anyhow, bail};
 use log::trace;
+
 use process_data::pci_slot::PciSlot;
 use std::fmt::{Display, Formatter};
 use std::path::Path;
@@ -14,6 +17,7 @@ pub enum Link {
     Pcie(LinkData<PcieLinkData>),
     Sata(LinkData<SataSpeed>),
     Usb(LinkData<UsbSpeed>),
+    Wifi(LinkData<WifiGeneration>),
     #[default]
     Unknown,
 }
@@ -44,6 +48,26 @@ pub enum SataSpeed {
     Sata150,
     Sata300,
     Sata600,
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum NetworkLinkData {
+    Wifi(WifiLinkData),
+    Other(usize),
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct WifiLinkData {
+    pub generation: Option<WifiGeneration>,
+    pub frequency_mhz: u32,
+    pub rx_bps: usize,
+    pub tx_bps: usize,
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum WifiGeneration {
+    Wifi4,
+    Wifi5,
+    Wifi6,
+    Wifi6e,
+    Wifi7,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -314,6 +338,7 @@ impl Display for Link {
                 Link::Pcie(data) => data.to_string(),
                 Link::Sata(data) => data.to_string(),
                 Link::Usb(data) => data.to_string(),
+                Link::Wifi(data) => data.to_string(),
                 Link::Unknown => i18n("N/A"),
             }
         )

@@ -8,9 +8,8 @@ use anyhow::{Context, Result};
 use gtk::gio::{Icon, ThemedIcon};
 use log::trace;
 
-use crate::i18n::i18n;
-
 use super::{pci::Device, read_uevent};
+use crate::i18n::i18n;
 
 const PATH_SYSFS: &str = "/sys/class/net";
 
@@ -71,7 +70,7 @@ impl NetworkData {
     }
 }
 
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub enum InterfaceType {
     Bluetooth,
     Bridge,

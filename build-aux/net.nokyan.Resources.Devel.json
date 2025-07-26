@@ -21,6 +21,7 @@
         "--filesystem=xdg-data/flatpak/exports/share:ro",
         "--filesystem=host:ro",
         "--share=ipc",
+        "--share=network",
         "--socket=fallback-x11",
         "--socket=wayland",
         "--talk-name=org.freedesktop.Flatpak"
