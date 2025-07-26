@@ -1,18 +1,13 @@
 mod wifi;
 
-use crate::i18n::{i18n, i18n_f};
+use crate::i18n::i18n;
 use crate::utils::drive::{AtaSlot, UsbSlot};
 use crate::utils::link::SataSpeed::{Sata150, Sata300, Sata600};
-use crate::utils::network::{InterfaceType, NetworkInterface};
-use crate::utils::units::{
-    convert_frequency, convert_speed_bits_decimal, convert_speed_bits_decimal_with_places,
-};
+use crate::utils::units::convert_speed_bits_decimal_with_places;
 use anyhow::{Context, Error, Result, anyhow, bail};
-use log::{info, trace};
+use log::trace;
 
-use plotters::prelude::LogScalable;
 use process_data::pci_slot::PciSlot;
-use std::ffi::CString;
 use std::fmt::{Display, Formatter};
 use std::path::Path;
 use std::str::FromStr;

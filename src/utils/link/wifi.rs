@@ -2,25 +2,20 @@ use crate::i18n::{i18n, i18n_f};
 use crate::utils::link::{LinkData, WifiGeneration, WifiLinkData};
 use crate::utils::network::{InterfaceType, NetworkInterface};
 use crate::utils::units::{convert_frequency, convert_speed_bits_decimal};
-use anyhow::{Context, anyhow, bail};
-use log::{debug, info, trace, warn};
+use anyhow::{Context, Result, anyhow, bail};
+use log::{debug, trace, warn};
 use neli_wifi::{Socket, Station};
 use plotters::prelude::LogScalable;
-use std::error::Error;
 use std::ffi::CString;
 use std::fmt::{Display, Formatter};
-use std::ops::Deref;
 use std::sync::{LazyLock, Mutex};
 
-static NeliWifiSocket: LazyLock<anyhow::Result<Mutex<Socket>>> = LazyLock::new(|| {
-    let socket = Socket::connect();
-
-    return match socket {
-        Ok(socket) => Ok(Mutex::new(socket)),
-        Err(error) => Err(anyhow!(
-            "Connection to 80211 kernel socket using neli-wifi failed, reason: {error}"
-        )),
-    };
+static NELI_SOCKET: LazyLock<Result<Mutex<Socket>>> = LazyLock::new(|| {
+    Socket::connect()
+        .inspect(|_| debug!("Successfully connected to nl80211"))
+        .map_err(|e| anyhow!("connection to nl80211 failed: {e}"))
+        .inspect_err(|e| warn!("Connection to nl80211 failed, reason: {e}"))
+        .map(|socket| Mutex::new(socket))
 });
 
 impl WifiGeneration {
@@ -34,7 +29,7 @@ impl WifiGeneration {
             wifi_generation = Some(WifiGeneration::Wifi5)
         }
         if station.he_mcs.is_some() {
-            if frequency_mhz >= 5925 && frequency_mhz <= 7125 {
+            if (5925..=7125).contains(&frequency_mhz) {
                 wifi_generation = Some(WifiGeneration::Wifi6e)
             } else {
                 wifi_generation = Some(WifiGeneration::Wifi6)
@@ -64,44 +59,43 @@ impl Display for WifiGeneration {
 }
 
 impl LinkData<WifiLinkData> {
-    pub fn from_wifi_adapter(interface: &NetworkInterface) -> anyhow::Result<Self> {
+    pub fn from_wifi_adapter(interface: &NetworkInterface) -> Result<Self> {
         if interface.interface_type != InterfaceType::Wlan {
             bail!("Wifi interface type is required for wifi generation detection");
         }
+
         let name = interface
             .interface_name
             .to_str()
-            .ok_or(anyhow!("No name"))?;
-        let neli = NeliWifiSocket.as_ref().map_err(|e| anyhow!(e))?;
-        let mut socket = neli
-            .lock()
-            .map_err(|_| anyhow!("Could not lock neli-wifi socket"))?;
+            .context("unable to turn osstring to string")?;
+        let mutex = NELI_SOCKET.as_ref().map_err(|e| anyhow!(e))?;
+        let mut socket = mutex
+            .try_lock()
+            .map_err(|e| anyhow!("unable to lock neli mutex, reason: {e}"))?;
         let interfaces = socket
             .get_interfaces_info()
             .context("Could not get interfaces")?;
-        let wifi_interface = interfaces
-            .iter()
-            .filter(|x| {
-                x.name.is_some() && {
-                    if let Ok(c_name) = CString::from_vec_with_nul(x.name.clone().unwrap()) {
-                        c_name.to_string_lossy() == name
-                    } else {
-                        false
-                    }
+        let wifi_interface = interfaces.iter().find(|x| {
+            x.name.is_some() && {
+                if let Ok(c_name) = CString::from_vec_with_nul(x.name.clone().unwrap()) {
+                    c_name.to_string_lossy() == name
+                } else {
+                    false
                 }
-            })
-            .next();
+            }
+        });
+
         if let Some(wifi_interface) = wifi_interface {
             let wifi_interface_name =
                 String::from_utf8_lossy(wifi_interface.name.as_ref().unwrap());
-            trace!("Found interface '{}': {:?}", wifi_interface_name, interface);
+            trace!("Found interface '{wifi_interface_name}': {interface:?}");
             let index = wifi_interface
                 .index
-                .ok_or(anyhow!("Could not get index of wifi_interface"))?;
+                .context("Could not get index of wifi_interface")?;
             let stations = socket.get_station_info(index)?;
             trace!("Stations found: {}", stations.len());
             if let Some(station_info) = stations.first() {
-                trace!("Found station: {:?}", station_info,);
+                trace!("Found station: {station_info:?}");
                 let mhz = wifi_interface.frequency.unwrap_or(0);
                 let wifi_generation = WifiGeneration::get_wifi_generation(station_info, mhz);
                 let rx = station_info.rx_bitrate.unwrap_or(0).saturating_mul(100_000) as usize;
@@ -117,6 +111,7 @@ impl LinkData<WifiLinkData> {
                 });
             }
         }
+
         bail!("Could not find matching WIFI interface");
     }
 }

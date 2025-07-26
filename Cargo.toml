@@ -27,7 +27,7 @@ gtk = { version = "0.9.7", features = ["v4_10"], package = "gtk4" }
 lazy-regex = "3.4.1"
 libc = { version = "0.2.174", features = ["extra_traits"] }
 log = "0.4.27"
-neli-wifi =  {version = "0.6.1" ,features = ["default"] }
+neli-wifi = { version = "0.6.1", features = ["default"] }
 
 nix = { version = "0.30.0", default-features = false, features = [
     "signal",
