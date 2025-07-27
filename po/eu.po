@@ -6,8 +6,8 @@
 msgid ""
 msgstr "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2025-07-04 19:58+0000\n"
-"PO-Revision-Date: 2025-07-04 19:58+0000\n"
+"POT-Creation-Date: 2025-07-20 15:34+0000\n"
+"PO-Revision-Date: 2025-07-27 19:58+0000\n"
 "Last-Translator: Asier Saratsua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <eu@li.org>\n"
 "Language: eu\n"
@@ -16,22 +16,21 @@ msgstr "Project-Id-Version: resources main\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: data/net.nokyan.Resources.desktop.in.in:3
+#: data/net.nokyan.Resources.desktop.in.in:2
 #: data/net.nokyan.Resources.metainfo.xml.in.in:4
 #: data/resources/ui/window.ui:22 src/application.rs:265
 msgid "Resources"
 msgstr "Baliabideak"
 
 #. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
-#: data/net.nokyan.Resources.desktop.in.in:4
+#: data/net.nokyan.Resources.desktop.in.in:3
 #: data/net.nokyan.Resources.metainfo.xml.in.in:5
 msgid "Keep an eye on system resources"
 msgstr "Begiratu sistemaren baliabideak"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: data/net.nokyan.Resources.desktop.in.in:10
-msgid ""
-"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
+#: data/net.nokyan.Resources.desktop.in.in:9
+msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 msgstr "Sisteam;Baliabideak;Monitorea;Prozesuak;Erabilera;Zeregina;Kudeatzailea;PUZ;RAM;Memoria;PUG;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
@@ -672,6 +671,7 @@ msgid "Video Memory Frequency"
 msgstr "Bideo-memoriaren maiztasuna"
 
 #: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49
+#: src/ui/pages/battery.rs:216
 msgid "Power Usage"
 msgstr "Energia-erabilera"
 
@@ -892,35 +892,61 @@ msgstr "Ikonoa:"
 #: src/ui/dialogs/process_dialog.rs:146 src/ui/dialogs/process_dialog.rs:169
 #: src/ui/dialogs/process_dialog.rs:176 src/ui/dialogs/process_dialog.rs:183
 #: src/ui/dialogs/process_dialog.rs:190 src/ui/pages/applications/mod.rs:945
-#: src/ui/pages/applications/mod.rs:1069 src/ui/pages/cpu.rs:242
-#: src/ui/pages/cpu.rs:257 src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:282
-#: src/ui/pages/cpu.rs:288 src/ui/pages/cpu.rs:294 src/ui/pages/cpu.rs:298
-#: src/ui/pages/cpu.rs:301 src/ui/pages/cpu.rs:339 src/ui/pages/cpu.rs:446
-#: src/ui/pages/drive.rs:318 src/ui/pages/drive.rs:349
-#: src/ui/pages/drive.rs:351 src/ui/pages/drive.rs:380
-#: src/ui/pages/drive.rs:382 src/ui/pages/drive.rs:398
-#: src/ui/pages/drive.rs:399 src/ui/pages/drive.rs:406
-#: src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426
-#: src/ui/pages/drive.rs:432 src/ui/pages/gpu.rs:243 src/ui/pages/gpu.rs:250
-#: src/ui/pages/gpu.rs:295 src/ui/pages/gpu.rs:320 src/ui/pages/gpu.rs:323
-#: src/ui/pages/gpu.rs:334 src/ui/pages/gpu.rs:354 src/ui/pages/gpu.rs:366
-#: src/ui/pages/gpu.rs:377 src/ui/pages/gpu.rs:389 src/ui/pages/gpu.rs:396
-#: src/ui/pages/gpu.rs:400 src/ui/pages/gpu.rs:430 src/ui/pages/gpu.rs:436
-#: src/ui/pages/memory.rs:226 src/ui/pages/memory.rs:227
-#: src/ui/pages/memory.rs:231 src/ui/pages/memory.rs:232
-#: src/ui/pages/memory.rs:236 src/ui/pages/memory.rs:237
-#: src/ui/pages/memory.rs:265 src/ui/pages/memory.rs:326
-#: src/ui/pages/network.rs:240 src/ui/pages/network.rs:247
-#: src/ui/pages/network.rs:254 src/ui/pages/network.rs:260
-#: src/ui/pages/network.rs:263 src/ui/pages/network.rs:270
-#: src/ui/pages/network.rs:335 src/ui/pages/network.rs:338
-#: src/ui/pages/network.rs:340 src/ui/pages/network.rs:369
-#: src/ui/pages/network.rs:372 src/ui/pages/network.rs:374
-#: src/ui/pages/processes/mod.rs:1220 src/ui/pages/processes/mod.rs:1286
-#: src/ui/pages/processes/mod.rs:1352 src/ui/pages/processes/mod.rs:1418
-#: src/ui/pages/processes/mod.rs:1900 src/ui/pages/processes/mod.rs:1902
+#: src/ui/pages/applications/mod.rs:1069 src/ui/pages/battery.rs:204
+#: src/ui/pages/battery.rs:224 src/ui/pages/battery.rs:230
+#: src/ui/pages/battery.rs:233 src/ui/pages/battery.rs:264
+#: src/ui/pages/battery.rs:288 src/ui/pages/battery.rs:290
+#: src/ui/pages/battery.rs:300 src/ui/pages/cpu.rs:242 src/ui/pages/cpu.rs:257
+#: src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:282 src/ui/pages/cpu.rs:288
+#: src/ui/pages/cpu.rs:294 src/ui/pages/cpu.rs:298 src/ui/pages/cpu.rs:301
+#: src/ui/pages/cpu.rs:339 src/ui/pages/cpu.rs:446 src/ui/pages/drive.rs:318
+#: src/ui/pages/drive.rs:349 src/ui/pages/drive.rs:351
+#: src/ui/pages/drive.rs:380 src/ui/pages/drive.rs:382
+#: src/ui/pages/drive.rs:398 src/ui/pages/drive.rs:399
+#: src/ui/pages/drive.rs:406 src/ui/pages/drive.rs:416
+#: src/ui/pages/drive.rs:426 src/ui/pages/drive.rs:432 src/ui/pages/gpu.rs:243
+#: src/ui/pages/gpu.rs:250 src/ui/pages/gpu.rs:295 src/ui/pages/gpu.rs:320
+#: src/ui/pages/gpu.rs:323 src/ui/pages/gpu.rs:334 src/ui/pages/gpu.rs:354
+#: src/ui/pages/gpu.rs:366 src/ui/pages/gpu.rs:377 src/ui/pages/gpu.rs:389
+#: src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:400 src/ui/pages/gpu.rs:430
+#: src/ui/pages/gpu.rs:436 src/ui/pages/memory.rs:226
+#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:231
+#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:236
+#: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:265
+#: src/ui/pages/memory.rs:326 src/ui/pages/network.rs:240
+#: src/ui/pages/network.rs:247 src/ui/pages/network.rs:254
+#: src/ui/pages/network.rs:260 src/ui/pages/network.rs:263
+#: src/ui/pages/network.rs:270 src/ui/pages/network.rs:335
+#: src/ui/pages/network.rs:338 src/ui/pages/network.rs:340
+#: src/ui/pages/network.rs:369 src/ui/pages/network.rs:372
+#: src/ui/pages/network.rs:374 src/ui/pages/processes/mod.rs:1220
+#: src/ui/pages/processes/mod.rs:1286 src/ui/pages/processes/mod.rs:1352
+#: src/ui/pages/processes/mod.rs:1418 src/ui/pages/processes/mod.rs:1900
+#: src/ui/pages/processes/mod.rs:1902 src/utils/battery.rs:149
+#: src/utils/drive.rs:136 src/utils/gpu/mod.rs:275 src/utils/gpu/mod.rs:287
+#: src/utils/link.rs:317 src/utils/npu/mod.rs:243 src/utils/npu/mod.rs:249
 msgid "N/A"
 msgstr "E/E"
+
+#: src/ui/dialogs/process_options_dialog.rs:145 src/ui/pages/cpu.rs:256
+#: src/ui/pages/cpu.rs:415 src/ui/pages/cpu.rs:419
+msgid "CPU {}"
+msgstr "PUZ {}"
+
+#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:413
+#: src/ui/pages/drive.rs:423 src/ui/pages/processes/process_entry.rs:211
+msgid "No"
+msgstr "Ez"
+
+#: src/ui/pages/applications/application_entry.rs:191
+#: src/ui/pages/processes/process_entry.rs:212
+msgid "Yes (Flatpak)"
+msgstr ""
+
+#: src/ui/pages/applications/application_entry.rs:192
+#: src/ui/pages/processes/process_entry.rs:213
+msgid "Yes (Snap)"
+msgstr ""
 
 #: src/ui/pages/applications/mod.rs:659
 msgid "Running Apps: {}"
@@ -966,27 +992,27 @@ msgid ""
 "implications. Use with caution."
 msgstr "Aplikazioa hiltzen bada, datuak galdu daitezke eta segurtasuna murriztu daiteke. Erabili kontuz."
 
+#: src/ui/pages/battery.rs:102 src/ui/pages/drive.rs:126
+msgid "Drive"
+msgstr "Unitatea"
+
+#: src/ui/pages/battery.rs:209
+msgid "Battery Charge"
+msgstr "Bateria-karga"
+
+#: src/ui/pages/battery.rs:278 src/ui/pages/cpu.rs:436
+#: src/ui/pages/drive.rs:343 src/ui/pages/drive.rs:374 src/ui/pages/gpu.rs:422
+#: src/ui/pages/network.rs:327 src/ui/pages/network.rs:361
+msgid "Highest:"
+msgstr "Altuena:"
+
 #: src/ui/pages/cpu.rs:241 src/ui/pages/gpu.rs:210
 msgid "Total Usage"
 msgstr "Erabilera guztira"
 
-#: src/ui/pages/cpu.rs:256 src/ui/pages/cpu.rs:415 src/ui/pages/cpu.rs:419
-msgid "CPU {}"
-msgstr "PUZ {}"
-
 #: src/ui/pages/cpu.rs:269 src/ui/pages/gpu.rs:237
 msgid "Temperature"
 msgstr "Tenperatura"
-
-#: src/ui/pages/cpu.rs:436 src/ui/pages/drive.rs:343 src/ui/pages/drive.rs:374
-#: src/ui/pages/gpu.rs:422 src/ui/pages/network.rs:327
-#: src/ui/pages/network.rs:361
-msgid "Highest:"
-msgstr "Altuena:"
-
-#: src/ui/pages/drive.rs:126
-msgid "Drive"
-msgstr "Unitatea"
 
 #: src/ui/pages/drive.rs:235
 msgid "Drive Activity"
@@ -1003,10 +1029,6 @@ msgstr "Idazte-abiadura"
 #: src/ui/pages/drive.rs:411 src/ui/pages/drive.rs:421
 msgid "Yes"
 msgstr "Bai"
-
-#: src/ui/pages/drive.rs:413 src/ui/pages/drive.rs:423
-msgid "No"
-msgstr "Ez"
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
@@ -1050,7 +1072,7 @@ msgstr "{} MT/s"
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · Trukatze-espazioa: {} %"
 
-#: src/ui/pages/network.rs:118
+#: src/ui/pages/network.rs:118 src/utils/network.rs:136
 msgid "Network Interface"
 msgstr "Sareko interfazea"
 
@@ -1205,3 +1227,592 @@ msgstr "Arazoa gertatu da {} hiltzean"
 #: src/ui/window.rs:1305
 msgid "There was a problem continuing {}"
 msgstr "Arazoa gertatu da {} jarraitzean"
+
+#: src/utils/app.rs:219
+msgid "System Processes"
+msgstr "Sistema-prozesuak"
+
+#: src/utils/battery.rs:90
+msgid "Charging"
+msgstr "Kargatzen"
+
+#: src/utils/battery.rs:91
+msgid "Discharging"
+msgstr "Deskargatzen"
+
+#: src/utils/battery.rs:92
+msgid "Empty"
+msgstr "Hutsa"
+
+#: src/utils/battery.rs:93
+msgid "Full"
+msgstr "Osoa"
+
+#: src/utils/battery.rs:94
+msgid "Unknown"
+msgstr "Ezezaguna"
+
+#: src/utils/battery.rs:140
+msgid "Nickel-Metal Hydride"
+msgstr "Nikel-metal hibridoa"
+
+#: src/utils/battery.rs:141
+msgid "Nickel-Cadmium"
+msgstr "Nikel-kacmioa"
+
+#: src/utils/battery.rs:142
+msgid "Nickel-Zinc"
+msgstr "Nikel-zinka"
+
+#: src/utils/battery.rs:143
+msgid "Lead-Acid"
+msgstr "Berun-azidoa"
+
+#: src/utils/battery.rs:144
+msgid "Lithium-Ion"
+msgstr "Litio-ioia"
+
+#: src/utils/battery.rs:145
+msgid "Lithium Iron Phosphate"
+msgstr "Litio-ioi fosfatoa"
+
+#: src/utils/battery.rs:146
+msgid "Lithium Polymer"
+msgstr "Litiozko polimeroa"
+
+#: src/utils/battery.rs:148
+msgid "Rechargeable Alkaline Managanese"
+msgstr "Alkalino manganeso birkargagarria"
+
+#: src/utils/battery.rs:259
+msgid "{} Battery"
+msgstr "{} bateria"
+
+#: src/utils/battery.rs:261
+msgid "Battery"
+msgstr "Bateria"
+
+#: src/utils/units.rs:91
+msgid "{} K"
+msgstr "{} K"
+
+#: src/utils/units.rs:93
+msgid "{} °C"
+msgstr "{} °C"
+
+#: src/utils/units.rs:95
+msgid "{} °F"
+msgstr "{} °F"
+
+#: src/utils/units.rs:113 src/utils/units.rs:127 src/utils/units.rs:147
+#: src/utils/units.rs:161
+msgid "{} B"
+msgstr "{} B"
+
+#: src/utils/units.rs:114 src/utils/units.rs:128
+msgid "{} kB"
+msgstr "{} kB"
+
+#: src/utils/units.rs:115 src/utils/units.rs:129
+msgid "{} MB"
+msgstr "{} MB"
+
+#: src/utils/units.rs:116 src/utils/units.rs:130
+msgid "{} GB"
+msgstr "{} GB"
+
+#: src/utils/units.rs:117 src/utils/units.rs:131
+msgid "{} TB"
+msgstr "{} TB"
+
+#: src/utils/units.rs:118 src/utils/units.rs:132
+msgid "{} PB"
+msgstr "{} PB"
+
+#: src/utils/units.rs:119 src/utils/units.rs:133
+msgid "{} EB"
+msgstr "{} EB"
+
+#: src/utils/units.rs:120 src/utils/units.rs:134
+msgid "{} ZB"
+msgstr "{} ZB"
+
+#: src/utils/units.rs:121 src/utils/units.rs:135
+msgid "{} YB"
+msgstr "{} YB"
+
+#: src/utils/units.rs:122 src/utils/units.rs:136
+msgid "{} RB"
+msgstr "{} RB"
+
+#: src/utils/units.rs:123 src/utils/units.rs:137
+msgid "{} QB"
+msgstr "{} QB"
+
+#: src/utils/units.rs:148 src/utils/units.rs:162
+msgid "{} KiB"
+msgstr "{} KiB"
+
+#: src/utils/units.rs:149 src/utils/units.rs:163
+msgid "{} MiB"
+msgstr "{} MiB"
+
+#: src/utils/units.rs:150 src/utils/units.rs:164
+msgid "{} GiB"
+msgstr "{} GiB"
+
+#: src/utils/units.rs:151 src/utils/units.rs:165
+msgid "{} TiB"
+msgstr "{} TiB"
+
+#: src/utils/units.rs:152 src/utils/units.rs:166
+msgid "{} PiB"
+msgstr "{} PiB"
+
+#: src/utils/units.rs:153 src/utils/units.rs:167
+msgid "{} EiB"
+msgstr "{} EiB"
+
+#: src/utils/units.rs:154 src/utils/units.rs:168
+msgid "{} ZiB"
+msgstr "{} ZiB"
+
+#: src/utils/units.rs:155 src/utils/units.rs:169
+msgid "{} YiB"
+msgstr "{} YiB"
+
+#: src/utils/units.rs:156 src/utils/units.rs:170
+msgid "{} RiB"
+msgstr "{} RiB"
+
+#: src/utils/units.rs:157 src/utils/units.rs:171
+msgid "{} QiB"
+msgstr "{} QiB"
+
+#: src/utils/units.rs:198 src/utils/units.rs:215
+msgid "{} B/s"
+msgstr "{} B/s"
+
+#: src/utils/units.rs:199
+msgid "{} kB/s"
+msgstr "{} kB/s"
+
+#: src/utils/units.rs:200
+msgid "{} MB/s"
+msgstr "{} MB/s"
+
+#: src/utils/units.rs:201
+msgid "{} GB/s"
+msgstr "{} GB/s"
+
+#: src/utils/units.rs:202
+msgid "{} TB/s"
+msgstr "{} TB/s"
+
+#: src/utils/units.rs:203
+msgid "{} PB/s"
+msgstr "{} PB/s"
+
+#: src/utils/units.rs:204
+msgid "{} EB/s"
+msgstr "{} EB/s"
+
+#: src/utils/units.rs:205
+msgid "{} ZB/s"
+msgstr "{} ZB/s"
+
+#: src/utils/units.rs:206
+msgid "{} YB/s"
+msgstr "{} YB/s"
+
+#: src/utils/units.rs:207
+msgid "{} RB/s"
+msgstr "{} RB/s"
+
+#: src/utils/units.rs:208
+msgid "{} QB/s"
+msgstr "{} QB/s"
+
+#: src/utils/units.rs:216
+msgid "{} KiB/s"
+msgstr "{} KiB/s"
+
+#: src/utils/units.rs:217
+msgid "{} MiB/s"
+msgstr "{} MiB/s"
+
+#: src/utils/units.rs:218
+msgid "{} GiB/s"
+msgstr "{} GiB/s"
+
+#: src/utils/units.rs:219
+msgid "{} TiB/s"
+msgstr "{} TiB/s"
+
+#: src/utils/units.rs:220
+msgid "{} PiB/s"
+msgstr "{} PiB/s"
+
+#: src/utils/units.rs:221
+msgid "{} EiB/s"
+msgstr "{} EiB/s"
+
+#: src/utils/units.rs:222
+msgid "{} ZiB/s"
+msgstr "{} ZiB/s"
+
+#: src/utils/units.rs:223
+msgid "{} YiB/s"
+msgstr "{} YiB/s"
+
+#: src/utils/units.rs:224
+msgid "{} RiB/s"
+msgstr "{} RiB/s"
+
+#: src/utils/units.rs:225
+msgid "{} QiB/s"
+msgstr "{} QiB/s"
+
+#: src/utils/units.rs:239 src/utils/units.rs:256
+msgid "{} b/s"
+msgstr "{} b/s"
+
+#: src/utils/units.rs:240
+msgid "{} kb/s"
+msgstr "{} kb/s"
+
+#: src/utils/units.rs:241
+msgid "{} Mb/s"
+msgstr "{} MB/s"
+
+#: src/utils/units.rs:242
+msgid "{} Gb/s"
+msgstr "{} Gb/s"
+
+#: src/utils/units.rs:243
+msgid "{} Tb/s"
+msgstr "{} TB/s"
+
+#: src/utils/units.rs:244
+msgid "{} Pb/s"
+msgstr "{} Pb/s"
+
+#: src/utils/units.rs:245
+msgid "{} Eb/s"
+msgstr "{} Eb/s"
+
+#: src/utils/units.rs:246
+msgid "{} Zb/s"
+msgstr "{} Zb/s"
+
+#: src/utils/units.rs:247
+msgid "{} Yb/s"
+msgstr "{} Yb/s"
+
+#: src/utils/units.rs:248
+msgid "{} Rb/s"
+msgstr "{} Rb/s"
+
+#: src/utils/units.rs:249
+msgid "{} Qb/s"
+msgstr "{} Qb/s"
+
+#: src/utils/units.rs:257
+msgid "{} Kib/s"
+msgstr "{} KiB/s"
+
+#: src/utils/units.rs:258
+msgid "{} Mib/s"
+msgstr "{} Mib/s"
+
+#: src/utils/units.rs:259
+msgid "{} Gib/s"
+msgstr "{} GiB/s"
+
+#: src/utils/units.rs:260
+msgid "{} Tib/s"
+msgstr "{} TiB/s"
+
+#: src/utils/units.rs:261
+msgid "{} Pib/s"
+msgstr "{} PiB/s"
+
+#: src/utils/units.rs:262
+msgid "{} Eib/s"
+msgstr "{} Eib/s"
+
+#: src/utils/units.rs:263
+msgid "{} Zib/s"
+msgstr "{} Zib/s"
+
+#: src/utils/units.rs:264
+msgid "{} Yib/s"
+msgstr "{} YiB/s"
+
+#: src/utils/units.rs:265
+msgid "{} Rib/s"
+msgstr "{} RiB/s"
+
+#: src/utils/units.rs:266
+msgid "{} Qib/s"
+msgstr "{} QiB/s"
+
+#: src/utils/units.rs:273
+msgid "{} Hz"
+msgstr "{} Hz"
+
+#: src/utils/units.rs:274
+msgid "{} kHz"
+msgstr "{} kHz"
+
+#: src/utils/units.rs:275
+msgid "{} MHz"
+msgstr "{} MHz"
+
+#: src/utils/units.rs:276
+msgid "{} GHz"
+msgstr "{} GHz"
+
+#: src/utils/units.rs:277
+msgid "{} THz"
+msgstr "{} THz"
+
+#: src/utils/units.rs:278
+msgid "{} PHz"
+msgstr "{} PHz"
+
+#: src/utils/units.rs:279
+msgid "{} EHz"
+msgstr "{} EHz"
+
+#: src/utils/units.rs:280
+msgid "{} ZHz"
+msgstr "{} ZHz"
+
+#: src/utils/units.rs:281
+msgid "{} YHz"
+msgstr "{} YHz"
+
+#: src/utils/units.rs:282
+msgid "{} RHz"
+msgstr "{} RHz"
+
+#: src/utils/units.rs:283
+msgid "{} QHz"
+msgstr "{} QHz"
+
+#: src/utils/units.rs:290
+msgid "{} W"
+msgstr "{} W"
+
+#: src/utils/units.rs:291
+msgid "{} kW"
+msgstr "{} kW"
+
+#: src/utils/units.rs:292
+msgid "{} MW"
+msgstr "{} MW"
+
+#: src/utils/units.rs:293
+msgid "{} GW"
+msgstr "{} GW"
+
+#: src/utils/units.rs:294
+msgid "{} TW"
+msgstr "{} TW"
+
+#: src/utils/units.rs:295
+msgid "{} PW"
+msgstr "{} PW"
+
+#: src/utils/units.rs:296
+msgid "{} EW"
+msgstr "{} EW"
+
+#: src/utils/units.rs:297
+msgid "{} ZW"
+msgstr "{} ZW"
+
+#: src/utils/units.rs:298
+msgid "{} YW"
+msgstr "{} YW"
+
+#: src/utils/units.rs:299
+msgid "{} RW"
+msgstr "{} RW"
+
+#: src/utils/units.rs:300
+msgid "{} QW"
+msgstr "{} QW"
+
+#: src/utils/units.rs:309 src/utils/units.rs:323
+msgid "{} Wh"
+msgstr "{} Wh"
+
+#: src/utils/units.rs:310 src/utils/units.rs:324
+msgid "{} kWh"
+msgstr "{} kWh"
+
+#: src/utils/units.rs:311 src/utils/units.rs:325
+msgid "{} MWh"
+msgstr "{} MWh"
+
+#: src/utils/units.rs:312 src/utils/units.rs:326
+msgid "{} GWh"
+msgstr "{} GWh"
+
+#: src/utils/units.rs:313 src/utils/units.rs:327
+msgid "{} TWh"
+msgstr "{} TWh"
+
+#: src/utils/units.rs:314 src/utils/units.rs:328
+msgid "{} PWh"
+msgstr "{} PWh"
+
+#: src/utils/units.rs:315 src/utils/units.rs:329
+msgid "{} EWh"
+msgstr "{} EWh"
+
+#: src/utils/units.rs:316 src/utils/units.rs:330
+msgid "{} ZWh"
+msgstr "{} ZWh"
+
+#: src/utils/units.rs:317 src/utils/units.rs:331
+msgid "{} YWh"
+msgstr "{} YWh"
+
+#: src/utils/units.rs:318 src/utils/units.rs:332
+msgid "{} RWh"
+msgstr "{} RWh"
+
+#: src/utils/units.rs:319 src/utils/units.rs:333
+msgid "{} QWh"
+msgstr "{} QWh"
+
+#: src/utils/drive.rs:128 src/utils/drive.rs:207
+msgid "CD/DVD/Blu-ray Drive"
+msgstr "CD/DVD/Blu-ray unitatea"
+
+#: src/utils/drive.rs:129
+msgid "eMMC Storage"
+msgstr "eMMC biltegiratzea"
+
+#: src/utils/drive.rs:130
+msgid "Flash Storage"
+msgstr "Flash biltegiratzea"
+
+#: src/utils/drive.rs:131 src/utils/drive.rs:208
+msgid "Floppy Drive"
+msgstr "Disketea"
+
+#: src/utils/drive.rs:132
+msgid "Hard Disk Drive"
+msgstr "Disko gogorra"
+
+#: src/utils/drive.rs:133
+msgid "Loop Device"
+msgstr ""
+
+#: src/utils/drive.rs:134
+msgid "Mapped Device"
+msgstr "Mapatutako gailua"
+
+#: src/utils/drive.rs:135
+msgid "NVMe Drive"
+msgstr "NVMe unitatea"
+
+#: src/utils/drive.rs:137
+msgid "Software Raid"
+msgstr ""
+
+#: src/utils/drive.rs:138
+msgid "RAM Disk"
+msgstr "RAM diskoa"
+
+#: src/utils/drive.rs:139
+msgid "Solid State Drive"
+msgstr "Egoerako solidoko unitatea"
+
+#: src/utils/drive.rs:140
+msgid "ZFS Volume"
+msgstr "ZFS bolumena"
+
+#: src/utils/drive.rs:141
+msgid "Compressed RAM Disk (zram)"
+msgstr "Konprimatutako RAM diskoa (zram)"
+
+#: src/utils/drive.rs:209
+msgid "{} Loop Device"
+msgstr ""
+
+#: src/utils/drive.rs:210
+msgid "{} Mapped Device"
+msgstr "{} mapatutako gailua"
+
+#: src/utils/drive.rs:211
+msgid "{} RAID"
+msgstr "{} RAID"
+
+#: src/utils/drive.rs:212
+msgid "{} RAM Disk"
+msgstr "{} RAM diskoa"
+
+#: src/utils/drive.rs:213
+msgid "{} zram Device"
+msgstr "{} zram gailua"
+
+#: src/utils/drive.rs:214
+msgid "{} ZFS Volume"
+msgstr "{} ZFS bolumena"
+
+#: src/utils/drive.rs:215
+msgid "{} Drive"
+msgstr "{} unitatea"
+
+#: src/utils/network.rs:124
+msgid "Bluetooth Tether"
+msgstr "Bluetooth aingura"
+
+#: src/utils/network.rs:125
+msgid "Network Bridge"
+msgstr "Sareko zubia"
+
+#: src/utils/network.rs:126
+msgid "Ethernet Connection"
+msgstr "Ethernet konexioa"
+
+#: src/utils/network.rs:127
+msgid "Docker Bridge"
+msgstr "Docker zubia"
+
+#: src/utils/network.rs:128
+msgid "InfiniBand Connection"
+msgstr "InfiniBand konexioa"
+
+#: src/utils/network.rs:129
+msgid "Serial Line IP Connection"
+msgstr ""
+
+#: src/utils/network.rs:130
+msgid "Virtual Ethernet Device"
+msgstr "Ethernet gailu birtuala"
+
+#: src/utils/network.rs:131
+msgid "VM Network Bridge"
+msgstr "VM sareko zubia"
+
+#: src/utils/network.rs:132
+msgid "VPN Tunnel"
+msgstr "VPN tunela"
+
+#: src/utils/network.rs:133
+msgid "VPN Tunnel (WireGuard)"
+msgstr "VPN tunela (WireGuard)"
+
+#: src/utils/network.rs:134
+msgid "Wi-Fi Connection"
+msgstr "Wifi konexioa"
+
+#: src/utils/network.rs:135
+msgid "WWAN Connection"
+msgstr "WWAN konexioa"
