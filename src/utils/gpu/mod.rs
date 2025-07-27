@@ -44,8 +44,8 @@ pub struct GpuData {
     pub encode_fraction: Option<f64>,
     pub decode_fraction: Option<f64>,
 
-    pub total_vram: Option<usize>,
-    pub used_vram: Option<usize>,
+    pub total_vram: Option<u64>,
+    pub used_vram: Option<u64>,
 
     pub clock_speed: Option<f64>,
     pub vram_speed: Option<f64>,
@@ -139,8 +139,8 @@ pub trait GpuImpl {
     fn encode_usage(&self) -> Result<f64>;
     fn decode_usage(&self) -> Result<f64>;
     fn combined_media_engine(&self) -> Result<bool>;
-    fn used_vram(&self) -> Result<usize>;
-    fn total_vram(&self) -> Result<usize>;
+    fn used_vram(&self) -> Result<u64>;
+    fn total_vram(&self) -> Result<u64>;
     fn temperature(&self) -> Result<f64>;
     fn power_usage(&self) -> Result<f64>;
     fn core_frequency(&self) -> Result<f64>;

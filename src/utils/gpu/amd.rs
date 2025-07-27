@@ -161,12 +161,12 @@ impl GpuImpl for AmdGpu {
         Ok(self.combined_media_engine)
     }
 
-    fn used_vram(&self) -> Result<usize> {
-        self.drm_used_vram().map(|usage| usage as usize)
+    fn used_vram(&self) -> Result<u64> {
+        self.drm_used_vram().map(|usage| usage as u64)
     }
 
-    fn total_vram(&self) -> Result<usize> {
-        self.drm_total_vram().map(|usage| usage as usize)
+    fn total_vram(&self) -> Result<u64> {
+        self.drm_total_vram().map(|usage| usage as u64)
     }
 
     fn temperature(&self) -> Result<f64> {
