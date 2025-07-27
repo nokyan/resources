@@ -98,8 +98,9 @@ static DEC_NS_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> =
 static MEM_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> = Lazy::new(|| {
     HashMap::from_iter([
         ("amdgpu", vec!["drm-memory-gtt", "drm-memory-vram"]),
+        ("i915", vec!["drm-total-local0", "drm-total-system0"]),
         ("v3d", vec!["drm-total-memory"]),
-        ("xe", vec!["drm-engine-vram0"]),
+        ("xe", vec!["drm-total-gtt", "drm-total-vram0"]),
     ])
 });
 
