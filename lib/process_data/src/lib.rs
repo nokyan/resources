@@ -330,7 +330,7 @@ impl ProcessData {
             .for_each(|int| {
                 // we want the bits and there are 4 bits in a hex digit
                 (0..4).for_each(|i| {
-                    // this if should prevent wrong size affinity vecs if the thread count is not divisible by 4
+                    // this should prevent wrong size affinity vecs if the thread count is not divisible by 4
                     if affinity.len() < *NUM_CPUS {
                         affinity.push((int & (1 << i)) != 0);
                     }
