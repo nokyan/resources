@@ -615,6 +615,18 @@ impl AppsContext {
             .clamp(0.0, 1.0)
     }
 
+    pub fn vram_usage(&self, gpu_identifier: GpuIdentifier) -> u64 {
+        self.processes_iter()
+            .flat_map(|process| {
+                process
+                    .data
+                    .gpu_usage_stats
+                    .get(&gpu_identifier)
+                    .and_then(|gpu_identifier| gpu_identifier.mem())
+            })
+            .sum()
+    }
+
     fn app_associated_with_process(&self, process: &Process) -> Option<String> {
         // TODO: tidy this up
         // ↓ look for whether we can find an ID in the cgroup
