@@ -42,7 +42,7 @@ src/utils/battery.rs
 src/utils/units.rs
 src/utils/drive.rs
 src/utils/gpu/mod.rs
-src/utils/link.rs
+src/utils/link/mod.rs
 src/utils/network.rs
 src/utils/npu/mod.rs
 src/utils/units.rs
