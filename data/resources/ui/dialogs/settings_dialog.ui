@@ -114,6 +114,36 @@
             </child>
           </object>
         </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">System Action Buttons</property>
+            <property name="description" translatable="yes">Control the visibility of system action buttons in the interface</property>
+            <child>
+              <object class="AdwSwitchRow" id="show_kill_window_button_row">
+                <property name="title" translatable="yes">Show Kill Window Button</property>
+                <property name="subtitle" translatable="yes">Display kill window button when KWin is detected</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="show_logout_button_row">
+                <property name="title" translatable="yes">Show Logout Button</property>
+                <property name="subtitle" translatable="yes">Display logout button in the interface</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="show_reboot_button_row">
+                <property name="title" translatable="yes">Show Reboot Button</property>
+                <property name="subtitle" translatable="yes">Display reboot button in the interface</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="show_shutdown_button_row">
+                <property name="title" translatable="yes">Show Shutdown Button</property>
+                <property name="subtitle" translatable="yes">Display shutdown button in the interface</property>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
     <child>

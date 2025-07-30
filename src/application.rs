@@ -212,6 +212,48 @@ impl Application {
             }
         ));
         self.add_action(&action_process_options);
+
+        // Kill Window if using kwin
+        let action_kill_window = gio::SimpleAction::new("kill-window", None);
+        action_kill_window.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _| {
+                this.main_window().shortcut_kill_window();
+            }
+        ));
+        self.add_action(&action_kill_window);
+
+        // System actions with confirmation dialogs
+        let action_logout = gio::SimpleAction::new("logout", None);
+        action_logout.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _| {
+                this.main_window().shortcut_logout();
+            }
+        ));
+        self.add_action(&action_logout);
+
+        let action_reboot = gio::SimpleAction::new("reboot", None);
+        action_reboot.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _| {
+                this.main_window().shortcut_reboot();
+            }
+        ));
+        self.add_action(&action_reboot);
+
+        let action_shutdown = gio::SimpleAction::new("shutdown", None);
+        action_shutdown.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _| {
+                this.main_window().shortcut_shutdown();
+            }
+        ));
+        self.add_action(&action_shutdown);
     }
 
     // Sets up keyboard shortcuts
@@ -250,7 +292,8 @@ impl Application {
 
         let settings = ResSettingsDialog::new();
 
-        settings.init();
+        let kwin_running = self.main_window().is_kwin_running();
+        settings.init(kwin_running);
 
         settings.present(Some(&self.main_window()));
         imp.settings_window_opened.set(true);

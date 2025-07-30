@@ -87,6 +87,14 @@ mod imp {
         #[template_child]
         pub processes_scrolled_window: TemplateChild<gtk::ScrolledWindow>,
         #[template_child]
+        pub kill_window_button: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub logout_button: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub reboot_button: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub shutdown_button: TemplateChild<gtk::Button>,
+        #[template_child]
         pub options_button: TemplateChild<gtk::Button>,
         #[template_child]
         pub information_button: TemplateChild<gtk::Button>,
@@ -155,6 +163,10 @@ mod imp {
                 search_bar: Default::default(),
                 search_entry: Default::default(),
                 processes_scrolled_window: Default::default(),
+                kill_window_button: Default::default(),
+                logout_button: Default::default(),
+                reboot_button: Default::default(),
+                shutdown_button: Default::default(),
                 options_button: Default::default(),
                 information_button: Default::default(),
                 end_process_button: Default::default(),
@@ -734,8 +746,16 @@ impl ResProcesses {
         }
     }
 
-    pub fn refresh_processes_list(&self, apps_context: &AppsContext) {
+    pub fn refresh_processes_list(&self, apps_context: &AppsContext, kwin_running: bool) {
         let imp = self.imp();
+
+        // Update button visibility based on settings
+        imp.kill_window_button
+            .set_visible(kwin_running && SETTINGS.show_kill_window_button());
+        imp.logout_button.set_visible(SETTINGS.show_logout_button());
+        imp.reboot_button.set_visible(SETTINGS.show_reboot_button());
+        imp.shutdown_button
+            .set_visible(SETTINGS.show_shutdown_button());
 
         if imp.info_dialog_closed.get() {
             let _ = imp.open_info_dialog.take();
@@ -2073,6 +2093,10 @@ fn get_action_name(action: ProcessAction, name: &str) -> String {
         ProcessAction::STOP => i18n_f("Halt {}?", &[name]),
         ProcessAction::KILL => i18n_f("Kill {}?", &[name]),
         ProcessAction::CONT => i18n_f("Continue {}?", &[name]),
+        ProcessAction::KILLWINDOW => i18n("Kill a Window?"),
+        ProcessAction::LOGOUT => i18n("Logout?"),
+        ProcessAction::REBOOT => i18n("Reboot?"),
+        ProcessAction::SHUTDOWN => i18n("Shutdown?"),
     }
 }
 
@@ -2102,6 +2126,10 @@ fn get_action_name_multiple(action: ProcessAction, count: usize) -> String {
             count as u32,
             &[&count.to_string()],
         ),
+        ProcessAction::KILLWINDOW => i18n("Kill a Window?"),
+        ProcessAction::LOGOUT => i18n("Logout?"),
+        ProcessAction::REBOOT => i18n("Reboot?"),
+        ProcessAction::SHUTDOWN => i18n("Shutdown?"),
     }
 }
 
@@ -2115,6 +2143,16 @@ fn get_action_warning(action: ProcessAction) -> String {
             "Killing a process can come with serious risks such as losing data and security implications. Use with caution.",
         ),
         ProcessAction::CONT => String::new(),
+        ProcessAction::KILLWINDOW => i18n("Click on a window to kill it."),
+        ProcessAction::LOGOUT => {
+            i18n("This action will be executed without checking for unsaved files.")
+        }
+        ProcessAction::REBOOT => {
+            i18n("This action will be executed without checking for unsaved files.")
+        }
+        ProcessAction::SHUTDOWN => {
+            i18n("This action will be executed without checking for unsaved files.")
+        }
     }
 }
 
@@ -2124,5 +2162,9 @@ fn get_action_description(action: ProcessAction) -> String {
         ProcessAction::STOP => i18n("Halt Process"),
         ProcessAction::KILL => i18n("Kill Process"),
         ProcessAction::CONT => i18n("Continue Process"),
+        ProcessAction::KILLWINDOW => i18n("Kill Window"),
+        ProcessAction::LOGOUT => i18n("Logout"),
+        ProcessAction::REBOOT => i18n("Reboot"),
+        ProcessAction::SHUTDOWN => i18n("Shutdown"),
     }
 }

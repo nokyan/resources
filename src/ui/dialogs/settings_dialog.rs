@@ -38,6 +38,16 @@ mod imp {
         #[template_child]
         pub normalize_cpu_usage_row: TemplateChild<adw::SwitchRow>,
 
+        // System action buttons
+        #[template_child]
+        pub show_kill_window_button_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub show_logout_button_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub show_reboot_button_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub show_shutdown_button_row: TemplateChild<adw::SwitchRow>,
+
         #[template_child]
         pub apps_show_memory_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
@@ -163,12 +173,12 @@ impl ResSettingsDialog {
         glib::Object::new::<Self>()
     }
 
-    pub fn init(&self) {
-        self.setup_widgets();
+    pub fn init(&self, kwin_running: bool) {
+        self.setup_widgets(kwin_running);
         self.setup_signals();
     }
 
-    pub fn setup_widgets(&self) {
+    pub fn setup_widgets(&self, kwin_running: bool) {
         trace!("Setting up ResSettingsDialog widgets…");
 
         let imp = self.imp();
@@ -191,6 +201,17 @@ impl ResSettingsDialog {
             .set_selected(SETTINGS.sidebar_meter_type() as u32);
         imp.normalize_cpu_usage_row
             .set_active(SETTINGS.normalize_cpu_usage());
+
+        // System action buttons
+        imp.show_kill_window_button_row
+            .set_active(SETTINGS.show_kill_window_button());
+        imp.show_kill_window_button_row.set_visible(kwin_running);
+        imp.show_logout_button_row
+            .set_active(SETTINGS.show_logout_button());
+        imp.show_reboot_button_row
+            .set_active(SETTINGS.show_reboot_button());
+        imp.show_shutdown_button_row
+            .set_active(SETTINGS.show_shutdown_button());
 
         imp.apps_show_memory_row
             .set_active(SETTINGS.apps_show_memory());
@@ -319,6 +340,27 @@ impl ResSettingsDialog {
         imp.normalize_cpu_usage_row
             .connect_active_notify(|switch_row| {
                 let _ = SETTINGS.set_normalize_cpu_usage(switch_row.is_active());
+            });
+
+        // System action buttons
+        imp.show_kill_window_button_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_show_kill_window_button(switch_row.is_active());
+            });
+
+        imp.show_logout_button_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_show_logout_button(switch_row.is_active());
+            });
+
+        imp.show_reboot_button_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_show_reboot_button(switch_row.is_active());
+            });
+
+        imp.show_shutdown_button_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_show_shutdown_button(switch_row.is_active());
             });
 
         imp.apps_show_cpu_row.connect_active_notify(|switch_row| {
