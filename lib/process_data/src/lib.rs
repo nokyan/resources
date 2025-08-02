@@ -729,3 +729,10 @@ pub fn unix_as_millis() -> u64 {
         .unwrap()
         .as_millis() as u64
 }
+
+pub fn unix_as_secs_f64() -> f64 {
+    SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap()
+        .as_secs_f64()
+}
