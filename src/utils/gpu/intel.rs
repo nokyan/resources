@@ -141,8 +141,8 @@ impl GpuImpl for IntelGpu {
         }
 
         let energy_delta = new_energy - old_energy;
-        let timestamp_delta = (new_timestamp.saturating_sub(old_timestamp)) as f64;
-        Ok((energy_delta / timestamp_delta) / 1000.0)
+        let timestamp_delta = (new_timestamp.saturating_sub(old_timestamp)) as f64 / 1000.0;
+        Ok(energy_delta / timestamp_delta)
     }
 
     fn core_frequency(&self) -> Result<f64> {
