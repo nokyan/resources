@@ -41,7 +41,7 @@ pub struct IntelGpu {
     sysfs_path: PathBuf,
     first_hwmon_path: Option<PathBuf>,
     // for some reason intel states used energy in joules instead of power in watts…
-    last_energy_usage: Cell<f64>,
+    last_energy_usage: Cell<u64>,
     last_energy_usage_timestamp: Cell<u64>,
 }
 
@@ -60,7 +60,7 @@ impl IntelGpu {
             driver_string: driver,
             sysfs_path,
             first_hwmon_path,
-            last_energy_usage: Cell::new(0.0),
+            last_energy_usage: Cell::new(0),
             last_energy_usage_timestamp: Cell::new(0),
         }
     }
@@ -126,9 +126,9 @@ impl GpuImpl for IntelGpu {
     /// For Intel GPUs, this returns the average power usage since last time this function was called.
     /// First call will always return Err
     fn power_usage(&self) -> Result<f64> {
-        let new_energy = read_parsed::<f64>(self.hwmon_path()?.join("energy1_input"))
-            .or_else(|_| read_parsed::<f64>(self.hwmon_path()?.join("energy2_input")))
-            .map(|microjoules| microjoules / 1_000_000.0)?;
+        let new_energy = read_parsed::<u64>(self.hwmon_path()?.join("energy1_input"))
+            .or_else(|_| read_parsed::<u64>(self.hwmon_path()?.join("energy2_input")))
+            .map(|microjoules| microjoules.saturating_div(1_000_000))?;
         let new_timestamp = unix_as_millis();
         let old_energy = self.last_energy_usage.get();
         let old_timestamp = self.last_energy_usage_timestamp.get();
@@ -140,7 +140,7 @@ impl GpuImpl for IntelGpu {
             bail!("first check")
         }
 
-        let energy_delta = new_energy - old_energy;
+        let energy_delta = (new_energy.saturating_sub(old_energy)) as f64;
         let timestamp_delta = (new_timestamp.saturating_sub(old_timestamp)) as f64 / 1000.0;
         Ok(energy_delta / timestamp_delta)
     }
