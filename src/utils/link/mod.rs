@@ -42,6 +42,7 @@ pub enum PcieSpeed {
     Pcie50,
     Pcie60,
     Pcie70,
+    Pcie80,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum SataSpeed {
@@ -228,6 +229,7 @@ impl Display for PcieSpeed {
                 PcieSpeed::Pcie50 => "PCIe 5.0",
                 PcieSpeed::Pcie60 => "PCIe 6.0",
                 PcieSpeed::Pcie70 => "PCIe 7.0",
+                PcieSpeed::Pcie80 => "PCIe 8.0",
             }
         )
     }
@@ -245,6 +247,7 @@ impl FromStr for PcieSpeed {
             "32.0 GT/s PCIe" => Ok(PcieSpeed::Pcie50),
             "64.0 GT/s PCIe" => Ok(PcieSpeed::Pcie60),
             "128.0 GT/s PCIe" => Ok(PcieSpeed::Pcie70),
+            "256.0 GT/s PCIe" => Ok(PcieSpeed::Pcie80),
             _ => Err(anyhow!("Could not parse PCIe speed: '{s}'")),
         }
     }
@@ -362,6 +365,7 @@ mod test {
             ("32.0 GT/s PCIe", PcieSpeed::Pcie50),
             ("64.0 GT/s PCIe", PcieSpeed::Pcie60),
             ("128.0 GT/s PCIe", PcieSpeed::Pcie70),
+            ("256.0 GT/s PCIe", PcieSpeed::Pcie80),
         ]);
 
         for input in map.keys() {
@@ -374,7 +378,7 @@ mod test {
 
     #[test]
     fn parse_pcie_link_speeds_failure() {
-        let invalid = vec!["256.0 GT/s PCIe", "SOMETHING_ELSE", ""];
+        let invalid = vec!["999.0 GT/s PCIe", "SOMETHING_ELSE", ""];
 
         for input in invalid {
             let result = PcieSpeed::from_str(input);
@@ -395,6 +399,7 @@ mod test {
             (PcieSpeed::Pcie50, "PCIe 5.0"),
             (PcieSpeed::Pcie60, "PCIe 6.0"),
             (PcieSpeed::Pcie70, "PCIe 7.0"),
+            (PcieSpeed::Pcie80, "PCIe 8.0"),
         ]);
 
         for input in map.keys() {
