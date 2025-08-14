@@ -1,5 +1,5 @@
 use crate::i18n::{i18n, i18n_f};
-use crate::utils::link::{LinkData, WifiGeneration, WifiLinkData};
+use crate::utils::link::LinkData;
 use crate::utils::network::{InterfaceType, NetworkInterface};
 use crate::utils::units::{convert_frequency, convert_speed_bits_decimal};
 use anyhow::{Context, Result, anyhow, bail};
@@ -15,8 +15,24 @@ static NELI_SOCKET: LazyLock<Result<Mutex<Socket>>> = LazyLock::new(|| {
         .inspect(|_| debug!("Successfully connected to nl80211"))
         .map_err(|e| anyhow!("connection to nl80211 failed: {e}"))
         .inspect_err(|e| warn!("Connection to nl80211 failed, reason: {e}"))
-        .map(|socket| Mutex::new(socket))
+        .map(Mutex::new)
 });
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct WifiLinkData {
+    pub generation: Option<WifiGeneration>,
+    pub frequency_mhz: u32,
+    pub rx_bps: usize,
+    pub tx_bps: usize,
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum WifiGeneration {
+    Wifi4,
+    Wifi5,
+    Wifi6,
+    Wifi6e,
+    Wifi7,
+}
 
 impl WifiGeneration {
     pub fn get_wifi_generation(station: &Station, frequency_mhz: u32) -> Option<WifiGeneration> {
@@ -155,8 +171,8 @@ impl Display for WifiLinkData {
 }
 
 #[cfg(test)]
-mod tests {
-    use crate::utils::link::{WifiGeneration, WifiLinkData};
+mod test {
+    use crate::utils::link::wifi::{WifiGeneration, WifiLinkData};
     use neli_wifi::Station;
     use std::collections::HashMap;
 
