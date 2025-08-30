@@ -30,13 +30,12 @@ pub struct LinkData<T> {
 impl<T> Display for LinkData<T>
 where
     T: Display,
-    T: Copy,
     T: PartialEq,
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let has_different_max = {
-            if let Ok(max) = self.max {
-                self.current != max
+            if let Ok(max) = self.max.as_ref() {
+                self.current != *max
             } else {
                 false
             }
