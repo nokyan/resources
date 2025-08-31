@@ -160,7 +160,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResMemory(ObjectSubclass<imp::ResMemory>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResMemory {

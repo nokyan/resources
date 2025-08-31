@@ -193,7 +193,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResStackSidebarItem(ObjectSubclass<imp::ResStackSidebarItem>)
-        @extends adw::Bin, gtk::Widget;
+        @extends adw::Bin, gtk::Widget,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl ResStackSidebarItem {

@@ -92,7 +92,10 @@ impl Application {
     }
 
     pub fn try_main_window(&self) -> Option<MainWindow> {
-        self.imp().window.get().and_then(|window| window.upgrade())
+        self.imp()
+            .window
+            .get()
+            .and_then(adw::glib::WeakRef::upgrade)
     }
 
     fn setup_gactions(&self) {
@@ -252,7 +255,7 @@ impl Application {
 
         settings.init();
 
-        settings.present(Some(&self.main_window()));
+        AdwDialogExt::present(&settings, Some(&self.main_window()));
         imp.settings_window_opened.set(true);
 
         settings.connect_closed(clone!(

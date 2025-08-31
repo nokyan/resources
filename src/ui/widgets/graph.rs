@@ -140,7 +140,9 @@ mod imp {
 }
 
 glib::wrapper! {
-    pub struct ResGraph(ObjectSubclass<imp::ResGraph>) @extends gtk::Widget;
+    pub struct ResGraph(ObjectSubclass<imp::ResGraph>)
+        @extends gtk::Widget,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResGraph {

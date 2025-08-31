@@ -281,7 +281,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResApplications(ObjectSubclass<imp::ResApplications>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResApplications {
@@ -540,7 +541,7 @@ impl ResApplications {
 
         dialog.init(app);
 
-        dialog.present(Some(&MainWindow::default()));
+        AdwDialogExt::present(&dialog, Some(&MainWindow::default()));
 
         dialog.connect_closed(clone!(
             #[weak(rename_to = this)]
@@ -609,7 +610,7 @@ impl ResApplications {
                 {
                     if let Some((dialog_id, dialog)) = dialog_opt {
                         if dialog_id.as_deref() == app_id.as_deref() {
-                            dialog.close();
+                            AdwDialogExt::close(dialog);
                             dialog_opt = &None;
                         }
                     }

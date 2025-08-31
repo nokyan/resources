@@ -17,17 +17,17 @@ strip = true
 opt-level = 3
 
 [dependencies]
-anyhow = "1.0.94"
-glob = "0.3.2"
+anyhow = "1.0.99"
+glob = "0.3.3"
 lazy-regex = "3.4.1"
-libc = "0.2.167"
-num_cpus = "1.16.0"
-nutype = { version = "0.6.1", features = ["serde"] }
-nvml-wrapper = "0.10.0"
+libc = "0.2.175"
+num_cpus = "1.17.0"
+nutype = { version = "0.6.2", features = ["serde"] }
+nvml-wrapper = "0.11.0"
 serde = { version = "1.0.219", features = ["serde_derive"] }
 syscalls = { version = "0.6.18", features = ["all"] }
 sysconf = "0.3.4"
-thiserror = "2.0.12"
+thiserror = "2.0.16"
 unescape = "0.1.0"
 uzers = "0.12.1"
 
