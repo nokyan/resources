@@ -18,12 +18,13 @@ static NELI_SOCKET: LazyLock<Result<Mutex<Socket>>> = LazyLock::new(|| {
         .map(Mutex::new)
 });
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct WifiLinkData {
     pub generation: Option<WifiGeneration>,
     pub frequency_mhz: u32,
     pub rx_bps: usize,
     pub tx_bps: usize,
+    pub ssid: Option<String>,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum WifiGeneration {
@@ -79,7 +80,6 @@ impl LinkData<WifiLinkData> {
         if interface.interface_type != InterfaceType::Wlan {
             bail!("Wifi interface type is required for wifi generation detection");
         }
-
         let name = interface
             .interface_name
             .to_str()
@@ -104,6 +104,10 @@ impl LinkData<WifiLinkData> {
         if let Some(wifi_interface) = wifi_interface {
             let wifi_interface_name =
                 String::from_utf8_lossy(wifi_interface.name.as_ref().unwrap());
+            let ssid = wifi_interface
+                .ssid
+                .as_ref()
+                .map(|s| String::from_utf8_lossy(s).to_string());
             trace!("Found interface '{wifi_interface_name}': {interface:?}");
             let index = wifi_interface
                 .index
@@ -122,6 +126,7 @@ impl LinkData<WifiLinkData> {
                         rx_bps: rx,
                         tx_bps: tx,
                         frequency_mhz: wifi_interface.frequency.unwrap_or(0),
+                        ssid,
                     },
                     max: Err(anyhow!("No max yet supported")),
                 });
@@ -165,7 +170,7 @@ impl Display for WifiLinkData {
             } else {
                 i18n("N/A")
             },
-            self.frequency_display()
+            self.frequency_display(),
         )
     }
 }
@@ -297,6 +302,7 @@ mod test {
                     frequency_mhz: step,
                     rx_bps: 0,
                     tx_bps: 0,
+                    ssid: None,
                 };
                 let result = input.frequency_display();
                 let expected = map[mhz_range];
@@ -320,6 +326,7 @@ mod test {
                 frequency_mhz: *mhz,
                 rx_bps: 0,
                 tx_bps: 0,
+                ssid: None,
             };
             let result = input.frequency_display();
             let expected = map[mhz];
@@ -360,6 +367,7 @@ mod test {
                 frequency_mhz: 0,
                 rx_bps: receive,
                 tx_bps: send,
+                ssid: None,
             };
             let result = input.link_speed_display();
             pretty_assertions::assert_eq!(*expected, result);

@@ -46,6 +46,8 @@ mod imp {
         #[template_child]
         pub hw_address: TemplateChild<adw::ActionRow>,
         #[template_child]
+        pub network_name: TemplateChild<adw::ActionRow>,
+        #[template_child]
         pub link: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub link_speed: TemplateChild<adw::ActionRow>,
@@ -115,6 +117,7 @@ mod imp {
                 driver: Default::default(),
                 interface: Default::default(),
                 hw_address: Default::default(),
+                network_name: Default::default(),
                 link: Default::default(),
                 link_speed: Default::default(),
                 uses_progress_bar: Cell::new(true),
@@ -274,6 +277,17 @@ impl ResNetwork {
             imp.hw_address.set_subtitle(&hw_address);
         }
 
+        if let Ok(wifi_link) = &wifi_link {
+            imp.network_name.set_visible(true);
+            if let Some(ssid) = &wifi_link.current.ssid {
+                imp.network_name.set_subtitle(ssid);
+            } else {
+                imp.network_name.set_subtitle(&i18n("N/A"));
+            }
+        } else {
+            imp.network_name.set_visible(false);
+        }
+
         imp.link.set_subtitle(&wifi_link.as_ref().map_or_else(
             |_| i18n("N/A"),
             |network_link_data| network_link_data.to_string(),
@@ -394,6 +408,18 @@ impl ResNetwork {
 
             (0.0, i18n("N/A"))
         };
+
+        if let Ok(wifi_link) = &wifi_link {
+            imp.network_name.set_visible(true);
+            if let Some(ssid) = &wifi_link.current.ssid {
+                imp.network_name.set_subtitle(ssid);
+            } else {
+                imp.network_name.set_subtitle(&i18n("N/A"));
+            }
+        } else {
+            imp.network_name.set_visible(false);
+        }
+
         imp.link.set_subtitle(&wifi_link.as_ref().map_or_else(
             |_| i18n("N/A"),
             |network_link_data| network_link_data.to_string(),
