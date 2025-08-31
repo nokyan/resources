@@ -147,7 +147,9 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResSettingsDialog(ObjectSubclass<imp::ResSettingsDialog>)
-        @extends adw::PreferencesDialog, gtk::Widget, adw::Dialog;
+        @extends adw::PreferencesDialog, gtk::Widget, adw::Dialog, gtk::Window,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible, gtk::ShortcutManager, gtk::Root,
+        gtk::Native;
 }
 
 impl Default for ResSettingsDialog {

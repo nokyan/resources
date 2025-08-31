@@ -206,7 +206,8 @@ mod imp {
 glib::wrapper! {
     pub struct MainWindow(ObjectSubclass<imp::MainWindow>)
         @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow, adw::ApplicationWindow,
-        @implements gio::ActionMap, gio::ActionGroup, gtk::Root;
+        @implements gio::ActionMap, gio::ActionGroup, gtk::Root, gtk::Buildable, gtk::ConstraintTarget, gtk::Native, 
+        gtk::ShortcutManager, gtk::Accessible;
 }
 
 struct RefreshData {

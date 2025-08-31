@@ -252,7 +252,7 @@ impl Application {
 
         settings.init();
 
-        settings.present(Some(&self.main_window()));
+        AdwDialogExt::present(&settings, Some(&self.main_window()));
         imp.settings_window_opened.set(true);
 
         settings.connect_closed(clone!(

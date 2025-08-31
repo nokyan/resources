@@ -185,7 +185,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResNetwork(ObjectSubclass<imp::ResNetwork>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResNetwork {

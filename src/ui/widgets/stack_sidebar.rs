@@ -74,15 +74,12 @@ mod imp {
     impl WidgetImpl for ResStackSidebar {}
 
     impl BinImpl for ResStackSidebar {}
-
-    impl ListBoxRowImpl for ResStackSidebar {}
-
-    impl PreferencesRowImpl for ResStackSidebar {}
 }
 
 glib::wrapper! {
     pub struct ResStackSidebar(ObjectSubclass<imp::ResStackSidebar>)
-        @extends gtk::Widget, adw::Bin, adw::PreferencesRow;
+        @extends gtk::Widget, adw::Bin, adw::PreferencesRow,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResStackSidebar {
@@ -201,7 +198,7 @@ impl ResStackSidebar {
 
             // TODO: generalize to "uses_meter"?
             if child.property::<bool>("uses_progress_bar") {
-                if child.has_property("main_graph_color", Some(glib::Bytes::static_type())) {
+                if child.has_property("main_graph_color") {
                     let b = child.property::<glib::Bytes>("main_graph_color");
                     sidebar_item.graph().set_graph_color(b[0], b[1], b[2]);
                 }
