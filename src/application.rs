@@ -92,7 +92,10 @@ impl Application {
     }
 
     pub fn try_main_window(&self) -> Option<MainWindow> {
-        self.imp().window.get().and_then(|window| window.upgrade())
+        self.imp()
+            .window
+            .get()
+            .and_then(adw::glib::WeakRef::upgrade)
     }
 
     fn setup_gactions(&self) {

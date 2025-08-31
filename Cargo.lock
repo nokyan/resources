@@ -1112,39 +1112,16 @@ dependencies = [
 
 [[package]]
 name = "nvml-wrapper"
-version = "0.10.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0c9bff0aa1d48904a1385ea2a8b97576fbdcbc9a3cfccd0d31fe978e1c4038c5"
-dependencies = [
- "bitflags",
- "libloading",
- "nvml-wrapper-sys 0.8.0",
- "static_assertions",
- "thiserror 1.0.69",
- "wrapcenum-derive",
-]
-
-[[package]]
-name = "nvml-wrapper"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0d5c6c0ef9702176a570f06ad94f3198bc29c524c8b498f1b9346e1b1bdcbb3a"
 dependencies = [
  "bitflags",
  "libloading",
- "nvml-wrapper-sys 0.9.0",
+ "nvml-wrapper-sys",
  "static_assertions",
  "thiserror 1.0.69",
  "wrapcenum-derive",
-]
-
-[[package]]
-name = "nvml-wrapper-sys"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "698d45156f28781a4e79652b6ebe2eaa0589057d588d3aec1333f6466f13fcb5"
-dependencies = [
- "libloading",
 ]
 
 [[package]]
@@ -1355,7 +1332,7 @@ dependencies = [
  "libc",
  "num_cpus",
  "nutype",
- "nvml-wrapper 0.10.0",
+ "nvml-wrapper",
  "serde",
  "syscalls",
  "sysconf",
@@ -1419,7 +1396,7 @@ dependencies = [
  "neli-wifi",
  "nix",
  "num_cpus",
- "nvml-wrapper 0.11.0",
+ "nvml-wrapper",
  "paste",
  "path-dedot",
  "plotters",

@@ -184,7 +184,7 @@ impl ResSettingsDialog {
         imp.show_graph_grids_row
             .set_active(SETTINGS.show_graph_grids());
         imp.graph_data_points_row
-            .set_value(SETTINGS.graph_data_points() as f64);
+            .set_value(f64::from(SETTINGS.graph_data_points()));
         imp.sidebar_details_row
             .set_active(SETTINGS.sidebar_details());
         imp.sidebar_description_row

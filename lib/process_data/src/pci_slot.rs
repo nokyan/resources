@@ -70,7 +70,7 @@ impl PciSlot {
             data: (u32::from(domain) << 16)
                 | (u32::from(bus) << 8)
                 | (u32::from(number) << 3)
-                | (u32::from(function) as u32),
+                | (u32::from(function)),
         })
     }
 
