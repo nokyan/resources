@@ -6,8 +6,8 @@
 msgid ""
 msgstr "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2025-07-20 15:34+0000\n"
-"PO-Revision-Date: 2025-07-27 19:58+0000\n"
+"POT-Creation-Date: 2025-09-14 03:37+0000\n"
+"PO-Revision-Date: 2025-09-14 19:58+0000\n"
 "Last-Translator: Asier Saratsua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <eu@li.org>\n"
 "Language: eu\n"
@@ -18,7 +18,7 @@ msgstr "Project-Id-Version: resources main\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:2
 #: data/net.nokyan.Resources.metainfo.xml.in.in:4
-#: data/resources/ui/window.ui:22 src/application.rs:265
+#: data/resources/ui/window.ui:22 src/application.rs:272
 msgid "Resources"
 msgstr "Baliabideak"
 
@@ -54,8 +54,8 @@ msgstr "PUZa"
 #: data/resources/ui/dialogs/settings_dialog.ui:128
 #: data/resources/ui/dialogs/settings_dialog.ui:220
 #: data/resources/ui/window.ui:176 data/resources/ui/window.ui:183
-#: src/ui/pages/applications/mod.rs:802 src/ui/pages/memory.rs:106
-#: src/ui/pages/memory.rs:191 src/ui/pages/processes/mod.rs:1078
+#: src/ui/pages/applications/mod.rs:803 src/ui/pages/memory.rs:106
+#: src/ui/pages/memory.rs:192 src/ui/pages/processes/mod.rs:1079
 msgid "Memory"
 msgstr "Memoria"
 
@@ -64,8 +64,8 @@ msgstr "Memoria"
 #: data/resources/ui/dialogs/process_dialog.ui:118
 #: data/resources/ui/dialogs/settings_dialog.ui:158
 #: data/resources/ui/dialogs/settings_dialog.ui:250
-#: src/ui/pages/applications/mod.rs:1175 src/ui/pages/gpu.rs:118
-#: src/ui/pages/processes/mod.rs:1462 src/ui/window.rs:454
+#: src/ui/pages/applications/mod.rs:1181 src/ui/pages/gpu.rs:118
+#: src/ui/pages/processes/mod.rs:1469 src/ui/window.rs:468
 msgid "GPU"
 msgstr "PUZa"
 
@@ -141,8 +141,8 @@ msgstr "Erabilera"
 #: data/resources/ui/dialogs/settings_dialog.ui:133
 #: data/resources/ui/dialogs/settings_dialog.ui:225
 #: data/resources/ui/window.ui:145 data/resources/ui/window.ui:152
-#: src/ui/pages/applications/mod.rs:861 src/ui/pages/cpu.rs:128
-#: src/ui/pages/processes/mod.rs:1136 src/ui/window.rs:289
+#: src/ui/pages/applications/mod.rs:862 src/ui/pages/cpu.rs:128
+#: src/ui/pages/processes/mod.rs:1138 src/ui/window.rs:290
 msgid "Processor"
 msgstr "Prozesadorea"
 
@@ -150,8 +150,8 @@ msgstr "Prozesadorea"
 #: data/resources/ui/dialogs/process_dialog.ui:73
 #: data/resources/ui/dialogs/settings_dialog.ui:178
 #: data/resources/ui/dialogs/settings_dialog.ui:290
-#: src/ui/pages/applications/mod.rs:1410 src/ui/pages/memory.rs:197
-#: src/ui/pages/processes/mod.rs:1943
+#: src/ui/pages/applications/mod.rs:1420 src/ui/pages/memory.rs:198
+#: src/ui/pages/processes/mod.rs:1954
 msgid "Swap"
 msgstr "Trukatze-espazioa"
 
@@ -159,7 +159,7 @@ msgstr "Trukatze-espazioa"
 #: data/resources/ui/dialogs/process_dialog.ui:78
 #: data/resources/ui/dialogs/settings_dialog.ui:138
 #: data/resources/ui/dialogs/settings_dialog.ui:230
-#: src/ui/pages/applications/mod.rs:924 src/ui/pages/processes/mod.rs:1199
+#: src/ui/pages/applications/mod.rs:926 src/ui/pages/processes/mod.rs:1202
 msgid "Drive Read"
 msgstr "Unitatetik irakurrita"
 
@@ -167,7 +167,7 @@ msgstr "Unitatetik irakurrita"
 #: data/resources/ui/dialogs/process_dialog.ui:87
 #: data/resources/ui/dialogs/settings_dialog.ui:143
 #: data/resources/ui/dialogs/settings_dialog.ui:235
-#: src/ui/pages/applications/mod.rs:988 src/ui/pages/processes/mod.rs:1265
+#: src/ui/pages/applications/mod.rs:991 src/ui/pages/processes/mod.rs:1269
 msgid "Drive Read Total"
 msgstr "Unitatetik irakurrita guztira"
 
@@ -175,7 +175,7 @@ msgstr "Unitatetik irakurrita guztira"
 #: data/resources/ui/dialogs/process_dialog.ui:96
 #: data/resources/ui/dialogs/settings_dialog.ui:148
 #: data/resources/ui/dialogs/settings_dialog.ui:240
-#: src/ui/pages/applications/mod.rs:1048 src/ui/pages/processes/mod.rs:1331
+#: src/ui/pages/applications/mod.rs:1052 src/ui/pages/processes/mod.rs:1336
 msgid "Drive Write"
 msgstr "Unitatean idatzita"
 
@@ -183,7 +183,7 @@ msgstr "Unitatean idatzita"
 #: data/resources/ui/dialogs/process_dialog.ui:105
 #: data/resources/ui/dialogs/settings_dialog.ui:153
 #: data/resources/ui/dialogs/settings_dialog.ui:245
-#: src/ui/pages/applications/mod.rs:1114 src/ui/pages/processes/mod.rs:1397
+#: src/ui/pages/applications/mod.rs:1119 src/ui/pages/processes/mod.rs:1403
 msgid "Drive Write Total"
 msgstr "Unitatean idatzita guztira"
 
@@ -191,7 +191,7 @@ msgstr "Unitatean idatzita guztira"
 #: data/resources/ui/dialogs/process_dialog.ui:127
 #: data/resources/ui/dialogs/settings_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:255
-#: src/ui/pages/applications/mod.rs:1352 src/ui/pages/processes/mod.rs:1640
+#: src/ui/pages/applications/mod.rs:1361 src/ui/pages/processes/mod.rs:1650
 msgid "Video Memory"
 msgstr "Bideo-memoria"
 
@@ -199,7 +199,7 @@ msgstr "Bideo-memoria"
 #: data/resources/ui/dialogs/process_dialog.ui:136
 #: data/resources/ui/dialogs/settings_dialog.ui:168
 #: data/resources/ui/dialogs/settings_dialog.ui:260
-#: src/ui/pages/applications/mod.rs:1233 src/ui/pages/processes/mod.rs:1520
+#: src/ui/pages/applications/mod.rs:1240 src/ui/pages/processes/mod.rs:1528
 msgid "Video Encoder"
 msgstr "Bideo-kodetzailea"
 
@@ -207,7 +207,7 @@ msgstr "Bideo-kodetzailea"
 #: data/resources/ui/dialogs/process_dialog.ui:145
 #: data/resources/ui/dialogs/settings_dialog.ui:173
 #: data/resources/ui/dialogs/settings_dialog.ui:265
-#: src/ui/pages/applications/mod.rs:1293 src/ui/pages/processes/mod.rs:1580
+#: src/ui/pages/applications/mod.rs:1301 src/ui/pages/processes/mod.rs:1589
 msgid "Video Decoder"
 msgstr "Bideo-deskodetzailea"
 
@@ -244,25 +244,25 @@ msgstr "Prozesu-informazioa"
 
 #: data/resources/ui/dialogs/process_dialog.ui:154
 #: data/resources/ui/dialogs/settings_dialog.ui:270
-#: src/ui/pages/processes/mod.rs:1699
+#: src/ui/pages/processes/mod.rs:1710
 msgid "Total CPU Time"
 msgstr "PUZ denbora guztira"
 
 #: data/resources/ui/dialogs/process_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:275
-#: src/ui/pages/processes/mod.rs:1758
+#: src/ui/pages/processes/mod.rs:1769
 msgid "User CPU Time"
 msgstr "Erabiltzailearen PUZ denbora"
 
 #: data/resources/ui/dialogs/process_dialog.ui:172
 #: data/resources/ui/dialogs/settings_dialog.ui:280
-#: src/ui/pages/processes/mod.rs:1817
+#: src/ui/pages/processes/mod.rs:1828
 msgid "System CPU Time"
 msgstr "Sistemaren PUZ denbora"
 
 #: data/resources/ui/dialogs/process_dialog.ui:186
 #: data/resources/ui/dialogs/settings_dialog.ui:210
-#: src/ui/pages/processes/mod.rs:971
+#: src/ui/pages/processes/mod.rs:972
 msgid "Process ID"
 msgstr "Prozesuaren IDa"
 
@@ -272,7 +272,7 @@ msgstr "Komando-lerroa"
 
 #: data/resources/ui/dialogs/process_dialog.ui:213
 #: data/resources/ui/dialogs/settings_dialog.ui:215
-#: src/ui/pages/processes/mod.rs:1024
+#: src/ui/pages/processes/mod.rs:1025
 msgid "User"
 msgstr "Erabiltzailea"
 
@@ -301,7 +301,7 @@ msgstr "Prozesu baten lehentasuna bere jatortasunaren araberakoa da. Jatortasun-
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:87
 #: data/resources/ui/dialogs/settings_dialog.ui:285
-#: src/ui/pages/processes/mod.rs:1876
+#: src/ui/pages/processes/mod.rs:1887
 msgid "Priority"
 msgstr "Lehentasuna"
 
@@ -447,7 +447,7 @@ msgstr "Gaituta badago, gailu-identifikatzaile bat, adibidez izena edo gailu mot
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
 msgid "Sidebar Meter Type"
-msgstr ""
+msgstr "Alboko barraren metro mota"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:102
 msgid "Bar"
@@ -480,7 +480,7 @@ msgstr "Informazio-zutabeak"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:183
 #: data/resources/ui/dialogs/settings_dialog.ui:295
-#: src/ui/pages/applications/mod.rs:1469 src/ui/pages/processes/mod.rs:2001
+#: src/ui/pages/applications/mod.rs:1479 src/ui/pages/processes/mod.rs:2013
 msgid "Combined Memory"
 msgstr "Memoria konbinatua"
 
@@ -530,25 +530,25 @@ msgstr "Sareko interfaze birtualak dira, adibidez, zugiak edo VPN tunelak"
 
 #: data/resources/ui/pages/applications.ui:6
 #: data/resources/ui/pages/applications.ui:26
-#: src/ui/pages/applications/mod.rs:1552
+#: src/ui/pages/applications/mod.rs:1563
 msgid "Kill App"
 msgstr "Hil aplikazioa"
 
 #: data/resources/ui/pages/applications.ui:10
 #: data/resources/ui/pages/applications.ui:30
-#: src/ui/pages/applications/mod.rs:1551
+#: src/ui/pages/applications/mod.rs:1562
 msgid "Halt App"
 msgstr "Gelditu aplikazioa"
 
 #: data/resources/ui/pages/applications.ui:14
 #: data/resources/ui/pages/applications.ui:34
-#: src/ui/pages/applications/mod.rs:1553
+#: src/ui/pages/applications/mod.rs:1564
 msgid "Continue App"
 msgstr "Jarraitu aplikazioa"
 
 #: data/resources/ui/pages/applications.ui:22
 #: data/resources/ui/pages/applications.ui:98
-#: src/ui/pages/applications/mod.rs:1550
+#: src/ui/pages/applications/mod.rs:1561
 msgid "End App"
 msgstr "Amaitu aplikazioa"
 
@@ -658,7 +658,7 @@ msgstr "Kengarria"
 
 #. Translators: "Link" refers to something like "PCIe 4.0 ×16"
 #: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113
-#: data/resources/ui/pages/npu.ui:107
+#: data/resources/ui/pages/network.ui:103 data/resources/ui/pages/npu.ui:107
 msgid "Link"
 msgstr "Esteka"
 
@@ -671,7 +671,7 @@ msgid "Video Memory Frequency"
 msgstr "Bideo-memoriaren maiztasuna"
 
 #: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49
-#: src/ui/pages/battery.rs:216
+#: src/ui/pages/battery.rs:217
 msgid "Power Usage"
 msgstr "Energia-erabilera"
 
@@ -686,7 +686,7 @@ msgstr "Erabilitako kontrolatzailea"
 
 #: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
 msgid "Max Power Cap"
-msgstr ""
+msgstr "Gehieneko potentzia-kapazitatea"
 
 #: data/resources/ui/pages/memory.ui:9
 msgid "You need to authenticate to see memory properties"
@@ -706,7 +706,7 @@ msgstr "Abiadura"
 
 #: data/resources/ui/pages/memory.ui:63
 msgid "Form Factor"
-msgstr ""
+msgstr "Forma-faktorea"
 
 #: data/resources/ui/pages/memory.ui:81
 msgid "Type Detail"
@@ -729,6 +729,10 @@ msgid "Hardware Address"
 msgstr "Hardwarearen helbidea"
 
 #: data/resources/ui/pages/network.ui:94
+msgid "Network Name"
+msgstr "Sarearen izena"
+
+#: data/resources/ui/pages/network.ui:112
 msgid "Link Speed"
 msgstr "Esteka-abiadura"
 
@@ -741,17 +745,17 @@ msgid "Memory Frequency"
 msgstr "Memoria-maiztasuna"
 
 #: data/resources/ui/pages/processes.ui:6
-#: data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2113
+#: data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2126
 msgid "Kill Process"
 msgstr "Hil prozesua"
 
 #: data/resources/ui/pages/processes.ui:10
-#: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2112
+#: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2125
 msgid "Halt Process"
 msgstr "Gelditu prozesua"
 
 #: data/resources/ui/pages/processes.ui:14
-#: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2114
+#: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2127
 msgid "Continue Process"
 msgstr "Jarraitu prozesuarekin"
 
@@ -771,12 +775,12 @@ msgid "Continue Processes"
 msgstr "Jarraitu prozesuekin"
 
 #: data/resources/ui/pages/processes.ui:38
-#: data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:522
-#: src/ui/pages/processes/mod.rs:2111
+#: data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:523
+#: src/ui/pages/processes/mod.rs:2124
 msgid "End Process"
 msgstr "Amaitu prozesua"
 
-#: data/resources/ui/pages/processes.ui:70 src/ui/pages/processes/mod.rs:526
+#: data/resources/ui/pages/processes.ui:70 src/ui/pages/processes/mod.rs:527
 msgid "End Processes"
 msgstr "Amaitu prozesuak"
 
@@ -869,362 +873,369 @@ msgstr "Bilatu"
 msgid "Toggle search field"
 msgstr "Erakutsi/ezkutatu bilaketa-eremua"
 
-#: src/application.rs:267
+#: src/application.rs:274
 msgid "The Nalux Team"
 msgstr "Nalux taldea"
 
-#: src/application.rs:275
+#: src/application.rs:282
 msgid "Report Issues"
 msgstr "Jakinarazi akatsak"
 
 #. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
 #. One name per line, please do not remove previous names.
-#: src/application.rs:281
+#: src/application.rs:288
 msgid "translator-credits"
 msgstr "Asier Saratsua Garmendia <asiersarasua@ni.eus>"
 
-#: src/application.rs:282
+#: src/application.rs:289
 msgid "Icon by"
 msgstr "Ikonoa:"
 
-#: src/ui/dialogs/app_dialog.rs:153 src/ui/dialogs/process_dialog.rs:131
-#: src/ui/dialogs/process_dialog.rs:135 src/ui/dialogs/process_dialog.rs:144
-#: src/ui/dialogs/process_dialog.rs:146 src/ui/dialogs/process_dialog.rs:169
-#: src/ui/dialogs/process_dialog.rs:176 src/ui/dialogs/process_dialog.rs:183
-#: src/ui/dialogs/process_dialog.rs:190 src/ui/pages/applications/mod.rs:945
-#: src/ui/pages/applications/mod.rs:1069 src/ui/pages/battery.rs:204
-#: src/ui/pages/battery.rs:224 src/ui/pages/battery.rs:230
-#: src/ui/pages/battery.rs:233 src/ui/pages/battery.rs:264
-#: src/ui/pages/battery.rs:288 src/ui/pages/battery.rs:290
-#: src/ui/pages/battery.rs:300 src/ui/pages/cpu.rs:242 src/ui/pages/cpu.rs:257
-#: src/ui/pages/cpu.rs:276 src/ui/pages/cpu.rs:282 src/ui/pages/cpu.rs:288
-#: src/ui/pages/cpu.rs:294 src/ui/pages/cpu.rs:298 src/ui/pages/cpu.rs:301
-#: src/ui/pages/cpu.rs:339 src/ui/pages/cpu.rs:446 src/ui/pages/drive.rs:318
-#: src/ui/pages/drive.rs:349 src/ui/pages/drive.rs:351
-#: src/ui/pages/drive.rs:380 src/ui/pages/drive.rs:382
-#: src/ui/pages/drive.rs:398 src/ui/pages/drive.rs:399
-#: src/ui/pages/drive.rs:406 src/ui/pages/drive.rs:416
-#: src/ui/pages/drive.rs:426 src/ui/pages/drive.rs:432 src/ui/pages/gpu.rs:243
-#: src/ui/pages/gpu.rs:250 src/ui/pages/gpu.rs:295 src/ui/pages/gpu.rs:320
-#: src/ui/pages/gpu.rs:323 src/ui/pages/gpu.rs:334 src/ui/pages/gpu.rs:354
-#: src/ui/pages/gpu.rs:366 src/ui/pages/gpu.rs:377 src/ui/pages/gpu.rs:389
-#: src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:400 src/ui/pages/gpu.rs:430
-#: src/ui/pages/gpu.rs:436 src/ui/pages/memory.rs:226
-#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:231
-#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:236
-#: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:265
-#: src/ui/pages/memory.rs:326 src/ui/pages/network.rs:240
-#: src/ui/pages/network.rs:247 src/ui/pages/network.rs:254
-#: src/ui/pages/network.rs:260 src/ui/pages/network.rs:263
-#: src/ui/pages/network.rs:270 src/ui/pages/network.rs:335
-#: src/ui/pages/network.rs:338 src/ui/pages/network.rs:340
-#: src/ui/pages/network.rs:369 src/ui/pages/network.rs:372
-#: src/ui/pages/network.rs:374 src/ui/pages/processes/mod.rs:1220
-#: src/ui/pages/processes/mod.rs:1286 src/ui/pages/processes/mod.rs:1352
-#: src/ui/pages/processes/mod.rs:1418 src/ui/pages/processes/mod.rs:1900
-#: src/ui/pages/processes/mod.rs:1902 src/utils/battery.rs:149
-#: src/utils/drive.rs:136 src/utils/gpu/mod.rs:275 src/utils/gpu/mod.rs:287
-#: src/utils/link.rs:317 src/utils/npu/mod.rs:243 src/utils/npu/mod.rs:249
+#: src/ui/dialogs/app_dialog.rs:155 src/ui/dialogs/process_dialog.rs:133
+#: src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:146
+#: src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171
+#: src/ui/dialogs/process_dialog.rs:178 src/ui/dialogs/process_dialog.rs:185
+#: src/ui/dialogs/process_dialog.rs:192 src/ui/pages/applications/mod.rs:948
+#: src/ui/pages/applications/mod.rs:1074 src/ui/pages/battery.rs:205
+#: src/ui/pages/battery.rs:225 src/ui/pages/battery.rs:231
+#: src/ui/pages/battery.rs:234 src/ui/pages/battery.rs:265
+#: src/ui/pages/battery.rs:289 src/ui/pages/battery.rs:291
+#: src/ui/pages/battery.rs:301 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258
+#: src/ui/pages/cpu.rs:277 src/ui/pages/cpu.rs:283 src/ui/pages/cpu.rs:289
+#: src/ui/pages/cpu.rs:295 src/ui/pages/cpu.rs:299 src/ui/pages/cpu.rs:302
+#: src/ui/pages/cpu.rs:340 src/ui/pages/cpu.rs:447 src/ui/pages/drive.rs:319
+#: src/ui/pages/drive.rs:350 src/ui/pages/drive.rs:352
+#: src/ui/pages/drive.rs:381 src/ui/pages/drive.rs:383
+#: src/ui/pages/drive.rs:399 src/ui/pages/drive.rs:400
+#: src/ui/pages/drive.rs:407 src/ui/pages/drive.rs:417
+#: src/ui/pages/drive.rs:427 src/ui/pages/drive.rs:433 src/ui/pages/gpu.rs:244
+#: src/ui/pages/gpu.rs:251 src/ui/pages/gpu.rs:296 src/ui/pages/gpu.rs:321
+#: src/ui/pages/gpu.rs:324 src/ui/pages/gpu.rs:335 src/ui/pages/gpu.rs:355
+#: src/ui/pages/gpu.rs:367 src/ui/pages/gpu.rs:378 src/ui/pages/gpu.rs:390
+#: src/ui/pages/gpu.rs:397 src/ui/pages/gpu.rs:401 src/ui/pages/gpu.rs:431
+#: src/ui/pages/gpu.rs:437 src/ui/pages/memory.rs:227
+#: src/ui/pages/memory.rs:228 src/ui/pages/memory.rs:232
+#: src/ui/pages/memory.rs:233 src/ui/pages/memory.rs:237
+#: src/ui/pages/memory.rs:238 src/ui/pages/memory.rs:266
+#: src/ui/pages/memory.rs:327 src/ui/pages/network.rs:252
+#: src/ui/pages/network.rs:259 src/ui/pages/network.rs:266
+#: src/ui/pages/network.rs:272 src/ui/pages/network.rs:275
+#: src/ui/pages/network.rs:285 src/ui/pages/network.rs:292
+#: src/ui/pages/network.rs:302 src/ui/pages/network.rs:370
+#: src/ui/pages/network.rs:373 src/ui/pages/network.rs:375
+#: src/ui/pages/network.rs:404 src/ui/pages/network.rs:407
+#: src/ui/pages/network.rs:409 src/ui/pages/network.rs:417
+#: src/ui/pages/network.rs:424 src/ui/pages/network.rs:434
+#: src/ui/pages/processes/mod.rs:1224 src/ui/pages/processes/mod.rs:1291
+#: src/ui/pages/processes/mod.rs:1358 src/ui/pages/processes/mod.rs:1425
+#: src/ui/pages/processes/mod.rs:1911 src/ui/pages/processes/mod.rs:1913
+#: src/utils/battery.rs:149 src/utils/drive.rs:136 src/utils/gpu/mod.rs:275
+#: src/utils/gpu/mod.rs:287 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:243
+#: src/utils/npu/mod.rs:249
 msgid "N/A"
 msgstr "E/E"
 
-#: src/ui/dialogs/process_options_dialog.rs:145 src/ui/pages/cpu.rs:256
-#: src/ui/pages/cpu.rs:415 src/ui/pages/cpu.rs:419
+#: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257
+#: src/ui/pages/cpu.rs:416 src/ui/pages/cpu.rs:420
 msgid "CPU {}"
 msgstr "PUZ {}"
 
-#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:413
-#: src/ui/pages/drive.rs:423 src/ui/pages/processes/process_entry.rs:211
+#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:414
+#: src/ui/pages/drive.rs:424 src/ui/pages/processes/process_entry.rs:211
 msgid "No"
 msgstr "Ez"
 
 #: src/ui/pages/applications/application_entry.rs:191
 #: src/ui/pages/processes/process_entry.rs:212
 msgid "Yes (Flatpak)"
-msgstr ""
+msgstr "Bai (Flatpak)"
 
 #: src/ui/pages/applications/application_entry.rs:192
 #: src/ui/pages/processes/process_entry.rs:213
 msgid "Yes (Snap)"
-msgstr ""
+msgstr "Bai (Snap)"
 
-#: src/ui/pages/applications/mod.rs:659
+#: src/ui/pages/applications/mod.rs:660
 msgid "Running Apps: {}"
 msgstr "Exekuzioan dauden aplikazioak: {}"
 
-#: src/ui/pages/applications/mod.rs:699 src/ui/pages/processes/mod.rs:861
+#: src/ui/pages/applications/mod.rs:700 src/ui/pages/processes/mod.rs:862
 msgid "Cancel"
 msgstr "Utzi"
 
-#: src/ui/pages/applications/mod.rs:745
+#: src/ui/pages/applications/mod.rs:746
 msgid "App"
 msgstr "Aplikazioa"
 
-#: src/ui/pages/applications/mod.rs:1528 src/ui/pages/processes/mod.rs:2060
+#: src/ui/pages/applications/mod.rs:1539 src/ui/pages/processes/mod.rs:2073
 msgid "End {}?"
 msgstr "Amaitu {}?"
 
-#: src/ui/pages/applications/mod.rs:1529 src/ui/pages/processes/mod.rs:2061
+#: src/ui/pages/applications/mod.rs:1540 src/ui/pages/processes/mod.rs:2074
 msgid "Halt {}?"
 msgstr "Gelditu {}?"
 
-#: src/ui/pages/applications/mod.rs:1530 src/ui/pages/processes/mod.rs:2062
+#: src/ui/pages/applications/mod.rs:1541 src/ui/pages/processes/mod.rs:2075
 msgid "Kill {}?"
 msgstr "Hil {}?"
 
-#: src/ui/pages/applications/mod.rs:1531 src/ui/pages/processes/mod.rs:2063
+#: src/ui/pages/applications/mod.rs:1542 src/ui/pages/processes/mod.rs:2076
 msgid "Continue {}?"
 msgstr "Jarraitu {}?"
 
-#: src/ui/pages/applications/mod.rs:1537 src/ui/pages/processes/mod.rs:2098
+#: src/ui/pages/applications/mod.rs:1548 src/ui/pages/processes/mod.rs:2111
 msgid "Unsaved work might be lost."
 msgstr "Gorde gabeko lana galdu egin daiteke."
 
-#: src/ui/pages/applications/mod.rs:1539
+#: src/ui/pages/applications/mod.rs:1550
 msgid ""
 "Halting an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
 msgstr "Aplikazioa gelditzen bada, datuak galdu daitezke eta segurtasuna murriztu daiteke. Erabili kontuz."
 
-#: src/ui/pages/applications/mod.rs:1542
+#: src/ui/pages/applications/mod.rs:1553
 msgid ""
 "Killing an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
 msgstr "Aplikazioa hiltzen bada, datuak galdu daitezke eta segurtasuna murriztu daiteke. Erabili kontuz."
 
-#: src/ui/pages/battery.rs:102 src/ui/pages/drive.rs:126
-msgid "Drive"
-msgstr "Unitatea"
+#: src/ui/pages/battery.rs:102 src/utils/battery.rs:261
+msgid "Battery"
+msgstr "Bateria"
 
-#: src/ui/pages/battery.rs:209
+#: src/ui/pages/battery.rs:210
 msgid "Battery Charge"
 msgstr "Bateria-karga"
 
-#: src/ui/pages/battery.rs:278 src/ui/pages/cpu.rs:436
-#: src/ui/pages/drive.rs:343 src/ui/pages/drive.rs:374 src/ui/pages/gpu.rs:422
-#: src/ui/pages/network.rs:327 src/ui/pages/network.rs:361
+#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:437
+#: src/ui/pages/drive.rs:344 src/ui/pages/drive.rs:375 src/ui/pages/gpu.rs:423
+#: src/ui/pages/network.rs:362 src/ui/pages/network.rs:396
 msgid "Highest:"
 msgstr "Altuena:"
 
-#: src/ui/pages/cpu.rs:241 src/ui/pages/gpu.rs:210
+#: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:211
 msgid "Total Usage"
 msgstr "Erabilera guztira"
 
-#: src/ui/pages/cpu.rs:269 src/ui/pages/gpu.rs:237
+#: src/ui/pages/cpu.rs:270 src/ui/pages/gpu.rs:238
 msgid "Temperature"
 msgstr "Tenperatura"
 
-#: src/ui/pages/drive.rs:235
+#: src/ui/pages/drive.rs:126
+msgid "Drive"
+msgstr "Unitatea"
+
+#: src/ui/pages/drive.rs:236
 msgid "Drive Activity"
 msgstr "Unitate-jarduera"
 
-#: src/ui/pages/drive.rs:242
+#: src/ui/pages/drive.rs:243
 msgid "Read Speed"
 msgstr "Irakurtze-abiadura"
 
-#: src/ui/pages/drive.rs:246
+#: src/ui/pages/drive.rs:247
 msgid "Write Speed"
 msgstr "Idazte-abiadura"
 
-#: src/ui/pages/drive.rs:411 src/ui/pages/drive.rs:421
+#: src/ui/pages/drive.rs:412 src/ui/pages/drive.rs:422
 msgid "Yes"
 msgstr "Bai"
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
-#: src/ui/pages/drive.rs:439
+#: src/ui/pages/drive.rs:440
 msgid "R: {} · W: {}"
 msgstr "R: {} · W: {}"
 
-#: src/ui/pages/gpu.rs:218
+#: src/ui/pages/gpu.rs:219
 msgid "Video Encoder/Decoder Usage"
 msgstr "Bideo-kodetzailearen/deskodetzailearen erabilera"
 
-#: src/ui/pages/gpu.rs:224
+#: src/ui/pages/gpu.rs:225
 msgid "Video Encoder Usage"
 msgstr "Bideo-kodetzailearen erabilera"
 
-#: src/ui/pages/gpu.rs:229
+#: src/ui/pages/gpu.rs:230
 msgid "Video Decoder Usage"
 msgstr "Bideo-deskodetzailearen erabilera"
 
-#: src/ui/pages/gpu.rs:234
+#: src/ui/pages/gpu.rs:235
 msgid "Video Memory Usage"
 msgstr "Bideo-memoriaren erabilera"
 
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
-#: src/ui/pages/gpu.rs:408
+#: src/ui/pages/gpu.rs:409
 msgid "Memory: {}"
 msgstr "Memoria: {}"
 
-#: src/ui/pages/memory.rs:261
+#: src/ui/pages/memory.rs:262
 msgid "{} of {}"
 msgstr "{} / {}"
 
-#: src/ui/pages/memory.rs:264
+#: src/ui/pages/memory.rs:265
 msgid "{} MT/s"
 msgstr "{} MT/s"
 
 #. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
 #. preferably be quite short or an abbreviation
-#: src/ui/pages/memory.rs:345
+#: src/ui/pages/memory.rs:346
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · Trukatze-espazioa: {} %"
 
-#: src/ui/pages/network.rs:118 src/utils/network.rs:136
+#: src/ui/pages/network.rs:127 src/utils/network.rs:135
 msgid "Network Interface"
 msgstr "Sareko interfazea"
 
-#: src/ui/pages/network.rs:229
+#: src/ui/pages/network.rs:241
 msgid "Receiving"
 msgstr "Jasotzen"
 
-#: src/ui/pages/network.rs:233
+#: src/ui/pages/network.rs:245
 msgid "Sending"
 msgstr "Bidaltzen"
 
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
-#: src/ui/pages/network.rs:384
+#: src/ui/pages/network.rs:445
 msgid "R: {} · S: {}"
 msgstr "B: {} · J: {}"
 
-#: src/ui/pages/processes/mod.rs:812
+#: src/ui/pages/processes/mod.rs:813
 msgid "Running Processes: {}"
 msgstr "Exekuzioan dauden prozesuak: {}"
 
-#: src/ui/pages/processes/mod.rs:910
+#: src/ui/pages/processes/mod.rs:911
 msgid "Process"
 msgstr "Prozesua"
 
-#: src/ui/pages/processes/mod.rs:2070
+#: src/ui/pages/processes/mod.rs:2083
 msgid "End process?"
 msgid_plural "End {} processes?"
 msgstr[0] "Amaitu prozesua?"
 msgstr[1] "Amaitu {} prozesu?"
 
-#: src/ui/pages/processes/mod.rs:2076
+#: src/ui/pages/processes/mod.rs:2089
 msgid "Halt process?"
 msgid_plural "Halt {} processes?"
 msgstr[0] "Gelditu prozesua?"
 msgstr[1] "Gelditu {} prozesu?"
 
-#: src/ui/pages/processes/mod.rs:2082 src/ui/pages/processes/mod.rs:2088
+#: src/ui/pages/processes/mod.rs:2095 src/ui/pages/processes/mod.rs:2101
 msgid "Kill process?"
 msgid_plural "Kill {} processes?"
 msgstr[0] "Hil prozesua?"
 msgstr[1] "Hil {} prozesu?"
 
-#: src/ui/pages/processes/mod.rs:2100
+#: src/ui/pages/processes/mod.rs:2113
 msgid ""
 "Halting a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr "Prozesua gelditzen bada, datuak galdu daitezke eta segurtasuna murriztu daiteke. Erabili kontuz."
 
-#: src/ui/pages/processes/mod.rs:2103
+#: src/ui/pages/processes/mod.rs:2116
 msgid ""
 "Killing a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr "Prozesua hiltzen bada, datuak galdu daitezke eta segurtasuna murriztu daiteke. Erabili kontuz."
 
-#: src/ui/window.rs:452
+#: src/ui/window.rs:466
 msgid "GPU {}"
 msgstr "PUG {}"
 
-#: src/ui/window.rs:482
+#: src/ui/window.rs:496
 msgid "NPU {}"
 msgstr "NPU {}"
 
-#: src/ui/window.rs:484
+#: src/ui/window.rs:498
 msgid "NPU"
 msgstr "NPU"
 
-#: src/ui/window.rs:1152
+#: src/ui/window.rs:1167
 msgid "Successfully adjusted {}"
 msgstr "{} ongi doitu da"
 
-#: src/ui/window.rs:1153
+#: src/ui/window.rs:1168
 msgid "There was a problem adjusting {}"
 msgstr "Arazoa gertatu da {} doitzean"
 
-#: src/ui/window.rs:1235
+#: src/ui/window.rs:1250
 msgid "Successfully ended {}"
 msgstr "{} ongi amaitu da"
 
-#: src/ui/window.rs:1236
+#: src/ui/window.rs:1251
 msgid "Successfully halted {}"
 msgstr "{} ongi gelditu da"
 
-#: src/ui/window.rs:1237
+#: src/ui/window.rs:1252
 msgid "Successfully killed {}"
 msgstr "{} ongi hil da"
 
-#: src/ui/window.rs:1238
+#: src/ui/window.rs:1253
 msgid "Successfully continued {}"
 msgstr "{} ongi jarraitu da"
 
-#: src/ui/window.rs:1245
+#: src/ui/window.rs:1260
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
 msgstr[0] "Prozesua ongi amaitu da"
 msgstr[1] "{} prozesu ongi amaitu dira"
 
-#: src/ui/window.rs:1251
+#: src/ui/window.rs:1266
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
 msgstr[0] "Prozesua ongi gelditu da"
 msgstr[1] "{} prozesu ongi gelditu dira"
 
-#: src/ui/window.rs:1257
+#: src/ui/window.rs:1272
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
 msgstr[0] "Prozesua ongi hil da"
 msgstr[1] "{} prozesu ongi hil dira"
 
-#: src/ui/window.rs:1263
+#: src/ui/window.rs:1278
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
 msgstr[0] "Prozesua ongi jarraitu da"
 msgstr[1] "{} prozesu ongi jarraitu dira"
 
-#: src/ui/window.rs:1274
+#: src/ui/window.rs:1289
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] "Arazoa gertatu da prozesu bat amaitzean"
 msgstr[1] "Arazoa gertatu da {} prozesu amaitzean"
 
-#: src/ui/window.rs:1280
+#: src/ui/window.rs:1295
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "Arazoa gertatu da prozesu bat gelditzean"
 msgstr[1] "Arazoa gertatu da {} prozesu gelditzean"
 
-#: src/ui/window.rs:1286
+#: src/ui/window.rs:1301
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "Arazoa gertatu da prozesu bat hiltzean"
 msgstr[1] "Arazoa gertatu da {} prozesu hiltzean"
 
-#: src/ui/window.rs:1292
+#: src/ui/window.rs:1307
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "Arazoa gertatu da prozesu bat jarraitzean"
 msgstr[1] "Arazoa gertatu da {} prozesu jarraitzean"
 
-#: src/ui/window.rs:1302
+#: src/ui/window.rs:1317
 msgid "There was a problem ending {}"
 msgstr "Arazoa gertatu da {} amaitzean"
 
-#: src/ui/window.rs:1303
+#: src/ui/window.rs:1318
 msgid "There was a problem halting {}"
 msgstr "Arazoa gertatu da {} gelditzean"
 
-#: src/ui/window.rs:1304
+#: src/ui/window.rs:1319
 msgid "There was a problem killing {}"
 msgstr "Arazoa gertatu da {} hiltzean"
 
-#: src/ui/window.rs:1305
+#: src/ui/window.rs:1320
 msgid "There was a problem continuing {}"
 msgstr "Arazoa gertatu da {} jarraitzean"
 
@@ -1287,10 +1298,6 @@ msgstr "Alkalino manganeso birkargagarria"
 #: src/utils/battery.rs:259
 msgid "{} Battery"
 msgstr "{} bateria"
-
-#: src/utils/battery.rs:261
-msgid "Battery"
-msgstr "Bateria"
 
 #: src/utils/units.rs:91
 msgid "{} K"
@@ -1711,7 +1718,7 @@ msgstr "Disko gogorra"
 
 #: src/utils/drive.rs:133
 msgid "Loop Device"
-msgstr ""
+msgstr "Begizta-gailua"
 
 #: src/utils/drive.rs:134
 msgid "Mapped Device"
@@ -1723,7 +1730,7 @@ msgstr "NVMe unitatea"
 
 #: src/utils/drive.rs:137
 msgid "Software Raid"
-msgstr ""
+msgstr "Software bidezko raid-a"
 
 #: src/utils/drive.rs:138
 msgid "RAM Disk"
@@ -1743,7 +1750,7 @@ msgstr "Konprimatutako RAM diskoa (zram)"
 
 #: src/utils/drive.rs:209
 msgid "{} Loop Device"
-msgstr ""
+msgstr "{} begizta-gailua"
 
 #: src/utils/drive.rs:210
 msgid "{} Mapped Device"
@@ -1769,50 +1776,50 @@ msgstr "{} ZFS bolumena"
 msgid "{} Drive"
 msgstr "{} unitatea"
 
-#: src/utils/network.rs:124
+#: src/utils/network.rs:123
 msgid "Bluetooth Tether"
 msgstr "Bluetooth aingura"
 
-#: src/utils/network.rs:125
+#: src/utils/network.rs:124
 msgid "Network Bridge"
 msgstr "Sareko zubia"
 
-#: src/utils/network.rs:126
+#: src/utils/network.rs:125
 msgid "Ethernet Connection"
 msgstr "Ethernet konexioa"
 
-#: src/utils/network.rs:127
+#: src/utils/network.rs:126
 msgid "Docker Bridge"
 msgstr "Docker zubia"
 
-#: src/utils/network.rs:128
+#: src/utils/network.rs:127
 msgid "InfiniBand Connection"
 msgstr "InfiniBand konexioa"
 
-#: src/utils/network.rs:129
+#: src/utils/network.rs:128
 msgid "Serial Line IP Connection"
-msgstr ""
+msgstr "Serieko lineako IP konexioa"
 
-#: src/utils/network.rs:130
+#: src/utils/network.rs:129
 msgid "Virtual Ethernet Device"
 msgstr "Ethernet gailu birtuala"
 
-#: src/utils/network.rs:131
+#: src/utils/network.rs:130
 msgid "VM Network Bridge"
 msgstr "VM sareko zubia"
 
-#: src/utils/network.rs:132
+#: src/utils/network.rs:131
 msgid "VPN Tunnel"
 msgstr "VPN tunela"
 
-#: src/utils/network.rs:133
+#: src/utils/network.rs:132
 msgid "VPN Tunnel (WireGuard)"
 msgstr "VPN tunela (WireGuard)"
 
-#: src/utils/network.rs:134
+#: src/utils/network.rs:133
 msgid "Wi-Fi Connection"
 msgstr "Wifi konexioa"
 
-#: src/utils/network.rs:135
+#: src/utils/network.rs:134
 msgid "WWAN Connection"
 msgstr "WWAN konexioa"
