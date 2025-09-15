@@ -32,6 +32,8 @@ pub const VID_AMD: u16 = 0x1002;
 pub const VID_INTEL: u16 = 0x8086;
 pub const VID_NVIDIA: u16 = 0x10DE;
 
+const BLOCKLISTED_DRIVERS: &[&str] = &["simple-framebuffer", "evdi"];
+
 static RE_CARD_ENUMARATOR: Lazy<Regex> = lazy_regex!(r"(\d+)\/?$");
 
 #[derive(Debug)]
@@ -286,9 +288,8 @@ impl Gpu {
             .get("DRIVER")
             .map_or_else(|| i18n("N/A"), std::string::ToString::to_string);
 
-        // if the driver is simple-framebuffer, it's likely not a GPU
-        if driver == "simple-framebuffer" {
-            bail!("this is a simple framebuffer");
+        if BLOCKLISTED_DRIVERS.contains(&driver.as_str()) {
+            bail!("blocklisted driver");
         }
 
         let (gpu, gpu_category) = if vid == VID_AMD || driver == "amdgpu" {
