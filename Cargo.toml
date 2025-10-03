@@ -17,7 +17,7 @@ strip = true
 opt-level = 3
 
 [dependencies]
-adw = { version = "0.8.0", features = ["v1_6"], package = "libadwaita" }
+adw = { version = "0.8.0", features = ["v1_7"], package = "libadwaita" }
 anyhow = { version = "1.0.99", features = ["backtrace"] }
 async-channel = "2.5.0"
 clap = { version = "4.5.46", features = ["derive"] }

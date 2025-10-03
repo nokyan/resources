@@ -70,7 +70,7 @@ You can also build Resources yourself using either Meson directly or preferably 
 - `glib-2.0` ≥ 2.66
 - `gio-2.0` ≥ 2.66
 - `gtk-4` ≥ 4.12
-- `libadwaita-1` ≥ 1.6
+- `libadwaita-1` ≥ 1.8
 - `cargo`
 
 Other dependencies are handled by `cargo`.

@@ -262,6 +262,7 @@ impl ResCPU {
             let flow_box_chld = FlowBoxChild::builder()
                 .child(&thread_box)
                 .css_classes(vec!["tile", "card"])
+                .can_target(false)
                 .build();
             imp.thread_box.append(&flow_box_chld);
             imp.thread_graphs.borrow_mut().push(thread_box);
