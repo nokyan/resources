@@ -380,9 +380,9 @@ impl MainWindow {
             move |window| {
                 imp.pause_updates.set(window.is_suspended());
                 if window.is_suspended() {
-                    debug!("Resources has been suspended, halting graphical updates")
+                    debug!("Resources has been suspended, halting graphical updates");
                 } else {
-                    debug!("Resources is not suspended anymore, resuming graphical updates")
+                    debug!("Resources is not suspended anymore, resuming graphical updates");
                 }
             }
         ));
