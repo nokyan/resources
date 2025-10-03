@@ -1,6 +1,8 @@
 use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::trace;
 
+use crate::utils::read_parsed;
+
 use super::IS_FLATPAK;
 
 const PATH_OS_RELEASE: &str = "/etc/os-release";
@@ -25,13 +27,11 @@ impl OsInfo {
         trace!("Path for the os-release file is determined to be `{os_path}`");
 
         let name = RE_PRETTY_NAME
-            .captures(&std::fs::read_to_string(os_path).unwrap_or_default())
+            .captures(&read_parsed::<String>(os_path).unwrap_or_default())
             .and_then(|captures| captures.get(1))
             .map(|capture| capture.as_str().trim().to_string());
 
-        let kernel_version = std::fs::read_to_string(PATH_KERNEL_VERSION)
-            .ok()
-            .map(|s| s.trim().to_string());
+        let kernel_version = read_parsed(PATH_KERNEL_VERSION).ok();
 
         OsInfo {
             name,

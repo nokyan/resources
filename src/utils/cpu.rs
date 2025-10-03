@@ -8,6 +8,8 @@ use std::{
     sync::LazyLock,
 };
 
+use crate::utils::read_parsed;
+
 const PROC_STAT: &str = "/proc/stat";
 
 const KNOWN_HWMONS: &[&str] = &["zenpower", "coretemp", "k10temp"];
@@ -55,8 +57,8 @@ fn search_for_hwmons(names: &[&'static str]) -> Option<PathBuf> {
 
     for path in (glob("/sys/class/hwmon/hwmon*").unwrap()).flatten() {
         trace!("Found hwmon {path:?}");
-        if let Ok(read_name) = std::fs::read_to_string(path.join("name")) {
-            let read_name = read_name.trim_end().to_string();
+        if let Ok(read_name) = read_parsed::<String>(path.join("name")) {
+            let read_name = read_name.to_string();
             trace!("{path:?} is a hwmon for {read_name}");
             if let Some(first_temp) = search_for_first_temp(path.to_string_lossy()) {
                 hwmon_map.insert(read_name, first_temp);
@@ -82,7 +84,7 @@ fn search_for_thermal_zones(types: &[&'static str]) -> Option<PathBuf> {
 
     for path in (glob("/sys/class/thermal/thermal_zone*").unwrap()).flatten() {
         trace!("Found thermal zone {path:?}");
-        if let Ok(read_type) = std::fs::read_to_string(path.join("type")) {
+        if let Ok(read_type) = read_parsed::<String>(path.join("type")) {
             let read_type = read_type.trim_end().to_string();
             trace!("{path:?} is a thermal zone for {read_type}");
             thermal_zone_map.insert(read_type, path.join("temp"));
@@ -243,14 +245,9 @@ impl CpuInfo {
 pub fn get_cpu_freq(core: usize) -> Result<u64> {
     trace!("Finding CPU frequency for core {core}…");
 
-    std::fs::read_to_string(format!(
+    read_parsed::<u64>(format!(
         "/sys/devices/system/cpu/cpu{core}/cpufreq/scaling_cur_freq"
     ))
-    .inspect_err(|err| trace!("Unable to get CPU frequency for core {core}: {err}"))
-    .with_context(|| format!("unable to read scaling_cur_freq for core {core}"))?
-    .replace('\n', "")
-    .parse::<u64>()
-    .context("can't parse scaling_cur_freq to usize")
     .map(|x| x * 1000)
     .inspect(|freq| trace!("Frequency of core {core}: {freq} Hz"))
 }
@@ -305,7 +302,7 @@ fn parse_proc_stat<S: AsRef<str>>(stat: S) -> Vec<Result<(u64, u64)>> {
 pub fn get_cpu_usage() -> Vec<Result<(u64, u64)>> {
     trace!("Reading {PROC_STAT}…");
 
-    let raw = std::fs::read_to_string("/proc/stat")
+    let raw = read_parsed::<String>("/proc/stat")
         .context("unable to read /proc/stat")
         .unwrap_or_default();
 
@@ -327,13 +324,10 @@ pub fn get_temperature() -> Result<f32> {
 
 fn read_sysfs_thermal<P: AsRef<Path>>(path: P) -> Result<f32> {
     let path = path.as_ref();
-    let temp_string = std::fs::read_to_string(path)
-        .with_context(|| format!("unable to read {}", path.display()))?;
-    temp_string
-        .replace('\n', "")
-        .parse::<f32>()
-        .with_context(|| format!("unable to parse {}", path.display()))
+
+    read_parsed::<f32>(path)
         .map(|t| t / 1000f32)
+        .with_context(|| format!("unable to read {}", path.display()))
 }
 
 #[cfg(test)]

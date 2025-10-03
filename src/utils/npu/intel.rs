@@ -1,12 +1,12 @@
 use anyhow::Result;
-use process_data::{pci_slot::PciSlot, unix_as_millis};
+use process_data::{pci_slot::PciSlot, unix_as_secs_f64};
 
 use std::{
     cell::Cell,
     path::{Path, PathBuf},
 };
 
-use crate::utils::{pci::Device, read_sysfs};
+use crate::utils::{pci::Device, read_parsed};
 
 use super::NpuImpl;
 
@@ -19,7 +19,7 @@ pub struct IntelNpu {
     sysfs_path: PathBuf,
     first_hwmon_path: Option<PathBuf>,
     last_busy_time_us: Cell<usize>,
-    last_busy_time_timestamp: Cell<u64>,
+    last_busy_time_timestamp: Cell<f64>,
 }
 
 impl IntelNpu {
@@ -71,16 +71,16 @@ impl NpuImpl for IntelNpu {
         let last_timestamp = self.last_busy_time_timestamp.get();
         let last_busy_time = self.last_busy_time_us.get();
 
-        let new_timestamp = unix_as_millis();
-        let new_busy_time = read_sysfs(self.sysfs_path().join("device/npu_busy_time_us"))?;
+        let new_timestamp = unix_as_secs_f64();
+        let new_busy_time = read_parsed(self.sysfs_path().join("device/npu_busy_time_us"))?;
 
         self.last_busy_time_timestamp.set(new_timestamp);
         self.last_busy_time_us.set(new_busy_time);
 
-        let delta_timestamp = new_timestamp.saturating_sub(last_timestamp) as f64;
+        let delta_timestamp = new_timestamp - last_timestamp;
         let delta_busy_time = new_busy_time.saturating_sub(last_busy_time) as f64;
 
-        Ok((delta_busy_time / delta_timestamp) / 1000.0)
+        Ok(delta_busy_time / delta_timestamp)
     }
 
     fn used_vram(&self) -> Result<usize> {

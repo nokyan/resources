@@ -1,6 +1,7 @@
 use super::units::convert_storage;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::link::{Link, LinkData};
+use crate::utils::read_parsed;
 use anyhow::{Context, Result, bail};
 use gtk::gio::{Icon, ThemedIcon};
 use lazy_regex::{Lazy, Regex, lazy_regex};
@@ -223,8 +224,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub fn sys_stats(&self) -> Result<HashMap<String, usize>> {
-        let stat = std::fs::read_to_string(self.sysfs_path.join("stat"))
-            .with_context(|| format!("unable to read /sys/block/{}/stat", self.block_device))?;
+        let stat = read_parsed::<String>(self.sysfs_path.join("stat"))?;
 
         let captures = RE_DRIVE
             .captures(&stat)
@@ -263,15 +263,8 @@ impl Drive {
             Ok(DriveType::RamDisk)
         } else if self.block_device.starts_with("zd") {
             Ok(DriveType::ZfsVolume)
-        } else if let Ok(rotational) =
-            std::fs::read_to_string(self.sysfs_path.join("queue/rotational"))
-        {
-            // turn rot into a boolean
-            let rotational = rotational
-                .replace('\n', "")
-                .parse::<u8>()
-                .map(|rot| rot != 0)?;
-            if rotational {
+        } else if let Ok(rotational) = read_parsed::<u8>(self.sysfs_path.join("queue/rotational")) {
+            if rotational != 0 {
                 Ok(DriveType::Hdd)
             } else if self.removable()? {
                 Ok(DriveType::Flash)
@@ -290,9 +283,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub fn removable(&self) -> Result<bool> {
-        std::fs::read_to_string(self.sysfs_path.join("removable"))?
-            .replace('\n', "")
-            .parse::<u8>()
+        read_parsed::<u8>(self.sysfs_path.join("removable"))
             .map(|rem| rem != 0)
             .context("unable to parse removable sysfs file")
     }
@@ -304,9 +295,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub fn writable(&self) -> Result<bool> {
-        std::fs::read_to_string(self.sysfs_path.join("ro"))?
-            .replace('\n', "")
-            .parse::<u8>()
+        read_parsed::<u8>(self.sysfs_path.join("ro"))
             .map(|ro| ro == 0)
             .context("unable to parse ro sysfs file")
     }
@@ -318,9 +307,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub fn capacity(&self) -> Result<u64> {
-        std::fs::read_to_string(self.sysfs_path.join("size"))?
-            .replace('\n', "")
-            .parse::<u64>()
+        read_parsed::<u64>(self.sysfs_path.join("size"))
             .map(|sectors| sectors * 512)
             .context("unable to parse size sysfs file")
     }
@@ -332,7 +319,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub fn model(&self) -> Result<String> {
-        std::fs::read_to_string(self.sysfs_path.join("device/model"))
+        read_parsed(self.sysfs_path.join("device/model"))
             .context("unable to parse model sysfs file")
     }
 
@@ -365,10 +352,10 @@ impl Drive {
 
     fn pci_slot(&self) -> Result<PciSlot> {
         let pci_address_path = self.sysfs_path.join("device").join("address");
-        let pci_address =
-            std::fs::read_to_string(pci_address_path).map(|x| x.trim().to_string())?;
 
-        Ok(PciSlot::from_str(&pci_address)?)
+        Ok(PciSlot::from_str(&read_parsed::<String>(
+            pci_address_path,
+        )?)?)
     }
 
     fn ata_slot(&self) -> Result<AtaSlot> {
@@ -449,8 +436,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub fn wwid(&self) -> Result<String> {
-        std::fs::read_to_string(self.sysfs_path.join("device/wwid"))
-            .context("unable to parse wwid sysfs file")
+        read_parsed(self.sysfs_path.join("device/wwid"))
     }
 
     /// Returns the appropriate Icon for the type of drive

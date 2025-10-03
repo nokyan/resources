@@ -7,7 +7,7 @@ mod v3d;
 use anyhow::{Context, Result, bail};
 use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, info, trace};
-use process_data::{GpuIdentifier, pci_slot::PciSlot};
+use process_data::{gpu_usage::GpuIdentifier, pci_slot::PciSlot};
 use v3d::V3dGpu;
 
 use std::{
@@ -18,7 +18,7 @@ use std::{
 use self::{amd::AmdGpu, intel::IntelGpu, nvidia::NvidiaGpu, other::OtherGpu};
 use crate::utils::{
     link::{Link, LinkData},
-    read_sysfs,
+    read_parsed,
 };
 use crate::{
     i18n::i18n,
@@ -46,8 +46,8 @@ pub struct GpuData {
     pub encode_fraction: Option<f64>,
     pub decode_fraction: Option<f64>,
 
-    pub total_vram: Option<usize>,
-    pub used_vram: Option<usize>,
+    pub total_vram: Option<u64>,
+    pub used_vram: Option<u64>,
 
     pub clock_speed: Option<f64>,
     pub vram_speed: Option<f64>,
@@ -141,8 +141,8 @@ pub trait GpuImpl {
     fn encode_usage(&self) -> Result<f64>;
     fn decode_usage(&self) -> Result<f64>;
     fn combined_media_engine(&self) -> Result<bool>;
-    fn used_vram(&self) -> Result<usize>;
-    fn total_vram(&self) -> Result<usize>;
+    fn used_vram(&self) -> Result<u64>;
+    fn total_vram(&self) -> Result<u64>;
     fn temperature(&self) -> Result<f64>;
     fn power_usage(&self) -> Result<f64>;
     fn core_frequency(&self) -> Result<f64>;
@@ -158,15 +158,15 @@ pub trait GpuImpl {
     }
 
     fn drm_usage(&self) -> Result<isize> {
-        read_sysfs(self.sysfs_path().join("device/gpu_busy_percent"))
+        read_parsed(self.sysfs_path().join("device/gpu_busy_percent"))
     }
 
     fn drm_used_vram(&self) -> Result<isize> {
-        read_sysfs(self.sysfs_path().join("device/mem_info_vram_used"))
+        read_parsed(self.sysfs_path().join("device/mem_info_vram_used"))
     }
 
     fn drm_total_vram(&self) -> Result<isize> {
-        read_sysfs(self.sysfs_path().join("device/mem_info_vram_total"))
+        read_parsed(self.sysfs_path().join("device/mem_info_vram_total"))
     }
 
     fn hwmon_path(&self) -> Result<&Path> {
@@ -174,31 +174,32 @@ pub trait GpuImpl {
     }
 
     fn hwmon_temperature(&self) -> Result<f64> {
-        read_sysfs::<isize>(self.hwmon_path()?.join("temp1_input")).map(|temp| temp as f64 / 1000.0)
+        read_parsed::<f64>(self.hwmon_path()?.join("temp1_input"))
+            .map(|millicelsius| millicelsius / 1000.0)
     }
 
     fn hwmon_power_usage(&self) -> Result<f64> {
-        read_sysfs::<isize>(self.hwmon_path()?.join("power1_average"))
-            .or_else(|_| read_sysfs::<isize>(self.hwmon_path()?.join("power1_input")))
-            .map(|power| power as f64 / 1_000_000.0)
+        read_parsed::<f64>(self.hwmon_path()?.join("power1_average"))
+            .or_else(|_| read_parsed::<f64>(self.hwmon_path()?.join("power1_input")))
+            .map(|microwatts| microwatts / 1_000_000.0)
     }
 
     fn hwmon_core_frequency(&self) -> Result<f64> {
-        read_sysfs::<isize>(self.hwmon_path()?.join("freq1_input")).map(|freq| freq as f64)
+        read_parsed::<f64>(self.hwmon_path()?.join("freq1_input"))
     }
 
     fn hwmon_vram_frequency(&self) -> Result<f64> {
-        read_sysfs::<isize>(self.hwmon_path()?.join("freq2_input")).map(|freq| freq as f64)
+        read_parsed::<f64>(self.hwmon_path()?.join("freq2_input"))
     }
 
     fn hwmon_power_cap(&self) -> Result<f64> {
-        read_sysfs::<isize>(self.hwmon_path()?.join("power1_cap"))
-            .map(|power| power as f64 / 1_000_000.0)
+        read_parsed::<f64>(self.hwmon_path()?.join("power1_cap"))
+            .map(|microwatts| microwatts / 1_000_000.0)
     }
 
     fn hwmon_power_cap_max(&self) -> Result<f64> {
-        read_sysfs::<isize>(self.hwmon_path()?.join("power1_cap_max"))
-            .map(|power| power as f64 / 1_000_000.0)
+        read_parsed::<f64>(self.hwmon_path()?.join("power1_cap_max"))
+            .map(|microwatts| microwatts / 1_000_000.0)
     }
 }
 
@@ -268,6 +269,7 @@ impl Gpu {
         ))?
         .flatten()
         {
+            trace!("Found hwmon at {hwmon:?}");
             hwmon_vec.push(hwmon);
         }
 
@@ -303,7 +305,7 @@ impl Gpu {
                 )),
                 "AMD",
             )
-        } else if vid == VID_INTEL || driver == "i915" {
+        } else if vid == VID_INTEL || intel::DRIVER_NAMES.contains(&driver.as_str()) {
             (
                 Gpu::Intel(IntelGpu::new(
                     device,

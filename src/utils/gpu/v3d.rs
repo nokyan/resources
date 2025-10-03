@@ -1,9 +1,9 @@
 use anyhow::{Result, bail};
-use process_data::GpuIdentifier;
+use process_data::gpu_usage::GpuIdentifier;
 
 use std::path::{Path, PathBuf};
 
-use crate::utils::{pci::Device, read_sysfs};
+use crate::utils::{pci::Device, read_parsed};
 
 use super::GpuImpl;
 
@@ -76,12 +76,12 @@ impl GpuImpl for V3dGpu {
         Ok(true)
     }
 
-    fn used_vram(&self) -> Result<usize> {
-        self.drm_used_vram().map(|usage| usage as usize)
+    fn used_vram(&self) -> Result<u64> {
+        self.drm_used_vram().map(|usage| usage as u64)
     }
 
-    fn total_vram(&self) -> Result<usize> {
-        self.drm_total_vram().map(|usage| usage as usize)
+    fn total_vram(&self) -> Result<u64> {
+        self.drm_total_vram().map(|usage| usage as u64)
     }
 
     fn temperature(&self) -> Result<f64> {
@@ -93,8 +93,7 @@ impl GpuImpl for V3dGpu {
     }
 
     fn core_frequency(&self) -> Result<f64> {
-        read_sysfs::<isize>(self.sysfs_path().join("gt_cur_freq_mhz"))
-            .map(|freq| freq as f64 * 1_000_000.0)
+        read_parsed::<f64>(self.sysfs_path().join("gt_cur_freq_mhz")).map(|freq| freq * 1_000_000.0)
     }
 
     fn vram_frequency(&self) -> Result<f64> {

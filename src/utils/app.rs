@@ -12,12 +12,15 @@ use gtk::{
 };
 use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, info, trace};
-use process_data::{Containerization, GpuIdentifier, ProcessData};
+use process_data::{
+    Containerization, ProcessData,
+    gpu_usage::{GpuIdentifier, GpuUsageStats},
+};
 
 use crate::i18n::i18n;
 
 use super::{
-    FiniteOr, boot_time,
+    boot_time,
     process::{Process, ProcessAction},
 };
 
@@ -545,16 +548,8 @@ impl AppsContext {
                 _ => None,
             })
             .map(|(new, old, timestamp, timestamp_last)| {
-                if new.nvidia {
-                    new.gfx as f32 / 100.0
-                } else if old.gfx == 0 {
-                    0.0
-                } else {
-                    ((new.gfx.saturating_sub(old.gfx) as f32)
-                        / (timestamp.saturating_sub(timestamp_last) as f32))
-                        .finite_or_default()
-                        / 1_000_000.0
-                }
+                let time_delta = timestamp.saturating_sub(timestamp_last);
+                new.gfx_fraction(old, time_delta).unwrap_or_default()
             })
             .sum::<f32>()
             .clamp(0.0, 1.0)
@@ -583,16 +578,8 @@ impl AppsContext {
                 _ => None,
             })
             .map(|(new, old, timestamp, timestamp_last)| {
-                if new.nvidia {
-                    new.enc as f32 / 100.0
-                } else if old.enc == 0 {
-                    0.0
-                } else {
-                    ((new.enc.saturating_sub(old.enc) as f32)
-                        / (timestamp.saturating_sub(timestamp_last) as f32))
-                        .finite_or_default()
-                        / 1_000_000.0
-                }
+                let time_delta = timestamp.saturating_sub(timestamp_last);
+                new.enc_fraction(old, time_delta).unwrap_or_default()
             })
             .sum::<f32>()
             .clamp(0.0, 1.0)
@@ -621,19 +608,23 @@ impl AppsContext {
                 _ => None,
             })
             .map(|(new, old, timestamp, timestamp_last)| {
-                if new.nvidia {
-                    new.dec as f32 / 100.0
-                } else if old.dec == 0 {
-                    0.0
-                } else {
-                    ((new.dec.saturating_sub(old.dec) as f32)
-                        / (timestamp.saturating_sub(timestamp_last) as f32))
-                        .finite_or_default()
-                        / 1_000_000.0
-                }
+                let time_delta = timestamp.saturating_sub(timestamp_last);
+                new.dec_fraction(old, time_delta).unwrap_or_default()
             })
             .sum::<f32>()
             .clamp(0.0, 1.0)
+    }
+
+    pub fn vram_usage(&self, gpu_identifier: GpuIdentifier) -> u64 {
+        self.processes_iter()
+            .flat_map(|process| {
+                process
+                    .data
+                    .gpu_usage_stats
+                    .get(&gpu_identifier)
+                    .and_then(|gpu_identifier| gpu_identifier.mem())
+            })
+            .sum()
     }
 
     fn app_associated_with_process(&self, process: &Process) -> Option<String> {
@@ -775,7 +766,7 @@ impl AppsContext {
 
             // this is awkward: since AppsContext is the only object around that knows what GPUs have combined media
             // engines, it is here where we have to manipulate the GpuUsageStats objects with PciSlots of those GPUs
-            // whose media engine is combined (e.g. no discrimination between enc and dec stats)
+            // whose media engine is combined (i.e. no discrimination between enc and dec stats)
             process_data
                 .gpu_usage_stats
                 .iter_mut()
@@ -783,8 +774,10 @@ impl AppsContext {
                 .for_each(|(pci_slot, stats)| {
                     trace!("Manually adjusting GPU stats of {} for {pci_slot} due to combined media engine", process_data.pid);
 
-                    stats.dec = u64::max(stats.dec, stats.enc);
-                    stats.enc = u64::max(stats.dec, stats.enc);
+                    if let GpuUsageStats::AmdgpuStats { gfx_ns: _, enc_ns, dec_ns, mem_bytes: _ } = stats {
+                        *enc_ns = u64::max(*enc_ns, *dec_ns);
+                        *dec_ns = u64::max(*enc_ns, *dec_ns);
+                    }
                 });
 
             // refresh our old processes

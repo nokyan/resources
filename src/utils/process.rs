@@ -1,7 +1,10 @@
 use anyhow::{Context, Result, bail};
 use config::LIBEXECDIR;
 use log::{debug, error, info, trace};
-use process_data::{GpuIdentifier, GpuUsageStats, Niceness, ProcessData};
+use process_data::{
+    Niceness, ProcessData,
+    gpu_usage::{GpuIdentifier, GpuUsageStats},
+};
 use std::{
     collections::BTreeMap,
     ffi::{OsStr, OsString},
@@ -399,20 +402,10 @@ impl Process {
         let mut returned_gpu_usage = 0.0;
         for (gpu, usage) in &self.data.gpu_usage_stats {
             if let Some(old_usage) = self.gpu_usage_stats_last.get(gpu) {
-                let this_gpu_usage = if usage.nvidia {
-                    usage.gfx as f32 / 100.0
-                } else if old_usage.gfx == 0 {
-                    0.0
-                } else {
-                    ((usage.gfx.saturating_sub(old_usage.gfx) as f32)
-                        / (self.data.timestamp.saturating_sub(self.timestamp_last) as f32)
-                            .finite_or_default())
-                        / 1_000_000.0
-                };
-
-                if this_gpu_usage > returned_gpu_usage {
-                    returned_gpu_usage = this_gpu_usage;
-                }
+                let time_delta = self.data.timestamp.saturating_sub(self.timestamp_last);
+                returned_gpu_usage += usage
+                    .gfx_fraction(old_usage, time_delta)
+                    .unwrap_or_default();
             }
         }
 
@@ -424,20 +417,10 @@ impl Process {
         let mut returned_gpu_usage = 0.0;
         for (gpu, usage) in &self.data.gpu_usage_stats {
             if let Some(old_usage) = self.gpu_usage_stats_last.get(gpu) {
-                let this_gpu_usage = if usage.nvidia {
-                    usage.enc as f32 / 100.0
-                } else if old_usage.enc == 0 {
-                    0.0
-                } else {
-                    ((usage.enc.saturating_sub(old_usage.enc) as f32)
-                        / (self.data.timestamp.saturating_sub(self.timestamp_last) as f32)
-                            .finite_or_default())
-                        / 1_000_000.0
-                };
-
-                if this_gpu_usage > returned_gpu_usage {
-                    returned_gpu_usage = this_gpu_usage;
-                }
+                let time_delta = self.data.timestamp.saturating_sub(self.timestamp_last);
+                returned_gpu_usage += usage
+                    .enc_fraction(old_usage, time_delta)
+                    .unwrap_or_default();
             }
         }
 
@@ -449,20 +432,10 @@ impl Process {
         let mut returned_gpu_usage = 0.0;
         for (gpu, usage) in &self.data.gpu_usage_stats {
             if let Some(old_usage) = self.gpu_usage_stats_last.get(gpu) {
-                let this_gpu_usage = if usage.nvidia {
-                    usage.dec as f32 / 100.0
-                } else if old_usage.dec == 0 {
-                    0.0
-                } else {
-                    ((usage.dec.saturating_sub(old_usage.dec) as f32)
-                        / (self.data.timestamp.saturating_sub(self.timestamp_last) as f32)
-                            .finite_or_default())
-                        / 1_000_000.0
-                };
-
-                if this_gpu_usage > returned_gpu_usage {
-                    returned_gpu_usage = this_gpu_usage;
-                }
+                let time_delta = self.data.timestamp.saturating_sub(self.timestamp_last);
+                returned_gpu_usage += usage
+                    .dec_fraction(old_usage, time_delta)
+                    .unwrap_or_default();
             }
         }
 
@@ -474,7 +447,7 @@ impl Process {
         self.data
             .gpu_usage_stats
             .values()
-            .map(|stats| stats.mem)
+            .map(|stats| stats.mem().unwrap_or_default())
             .sum()
     }
 

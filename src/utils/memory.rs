@@ -4,6 +4,8 @@ use anyhow::{Context, Result, bail};
 use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, trace};
 
+use crate::utils::read_parsed;
+
 use super::{FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
 
 const PROC_MEMINFO: &str = "/proc/meminfo";
@@ -59,9 +61,7 @@ impl MemoryData {
         trace!("Gathering memory data…");
 
         trace!("Reading {PROC_MEMINFO}…");
-        let proc_mem = std::fs::read_to_string("/proc/meminfo")
-            .inspect_err(|err| trace!("Unable to read {PROC_MEMINFO}: {err}"))
-            .context("unable to read /proc/meminfo")?;
+        let proc_mem = read_parsed::<String>("/proc/meminfo")?;
 
         let total_mem = RE_MEM_TOTAL
             .captures(&proc_mem)

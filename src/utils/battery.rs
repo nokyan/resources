@@ -4,7 +4,10 @@ use std::{
     str::{self, FromStr},
 };
 
-use crate::i18n::{i18n, i18n_f};
+use crate::{
+    i18n::{i18n, i18n_f},
+    utils::read_parsed,
+};
 use anyhow::{Context, Result, bail};
 use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::trace;
@@ -182,10 +185,10 @@ impl Battery {
         //type == "Battery"
         //scope != "Device" (HID device batteries)
 
-        let power_supply_type_is_battery = std::fs::read_to_string(path.join("type"))
+        let power_supply_type_is_battery = read_parsed::<String>(path.join("type"))
             .is_ok_and(|ps_type| ps_type.trim() == "Battery");
 
-        let power_supply_scope_is_not_device = std::fs::read_to_string(path.join("scope"))
+        let power_supply_scope_is_not_device = read_parsed::<String>(path.join("scope"))
             .map(|ps_scope| ps_scope.trim() != "Device")
             .unwrap_or(true);
 
@@ -197,30 +200,24 @@ impl Battery {
 
         trace!("Creating Battery object of {sysfs_path:?}…");
 
-        let manufacturer = std::fs::read_to_string(sysfs_path.join("manufacturer"))
+        let manufacturer = read_parsed::<String>(sysfs_path.join("manufacturer"))
             .map(|s| Self::untangle_weird_encoding(s.replace('\n', "")))
             .ok();
 
-        let model_name = std::fs::read_to_string(sysfs_path.join("model_name"))
+        let model_name = read_parsed::<String>(sysfs_path.join("model_name"))
             .map(|s| Self::untangle_weird_encoding(s.replace('\n', "")))
             .ok();
 
         let technology = Technology::from_str(
-            &std::fs::read_to_string(sysfs_path.join("technology"))
-                .map(|s| s.replace('\n', ""))
+            &read_parsed(sysfs_path.join("technology"))
+                .map(|s: String| s.replace('\n', ""))
                 .unwrap_or_default(),
         )
         .unwrap_or_default();
 
-        let design_capacity = std::fs::read_to_string(sysfs_path.join("energy_full_design"))
+        let design_capacity = read_parsed::<f64>(sysfs_path.join("energy_full_design"))
             .context("unable to find any energy_full_design")
-            .and_then(|capacity| {
-                capacity
-                    .trim()
-                    .parse::<usize>()
-                    .map(|int| int as f64 / 1_000_000.0)
-                    .context("can't parse energy_full_design")
-            })
+            .map(|capacity| capacity / 1_000_000.0)
             .ok();
 
         let battery = Battery {
@@ -263,34 +260,18 @@ impl Battery {
     }
 
     pub fn charge(&self) -> Result<f64> {
-        std::fs::read_to_string(self.sysfs_path.join("capacity"))
+        read_parsed::<u8>(self.sysfs_path.join("capacity"))
             .context("unable to read capacity sysfs file")
-            .and_then(|capacity| {
-                capacity
-                    .trim()
-                    .parse::<u8>()
-                    .map(|percent| f64::from(percent) / 100.0)
-                    .context("unable to parse capacity sysfs file")
-            })
+            .map(|percent| f64::from(percent) / 100.0)
             .or_else(|_| self.charge_from_energy())
     }
 
     pub fn charge_from_energy(&self) -> Result<f64> {
-        let energy_now = std::fs::read_to_string(self.sysfs_path.join("energy_now"))
-            .context("unable to read energy_now sysfs file")
-            .and_then(|x| {
-                x.trim()
-                    .parse::<usize>()
-                    .context("unable to parse energy_now sysfs file")
-            });
+        let energy_now = read_parsed::<usize>(self.sysfs_path.join("energy_now"))
+            .context("unable to read energy_now sysfs file");
 
-        let energy_full = std::fs::read_to_string(self.sysfs_path.join("energy_full"))
-            .context("unable to read energy_full sysfs file")
-            .and_then(|x| {
-                x.trim()
-                    .parse::<usize>()
-                    .context("unable to parse energy_full sysfs file")
-            });
+        let energy_full = read_parsed::<usize>(self.sysfs_path.join("energy_full"))
+            .context("unable to read energy_full sysfs file");
 
         if let (Ok(energy_now), Ok(energy_full)) = (energy_now, energy_full) {
             Ok(energy_now as f64 / energy_full as f64)
@@ -300,42 +281,21 @@ impl Battery {
     }
 
     pub fn health(&self) -> Result<f64> {
-        let energy_full = std::fs::read_to_string(self.sysfs_path.join("energy_full"))
-            .context("unable to read energy_full sysfs file")
-            .and_then(|x| {
-                x.trim()
-                    .parse::<usize>()
-                    .context("unable to parse energy_full sysfs file")
-            });
+        let energy_full = read_parsed::<usize>(self.sysfs_path.join("energy_full"))
+            .context("unable to read energy_full sysfs file");
 
-        let energy_full_design =
-            std::fs::read_to_string(self.sysfs_path.join("energy_full_design"))
-                .context("unable to read energy_full_design sysfs file")
-                .and_then(|x| {
-                    x.trim()
-                        .parse::<usize>()
-                        .context("unable to parse energy_full_design sysfs file")
-                });
+        let energy_full_design = read_parsed::<usize>(self.sysfs_path.join("energy_full_design"))
+            .context("unable to read energy_full_design sysfs file");
 
         if let (Ok(energy_full), Ok(energy_full_design)) = (energy_full, energy_full_design) {
             Ok(energy_full as f64 / energy_full_design as f64)
         } else {
-            let charge_full = std::fs::read_to_string(self.sysfs_path.join("charge_full"))
-                .context("unable to read charge_full sysfs file")
-                .and_then(|x| {
-                    x.trim()
-                        .parse::<usize>()
-                        .context("unable to parse charge_full sysfs file")
-                });
+            let charge_full = read_parsed::<usize>(self.sysfs_path.join("charge_full"))
+                .context("unabread_parsed(ysfs file");
 
             let charge_full_design =
-                std::fs::read_to_string(self.sysfs_path.join("charge_full_design"))
-                    .context("unable to read charge_full_design sysfs file")
-                    .and_then(|x| {
-                        x.trim()
-                            .parse::<usize>()
-                            .context("unable to parse charge_full_design sysfs file")
-                    });
+                read_parsed::<usize>(self.sysfs_path.join("charge_full_design"))
+                    .context("unable to read charge_full_design sysfs file");
 
             if let (Ok(charge_full), Ok(charge_full_design)) = (charge_full, charge_full_design) {
                 Ok(charge_full as f64 / charge_full_design as f64)
@@ -346,44 +306,30 @@ impl Battery {
     }
 
     pub fn power_usage(&self) -> Result<f64> {
-        std::fs::read_to_string(self.sysfs_path.join("power_now"))
+        read_parsed::<f64>(self.sysfs_path.join("power_now"))
             .context("unable to read power_now file")
-            .and_then(|x| {
-                x.trim()
-                    .parse::<isize>()
-                    .map(|microwatts| microwatts.abs() as f64 / 1_000_000.0)
-                    .context("unable to parse power_now sysfs file")
-            })
+            .map(|microwatts| microwatts.abs() / 1_000_000.0)
             .or_else(|_| self.power_usage_from_voltage_and_current())
     }
 
     fn power_usage_from_voltage_and_current(&self) -> Result<f64> {
-        let voltage = std::fs::read_to_string(self.sysfs_path.join("voltage_now"))?
-            .trim()
-            .parse::<usize>()
-            .map(|microvolts| microvolts as f64 / 1_000_000.0)
+        let voltage = read_parsed::<f64>(self.sysfs_path.join("voltage_now"))
+            .map(|microvolts| microvolts / 1_000_000.0)
             .context("unable to parse voltage_now sysfs file")?;
 
-        let current = std::fs::read_to_string(self.sysfs_path.join("current_now"))?
-            .trim()
-            .parse::<usize>()
-            .map(|microamps| microamps as f64 / 1_000_000.0)
+        let current = read_parsed::<f64>(self.sysfs_path.join("current_now"))
+            .map(|microamps| microamps / 1_000_000.0)
             .context("unable to parse current_now sysfs file")?;
 
         Ok(f64::abs(voltage * current))
     }
 
     pub fn state(&self) -> Result<State> {
-        State::from_str(
-            &std::fs::read_to_string(self.sysfs_path.join("status"))
-                .map(|s| s.replace('\n', ""))?,
-        )
+        State::from_str(&read_parsed::<String>(self.sysfs_path.join("status"))?)
     }
 
     pub fn charge_cycles(&self) -> Result<usize> {
-        std::fs::read_to_string(self.sysfs_path.join("cycle_count"))?
-            .trim()
-            .parse()
+        read_parsed(self.sysfs_path.join("cycle_count"))
             .context("unable to parse cycle_count sysfs file")
     }
 }

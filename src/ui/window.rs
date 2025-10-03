@@ -63,7 +63,7 @@ mod imp {
     use async_channel::{Receiver, Sender, unbounded};
     use gtk::CompositeTemplate;
     use log::debug;
-    use process_data::{GpuIdentifier, pci_slot::PciSlot};
+    use process_data::{gpu_usage::GpuIdentifier, pci_slot::PciSlot};
 
     #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/net/nokyan/Resources/ui/window.ui")]
@@ -691,6 +691,13 @@ impl MainWindow {
                     "DRM decode: {drm_decode_fraction} · Process-based decode: {processes_decode_fraction} · Using {highest_decode_fraction}"
                 );
                 gpu_data.decode_fraction = Some(highest_decode_fraction);
+
+                if gpu_data.used_vram.is_none() {
+                    gpu_data.used_vram = Some(apps_context.vram_usage(gpu_data.gpu_identifier));
+                    trace!(
+                        "Couldn't read sysfs VRAM usage, falling back to summing up per-process usage…"
+                    )
+                }
             }
 
             page.refresh_page(&gpu_data);

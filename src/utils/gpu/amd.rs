@@ -1,7 +1,7 @@
 use anyhow::{Context, Result, bail};
 use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, trace, warn};
-use process_data::GpuIdentifier;
+use process_data::gpu_usage::GpuIdentifier;
 
 use std::{
     collections::HashMap,
@@ -13,7 +13,7 @@ use std::{
 use crate::utils::{
     IS_FLATPAK,
     pci::{self, Device},
-    read_sysfs,
+    read_parsed,
 };
 
 use super::GpuImpl;
@@ -54,7 +54,7 @@ impl AmdGpu {
             combined_media_engine: false,
         };
 
-        if let Ok(vcn_version) = read_sysfs::<isize>(
+        if let Ok(vcn_version) = read_parsed::<isize>(
             gpu.sysfs_path()
                 .join("device/ip_discovery/die/0/UVD/0/major"),
         ) {
@@ -79,7 +79,7 @@ impl AmdGpu {
 
         let mut map = HashMap::new();
 
-        let amdgpu_ids_raw = std::fs::read_to_string(&path)?;
+        let amdgpu_ids_raw = read_parsed::<String>(&path)?;
 
         for capture in RE_AMDGPU_IDS.captures_iter(&amdgpu_ids_raw) {
             if let (Some(device_id), Some(revision), Some(name)) =
@@ -128,7 +128,7 @@ impl GpuImpl for AmdGpu {
 
     fn name(&self) -> Result<String> {
         let revision = u8::from_str_radix(
-            read_sysfs::<String>(self.sysfs_path().join("device/revision"))?
+            read_parsed::<String>(self.sysfs_path().join("device/revision"))?
                 .strip_prefix("0x")
                 .context("missing hex prefix")?,
             16,
@@ -161,12 +161,12 @@ impl GpuImpl for AmdGpu {
         Ok(self.combined_media_engine)
     }
 
-    fn used_vram(&self) -> Result<usize> {
-        self.drm_used_vram().map(|usage| usage as usize)
+    fn used_vram(&self) -> Result<u64> {
+        self.drm_used_vram().map(|usage| usage as u64)
     }
 
-    fn total_vram(&self) -> Result<usize> {
-        self.drm_total_vram().map(|usage| usage as usize)
+    fn total_vram(&self) -> Result<u64> {
+        self.drm_total_vram().map(|usage| usage as u64)
     }
 
     fn temperature(&self) -> Result<f64> {
