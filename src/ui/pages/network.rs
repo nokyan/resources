@@ -1,13 +1,14 @@
 use std::time::{Duration, SystemTime};
 
+use crate::config::PROFILE;
+use crate::i18n::{i18n, i18n_f};
+use crate::utils::link::LinkData;
+use crate::utils::network::{NetworkData, NetworkInterface};
+use crate::utils::units::{convert_speed, convert_speed_bits_decimal, convert_storage};
 use adw::{glib::property::PropertySet, prelude::*, subclass::prelude::*};
 use gtk::glib;
 use log::trace;
-
-use crate::config::PROFILE;
-use crate::i18n::{i18n, i18n_f};
-use crate::utils::network::{NetworkData, NetworkInterface};
-use crate::utils::units::{convert_speed, convert_speed_bits_decimal, convert_storage};
+use plotters::prelude::LogScalable;
 
 pub const TAB_ID_PREFIX: &str = "network";
 
@@ -45,6 +46,10 @@ mod imp {
         #[template_child]
         pub hw_address: TemplateChild<adw::ActionRow>,
         #[template_child]
+        pub network_name: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub link: TemplateChild<adw::ActionRow>,
+        #[template_child]
         pub link_speed: TemplateChild<adw::ActionRow>,
         pub old_received_bytes: Cell<Option<usize>>,
         pub old_sent_bytes: Cell<Option<usize>>,
@@ -65,10 +70,12 @@ mod imp {
         #[property(get = Self::tab_name, set = Self::set_tab_name, type = glib::GString)]
         tab_name: Cell<glib::GString>,
 
-        #[property(get = Self::tab_detail_string, set = Self::set_tab_detail_string, type = glib::GString)]
+        #[property(get = Self::tab_detail_string, set = Self::set_tab_detail_string, type = glib::GString
+        )]
         tab_detail_string: Cell<glib::GString>,
 
-        #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString)]
+        #[property(get = Self::tab_usage_string, set = Self::set_tab_usage_string, type = glib::GString
+        )]
         tab_usage_string: Cell<glib::GString>,
 
         #[property(get = Self::tab_id, set = Self::set_tab_id, type = glib::GString)]
@@ -110,6 +117,8 @@ mod imp {
                 driver: Default::default(),
                 interface: Default::default(),
                 hw_address: Default::default(),
+                network_name: Default::default(),
+                link: Default::default(),
                 link_speed: Default::default(),
                 uses_progress_bar: Cell::new(true),
                 main_graph_color: glib::Bytes::from_static(&super::ResNetwork::MAIN_GRAPH_COLOR),
@@ -179,7 +188,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResNetwork(ObjectSubclass<imp::ResNetwork>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResNetwork {
@@ -214,6 +224,8 @@ impl ResNetwork {
 
         let imp = self.imp();
         let network_interface = &network_data.inner;
+        let link_speed = network_interface.link_speed();
+        let wifi_link = LinkData::from_wifi_adapter(network_interface);
 
         let tab_id = format!(
             "{}-{}",
@@ -265,11 +277,31 @@ impl ResNetwork {
             imp.hw_address.set_subtitle(&hw_address);
         }
 
-        imp.link_speed
-            .set_subtitle(&network_interface.link_speed().map_or_else(
-                |_| i18n("N/A"),
-                |bps| convert_speed_bits_decimal(bps as f64),
-            ));
+        if let Ok(wifi_link) = &wifi_link {
+            imp.network_name.set_visible(true);
+            if let Some(ssid) = &wifi_link.current.ssid {
+                imp.network_name.set_subtitle(ssid);
+            } else {
+                imp.network_name.set_subtitle(&i18n("N/A"));
+            }
+        } else {
+            imp.network_name.set_visible(false);
+        }
+
+        imp.link.set_subtitle(&wifi_link.as_ref().map_or_else(
+            |_| i18n("N/A"),
+            |network_link_data| network_link_data.to_string(),
+        ));
+
+        imp.link_speed.set_subtitle(
+            &(if let Ok(wifi_link) = wifi_link {
+                wifi_link.current.link_speed_display()
+            } else if let Ok(link_speed) = link_speed {
+                convert_speed_bits_decimal(link_speed.as_f64())
+            } else {
+                i18n("N/A")
+            }),
+        );
 
         imp.last_timestamp.set(
             SystemTime::now()
@@ -298,6 +330,9 @@ impl ResNetwork {
             is_virtual: _,
             display_name: _,
         } = network_data;
+
+        let wifi_link = LinkData::from_wifi_adapter(&network_data.inner);
+        let link_speed = network_data.inner.link_speed();
 
         let imp = self.imp();
         let time_passed = SystemTime::now()
@@ -373,6 +408,32 @@ impl ResNetwork {
 
             (0.0, i18n("N/A"))
         };
+
+        if let Ok(wifi_link) = &wifi_link {
+            imp.network_name.set_visible(true);
+            if let Some(ssid) = &wifi_link.current.ssid {
+                imp.network_name.set_subtitle(ssid);
+            } else {
+                imp.network_name.set_subtitle(&i18n("N/A"));
+            }
+        } else {
+            imp.network_name.set_visible(false);
+        }
+
+        imp.link.set_subtitle(&wifi_link.as_ref().map_or_else(
+            |_| i18n("N/A"),
+            |network_link_data| network_link_data.to_string(),
+        ));
+
+        imp.link_speed.set_subtitle(
+            &(if let Ok(wifi_link) = wifi_link {
+                wifi_link.current.link_speed_display()
+            } else if let Ok(link_speed) = link_speed {
+                convert_speed_bits_decimal(link_speed.as_f64())
+            } else {
+                i18n("N/A")
+            }),
+        );
 
         self.set_property("usage", f64::max(received_delta, sent_delta));
 

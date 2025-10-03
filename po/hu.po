@@ -1,42 +1,43 @@
-# Turkish translation for resources.
-# Copyright (C) 2023-2025 resources's COPYRIGHT HOLDER
+# Hungarian translation for resources.
+# Copyright (C) 2025 Free Software Foundation, Inc.
 # This file is distributed under the same license as the resources package.
 #
-# Sabri Ünal <libreajans@gmail.com>, 2023-2025.
-#
+# Balázs Meskó <mesko.balazs at fsf dot hu>, 2025.
+# Balázs Úr <ur.balazs at fsf dot hu>, 2025.
 msgid ""
 msgstr ""
-"Project-Id-Version: resources\n"
+"Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2025-09-17 15:36+0000\n"
-"PO-Revision-Date: 2025-09-01 13:28+0300\n"
-"Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
-"Language-Team: Turkish <takim@gnome.org.tr>\n"
-"Language: tr\n"
+"POT-Creation-Date: 2025-08-31 15:32+0000\n"
+"PO-Revision-Date: 2025-09-03 15:25+0200\n"
+"Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
+"Language-Team: Hungarian <openscope at fsf dot hu>\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.7\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 24.12.3\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:2
 #: data/net.nokyan.Resources.metainfo.xml.in.in:4
 #: data/resources/ui/window.ui:22 src/application.rs:272
 msgid "Resources"
-msgstr "Kaynaklar"
+msgstr "Erőforrások"
 
 #. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
 #: data/net.nokyan.Resources.desktop.in.in:3
 #: data/net.nokyan.Resources.metainfo.xml.in.in:5
 msgid "Keep an eye on system resources"
-msgstr "Bir gözünüz hep sistem kaynaklarında olsun"
+msgstr "Tartsa szemmel a rendszer erőforrásait"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/net.nokyan.Resources.desktop.in.in:9
-msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
+msgid ""
+"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 msgstr ""
-"Sistem;Kaynaklar;Monitör;İzle;Süreçler;Kullanım;Görev;Yönetici;CPU;İşlemci;RAM;Bellek; "
-"GPU;Ekran Kartı;"
+"Rendszer;Erőforrások;Megfigyelés;Követés;Felügyelet;Folyamatok;Használat;Felad"
+"atkezelő;CPU;RAM;Memória;GPU;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
@@ -44,18 +45,19 @@ msgid ""
 "control your running processes and apps. It’s designed to be user-friendly "
 "and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
-"Kaynaklar, sistem kaynaklarınızın kullanımını kontrol etmenizi ve çalışan "
-"süreçleri ve uygulamaları denetlemenizi sağlar. Kullanıcı dostu olacak "
-"şekilde ve GNOME libadwaita kullanılarak, sizi evinizde hissedecek şekilde "
-"tasarlanmıştır."
+"Az Erőforrások lehetővé teszi a rendszererőforrások kihasználtságának "
+"ellenőrzését, valamint a futó folyamatok és alkalmazások vezérlését. Úgy "
+"tervezték, hogy felhasználóbarát legyen, és a GNOME libadwaita "
+"programkönyvtárának köszönhetően otthonosan érezze benne magát egy modern "
+"asztali környezetben."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
-msgstr "Kaynaklar aşağıdaki bileşenlerin izlenmesini destekler:"
+msgstr "Az Erőforrások a következő összetevők felügyeletét támogatja:"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
-msgstr "İşlemci"
+msgstr "CPU"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:25
 #: data/resources/ui/dialogs/app_dialog.ui:82
@@ -66,7 +68,7 @@ msgstr "İşlemci"
 #: src/ui/pages/applications/mod.rs:803 src/ui/pages/memory.rs:106
 #: src/ui/pages/memory.rs:192 src/ui/pages/processes/mod.rs:1079
 msgid "Memory"
-msgstr "Bellek"
+msgstr "Memória"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:26
 #: data/resources/ui/dialogs/app_dialog.ui:140
@@ -76,67 +78,67 @@ msgstr "Bellek"
 #: src/ui/pages/applications/mod.rs:1181 src/ui/pages/gpu.rs:118
 #: src/ui/pages/processes/mod.rs:1469 src/ui/window.rs:468
 msgid "GPU"
-msgstr "Ekran Kartı"
+msgstr "GPU"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:27
 #: data/resources/ui/dialogs/settings_dialog.ui:319
 msgid "Network Interfaces"
-msgstr "Ağ Arayüzleri"
+msgstr "Hálózati csatolók"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:28
 msgid "Storage Devices"
-msgstr "Depolama Aygıtları"
+msgstr "Tárolóeszközök"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:29
 msgid "Batteries"
-msgstr "Pil"
+msgstr "Akkumulátorok"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:51
 msgid "Apps page in light theme"
-msgstr "Uygulamalar sayfası açık temada"
+msgstr "Alkalmazások oldal világos témával"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:55
 msgid "Processes page in dark theme"
-msgstr "Süreçler sayfası koyu temada"
+msgstr "Folyamatok oldal sötét témával"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:59
 msgid "Processor page in light theme"
-msgstr "Süreçler sayfası açık semada"
+msgstr "Processzor oldal világos témával"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:63
 msgid "Memory page in dark theme"
-msgstr "Bellekler sayfası koyu temada"
+msgstr "Memória oldal sötét témával"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:67
 msgid "GPU page in light theme"
-msgstr "Ekran Kartı sayfası açık temada"
+msgstr "GPU oldal világos témával"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:71
 msgid "Drive page in dark theme"
-msgstr "Sürücü sayfası koyu temada"
+msgstr "Meghajtó oldal sötét témával"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:75
 msgid "Network Interface page in light theme"
-msgstr "Ağ Arayüzü sayfası açık temada"
+msgstr "Hálózati csatoló oldal világos témával"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:79
 msgid "Battery page in dark theme"
-msgstr "Pil sayfası koyu temada"
+msgstr "Akkumulátor oldal sötét témával"
 
 #: data/net.nokyan.Resources.policy.in.in:9
 msgid "Control Process"
-msgstr "Süreci Denetle"
+msgstr "Folyamat vezérlése"
 
 #: data/net.nokyan.Resources.policy.in.in:10
 msgid ""
 "Authentication is required to control superuser’s or other users’ processes"
 msgstr ""
-"Süper kullanıcı ya da diğer kullanıcıların süreçlerini denetlemek için "
-"kimlik doğrulama gereklidir"
+"Hitelesítés szükséges a rendszergazda vagy más felhasználók folyamatainak "
+"vezérléséhez"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
 msgid "App Information"
-msgstr "Uygulama Bilgileri"
+msgstr "Alkalmazásinformációk"
 
 #: data/resources/ui/dialogs/app_dialog.ui:70
 #: data/resources/ui/dialogs/process_dialog.ui:48
@@ -145,7 +147,7 @@ msgstr "Uygulama Bilgileri"
 #: data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31
 #: data/resources/ui/pages/network.ui:22 data/resources/ui/pages/npu.ui:22
 msgid "Usage"
-msgstr "Kullanım"
+msgstr "Használat"
 
 #: data/resources/ui/dialogs/app_dialog.ui:73
 #: data/resources/ui/dialogs/process_dialog.ui:55
@@ -155,7 +157,7 @@ msgstr "Kullanım"
 #: src/ui/pages/applications/mod.rs:862 src/ui/pages/cpu.rs:128
 #: src/ui/pages/processes/mod.rs:1138 src/ui/window.rs:290
 msgid "Processor"
-msgstr "İşlemci"
+msgstr "Processzor"
 
 #: data/resources/ui/dialogs/app_dialog.ui:91
 #: data/resources/ui/dialogs/process_dialog.ui:73
@@ -164,7 +166,7 @@ msgstr "İşlemci"
 #: src/ui/pages/applications/mod.rs:1420 src/ui/pages/memory.rs:198
 #: src/ui/pages/processes/mod.rs:1954
 msgid "Swap"
-msgstr "Takas"
+msgstr "Cserehely"
 
 #: data/resources/ui/dialogs/app_dialog.ui:100
 #: data/resources/ui/dialogs/process_dialog.ui:78
@@ -172,7 +174,7 @@ msgstr "Takas"
 #: data/resources/ui/dialogs/settings_dialog.ui:230
 #: src/ui/pages/applications/mod.rs:926 src/ui/pages/processes/mod.rs:1202
 msgid "Drive Read"
-msgstr "Sürücü Okuma"
+msgstr "Lemezolvasás"
 
 #: data/resources/ui/dialogs/app_dialog.ui:109
 #: data/resources/ui/dialogs/process_dialog.ui:87
@@ -180,7 +182,7 @@ msgstr "Sürücü Okuma"
 #: data/resources/ui/dialogs/settings_dialog.ui:235
 #: src/ui/pages/applications/mod.rs:991 src/ui/pages/processes/mod.rs:1269
 msgid "Drive Read Total"
-msgstr "Sürücü Okuma Toplamı"
+msgstr "Lemezolvasás összesen"
 
 #: data/resources/ui/dialogs/app_dialog.ui:118
 #: data/resources/ui/dialogs/process_dialog.ui:96
@@ -188,7 +190,7 @@ msgstr "Sürücü Okuma Toplamı"
 #: data/resources/ui/dialogs/settings_dialog.ui:240
 #: src/ui/pages/applications/mod.rs:1052 src/ui/pages/processes/mod.rs:1336
 msgid "Drive Write"
-msgstr "Sürücü Yazma"
+msgstr "Lemezírás"
 
 #: data/resources/ui/dialogs/app_dialog.ui:127
 #: data/resources/ui/dialogs/process_dialog.ui:105
@@ -196,7 +198,7 @@ msgstr "Sürücü Yazma"
 #: data/resources/ui/dialogs/settings_dialog.ui:245
 #: src/ui/pages/applications/mod.rs:1119 src/ui/pages/processes/mod.rs:1403
 msgid "Drive Write Total"
-msgstr "Sürücü Yazma Toplamı"
+msgstr "Lemezírás összesen"
 
 #: data/resources/ui/dialogs/app_dialog.ui:149
 #: data/resources/ui/dialogs/process_dialog.ui:127
@@ -204,7 +206,7 @@ msgstr "Sürücü Yazma Toplamı"
 #: data/resources/ui/dialogs/settings_dialog.ui:255
 #: src/ui/pages/applications/mod.rs:1361 src/ui/pages/processes/mod.rs:1650
 msgid "Video Memory"
-msgstr "Video Belleği"
+msgstr "Videomemória"
 
 #: data/resources/ui/dialogs/app_dialog.ui:158
 #: data/resources/ui/dialogs/process_dialog.ui:136
@@ -212,7 +214,7 @@ msgstr "Video Belleği"
 #: data/resources/ui/dialogs/settings_dialog.ui:260
 #: src/ui/pages/applications/mod.rs:1240 src/ui/pages/processes/mod.rs:1528
 msgid "Video Encoder"
-msgstr "Video Kodlayıcı"
+msgstr "Videókódoló"
 
 #: data/resources/ui/dialogs/app_dialog.ui:167
 #: data/resources/ui/dialogs/process_dialog.ui:145
@@ -220,7 +222,7 @@ msgstr "Video Kodlayıcı"
 #: data/resources/ui/dialogs/settings_dialog.ui:265
 #: src/ui/pages/applications/mod.rs:1301 src/ui/pages/processes/mod.rs:1589
 msgid "Video Decoder"
-msgstr "Video Kod Çözücü"
+msgstr "Videódekódoló"
 
 #: data/resources/ui/dialogs/app_dialog.ui:174
 #: data/resources/ui/dialogs/process_dialog.ui:179
@@ -229,165 +231,163 @@ msgstr "Video Kod Çözücü"
 #: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
 #: data/resources/ui/pages/npu.ui:68
 msgid "Properties"
-msgstr "Özellikler"
+msgstr "Tulajdonságok"
 
 #: data/resources/ui/dialogs/app_dialog.ui:180
 msgid "ID"
-msgstr "Kimlik"
+msgstr "Azonosító"
 
 #: data/resources/ui/dialogs/app_dialog.ui:190
 #: data/resources/ui/dialogs/process_dialog.ui:195
 msgid "Running Since"
-msgstr "Çalışmaya Başlama"
+msgstr "Futás kezdete"
 
 #: data/resources/ui/dialogs/app_dialog.ui:198
 msgid "Running Processes"
-msgstr "Çalışan Süreçler"
+msgstr "Futó folyamatok"
 
 #: data/resources/ui/dialogs/app_dialog.ui:207
 #: data/resources/ui/dialogs/process_dialog.ui:231
 msgid "Containerized"
-msgstr "Konteynerli"
+msgstr "Konténerizált"
 
 #: data/resources/ui/dialogs/process_dialog.ui:7
 msgid "Process Information"
-msgstr "Süreç Bilgileri"
+msgstr "Folyamatinformációk"
 
 #: data/resources/ui/dialogs/process_dialog.ui:154
 #: data/resources/ui/dialogs/settings_dialog.ui:270
 #: src/ui/pages/processes/mod.rs:1710
 msgid "Total CPU Time"
-msgstr "Toplam İşlemci Süresi"
+msgstr "Teljes CPU-idő"
 
 #: data/resources/ui/dialogs/process_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:275
 #: src/ui/pages/processes/mod.rs:1769
 msgid "User CPU Time"
-msgstr "Kullanıcı İşlemci Süresi"
+msgstr "Felhasználói CPU-idő"
 
 #: data/resources/ui/dialogs/process_dialog.ui:172
 #: data/resources/ui/dialogs/settings_dialog.ui:280
 #: src/ui/pages/processes/mod.rs:1828
 msgid "System CPU Time"
-msgstr "Sistem İşlemci Süresi"
+msgstr "Rendszerszintű CPU-idő"
 
 #: data/resources/ui/dialogs/process_dialog.ui:186
 #: data/resources/ui/dialogs/settings_dialog.ui:210
 #: src/ui/pages/processes/mod.rs:972
 msgid "Process ID"
-msgstr "Süreç Kimliği"
+msgstr "Folyamatazonosító"
 
 #: data/resources/ui/dialogs/process_dialog.ui:204
 msgid "Commandline"
-msgstr "Komut Satırı"
+msgstr "Parancssor"
 
 #: data/resources/ui/dialogs/process_dialog.ui:213
 #: data/resources/ui/dialogs/settings_dialog.ui:215
 #: src/ui/pages/processes/mod.rs:1025
 msgid "User"
-msgstr "Kullanıcı"
+msgstr "Felhasználó"
 
 #: data/resources/ui/dialogs/process_dialog.ui:222
 msgid "Control Group"
-msgstr "Denetim Grubu"
+msgstr "Vezérlési csoport"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:7
 #: data/resources/ui/dialogs/process_options_dialog.ui:69
 msgid "Process Options"
-msgstr "Süreç Seçenekleri"
+msgstr "Folyamatbeállítások"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:29
 msgid "Apply"
-msgstr "Uygula"
+msgstr "Alkalmaz"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:72
 msgid "Niceness"
-msgstr "Nicelik"
+msgstr "Nice érték"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:73
 msgid ""
 "The priority of a process is given by its niceness. A lower niceness value "
 "correspond to a higher priority."
 msgstr ""
-"Sürecin önceliği niceliğine göre verilir. Daha düşük nicelik değeri daha "
-"yüksek önceliğe karşılık gelir."
+"Egy folyamat prioritása a nice értéke alapján van megadva. Az alacsonyabb nice"
+" érték magasabb prioritásnak felel meg."
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:87
 #: data/resources/ui/dialogs/settings_dialog.ui:285
 #: src/ui/pages/processes/mod.rs:1887
 msgid "Priority"
-msgstr "Öncelik"
+msgstr "Prioritás"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:91
 msgctxt "process priority"
 msgid "Very High"
-msgstr "Çok Yüksek"
+msgstr "Nagyon magas"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:92
 msgctxt "process priority"
 msgid "High"
-msgstr "Yüksek"
+msgstr "Magas"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:93
 msgctxt "process priority"
 msgid "Normal"
-msgstr "Normal"
+msgstr "Normál"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:94
 msgctxt "process priority"
 msgid "Low"
-msgstr "Düşük"
+msgstr "Alacsony"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:95
 msgctxt "process priority"
 msgid "Very Low"
-msgstr "Çok Düşük"
+msgstr "Nagyon alacsony"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:103
 msgid "Processor Affinity"
-msgstr "İşlemci Yakınlığı"
+msgstr "Processzoraffinitás"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:108
 msgid "Toggle All"
-msgstr "Tümünü Genişlet"
+msgstr "Összes be- és kikapcsolása"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:111
 msgid "Select which processor cores the process is allowed to run on"
-msgstr ""
-"İşlemin hangi işlemci çekirdekleri üzerinde çalışmasına izin verileceğini "
-"seçin"
+msgstr "Annak kiválasztása, hogy a folyamat mely processzormagokon futhat"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:7
 msgid "General"
-msgstr "Genel"
+msgstr "Általános"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:10
 msgid "Units"
-msgstr "Birim"
+msgstr "Mértékegységek"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:13
 msgid "Data Unit Prefix"
-msgstr "Veri Birimi Öneki"
+msgstr "Adatmértékegység-előtag"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:17
 msgid "Decimal"
-msgstr "Ondalık"
+msgstr "Decimális"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:18
 msgid "Binary"
-msgstr "İkili"
+msgstr "Bináris"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:26
 msgid "Show Network Speeds in Bits per Second"
-msgstr "Ağ Hızlarını Saniye Başına Bit Olarak Göster"
+msgstr "Hálózati sebességek megjelenítése bit per másodpercben"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:31
 msgid "Temperature Unit"
-msgstr "Sıcaklık Birimi"
+msgstr "Hőmérséklet mértékegysége"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:35
 msgid "Celsius"
-msgstr "Santigrat"
+msgstr "Celsius"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:36
 msgid "Kelvin"
@@ -395,521 +395,527 @@ msgstr "Kelvin"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:37
 msgid "Fahrenheit"
-msgstr "Fahrenhayt"
+msgstr "Fahrenheit"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:47
 msgid "User Interface"
-msgstr "Kullanıcı Arayüzü"
+msgstr "Felhasználói felület"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:50
 msgid "Refresh Speed"
-msgstr "Yenileme Hızı"
+msgstr "Frissítési sebesség"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:51
 msgid "Higher refresh speeds can lead to higher processor usage"
-msgstr "Yüksek yenileme hızları daha yüksek işlemci kullanımına yol açabilir"
+msgstr ""
+"A magasabb frissítési sebességek magasabb processzorhasználatot eredményezhetn"
+"ek"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:55
 msgctxt "UI refresh speed"
 msgid "Very Slow"
-msgstr "Çok Yavaş"
+msgstr "Nagyon lassú"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:56
 msgctxt "UI refresh speed"
 msgid "Slow"
-msgstr "Yavaş"
+msgstr "Lassú"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:57
 msgctxt "UI refresh speed"
 msgid "Normal"
-msgstr "Normal"
+msgstr "Normál"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:58
 msgctxt "UI refresh speed"
 msgid "Fast"
-msgstr "Hızlı"
+msgstr "Gyors"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:59
 msgctxt "UI refresh speed"
 msgid "Very Fast"
-msgstr "Çok Hızlı"
+msgstr "Nagyon gyors"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:67
 msgid "Show Graph Grids"
-msgstr "Grafik Izgaralarını Göster"
+msgstr "Grafikonrács megjelenítése"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:72
 msgid "Graph Data Points"
-msgstr "Grafik Veri Noktaları"
+msgstr "Grafikon adatpontjai"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:86
 msgid "Show Usage Details in Sidebar"
-msgstr "Kullanım Ayrıntılarını Kenar Çubuğunda Göster"
+msgstr "Használat részleteinek megjelenítése az oldalsávban"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:87
 msgid "If enabled, the usage along with other information will be displayed"
-msgstr "Etkinleştirilirse, diğer bilgilerle birlikte kullanım da görüntülenir"
+msgstr ""
+"Ha engedélyezve van, akkor a használat és egyéb információk lesznek megjelenít"
+"ve"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:92
 msgid "Show Device Descriptions in Sidebar"
-msgstr "Cihaz Açıklamalarını Kenar Çubuğunda Göster"
+msgstr "Eszközleírások megjelenítése az oldalsávban"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:93
 msgid ""
 "If enabled, a device identifier like its name or device type will be "
 "displayed"
 msgstr ""
-"Etkinleştirilirse, adı ya da aygıt türü gibi bir aygıt tanımlayıcısı "
-"görüntülenir"
+"Ha engedélyezve van, akkor az eszköz azonosítója, például a neve vagy az eszkö"
+"z típusa meg lesz jelenítve"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
 msgid "Sidebar Meter Type"
-msgstr "Kenar Çubuğu Sayaç Tipi"
+msgstr "Oldalsávban lévő mérő típusa"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:102
 msgid "Bar"
-msgstr "Çubuk"
+msgstr "Oszlop"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:103
 msgid "Graph"
-msgstr "Grafik"
+msgstr "Grafikon"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:111
 msgid "Normalize Processor Usage"
-msgstr "İşlemci Kullanımını Normalleştir"
+msgstr "Processzorhasználat normalizálása"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:112
 msgid ""
 "If enabled, the total usage of all cores will be divided by the amount of "
 "cores"
 msgstr ""
-"Etkinleştirilirse, tüm çekirdeklerin toplam kullanımı çekirdek sayısına "
-"bölünür"
+"Ha engedélyezve van, akkor az összes mag teljes használata el lesz osztva a ma"
+"gok számával"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:122
 #: data/resources/ui/window.ui:65 data/resources/ui/window.ui:72
 #: src/ui/pages/applications/mod.rs:131
 msgid "Apps"
-msgstr "Uygulamalar"
+msgstr "Alkalmazások"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:125
 #: data/resources/ui/dialogs/settings_dialog.ui:207
 msgid "Information Columns"
-msgstr "Bilgi Sütunları"
+msgstr "Információs oszlopok"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:183
 #: data/resources/ui/dialogs/settings_dialog.ui:295
 #: src/ui/pages/applications/mod.rs:1479 src/ui/pages/processes/mod.rs:2013
 msgid "Combined Memory"
-msgstr "Birleşik Bellek"
+msgstr "Kombinált memória"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:193
 #: data/resources/ui/window.ui:105 data/resources/ui/window.ui:112
 #: src/ui/pages/processes/mod.rs:175
 msgid "Processes"
-msgstr "Süreçler"
+msgstr "Folyamatok"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:196
 #: data/resources/ui/pages/cpu.ui:22 data/resources/ui/pages/processes.ui:56
 msgid "Options"
-msgstr "Seçenekler"
+msgstr "Beállítások"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:199
 msgid "Show Niceness Values"
-msgstr "Nitelik Değerlerini Göster"
+msgstr "Nice értékek megjelenítése"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:200
 msgid ""
 "Display priorities as niceness to allow for more fine-grained adjustments"
-msgstr "Daha ince ayarlara izin vermek için öncelikleri nitelik olarak göster"
+msgstr ""
+"A prioritások nice értékként való megjelenítése, hogy finomabb hangolást "
+"tegyen lehetővé"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:305
 msgid "Devices"
-msgstr "Aygıtlar"
+msgstr "Eszközök"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:308
 msgid "Drives"
-msgstr "Sürücüler"
+msgstr "Meghajtók"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:311
 msgid "Show Virtual Drives"
-msgstr "Sanal Sürücüleri Göster"
+msgstr "Virtuális meghajtók megjelenítése"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:312
 msgid "Virtual drives are for example ZFS volumes or mapped devices"
-msgstr "Sanal sürücüler ZFS birimleri ya da eşlenmiş aygıtlardır"
+msgstr "Virtuális meghajtók például a ZFS-kötetek vagy a leképezett eszközök"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:322
 msgid "Show Virtual Network Interfaces"
-msgstr "Sanal Ağ Arayüzlerini Göster"
+msgstr "Virtuális hálózati csatolók megjelenítése"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:323
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
-msgstr "Sanal ağ arayüzleri örneğin köprüler ya da VPN tünelleridir"
+msgstr "Virtuális hálózati csatolók például a hidak vagy a VPN-alagutak"
 
 #: data/resources/ui/pages/applications.ui:6
 #: data/resources/ui/pages/applications.ui:26
 #: src/ui/pages/applications/mod.rs:1563
 msgid "Kill App"
-msgstr "Uygulamayı Öldür"
+msgstr "Alkalmazás kilövése"
 
 #: data/resources/ui/pages/applications.ui:10
 #: data/resources/ui/pages/applications.ui:30
 #: src/ui/pages/applications/mod.rs:1562
 msgid "Halt App"
-msgstr "Uygulamayı Durdur"
+msgstr "Alkalmazás megállítása"
 
 #: data/resources/ui/pages/applications.ui:14
 #: data/resources/ui/pages/applications.ui:34
 #: src/ui/pages/applications/mod.rs:1564
 msgid "Continue App"
-msgstr "Uygulamayı Sürdür"
+msgstr "Alkalmazás folytatása"
 
 #: data/resources/ui/pages/applications.ui:22
 #: data/resources/ui/pages/applications.ui:98
 #: src/ui/pages/applications/mod.rs:1561
 msgid "End App"
-msgstr "Uygulamayı Sonlandır"
+msgstr "Alkalmazás befejezése"
 
 #: data/resources/ui/pages/applications.ui:40
 #: data/resources/ui/pages/processes.ui:62
 msgid "Information"
-msgstr "Bilgi"
+msgstr "Információk"
 
-# Düğme olduğu için
 #: data/resources/ui/pages/applications.ui:57
 msgid "Search applications"
-msgstr "Uygulamaları ara"
+msgstr "Alkalmazások keresése"
 
 #: data/resources/ui/pages/applications.ui:87
 #: data/resources/ui/pages/applications.ui:89
 msgid "Show App Information"
-msgstr "Uygulama Bilgilerini Göster"
+msgstr "Alkalmazásinformációk megjelenítése"
 
 #: data/resources/ui/pages/battery.ui:36
 msgid "Battery Health"
-msgstr "Pil Sağlığı"
+msgstr "Akkumulátor egészsége"
 
 #: data/resources/ui/pages/battery.ui:45
 msgid "Design Capacity"
-msgstr "Tasarım Kapasitesi"
+msgstr "Tervezett kapacitás"
 
 #: data/resources/ui/pages/battery.ui:54
 msgid "Charge Cycles"
-msgstr "Şarj Döngüsü"
+msgstr "Töltési ciklusok"
 
 #: data/resources/ui/pages/battery.ui:63
 msgid "Technology"
-msgstr "Teknoloji"
+msgstr "Technológia"
 
 #: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:81
 #: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:75
 msgid "Manufacturer"
-msgstr "Üretici"
+msgstr "Gyártó"
 
 #: data/resources/ui/pages/battery.ui:81
 msgid "Model Name"
-msgstr "Model Adı"
+msgstr "Modell neve"
 
 #: data/resources/ui/pages/battery.ui:90 data/resources/ui/pages/drive.ui:66
 msgid "Device"
-msgstr "Aygıt"
+msgstr "Eszköz"
 
 #: data/resources/ui/pages/cpu.ui:26
 msgid "Show Usages of Logical CPUs"
-msgstr "Mantıksal İşlemci Kullanımlarını Göster"
+msgstr "Logikai CPU-k használatának megjelenítése"
 
 #: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
 #: data/resources/ui/pages/npu.ui:60
 msgid "Sensors"
-msgstr "Algılayıcılar"
+msgstr "Érzékelők"
 
 #: data/resources/ui/pages/cpu.ui:90
 msgid "Max Frequency"
-msgstr "Azami Frekans"
+msgstr "Legnagyobb frekvencia"
 
 #: data/resources/ui/pages/cpu.ui:99
 msgid "Logical Cores"
-msgstr "Mantıksal Çekirdekler"
+msgstr "Logikai magok"
 
 #: data/resources/ui/pages/cpu.ui:108
 msgid "Physical Cores"
-msgstr "Fiziksel Çekirdekler"
+msgstr "Fizikai magok"
 
 #: data/resources/ui/pages/cpu.ui:117
 msgid "Sockets"
-msgstr "Yuvalar"
+msgstr "Foglalatok"
 
 #: data/resources/ui/pages/cpu.ui:126
 msgid "Uptime"
-msgstr "Çalışma Süresi"
+msgstr "Üzemidő"
 
 #: data/resources/ui/pages/cpu.ui:135
 msgid "Virtualization"
-msgstr "Sanallaştırma"
+msgstr "Virtualizáció"
 
 #: data/resources/ui/pages/cpu.ui:144
 msgid "Architecture"
-msgstr "Mimari"
+msgstr "Architektúra"
 
 #: data/resources/ui/pages/drive.ui:38
 msgid "Total Read"
-msgstr "Toplam Okuma"
+msgstr "Olvasva összesen"
 
 #: data/resources/ui/pages/drive.ui:47
 msgid "Total Written"
-msgstr "Toplam Yazma"
+msgstr "Írva összesen"
 
 #: data/resources/ui/pages/drive.ui:57 data/resources/ui/pages/memory.ui:72
 msgid "Type"
-msgstr "Tür"
+msgstr "Típus"
 
 #: data/resources/ui/pages/drive.ui:75
 msgid "Capacity"
-msgstr "Kapasite"
+msgstr "Kapacitás"
 
 #: data/resources/ui/pages/drive.ui:84
 msgid "Writable"
-msgstr "Yazılabilir"
+msgstr "Írható"
 
 #: data/resources/ui/pages/drive.ui:93
 msgid "Removable"
-msgstr "Kaldırılabilir"
+msgstr "Eltávolítható"
 
 #. Translators: "Link" refers to something like "PCIe 4.0 ×16"
 #: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113
 #: data/resources/ui/pages/network.ui:103 data/resources/ui/pages/npu.ui:107
 msgid "Link"
-msgstr "Bağlantı"
+msgstr "Kapcsolat"
 
 #: data/resources/ui/pages/gpu.ui:37
 msgid "GPU Frequency"
-msgstr "Ekran Kartı Frekansı"
+msgstr "GPU órajele"
 
 #: data/resources/ui/pages/gpu.ui:50
 msgid "Video Memory Frequency"
-msgstr "Video Bellek Frekansı"
+msgstr "Videomemória órajele"
 
 #: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49
 #: src/ui/pages/battery.rs:217
 msgid "Power Usage"
-msgstr "Güç Kullanımı"
+msgstr "Energiahasználat"
 
 #: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:84
 msgid "PCI Slot"
-msgstr "PCI Yuvası"
+msgstr "PCI foglalat"
 
 #: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
 #: data/resources/ui/pages/npu.ui:93
 msgid "Driver Used"
-msgstr "Kullanılan Sürücü"
+msgstr "Használt illesztőprogram"
 
 #: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
 msgid "Max Power Cap"
-msgstr "Azami Güç Kapasitesi"
+msgstr "Legnagyobb energiakorlát"
 
 #: data/resources/ui/pages/memory.ui:9
 msgid "You need to authenticate to see memory properties"
-msgstr "Bellek özelliklerini görmek için kimlik doğrulaması gerekir"
+msgstr "Hitelesítés szükséges a memóriatulajdonságok megtekintéséhez"
 
 #: data/resources/ui/pages/memory.ui:10
 msgid "Authenticate"
-msgstr "Kimlik Doğrula"
+msgstr "Hitelesítés"
 
 #: data/resources/ui/pages/memory.ui:45
 msgid "Slots Used"
-msgstr "Kullanılan Yuvalar"
+msgstr "Használt foglalatok"
 
 #: data/resources/ui/pages/memory.ui:54
 msgid "Speed"
-msgstr "Hız"
+msgstr "Sebesség"
 
 #: data/resources/ui/pages/memory.ui:63
 msgid "Form Factor"
-msgstr "Büyüme Katsayısı"
+msgstr "Fizikai formátum"
 
 #: data/resources/ui/pages/memory.ui:81
 msgid "Type Detail"
-msgstr "Tür Ayrıntısı"
+msgstr "Típus részletei"
 
 #: data/resources/ui/pages/network.ui:35
 msgid "Total Received"
-msgstr "Toplam Alınan"
+msgstr "Fogadva összesen"
 
 #: data/resources/ui/pages/network.ui:44
 msgid "Total Sent"
-msgstr "Toplam Gönderilen"
+msgstr "Küldve összesen"
 
 #: data/resources/ui/pages/network.ui:76
 msgid "Interface"
-msgstr "Arayüz"
+msgstr "Csatoló"
 
 #: data/resources/ui/pages/network.ui:85
 msgid "Hardware Address"
-msgstr "Donanım Adresi"
+msgstr "Hardvercím"
 
 #: data/resources/ui/pages/network.ui:94
+#| msgid "Network Bridge"
 msgid "Network Name"
-msgstr "Ağ Adı"
+msgstr "Hálózat neve"
 
 #: data/resources/ui/pages/network.ui:112
 msgid "Link Speed"
-msgstr "Bağlantı Hızı"
+msgstr "Kapcsolat sebessége"
 
 #: data/resources/ui/pages/npu.ui:31
 msgid "NPU Frequency"
-msgstr "YZ Çekirdeği Frekansı"
+msgstr "NPU órajele"
 
 #: data/resources/ui/pages/npu.ui:44
 msgid "Memory Frequency"
-msgstr "Bellek Frekansı"
+msgstr "Memória órajele"
 
 #: data/resources/ui/pages/processes.ui:6
 #: data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2126
 msgid "Kill Process"
-msgstr "Süreci Öldür"
+msgstr "Folyamat kilövése"
 
 #: data/resources/ui/pages/processes.ui:10
 #: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2125
 msgid "Halt Process"
-msgstr "Süreci Durdur"
+msgstr "Folyamat megállítása"
 
 #: data/resources/ui/pages/processes.ui:14
 #: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2127
 msgid "Continue Process"
-msgstr "Süreci Sürdür"
+msgstr "Folyamat folytatása"
 
 #: data/resources/ui/pages/processes.ui:22
 #: data/resources/ui/pages/processes.ui:74
 msgid "Kill Processes"
-msgstr "Süreçleri Öldür"
+msgstr "Folyamatok kilövése"
 
 #: data/resources/ui/pages/processes.ui:26
 #: data/resources/ui/pages/processes.ui:78
 msgid "Halt Processes"
-msgstr "Süreçleri Durdur"
+msgstr "Folyamatok megállítása"
 
 #: data/resources/ui/pages/processes.ui:30
 #: data/resources/ui/pages/processes.ui:82
 msgid "Continue Processes"
-msgstr "Süreçleri Sürdür"
+msgstr "Folyamatok folytatása"
 
 #: data/resources/ui/pages/processes.ui:38
 #: data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:523
 #: src/ui/pages/processes/mod.rs:2124
 msgid "End Process"
-msgstr "Süreci Sonlandır"
+msgstr "Folyamat befejezése"
 
 #: data/resources/ui/pages/processes.ui:70 src/ui/pages/processes/mod.rs:527
 msgid "End Processes"
-msgstr "Süreçleri Sonlandır"
+msgstr "Folyamatok befejezése"
 
 #: data/resources/ui/pages/processes.ui:103
 msgid "Search processes"
-msgstr "Süreç ara"
+msgstr "Folyamatok keresése"
 
 #: data/resources/ui/pages/processes.ui:133
 #: data/resources/ui/pages/processes.ui:135
 msgid "Show Process Options"
-msgstr "Süreç Seçeneklerini Göster"
+msgstr "Folyamatbeállítások megjelenítése"
 
 #: data/resources/ui/pages/processes.ui:146
 #: data/resources/ui/pages/processes.ui:148
 msgid "Show Process Information"
-msgstr "Süreç Bilgilerini Göster"
+msgstr "Folyamatinformációk megjelenítése"
 
 #: data/resources/ui/shortcuts.ui:11
 msgctxt "shortcut window"
 msgid "General"
-msgstr "Genel"
+msgstr "Általános"
 
 #: data/resources/ui/shortcuts.ui:14
 msgctxt "shortcut window"
 msgid "Preferences"
-msgstr "Tercihler"
+msgstr "Beállítások"
 
 #: data/resources/ui/shortcuts.ui:20
 msgctxt "shortcut window"
 msgid "Show Shortcuts"
-msgstr "Kısayolları Göster"
+msgstr "Gyorsbillentyűk megjelenítése"
 
 #: data/resources/ui/shortcuts.ui:26
 msgctxt "shortcut window"
 msgid "Quit"
-msgstr "Çık"
+msgstr "Kilépés"
 
 #: data/resources/ui/shortcuts.ui:32
 msgctxt "shortcut window"
 msgid "Toggle Search Field"
-msgstr "Arama Alanını Aç/Kapat"
+msgstr "Keresési mező be- és kikapcsolása"
 
 #: data/resources/ui/shortcuts.ui:38
 msgctxt "shortcut window"
 msgid "End App/Process"
-msgstr "Uygulamayı/Süreci Sonlandır"
+msgstr "Alkalmazás vagy folyamat befejezése"
 
 #: data/resources/ui/shortcuts.ui:44
 msgctxt "shortcut window"
 msgid "Kill App/Process"
-msgstr "Uygulamayı/Süreci Öldür"
+msgstr "Alkalmazás vagy folyamat kilövése"
 
 #: data/resources/ui/shortcuts.ui:50
 msgctxt "shortcut window"
 msgid "Halt App/Process"
-msgstr "Uygulamayı/Süreci Durdur"
+msgstr "Alkalmazás vagy folyamat megállítása"
 
 #: data/resources/ui/shortcuts.ui:56
 msgctxt "shortcut window"
 msgid "Continue App/Process"
-msgstr "Uygulamayı/Süreci Sürdür"
+msgstr "Alkalmazás vagy folyamat folytatása"
 
 #: data/resources/ui/shortcuts.ui:62
 msgctxt "shortcut window"
 msgid "Show Information for App/Process"
-msgstr "Uygulama/Süreç Bilgilerini Göster"
+msgstr "Alkalmazás- vagy folyamatinformációk megjelenítése"
 
 #: data/resources/ui/shortcuts.ui:68
 msgctxt "shortcut window"
 msgid "Show Process Options"
-msgstr "İşlem Seçeneklerini Göster"
+msgstr "Folyamatbeállítások megjelenítése"
 
 #: data/resources/ui/window.ui:6
 msgid "Preferences"
-msgstr "Tercihler"
+msgstr "Beállítások"
 
 #: data/resources/ui/window.ui:10
 msgid "Keyboard Shortcuts"
-msgstr "Klavye Kısayolları"
+msgstr "Gyorsbillentyűk"
 
 #: data/resources/ui/window.ui:14
 msgid "About Resources"
-msgstr "Kaynaklar Hakkında"
+msgstr "Az Erőforrások névjegye"
 
 #: data/resources/ui/window.ui:88 data/resources/ui/window.ui:128
 msgid "Search"
-msgstr "Ara"
+msgstr "Keresés"
 
 #: data/resources/ui/window.ui:90 data/resources/ui/window.ui:130
 msgid "Toggle search field"
-msgstr "Arama alanını aç/kapat"
+msgstr "Keresési mező be- és kikapcsolása"
 
 #: src/application.rs:274
 msgid "The Nalux Team"
-msgstr "Nalux Takımı"
+msgstr "A Nalux csapata"
 
 #: src/application.rs:282
 msgid "Report Issues"
-msgstr "Hata Raporla"
+msgstr "Problémák jelentése"
 
 #. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
 #. One name per line, please do not remove previous names.
 #: src/application.rs:288
 msgid "translator-credits"
-msgstr "Sabri Ünal <libreajans@gmail.com>"
+msgstr "Meskó Balázs <mesko dot balazs at fsf dot hu>, 2025."
 
 #: src/application.rs:289
 msgid "Icon by"
-msgstr "Simgeler"
+msgstr "Ikont készítette:"
 
 #: src/ui/dialogs/app_dialog.rs:155 src/ui/dialogs/process_dialog.rs:133
 #: src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:146
@@ -949,149 +955,150 @@ msgstr "Simgeler"
 #: src/ui/pages/processes/mod.rs:1224 src/ui/pages/processes/mod.rs:1291
 #: src/ui/pages/processes/mod.rs:1358 src/ui/pages/processes/mod.rs:1425
 #: src/ui/pages/processes/mod.rs:1911 src/ui/pages/processes/mod.rs:1913
-#: src/utils/battery.rs:149 src/utils/drive.rs:136 src/utils/gpu/mod.rs:277
-#: src/utils/gpu/mod.rs:289 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:243
+#: src/utils/battery.rs:149 src/utils/drive.rs:136 src/utils/gpu/mod.rs:275
+#: src/utils/gpu/mod.rs:287 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:243
 #: src/utils/npu/mod.rs:249
 msgid "N/A"
-msgstr "Bilinmiyor"
+msgstr "N/A"
 
 #: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257
 #: src/ui/pages/cpu.rs:416 src/ui/pages/cpu.rs:420
 msgid "CPU {}"
-msgstr "İşlemci {}"
+msgstr "{}. CPU"
 
 #: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:414
 #: src/ui/pages/drive.rs:424 src/ui/pages/processes/process_entry.rs:211
 msgid "No"
-msgstr "Hayır"
+msgstr "Nem"
 
 #: src/ui/pages/applications/application_entry.rs:191
 #: src/ui/pages/processes/process_entry.rs:212
 msgid "Yes (Flatpak)"
-msgstr "Evet (Flatpak)"
+msgstr "Igen (Flatpak)"
 
 #: src/ui/pages/applications/application_entry.rs:192
 #: src/ui/pages/processes/process_entry.rs:213
 msgid "Yes (Snap)"
-msgstr "Evet (Snap)"
+msgstr "Igen (Snap)"
 
 #: src/ui/pages/applications/mod.rs:660
 msgid "Running Apps: {}"
-msgstr "Çalışan Uygulamalar: {}"
+msgstr "Futó alkalmazások: {}"
 
 #: src/ui/pages/applications/mod.rs:700 src/ui/pages/processes/mod.rs:862
 msgid "Cancel"
-msgstr "İptal"
+msgstr "Mégse"
 
 #: src/ui/pages/applications/mod.rs:746
 msgid "App"
-msgstr "Uygulama"
+msgstr "Alkalmazás"
 
 #: src/ui/pages/applications/mod.rs:1539 src/ui/pages/processes/mod.rs:2073
 msgid "End {}?"
-msgstr "{} sonlandırılsın mı?"
+msgstr "A(z) {} befejezése?"
 
 #: src/ui/pages/applications/mod.rs:1540 src/ui/pages/processes/mod.rs:2074
 msgid "Halt {}?"
-msgstr "{} durdurulsun mu?"
+msgstr "A(z) {} megállítása?"
 
 #: src/ui/pages/applications/mod.rs:1541 src/ui/pages/processes/mod.rs:2075
 msgid "Kill {}?"
-msgstr "{} öldürülsün mü?"
+msgstr "A(z) {} kilövése?"
 
 #: src/ui/pages/applications/mod.rs:1542 src/ui/pages/processes/mod.rs:2076
 msgid "Continue {}?"
-msgstr "{} sürdürülsün mü?"
+msgstr "A(z) {} folytatása?"
 
 #: src/ui/pages/applications/mod.rs:1548 src/ui/pages/processes/mod.rs:2111
 msgid "Unsaved work might be lost."
-msgstr "Kaydedilmemiş çalışmalar kaybolabilir."
+msgstr "A mentetlen munka elveszhet."
 
 #: src/ui/pages/applications/mod.rs:1550
 msgid ""
 "Halting an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
 msgstr ""
-"Uygulamanın durdurulması, veri kaybı ve güvenlik etkileri gibi ciddi "
-"risklere neden olabilir. Dikkatli kullanın."
+"Egy alkalmazás megállítása komoly kockázatokkal járhat, például adatvesztéssel"
+" és biztonsági következményekkel. Használja körültekintően."
 
 #: src/ui/pages/applications/mod.rs:1553
 msgid ""
 "Killing an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
 msgstr ""
-"Uygulamayı öldürmek, veri kaybı ve güvenlik etkileri gibi ciddi risklere "
-"neden olabilir. Dikkatli kullanın."
+"Egy alkalmazás kilövése komoly kockázatokkal járhat, például adatvesztéssel és"
+" biztonsági következményekkel. Használja körültekintően."
 
 #: src/ui/pages/battery.rs:102 src/utils/battery.rs:261
 msgid "Battery"
-msgstr "Pil"
+msgstr "Akkumulátor"
 
 #: src/ui/pages/battery.rs:210
 msgid "Battery Charge"
-msgstr "Pil Doluluk"
+msgstr "Akkumulátortöltés"
 
 #: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:437
 #: src/ui/pages/drive.rs:344 src/ui/pages/drive.rs:375 src/ui/pages/gpu.rs:423
 #: src/ui/pages/network.rs:362 src/ui/pages/network.rs:396
 msgid "Highest:"
-msgstr "En Yüksek:"
+msgstr "Legmagasabb:"
 
 #: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:211
 msgid "Total Usage"
-msgstr "Toplam Kullanım"
+msgstr "Teljes használat"
 
 #: src/ui/pages/cpu.rs:270 src/ui/pages/gpu.rs:238
 msgid "Temperature"
-msgstr "Sıcaklık"
+msgstr "Hőmérséklet"
 
 #: src/ui/pages/drive.rs:126
 msgid "Drive"
-msgstr "Sürücü"
+msgstr "Meghajtó"
 
 #: src/ui/pages/drive.rs:236
 msgid "Drive Activity"
-msgstr "Sürücü Etkinliği"
+msgstr "Meghajtótevékenység"
 
 #: src/ui/pages/drive.rs:243
 msgid "Read Speed"
-msgstr "Okuma Hızı"
+msgstr "Olvasási sebesség"
 
 #: src/ui/pages/drive.rs:247
 msgid "Write Speed"
-msgstr "Yazma Hızı"
+msgstr "Írási sebesség"
 
 #: src/ui/pages/drive.rs:412 src/ui/pages/drive.rs:422
 msgid "Yes"
-msgstr "Evet"
+msgstr "Igen"
 
+# Ezt eredetiben hagyom, mert biztosan panaszkodnának miatta
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
 #: src/ui/pages/drive.rs:440
 msgid "R: {} · W: {}"
-msgstr "O: {} · Y: {}"
+msgstr "O: {} · Í: {}"
 
 #: src/ui/pages/gpu.rs:219
 msgid "Video Encoder/Decoder Usage"
-msgstr "Video Kodlayıcı/Kod Çözücü Kullanımı"
+msgstr "Videókódoló vagy -dekódoló használata"
 
 #: src/ui/pages/gpu.rs:225
 msgid "Video Encoder Usage"
-msgstr "Video Kodlayıcı Kullanımı"
+msgstr "Videókódoló használata"
 
 #: src/ui/pages/gpu.rs:230
 msgid "Video Decoder Usage"
-msgstr "Video Kod Çözücü Kullanımı"
+msgstr "Videódekódoló használata"
 
 #: src/ui/pages/gpu.rs:235
 msgid "Video Memory Usage"
-msgstr "Video Bellek Kullanımı"
+msgstr "Videomemória használata"
 
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
 #: src/ui/pages/gpu.rs:409
 msgid "Memory: {}"
-msgstr "Bellek: {}"
+msgstr "Memória: {}"
 
 #: src/ui/pages/memory.rs:262
 msgid "{} of {}"
@@ -1099,222 +1106,233 @@ msgstr "{} / {}"
 
 #: src/ui/pages/memory.rs:265
 msgid "{} MT/s"
-msgstr "{} MT/s"
+msgstr "{} MT/mp"
 
 #. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
 #. preferably be quite short or an abbreviation
 #: src/ui/pages/memory.rs:346
 msgid "{} / {} · Swap: {} %"
-msgstr "{} / {} · Takas: {} %"
+msgstr "{} / {} · Cserehely: {} %"
 
 #: src/ui/pages/network.rs:127 src/utils/network.rs:135
 msgid "Network Interface"
-msgstr "Ağ Arayüzü"
+msgstr "Hálózati csatoló"
 
 #: src/ui/pages/network.rs:241
 msgid "Receiving"
-msgstr "Alınıyor"
+msgstr "Fogadás"
 
 #: src/ui/pages/network.rs:245
 msgid "Sending"
-msgstr "Gönderiliyor"
+msgstr "Küldés"
 
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
 #: src/ui/pages/network.rs:445
 msgid "R: {} · S: {}"
-msgstr "A: {} · G: {}"
+msgstr "F: {} · K: {}"
 
 #: src/ui/pages/processes/mod.rs:813
 msgid "Running Processes: {}"
-msgstr "Çalışan Süreçler: {}"
+msgstr "Futó folyamatok: {}"
 
 #: src/ui/pages/processes/mod.rs:911
 msgid "Process"
-msgstr "Süreç"
+msgstr "Folyamat"
 
 #: src/ui/pages/processes/mod.rs:2083
 msgid "End process?"
 msgid_plural "End {} processes?"
-msgstr[0] "{} süreç sonlandırılsın mı?"
+msgstr[0] "Befejezi a folyamatot?"
+msgstr[1] "Befejez {} folyamatot?"
 
 #: src/ui/pages/processes/mod.rs:2089
 msgid "Halt process?"
 msgid_plural "Halt {} processes?"
-msgstr[0] "{} süreç duraklatılsın mı?"
+msgstr[0] "Megállítja a folyamatot?"
+msgstr[1] "Megállít {} folyamatot?"
 
 #: src/ui/pages/processes/mod.rs:2095 src/ui/pages/processes/mod.rs:2101
 msgid "Kill process?"
 msgid_plural "Kill {} processes?"
-msgstr[0] "{} süreç öldürülsün mü?"
+msgstr[0] "Kilövi a folyamatot?"
+msgstr[1] "Kilő {} folyamatot?"
 
 #: src/ui/pages/processes/mod.rs:2113
 msgid ""
 "Halting a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
-"Sürecin durdurulması, veri kaybı ve güvenlik etkileri gibi ciddi risklere "
-"neden olabilir. Dikkatli kullanın."
+"Egy folyamat megállítása komoly kockázatokkal járhat, például adatvesztéssel "
+"vagy biztonsági következményekkel. Használja körültekintően."
 
 #: src/ui/pages/processes/mod.rs:2116
 msgid ""
 "Killing a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
 msgstr ""
-"Süreci öldürmek, veri kaybı ve güvenlik etkileri gibi ciddi risklere neden "
-"olabilir. Dikkatli kullanın."
+"Egy folyamat kilövése komoly kockázatokkal járhat, például adatvesztéssel "
+"vagy biztonsági következményekkel. Használja körültekintően."
 
 #: src/ui/window.rs:466
 msgid "GPU {}"
-msgstr "Ekran Kartı {}"
+msgstr "{}. GPU"
 
 #: src/ui/window.rs:496
 msgid "NPU {}"
-msgstr "YZ Çekirdeği {}"
+msgstr "{}. NPU"
 
 #: src/ui/window.rs:498
 msgid "NPU"
-msgstr "YZ Çekirdeği"
+msgstr "NPU"
 
 #: src/ui/window.rs:1167
 msgid "Successfully adjusted {}"
-msgstr "{} başarıyla ayarlandı"
+msgstr "A(z) {} sikeresen módosítva"
 
 #: src/ui/window.rs:1168
 msgid "There was a problem adjusting {}"
-msgstr "{} ayarlanırken sorun oluştu"
+msgstr "Hiba történt a(z) {} módosítása során"
 
 #: src/ui/window.rs:1250
 msgid "Successfully ended {}"
-msgstr "{} sonlandırıldı"
+msgstr "A(z) {} sikeresen befejezve"
 
 #: src/ui/window.rs:1251
 msgid "Successfully halted {}"
-msgstr "{} durduruldu"
+msgstr "A(z) {} sikeresen megállítva"
 
 #: src/ui/window.rs:1252
 msgid "Successfully killed {}"
-msgstr "{} öldürüldü"
+msgstr "A(z) {} sikeresen kilőve"
 
 #: src/ui/window.rs:1253
 msgid "Successfully continued {}"
-msgstr "{} sürdürüldü"
+msgstr "A(z) {} sikeresen folytatva"
 
 #: src/ui/window.rs:1260
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
-msgstr[0] "{} süreç sonlandırıldı"
+msgstr[0] "A folyamat sikeresen befejezve"
+msgstr[1] "{} folyamat sikeresen befejezve"
 
 #: src/ui/window.rs:1266
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
-msgstr[0] "{} süreç durduruldu"
+msgstr[0] "A folyamat sikeresen megállítva"
+msgstr[1] "{} folyamat sikeresen megállítva"
 
 #: src/ui/window.rs:1272
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
-msgstr[0] "{} süreç öldürüldü"
+msgstr[0] "A folyamat sikeresen kilőve"
+msgstr[1] "{} folyamat sikeresen kilőve"
 
 #: src/ui/window.rs:1278
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
-msgstr[0] "{} süreç sürdürüldü"
+msgstr[0] "A folyamat sikeresen folytatva"
+msgstr[1] "{} folyamat sikeresen folytatva"
 
 #: src/ui/window.rs:1289
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
-msgstr[0] "Bir süreci sonlandırmakta sorun vardı"
+msgstr[0] "Hiba történt a folyamat befejezése során"
+msgstr[1] "Hiba történt {} folyamat befejezése során"
 
 #: src/ui/window.rs:1295
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
-msgstr[0] "Bir süreci durdurmakta sorun vardı"
+msgstr[0] "Hiba történt a folyamat megállítása során"
+msgstr[1] "Hiba történt {} folyamat megállítása során"
 
 #: src/ui/window.rs:1301
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
-msgstr[0] "Bir süreci öldürmekte sorun vardı"
+msgstr[0] "Hiba történt a folyamat kilövése során"
+msgstr[1] "Hiba történt {} folyamat kilövése során"
 
 #: src/ui/window.rs:1307
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
-msgstr[0] "Bir süreci sürdürmekte sorun vardı"
+msgstr[0] "Hiba történt a folyamat folytatása során"
+msgstr[1] "Hiba történt {} folyamat folytatása során"
 
 #: src/ui/window.rs:1317
 msgid "There was a problem ending {}"
-msgstr "{} sonlandırmakta sorun vardı"
+msgstr "Hiba történt a(z) {} befejezése során"
 
 #: src/ui/window.rs:1318
 msgid "There was a problem halting {}"
-msgstr "{} durdurmakta sorun vardı"
+msgstr "Hiba történt a(z) {} megállítása során"
 
 #: src/ui/window.rs:1319
 msgid "There was a problem killing {}"
-msgstr "{} sürdürmekte sorun vardı"
+msgstr "Hiba történt a(z) {} kilövése során"
 
 #: src/ui/window.rs:1320
 msgid "There was a problem continuing {}"
-msgstr "{} sürdürmekte sorun vardı"
+msgstr "Hiba történt a(z) {} folytatása során"
 
 #: src/utils/app.rs:219
 msgid "System Processes"
-msgstr "Sistem Süreçleri"
+msgstr "Rendszerfolyamatok"
 
 #: src/utils/battery.rs:90
 msgid "Charging"
-msgstr "Doluyor"
+msgstr "Töltés"
 
 #: src/utils/battery.rs:91
 msgid "Discharging"
-msgstr "Boşalıyor"
+msgstr "Kisülés"
 
 #: src/utils/battery.rs:92
 msgid "Empty"
-msgstr "Boş"
+msgstr "Üres"
 
 #: src/utils/battery.rs:93
 msgid "Full"
-msgstr "Dolu"
+msgstr "Tele"
 
 #: src/utils/battery.rs:94
 msgid "Unknown"
-msgstr "Bilinmiyor"
+msgstr "Ismeretlen"
 
 #: src/utils/battery.rs:140
 msgid "Nickel-Metal Hydride"
-msgstr "Nikel Metal Hidrür"
+msgstr "Nikkel–fém-hidrid"
 
 #: src/utils/battery.rs:141
 msgid "Nickel-Cadmium"
-msgstr "Nikel Kadmiyum"
+msgstr "Nikkel–kadmium"
 
 #: src/utils/battery.rs:142
 msgid "Nickel-Zinc"
-msgstr "Nikel Çinko"
+msgstr "Nikkel–cink"
 
 #: src/utils/battery.rs:143
 msgid "Lead-Acid"
-msgstr "Kurşun Asit"
+msgstr "Ólom-savas"
 
 #: src/utils/battery.rs:144
 msgid "Lithium-Ion"
-msgstr "Lityum İyon"
+msgstr "Lítium ion"
 
 #: src/utils/battery.rs:145
 msgid "Lithium Iron Phosphate"
-msgstr "Lityum Demir Fosfat"
+msgstr "Lítium-vasfoszfát"
 
 #: src/utils/battery.rs:146
 msgid "Lithium Polymer"
-msgstr "Lityum Polimer"
+msgstr "Lítium-polimer"
 
 #: src/utils/battery.rs:148
 msgid "Rechargeable Alkaline Managanese"
-msgstr "Şarj Edilebilir Alkalin Manganez"
+msgstr "Újratölthető alkáli-mangán"
 
 #: src/utils/battery.rs:259
 msgid "{} Battery"
-msgstr "{} Pil"
+msgstr "{} akkumulátor"
 
 #: src/utils/units.rs:91
 msgid "{} K"
@@ -1415,171 +1433,171 @@ msgstr "{} QiB"
 
 #: src/utils/units.rs:198 src/utils/units.rs:215
 msgid "{} B/s"
-msgstr "{} B/s"
+msgstr "{} B/mp"
 
 #: src/utils/units.rs:199
 msgid "{} kB/s"
-msgstr "{} kB/s"
+msgstr "{} kB/mp"
 
 #: src/utils/units.rs:200
 msgid "{} MB/s"
-msgstr "{} MB/s"
+msgstr "{} MB/mp"
 
 #: src/utils/units.rs:201
 msgid "{} GB/s"
-msgstr "{} GB/s"
+msgstr "{} GB/mp"
 
 #: src/utils/units.rs:202
 msgid "{} TB/s"
-msgstr "{} TB/s"
+msgstr "{} TB/mp"
 
 #: src/utils/units.rs:203
 msgid "{} PB/s"
-msgstr "{} PB/s"
+msgstr "{} PB/mp"
 
 #: src/utils/units.rs:204
 msgid "{} EB/s"
-msgstr "{} EB/s"
+msgstr "{} EB/mp"
 
 #: src/utils/units.rs:205
 msgid "{} ZB/s"
-msgstr "{} ZB/s"
+msgstr "{} ZB/mp"
 
 #: src/utils/units.rs:206
 msgid "{} YB/s"
-msgstr "{} YB/s"
+msgstr "{} YB/mp"
 
 #: src/utils/units.rs:207
 msgid "{} RB/s"
-msgstr "{} RB/s"
+msgstr "{} RB/mp"
 
 #: src/utils/units.rs:208
 msgid "{} QB/s"
-msgstr "{} QB/s"
+msgstr "{} QB/mp"
 
 #: src/utils/units.rs:216
 msgid "{} KiB/s"
-msgstr "{} KiB/s"
+msgstr "{} KiB/mp"
 
 #: src/utils/units.rs:217
 msgid "{} MiB/s"
-msgstr "{} MiB/s"
+msgstr "{} MiB/mp"
 
 #: src/utils/units.rs:218
 msgid "{} GiB/s"
-msgstr "{} GiB/s"
+msgstr "{} GiB/mp"
 
 #: src/utils/units.rs:219
 msgid "{} TiB/s"
-msgstr "{} TiB/s"
+msgstr "{} TiB/mp"
 
 #: src/utils/units.rs:220
 msgid "{} PiB/s"
-msgstr "{} PiB/s"
+msgstr "{} PiB/mp"
 
 #: src/utils/units.rs:221
 msgid "{} EiB/s"
-msgstr "{} EiB/s"
+msgstr "{} EiB/mp"
 
 #: src/utils/units.rs:222
 msgid "{} ZiB/s"
-msgstr "{} ZiB/s"
+msgstr "{} ZiB/mp"
 
 #: src/utils/units.rs:223
 msgid "{} YiB/s"
-msgstr "{} YiB/s"
+msgstr "{} YiB/mp"
 
 #: src/utils/units.rs:224
 msgid "{} RiB/s"
-msgstr "{} RiB/s"
+msgstr "{} RiB/mp"
 
 #: src/utils/units.rs:225
 msgid "{} QiB/s"
-msgstr "{} QiB/s"
+msgstr "{} QiB/mp"
 
 #: src/utils/units.rs:239 src/utils/units.rs:256
 msgid "{} b/s"
-msgstr "{} b/s"
+msgstr "{} b/mp"
 
 #: src/utils/units.rs:240
 msgid "{} kb/s"
-msgstr "{} kb/s"
+msgstr "{} kb/mp"
 
 #: src/utils/units.rs:241
 msgid "{} Mb/s"
-msgstr "{} Mb/s"
+msgstr "{} Mb/mp"
 
 #: src/utils/units.rs:242
 msgid "{} Gb/s"
-msgstr "{} Gb/s"
+msgstr "{} Gb/mp"
 
 #: src/utils/units.rs:243
 msgid "{} Tb/s"
-msgstr "{} Tb/s"
+msgstr "{} Tb/mp"
 
 #: src/utils/units.rs:244
 msgid "{} Pb/s"
-msgstr "{} Pb/s"
+msgstr "{} Pb/mp"
 
 #: src/utils/units.rs:245
 msgid "{} Eb/s"
-msgstr "{} Eb/s"
+msgstr "{} Eb/mp"
 
 #: src/utils/units.rs:246
 msgid "{} Zb/s"
-msgstr "{} Zb/s"
+msgstr "{} Zb/mp"
 
 #: src/utils/units.rs:247
 msgid "{} Yb/s"
-msgstr "{} Yb/s"
+msgstr "{} Yb/mp"
 
 #: src/utils/units.rs:248
 msgid "{} Rb/s"
-msgstr "{} Rb/s"
+msgstr "{} Rb/mp"
 
 #: src/utils/units.rs:249
 msgid "{} Qb/s"
-msgstr "{} Qb/s"
+msgstr "{} Qb/mp"
 
 #: src/utils/units.rs:257
 msgid "{} Kib/s"
-msgstr "{} Kib/s"
+msgstr "{} Kib/mp"
 
 #: src/utils/units.rs:258
 msgid "{} Mib/s"
-msgstr "{} Mib/s"
+msgstr "{} Mib/mp"
 
 #: src/utils/units.rs:259
 msgid "{} Gib/s"
-msgstr "{} Gib/s"
+msgstr "{} Gib/mp"
 
 #: src/utils/units.rs:260
 msgid "{} Tib/s"
-msgstr "{} Tib/s"
+msgstr "{} Tib/mp"
 
 #: src/utils/units.rs:261
 msgid "{} Pib/s"
-msgstr "{} Pib/s"
+msgstr "{} Pib/mp"
 
 #: src/utils/units.rs:262
 msgid "{} Eib/s"
-msgstr "{} Eib/s"
+msgstr "{} Eib/mp"
 
 #: src/utils/units.rs:263
 msgid "{} Zib/s"
-msgstr "{} Zib/s"
+msgstr "{} Zib/mp"
 
 #: src/utils/units.rs:264
 msgid "{} Yib/s"
-msgstr "{} Yib/s"
+msgstr "{} Yib/mp"
 
 #: src/utils/units.rs:265
 msgid "{} Rib/s"
-msgstr "{} Rib/s"
+msgstr "{} Rib/mp"
 
 #: src/utils/units.rs:266
 msgid "{} Qib/s"
-msgstr "{} Qib/s"
+msgstr "{} Qib/mp"
 
 #: src/utils/units.rs:273
 msgid "{} Hz"
@@ -1715,63 +1733,63 @@ msgstr "{} QWh"
 
 #: src/utils/drive.rs:128 src/utils/drive.rs:207
 msgid "CD/DVD/Blu-ray Drive"
-msgstr "CD/DVD/Blu-ray Sürücü"
+msgstr "CD/DVD/Blu-ray-meghajtó"
 
 #: src/utils/drive.rs:129
 msgid "eMMC Storage"
-msgstr "eMMC Depolama"
+msgstr "eMMC-tároló"
 
 #: src/utils/drive.rs:130
 msgid "Flash Storage"
-msgstr "Flash Depolama"
+msgstr "Flash-tároló"
 
 #: src/utils/drive.rs:131 src/utils/drive.rs:208
 msgid "Floppy Drive"
-msgstr "Disket Sürücü"
+msgstr "Floppy-meghajtó"
 
 #: src/utils/drive.rs:132
 msgid "Hard Disk Drive"
-msgstr "Sabit Disk Sürücüsü"
+msgstr "Merevlemez-meghajtó"
 
 #: src/utils/drive.rs:133
 msgid "Loop Device"
-msgstr "Döngü Aygıtı"
+msgstr "Hurokeszköz"
 
 #: src/utils/drive.rs:134
 msgid "Mapped Device"
-msgstr "Eşlenen Aygıt"
+msgstr "Leképezett eszköz"
 
 #: src/utils/drive.rs:135
 msgid "NVMe Drive"
-msgstr "NVMe Sürücü"
+msgstr "NVMe-meghajtó"
 
 #: src/utils/drive.rs:137
 msgid "Software Raid"
-msgstr "Yazılım Raid"
+msgstr "Szoftveres RAID"
 
 #: src/utils/drive.rs:138
 msgid "RAM Disk"
-msgstr "RAM Disk"
+msgstr "RAM-lemez"
 
 #: src/utils/drive.rs:139
 msgid "Solid State Drive"
-msgstr "Katı Hal Sürücüsü"
+msgstr "Szilárdtest-meghajtó"
 
 #: src/utils/drive.rs:140
 msgid "ZFS Volume"
-msgstr "ZFS Birimi"
+msgstr "ZFS-kötet"
 
 #: src/utils/drive.rs:141
 msgid "Compressed RAM Disk (zram)"
-msgstr "Sıkıştırılmış RAM Disk (zram)"
+msgstr "Tömörített RAM-lemez (zram)"
 
 #: src/utils/drive.rs:209
 msgid "{} Loop Device"
-msgstr "{} Döngü Aygıtı"
+msgstr "{} hurokeszköz"
 
 #: src/utils/drive.rs:210
 msgid "{} Mapped Device"
-msgstr "{} Eşleşen Aygıt"
+msgstr "{} leképezett eszköz"
 
 #: src/utils/drive.rs:211
 msgid "{} RAID"
@@ -1779,64 +1797,64 @@ msgstr "{} RAID"
 
 #: src/utils/drive.rs:212
 msgid "{} RAM Disk"
-msgstr "{} RAM Disk"
+msgstr "{} RAM-lemez"
 
 #: src/utils/drive.rs:213
 msgid "{} zram Device"
-msgstr "{} zram Aygıtı"
+msgstr "{} zram-eszköz"
 
 #: src/utils/drive.rs:214
 msgid "{} ZFS Volume"
-msgstr "{} ZFS Birimi"
+msgstr "{} ZFS-kötet"
 
 #: src/utils/drive.rs:215
 msgid "{} Drive"
-msgstr "{} Sürücü"
+msgstr "{} meghajtó"
 
 #: src/utils/network.rs:123
 msgid "Bluetooth Tether"
-msgstr "Bluetooth Bağlantısı"
+msgstr "Bluetooth-alapú hálózatmegosztás"
 
 #: src/utils/network.rs:124
 msgid "Network Bridge"
-msgstr "Ağ Köprüsü"
+msgstr "Hálózati híd"
 
 #: src/utils/network.rs:125
 msgid "Ethernet Connection"
-msgstr "Kablolu Bağlantı"
+msgstr "Ethernet-kapcsolat"
 
 #: src/utils/network.rs:126
 msgid "Docker Bridge"
-msgstr "Docker Köprüsü"
+msgstr "Docker-híd"
 
 #: src/utils/network.rs:127
 msgid "InfiniBand Connection"
-msgstr "InfiniBand Bağlantısı"
+msgstr "InfiniBand-kapcsolat"
 
 #: src/utils/network.rs:128
 msgid "Serial Line IP Connection"
-msgstr "Seri Hat IP Bağlantısı"
+msgstr "Soros vonali IP-kapcsolat"
 
 #: src/utils/network.rs:129
 msgid "Virtual Ethernet Device"
-msgstr "Sanal Kablolu Ağ Aygıtı"
+msgstr "Virtuális Ethernet-eszköz"
 
 #: src/utils/network.rs:130
 msgid "VM Network Bridge"
-msgstr "VM Ağ Köprüsü"
+msgstr "VM hálózati híd"
 
 #: src/utils/network.rs:131
 msgid "VPN Tunnel"
-msgstr "VPN Tüneli"
+msgstr "VPN-alagút"
 
 #: src/utils/network.rs:132
 msgid "VPN Tunnel (WireGuard)"
-msgstr "VPN Tüneli (WireGuard)"
+msgstr "VPN-alagút (WireGuard)"
 
 #: src/utils/network.rs:133
 msgid "Wi-Fi Connection"
-msgstr "Kablosuz Bağlantı"
+msgstr "Wi-Fi-kapcsolat"
 
 #: src/utils/network.rs:134
 msgid "WWAN Connection"
-msgstr "WWAN Bağlantısı"
+msgstr "WWAN-kapcsolat"

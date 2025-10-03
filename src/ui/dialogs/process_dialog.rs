@@ -95,7 +95,9 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResProcessDialog(ObjectSubclass<imp::ResProcessDialog>)
-        @extends gtk::Widget, adw::Dialog;
+        @extends gtk::Widget, adw::Dialog, gtk::Window,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible, gtk::ShortcutManager, gtk::Root,
+        gtk::Native;
 }
 
 impl Default for ResProcessDialog {

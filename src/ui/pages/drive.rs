@@ -186,7 +186,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResDrive(ObjectSubclass<imp::ResDrive>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResDrive {

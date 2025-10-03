@@ -150,7 +150,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResApplicationNameCell(ObjectSubclass<imp::ResApplicationNameCell>)
-        @extends gtk::Widget, gtk::Box;
+        @extends gtk::Widget, gtk::Box,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResApplicationNameCell {

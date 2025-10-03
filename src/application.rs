@@ -91,6 +91,13 @@ impl Application {
         self.imp().window.get().unwrap().upgrade().unwrap()
     }
 
+    pub fn try_main_window(&self) -> Option<MainWindow> {
+        self.imp()
+            .window
+            .get()
+            .and_then(adw::glib::WeakRef::upgrade)
+    }
+
     fn setup_gactions(&self) {
         // Quit
         let action_quit = gio::SimpleAction::new("quit", None);
@@ -248,7 +255,7 @@ impl Application {
 
         settings.init();
 
-        settings.present(Some(&self.main_window()));
+        AdwDialogExt::present(&settings, Some(&self.main_window()));
         imp.settings_window_opened.set(true);
 
         settings.connect_closed(clone!(
@@ -309,6 +316,10 @@ impl Application {
         }
 
         ApplicationExtManual::run_with_args::<&str>(self, &[]);
+    }
+
+    pub fn try_default() -> Option<Self> {
+        gio::Application::default().and_then(|app| app.downcast().ok())
     }
 }
 

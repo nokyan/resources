@@ -206,7 +206,8 @@ mod imp {
 glib::wrapper! {
     pub struct MainWindow(ObjectSubclass<imp::MainWindow>)
         @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow, adw::ApplicationWindow,
-        @implements gio::ActionMap, gio::ActionGroup, gtk::Root;
+        @implements gio::ActionMap, gio::ActionGroup, gtk::Root, gtk::Buildable, gtk::ConstraintTarget, gtk::Native,
+        gtk::ShortcutManager, gtk::Accessible;
 }
 
 struct RefreshData {
@@ -366,12 +367,25 @@ impl MainWindow {
             imp,
             move |_, key, _, _| {
                 if key == gdk::Key::Control_L {
-                    debug!("Ctrl has been released, continuing apps and processes updates");
+                    debug!("Ctrl has been released, resuming apps and processes updates");
                     imp.pause_updates.set(false);
                 };
             }
         ));
         self.add_controller(event_controller);
+
+        self.connect_suspended_notify(clone!(
+            #[weak]
+            imp,
+            move |window| {
+                imp.pause_updates.set(window.is_suspended());
+                if window.is_suspended() {
+                    debug!("Resources has been suspended, halting graphical updates")
+                } else {
+                    debug!("Resources is not suspended anymore, resuming graphical updates")
+                }
+            }
+        ));
     }
 
     fn get_selected_page(&self) -> Option<Widget> {
@@ -549,6 +563,7 @@ impl MainWindow {
             NetworkInterface::get_sysfs_paths().unwrap_or_default()
         };
         let mut network_data = Vec::with_capacity(network_paths.len());
+
         for path in &network_paths {
             network_data.push(NetworkData::new(path));
         }

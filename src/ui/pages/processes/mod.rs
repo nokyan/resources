@@ -355,7 +355,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResProcesses(ObjectSubclass<imp::ResProcesses>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResProcesses {
@@ -664,7 +665,7 @@ impl ResProcesses {
             }
         ));
 
-        dialog.present(Some(&MainWindow::default()));
+        adw::prelude::AdwDialogExt::present(&dialog, Some(&MainWindow::default()));
 
         *imp.open_options_dialog.borrow_mut() = Some((process.pid(), dialog));
     }
@@ -690,7 +691,7 @@ impl ResProcesses {
             }
         ));
 
-        dialog.present(Some(&MainWindow::default()));
+        AdwDialogExt::present(&dialog, Some(&MainWindow::default()));
 
         *imp.open_info_dialog.borrow_mut() = Some((process.pid(), dialog));
     }
@@ -769,13 +770,13 @@ impl ResProcesses {
                 // filter out processes that have existed before but don't anymore
                 if let Some((dialog_pid, dialog)) = &*info_dialog_opt {
                     if *dialog_pid == item_pid {
-                        dialog.close();
+                        AdwDialogExt::close(dialog);
                         *info_dialog_opt = None;
                     }
                 }
                 if let Some((dialog_pid, dialog)) = &*options_dialog_opt {
                     if *dialog_pid == item_pid {
-                        dialog.close();
+                        AdwDialogExt::close(dialog);
                         *options_dialog_opt = None;
                     }
                 }
@@ -1087,6 +1088,7 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1145,6 +1147,7 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(7);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1210,6 +1213,7 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(11);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1276,6 +1280,7 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1342,6 +1347,7 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(11);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1408,6 +1414,7 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1471,6 +1478,7 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(7);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1531,6 +1539,7 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(7);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1591,6 +1600,7 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(7);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -1651,6 +1661,7 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
                 item.property_expression("item")
@@ -1952,6 +1963,7 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
@@ -2012,6 +2024,7 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
 
                 item.set_child(Some(&row));
 
