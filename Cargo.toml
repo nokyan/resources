@@ -18,15 +18,15 @@ opt-level = 3
 
 [dependencies]
 adw = { version = "0.8.0", features = ["v1_7"], package = "libadwaita" }
-anyhow = { version = "1.0.99", features = ["backtrace"] }
+anyhow = { version = "1.0.100", features = ["backtrace"] }
 async-channel = "2.5.0"
-clap = { version = "4.5.46", features = ["derive"] }
+clap = { version = "4.5.48", features = ["derive"] }
 gettext-rs = { version = "0.7.2", features = ["gettext-system"] }
 glob = "0.3.3"
-gtk = { version = "0.10.0", features = ["v4_12"], package = "gtk4" }
+gtk = { version = "0.10.1", features = ["v4_12"], package = "gtk4" }
 lazy-regex = "3.4.1"
-libc = { version = "0.2.175", features = ["extra_traits"] }
-log = "0.4.27"
+libc = { version = "0.2.176", features = ["extra_traits"] }
+log = "0.4.28"
 neli-wifi = { version = "0.6.1", features = ["default"] }
 nix = { version = "0.30.0", default-features = false, features = [
     "signal",
