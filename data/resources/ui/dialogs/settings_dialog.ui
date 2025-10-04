@@ -295,6 +295,11 @@
                 <property name="title" translatable="yes">Combined Memory</property>
               </object>
             </child>
+            <child>
+              <object class="AdwSwitchRow" id="processes_show_commandline_row">
+                <property name="title" translatable="yes">Commandline</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>

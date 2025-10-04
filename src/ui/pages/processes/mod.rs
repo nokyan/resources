@@ -465,6 +465,7 @@ impl ResProcesses {
         columns.push(self.add_priority_column(&column_view));
         columns.push(self.add_swap_column(&column_view));
         columns.push(self.add_combined_memory_column(&column_view));
+        columns.push(self.add_commandline_column(&column_view));
 
         let store = gio::ListStore::new::<ProcessEntry>();
 
@@ -2065,6 +2066,63 @@ impl ResProcesses {
         ));
 
         combined_memory_col
+    }
+
+    fn add_commandline_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+        let commandline_col_factory = gtk::SignalListItemFactory::new();
+
+        let commandline_col = gtk::ColumnViewColumn::new(
+            Some(&i18n("Commandline")),
+            Some(commandline_col_factory.clone()),
+        );
+
+        commandline_col.set_resizable(true);
+
+        commandline_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(32);
+
+                item.set_child(Some(&row));
+
+                item.property_expression("item")
+                    .chain_property::<ProcessEntry>("commandline")
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        commandline_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
+        });
+
+        let commandline_col_sorter = StringSorter::builder()
+            .ignore_case(true)
+            .expression(gtk::PropertyExpression::new(
+                ProcessEntry::static_type(),
+                None::<&gtk::Expression>,
+                "commandline",
+            ))
+            .build();
+
+        commandline_col.set_sorter(Some(&commandline_col_sorter));
+        commandline_col.set_visible(SETTINGS.processes_show_commandline());
+
+        column_view.append_column(&commandline_col);
+
+        SETTINGS.connect_processes_show_commandline(clone!(
+            #[weak]
+            commandline_col,
+            move |visible| commandline_col.set_visible(visible)
+        ));
+
+        commandline_col
     }
 }
 

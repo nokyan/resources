@@ -101,6 +101,8 @@ mod imp {
         pub processes_show_swap_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub processes_show_combined_memory_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub processes_show_commandline_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub show_virtual_drives_row: TemplateChild<adw::SwitchRow>,
@@ -254,6 +256,8 @@ impl ResSettingsDialog {
             .set_active(SETTINGS.processes_show_swap());
         imp.processes_show_combined_memory_row
             .set_active(SETTINGS.processes_show_combined_memory());
+        imp.processes_show_commandline_row
+            .set_active(SETTINGS.processes_show_commandline());
 
         imp.show_virtual_drives_row
             .set_active(SETTINGS.show_virtual_drives());
@@ -472,6 +476,11 @@ impl ResSettingsDialog {
         imp.processes_show_combined_memory_row
             .connect_active_notify(|switch_row| {
                 let _ = SETTINGS.set_processes_show_combined_memory(switch_row.is_active());
+            });
+
+        imp.processes_show_commandline_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_processes_show_commandline(switch_row.is_active());
             });
 
         imp.show_virtual_drives_row
