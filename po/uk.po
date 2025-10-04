@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2025-09-01 03:35+0000\n"
-"PO-Revision-Date: 2025-09-01 16:12+0300\n"
+"POT-Creation-Date: 2025-10-04 03:35+0000\n"
+"PO-Revision-Date: 2025-10-04 17:54+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -74,7 +74,7 @@ msgstr "Оперативна пам'ять"
 #: data/resources/ui/dialogs/process_dialog.ui:118
 #: data/resources/ui/dialogs/settings_dialog.ui:158
 #: data/resources/ui/dialogs/settings_dialog.ui:250
-#: src/ui/pages/applications/mod.rs:1181 src/ui/pages/gpu.rs:118
+#: src/ui/pages/applications/mod.rs:1181 src/ui/pages/gpu.rs:119
 #: src/ui/pages/processes/mod.rs:1469 src/ui/window.rs:468
 msgid "GPU"
 msgstr "Відеокарта"
@@ -753,7 +753,6 @@ msgid "Hardware Address"
 msgstr "Апаратна адреса"
 
 #: data/resources/ui/pages/network.ui:94
-#| msgid "Network Bridge"
 msgid "Network Name"
 msgstr "Назва мережі"
 
@@ -823,25 +822,31 @@ msgstr "Показати налаштування процесу"
 msgid "Show Process Information"
 msgstr "Показати інформацію про процес"
 
-#: data/resources/ui/shortcuts.ui:11
+#: data/resources/ui/shortcuts.ui:6
 msgctxt "shortcut window"
 msgid "General"
 msgstr "Загальні"
 
-#: data/resources/ui/shortcuts.ui:14
+#: data/resources/ui/shortcuts.ui:9
 msgctxt "shortcut window"
 msgid "Preferences"
 msgstr "Налаштування"
 
-#: data/resources/ui/shortcuts.ui:20
+#: data/resources/ui/shortcuts.ui:15
 msgctxt "shortcut window"
 msgid "Show Shortcuts"
 msgstr "Показати клавіатурні скорочення"
 
-#: data/resources/ui/shortcuts.ui:26
+#: data/resources/ui/shortcuts.ui:21
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
+
+#: data/resources/ui/shortcuts.ui:29
+#| msgid "Processes"
+msgctxt "shortcut window"
+msgid "Apps/Processes"
+msgstr "Програми/Процеси"
 
 #: data/resources/ui/shortcuts.ui:32
 msgctxt "shortcut window"
@@ -926,42 +931,41 @@ msgstr "Піктограму зробив"
 #: src/ui/pages/battery.rs:234 src/ui/pages/battery.rs:265
 #: src/ui/pages/battery.rs:289 src/ui/pages/battery.rs:291
 #: src/ui/pages/battery.rs:301 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258
-#: src/ui/pages/cpu.rs:277 src/ui/pages/cpu.rs:283 src/ui/pages/cpu.rs:289
-#: src/ui/pages/cpu.rs:295 src/ui/pages/cpu.rs:299 src/ui/pages/cpu.rs:302
-#: src/ui/pages/cpu.rs:340 src/ui/pages/cpu.rs:447 src/ui/pages/drive.rs:319
+#: src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:290
+#: src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303
+#: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:319
 #: src/ui/pages/drive.rs:350 src/ui/pages/drive.rs:352
 #: src/ui/pages/drive.rs:381 src/ui/pages/drive.rs:383
 #: src/ui/pages/drive.rs:399 src/ui/pages/drive.rs:400
 #: src/ui/pages/drive.rs:407 src/ui/pages/drive.rs:417
-#: src/ui/pages/drive.rs:427 src/ui/pages/drive.rs:433 src/ui/pages/gpu.rs:244
-#: src/ui/pages/gpu.rs:251 src/ui/pages/gpu.rs:296 src/ui/pages/gpu.rs:321
-#: src/ui/pages/gpu.rs:324 src/ui/pages/gpu.rs:335 src/ui/pages/gpu.rs:355
-#: src/ui/pages/gpu.rs:367 src/ui/pages/gpu.rs:378 src/ui/pages/gpu.rs:390
-#: src/ui/pages/gpu.rs:397 src/ui/pages/gpu.rs:401 src/ui/pages/gpu.rs:431
-#: src/ui/pages/gpu.rs:437 src/ui/pages/memory.rs:227
-#: src/ui/pages/memory.rs:228 src/ui/pages/memory.rs:232
-#: src/ui/pages/memory.rs:233 src/ui/pages/memory.rs:237
-#: src/ui/pages/memory.rs:238 src/ui/pages/memory.rs:266
-#: src/ui/pages/memory.rs:327 src/ui/pages/network.rs:252
-#: src/ui/pages/network.rs:259 src/ui/pages/network.rs:266
-#: src/ui/pages/network.rs:272 src/ui/pages/network.rs:275
-#: src/ui/pages/network.rs:285 src/ui/pages/network.rs:292
-#: src/ui/pages/network.rs:302 src/ui/pages/network.rs:370
-#: src/ui/pages/network.rs:373 src/ui/pages/network.rs:375
-#: src/ui/pages/network.rs:404 src/ui/pages/network.rs:407
-#: src/ui/pages/network.rs:409 src/ui/pages/network.rs:417
-#: src/ui/pages/network.rs:424 src/ui/pages/network.rs:434
-#: src/ui/pages/processes/mod.rs:1224 src/ui/pages/processes/mod.rs:1291
-#: src/ui/pages/processes/mod.rs:1358 src/ui/pages/processes/mod.rs:1425
-#: src/ui/pages/processes/mod.rs:1911 src/ui/pages/processes/mod.rs:1913
-#: src/utils/battery.rs:149 src/utils/drive.rs:136 src/utils/gpu/mod.rs:275
-#: src/utils/gpu/mod.rs:287 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:243
-#: src/utils/npu/mod.rs:249
+#: src/ui/pages/drive.rs:427 src/ui/pages/drive.rs:433 src/ui/pages/gpu.rs:245
+#: src/ui/pages/gpu.rs:252 src/ui/pages/gpu.rs:297 src/ui/pages/gpu.rs:322
+#: src/ui/pages/gpu.rs:325 src/ui/pages/gpu.rs:336 src/ui/pages/gpu.rs:377
+#: src/ui/pages/gpu.rs:384 src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:403
+#: src/ui/pages/gpu.rs:407 src/ui/pages/gpu.rs:437 src/ui/pages/gpu.rs:443
+#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228
+#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233
+#: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:238
+#: src/ui/pages/memory.rs:266 src/ui/pages/memory.rs:327
+#: src/ui/pages/network.rs:252 src/ui/pages/network.rs:259
+#: src/ui/pages/network.rs:266 src/ui/pages/network.rs:272
+#: src/ui/pages/network.rs:275 src/ui/pages/network.rs:285
+#: src/ui/pages/network.rs:292 src/ui/pages/network.rs:302
+#: src/ui/pages/network.rs:370 src/ui/pages/network.rs:373
+#: src/ui/pages/network.rs:375 src/ui/pages/network.rs:404
+#: src/ui/pages/network.rs:407 src/ui/pages/network.rs:409
+#: src/ui/pages/network.rs:417 src/ui/pages/network.rs:424
+#: src/ui/pages/network.rs:434 src/ui/pages/processes/mod.rs:1224
+#: src/ui/pages/processes/mod.rs:1291 src/ui/pages/processes/mod.rs:1358
+#: src/ui/pages/processes/mod.rs:1425 src/ui/pages/processes/mod.rs:1911
+#: src/ui/pages/processes/mod.rs:1913 src/utils/battery.rs:152
+#: src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291
+#: src/utils/link/mod.rs:61 src/utils/npu/mod.rs:244 src/utils/npu/mod.rs:250
 msgid "N/A"
 msgstr "Невідомо"
 
 #: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257
-#: src/ui/pages/cpu.rs:416 src/ui/pages/cpu.rs:420
+#: src/ui/pages/cpu.rs:417 src/ui/pages/cpu.rs:421
 msgid "CPU {}"
 msgstr "Процесор {}"
 
@@ -1028,7 +1032,7 @@ msgstr ""
 "Знищення додатку може призвести до серйозних ризиків, такі як: втрата даних "
 "і проблеми з безпекою. Продовжуйте на свій власний ризик."
 
-#: src/ui/pages/battery.rs:102 src/utils/battery.rs:261
+#: src/ui/pages/battery.rs:102 src/utils/battery.rs:258
 msgid "Battery"
 msgstr "Акумулятор"
 
@@ -1036,17 +1040,17 @@ msgstr "Акумулятор"
 msgid "Battery Charge"
 msgstr "Заряд акумулятора"
 
-#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:437
-#: src/ui/pages/drive.rs:344 src/ui/pages/drive.rs:375 src/ui/pages/gpu.rs:423
+#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:438
+#: src/ui/pages/drive.rs:344 src/ui/pages/drive.rs:375 src/ui/pages/gpu.rs:429
 #: src/ui/pages/network.rs:362 src/ui/pages/network.rs:396
 msgid "Highest:"
 msgstr "Пікове навантаження:"
 
-#: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:211
+#: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:212
 msgid "Total Usage"
 msgstr "Загальне використання"
 
-#: src/ui/pages/cpu.rs:270 src/ui/pages/gpu.rs:238
+#: src/ui/pages/cpu.rs:271 src/ui/pages/gpu.rs:239
 msgid "Temperature"
 msgstr "Температура"
 
@@ -1076,25 +1080,25 @@ msgstr "Так"
 msgid "R: {} · W: {}"
 msgstr "Чит.: {} · Зап.: {}"
 
-#: src/ui/pages/gpu.rs:219
+#: src/ui/pages/gpu.rs:220
 msgid "Video Encoder/Decoder Usage"
 msgstr "Використання відео кодувальника/декодувальника"
 
-#: src/ui/pages/gpu.rs:225
+#: src/ui/pages/gpu.rs:226
 msgid "Video Encoder Usage"
 msgstr "Використання кодувальника"
 
-#: src/ui/pages/gpu.rs:230
+#: src/ui/pages/gpu.rs:231
 msgid "Video Decoder Usage"
 msgstr "Використання декодувальника"
 
-#: src/ui/pages/gpu.rs:235
+#: src/ui/pages/gpu.rs:236
 msgid "Video Memory Usage"
 msgstr "Використання відеопам'яті"
 
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
-#: src/ui/pages/gpu.rs:409
+#: src/ui/pages/gpu.rs:415
 msgid "Memory: {}"
 msgstr "Пам'ять: {}"
 
@@ -1187,59 +1191,59 @@ msgstr "Мережевий процесор {}"
 msgid "NPU"
 msgstr "Мережевий процесор"
 
-#: src/ui/window.rs:1167
+#: src/ui/window.rs:1174
 msgid "Successfully adjusted {}"
 msgstr "Успішно відкориговано {}"
 
-#: src/ui/window.rs:1168
+#: src/ui/window.rs:1175
 msgid "There was a problem adjusting {}"
 msgstr "Виникли проблема при коригуванні {}"
 
-#: src/ui/window.rs:1250
+#: src/ui/window.rs:1257
 msgid "Successfully ended {}"
 msgstr "Успішно завершено {}"
 
-#: src/ui/window.rs:1251
+#: src/ui/window.rs:1258
 msgid "Successfully halted {}"
 msgstr "Успішно зупинено {}"
 
-#: src/ui/window.rs:1252
+#: src/ui/window.rs:1259
 msgid "Successfully killed {}"
 msgstr "Успішно знищено {}"
 
-#: src/ui/window.rs:1253
+#: src/ui/window.rs:1260
 msgid "Successfully continued {}"
 msgstr "Успішно продовжено {}"
 
-#: src/ui/window.rs:1260
+#: src/ui/window.rs:1267
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
 msgstr[0] "Успішно завершено {} процес"
 msgstr[1] "Успішно завершено {} процеси"
 msgstr[2] "Успішно завершено {} процесів"
 
-#: src/ui/window.rs:1266
+#: src/ui/window.rs:1273
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
 msgstr[0] "Успішно зупинено {} процес"
 msgstr[1] "Успішно зупинено {} процеси"
 msgstr[2] "Успішно зупинено {} процесів"
 
-#: src/ui/window.rs:1272
+#: src/ui/window.rs:1279
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
 msgstr[0] "Успішно знищено {} процес"
 msgstr[1] "Успішно знищено {} процеси"
 msgstr[2] "Успішно знищено {} процесів"
 
-#: src/ui/window.rs:1278
+#: src/ui/window.rs:1285
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
 msgstr[0] "Успішно продовжено {} процес"
 msgstr[1] "Успішно продовжено {} процеси"
 msgstr[2] "Успішно продовжено {} процесів"
 
-#: src/ui/window.rs:1289
+#: src/ui/window.rs:1296
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] ""
@@ -1248,100 +1252,100 @@ msgstr[0] ""
 msgstr[1] "Виникли проблеми при завершені {} процесів"
 msgstr[2] "Виникли проблеми при завершені {} процесів"
 
-#: src/ui/window.rs:1295
+#: src/ui/window.rs:1302
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "Виникли проблеми при зупинці {} процесу"
 msgstr[1] "Виникли проблеми при зупинці {} процесів"
 msgstr[2] "Виникли проблеми при зупинці {} процесів"
 
-#: src/ui/window.rs:1301
+#: src/ui/window.rs:1308
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "Виникли проблеми при знищенні {} процесу"
 msgstr[1] "Виникли проблеми при знищенні {} процесів"
 msgstr[2] "Виникли проблеми при знищенні {} процесів"
 
-#: src/ui/window.rs:1307
+#: src/ui/window.rs:1314
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "Виникли проблеми при продовженні {} процесу"
 msgstr[1] "Виникли проблеми при продовженні {} процесів"
 msgstr[2] "Виникли проблеми при продовженні {} процесів"
 
-#: src/ui/window.rs:1317
+#: src/ui/window.rs:1324
 msgid "There was a problem ending {}"
 msgstr "Виникли проблема при продовженні {}"
 
-#: src/ui/window.rs:1318
+#: src/ui/window.rs:1325
 msgid "There was a problem halting {}"
 msgstr "Виникли проблема при зупинці {}"
 
-#: src/ui/window.rs:1319
+#: src/ui/window.rs:1326
 msgid "There was a problem killing {}"
 msgstr "Сталася проблема при знищенні {}"
 
-#: src/ui/window.rs:1320
+#: src/ui/window.rs:1327
 msgid "There was a problem continuing {}"
 msgstr "Сталася проблема при продовженні {}"
 
-#: src/utils/app.rs:219
+#: src/utils/app.rs:222
 msgid "System Processes"
 msgstr "Системні процеси"
 
-#: src/utils/battery.rs:90
+#: src/utils/battery.rs:93
 msgid "Charging"
 msgstr "Заряджається"
 
-#: src/utils/battery.rs:91
+#: src/utils/battery.rs:94
 msgid "Discharging"
 msgstr "Розряджається"
 
-#: src/utils/battery.rs:92
+#: src/utils/battery.rs:95
 msgid "Empty"
 msgstr "Порожня"
 
-#: src/utils/battery.rs:93
+#: src/utils/battery.rs:96
 msgid "Full"
 msgstr "Повна"
 
-#: src/utils/battery.rs:94
+#: src/utils/battery.rs:97
 msgid "Unknown"
 msgstr "Невідомо"
 
-#: src/utils/battery.rs:140
+#: src/utils/battery.rs:143
 msgid "Nickel-Metal Hydride"
 msgstr "Нікель-металевий гідрид"
 
-#: src/utils/battery.rs:141
+#: src/utils/battery.rs:144
 msgid "Nickel-Cadmium"
 msgstr "Нікель-кадмій"
 
-#: src/utils/battery.rs:142
+#: src/utils/battery.rs:145
 msgid "Nickel-Zinc"
 msgstr "Нікель-цинк"
 
-#: src/utils/battery.rs:143
+#: src/utils/battery.rs:146
 msgid "Lead-Acid"
 msgstr "Свинець"
 
-#: src/utils/battery.rs:144
+#: src/utils/battery.rs:147
 msgid "Lithium-Ion"
 msgstr "Літій-іон"
 
-#: src/utils/battery.rs:145
+#: src/utils/battery.rs:148
 msgid "Lithium Iron Phosphate"
 msgstr "Літієвий залізний фосфат"
 
-#: src/utils/battery.rs:146
+#: src/utils/battery.rs:149
 msgid "Lithium Polymer"
 msgstr "Літій полімер"
 
-#: src/utils/battery.rs:148
+#: src/utils/battery.rs:151
 msgid "Rechargeable Alkaline Managanese"
 msgstr "Акумуляторний лужний марганець"
 
-#: src/utils/battery.rs:259
+#: src/utils/battery.rs:256
 msgid "{} Battery"
 msgstr "{} акумулятор"
 
@@ -1742,83 +1746,83 @@ msgstr "{} РВт/год"
 msgid "{} QWh"
 msgstr "{} КВт/год"
 
-#: src/utils/drive.rs:128 src/utils/drive.rs:207
+#: src/utils/drive.rs:129 src/utils/drive.rs:208
 msgid "CD/DVD/Blu-ray Drive"
 msgstr "CD/DVD/Blu-ray дисковод"
 
-#: src/utils/drive.rs:129
+#: src/utils/drive.rs:130
 msgid "eMMC Storage"
 msgstr "eMMC накопичувач"
 
-#: src/utils/drive.rs:130
+#: src/utils/drive.rs:131
 msgid "Flash Storage"
 msgstr "Флеш накопичувач"
 
-#: src/utils/drive.rs:131 src/utils/drive.rs:208
+#: src/utils/drive.rs:132 src/utils/drive.rs:209
 msgid "Floppy Drive"
 msgstr "Флопі дискета"
 
-#: src/utils/drive.rs:132
+#: src/utils/drive.rs:133
 msgid "Hard Disk Drive"
 msgstr "Жорсткий диск"
 
-#: src/utils/drive.rs:133
+#: src/utils/drive.rs:134
 msgid "Loop Device"
 msgstr "Loop-пристрій"
 
-#: src/utils/drive.rs:134
+#: src/utils/drive.rs:135
 msgid "Mapped Device"
 msgstr "Приєднаний пристрій"
 
-#: src/utils/drive.rs:135
+#: src/utils/drive.rs:136
 msgid "NVMe Drive"
 msgstr "NVMe"
 
-#: src/utils/drive.rs:137
+#: src/utils/drive.rs:138
 msgid "Software Raid"
 msgstr "Програмний Raid"
 
-#: src/utils/drive.rs:138
+#: src/utils/drive.rs:139
 msgid "RAM Disk"
 msgstr "RAM-диск"
 
-#: src/utils/drive.rs:139
+#: src/utils/drive.rs:140
 msgid "Solid State Drive"
 msgstr "ССД"
 
-#: src/utils/drive.rs:140
+#: src/utils/drive.rs:141
 msgid "ZFS Volume"
 msgstr "Розділ ZFS"
 
-#: src/utils/drive.rs:141
+#: src/utils/drive.rs:142
 msgid "Compressed RAM Disk (zram)"
 msgstr "Скомпресований RAM-диск (zram)"
 
-#: src/utils/drive.rs:209
+#: src/utils/drive.rs:210
 msgid "{} Loop Device"
 msgstr "{} Loop-пристрій"
 
-#: src/utils/drive.rs:210
+#: src/utils/drive.rs:211
 msgid "{} Mapped Device"
 msgstr "{} Приєднаний пристрій"
 
-#: src/utils/drive.rs:211
+#: src/utils/drive.rs:212
 msgid "{} RAID"
 msgstr "{} RAID"
 
-#: src/utils/drive.rs:212
+#: src/utils/drive.rs:213
 msgid "{} RAM Disk"
 msgstr "{} RAM-диск"
 
-#: src/utils/drive.rs:213
+#: src/utils/drive.rs:214
 msgid "{} zram Device"
 msgstr "{} zram-пристрій"
 
-#: src/utils/drive.rs:214
+#: src/utils/drive.rs:215
 msgid "{} ZFS Volume"
 msgstr "{} ZFS розділ"
 
-#: src/utils/drive.rs:215
+#: src/utils/drive.rs:216
 msgid "{} Drive"
 msgstr "{} накопичувач"
 
