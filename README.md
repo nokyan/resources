@@ -86,7 +86,7 @@ These dependencies are not needed to build Resources but Resources may lack cert
 ### Building Using Flatpak Builder
 
 ```sh
-flatpak install org.gnome.Sdk//47 org.freedesktop.Sdk.Extension.rust-stable//24.08 org.gnome.Platform//47 org.freedesktop.Sdk.Extension.llvm18//24.08
+flatpak install org.gnome.Sdk//49 org.freedesktop.Sdk.Extension.rust-stable//25.08 org.gnome.Platform//49 org.freedesktop.Sdk.Extension.llvm21//25.08
 flatpak-builder --user flatpak_app build-aux/net.nokyan.Resources.Devel.json
 ```
 
