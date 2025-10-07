@@ -377,6 +377,7 @@ impl Settings {
         processes_show_priority,
         processes_show_swap,
         processes_show_combined_memory,
+        processes_show_commandline,
         show_logical_cpus,
         show_graph_grids,
         normalize_cpu_usage,
