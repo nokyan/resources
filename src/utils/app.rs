@@ -17,7 +17,7 @@ use process_data::{
     gpu_usage::{GpuIdentifier, GpuUsageStats},
 };
 
-use crate::i18n::i18n;
+use crate::{i18n::i18n, utils::read_parsed};
 
 use super::{
     boot_time,
@@ -233,9 +233,8 @@ impl App {
 
     pub fn from_desktop_file<P: AsRef<Path>>(file_path: P) -> Result<App> {
         let file_path = file_path.as_ref();
-        trace!("Reading {file_path:?}…");
 
-        let ini = ini::Ini::load_from_file(file_path)?;
+        let ini = ini::Ini::load_from_str(&read_parsed::<String>(file_path)?)?;
 
         let desktop_entry = ini
             .section(Some("Desktop Entry"))
