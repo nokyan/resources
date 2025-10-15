@@ -429,14 +429,7 @@ impl ResGPU {
             None
         };
         
-        
-        // let mut gtt_string = gtt_usage.map_or_else(|| i18n("N/A"),  |gtt| format!("{}", gtt as f64);
 
-        // // if let Some(power_cap) = power_cap {
-        // //     gtt_string.push_str(&format!(" / {}", convert_power(*power_cap)));
-        // // }
-
-        // imp.gtt_usage.set_subtitle(&gtt_string);
 
         let mut power_string = power_usage.map_or_else(|| i18n("N/A"), convert_power);
 
@@ -474,8 +467,6 @@ impl ResGPU {
         
         if let Some(gtt_usage_string) = gtt_usage_string {
             usage_percentage_string.push_str(" · ");
-            // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
-            // shorter than) 'Memory'
             usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&gtt_usage_string]));
         }
 
