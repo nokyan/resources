@@ -164,9 +164,17 @@ impl GpuImpl for AmdGpu {
     fn used_vram(&self) -> Result<u64> {
         self.drm_used_vram().map(|usage| usage as u64)
     }
-
+        
     fn total_vram(&self) -> Result<u64> {
         self.drm_total_vram().map(|usage| usage as u64)
+    }
+    
+    fn used_gtt_mem(&self)-> Result<u64> {
+        self.drm_gtt_used_mem().map(|usage| usage as u64)
+    }
+    
+    fn total_gtt_mem(&self)-> Result<u64> {
+        self.drm_gtt_total_mem().map(|usage| usage as u64)
     }
 
     fn temperature(&self) -> Result<f64> {

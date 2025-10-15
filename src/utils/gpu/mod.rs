@@ -48,6 +48,9 @@ pub struct GpuData {
 
     pub total_vram: Option<u64>,
     pub used_vram: Option<u64>,
+    
+    pub used_gtt_mem: Option<u64>,
+    pub total_gtt_mem: Option<u64>,
 
     pub clock_speed: Option<f64>,
     pub vram_speed: Option<f64>,
@@ -77,7 +80,9 @@ impl GpuData {
 
         let total_vram = gpu.total_vram().ok();
         let used_vram = gpu.used_vram().ok();
-
+        
+        let used_gtt_mem = gpu.used_gtt_mem().ok();
+        let total_gtt_mem = gpu.total_gtt_mem().ok();
         let clock_speed = gpu.core_frequency().ok();
         let vram_speed = gpu.vram_frequency().ok();
 
@@ -98,6 +103,8 @@ impl GpuData {
             decode_fraction,
             total_vram,
             used_vram,
+            used_gtt_mem,
+            total_gtt_mem,
             clock_speed,
             vram_speed,
             temperature,
@@ -143,6 +150,8 @@ pub trait GpuImpl {
     fn combined_media_engine(&self) -> Result<bool>;
     fn used_vram(&self) -> Result<u64>;
     fn total_vram(&self) -> Result<u64>;
+    fn used_gtt_mem(&self) -> Result<u64>;
+    fn total_gtt_mem(&self) -> Result<u64>;
     fn temperature(&self) -> Result<f64>;
     fn power_usage(&self) -> Result<f64>;
     fn core_frequency(&self) -> Result<f64>;
@@ -167,6 +176,14 @@ pub trait GpuImpl {
 
     fn drm_total_vram(&self) -> Result<isize> {
         read_parsed(self.sysfs_path().join("device/mem_info_vram_total"))
+    }
+    
+    fn drm_gtt_used_mem(&self) -> Result<isize> {
+        read_parsed(self.sysfs_path().join("device/mem_info_gtt_used"))
+    }
+    
+    fn drm_gtt_total_mem(&self) -> Result<isize> {
+        read_parsed(self.sysfs_path().join("device/mem_info_gtt_total"))
     }
 
     fn hwmon_path(&self) -> Result<&Path> {

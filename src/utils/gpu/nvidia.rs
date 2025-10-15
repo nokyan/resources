@@ -154,6 +154,14 @@ impl GpuImpl for NvidiaGpu {
             .map(|memory_info| memory_info.total)
             .or_else(|_| self.drm_total_vram().map(|usage| usage as u64))
     }
+    
+    fn used_gtt_mem(&self)-> Result<u64> {
+        self.drm_gtt_used_mem().map(|usage| usage as u64)
+    }
+    
+    fn total_gtt_mem(&self)-> Result<u64> {
+        self.drm_gtt_total_mem().map(|usage| usage as u64)
+    }
 
     fn temperature(&self) -> Result<f64> {
         Self::nvml_device(&self.pci_slot_string)
