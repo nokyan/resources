@@ -125,41 +125,106 @@
             <property name="margin-end">16</property>
             <property name="hexpand">true</property>
             <property name="spacing">16</property>
-            <property name="halign">end</property>
             <child>
-              <object class="GtkButton" id="options_button">
-                <property name="icon-name">options-symbolic</property>
-                <property name="sensitive">false</property>
-                <property name="tooltip-text" translatable="yes">Show Process Options</property>
-                <accessibility>
-                  <property name="label" translatable="yes">Show Process Options</property>
-                </accessibility>
-                <style>
-                  <class name="circular"/>
-                </style>
+              <object class="GtkBox">
+                <property name="spacing">16</property>
+                <property name="halign">start</property>
+                <child>
+                  <object class="GtkButton" id="kill_window_button">
+                    <property name="icon-name">window-close-symbolic</property>
+                    <property name="tooltip-text" translatable="yes">Kill a Window</property>
+                    <property name="action-name">app.kill-window</property>
+                    <property name="visible">False</property>
+                    <accessibility>
+                      <property name="label" translatable="yes">Kill a Window</property>
+                    </accessibility>
+                    <style>
+                      <class name="circular"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="logout_button">
+                    <property name="icon-name">system-log-out-symbolic</property>
+                    <property name="tooltip-text" translatable="yes">Logout</property>
+                    <property name="action-name">app.logout</property>
+                    <accessibility>
+                      <property name="label" translatable="yes">Logout</property>
+                    </accessibility>
+                    <style>
+                      <class name="circular"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="reboot_button">
+                    <property name="icon-name">system-reboot-symbolic</property>
+                    <property name="tooltip-text" translatable="yes">Reboot</property>
+                    <property name="action-name">app.reboot</property>
+                    <accessibility>
+                      <property name="label" translatable="yes">Reboot</property>
+                    </accessibility>
+                    <style>
+                      <class name="circular"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="shutdown_button">
+                    <property name="icon-name">system-shutdown-symbolic</property>
+                    <property name="tooltip-text" translatable="yes">Shutdown</property>
+                    <property name="action-name">app.shutdown</property>
+                    <accessibility>
+                      <property name="label" translatable="yes">Shutdown</property>
+                    </accessibility>
+                    <style>
+                      <class name="circular"/>
+                    </style>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
-              <object class="GtkButton" id="information_button">
-                <property name="icon-name">info-symbolic</property>
-                <property name="sensitive">false</property>
-                <property name="tooltip-text" translatable="yes">Show Process Information</property>
-                <accessibility>
-                  <property name="label" translatable="yes">Show Process Information</property>
-                </accessibility>
-                <style>
-                  <class name="circular"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="AdwSplitButton" id="end_process_button">
-                <property name="label" translatable="yes">End Process</property>
-                <property name="menu-model">end_process_menu</property>
-                <property name="sensitive">false</property>
-                <style>
-                  <class name="destructive-action"/>
-                </style>
+              <object class="GtkBox">
+                <property name="spacing">16</property>
+                <property name="halign">end</property>
+                <property name="hexpand">true</property>
+                <child>
+                  <object class="GtkButton" id="options_button">
+                    <property name="icon-name">options-symbolic</property>
+                    <property name="sensitive">false</property>
+                    <property name="tooltip-text" translatable="yes">Show Process Options</property>
+                    <accessibility>
+                      <property name="label" translatable="yes">Show Process Options</property>
+                    </accessibility>
+                    <style>
+                      <class name="circular"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="information_button">
+                    <property name="icon-name">info-symbolic</property>
+                    <property name="sensitive">false</property>
+                    <property name="tooltip-text" translatable="yes">Show Process Information</property>
+                    <accessibility>
+                      <property name="label" translatable="yes">Show Process Information</property>
+                    </accessibility>
+                    <style>
+                      <class name="circular"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwSplitButton" id="end_process_button">
+                    <property name="label" translatable="yes">End Process</property>
+                    <property name="menu-model">end_process_menu</property>
+                    <property name="sensitive">false</property>
+                    <style>
+                      <class name="destructive-action"/>
+                    </style>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
