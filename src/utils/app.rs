@@ -243,6 +243,7 @@ impl App {
         let id = desktop_entry
             .get("X-Flatpak") // is there a X-Flatpak section?
             .or_else(|| desktop_entry.get("X-SnapInstanceName")) // if not, maybe there is a X-SnapInstanceName
+            .or_else(|| desktop_entry.get("X-AppImage-Identifier")) // or maybe a X-AppImageIdentifier
             .map(str::to_string)
             .or_else(|| {
                 // if not, presume that the ID is in the file name
@@ -256,7 +257,9 @@ impl App {
             bail!("{id} is blocklisted (reason: {reason})")
         }
 
-        let exec = desktop_entry.get("Exec");
+        let exec = desktop_entry
+            .get("X-ExecLocation") // appimaged adds this entry that points to the original AppImage path
+            .or(desktop_entry.get("Exec"));
         let is_flatpak = exec.is_some_and(|exec| exec.starts_with("/usr/bin/flatpak run"));
         let commandline = exec
             .and_then(|exec| {
@@ -327,6 +330,7 @@ impl App {
             .map(str::to_string);
 
         let is_snap = desktop_entry.get("X-SnapInstanceName").is_some();
+        let is_appimage = desktop_entry.get("X-AppImage-Identifier").is_some();
 
         let containerization = if is_flatpak {
             debug!(
@@ -344,6 +348,14 @@ impl App {
                 executable_name.as_ref().unwrap_or(&"<None>".into()),
             );
             Containerization::Snap
+        } else if is_appimage {
+            debug!(
+                "Found AppImage app \"{display_name}\" (ID: {id:?}) at {} with commandline `{}` (detected executable name: {})",
+                file_path.to_string_lossy(),
+                commandline.as_ref().unwrap_or(&"<None>".into()),
+                executable_name.as_ref().unwrap_or(&"<None>".into()),
+            );
+            Containerization::AppImage
         } else {
             debug!(
                 "Found native app \"{display_name}\" (ID: {id:?}) at {} with commandline `{}` (detected executable name: {})",

@@ -162,6 +162,7 @@ pub enum Containerization {
     None,
     Flatpak,
     Snap,
+    AppImage,
 }
 
 /// Data that could be transferred us>ing `resources-processes`, separated from
@@ -368,10 +369,18 @@ impl ProcessData {
             .ok()
             .and_then(Self::sanitize_cgroup);
 
+        let environ = std::fs::read_to_string(proc_path.join("environ"))?
+            .split('\0')
+            .filter_map(|e| e.split_once('='))
+            .map(|(x, y)| (x.to_string(), y.to_string()))
+            .collect::<HashMap<_, _>>();
+
         let containerization = if commandline.starts_with("/snap/") {
             Containerization::Snap
         } else if proc_path.join("root").join(".flatpak-info").exists() {
             Containerization::Flatpak
+        } else if environ.contains_key("APPIMAGE") {
+            Containerization::AppImage
         } else {
             Containerization::None
         };

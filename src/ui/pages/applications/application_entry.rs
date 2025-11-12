@@ -190,6 +190,7 @@ impl ApplicationEntry {
             Containerization::None => i18n("No"),
             Containerization::Flatpak => i18n("Yes (Flatpak)"),
             Containerization::Snap => i18n("Yes (Snap)"),
+            Containerization::AppImage => i18n("Yes (AppImage)"),
         };
 
         let this: Self = glib::Object::builder()
