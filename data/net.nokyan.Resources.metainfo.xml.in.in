@@ -80,6 +80,17 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.9.1" date="2025-11-16">
+      <url type="details">https://github.com/nokyan/resources/releases/tag/v1.9.1</url>
+      <description translate="no">
+        <p>
+          Resources 1.9.1 is here with a small bugfix:
+        </p>
+        <ul>
+          <li>Less unnecessary warnings in Resources’ console logs</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.9.0" date="2025-10-25">
       <url type="details">https://github.com/nokyan/resources/releases/tag/v1.9.0</url>
       <description translate="no">
