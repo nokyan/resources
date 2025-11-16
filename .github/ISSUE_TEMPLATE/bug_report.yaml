@@ -56,7 +56,7 @@ body:
       description: |
         Please provide information about your environment if you were not able to include debug logs as described above.
       placeholder: |
-        Resources version: 1.9.0 (you can find this in the 'About' dialog)
+        Resources version: 1.9.1 (you can find this in the 'About' dialog)
         Package type: Flatpak
         Operating system: Ubuntu 22.04
         Hardware info: Intel i7-7700k, Nvidia GTX 1080, …
