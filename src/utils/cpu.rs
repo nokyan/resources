@@ -246,8 +246,13 @@ pub fn get_cpu_freq(core: usize) -> Result<u64> {
     trace!("Finding CPU frequency for core {core}…");
 
     read_parsed::<u64>(format!(
-        "/sys/devices/system/cpu/cpu{core}/cpufreq/scaling_cur_freq"
+        "/sys/devices/system/cpu/cpu{core}/cpufreq/cpuinfo_avg_freq"
     ))
+    .or_else(|_| {
+        read_parsed::<u64>(format!(
+            "/sys/devices/system/cpu/cpu{core}/cpufreq/scaling_cur_freq"
+        ))
+    })
     .map(|x| x * 1000)
     .inspect(|freq| trace!("Frequency of core {core}: {freq} Hz"))
 }
