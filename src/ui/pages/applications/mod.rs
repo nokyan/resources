@@ -363,6 +363,8 @@ impl ResApplications {
 
         let mut columns = imp.columns.borrow_mut();
 
+        column_view.set_tab_behavior(gtk::ListTabBehavior::Cell);
+
         columns.push(self.add_name_column(&column_view));
         columns.push(self.add_memory_column(&column_view));
         columns.push(self.add_cpu_column(&column_view));

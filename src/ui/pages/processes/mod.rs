@@ -444,6 +444,8 @@ impl ResProcesses {
         *imp.column_view.borrow_mut() = gtk::ColumnView::new(None::<gtk::SingleSelection>);
         let column_view = imp.column_view.borrow();
 
+        column_view.set_tab_behavior(gtk::ListTabBehavior::Cell);
+
         let mut columns = imp.columns.borrow_mut();
 
         columns.push(self.add_name_column(&column_view));
