@@ -3,7 +3,7 @@
  "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
  "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
 <policyconfig>
-  <vendor>The Nalux Team</vendor>
+  <vendor>nokyan</vendor>
   <icon_name>net.nokyan.Resources</icon_name>
   <action id="net.nokyan.Resources.kill">
     <description>Control Process</description>
