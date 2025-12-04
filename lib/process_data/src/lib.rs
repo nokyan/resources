@@ -165,6 +165,7 @@ pub enum Containerization {
     #[default]
     None,
     Flatpak,
+    Portable,
     Snap,
 }
 
@@ -350,6 +351,12 @@ impl ProcessData {
             Containerization::Snap
         } else if proc_path.join("root").join(".flatpak-info").exists() {
             Containerization::Flatpak
+        } else if proc_path
+            .join("root")
+            .join("top.kimiblock.portable")
+            .exists()
+        {
+            Containerization::Portable
         } else {
             Containerization::None
         };
