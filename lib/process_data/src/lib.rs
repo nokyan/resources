@@ -349,14 +349,14 @@ impl ProcessData {
 
         let containerization = if commandline.starts_with("/snap/") {
             Containerization::Snap
-        } else if proc_path.join("root").join(".flatpak-info").exists() {
-            Containerization::Flatpak
         } else if proc_path
             .join("root")
             .join("top.kimiblock.portable")
             .exists()
         {
             Containerization::Portable
+        } else if proc_path.join("root").join(".flatpak-info").exists() {
+            Containerization::Flatpak
         } else {
             Containerization::None
         };
