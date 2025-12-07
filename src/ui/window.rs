@@ -591,6 +591,18 @@ impl MainWindow {
                 .unwrap_or_default()
         };
 
+        for npu_data_entry in &mut npu_data {
+            if npu_data_entry.used_memory.is_none() {
+                npu_data_entry.used_memory = Some(
+                    process_data
+                        .iter()
+                        .filter_map(|p| p.npu_usage_stats.get(&npu_data_entry.pci_slot))
+                        .filter_map(|stats| stats.mem())
+                        .sum::<u64>() as usize,
+                );
+            }
+        }
+
         let refresh_data = RefreshData {
             cpu_data,
             mem_data,
