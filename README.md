@@ -1,11 +1,13 @@
 # Resources
 
-<a href='https://flathub.org/apps/net.nokyan.Resources'><img width='240' alt='Download on Flathub' src='https://dl.flathub.org/assets/badges/flathub-badge-en.png'/></a>
+<a href='https://flathub.org/apps/net.nokyan.Resources'><img width='240' alt='Download on Flathub' src='https://flathub.org/api/badge?svg&locale=en'/></a>
 
 [![GNOME Circle](https://circle.gnome.org/assets/button/badge.svg
 )](https://apps.gnome.org/app/net.nokyan.Resources/) [![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app)  
 
 Resources is a simple yet powerful monitor for your system resources and processes, written in Rust and using GTK 4 and libadwaita for its GUI. It’s capable of displaying usage and details of your CPU, memory, GPUs, NPUs, network interfaces and block devices. It’s also capable of listing and terminating running graphical applications as well as processes.
+
+Resources is *not* a program that will try to display every single possible piece of information about each tiny part of your device. Instead, it aims to strike a balance between information richness, user-friendliness and a balanced user interface — showing you most of the information most of you need most of the time.
 
 <details>
   <summary><b>Click me for screenshots!</b></summary>
@@ -67,12 +69,12 @@ You can also build Resources yourself using either Meson directly or preferably 
 
 - `glib-2.0` ≥ 2.66
 - `gio-2.0` ≥ 2.66
-- `gtk-4` ≥ 4.10
-- `libadwaita-1` ≥ 1.6
+- `gtk-4` ≥ 4.12
+- `libadwaita-1` ≥ 1.8
 - `cargo`
 
 Other dependencies are handled by `cargo`.
-Resources’ minimum supported Rust version (MSRV) is **1.80.0**.
+Resources’ minimum supported Rust version (MSRV) is **1.85.0**.
 
 ### Runtime Dependencies
 
@@ -84,7 +86,7 @@ These dependencies are not needed to build Resources but Resources may lack cert
 ### Building Using Flatpak Builder
 
 ```sh
-flatpak install org.gnome.Sdk//47 org.freedesktop.Sdk.Extension.rust-stable//24.08 org.gnome.Platform//47 org.freedesktop.Sdk.Extension.llvm18//24.08
+flatpak install org.gnome.Sdk//49 org.freedesktop.Sdk.Extension.rust-stable//25.08 org.gnome.Platform//49 org.freedesktop.Sdk.Extension.llvm21//25.08
 flatpak-builder --user flatpak_app build-aux/net.nokyan.Resources.Devel.json
 ```
 
@@ -105,7 +107,7 @@ If you’ve built Resources as a Flatpak, type `flatpak-builder --run flatpak_ap
 
 ## Contributing
 
-If you have an idea, bug report, question or something else, don’t hesitate to [open an issue](https://github.com/nokyan/resources/issues)! Translations are always welcome.
+If you have an idea, bug report, question or something else, don’t hesitate to [open an issue](https://github.com/nokyan/resources/issues)! Translations are always welcome but need to go through [GNOME Damned Lies](https://l10n.gnome.org/module/resources/), ordinary pull requests for translation changes cannot be accepted anymore.
 
 ## Code of Conduct
 

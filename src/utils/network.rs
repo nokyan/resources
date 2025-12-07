@@ -4,13 +4,12 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anyhow::{Context, Result};
+use anyhow::Result;
 use gtk::gio::{Icon, ThemedIcon};
 use log::trace;
 
-use crate::i18n::i18n;
-
 use super::{pci::Device, read_uevent};
+use crate::{i18n::i18n, utils::read_parsed};
 
 const PATH_SYSFS: &str = "/sys/class/net";
 
@@ -71,7 +70,7 @@ impl NetworkData {
     }
 }
 
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub enum InterfaceType {
     Bluetooth,
     Bridge,
@@ -91,7 +90,7 @@ pub enum InterfaceType {
 
 impl InterfaceType {
     pub fn from_interface_name<S: AsRef<str>>(interface_name: S) -> Self {
-        for (name, interface_type) in INTERFACE_TYPE_MAP.iter() {
+        for (name, interface_type) in INTERFACE_TYPE_MAP {
             if interface_name.as_ref().starts_with(name) {
                 return *interface_type;
             }
@@ -195,19 +194,13 @@ impl NetworkInterface {
         };
 
         let sysfs_path_clone = sysfs_path.to_owned();
-        let speed = std::fs::read_to_string(sysfs_path_clone.join("speed"))
-            .map(|x| x.parse().unwrap_or_default())
-            .ok();
+        let speed = read_parsed(sysfs_path_clone.join("speed")).ok();
 
         let sysfs_path_clone = sysfs_path.to_owned();
-        let device_label = std::fs::read_to_string(sysfs_path_clone.join("device/label"))
-            .map(|x| x.replace('\n', ""))
-            .ok();
+        let device_label = read_parsed(sysfs_path_clone.join("device/label")).ok();
 
         let sysfs_path_clone = sysfs_path.to_owned();
-        let hw_address = std::fs::read_to_string(sysfs_path_clone.join("address"))
-            .map(|x| x.replace('\n', ""))
-            .ok();
+        let hw_address = read_parsed(sysfs_path_clone.join("address")).ok();
 
         let interface_type = InterfaceType::from_interface_name(interface_name.to_string_lossy());
 
@@ -248,11 +241,7 @@ impl NetworkInterface {
     /// Will return `Err` if the `tx_bytes` file in sysfs
     /// is unreadable or not parsable to a `usize`
     pub fn received_bytes(&self) -> Result<usize> {
-        std::fs::read_to_string(&self.received_bytes_path)
-            .context("read failure")?
-            .replace('\n', "")
-            .parse()
-            .context("parsing failure")
+        read_parsed(&self.received_bytes_path)
     }
 
     /// Returns the amount of bytes sent by this Network
@@ -263,11 +252,17 @@ impl NetworkInterface {
     /// Will return `Err` if the `tx_bytes` file in sysfs
     /// is unreadable or not parsable to a `usize`
     pub fn sent_bytes(&self) -> Result<usize> {
-        std::fs::read_to_string(&self.sent_bytes_path)
-            .context("read failure")?
-            .replace('\n', "")
-            .parse()
-            .context("parsing failure")
+        read_parsed(&self.sent_bytes_path)
+    }
+
+    /// Returns the link speed of this connection in bits per second
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if the link speed couldn't be determined (e. g. for Wi-Fi connections)
+    pub fn link_speed(&self) -> Result<usize> {
+        read_parsed::<usize>(self.sysfs_path.join("speed"))
+            .map(|mbps| mbps.saturating_mul(1_000_000))
     }
 
     /// Returns the appropriate Icon for the type of drive

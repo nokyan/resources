@@ -22,9 +22,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        CompositeTemplate,
         gio::Icon,
         glib::{ParamSpec, Properties, Value},
-        CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]
@@ -51,6 +51,8 @@ mod imp {
         pub writable: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub removable: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub link: TemplateChild<adw::ActionRow>,
         pub old_stats: RefCell<HashMap<String, usize>>,
         pub last_timestamp: Cell<SystemTime>,
 
@@ -116,6 +118,7 @@ mod imp {
                 capacity: Default::default(),
                 writable: Default::default(),
                 removable: Default::default(),
+                link: Default::default(),
                 uses_progress_bar: Cell::new(true),
                 main_graph_color: glib::Bytes::from_static(&super::ResDrive::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(Drive::default_icon()),
@@ -183,7 +186,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResDrive(ObjectSubclass<imp::ResDrive>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResDrive {
@@ -209,8 +213,8 @@ impl ResDrive {
 
     pub fn setup_widgets(&self, drive_data: &DriveData) {
         trace!(
-            "Setting up ResDrive ({:?}) widgets…",
-            drive_data.inner.sysfs_path
+            "Setting up ResDrive ({}) widgets…",
+            drive_data.inner.sysfs_path.to_string_lossy()
         );
 
         let imp = self.imp();
@@ -255,7 +259,10 @@ impl ResDrive {
         );
 
         if let Some(model_name) = &drive_data.inner.model {
-            imp.set_tab_detail_string(model_name);
+            imp.set_tab_detail_string(&format!(
+                "{model_name} ({})",
+                &drive_data.inner.block_device
+            ));
         } else {
             imp.set_tab_detail_string(&drive_data.inner.block_device);
         }
@@ -266,7 +273,10 @@ impl ResDrive {
     }
 
     pub fn refresh_page(&self, drive_data: DriveData) {
-        trace!("Refreshing ResDrive ({:?})…", drive_data.inner.sysfs_path);
+        trace!(
+            "Refreshing ResDrive ({})…",
+            drive_data.inner.sysfs_path.to_string_lossy()
+        );
 
         let imp = self.imp();
 
@@ -277,6 +287,7 @@ impl ResDrive {
             removable,
             disk_stats,
             capacity,
+            link,
         } = drive_data;
 
         let time_passed = SystemTime::now()
@@ -414,6 +425,12 @@ impl ResDrive {
             }
         } else {
             imp.removable.set_subtitle(&i18n("N/A"));
+        }
+
+        if let Ok(link) = link {
+            imp.link.set_subtitle(&link.to_string());
+        } else {
+            imp.link.set_subtitle(&i18n("N/A"));
         }
 
         self.set_property(

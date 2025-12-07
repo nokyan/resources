@@ -17,9 +17,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        CompositeTemplate,
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]
@@ -99,7 +99,7 @@ mod imp {
                 main_graph_color: glib::Bytes::from_static(&super::ResBattery::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(ThemedIcon::new("battery-symbolic").into()),
                 usage: Default::default(),
-                tab_name: Cell::new(glib::GString::from(i18n("Drive"))),
+                tab_name: Cell::new(glib::GString::from(i18n("Battery"))),
                 tab_detail_string: Cell::new(glib::GString::new()),
                 tab_id: Cell::new(glib::GString::new()),
                 tab_usage_string: Cell::new(glib::GString::new()),
@@ -156,7 +156,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResBattery(ObjectSubclass<imp::ResBattery>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResBattery {
@@ -181,8 +182,8 @@ impl ResBattery {
 
     pub fn setup_widgets(&self, battery_data: &BatteryData) {
         trace!(
-            "Setting up ResBattery ({:?}) widgets…",
-            battery_data.inner.sysfs_path
+            "Setting up ResBattery ({}) widgets…",
+            battery_data.inner.sysfs_path.to_string_lossy()
         );
 
         let imp = self.imp();
@@ -240,8 +241,8 @@ impl ResBattery {
 
     pub fn refresh_page(&self, battery_data: BatteryData) {
         trace!(
-            "Refreshing ResBattery ({:?})…",
-            battery_data.inner.sysfs_path
+            "Refreshing ResBattery ({})…",
+            battery_data.inner.sysfs_path.to_string_lossy()
         );
 
         let imp = self.imp();

@@ -8,7 +8,7 @@
       </item>
       <item>
         <attribute name="label" translatable="yes">Keyboard Shortcuts</attribute>
-        <attribute name="action">win.show-help-overlay</attribute>
+        <attribute name="action">app.shortcuts</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">About Resources</attribute>
@@ -61,7 +61,7 @@
                 <property name="vexpand">True</property>
                 <property name="vhomogeneous">False</property>
                 <child>
-                  <object class="GtkStackPage" id="applications_page">
+                  <object class="GtkStackPage" id="apps_page">
                     <property name="title" translatable="yes">Apps</property>
                     <property name="child">
                       <object class="AdwToolbarView">
@@ -82,10 +82,19 @@
                                 <property name="active" bind-source="split_view" bind-property="show-sidebar" bind-flags="sync-create|bidirectional"/>
                               </object>
                             </child>
+                            <child>
+                              <object class="GtkToggleButton" id="apps_search_button">
+                                <property name="icon-name">search-symbolic</property>
+                                <property name="tooltip-text" translatable="yes">Search</property>
+                                <accessibility>
+                                  <property name="label" translatable="yes">Toggle search field</property>
+                                </accessibility>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <property name="content">
-                          <object class="ResApplications" id="applications"/>
+                          <object class="ResApplications" id="apps"/>
                         </property>
                       </object>
                     </property>
@@ -111,6 +120,15 @@
                                 <property name="icon-name">sidebar-show-symbolic</property>
                                 <property name="visible" bind-source="split_view" bind-property="collapsed" bind-flags="sync-create"/>
                                 <property name="active" bind-source="split_view" bind-property="show-sidebar" bind-flags="sync-create|bidirectional"/>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkToggleButton" id="processes_search_button">
+                                <property name="icon-name">search-symbolic</property>
+                                <property name="tooltip-text" translatable="yes">Search</property>
+                                <accessibility>
+                                  <property name="label" translatable="yes">Toggle search field</property>
+                                </accessibility>
                               </object>
                             </child>
                           </object>

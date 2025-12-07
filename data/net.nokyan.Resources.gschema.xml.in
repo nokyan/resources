@@ -25,10 +25,6 @@
       <default>&quot;Normal&quot;</default>
       <summary>Refresh Speed</summary>
     </key>
-    <key name="show-search-on-start" type="b">
-      <default>false</default>
-      <summary>Show search field for Processes and Applications on launch</summary>
-    </key>
     <key name="show-virtual-drives" type="b">
       <default>false</default>
       <summary>Show virtual block devices such as LVM containers</summary>
@@ -97,6 +93,10 @@
       <default>false</default>
       <summary>Display swap usage in Applications view</summary>
     </key>
+    <key name="apps-show-combined-memory" type="b">
+      <default>false</default>
+      <summary>Display combined memory usage in Applications view</summary>
+    </key>
     <key name="processes-show-id" type="b">
       <default>true</default>
       <summary>Display process ID in Processes view</summary>
@@ -164,6 +164,14 @@
     <key name="processes-show-swap" type="b">
       <default>false</default>
       <summary>Display swap usage in Processes view</summary>
+    </key>
+    <key name="processes-show-combined-memory" type="b">
+      <default>false</default>
+      <summary>Display combined memory usage in Processes view</summary>
+    </key>
+    <key name="processes-show-commandline" type="b">
+      <default>false</default>
+      <summary>Display commandline in Processes view</summary>
     </key>
     <key name="show-logical-cpus" type="b">
       <default>false</default>

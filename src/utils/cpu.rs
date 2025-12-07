@@ -1,11 +1,14 @@
-use anyhow::{anyhow, bail, Context, Result};
+use anyhow::{Context, Result, anyhow, bail};
 use glob::glob;
-use lazy_regex::{lazy_regex, Lazy, Regex};
+use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, trace, warn};
 use std::{
+    collections::HashMap,
     path::{Path, PathBuf},
     sync::LazyLock,
 };
+
+use crate::utils::read_parsed;
 
 const PROC_STAT: &str = "/proc/stat";
 
@@ -28,54 +31,74 @@ static RE_LSCPU_VIRTUALIZATION: Lazy<Regex> = lazy_regex!(r"Virtualization:\s*(.
 static RE_LSCPU_MAX_MHZ: Lazy<Regex> = lazy_regex!(r"CPU max MHz:\s*(.*)");
 
 static RE_PROC_STAT: Lazy<Regex> = lazy_regex!(
-    r"cpu[0-9]+ *(?P<user>[0-9]*) *(?P<nice>[0-9]*) *(?P<system>[0-9]*) *(?P<idle>[0-9]*) *(?P<iowait>[0-9]*) *(?P<irq>[0-9]*) *(?P<softirq>[0-9]*) *(?P<steal>[0-9]*) *(?P<guest>[0-9]*) *(?P<guest_nice>[0-9]*)"
+    r"cpu\d+ *(?P<user>\d*) *(?P<nice>\d*) *(?P<system>\d*) *(?P<idle>\d*) *(?P<iowait>\d*) *(?P<irq>\d*) *(?P<softirq>\d*) *(?P<steal>\d*) *(?P<guest>\d*) *(?P<guest_nice>\d*)"
 );
 
 static CPU_TEMPERATURE_PATH: LazyLock<Option<PathBuf>> = LazyLock::new(|| {
-    let cpu_temperature_path =
-        search_for_hwmons(KNOWN_HWMONS).or_else(|| search_for_thermal_zones(KNOWN_THERMAL_ZONES));
-
-    if let Some((sensor, path)) = &cpu_temperature_path {
-        debug!(
-            "CPU temperature sensor located at {} ({sensor})",
-            path.display()
-        );
-    } else {
-        warn!("No sensor for CPU temperature found!");
-    }
-
-    cpu_temperature_path.map(|(_, path)| path)
+    search_for_hwmons(KNOWN_HWMONS)
+        .or_else(|| search_for_thermal_zones(KNOWN_THERMAL_ZONES))
+        .or_else(|| {
+            warn!("No CPU temperature sensor found!");
+            None
+        })
 });
 
-/// Looks for hwmons with the given names.
-/// This function is a bit inefficient since the `names` array is considered to be ordered by priority.
-fn search_for_hwmons(names: &[&'static str]) -> Option<(&'static str, PathBuf)> {
-    for temp_name in names {
-        for path in (glob("/sys/class/hwmon/hwmon*").unwrap()).flatten() {
-            if let Ok(read_name) = std::fs::read_to_string(path.join("name")) {
-                if &read_name.trim_end() == temp_name {
-                    return Some((temp_name, path.join("temp1_input")));
-                }
+fn search_for_first_temp<S: AsRef<str>>(base_path: S) -> Option<PathBuf> {
+    glob(&format!("{}/temp*_input", base_path.as_ref()))
+        .unwrap()
+        .flatten()
+        .next()
+}
+
+fn search_for_hwmons(names: &[&'static str]) -> Option<PathBuf> {
+    let mut hwmon_map = HashMap::new();
+
+    trace!("Collecting hwmons for CPU temperature…");
+
+    for path in (glob("/sys/class/hwmon/hwmon*").unwrap()).flatten() {
+        trace!("Found hwmon {path:?}");
+        if let Ok(read_name) = read_parsed::<String>(path.join("name")) {
+            let read_name = read_name.to_string();
+            trace!("{path:?} is a hwmon for {read_name}");
+            if let Some(first_temp) = search_for_first_temp(path.to_string_lossy()) {
+                hwmon_map.insert(read_name, first_temp);
             }
         }
     }
 
+    for name in names {
+        if let Some(hwmon) = hwmon_map.remove(*name) {
+            debug!("CPU temperature sensor located at {hwmon:?} ({name}, type: hwmon)");
+            return Some(hwmon);
+        }
+    }
+
+    trace!("No hwmon CPU temperature sensor found");
     None
 }
 
-/// Looks for thermal zones with the given types.
-/// This function is a bit inefficient since the `types` array is considered to be ordered by priority.
-fn search_for_thermal_zones(types: &[&'static str]) -> Option<(&'static str, PathBuf)> {
-    for temp_type in types {
-        for path in (glob("/sys/class/thermal/thermal_zone*").unwrap()).flatten() {
-            if let Ok(read_type) = std::fs::read_to_string(path.join("type")) {
-                if &read_type.trim_end() == temp_type {
-                    return Some((temp_type, path.join("temp")));
-                }
-            }
+fn search_for_thermal_zones(types: &[&'static str]) -> Option<PathBuf> {
+    let mut thermal_zone_map = HashMap::new();
+
+    trace!("Collecting thermal zones for CPU temperature…");
+
+    for path in (glob("/sys/class/thermal/thermal_zone*").unwrap()).flatten() {
+        trace!("Found thermal zone {path:?}");
+        if let Ok(read_type) = read_parsed::<String>(path.join("type")) {
+            let read_type = read_type.trim_end().to_string();
+            trace!("{path:?} is a thermal zone for {read_type}");
+            thermal_zone_map.insert(read_type, path.join("temp"));
         }
     }
 
+    for r#type in types {
+        if let Some(hwmon) = thermal_zone_map.remove(*r#type) {
+            debug!("CPU temperature sensor located at {hwmon:?} ({type}, type: thermal zone)");
+            return Some(hwmon);
+        }
+    }
+
+    trace!("No thermal zone CPU temperature sensor found");
     None
 }
 
@@ -222,14 +245,9 @@ impl CpuInfo {
 pub fn get_cpu_freq(core: usize) -> Result<u64> {
     trace!("Finding CPU frequency for core {core}…");
 
-    std::fs::read_to_string(format!(
+    read_parsed::<u64>(format!(
         "/sys/devices/system/cpu/cpu{core}/cpufreq/scaling_cur_freq"
     ))
-    .inspect_err(|err| trace!("Unable to get CPU frequency for core {core}: {err}"))
-    .with_context(|| format!("unable to read scaling_cur_freq for core {core}"))?
-    .replace('\n', "")
-    .parse::<u64>()
-    .context("can't parse scaling_cur_freq to usize")
     .map(|x| x * 1000)
     .inspect(|freq| trace!("Frequency of core {core}: {freq} Hz"))
 }
@@ -268,7 +286,7 @@ fn parse_proc_stat<S: AsRef<str>>(stat: S) -> Vec<Result<(u64, u64)>> {
         .lines()
         .skip(1)
         .filter(|line| line.starts_with("cpu"))
-        .map(|line| parse_proc_stat_line(line))
+        .map(parse_proc_stat_line)
         .collect()
 }
 
@@ -284,7 +302,7 @@ fn parse_proc_stat<S: AsRef<str>>(stat: S) -> Vec<Result<(u64, u64)>> {
 pub fn get_cpu_usage() -> Vec<Result<(u64, u64)>> {
     trace!("Reading {PROC_STAT}…");
 
-    let raw = std::fs::read_to_string("/proc/stat")
+    let raw = read_parsed::<String>("/proc/stat")
         .context("unable to read /proc/stat")
         .unwrap_or_default();
 
@@ -306,13 +324,10 @@ pub fn get_temperature() -> Result<f32> {
 
 fn read_sysfs_thermal<P: AsRef<Path>>(path: P) -> Result<f32> {
     let path = path.as_ref();
-    let temp_string = std::fs::read_to_string(path)
-        .with_context(|| format!("unable to read {}", path.display()))?;
-    temp_string
-        .replace('\n', "")
-        .parse::<f32>()
-        .with_context(|| format!("unable to parse {}", path.display()))
+
+    read_parsed::<f32>(path)
         .map(|t| t / 1000f32)
+        .with_context(|| format!("unable to read {}", path.display()))
 }
 
 #[cfg(test)]

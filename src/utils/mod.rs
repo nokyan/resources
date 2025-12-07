@@ -1,4 +1,4 @@
-use std::{collections::HashMap, path::Path, sync::LazyLock};
+use std::{collections::HashMap, path::Path, str::FromStr, sync::LazyLock};
 
 use anyhow::{Context, Result};
 use gtk::glib::DateTime;
@@ -11,6 +11,7 @@ pub mod battery;
 pub mod cpu;
 pub mod drive;
 pub mod gpu;
+pub mod link;
 pub mod memory;
 pub mod network;
 pub mod npu;
@@ -24,7 +25,7 @@ const FLATPAK_SPAWN: &str = "/usr/bin/flatpak-spawn";
 
 static BOOT_TIMESTAMP: LazyLock<Option<i64>> = LazyLock::new(|| {
     let unix_timestamp = (unix_as_millis() / 1000) as i64;
-    std::fs::read_to_string("/proc/uptime")
+    read_parsed::<String>("/proc/uptime")
         .context("unable to read /proc/uptime")
         .and_then(|procfs| {
             procfs
@@ -86,7 +87,7 @@ pub fn boot_time() -> Result<DateTime> {
         })
 }
 
-pub fn read_uevent_contents<S: AsRef<str>>(contents: S) -> Result<HashMap<String, String>> {
+pub fn parse_uevent_contents(contents: impl AsRef<str>) -> Result<HashMap<String, String>> {
     contents
         .as_ref()
         .lines()
@@ -98,12 +99,34 @@ pub fn read_uevent_contents<S: AsRef<str>>(contents: S) -> Result<HashMap<String
         .collect()
 }
 
-pub fn read_uevent<P: AsRef<Path>>(uevent_path: P) -> Result<HashMap<String, String>> {
-    trace!(
-        "Reading uevent contents of {}",
-        uevent_path.as_ref().to_string_lossy()
-    );
-    read_uevent_contents(std::fs::read_to_string(uevent_path)?)
+pub fn read_uevent(path: impl AsRef<Path>) -> Result<HashMap<String, String>> {
+    let path = path.as_ref();
+
+    parse_uevent_contents(read_parsed::<String>(path)?)
+        .inspect(|content| trace!("Successfully parsed uevent file {path:?} → {content:?}"))
+        .inspect_err(|e| trace!("Unable to parse uevent file {path:?} → {e}"))
+}
+
+pub fn read_parsed<T: FromStr>(path: impl AsRef<Path>) -> Result<T>
+where
+    <T as FromStr>::Err: std::error::Error + Send + Sync + 'static,
+{
+    let path = path.as_ref();
+
+    let content = std::fs::read_to_string(path)
+        .map(|content| content.trim().to_string())
+        .inspect_err(|e| trace!("Unable to read {path:?} → {e}"))?;
+
+    let type_name = std::any::type_name::<T>();
+
+    content
+        .parse::<T>()
+        .inspect(|_| trace!("Successfully read {path:?} to {type_name} → {content}",))
+        .inspect_err(|e| {
+            trace!("Unable to parse {path:?} to {type_name} → {e}");
+            trace!("Content of {path:?} → {content}");
+        })
+        .with_context(|| format!("error parsing file {}", path.display()))
 }
 
 pub trait FiniteOr {
@@ -123,11 +146,7 @@ pub trait FiniteOr {
 
 impl FiniteOr for f64 {
     fn finite_or(&self, x: Self) -> Self {
-        if self.is_finite() {
-            *self
-        } else {
-            x
-        }
+        if self.is_finite() { *self } else { x }
     }
 
     fn finite_or_default(&self) -> Self {
@@ -142,21 +161,13 @@ impl FiniteOr for f64 {
     where
         Self: Sized,
     {
-        if self.is_finite() {
-            *self
-        } else {
-            f(*self)
-        }
+        if self.is_finite() { *self } else { f(*self) }
     }
 }
 
 impl FiniteOr for f32 {
     fn finite_or(&self, x: Self) -> Self {
-        if self.is_finite() {
-            *self
-        } else {
-            x
-        }
+        if self.is_finite() { *self } else { x }
     }
 
     fn finite_or_default(&self) -> Self {
@@ -171,11 +182,7 @@ impl FiniteOr for f32 {
     where
         Self: Sized,
     {
-        if self.is_finite() {
-            *self
-        } else {
-            f(*self)
-        }
+        if self.is_finite() { *self } else { f(*self) }
     }
 }
 
@@ -185,13 +192,13 @@ mod test {
     use pretty_assertions::assert_eq;
     use std::collections::HashMap;
 
-    use crate::utils::{read_uevent_contents, FiniteOr};
+    use crate::utils::{FiniteOr, parse_uevent_contents};
 
     #[test]
     fn read_uevent_contents_valid_simple() {
         let uevent_raw = "a=b";
 
-        let parsed = read_uevent_contents(uevent_raw).unwrap();
+        let parsed = parse_uevent_contents(uevent_raw).unwrap();
 
         let expected: HashMap<String, String> = HashMap::from([("a".into(), "b".into())]);
 
@@ -202,7 +209,7 @@ mod test {
     fn read_uevent_contents_valid_single_equals() {
         let uevent_raw = "=";
 
-        let parsed = read_uevent_contents(uevent_raw).unwrap();
+        let parsed = parse_uevent_contents(uevent_raw).unwrap();
 
         let expected: HashMap<String, String> = HashMap::from([("".into(), "".into())]);
 
@@ -213,7 +220,7 @@ mod test {
     fn read_uevent_contents_valid_multiple_equals() {
         let uevent_raw = "a=b=c";
 
-        let parsed = read_uevent_contents(uevent_raw).unwrap();
+        let parsed = parse_uevent_contents(uevent_raw).unwrap();
 
         let expected: HashMap<String, String> = HashMap::from([("a".into(), "b=c".into())]);
 
@@ -224,7 +231,7 @@ mod test {
     fn read_uevent_contents_valid_left_empty() {
         let uevent_raw = "=EMPTY";
 
-        let parsed = read_uevent_contents(uevent_raw).unwrap();
+        let parsed = parse_uevent_contents(uevent_raw).unwrap();
 
         let expected: HashMap<String, String> = HashMap::from([("".into(), "EMPTY".into())]);
 
@@ -235,7 +242,7 @@ mod test {
     fn read_uevent_contents_valid_right_empty() {
         let uevent_raw = "EMPTY=";
 
-        let parsed = read_uevent_contents(uevent_raw).unwrap();
+        let parsed = parse_uevent_contents(uevent_raw).unwrap();
 
         let expected: HashMap<String, String> = HashMap::from([("EMPTY".into(), "".into())]);
 
@@ -252,7 +259,7 @@ mod test {
             "="
         );
 
-        let parsed = read_uevent_contents(uevent_raw).unwrap();
+        let parsed = parse_uevent_contents(uevent_raw).unwrap();
 
         let expected: HashMap<String, String> = HashMap::from([
             ("DRIVER".into(), "driver".into()),
@@ -269,7 +276,7 @@ mod test {
     fn read_uevent_contents_valid_empty() {
         let uevent_raw = "";
 
-        let parsed = read_uevent_contents(uevent_raw).unwrap();
+        let parsed = parse_uevent_contents(uevent_raw).unwrap();
 
         let expected: HashMap<String, String> = HashMap::new();
 
@@ -280,7 +287,7 @@ mod test {
     fn read_uevent_contents_invalid() {
         let uevent_raw = "NO_EQUALS";
 
-        let parsed = read_uevent_contents(uevent_raw);
+        let parsed = parse_uevent_contents(uevent_raw);
 
         assert!(parsed.is_err())
     }

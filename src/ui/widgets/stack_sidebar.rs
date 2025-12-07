@@ -2,13 +2,13 @@ use std::rc::Rc;
 
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::{
-    glib::{self, clone, GString},
     Ordering,
+    glib::{self, GString, clone},
 };
 use log::trace;
 use std::collections::HashMap;
 
-use crate::utils::settings::{SidebarMeterType, SETTINGS};
+use crate::utils::settings::{SETTINGS, SidebarMeterType};
 
 use super::stack_sidebar_item::ResStackSidebarItem;
 
@@ -21,7 +21,7 @@ mod imp {
 
     use super::*;
 
-    use gtk::{gio, CompositeTemplate, SingleSelection};
+    use gtk::{CompositeTemplate, SingleSelection, gio};
 
     #[derive(CompositeTemplate)]
     #[template(resource = "/net/nokyan/Resources/ui/widgets/stack_sidebar.ui")]
@@ -74,15 +74,12 @@ mod imp {
     impl WidgetImpl for ResStackSidebar {}
 
     impl BinImpl for ResStackSidebar {}
-
-    impl ListBoxRowImpl for ResStackSidebar {}
-
-    impl PreferencesRowImpl for ResStackSidebar {}
 }
 
 glib::wrapper! {
     pub struct ResStackSidebar(ObjectSubclass<imp::ResStackSidebar>)
-        @extends gtk::Widget;
+        @extends gtk::Widget, adw::Bin, adw::PreferencesRow,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResStackSidebar {
@@ -123,7 +120,7 @@ impl ResStackSidebar {
         return_map
     }
 
-    fn populate_list(&self, last_data_points: HashMap<String, Vec<f64>>) {
+    fn populate_list(&self, last_data_points: &HashMap<String, Vec<f64>>) {
         let imp = self.imp();
         imp.populating.set(true);
 
@@ -201,7 +198,7 @@ impl ResStackSidebar {
 
             // TODO: generalize to "uses_meter"?
             if child.property::<bool>("uses_progress_bar") {
-                if child.has_property("main_graph_color", Some(glib::Bytes::static_type())) {
+                if child.has_property("main_graph_color") {
                     let b = child.property::<glib::Bytes>("main_graph_color");
                     sidebar_item.graph().set_graph_color(b[0], b[1], b[2]);
                 }
@@ -246,6 +243,8 @@ impl ResStackSidebar {
 
             imp.list_box.append(&row);
 
+            row.set_focus_on_click(false);
+
             if let Some(visible_page) = imp.stack.borrow().visible_child() {
                 if visible_page == page.child() {
                     imp.list_box.select_row(Some(&row));
@@ -287,7 +286,7 @@ impl ResStackSidebar {
             #[weak(rename_to = this)]
             self,
             move |_, _, _, _| {
-                this.populate_list(this.clear());
+                this.populate_list(&this.clear());
             }
         ));
 
@@ -314,9 +313,8 @@ impl ResStackSidebar {
                         imp.stack.borrow().set_visible_child(&child);
 
                         if let Some(page) = child
-                            .downcast::<adw::ToolbarView>()
-                            .ok()
-                            .and_then(|toolbar| toolbar.content())
+                            .downcast_ref::<adw::ToolbarView>()
+                            .and_then(adw::ToolbarView::content)
                         {
                             let _ = SETTINGS
                                 .set_last_viewed_page(page.property::<GString>("tab-id").as_str());

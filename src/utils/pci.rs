@@ -40,7 +40,7 @@ impl std::fmt::Debug for Device {
             .field("id", &self.id)
             .field("vendor_id", &self.vendor_id)
             .field("name", &self.name)
-            .finish()
+            .finish_non_exhaustive()
     }
 }
 
@@ -73,7 +73,7 @@ impl std::fmt::Debug for Vendor {
         f.debug_struct("Vendor")
             .field("id", &self.id)
             .field("name", &self.name)
-            .finish()
+            .finish_non_exhaustive()
     }
 }
 
@@ -108,10 +108,9 @@ fn parse_pci_ids<R: BufRead>(reader: R) -> Result<BTreeMap<u16, Vendor>> {
             trace!("Line {}: Classes reached, parsing done", number + 1);
             break;
         } else if line.starts_with('#') || line.is_empty() {
-            trace!("Line {}: Empty line or comment", number + 1);
             // case 2: we're seeing a comment, don't care
             // case 3: we're seeing an empty line, also don't care
-            continue;
+            trace!("Line {}: Empty line or comment", number + 1);
         } else if line.starts_with("\t\t") {
             // case 4: we're seeing a new sub device of the last seen device
             let mut split = line.trim_start().splitn(4, ' ');
@@ -248,7 +247,9 @@ fn init() -> Result<BTreeMap<u16, Vendor>> {
 
     let elapsed = start.elapsed();
 
-    info!("Successfully parsed pci.ids within {elapsed:.2?} (vendors: {vendors_count}, devices: {devices_count}, subdevices: {subdevices_count})");
+    info!(
+        "Successfully parsed pci.ids within {elapsed:.2?} (vendors: {vendors_count}, devices: {devices_count}, subdevices: {subdevices_count})"
+    );
 
     Ok(map)
 }
@@ -258,7 +259,7 @@ mod test {
     use pretty_assertions::assert_eq;
     use std::{collections::BTreeMap, io::BufReader};
 
-    use crate::utils::pci::{parse_pci_ids, Device, Subdevice, Vendor};
+    use crate::utils::pci::{Device, Subdevice, Vendor, parse_pci_ids};
 
     #[test]
     fn valid_empty() {

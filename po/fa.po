@@ -1,0 +1,1851 @@
+# Persian translations for PACKAGE package.
+# Copyright (C) 2025 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# sobhan <me@mirsobhan.ir>, 2025.
+# Danial Behzadi <dani.behzi@ubuntu.com>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1\n"
+"Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
+"POT-Creation-Date: 2025-10-11 03:36+0000\n"
+"PO-Revision-Date: 2025-10-11 14:24+0330\n"
+"Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
+"Language-Team: Persian\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Gtranslator 48.0\n"
+
+#: data/net.nokyan.Resources.desktop.in.in:2
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4
+#: data/resources/ui/window.ui:22 src/application.rs:272
+msgid "Resources"
+msgstr "منابع"
+
+#. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
+#: data/net.nokyan.Resources.desktop.in.in:3
+#: data/net.nokyan.Resources.metainfo.xml.in.in:5
+msgid "Keep an eye on system resources"
+msgstr "نگاهی به منابع سامانه"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: data/net.nokyan.Resources.desktop.in.in:9
+msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
+msgstr "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;سامانه;منابع;پایش;فرایند;مصرف;وظیفه;مدیر;پردازنده;رم;حافظه;گرافیک;"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:17
+msgid ""
+"Resources allows you to check the utilization of your system resources and "
+"control your running processes and apps. It’s designed to be user-friendly "
+"and feel right at home on a modern desktop by using GNOME’s libadwaita."
+msgstr ""
+"منابع می‌گذارد استفاده از منابع سامانه‌تان را بررسی کرده و کاره‌ها و فرایندهای "
+"در حال اجرا را وابپایید. این برنامه با استفاده از libadwiataی گنوم برای "
+"کاربرپسند بودن و دادن حس بودن در خانه روی میزکارهای نوین طرّاحی شده."
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:20
+msgid "Resources supports monitoring the following components:"
+msgstr "منابع از پایش مولّفه‌های زیر پشتیبانی می‌کند:"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:24
+msgid "CPU"
+msgstr "پردازنده"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+#: data/resources/ui/dialogs/app_dialog.ui:82
+#: data/resources/ui/dialogs/process_dialog.ui:64
+#: data/resources/ui/dialogs/settings_dialog.ui:128
+#: data/resources/ui/dialogs/settings_dialog.ui:220
+#: data/resources/ui/window.ui:176 data/resources/ui/window.ui:183
+#: src/ui/pages/applications/mod.rs:803 src/ui/pages/memory.rs:106
+#: src/ui/pages/memory.rs:192 src/ui/pages/processes/mod.rs:1080
+msgid "Memory"
+msgstr "حافظه"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:26
+#: data/resources/ui/dialogs/app_dialog.ui:140
+#: data/resources/ui/dialogs/process_dialog.ui:118
+#: data/resources/ui/dialogs/settings_dialog.ui:158
+#: data/resources/ui/dialogs/settings_dialog.ui:250
+#: src/ui/pages/applications/mod.rs:1181 src/ui/pages/gpu.rs:119
+#: src/ui/pages/processes/mod.rs:1470 src/ui/window.rs:468
+msgid "GPU"
+msgstr "شتاب‌دهندهٔ گرافیکی"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:27
+#: data/resources/ui/dialogs/settings_dialog.ui:324
+msgid "Network Interfaces"
+msgstr "میاناهای شبکه"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:28
+msgid "Storage Devices"
+msgstr "افزاره‌های ذخیره‌سازی"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:29
+msgid "Batteries"
+msgstr "باتری‌ها"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:51
+msgid "Apps page in light theme"
+msgstr "صفحهٔ کاره‌ها در زمینهٔ روشن"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:55
+msgid "Processes page in dark theme"
+msgstr "صفحهٔ فرایندها در زمینهٔ تیره"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:59
+msgid "Processor page in light theme"
+msgstr "صفحهٔ فرایندها در زمینهٔ روشن"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:63
+msgid "Memory page in dark theme"
+msgstr "صفحهٔ حافظه در زمینهٔ تیره"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:67
+msgid "GPU page in light theme"
+msgstr "صفحهٔ گرافیک در زمینهٔ روشن"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:71
+msgid "Drive page in dark theme"
+msgstr "صفحهٔ گرداننده در زمینهٔ تیره"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:75
+msgid "Network Interface page in light theme"
+msgstr "صفحهٔ میانای شبکه در زمینهٔ روشن"
+
+#: data/net.nokyan.Resources.metainfo.xml.in.in:79
+msgid "Battery page in dark theme"
+msgstr "صفحهٔ باتری در زمینهٔ تیره"
+
+#: data/net.nokyan.Resources.policy.in.in:9
+msgid "Control Process"
+msgstr "واپایش فرایند"
+
+#: data/net.nokyan.Resources.policy.in.in:10
+msgid ""
+"Authentication is required to control superuser’s or other users’ processes"
+msgstr "نیازمند هویت‌سنجی برای واپایش فرایند‌های ابرکاربر یا دیگر کاربران"
+
+#: data/resources/ui/dialogs/app_dialog.ui:7
+msgid "App Information"
+msgstr "اطّلاعات کاره"
+
+#: data/resources/ui/dialogs/app_dialog.ui:70
+#: data/resources/ui/dialogs/process_dialog.ui:48
+#: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37
+#: data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22
+#: data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31
+#: data/resources/ui/pages/network.ui:22 data/resources/ui/pages/npu.ui:22
+msgid "Usage"
+msgstr "استفاده"
+
+#: data/resources/ui/dialogs/app_dialog.ui:73
+#: data/resources/ui/dialogs/process_dialog.ui:55
+#: data/resources/ui/dialogs/settings_dialog.ui:133
+#: data/resources/ui/dialogs/settings_dialog.ui:225
+#: data/resources/ui/window.ui:145 data/resources/ui/window.ui:152
+#: src/ui/pages/applications/mod.rs:862 src/ui/pages/cpu.rs:128
+#: src/ui/pages/processes/mod.rs:1139 src/ui/window.rs:290
+msgid "Processor"
+msgstr "پردازنده"
+
+#: data/resources/ui/dialogs/app_dialog.ui:91
+#: data/resources/ui/dialogs/process_dialog.ui:73
+#: data/resources/ui/dialogs/settings_dialog.ui:178
+#: data/resources/ui/dialogs/settings_dialog.ui:290
+#: src/ui/pages/applications/mod.rs:1420 src/ui/pages/memory.rs:198
+#: src/ui/pages/processes/mod.rs:1955
+msgid "Swap"
+msgstr "مبادله"
+
+#: data/resources/ui/dialogs/app_dialog.ui:100
+#: data/resources/ui/dialogs/process_dialog.ui:78
+#: data/resources/ui/dialogs/settings_dialog.ui:138
+#: data/resources/ui/dialogs/settings_dialog.ui:230
+#: src/ui/pages/applications/mod.rs:926 src/ui/pages/processes/mod.rs:1203
+msgid "Drive Read"
+msgstr "خواندن گرداننده"
+
+#: data/resources/ui/dialogs/app_dialog.ui:109
+#: data/resources/ui/dialogs/process_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:143
+#: data/resources/ui/dialogs/settings_dialog.ui:235
+#: src/ui/pages/applications/mod.rs:991 src/ui/pages/processes/mod.rs:1270
+msgid "Drive Read Total"
+msgstr "مجموع خواندن گرداننده"
+
+#: data/resources/ui/dialogs/app_dialog.ui:118
+#: data/resources/ui/dialogs/process_dialog.ui:96
+#: data/resources/ui/dialogs/settings_dialog.ui:148
+#: data/resources/ui/dialogs/settings_dialog.ui:240
+#: src/ui/pages/applications/mod.rs:1052 src/ui/pages/processes/mod.rs:1337
+msgid "Drive Write"
+msgstr "نوشتن گرداننده"
+
+#: data/resources/ui/dialogs/app_dialog.ui:127
+#: data/resources/ui/dialogs/process_dialog.ui:105
+#: data/resources/ui/dialogs/settings_dialog.ui:153
+#: data/resources/ui/dialogs/settings_dialog.ui:245
+#: src/ui/pages/applications/mod.rs:1119 src/ui/pages/processes/mod.rs:1404
+msgid "Drive Write Total"
+msgstr "مجموع نوشتن گرداننده"
+
+#: data/resources/ui/dialogs/app_dialog.ui:149
+#: data/resources/ui/dialogs/process_dialog.ui:127
+#: data/resources/ui/dialogs/settings_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:255
+#: src/ui/pages/applications/mod.rs:1361 src/ui/pages/processes/mod.rs:1651
+msgid "Video Memory"
+msgstr "حافظهٔ ویدیویی"
+
+#: data/resources/ui/dialogs/app_dialog.ui:158
+#: data/resources/ui/dialogs/process_dialog.ui:136
+#: data/resources/ui/dialogs/settings_dialog.ui:168
+#: data/resources/ui/dialogs/settings_dialog.ui:260
+#: src/ui/pages/applications/mod.rs:1240 src/ui/pages/processes/mod.rs:1529
+msgid "Video Encoder"
+msgstr "کدگذار ویدیوی"
+
+#: data/resources/ui/dialogs/app_dialog.ui:167
+#: data/resources/ui/dialogs/process_dialog.ui:145
+#: data/resources/ui/dialogs/settings_dialog.ui:173
+#: data/resources/ui/dialogs/settings_dialog.ui:265
+#: src/ui/pages/applications/mod.rs:1301 src/ui/pages/processes/mod.rs:1590
+msgid "Video Decoder"
+msgstr "کدگشای ویدیویی"
+
+#: data/resources/ui/dialogs/app_dialog.ui:174
+#: data/resources/ui/dialogs/process_dialog.ui:179
+#: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:83
+#: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:74
+#: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
+#: data/resources/ui/pages/npu.ui:68
+msgid "Properties"
+msgstr "ویژگی‌ها"
+
+#: data/resources/ui/dialogs/app_dialog.ui:180
+msgid "ID"
+msgstr "شناسه"
+
+#: data/resources/ui/dialogs/app_dialog.ui:190
+#: data/resources/ui/dialogs/process_dialog.ui:195
+msgid "Running Since"
+msgstr "در حال اجرا از"
+
+#: data/resources/ui/dialogs/app_dialog.ui:198
+msgid "Running Processes"
+msgstr "فرایندهای در حال اجرا"
+
+#: data/resources/ui/dialogs/app_dialog.ui:207
+#: data/resources/ui/dialogs/process_dialog.ui:231
+msgid "Containerized"
+msgstr "بارگنجیده"
+
+#: data/resources/ui/dialogs/process_dialog.ui:7
+msgid "Process Information"
+msgstr "اطّلاعات فرایند"
+
+#: data/resources/ui/dialogs/process_dialog.ui:154
+#: data/resources/ui/dialogs/settings_dialog.ui:270
+#: src/ui/pages/processes/mod.rs:1711
+msgid "Total CPU Time"
+msgstr "مجموع زمان پردازنده"
+
+#: data/resources/ui/dialogs/process_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:275
+#: src/ui/pages/processes/mod.rs:1770
+msgid "User CPU Time"
+msgstr "زمان پردازندهٔ کاربر"
+
+#: data/resources/ui/dialogs/process_dialog.ui:172
+#: data/resources/ui/dialogs/settings_dialog.ui:280
+#: src/ui/pages/processes/mod.rs:1829
+msgid "System CPU Time"
+msgstr "زمان پردازندهٔ سامانه"
+
+#: data/resources/ui/dialogs/process_dialog.ui:186
+#: data/resources/ui/dialogs/settings_dialog.ui:210
+#: src/ui/pages/processes/mod.rs:973
+msgid "Process ID"
+msgstr "شناسهٔ فرایند"
+
+#: data/resources/ui/dialogs/process_dialog.ui:204
+#: data/resources/ui/dialogs/settings_dialog.ui:300
+#: src/ui/pages/processes/mod.rs:2075
+msgid "Commandline"
+msgstr "خط فرمان"
+
+#: data/resources/ui/dialogs/process_dialog.ui:213
+#: data/resources/ui/dialogs/settings_dialog.ui:215
+#: src/ui/pages/processes/mod.rs:1026
+msgid "User"
+msgstr "کاربر"
+
+#: data/resources/ui/dialogs/process_dialog.ui:222
+msgid "Control Group"
+msgstr "گروه واپایشی"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:7
+#: data/resources/ui/dialogs/process_options_dialog.ui:69
+msgid "Process Options"
+msgstr "گزینه‌های فرایند"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:29
+msgid "Apply"
+msgstr "اِعمال"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:72
+msgid "Niceness"
+msgstr "خوبی"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:73
+msgid ""
+"The priority of a process is given by its niceness. A lower niceness value "
+"correspond to a higher priority."
+msgstr ""
+"اولویت فرایند بر اساس خوبیش داده می‌شود. مقدار خوبی کم‌تر معادل اولویت بیش‌تر "
+"است."
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:285
+#: src/ui/pages/processes/mod.rs:1888
+msgid "Priority"
+msgstr "اولویت"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:91
+msgctxt "process priority"
+msgid "Very High"
+msgstr "خیلی زیاد"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:92
+msgctxt "process priority"
+msgid "High"
+msgstr "زیاد"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:93
+msgctxt "process priority"
+msgid "Normal"
+msgstr "معمول"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:94
+msgctxt "process priority"
+msgid "Low"
+msgstr "کم"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:95
+msgctxt "process priority"
+msgid "Very Low"
+msgstr "خیلی کم"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:103
+msgid "Processor Affinity"
+msgstr "تخصیص پردازنده"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:108
+msgid "Toggle All"
+msgstr "تغییر وضعیت همه"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:111
+msgid "Select which processor cores the process is allowed to run on"
+msgstr "گزینش هسته‌های پردازنده‌ای که فرایند مجاز به اجرا رویشان است"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:7
+msgid "General"
+msgstr "عمومی"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:10
+msgid "Units"
+msgstr "یکاها"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:13
+msgid "Data Unit Prefix"
+msgstr "پیشوند یکای داده"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:17
+msgid "Decimal"
+msgstr "ده‌دهی"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:18
+msgid "Binary"
+msgstr "دودویی"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:26
+msgid "Show Network Speeds in Bits per Second"
+msgstr "نمایش سرعت شبکه بر اساس بیت بر ثانیه"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:31
+msgid "Temperature Unit"
+msgstr "یکای دما"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:35
+msgid "Celsius"
+msgstr "سلسیوس"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:36
+msgid "Kelvin"
+msgstr "کلوین"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:37
+msgid "Fahrenheit"
+msgstr "فارنهایت"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:47
+msgid "User Interface"
+msgstr "میانای کاربری"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:50
+msgid "Refresh Speed"
+msgstr "سرعت تازه‌سازی"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:51
+msgid "Higher refresh speeds can lead to higher processor usage"
+msgstr "سرعت‌های تازه‌سازی بیش‌تر می‌تواند موجب استفادهٔ بیش‌تر از پردازنده شوند"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:55
+msgctxt "UI refresh speed"
+msgid "Very Slow"
+msgstr "خیلی کند"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:56
+msgctxt "UI refresh speed"
+msgid "Slow"
+msgstr "کند"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:57
+msgctxt "UI refresh speed"
+msgid "Normal"
+msgstr "معمولی"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:58
+msgctxt "UI refresh speed"
+msgid "Fast"
+msgstr "تند"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:59
+msgctxt "UI refresh speed"
+msgid "Very Fast"
+msgstr "خیلی تند"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:67
+msgid "Show Graph Grids"
+msgstr "نمایش توری نمودار"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:72
+msgid "Graph Data Points"
+msgstr "نقاط دادهٔ نمودار"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:86
+msgid "Show Usage Details in Sidebar"
+msgstr "نمایش جزییات استفاده در نوار کناری"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:87
+msgid "If enabled, the usage along with other information will be displayed"
+msgstr "در صورت به کار افتادن استفاده با دیگر اطّلاعات نمایش داده خواهد شد"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:92
+msgid "Show Device Descriptions in Sidebar"
+msgstr "نمایش شرح‌های افزاره در نوار کناری"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:93
+msgid ""
+"If enabled, a device identifier like its name or device type will be "
+"displayed"
+msgstr ""
+"در صورت به کار افتادن شناساگری از افزاره چون گونه یا نامش نمایش داده خواهد شد"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:98
+msgid "Sidebar Meter Type"
+msgstr "گونهٔ معیار نوار کناری"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:102
+msgid "Bar"
+msgstr "نوار"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:103
+msgid "Graph"
+msgstr "نمودار"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:111
+msgid "Normalize Processor Usage"
+msgstr "نرمال کردن استفادهٔ پردازنده"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:112
+msgid ""
+"If enabled, the total usage of all cores will be divided by the amount of "
+"cores"
+msgstr ""
+"در صورت به کار افتادن مجموع استفادهٔ همهٔ هسته‌های برای تعدادشان تقسیم خواهد شد"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:122
+#: data/resources/ui/window.ui:65 data/resources/ui/window.ui:72
+#: src/ui/pages/applications/mod.rs:131
+msgid "Apps"
+msgstr "کاره‌ها"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:125
+#: data/resources/ui/dialogs/settings_dialog.ui:207
+msgid "Information Columns"
+msgstr "ستون‌های اطلاعات"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:183
+#: data/resources/ui/dialogs/settings_dialog.ui:295
+#: src/ui/pages/applications/mod.rs:1479 src/ui/pages/processes/mod.rs:2014
+msgid "Combined Memory"
+msgstr "حافظهٔ ترکیبی"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:193
+#: data/resources/ui/window.ui:105 data/resources/ui/window.ui:112
+#: src/ui/pages/processes/mod.rs:175
+msgid "Processes"
+msgstr "فرایندها"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:196
+#: data/resources/ui/pages/cpu.ui:22 data/resources/ui/pages/processes.ui:56
+msgid "Options"
+msgstr "گزینه‌ها"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:199
+msgid "Show Niceness Values"
+msgstr "نمایش مقدارهای خوبی"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:200
+msgid ""
+"Display priorities as niceness to allow for more fine-grained adjustments"
+msgstr "نمایش اولویت‌ها به صورت خوبی برای امکان تنظیمات دقیق‌تر"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:310
+msgid "Devices"
+msgstr "افزاره‌ها"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:313
+msgid "Drives"
+msgstr "گرداننده‌ها"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:316
+msgid "Show Virtual Drives"
+msgstr "نمایش گردانندهٔ مجازی"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:317
+msgid "Virtual drives are for example ZFS volumes or mapped devices"
+msgstr "افزاره‌های مجاری برای نمونه حجم‌های ZFS یا افزاره‌های نگاشته هستند"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:327
+msgid "Show Virtual Network Interfaces"
+msgstr "نمایش میانای شبکهٔ مجازی"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:328
+msgid "Virtual network interfaces are for example bridges or VPN tunnels"
+msgstr "میاناهای شبکه مجازی برای نمونه پل‌ها و تونل‌های وی‌پی‌ان هستند"
+
+#: data/resources/ui/pages/applications.ui:6
+#: data/resources/ui/pages/applications.ui:26
+#: src/ui/pages/applications/mod.rs:1563
+msgid "Kill App"
+msgstr "کشتن کاره"
+
+#: data/resources/ui/pages/applications.ui:10
+#: data/resources/ui/pages/applications.ui:30
+#: src/ui/pages/applications/mod.rs:1562
+msgid "Halt App"
+msgstr "بستن کاره"
+
+#: data/resources/ui/pages/applications.ui:14
+#: data/resources/ui/pages/applications.ui:34
+#: src/ui/pages/applications/mod.rs:1564
+msgid "Continue App"
+msgstr "ادامهٔ کاره"
+
+#: data/resources/ui/pages/applications.ui:22
+#: data/resources/ui/pages/applications.ui:98
+#: src/ui/pages/applications/mod.rs:1561
+msgid "End App"
+msgstr "اتمام کاره"
+
+#: data/resources/ui/pages/applications.ui:40
+#: data/resources/ui/pages/processes.ui:62
+msgid "Information"
+msgstr "اطّلاعات"
+
+#: data/resources/ui/pages/applications.ui:57
+msgid "Search applications"
+msgstr "جست‌وجوی برنامه‌ها"
+
+#: data/resources/ui/pages/applications.ui:87
+#: data/resources/ui/pages/applications.ui:89
+msgid "Show App Information"
+msgstr "نمایش اطّلاعات کاره"
+
+#: data/resources/ui/pages/battery.ui:36
+msgid "Battery Health"
+msgstr "سلامت باتری"
+
+#: data/resources/ui/pages/battery.ui:45
+msgid "Design Capacity"
+msgstr "ظرفیت طراحی"
+
+#: data/resources/ui/pages/battery.ui:54
+msgid "Charge Cycles"
+msgstr "چرخهٔ پر شدن"
+
+#: data/resources/ui/pages/battery.ui:63
+msgid "Technology"
+msgstr "فناوری"
+
+#: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:81
+#: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:75
+msgid "Manufacturer"
+msgstr "سازنده"
+
+#: data/resources/ui/pages/battery.ui:81
+msgid "Model Name"
+msgstr "نام مدل"
+
+#: data/resources/ui/pages/battery.ui:90 data/resources/ui/pages/drive.ui:66
+msgid "Device"
+msgstr "افزاره"
+
+#: data/resources/ui/pages/cpu.ui:26
+msgid "Show Usages of Logical CPUs"
+msgstr "نمایش مصرف پردازنده های منطقی"
+
+#: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
+#: data/resources/ui/pages/npu.ui:60
+msgid "Sensors"
+msgstr "حسگرها"
+
+#: data/resources/ui/pages/cpu.ui:90
+msgid "Max Frequency"
+msgstr "بیشینهٔ بسامد"
+
+#: data/resources/ui/pages/cpu.ui:99
+msgid "Logical Cores"
+msgstr "هسته‌های منطقی"
+
+#: data/resources/ui/pages/cpu.ui:108
+msgid "Physical Cores"
+msgstr "هسته‌های فیزیکی"
+
+#: data/resources/ui/pages/cpu.ui:117
+msgid "Sockets"
+msgstr "سوکت‌ها"
+
+#: data/resources/ui/pages/cpu.ui:126
+msgid "Uptime"
+msgstr "زمان کارکرد"
+
+#: data/resources/ui/pages/cpu.ui:135
+msgid "Virtualization"
+msgstr "مجازی‌سازی"
+
+#: data/resources/ui/pages/cpu.ui:144
+msgid "Architecture"
+msgstr "معماری"
+
+#: data/resources/ui/pages/drive.ui:38
+msgid "Total Read"
+msgstr "کل خواندن"
+
+#: data/resources/ui/pages/drive.ui:47
+msgid "Total Written"
+msgstr "کل نوشتن"
+
+#: data/resources/ui/pages/drive.ui:57 data/resources/ui/pages/memory.ui:72
+msgid "Type"
+msgstr "گونه"
+
+#: data/resources/ui/pages/drive.ui:75
+msgid "Capacity"
+msgstr "ظرفیت"
+
+#: data/resources/ui/pages/drive.ui:84
+msgid "Writable"
+msgstr "قابل نوشتن"
+
+#: data/resources/ui/pages/drive.ui:93
+msgid "Removable"
+msgstr "برداشتنی"
+
+#. Translators: "Link" refers to something like "PCIe 4.0 ×16"
+#: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113
+#: data/resources/ui/pages/network.ui:103 data/resources/ui/pages/npu.ui:107
+msgid "Link"
+msgstr "پیوند"
+
+#: data/resources/ui/pages/gpu.ui:37
+msgid "GPU Frequency"
+msgstr "بسامد شتاب‌دهندهٔ گرافیکی"
+
+#: data/resources/ui/pages/gpu.ui:50
+msgid "Video Memory Frequency"
+msgstr "بسامد حافظهٔ ویدیویی"
+
+#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49
+#: src/ui/pages/battery.rs:217
+msgid "Power Usage"
+msgstr "مصرف نیرو"
+
+#: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:84
+msgid "PCI Slot"
+msgstr "شکاف PCI"
+
+#: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
+#: data/resources/ui/pages/npu.ui:93
+msgid "Driver Used"
+msgstr "راه‌انداز استفاده شده"
+
+#: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
+msgid "Max Power Cap"
+msgstr "بیشینه ظرفیت نیرو"
+
+#: data/resources/ui/pages/memory.ui:9
+msgid "You need to authenticate to see memory properties"
+msgstr "دیدن ویژگی‌های حافظه نیازمند هویت‌سنجی"
+
+#: data/resources/ui/pages/memory.ui:10
+msgid "Authenticate"
+msgstr "هویت‌سنجی"
+
+#: data/resources/ui/pages/memory.ui:45
+msgid "Slots Used"
+msgstr "شکاف‌های استفاده شده"
+
+#: data/resources/ui/pages/memory.ui:54
+msgid "Speed"
+msgstr "سرعت"
+
+#: data/resources/ui/pages/memory.ui:63
+msgid "Form Factor"
+msgstr "قالب ریخت"
+
+#: data/resources/ui/pages/memory.ui:81
+msgid "Type Detail"
+msgstr "جزییات گونه"
+
+#: data/resources/ui/pages/network.ui:35
+msgid "Total Received"
+msgstr "کل دریافت"
+
+#: data/resources/ui/pages/network.ui:44
+msgid "Total Sent"
+msgstr "کل ارسال"
+
+#: data/resources/ui/pages/network.ui:76
+msgid "Interface"
+msgstr "میانا"
+
+#: data/resources/ui/pages/network.ui:85
+msgid "Hardware Address"
+msgstr "نشانی سخت‌افزاری"
+
+#: data/resources/ui/pages/network.ui:94
+msgid "Network Name"
+msgstr "نام شبکه"
+
+#: data/resources/ui/pages/network.ui:112
+msgid "Link Speed"
+msgstr "سرعت پیوند"
+
+#: data/resources/ui/pages/npu.ui:31
+msgid "NPU Frequency"
+msgstr "بسامد پرداشگر عصبی"
+
+#: data/resources/ui/pages/npu.ui:44
+msgid "Memory Frequency"
+msgstr "بسامد حافظه"
+
+#: data/resources/ui/pages/processes.ui:6
+#: data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2184
+msgid "Kill Process"
+msgstr "کشتن فرایند"
+
+#: data/resources/ui/pages/processes.ui:10
+#: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2183
+msgid "Halt Process"
+msgstr "بستن فرایند"
+
+#: data/resources/ui/pages/processes.ui:14
+#: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2185
+msgid "Continue Process"
+msgstr "ادامهٔ فرایند"
+
+#: data/resources/ui/pages/processes.ui:22
+#: data/resources/ui/pages/processes.ui:74
+msgid "Kill Processes"
+msgstr "کشتن فرایندها"
+
+#: data/resources/ui/pages/processes.ui:26
+#: data/resources/ui/pages/processes.ui:78
+msgid "Halt Processes"
+msgstr "بستن فرایندها"
+
+#: data/resources/ui/pages/processes.ui:30
+#: data/resources/ui/pages/processes.ui:82
+msgid "Continue Processes"
+msgstr "ادامهٔ فرایندها"
+
+#: data/resources/ui/pages/processes.ui:38
+#: data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:524
+#: src/ui/pages/processes/mod.rs:2182
+msgid "End Process"
+msgstr "اتمام فرایند"
+
+#: data/resources/ui/pages/processes.ui:70 src/ui/pages/processes/mod.rs:528
+msgid "End Processes"
+msgstr "اتمام فرایندها"
+
+#: data/resources/ui/pages/processes.ui:103
+msgid "Search processes"
+msgstr "جست‌وجوی فرایندها"
+
+#: data/resources/ui/pages/processes.ui:133
+#: data/resources/ui/pages/processes.ui:135
+msgid "Show Process Options"
+msgstr "نمایش گزینه‌های فرایند"
+
+#: data/resources/ui/pages/processes.ui:146
+#: data/resources/ui/pages/processes.ui:148
+msgid "Show Process Information"
+msgstr "نمایش اطلاعات فرایند"
+
+#: data/resources/ui/shortcuts.ui:6
+msgctxt "shortcut window"
+msgid "General"
+msgstr "عمومی"
+
+#: data/resources/ui/shortcuts.ui:9
+msgctxt "shortcut window"
+msgid "Preferences"
+msgstr "ترجیحات"
+
+#: data/resources/ui/shortcuts.ui:15
+msgctxt "shortcut window"
+msgid "Show Shortcuts"
+msgstr "نمایش میان‌برها"
+
+#: data/resources/ui/shortcuts.ui:21
+msgctxt "shortcut window"
+msgid "Quit"
+msgstr "خروج"
+
+#: data/resources/ui/shortcuts.ui:29
+msgctxt "shortcut window"
+msgid "Apps/Processes"
+msgstr "کاره‌ها و فرایندها"
+
+#: data/resources/ui/shortcuts.ui:32
+msgctxt "shortcut window"
+msgid "Toggle Search Field"
+msgstr "تغییر وضعیت زمینهٔ جست‌وجو"
+
+#: data/resources/ui/shortcuts.ui:38
+msgctxt "shortcut window"
+msgid "End App/Process"
+msgstr "اتمام کاره یا فرایند"
+
+#: data/resources/ui/shortcuts.ui:44
+msgctxt "shortcut window"
+msgid "Kill App/Process"
+msgstr "کشتن کاره یا فرایند"
+
+#: data/resources/ui/shortcuts.ui:50
+msgctxt "shortcut window"
+msgid "Halt App/Process"
+msgstr "بستن کاره یا فرایند"
+
+#: data/resources/ui/shortcuts.ui:56
+msgctxt "shortcut window"
+msgid "Continue App/Process"
+msgstr "ادامهٔ کاره یا فرایند"
+
+#: data/resources/ui/shortcuts.ui:62
+msgctxt "shortcut window"
+msgid "Show Information for App/Process"
+msgstr "نمایش اطّلاعات کاره یا فرایند"
+
+#: data/resources/ui/shortcuts.ui:68
+msgctxt "shortcut window"
+msgid "Show Process Options"
+msgstr "نمایش گزینه‌های فرایند"
+
+#: data/resources/ui/window.ui:6
+msgid "Preferences"
+msgstr "ترجیحات"
+
+#: data/resources/ui/window.ui:10
+msgid "Keyboard Shortcuts"
+msgstr "میان‌برهای صفحه‌کلید"
+
+#: data/resources/ui/window.ui:14
+msgid "About Resources"
+msgstr "دربارهٔ منابع"
+
+#: data/resources/ui/window.ui:88 data/resources/ui/window.ui:128
+msgid "Search"
+msgstr "جست‌وجو"
+
+#: data/resources/ui/window.ui:90 data/resources/ui/window.ui:130
+msgid "Toggle search field"
+msgstr "تغییر وضعیت زمینهٔ جست‌وجو"
+
+#: src/application.rs:274
+msgid "The Nalux Team"
+msgstr "گروه نالوکس"
+
+#: src/application.rs:282
+msgid "Report Issues"
+msgstr "گزارش مسئله‌ها"
+
+#. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
+#. One name per line, please do not remove previous names.
+#: src/application.rs:288
+msgid "translator-credits"
+msgstr ""
+"دانیال بهزادی <dani.behzi@ubuntu.com>\n"
+"میسانو t.me/mirsobhan"
+
+#: src/application.rs:289
+msgid "Icon by"
+msgstr "نقشک به دست"
+
+#: src/ui/dialogs/app_dialog.rs:155 src/ui/dialogs/process_dialog.rs:133
+#: src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:146
+#: src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171
+#: src/ui/dialogs/process_dialog.rs:178 src/ui/dialogs/process_dialog.rs:185
+#: src/ui/dialogs/process_dialog.rs:192 src/ui/pages/applications/mod.rs:948
+#: src/ui/pages/applications/mod.rs:1074 src/ui/pages/battery.rs:205
+#: src/ui/pages/battery.rs:225 src/ui/pages/battery.rs:231
+#: src/ui/pages/battery.rs:234 src/ui/pages/battery.rs:265
+#: src/ui/pages/battery.rs:289 src/ui/pages/battery.rs:291
+#: src/ui/pages/battery.rs:301 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258
+#: src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:290
+#: src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303
+#: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:319
+#: src/ui/pages/drive.rs:350 src/ui/pages/drive.rs:352
+#: src/ui/pages/drive.rs:381 src/ui/pages/drive.rs:383
+#: src/ui/pages/drive.rs:399 src/ui/pages/drive.rs:400
+#: src/ui/pages/drive.rs:407 src/ui/pages/drive.rs:417
+#: src/ui/pages/drive.rs:427 src/ui/pages/drive.rs:433 src/ui/pages/gpu.rs:245
+#: src/ui/pages/gpu.rs:252 src/ui/pages/gpu.rs:297 src/ui/pages/gpu.rs:322
+#: src/ui/pages/gpu.rs:325 src/ui/pages/gpu.rs:336 src/ui/pages/gpu.rs:377
+#: src/ui/pages/gpu.rs:384 src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:403
+#: src/ui/pages/gpu.rs:407 src/ui/pages/gpu.rs:437 src/ui/pages/gpu.rs:443
+#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228
+#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233
+#: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:238
+#: src/ui/pages/memory.rs:266 src/ui/pages/memory.rs:327
+#: src/ui/pages/network.rs:252 src/ui/pages/network.rs:259
+#: src/ui/pages/network.rs:266 src/ui/pages/network.rs:272
+#: src/ui/pages/network.rs:275 src/ui/pages/network.rs:285
+#: src/ui/pages/network.rs:292 src/ui/pages/network.rs:302
+#: src/ui/pages/network.rs:370 src/ui/pages/network.rs:373
+#: src/ui/pages/network.rs:375 src/ui/pages/network.rs:404
+#: src/ui/pages/network.rs:407 src/ui/pages/network.rs:409
+#: src/ui/pages/network.rs:417 src/ui/pages/network.rs:424
+#: src/ui/pages/network.rs:434 src/ui/pages/processes/mod.rs:1225
+#: src/ui/pages/processes/mod.rs:1292 src/ui/pages/processes/mod.rs:1359
+#: src/ui/pages/processes/mod.rs:1426 src/ui/pages/processes/mod.rs:1912
+#: src/ui/pages/processes/mod.rs:1914 src/utils/battery.rs:152
+#: src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291
+#: src/utils/link/mod.rs:61 src/utils/npu/mod.rs:244 src/utils/npu/mod.rs:250
+msgid "N/A"
+msgstr "نامربوط"
+
+#: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257
+#: src/ui/pages/cpu.rs:417 src/ui/pages/cpu.rs:421
+msgid "CPU {}"
+msgstr "پردازندهٔ {}"
+
+#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:414
+#: src/ui/pages/drive.rs:424 src/ui/pages/processes/process_entry.rs:211
+msgid "No"
+msgstr "نه"
+
+#: src/ui/pages/applications/application_entry.rs:191
+#: src/ui/pages/processes/process_entry.rs:212
+msgid "Yes (Flatpak)"
+msgstr "بله (فلت‌پک)"
+
+#: src/ui/pages/applications/application_entry.rs:192
+#: src/ui/pages/processes/process_entry.rs:213
+msgid "Yes (Snap)"
+msgstr "بله (اسنپ)"
+
+#: src/ui/pages/applications/mod.rs:660
+msgid "Running Apps: {}"
+msgstr "کاره‌های درحال اجرا: {}"
+
+#: src/ui/pages/applications/mod.rs:700 src/ui/pages/processes/mod.rs:863
+msgid "Cancel"
+msgstr "لغو"
+
+#: src/ui/pages/applications/mod.rs:746
+msgid "App"
+msgstr "کاره"
+
+#: src/ui/pages/applications/mod.rs:1539 src/ui/pages/processes/mod.rs:2131
+msgid "End {}?"
+msgstr "پایان دادن {}؟"
+
+#: src/ui/pages/applications/mod.rs:1540 src/ui/pages/processes/mod.rs:2132
+msgid "Halt {}?"
+msgstr "بستن {}؟"
+
+#: src/ui/pages/applications/mod.rs:1541 src/ui/pages/processes/mod.rs:2133
+msgid "Kill {}?"
+msgstr "کشتن {}؟"
+
+#: src/ui/pages/applications/mod.rs:1542 src/ui/pages/processes/mod.rs:2134
+msgid "Continue {}?"
+msgstr "ادامهٔ {}؟"
+
+#: src/ui/pages/applications/mod.rs:1548 src/ui/pages/processes/mod.rs:2169
+msgid "Unsaved work might be lost."
+msgstr "ممکن است کارهای ذخیره نشده از دست بروند."
+
+#: src/ui/pages/applications/mod.rs:1550
+msgid ""
+"Halting an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
+msgstr ""
+"بستن کاره می‌تواند با خطرهای جدی چون از دست دادن داده‌ها و مسائل امنیتی همراه "
+"باشد. با احتیاط استفاده شود."
+
+#: src/ui/pages/applications/mod.rs:1553
+msgid ""
+"Killing an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
+msgstr ""
+"کشتن کاره می‌تواند با خطرهای جدی چون از دست دادن داده‌ها و مسائل امنیتی همراه "
+"باشد. با احتیاط استفاده شود."
+
+#: src/ui/pages/battery.rs:102 src/utils/battery.rs:258
+msgid "Battery"
+msgstr "باتری"
+
+#: src/ui/pages/battery.rs:210
+msgid "Battery Charge"
+msgstr "شارژ باتری"
+
+#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:438
+#: src/ui/pages/drive.rs:344 src/ui/pages/drive.rs:375 src/ui/pages/gpu.rs:429
+#: src/ui/pages/network.rs:362 src/ui/pages/network.rs:396
+msgid "Highest:"
+msgstr "بیش‌ترین:"
+
+#: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:212
+msgid "Total Usage"
+msgstr "مصرف کل"
+
+#: src/ui/pages/cpu.rs:271 src/ui/pages/gpu.rs:239
+msgid "Temperature"
+msgstr "دما"
+
+#: src/ui/pages/drive.rs:126
+msgid "Drive"
+msgstr "گرداننده"
+
+#: src/ui/pages/drive.rs:236
+msgid "Drive Activity"
+msgstr "فعّالیت گرداننده"
+
+#: src/ui/pages/drive.rs:243
+msgid "Read Speed"
+msgstr "سرعت خواندن"
+
+#: src/ui/pages/drive.rs:247
+msgid "Write Speed"
+msgstr "سرعت نوشتن"
+
+#: src/ui/pages/drive.rs:412 src/ui/pages/drive.rs:422
+msgid "Yes"
+msgstr "بله"
+
+#. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
+#. translation should preferably be quite short or an abbreviation
+#: src/ui/pages/drive.rs:440
+msgid "R: {} · W: {}"
+msgstr "خ: {} · ن: {}"
+
+#: src/ui/pages/gpu.rs:220
+msgid "Video Encoder/Decoder Usage"
+msgstr "مصرف کدگشا/کدگذار ویدیو"
+
+#: src/ui/pages/gpu.rs:226
+msgid "Video Encoder Usage"
+msgstr "مصرف کدگذار ویدیو"
+
+#: src/ui/pages/gpu.rs:231
+msgid "Video Decoder Usage"
+msgstr "مصرف کدگشای ویدیو"
+
+#: src/ui/pages/gpu.rs:236
+msgid "Video Memory Usage"
+msgstr "مصرف حافظهٔ ویدیویی"
+
+#. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
+#. shorter than) 'Memory'
+#: src/ui/pages/gpu.rs:415
+msgid "Memory: {}"
+msgstr "حافظه: {}"
+
+#: src/ui/pages/memory.rs:262
+msgid "{} of {}"
+msgstr "{} از {}"
+
+#: src/ui/pages/memory.rs:265
+msgid "{} MT/s"
+msgstr "{} MT/s"
+
+#. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
+#. preferably be quite short or an abbreviation
+#: src/ui/pages/memory.rs:346
+msgid "{} / {} · Swap: {} %"
+msgstr "{} / {} · مبادله: {} %"
+
+#: src/ui/pages/network.rs:127 src/utils/network.rs:135
+msgid "Network Interface"
+msgstr "میانای شبکه"
+
+#: src/ui/pages/network.rs:241
+msgid "Receiving"
+msgstr "گرفتن"
+
+#: src/ui/pages/network.rs:245
+msgid "Sending"
+msgstr "فرستادن"
+
+#. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
+#. your translation should preferably be quite short or an abbreviation
+#: src/ui/pages/network.rs:445
+msgid "R: {} · S: {}"
+msgstr "گ: {} · ف: {}"
+
+#: src/ui/pages/processes/mod.rs:814
+msgid "Running Processes: {}"
+msgstr "فرایندهای درحال اجرا: {}"
+
+#: src/ui/pages/processes/mod.rs:912
+msgid "Process"
+msgstr "فرایند"
+
+#: src/ui/pages/processes/mod.rs:2141
+msgid "End process?"
+msgid_plural "End {} processes?"
+msgstr[0] "اتمام فرایند؟"
+msgstr[1] "اتمام {} فرایند؟"
+
+#: src/ui/pages/processes/mod.rs:2147
+msgid "Halt process?"
+msgid_plural "Halt {} processes?"
+msgstr[0] "بستن فرایند؟"
+msgstr[1] "بستن {} فرایند؟"
+
+#: src/ui/pages/processes/mod.rs:2153 src/ui/pages/processes/mod.rs:2159
+msgid "Kill process?"
+msgid_plural "Kill {} processes?"
+msgstr[0] "کشتن فرایند؟"
+msgstr[1] "کشتن {} فرایند؟"
+
+#: src/ui/pages/processes/mod.rs:2171
+msgid ""
+"Halting a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"بستن فرایند می‌تواند با خطرهای جدی چون از دست دادن داده‌ها و مسائل امنیتی "
+"همراه باشد. با احتیاط استفاده شود."
+
+#: src/ui/pages/processes/mod.rs:2174
+msgid ""
+"Killing a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"کشتن فرایند می‌تواند با خطرهای جدی چون از دست دادن داده‌ها و مسائل امنیتی "
+"همراه باشد. با احتیاط استفاده شود."
+
+#: src/ui/window.rs:466
+msgid "GPU {}"
+msgstr "شتاب‌دهندهٔ گرافیکی {}"
+
+#: src/ui/window.rs:496
+msgid "NPU {}"
+msgstr "پردازندهٔ عصبی {}"
+
+#: src/ui/window.rs:498
+msgid "NPU"
+msgstr "پردازندهٔ عصبی"
+
+#: src/ui/window.rs:1174
+msgid "Successfully adjusted {}"
+msgstr "{} با موفّقیت تنظیم شد"
+
+#: src/ui/window.rs:1175
+msgid "There was a problem adjusting {}"
+msgstr "مشکلی در تنظیم {} وجود داشت"
+
+#: src/ui/window.rs:1257
+msgid "Successfully ended {}"
+msgstr "{} با موفّقیت اتمام یافت"
+
+#: src/ui/window.rs:1258
+msgid "Successfully halted {}"
+msgstr "{} با موفّقیت بسته شد"
+
+#: src/ui/window.rs:1259
+msgid "Successfully killed {}"
+msgstr "{} با موفّقیت کشته شد"
+
+#: src/ui/window.rs:1260
+msgid "Successfully continued {}"
+msgstr "{} با موفّقیت ادامه یافت"
+
+#: src/ui/window.rs:1267
+msgid "Successfully ended the process"
+msgid_plural "Successfully ended {} processes"
+msgstr[0] "فرایند با موفقیت پایان یافت"
+msgstr[1] "{} فرایند با موفقیت پایان یافتند"
+
+#: src/ui/window.rs:1273
+msgid "Successfully halted the process"
+msgid_plural "Successfully halted {} processes"
+msgstr[0] "فرایند با موفقیت بسته شد"
+msgstr[1] "{} فرایند با موفقیت بسته شدند"
+
+#: src/ui/window.rs:1279
+msgid "Successfully killed the process"
+msgid_plural "Successfully killed {} processes"
+msgstr[0] "فرایند با موفقیت کشته شد"
+msgstr[1] "{} فرایند با موفقیت کشته شد"
+
+#: src/ui/window.rs:1285
+msgid "Successfully continued the process"
+msgid_plural "Successfully continued {} processes"
+msgstr[0] "فرایند با موفقیت ادامه یافت"
+msgstr[1] "{} فرایند با موفقیت ادامه یافت"
+
+#: src/ui/window.rs:1296
+msgid "There was a problem ending a process"
+msgid_plural "There were problems ending {} processes"
+msgstr[0] "مشکلی در اتمام فرایند وجود داشت"
+msgstr[1] "مشکلی در اتمام {} فرایند وجود داشت"
+
+#: src/ui/window.rs:1302
+msgid "There was a problem halting a process"
+msgid_plural "There were problems halting {} processes"
+msgstr[0] "مشکلی در بستن فرایند وجود داشت"
+msgstr[1] "مشکلی در بستن {} فرایند وجود داشت"
+
+#: src/ui/window.rs:1308
+msgid "There was a problem killing a process"
+msgid_plural "There were problems killing {} processes"
+msgstr[0] "مشکلی در کشتن فرایند وجود داشت"
+msgstr[1] "مشکلی در کشتن {} فرایند وجود داشت"
+
+#: src/ui/window.rs:1314
+msgid "There was a problem continuing a process"
+msgid_plural "There were problems continuing {} processes"
+msgstr[0] "مشکلی در ادامهٔ فرایند وجود داشت"
+msgstr[1] "مشکلی در ادامهٔ {} فرایند وجود داشت"
+
+#: src/ui/window.rs:1324
+msgid "There was a problem ending {}"
+msgstr "مشکلی در اتمام {} وجود داشت"
+
+#: src/ui/window.rs:1325
+msgid "There was a problem halting {}"
+msgstr "مشکلی در بستن {} وجود داشت"
+
+#: src/ui/window.rs:1326
+msgid "There was a problem killing {}"
+msgstr "مشکلی در کشتن {} وجود داشت"
+
+#: src/ui/window.rs:1327
+msgid "There was a problem continuing {}"
+msgstr "مشکلی در ادامهٔ {} وجود داشت"
+
+#: src/utils/app.rs:222
+msgid "System Processes"
+msgstr "فرایندهای سامانه"
+
+#: src/utils/battery.rs:93
+msgid "Charging"
+msgstr "پر شدن"
+
+#: src/utils/battery.rs:94
+msgid "Discharging"
+msgstr "خالی شدن"
+
+#: src/utils/battery.rs:95
+msgid "Empty"
+msgstr "خالی"
+
+#: src/utils/battery.rs:96
+msgid "Full"
+msgstr "پر"
+
+#: src/utils/battery.rs:97
+msgid "Unknown"
+msgstr "نامشخص"
+
+#: src/utils/battery.rs:143
+msgid "Nickel-Metal Hydride"
+msgstr "نیکل-متال هیدرید"
+
+#: src/utils/battery.rs:144
+msgid "Nickel-Cadmium"
+msgstr "نیکل-کادمیم"
+
+#: src/utils/battery.rs:145
+msgid "Nickel-Zinc"
+msgstr "نیکل-زینک"
+
+#: src/utils/battery.rs:146
+msgid "Lead-Acid"
+msgstr "سرب-اسید"
+
+#: src/utils/battery.rs:147
+msgid "Lithium-Ion"
+msgstr "لیتیوم-یون"
+
+#: src/utils/battery.rs:148
+msgid "Lithium Iron Phosphate"
+msgstr "فسفات آهن لیتیوم"
+
+#: src/utils/battery.rs:149
+msgid "Lithium Polymer"
+msgstr "پلیمر لیتیوم"
+
+#: src/utils/battery.rs:151
+msgid "Rechargeable Alkaline Managanese"
+msgstr "قلیایی قابل شارژ"
+
+#: src/utils/battery.rs:256
+msgid "{} Battery"
+msgstr "{} باتری"
+
+#: src/utils/units.rs:91
+msgid "{} K"
+msgstr "{} K"
+
+#: src/utils/units.rs:93
+msgid "{} °C"
+msgstr "{} °C"
+
+#: src/utils/units.rs:95
+msgid "{} °F"
+msgstr "{} °F"
+
+#: src/utils/units.rs:113 src/utils/units.rs:127 src/utils/units.rs:147
+#: src/utils/units.rs:161
+msgid "{} B"
+msgstr "{} B"
+
+#: src/utils/units.rs:114 src/utils/units.rs:128
+msgid "{} kB"
+msgstr "{} ک‌ب"
+
+#: src/utils/units.rs:115 src/utils/units.rs:129
+msgid "{} MB"
+msgstr "{} م‌ب"
+
+#: src/utils/units.rs:116 src/utils/units.rs:130
+msgid "{} GB"
+msgstr "{} گ‌ب"
+
+#: src/utils/units.rs:117 src/utils/units.rs:131
+msgid "{} TB"
+msgstr "{} ت‌ب"
+
+#: src/utils/units.rs:118 src/utils/units.rs:132
+msgid "{} PB"
+msgstr "{} پ‌ب"
+
+#: src/utils/units.rs:119 src/utils/units.rs:133
+msgid "{} EB"
+msgstr "{} اِب"
+
+#: src/utils/units.rs:120 src/utils/units.rs:134
+msgid "{} ZB"
+msgstr "{} زب"
+
+#: src/utils/units.rs:121 src/utils/units.rs:135
+msgid "{} YB"
+msgstr "{} ی‌ب"
+
+#: src/utils/units.rs:122 src/utils/units.rs:136
+msgid "{} RB"
+msgstr "{} رب"
+
+#: src/utils/units.rs:123 src/utils/units.rs:137
+msgid "{} QB"
+msgstr "{} کوب"
+
+#: src/utils/units.rs:148 src/utils/units.rs:162
+msgid "{} KiB"
+msgstr "{} کی‌ب"
+
+#: src/utils/units.rs:149 src/utils/units.rs:163
+msgid "{} MiB"
+msgstr "{} می‌ب"
+
+#: src/utils/units.rs:150 src/utils/units.rs:164
+msgid "{} GiB"
+msgstr "{} گی‌ب"
+
+#: src/utils/units.rs:151 src/utils/units.rs:165
+msgid "{} TiB"
+msgstr "{} تی‌ب"
+
+#: src/utils/units.rs:152 src/utils/units.rs:166
+msgid "{} PiB"
+msgstr "{} پی‌ب"
+
+#: src/utils/units.rs:153 src/utils/units.rs:167
+msgid "{} EiB"
+msgstr "{} ای‌ب"
+
+#: src/utils/units.rs:154 src/utils/units.rs:168
+msgid "{} ZiB"
+msgstr "{} زی‌ب"
+
+#: src/utils/units.rs:155 src/utils/units.rs:169
+msgid "{} YiB"
+msgstr "{} یی‌ب"
+
+#: src/utils/units.rs:156 src/utils/units.rs:170
+msgid "{} RiB"
+msgstr "{} ری‌ب"
+
+#: src/utils/units.rs:157 src/utils/units.rs:171
+msgid "{} QiB"
+msgstr "{} کوی‌ب"
+
+#: src/utils/units.rs:198 src/utils/units.rs:215
+msgid "{} B/s"
+msgstr "{} ب/ث"
+
+#: src/utils/units.rs:199
+msgid "{} kB/s"
+msgstr "{} ک‌ب/ث"
+
+#: src/utils/units.rs:200
+msgid "{} MB/s"
+msgstr "{} م‌ب/ث"
+
+#: src/utils/units.rs:201
+msgid "{} GB/s"
+msgstr "{} گ‌ب/ث"
+
+#: src/utils/units.rs:202
+msgid "{} TB/s"
+msgstr "{} ت‌ب/ث"
+
+#: src/utils/units.rs:203
+msgid "{} PB/s"
+msgstr "{} پ‌ب/ث"
+
+#: src/utils/units.rs:204
+msgid "{} EB/s"
+msgstr "{} اِب/ث"
+
+#: src/utils/units.rs:205
+msgid "{} ZB/s"
+msgstr "{} زب/ث"
+
+#: src/utils/units.rs:206
+msgid "{} YB/s"
+msgstr "{} ی‌ب/ث"
+
+#: src/utils/units.rs:207
+msgid "{} RB/s"
+msgstr "{} رب/ث"
+
+#: src/utils/units.rs:208
+msgid "{} QB/s"
+msgstr "{} کوب/ث"
+
+#: src/utils/units.rs:216
+msgid "{} KiB/s"
+msgstr "{} کی‌ب/ث"
+
+#: src/utils/units.rs:217
+msgid "{} MiB/s"
+msgstr "{} می‌ب/ث"
+
+#: src/utils/units.rs:218
+msgid "{} GiB/s"
+msgstr "{} گی‌ب/ث"
+
+#: src/utils/units.rs:219
+msgid "{} TiB/s"
+msgstr "{} تی‌ب/ث"
+
+#: src/utils/units.rs:220
+msgid "{} PiB/s"
+msgstr "{} پی‌ب/ث"
+
+#: src/utils/units.rs:221
+msgid "{} EiB/s"
+msgstr "{} ای‌ب/ث"
+
+#: src/utils/units.rs:222
+msgid "{} ZiB/s"
+msgstr "{} زی‌ب/ث"
+
+#: src/utils/units.rs:223
+msgid "{} YiB/s"
+msgstr "{} یی‌ب/ث"
+
+#: src/utils/units.rs:224
+msgid "{} RiB/s"
+msgstr "{} ری‌ب/ث"
+
+#: src/utils/units.rs:225
+msgid "{} QiB/s"
+msgstr "{} کوی‌ب/ث"
+
+#: src/utils/units.rs:239 src/utils/units.rs:256
+msgid "{} b/s"
+msgstr "{} بی/ث"
+
+#: src/utils/units.rs:240
+msgid "{} kb/s"
+msgstr "{} ک‌بی/ث"
+
+#: src/utils/units.rs:241
+msgid "{} Mb/s"
+msgstr "{} م‌بی/ث"
+
+#: src/utils/units.rs:242
+msgid "{} Gb/s"
+msgstr "{} گ‌بی/ث"
+
+#: src/utils/units.rs:243
+msgid "{} Tb/s"
+msgstr "{} ت‌بی/ث"
+
+#: src/utils/units.rs:244
+msgid "{} Pb/s"
+msgstr "{} پ‌بی/ث"
+
+#: src/utils/units.rs:245
+msgid "{} Eb/s"
+msgstr "{} اِبی/ث"
+
+#: src/utils/units.rs:246
+msgid "{} Zb/s"
+msgstr "{} زبی/ث"
+
+#: src/utils/units.rs:247
+msgid "{} Yb/s"
+msgstr "{} ی‌بی/ث"
+
+#: src/utils/units.rs:248
+msgid "{} Rb/s"
+msgstr "{} ربی/ث"
+
+#: src/utils/units.rs:249
+msgid "{} Qb/s"
+msgstr "{} کوبی/ث"
+
+#: src/utils/units.rs:257
+msgid "{} Kib/s"
+msgstr "{} کی‌بی/ث"
+
+#: src/utils/units.rs:258
+msgid "{} Mib/s"
+msgstr "{} می‌بی/ث"
+
+#: src/utils/units.rs:259
+msgid "{} Gib/s"
+msgstr "{} گی‌بی/ث"
+
+#: src/utils/units.rs:260
+msgid "{} Tib/s"
+msgstr "{} تی‌بی/ث"
+
+#: src/utils/units.rs:261
+msgid "{} Pib/s"
+msgstr "{} پی‌بی/ث"
+
+#: src/utils/units.rs:262
+msgid "{} Eib/s"
+msgstr "{} ای‌بی/ث"
+
+#: src/utils/units.rs:263
+msgid "{} Zib/s"
+msgstr "{} زی‌بی/ث"
+
+#: src/utils/units.rs:264
+msgid "{} Yib/s"
+msgstr "{} یی‌بی/ث"
+
+#: src/utils/units.rs:265
+msgid "{} Rib/s"
+msgstr "{} ری‌بی/ث"
+
+#: src/utils/units.rs:266
+msgid "{} Qib/s"
+msgstr "{} کوی‌بی/ث"
+
+#: src/utils/units.rs:273
+msgid "{} Hz"
+msgstr "{} ه"
+
+#: src/utils/units.rs:274
+msgid "{} kHz"
+msgstr "{} ک‌ه"
+
+#: src/utils/units.rs:275
+msgid "{} MHz"
+msgstr "{} م‌ه"
+
+#: src/utils/units.rs:276
+msgid "{} GHz"
+msgstr "{}گ‌ه"
+
+#: src/utils/units.rs:277
+msgid "{} THz"
+msgstr "{} ت‌ه"
+
+#: src/utils/units.rs:278
+msgid "{} PHz"
+msgstr "{} پ‌ه"
+
+#: src/utils/units.rs:279
+msgid "{} EHz"
+msgstr "{} اِه"
+
+#: src/utils/units.rs:280
+msgid "{} ZHz"
+msgstr "{} زه"
+
+#: src/utils/units.rs:281
+msgid "{} YHz"
+msgstr "{} ی‌ه"
+
+#: src/utils/units.rs:282
+msgid "{} RHz"
+msgstr "{} ره"
+
+#: src/utils/units.rs:283
+msgid "{} QHz"
+msgstr "{} کوه"
+
+#: src/utils/units.rs:290
+msgid "{} W"
+msgstr "{} و"
+
+#: src/utils/units.rs:291
+msgid "{} kW"
+msgstr "{} ک‌و"
+
+#: src/utils/units.rs:292
+msgid "{} MW"
+msgstr "{} م‌و"
+
+#: src/utils/units.rs:293
+msgid "{} GW"
+msgstr "{} گ‌و"
+
+#: src/utils/units.rs:294
+msgid "{} TW"
+msgstr "{} ت‌و"
+
+#: src/utils/units.rs:295
+msgid "{} PW"
+msgstr "{} پ‌و"
+
+#: src/utils/units.rs:296
+msgid "{} EW"
+msgstr "{} اِو"
+
+#: src/utils/units.rs:297
+msgid "{} ZW"
+msgstr "{} زو"
+
+#: src/utils/units.rs:298
+msgid "{} YW"
+msgstr "{} ی‌و"
+
+#: src/utils/units.rs:299
+msgid "{} RW"
+msgstr "{} رو"
+
+#: src/utils/units.rs:300
+msgid "{} QW"
+msgstr "{} کوو"
+
+#: src/utils/units.rs:309 src/utils/units.rs:323
+msgid "{} Wh"
+msgstr "{} وس"
+
+#: src/utils/units.rs:310 src/utils/units.rs:324
+msgid "{} kWh"
+msgstr "{} ک‌وس"
+
+#: src/utils/units.rs:311 src/utils/units.rs:325
+msgid "{} MWh"
+msgstr "{} م‌وس"
+
+#: src/utils/units.rs:312 src/utils/units.rs:326
+msgid "{} GWh"
+msgstr "{} گ‌وس"
+
+#: src/utils/units.rs:313 src/utils/units.rs:327
+msgid "{} TWh"
+msgstr "{} ت‌وس"
+
+#: src/utils/units.rs:314 src/utils/units.rs:328
+msgid "{} PWh"
+msgstr "{} پ‌وس"
+
+#: src/utils/units.rs:315 src/utils/units.rs:329
+msgid "{} EWh"
+msgstr "{} اِوس"
+
+#: src/utils/units.rs:316 src/utils/units.rs:330
+msgid "{} ZWh"
+msgstr "{} زوس"
+
+#: src/utils/units.rs:317 src/utils/units.rs:331
+msgid "{} YWh"
+msgstr "{} ی‌وس"
+
+#: src/utils/units.rs:318 src/utils/units.rs:332
+msgid "{} RWh"
+msgstr "{} روس"
+
+#: src/utils/units.rs:319 src/utils/units.rs:333
+msgid "{} QWh"
+msgstr "{} کووس"
+
+#: src/utils/drive.rs:129 src/utils/drive.rs:208
+msgid "CD/DVD/Blu-ray Drive"
+msgstr "گردانندهٔ سی‌دی/دی‌وی‌دی/بلو‌ری"
+
+#: src/utils/drive.rs:130
+msgid "eMMC Storage"
+msgstr "ذخیره‌ساز eMMC"
+
+#: src/utils/drive.rs:131
+msgid "Flash Storage"
+msgstr "حافظهٔ فلش"
+
+#: src/utils/drive.rs:132 src/utils/drive.rs:209
+msgid "Floppy Drive"
+msgstr "گردانندهٔ فلاپی"
+
+#: src/utils/drive.rs:133
+msgid "Hard Disk Drive"
+msgstr "گردانندهٔ دیسک سخت"
+
+#: src/utils/drive.rs:134
+msgid "Loop Device"
+msgstr "افزارهٔ حلقه‌ای"
+
+#: src/utils/drive.rs:135
+msgid "Mapped Device"
+msgstr "افزارهٔ نگاشته"
+
+#: src/utils/drive.rs:136
+msgid "NVMe Drive"
+msgstr "گردانندهٔ NVMe"
+
+#: src/utils/drive.rs:138
+msgid "Software Raid"
+msgstr "رید نرم‌افزاری"
+
+#: src/utils/drive.rs:139
+msgid "RAM Disk"
+msgstr "دیسک رم"
+
+#: src/utils/drive.rs:140
+msgid "Solid State Drive"
+msgstr "گردانندهٔ حالت جامد"
+
+#: src/utils/drive.rs:141
+msgid "ZFS Volume"
+msgstr "حجم ZFS"
+
+#: src/utils/drive.rs:142
+msgid "Compressed RAM Disk (zram)"
+msgstr "دیسک رم فشرده (zram)"
+
+#: src/utils/drive.rs:210
+msgid "{} Loop Device"
+msgstr "{} افزارهٔ حلقه‌ای"
+
+#: src/utils/drive.rs:211
+msgid "{} Mapped Device"
+msgstr "{} دستگاه نگاشته"
+
+#: src/utils/drive.rs:212
+msgid "{} RAID"
+msgstr "{} رید"
+
+#: src/utils/drive.rs:213
+msgid "{} RAM Disk"
+msgstr "{} دیسک رم"
+
+#: src/utils/drive.rs:214
+msgid "{} zram Device"
+msgstr "{} افزارهٔ zram"
+
+#: src/utils/drive.rs:215
+msgid "{} ZFS Volume"
+msgstr "{} حجم ZFS"
+
+#: src/utils/drive.rs:216
+msgid "{} Drive"
+msgstr "{} گرداننده"
+
+#: src/utils/network.rs:123
+msgid "Bluetooth Tether"
+msgstr "چتر بلوتوثی"
+
+#: src/utils/network.rs:124
+msgid "Network Bridge"
+msgstr "پل شبکه"
+
+#: src/utils/network.rs:125
+msgid "Ethernet Connection"
+msgstr "اتّصال اترنت"
+
+#: src/utils/network.rs:126
+msgid "Docker Bridge"
+msgstr "پل داکر"
+
+#: src/utils/network.rs:127
+msgid "InfiniBand Connection"
+msgstr "اتصال InfiniBand"
+
+#: src/utils/network.rs:128
+msgid "Serial Line IP Connection"
+msgstr "اتصال اینترنتی خط سریال"
+
+#: src/utils/network.rs:129
+msgid "Virtual Ethernet Device"
+msgstr "افزارهٔ اترنت مجازی"
+
+#: src/utils/network.rs:130
+msgid "VM Network Bridge"
+msgstr "پل شبکهٔ ماشین مجازی"
+
+#: src/utils/network.rs:131
+msgid "VPN Tunnel"
+msgstr "تونل VPN"
+
+#: src/utils/network.rs:132
+msgid "VPN Tunnel (WireGuard)"
+msgstr "تونل VPN (وایرگارد)"
+
+#: src/utils/network.rs:133
+msgid "Wi-Fi Connection"
+msgstr "اتصال وای‌فای"
+
+#: src/utils/network.rs:134
+msgid "WWAN Connection"
+msgstr "اتّصال WWAN"

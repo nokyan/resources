@@ -4,7 +4,7 @@ use log::trace;
 
 use crate::{
     config::PROFILE,
-    utils::settings::{Base, RefreshSpeed, SidebarMeterType, TemperatureUnit, SETTINGS},
+    utils::settings::{Base, RefreshSpeed, SETTINGS, SidebarMeterType, TemperatureUnit},
 };
 
 mod imp {
@@ -29,8 +29,6 @@ mod imp {
         pub show_graph_grids_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub graph_data_points_row: TemplateChild<adw::SpinRow>,
-        #[template_child]
-        pub show_search_on_start_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub sidebar_details_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
@@ -62,6 +60,8 @@ mod imp {
         pub apps_show_decoder_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub apps_show_swap_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub apps_show_combined_memory_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub processes_niceness: TemplateChild<adw::SwitchRow>,
@@ -99,6 +99,10 @@ mod imp {
         pub processes_show_priority_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub processes_show_swap_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub processes_show_combined_memory_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub processes_show_commandline_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub show_virtual_drives_row: TemplateChild<adw::SwitchRow>,
@@ -145,7 +149,9 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResSettingsDialog(ObjectSubclass<imp::ResSettingsDialog>)
-        @extends adw::PreferencesDialog, gtk::Widget, adw::Dialog;
+        @extends adw::PreferencesDialog, gtk::Widget, adw::Dialog, gtk::Window,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible, gtk::ShortcutManager, gtk::Root,
+        gtk::Native;
 }
 
 impl Default for ResSettingsDialog {
@@ -170,26 +176,23 @@ impl ResSettingsDialog {
         trace!("Setting up ResSettingsDialog widgets…");
 
         let imp = self.imp();
-        imp.prefix_combo_row
-            .set_selected((SETTINGS.base() as u8) as u32);
+        imp.prefix_combo_row.set_selected(SETTINGS.base() as u32);
         imp.network_bits_row.set_active(SETTINGS.network_bits());
         imp.temperature_combo_row
-            .set_selected((SETTINGS.temperature_unit() as u8) as u32);
+            .set_selected(SETTINGS.temperature_unit() as u32);
 
         imp.refresh_speed_combo_row
-            .set_selected((SETTINGS.refresh_speed() as u8) as u32);
+            .set_selected(SETTINGS.refresh_speed() as u32);
         imp.show_graph_grids_row
             .set_active(SETTINGS.show_graph_grids());
         imp.graph_data_points_row
-            .set_value(SETTINGS.graph_data_points() as f64);
+            .set_value(f64::from(SETTINGS.graph_data_points()));
         imp.sidebar_details_row
             .set_active(SETTINGS.sidebar_details());
         imp.sidebar_description_row
             .set_active(SETTINGS.sidebar_description());
         imp.sidebar_meter_type_row
-            .set_selected((SETTINGS.sidebar_meter_type() as u8) as u32);
-        imp.show_search_on_start_row
-            .set_active(SETTINGS.show_search_on_start());
+            .set_selected(SETTINGS.sidebar_meter_type() as u32);
         imp.normalize_cpu_usage_row
             .set_active(SETTINGS.normalize_cpu_usage());
 
@@ -212,6 +215,8 @@ impl ResSettingsDialog {
         imp.apps_show_decoder_row
             .set_active(SETTINGS.apps_show_decoder());
         imp.apps_show_swap_row.set_active(SETTINGS.apps_show_swap());
+        imp.apps_show_combined_memory_row
+            .set_active(SETTINGS.apps_show_combined_memory());
 
         imp.processes_niceness
             .set_active(SETTINGS.detailed_priority());
@@ -249,6 +254,10 @@ impl ResSettingsDialog {
             .set_active(SETTINGS.processes_show_system_cpu_time());
         imp.processes_show_swap_row
             .set_active(SETTINGS.processes_show_swap());
+        imp.processes_show_combined_memory_row
+            .set_active(SETTINGS.processes_show_combined_memory());
+        imp.processes_show_commandline_row
+            .set_active(SETTINGS.processes_show_commandline());
 
         imp.show_virtual_drives_row
             .set_active(SETTINGS.show_virtual_drives());
@@ -313,11 +322,6 @@ impl ResSettingsDialog {
                 }
             });
 
-        imp.show_search_on_start_row
-            .connect_active_notify(|switch_row| {
-                let _ = SETTINGS.set_show_search_on_start(switch_row.is_active());
-            });
-
         imp.normalize_cpu_usage_row
             .connect_active_notify(|switch_row| {
                 let _ = SETTINGS.set_normalize_cpu_usage(switch_row.is_active());
@@ -374,6 +378,11 @@ impl ResSettingsDialog {
         imp.apps_show_swap_row.connect_active_notify(|switch_row| {
             let _ = SETTINGS.set_apps_show_swap(switch_row.is_active());
         });
+
+        imp.apps_show_combined_memory_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_apps_show_combined_memory(switch_row.is_active());
+            });
 
         imp.processes_niceness.connect_active_notify(|switch_row| {
             let _ = SETTINGS.set_detailed_priority(switch_row.is_active());
@@ -462,6 +471,16 @@ impl ResSettingsDialog {
         imp.processes_show_swap_row
             .connect_active_notify(|switch_row| {
                 let _ = SETTINGS.set_processes_show_swap(switch_row.is_active());
+            });
+
+        imp.processes_show_combined_memory_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_processes_show_combined_memory(switch_row.is_active());
+            });
+
+        imp.processes_show_commandline_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_processes_show_commandline(switch_row.is_active());
             });
 
         imp.show_virtual_drives_row

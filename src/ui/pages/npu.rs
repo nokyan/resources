@@ -4,9 +4,9 @@ use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
+use crate::utils::FiniteOr;
 use crate::utils::npu::{Npu, NpuData};
 use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
-use crate::utils::FiniteOr;
 
 pub const TAB_ID_PREFIX: &str = "npu";
 
@@ -18,9 +18,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        CompositeTemplate,
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]
@@ -47,6 +47,8 @@ mod imp {
         pub driver_used: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub max_power_cap: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub link: TemplateChild<adw::ActionRow>,
 
         #[property(get)]
         uses_progress_bar: Cell<bool>,
@@ -99,6 +101,7 @@ mod imp {
                 pci_slot: Default::default(),
                 driver_used: Default::default(),
                 max_power_cap: Default::default(),
+                link: Default::default(),
                 uses_progress_bar: Cell::new(true),
                 main_graph_color: glib::Bytes::from_static(&super::ResNPU::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(ThemedIcon::new("npu-symbolic").into()),
@@ -160,7 +163,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResNPU(ObjectSubclass<imp::ResNPU>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResNPU {
@@ -184,7 +188,11 @@ impl ResNPU {
     }
 
     pub fn setup_widgets(&self, npu: &Npu) {
-        trace!("Setting up ResNPU ({}) widgets…", npu.pci_slot());
+        trace!(
+            "Setting up ResNPU ({}, {}) widgets…",
+            self.tab_detail_string(),
+            npu.pci_slot()
+        );
 
         let imp = self.imp();
 
@@ -212,7 +220,7 @@ impl ResNPU {
 
         imp.pci_slot.set_subtitle(&npu.pci_slot().to_string());
 
-        imp.driver_used.set_subtitle(&npu.driver());
+        imp.driver_used.set_subtitle(npu.driver());
 
         if let Ok(model_name) = npu.name() {
             imp.set_tab_detail_string(&model_name);
@@ -220,7 +228,11 @@ impl ResNPU {
     }
 
     pub fn refresh_page(&self, npu_data: &NpuData) {
-        trace!("Refreshing ResNPU ({})…", npu_data.pci_slot);
+        trace!(
+            "Refreshing ResNPU ({}, {})…",
+            self.tab_detail_string(),
+            npu_data.pci_slot
+        );
 
         let imp = self.imp();
 
@@ -235,6 +247,7 @@ impl ResNPU {
             power_usage,
             power_cap,
             power_cap_max,
+            link,
         } = npu_data;
 
         let mut usage_percentage_string = usage_fraction.map_or_else(
@@ -248,37 +261,57 @@ impl ResNPU {
             .push_data_point(usage_fraction.unwrap_or(0.0));
         imp.npu_usage.graph().set_visible(usage_fraction.is_some());
 
-        let used_memory_fraction =
-            if let (Some(total_memory), Some(used_memory)) = (total_memory, used_memory) {
-                Some((*used_memory as f64 / *total_memory as f64).finite_or_default())
-            } else {
-                None
-            };
+        let memory_subtitle = if let (Some(total_memory), Some(used_memory)) =
+            (total_memory, used_memory)
+        {
+            let used_memory_fraction =
+                (*used_memory as f64 / *total_memory as f64).finite_or_default();
 
-        let memory_percentage_string = used_memory_fraction.as_ref().map_or_else(
-            || i18n("N/A"),
-            |fraction| format!("{} %", (fraction * 100.0).round()),
-        );
+            imp.memory_usage
+                .graph()
+                .push_data_point(used_memory_fraction);
 
-        let memory_subtitle =
-            if let (Some(total_memory), Some(used_memory)) = (total_memory, used_memory) {
-                format!(
-                    "{} / {} · {}",
-                    convert_storage(*used_memory as f64, false),
-                    convert_storage(*total_memory as f64, false),
-                    memory_percentage_string
-                )
-            } else {
-                i18n("N/A")
-            };
+            let memory_percentage_string = format!("{} %", (used_memory_fraction * 100.0).round());
+
+            usage_percentage_string.push_str(" · ");
+            // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
+            // shorter than) 'Memory'
+            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&memory_percentage_string]));
+
+            format!(
+                "{} / {} · {}",
+                convert_storage(*used_memory as f64, false),
+                convert_storage(*total_memory as f64, false),
+                memory_percentage_string
+            )
+        } else if let Some(used_memory) = used_memory {
+            imp.memory_usage
+                .graph()
+                .push_data_point(*used_memory as f64);
+
+            let memory_string = convert_storage(*used_memory as f64, false);
+
+            let highest_memory_string =
+                convert_storage(imp.memory_usage.graph().get_highest_value(), false);
+
+            usage_percentage_string.push_str(" · ");
+            // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
+            // shorter than) 'Memory'
+            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&memory_string]));
+
+            format!(
+                "{} · {} {}",
+                &memory_string,
+                i18n("Highest:"),
+                highest_memory_string
+            )
+        } else {
+            i18n("N/A")
+        };
+
+        imp.memory_usage.graph().set_visible(used_memory.is_some());
 
         imp.memory_usage.set_subtitle(&memory_subtitle);
-        imp.memory_usage
-            .graph()
-            .push_data_point(used_memory_fraction.unwrap_or(0.0));
-        imp.memory_usage
-            .graph()
-            .set_visible(used_memory_fraction.is_some());
 
         imp.temperature.graph().set_visible(temperature.is_some());
 
@@ -309,13 +342,6 @@ impl ResNPU {
 
         self.set_property("usage", usage_fraction.unwrap_or(0.0));
 
-        if used_memory_fraction.is_some() {
-            usage_percentage_string.push_str(" · ");
-            // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
-            // shorter than) 'Memory'
-            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&memory_percentage_string]));
-        }
-
         if let Some(temperature) = temperature {
             let temperature_string = convert_temperature(*temperature);
 
@@ -334,6 +360,12 @@ impl ResNPU {
             usage_percentage_string.push_str(&temperature_string);
         } else {
             imp.temperature.set_subtitle(&i18n("N/A"));
+        }
+
+        if let Some(link) = link {
+            imp.link.set_subtitle(&link.to_string());
+        } else {
+            imp.link.set_subtitle(&i18n("N/A"));
         }
 
         self.set_property("tab_usage_string", &usage_percentage_string);

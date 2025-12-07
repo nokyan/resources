@@ -5,21 +5,24 @@ use std::{
     time::Instant,
 };
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use gtk::{
     gio::{File, FileIcon, Icon, ThemedIcon},
     glib::GString,
 };
-use lazy_regex::{lazy_regex, Lazy, Regex};
+use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, info, trace};
-use process_data::{pci_slot::PciSlot, Containerization, GpuIdentifier, ProcessData};
+use process_data::{
+    Containerization, ProcessData,
+    gpu_usage::{GpuIdentifier, GpuUsageStats},
+    pci_slot::PciSlot,
+};
 
-use crate::i18n::i18n;
+use crate::{i18n::i18n, utils::read_parsed};
 
 use super::{
     boot_time,
     process::{Process, ProcessAction},
-    FiniteOr,
 };
 
 /// This contains the cgroups of desktop environments. If a process has this as its cgroup, its parent's cgroup will be
@@ -193,10 +196,7 @@ impl App {
             .map(|path| path.join("applications"))
             .collect();
 
-        debug!(
-            "Using the following directories for app detection: {:?}",
-            applications_dir
-        );
+        debug!("Using the following directories for app detection: {applications_dir:?}",);
 
         let mut apps: Vec<_> = applications_dir
             .iter()
@@ -234,9 +234,8 @@ impl App {
 
     pub fn from_desktop_file<P: AsRef<Path>>(file_path: P) -> Result<App> {
         let file_path = file_path.as_ref();
-        trace!("Reading {file_path:?}…");
 
-        let ini = ini::Ini::load_from_file(file_path)?;
+        let ini = ini::Ini::load_from_str(&read_parsed::<String>(file_path)?)?;
 
         let desktop_entry = ini
             .section(Some("Desktop Entry"))
@@ -549,16 +548,8 @@ impl AppsContext {
                 _ => None,
             })
             .map(|(new, old, timestamp, timestamp_last)| {
-                if new.nvidia {
-                    new.gfx as f32 / 100.0
-                } else if old.gfx == 0 {
-                    0.0
-                } else {
-                    ((new.gfx.saturating_sub(old.gfx) as f32)
-                        / (timestamp.saturating_sub(timestamp_last) as f32))
-                        .finite_or_default()
-                        / 1_000_000.0
-                }
+                let time_delta = timestamp.saturating_sub(timestamp_last);
+                new.gfx_fraction(old, time_delta).unwrap_or_default()
             })
             .sum::<f32>()
             .clamp(0.0, 1.0)
@@ -587,16 +578,8 @@ impl AppsContext {
                 _ => None,
             })
             .map(|(new, old, timestamp, timestamp_last)| {
-                if new.nvidia {
-                    new.enc as f32 / 100.0
-                } else if old.enc == 0 {
-                    0.0
-                } else {
-                    ((new.enc.saturating_sub(old.enc) as f32)
-                        / (timestamp.saturating_sub(timestamp_last) as f32))
-                        .finite_or_default()
-                        / 1_000_000.0
-                }
+                let time_delta = timestamp.saturating_sub(timestamp_last);
+                new.enc_fraction(old, time_delta).unwrap_or_default()
             })
             .sum::<f32>()
             .clamp(0.0, 1.0)
@@ -625,16 +608,8 @@ impl AppsContext {
                 _ => None,
             })
             .map(|(new, old, timestamp, timestamp_last)| {
-                if new.nvidia {
-                    new.dec as f32 / 100.0
-                } else if old.dec == 0 {
-                    0.0
-                } else {
-                    ((new.dec.saturating_sub(old.dec) as f32)
-                        / (timestamp.saturating_sub(timestamp_last) as f32))
-                        .finite_or_default()
-                        / 1_000_000.0
-                }
+                let time_delta = timestamp.saturating_sub(timestamp_last);
+                new.dec_fraction(old, time_delta).unwrap_or_default()
             })
             .sum::<f32>()
             .clamp(0.0, 1.0)
@@ -663,14 +638,8 @@ impl AppsContext {
                 _ => None,
             })
             .map(|(new, old, timestamp, timestamp_last)| {
-                if old.usage == 0 {
-                    0.0
-                } else {
-                    ((new.usage.saturating_sub(old.usage) as f32)
-                        / (timestamp.saturating_sub(timestamp_last) as f32))
-                        .finite_or_default()
-                        / 1_000_000.0
-                }
+                let time_delta = timestamp.saturating_sub(timestamp_last);
+                new.usage_fraction(old, time_delta).unwrap_or_default()
             })
             .sum::<f32>()
             .clamp(0.0, 1.0)
@@ -678,10 +647,24 @@ impl AppsContext {
 
     pub fn npu_mem(&self, pci_slot: PciSlot) -> u64 {
         self.processes_iter()
-            .map(|process| process.data.npu_usage_stats.get(&pci_slot))
-            .map(|stats| match stats {
-                Some(stats) => stats.mem,
-                None => 0,
+            .flat_map(|process| {
+                process
+                    .data
+                    .npu_usage_stats
+                    .get(&pci_slot)
+                    .and_then(|npu_usage_stats| npu_usage_stats.mem())
+            })
+            .sum()
+    }
+
+    pub fn vram_usage(&self, gpu_identifier: GpuIdentifier) -> u64 {
+        self.processes_iter()
+            .flat_map(|process| {
+                process
+                    .data
+                    .gpu_usage_stats
+                    .get(&gpu_identifier)
+                    .and_then(|gpu_usage_stats| gpu_usage_stats.mem())
             })
             .sum()
     }
@@ -706,21 +689,27 @@ impl AppsContext {
         {
             debug!(
                 "Associating process {} with app {:?} (ID: {:?}) based on process cgroup matching with app ID",
-                process.data.pid, app.display_name, app.id.as_deref().unwrap_or("N/A")
+                process.data.pid,
+                app.display_name,
+                app.id.as_deref().unwrap_or("N/A")
             );
             app.id.clone()
         } else if let Some(app) = self.apps.get(&Some(process.executable_path.clone())) {
             // ↑ look for whether we can find an ID in the executable path of the process
             debug!(
                 "Associating process {} with app {:?} (ID: {:?}) based on process executable path matching with app ID",
-                process.data.pid, app.display_name, app.id.as_deref().unwrap_or("N/A")
+                process.data.pid,
+                app.display_name,
+                app.id.as_deref().unwrap_or("N/A")
             );
             app.id.clone()
         } else if let Some(app) = self.apps.get(&Some(process.executable_name.clone())) {
             // ↑ look for whether we can find an ID in the executable name of the process
             debug!(
                 "Associating process {} with app {:?} (ID: {:?}) based on process executable name matching with app ID",
-                process.data.pid, app.display_name, app.id.as_deref().unwrap_or("N/A")
+                process.data.pid,
+                app.display_name,
+                app.id.as_deref().unwrap_or("N/A")
             );
             app.id.clone()
         } else {
@@ -819,7 +808,7 @@ impl AppsContext {
 
             // this is awkward: since AppsContext is the only object around that knows what GPUs have combined media
             // engines, it is here where we have to manipulate the GpuUsageStats objects with PciSlots of those GPUs
-            // whose media engine is combined (e.g. no discrimination between enc and dec stats)
+            // whose media engine is combined (i.e. no discrimination between enc and dec stats)
             process_data
                 .gpu_usage_stats
                 .iter_mut()
@@ -827,8 +816,10 @@ impl AppsContext {
                 .for_each(|(pci_slot, stats)| {
                     trace!("Manually adjusting GPU stats of {} for {pci_slot} due to combined media engine", process_data.pid);
 
-                    stats.dec = u64::max(stats.dec, stats.enc);
-                    stats.enc = u64::max(stats.dec, stats.enc);
+                    if let GpuUsageStats::AmdgpuStats { gfx_ns: _, enc_ns, dec_ns, mem_bytes: _ } = stats {
+                        *enc_ns = u64::max(*enc_ns, *dec_ns);
+                        *dec_ns = u64::max(*enc_ns, *dec_ns);
+                    }
                 });
 
             // refresh our old processes

@@ -1,12 +1,13 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self};
 use log::trace;
+use process_data::gpu_usage::GpuIdentifier;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
+use crate::utils::FiniteOr;
 use crate::utils::gpu::{Gpu, GpuData};
 use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
-use crate::utils::FiniteOr;
 
 pub const TAB_ID_PREFIX: &str = "gpu";
 
@@ -21,9 +22,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        CompositeTemplate,
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]
@@ -54,6 +55,8 @@ mod imp {
         pub driver_used: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub max_power_cap: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub link: TemplateChild<adw::ActionRow>,
 
         #[property(get)]
         uses_progress_bar: Cell<bool>,
@@ -108,6 +111,7 @@ mod imp {
                 pci_slot: Default::default(),
                 driver_used: Default::default(),
                 max_power_cap: Default::default(),
+                link: Default::default(),
                 uses_progress_bar: Cell::new(true),
                 main_graph_color: glib::Bytes::from_static(&super::ResGPU::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(ThemedIcon::new("gpu-symbolic").into()),
@@ -169,7 +173,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResGPU(ObjectSubclass<imp::ResGPU>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResGPU {
@@ -193,7 +198,11 @@ impl ResGPU {
     }
 
     pub fn setup_widgets(&self, gpu: &Gpu) {
-        trace!("Setting up ResGPU ({}) widgets…", gpu.gpu_identifier());
+        trace!(
+            "Setting up ResGPU ({}, {}) widgets…",
+            self.tab_detail_string(),
+            gpu.gpu_identifier()
+        );
 
         let imp = self.imp();
 
@@ -237,13 +246,13 @@ impl ResGPU {
         );
 
         match gpu.gpu_identifier() {
-            process_data::GpuIdentifier::PciSlot(pci_slot) => {
-                imp.pci_slot.set_subtitle(&pci_slot.to_string())
+            GpuIdentifier::PciSlot(pci_slot) => {
+                imp.pci_slot.set_subtitle(&pci_slot.to_string());
             }
-            process_data::GpuIdentifier::Enumerator(_) => imp.pci_slot.set_subtitle(&i18n("N/A")),
+            GpuIdentifier::Enumerator(_) => imp.pci_slot.set_subtitle(&i18n("N/A")),
         }
 
-        imp.driver_used.set_subtitle(&gpu.driver());
+        imp.driver_used.set_subtitle(gpu.driver());
 
         if gpu.combined_media_engine().unwrap_or_default() {
             imp.encode_decode_combined_usage.set_visible(true);
@@ -259,7 +268,11 @@ impl ResGPU {
     }
 
     pub fn refresh_page(&self, gpu_data: &GpuData) {
-        trace!("Refreshing ResGPU ({})…", gpu_data.gpu_identifier);
+        trace!(
+            "Refreshing ResGPU ({}, {})…",
+            self.tab_detail_string(),
+            gpu_data.gpu_identifier
+        );
 
         let imp = self.imp();
 
@@ -276,6 +289,7 @@ impl ResGPU {
             power_usage,
             power_cap,
             power_cap_max,
+            link,
             nvidia: _,
         } = gpu_data;
 
@@ -331,36 +345,41 @@ impl ResGPU {
             .end_graph()
             .set_visible(encode_fraction.is_some() || decode_fraction.is_some());
 
-        let used_vram_fraction =
-            if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
-                Some((*used_vram as f64 / *total_vram as f64).finite_or_default())
-            } else {
-                None
-            };
+        let vram_usage_string = if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram)
+        {
+            let used_vram_fraction = (*used_vram as f64 / *total_vram as f64).finite_or_default();
 
-        let vram_percentage_string = used_vram_fraction.as_ref().map_or_else(
-            || i18n("N/A"),
-            |fraction| format!("{} %", (fraction * 100.0).round()),
-        );
+            let vram_percentage_string = format!("{} %", (used_vram_fraction * 100.0).round());
 
-        let vram_subtitle = if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
-            format!(
+            let vram_subtitle = format!(
                 "{} / {} · {}",
                 convert_storage(*used_vram as f64, false),
                 convert_storage(*total_vram as f64, false),
                 vram_percentage_string
-            )
-        } else {
-            i18n("N/A")
-        };
+            );
 
-        imp.vram_usage.set_subtitle(&vram_subtitle);
-        imp.vram_usage
-            .graph()
-            .push_data_point(used_vram_fraction.unwrap_or(0.0));
-        imp.vram_usage
-            .graph()
-            .set_visible(used_vram_fraction.is_some());
+            imp.vram_usage.set_subtitle(&vram_subtitle);
+            imp.vram_usage.graph().push_data_point(used_vram_fraction);
+            imp.vram_usage.graph().set_visible(true);
+            imp.vram_usage.graph().set_locked_max_y(Some(1.0));
+
+            Some(vram_percentage_string)
+        } else if let Some(used_vram) = used_vram {
+            let vram_subtitle = convert_storage(*used_vram as f64, false);
+
+            imp.vram_usage.set_subtitle(&vram_subtitle);
+            imp.vram_usage.graph().push_data_point(*used_vram as f64);
+            imp.vram_usage.graph().set_visible(true);
+            imp.vram_usage.graph().set_locked_max_y(None);
+
+            Some(vram_subtitle)
+        } else {
+            imp.vram_usage.set_subtitle(&i18n("N/A"));
+
+            imp.vram_usage.graph().set_visible(false);
+
+            None
+        };
 
         let mut power_string = power_usage.map_or_else(|| i18n("N/A"), convert_power);
 
@@ -389,11 +408,11 @@ impl ResGPU {
 
         self.set_property("usage", usage_fraction.unwrap_or(0.0));
 
-        if used_vram_fraction.is_some() {
+        if let Some(vram_usage_string) = vram_usage_string {
             usage_percentage_string.push_str(" · ");
             // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
             // shorter than) 'Memory'
-            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&vram_percentage_string]));
+            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&vram_usage_string]));
         }
 
         imp.temperature.graph().set_visible(temperature.is_some());
@@ -416,6 +435,12 @@ impl ResGPU {
             usage_percentage_string.push_str(&temperature_string);
         } else {
             imp.temperature.set_subtitle(&i18n("N/A"));
+        }
+
+        if let Some(link) = link {
+            imp.link.set_subtitle(&link.to_string());
+        } else {
+            imp.link.set_subtitle(&i18n("N/A"));
         }
 
         self.set_property("tab_usage_string", &usage_percentage_string);

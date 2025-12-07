@@ -2,12 +2,12 @@ use process_data::{Niceness, ProcessData};
 use std::path::PathBuf;
 use std::time::{Duration, Instant};
 
-use adw::{prelude::*, subclass::prelude::*, ToolbarView};
 use adw::{Toast, ToastOverlay};
+use adw::{ToolbarView, prelude::*, subclass::prelude::*};
 use anyhow::{Context, Result};
-use gtk::glib::{clone, timeout_future, GString, MainContext};
-use gtk::{gio, glib, Widget};
-use log::{info, trace, warn};
+use gtk::glib::{GString, MainContext, clone, timeout_future};
+use gtk::{Widget, gdk, gio, glib};
+use log::{debug, info, trace, warn};
 
 use crate::application::Application;
 use crate::config::PROFILE;
@@ -28,10 +28,10 @@ use crate::utils::npu::{Npu, NpuData};
 use crate::utils::process::{Process, ProcessAction};
 use crate::utils::settings::SETTINGS;
 
+use super::pages::applications;
 use super::pages::gpu::ResGPU;
 use super::pages::network::ResNetwork;
 use super::pages::npu::ResNPU;
-use super::pages::{applications, processes};
 
 #[derive(Debug, Clone)]
 pub enum Action {
@@ -41,7 +41,10 @@ pub enum Action {
 }
 
 mod imp {
-    use std::{cell::RefCell, collections::HashMap};
+    use std::{
+        cell::{Cell, RefCell},
+        collections::HashMap,
+    };
 
     use crate::{
         config::VERSION,
@@ -57,10 +60,10 @@ mod imp {
 
     use super::*;
 
-    use async_channel::{unbounded, Receiver, Sender};
+    use async_channel::{Receiver, Sender, unbounded};
     use gtk::CompositeTemplate;
     use log::debug;
-    use process_data::{pci_slot::PciSlot, GpuIdentifier};
+    use process_data::{gpu_usage::GpuIdentifier, pci_slot::PciSlot};
 
     #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/net/nokyan/Resources/ui/window.ui")]
@@ -78,13 +81,17 @@ mod imp {
         #[template_child]
         pub cpu_page: TemplateChild<gtk::StackPage>,
         #[template_child]
-        pub applications: TemplateChild<ResApplications>,
+        pub apps: TemplateChild<ResApplications>,
         #[template_child]
-        pub applications_page: TemplateChild<gtk::StackPage>,
+        pub apps_page: TemplateChild<gtk::StackPage>,
+        #[template_child]
+        pub apps_search_button: TemplateChild<gtk::ToggleButton>,
         #[template_child]
         pub processes: TemplateChild<ResProcesses>,
         #[template_child]
         pub processes_page: TemplateChild<gtk::StackPage>,
+        #[template_child]
+        pub processes_search_button: TemplateChild<gtk::ToggleButton>,
         #[template_child]
         pub memory: TemplateChild<ResMemory>,
         #[template_child]
@@ -102,6 +109,8 @@ mod imp {
 
         pub apps_context: RefCell<AppsContext>,
 
+        pub pause_updates: Cell<bool>,
+
         pub sender: Sender<Action>,
         pub receiver: RefCell<Option<Receiver<Action>>>,
     }
@@ -118,15 +127,18 @@ mod imp {
                 split_view: TemplateChild::default(),
                 resources_sidebar: TemplateChild::default(),
                 content_stack: TemplateChild::default(),
-                applications: TemplateChild::default(),
-                applications_page: TemplateChild::default(),
+                apps: TemplateChild::default(),
+                apps_page: TemplateChild::default(),
+                apps_search_button: TemplateChild::default(),
                 processes: TemplateChild::default(),
                 processes_page: TemplateChild::default(),
+                processes_search_button: TemplateChild::default(),
                 cpu: TemplateChild::default(),
                 cpu_page: TemplateChild::default(),
                 memory: TemplateChild::default(),
                 memory_page: TemplateChild::default(),
                 apps_context: Default::default(),
+                pause_updates: Default::default(),
                 sender,
                 receiver,
                 processor_window_title: TemplateChild::default(),
@@ -161,7 +173,7 @@ mod imp {
             if PROFILE == "Devel" {
                 obj.add_css_class("devel");
                 obj.set_title(Some(
-                    &format!("{} ({})", obj.title().unwrap_or_default(), VERSION).trim(),
+                    format!("{} ({})", obj.title().unwrap_or_default(), VERSION).trim(),
                 ));
             }
 
@@ -194,7 +206,8 @@ mod imp {
 glib::wrapper! {
     pub struct MainWindow(ObjectSubclass<imp::MainWindow>)
         @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow, adw::ApplicationWindow,
-        @implements gio::ActionMap, gio::ActionGroup, gtk::Root;
+        @implements gio::ActionMap, gio::ActionGroup, gtk::Root, gtk::Buildable, gtk::ConstraintTarget, gtk::Native,
+        gtk::ShortcutManager, gtk::Accessible;
 }
 
 struct RefreshData {
@@ -233,8 +246,146 @@ impl MainWindow {
                 }
             ));
         }
+
         window.setup_widgets();
+        window.setup_signals();
+
         window
+    }
+
+    fn setup_widgets(&self) {
+        trace!("Setting up Application widgets…");
+        let imp = self.imp();
+
+        let gpus = Gpu::get_gpus().unwrap_or_default();
+
+        if !ARGS.disable_gpu_monitoring {
+            self.init_gpu_pages(&gpus);
+        }
+
+        imp.resources_sidebar.set_stack(&imp.content_stack);
+
+        if ARGS.disable_process_monitoring {
+            self.remove_page(imp.apps_page.child().downcast_ref().unwrap());
+            self.remove_page(imp.processes_page.child().downcast_ref().unwrap());
+        } else {
+            *imp.apps_context.borrow_mut() = AppsContext::new(
+                gpus.iter()
+                    .filter(|gpu| gpu.combined_media_engine().unwrap_or_default())
+                    .map(|gpu| gpu.gpu_identifier())
+                    .collect(),
+            );
+            imp.apps.init(imp.sender.clone());
+            imp.processes.init(imp.sender.clone());
+        }
+
+        if ARGS.disable_cpu_monitoring {
+            self.remove_page(imp.cpu_page.child().downcast_ref().unwrap());
+        } else {
+            let cpu_info = cpu::CpuInfo::get()
+                .context("unable to get CPUInfo")
+                .unwrap();
+            if let Some(model_name) = cpu_info.model_name.as_deref() {
+                imp.processor_window_title.set_title(model_name);
+                imp.processor_window_title.set_subtitle(&i18n("Processor"));
+            }
+            imp.cpu.init(cpu_info);
+        }
+
+        if ARGS.disable_memory_monitoring {
+            self.remove_page(imp.memory_page.child().downcast_ref().unwrap());
+        } else {
+            imp.memory.init();
+        }
+
+        if !ARGS.disable_npu_monitoring {
+            self.init_npu_pages();
+        }
+
+        let main_context = MainContext::default();
+
+        main_context.spawn_local(clone!(
+            #[weak(rename_to = this)]
+            self,
+            async move {
+                this.periodic_refresh_all().await;
+            }
+        ));
+    }
+
+    fn setup_signals(&self) {
+        let imp = self.imp();
+
+        imp.apps
+            .search_bar()
+            .bind_property(
+                "search-mode-enabled",
+                &imp.apps_search_button.get(),
+                "active",
+            )
+            .sync_create()
+            .bidirectional()
+            .build();
+
+        imp.processes
+            .search_bar()
+            .bind_property(
+                "search-mode-enabled",
+                &imp.processes_search_button.get(),
+                "active",
+            )
+            .sync_create()
+            .bidirectional()
+            .build();
+
+        imp.content_stack.connect_visible_child_notify(clone!(
+            #[weak]
+            imp,
+            move |_| {
+                // close the split view if we're in "mobile layout" and the user has clicked on an element
+                if imp.split_view.is_collapsed() {
+                    imp.split_view.set_show_sidebar(false);
+                }
+            }
+        ));
+
+        // if CTRL is held, don't update apps and processes like Windows Task Manager
+        let event_controller = gtk::EventControllerKey::new();
+        event_controller.connect_key_pressed(clone!(
+            #[strong(rename_to = this)]
+            self,
+            move |_, key, _, _| {
+                if key == gdk::Key::Control_L {
+                    debug!("Ctrl is being held, halting apps and processes updates");
+                    this.imp().pause_updates.set(true);
+                }
+                glib::Propagation::Proceed
+            }
+        ));
+        event_controller.connect_key_released(clone!(
+            #[weak]
+            imp,
+            move |_, key, _, _| {
+                if key == gdk::Key::Control_L {
+                    debug!("Ctrl has been released, resuming apps and processes updates");
+                    imp.pause_updates.set(false);
+                };
+            }
+        ));
+        self.add_controller(event_controller);
+
+        self.connect_suspended_notify(clone!(
+            #[weak]
+            imp,
+            move |window| {
+                imp.pause_updates.set(window.is_suspended());
+                if window.is_suspended() {
+                    debug!("Resources has been suspended, halting graphical updates");
+                } else {
+                    debug!("Resources is not suspended anymore, resuming graphical updates");
+                }
+            }
+        ));
     }
 
     fn get_selected_page(&self) -> Option<Widget> {
@@ -251,7 +402,7 @@ impl MainWindow {
         let selected_page = self.get_selected_page().unwrap();
 
         if selected_page.is::<ResApplications>() {
-            imp.applications.toggle_search();
+            imp.apps.toggle_search();
         } else if selected_page.is::<ResProcesses>() {
             imp.processes.toggle_search();
         }
@@ -263,9 +414,8 @@ impl MainWindow {
         let selected_page = self.get_selected_page().unwrap();
 
         if selected_page.is::<ResApplications>() {
-            if let Some(app_item) = imp.applications.get_selected_app_entry() {
-                imp.applications
-                    .open_app_action_dialog(&app_item, process_action);
+            if let Some(app_item) = imp.apps.get_selected_app_entry() {
+                imp.apps.open_app_action_dialog(&app_item, process_action);
             }
         } else if selected_page.is::<ResProcesses>() {
             let selected = imp.processes.get_selected_process_entries();
@@ -282,8 +432,8 @@ impl MainWindow {
         let selected_page = self.get_selected_page().unwrap();
 
         if selected_page.is::<ResApplications>() {
-            if let Some(app_item) = imp.applications.get_selected_app_entry() {
-                imp.applications.open_info_dialog(&app_item);
+            if let Some(app_item) = imp.apps.get_selected_app_entry() {
+                imp.apps.open_info_dialog(&app_item);
             }
         } else if selected_page.is::<ResProcesses>() {
             let selected = imp.processes.get_selected_process_entries();
@@ -366,78 +516,6 @@ impl MainWindow {
         npus
     }
 
-    fn setup_widgets(&self) {
-        trace!("Setting up Application widgets…");
-        let imp = self.imp();
-
-        let gpus = Gpu::get_gpus().unwrap_or_default();
-
-        if !ARGS.disable_gpu_monitoring {
-            self.init_gpu_pages(&gpus);
-        }
-
-        imp.resources_sidebar.set_stack(&imp.content_stack);
-
-        if SETTINGS.show_search_on_start() {
-            // we want the search bar to show up for both but also let the last viewed page grab the focus, so order is
-            // important here
-            if SETTINGS.last_viewed_page() == applications::TAB_ID {
-                imp.processes.toggle_search();
-                imp.applications.toggle_search();
-            } else if SETTINGS.last_viewed_page() == processes::TAB_ID {
-                imp.applications.toggle_search();
-                imp.processes.toggle_search();
-            }
-        }
-
-        if ARGS.disable_process_monitoring {
-            self.remove_page(imp.applications_page.child().downcast_ref().unwrap());
-            self.remove_page(imp.processes_page.child().downcast_ref().unwrap());
-        } else {
-            *imp.apps_context.borrow_mut() = AppsContext::new(
-                gpus.iter()
-                    .filter(|gpu| gpu.combined_media_engine().unwrap_or_default())
-                    .map(Gpu::gpu_identifier)
-                    .collect(),
-            );
-            imp.applications.init(imp.sender.clone());
-            imp.processes.init(imp.sender.clone());
-        }
-
-        if ARGS.disable_cpu_monitoring {
-            self.remove_page(imp.cpu_page.child().downcast_ref().unwrap());
-        } else {
-            let cpu_info = cpu::CpuInfo::get()
-                .context("unable to get CPUInfo")
-                .unwrap();
-            if let Some(model_name) = cpu_info.model_name.as_deref() {
-                imp.processor_window_title.set_title(model_name);
-                imp.processor_window_title.set_subtitle(&i18n("Processor"));
-            }
-            imp.cpu.init(cpu_info);
-        }
-
-        if ARGS.disable_memory_monitoring {
-            self.remove_page(imp.memory_page.child().downcast_ref().unwrap());
-        } else {
-            imp.memory.init();
-        }
-
-        if !ARGS.disable_npu_monitoring {
-            self.init_npu_pages();
-        }
-
-        let main_context = MainContext::default();
-
-        main_context.spawn_local(clone!(
-            #[weak(rename_to = this)]
-            self,
-            async move {
-                this.periodic_refresh_all().await;
-            }
-        ));
-    }
-
     fn gather_refresh_data(logical_cpus: usize, gpus: &[Gpu], npus: &[Npu]) -> RefreshData {
         let start = Instant::now();
 
@@ -485,6 +563,7 @@ impl MainWindow {
             NetworkInterface::get_sysfs_paths().unwrap_or_default()
         };
         let mut network_data = Vec::with_capacity(network_paths.len());
+
         for path in &network_paths {
             network_data.push(NetworkData::new(path));
         }
@@ -559,8 +638,12 @@ impl MainWindow {
         let mut apps_context = imp.apps_context.borrow_mut();
         apps_context.refresh(process_data);
 
-        imp.applications.refresh_apps_list(&apps_context);
-        imp.processes.refresh_processes_list(&apps_context);
+        // if CTRL is held, don't update apps and processes like Windows Task Manager
+        if !imp.pause_updates.get() {
+            trace!("Skipping visual apps and processes updates");
+            imp.apps.refresh_apps_list(&apps_context);
+            imp.processes.refresh_processes_list(&apps_context);
+        }
 
         /*
          *  Gpu
@@ -574,25 +657,47 @@ impl MainWindow {
                 // average usage during now and the last refresh, while gpu_busy_percent is a snapshot of the current
                 // usage, which might not be what we want
 
-                let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.gpu_identifier);
-                gpu_data.usage_fraction = Some(f64::max(
-                    gpu_data.usage_fraction.unwrap_or(0.0),
-                    processes_gpu_fraction.into(),
-                ));
+                trace!(
+                    "{} ({}) is not an NVIDIA GPU, adjusting usage values using process-based statistics",
+                    page.tab_detail_string(),
+                    gpu_data.gpu_identifier
+                );
 
+                let drm_gpu_fraction = gpu_data.usage_fraction.unwrap_or(0.0);
+                let processes_gpu_fraction = apps_context.gpu_fraction(gpu_data.gpu_identifier);
+                let highest_gpu_fraction =
+                    f64::max(drm_gpu_fraction, processes_gpu_fraction.into());
+                trace!(
+                    "DRM usage: {drm_gpu_fraction} · Process-based usage: {processes_gpu_fraction} · Using {highest_gpu_fraction}"
+                );
+                gpu_data.usage_fraction = Some(highest_gpu_fraction);
+
+                let drm_encode_fraction = gpu_data.encode_fraction.unwrap_or(0.0);
                 let processes_encode_fraction =
                     apps_context.encoder_fraction(gpu_data.gpu_identifier);
-                gpu_data.encode_fraction = Some(f64::max(
-                    gpu_data.encode_fraction.unwrap_or(0.0),
-                    processes_encode_fraction.into(),
-                ));
+                let highest_encode_fraction =
+                    f64::max(drm_encode_fraction, processes_encode_fraction.into());
+                trace!(
+                    "DRM encode: {drm_encode_fraction} · Process-based encode: {processes_encode_fraction} · Using {highest_encode_fraction}"
+                );
+                gpu_data.encode_fraction = Some(highest_encode_fraction);
 
+                let drm_decode_fraction = gpu_data.decode_fraction.unwrap_or(0.0);
                 let processes_decode_fraction =
                     apps_context.decoder_fraction(gpu_data.gpu_identifier);
-                gpu_data.decode_fraction = Some(f64::max(
-                    gpu_data.decode_fraction.unwrap_or(0.0),
-                    processes_decode_fraction.into(),
-                ));
+                let highest_decode_fraction =
+                    f64::max(drm_decode_fraction, processes_decode_fraction.into());
+                trace!(
+                    "DRM decode: {drm_decode_fraction} · Process-based decode: {processes_decode_fraction} · Using {highest_decode_fraction}"
+                );
+                gpu_data.decode_fraction = Some(highest_decode_fraction);
+
+                if gpu_data.used_vram.is_none() {
+                    gpu_data.used_vram = Some(apps_context.vram_usage(gpu_data.gpu_identifier));
+                    trace!(
+                        "Couldn't read sysfs VRAM usage, falling back to summing up per-process usage…"
+                    )
+                }
             }
 
             page.refresh_page(&gpu_data);
@@ -784,7 +889,7 @@ impl MainWindow {
 
             timeout_future(Duration::from_secs_f32(total_delay - gather_time)).await;
 
-            // Tell other threads to start gethering data
+            // Tell other threads to start gathering data
             tx_wait.send(()).unwrap();
 
             timeout_future(Duration::from_secs_f32(gather_time)).await;
@@ -793,6 +898,8 @@ impl MainWindow {
 
     /// Wrapper to remove page, and check if removed page was visible with global default behavior
     fn remove_page(&self, page: &ToolbarView) {
+        trace!("Removing page {page:?}…");
+
         let imp = self.imp();
 
         // no visible child exists
@@ -821,10 +928,7 @@ impl MainWindow {
             .max()
             .unwrap_or_default();
 
-        let old_page_paths: Vec<PathBuf> = drive_pages
-            .iter()
-            .map(|(path, _)| path.to_owned())
-            .collect();
+        let old_page_paths: Vec<PathBuf> = drive_pages.keys().map(ToOwned::to_owned).collect();
 
         // Filter hidden drives
         for data in drive_data {
@@ -896,10 +1000,7 @@ impl MainWindow {
             .max()
             .unwrap_or_default();
 
-        let old_page_paths: Vec<PathBuf> = network_pages
-            .iter()
-            .map(|(path, _)| path.to_owned())
-            .collect();
+        let old_page_paths: Vec<PathBuf> = network_pages.keys().map(ToOwned::to_owned).collect();
 
         // Filter hidden networks
         for data in network_data {
@@ -1091,7 +1192,7 @@ impl MainWindow {
                     toast_overlay.add_toast(Toast::new(&toast_message));
                 }
             }
-        };
+        }
     }
 
     fn save_window_size(&self) -> Result<(), glib::BoolError> {

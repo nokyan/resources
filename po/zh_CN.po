@@ -1,39 +1,43 @@
-#
-# nokyan <nokyan@tuta.io>, 2023.
-# Peter Dave Hello <hsu@peterdavehello.org>, 2023.
+# Chinese translation of Resources.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the resources package.
 # Alex3236 <awa@alex3236.top>, 2024.
+# nicolasyang <bill.lee.y@gmail.com>, 2024.
+# lumingzh <lumingzh@qq.com>, 2025.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: resources\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-19 07:42+0200\n"
-"PO-Revision-Date: 2024-10-24 20:56+0800\n"
-"Last-Translator: Alex3236 <awa@alex3236.top>\n"
-"Language-Team: Chinese (China)\n"
+"Project-Id-Version: resources-main\n"
+"Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
+"POT-Creation-Date: 2025-10-04 15:36+0000\n"
+"PO-Revision-Date: 2025-10-05 07:23+0800\n"
+"Last-Translator: lumingzh <lumingzh@qq.com>\n"
+"Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Gtranslator 49.0\n"
 
-#: data/net.nokyan.Resources.desktop.in.in:3
-#: data/net.nokyan.Resources.metainfo.xml.in.in:4 src/application.rs:262
-#: data/resources/ui/window.ui:22
+#: data/net.nokyan.Resources.desktop.in.in:2
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4
+#: data/resources/ui/window.ui:22 src/application.rs:272
 msgid "Resources"
-msgstr "Resources"
+msgstr "资源"
 
 #. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
-#: data/net.nokyan.Resources.desktop.in.in:4
+#: data/net.nokyan.Resources.desktop.in.in:3
 #: data/net.nokyan.Resources.metainfo.xml.in.in:5
 msgid "Keep an eye on system resources"
-msgstr "随时关注系统资源"
+msgstr "随时关注系统资源占用"
 
-#: data/net.nokyan.Resources.desktop.in.in:10
-msgid ""
-"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
-msgstr "系统;资源;监控;进程;使用情况;任务;管理员;CPU;RAM;存储;储存;GPU;"
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: data/net.nokyan.Resources.desktop.in.in:9
+msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
+msgstr ""
+"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;系"
+"统;资源;监视器;进程;占用;使用情况;任务;管理器;处理器;内存;显卡;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
@@ -41,40 +45,40 @@ msgid ""
 "control your running processes and apps. It’s designed to be user-friendly "
 "and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
-"Resources 能够查看系统资源的使用情况，并控制正在运行的应用与进程。GNOME 的 "
-"libadwaita 使其拥有现代化的界面且易于使用。"
+"资源可让您查看系统资源的使用情况，并控制正在运行的应用与进程。其通过使用 "
+"GNOME 的 libadwaita 使其设计为用户友好且易于在现代桌面上使用。"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
-msgstr "Resources 支持监控以下组件："
+msgstr "资源支持监控以下组件："
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
-msgstr "CPU"
+msgstr "处理器"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:25
-#: src/ui/pages/applications/mod.rs:810 src/ui/pages/memory.rs:105
-#: src/ui/pages/memory.rs:186 src/ui/pages/processes/mod.rs:1086
-#: data/resources/ui/window.ui:158 data/resources/ui/window.ui:165
 #: data/resources/ui/dialogs/app_dialog.ui:82
 #: data/resources/ui/dialogs/process_dialog.ui:64
-#: data/resources/ui/dialogs/settings_dialog.ui:133
-#: data/resources/ui/dialogs/settings_dialog.ui:215
+#: data/resources/ui/dialogs/settings_dialog.ui:128
+#: data/resources/ui/dialogs/settings_dialog.ui:220
+#: data/resources/ui/window.ui:176 data/resources/ui/window.ui:183
+#: src/ui/pages/applications/mod.rs:803 src/ui/pages/memory.rs:106
+#: src/ui/pages/memory.rs:192 src/ui/pages/processes/mod.rs:1079
 msgid "Memory"
 msgstr "内存"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:26
-#: src/ui/pages/applications/mod.rs:1183 src/ui/pages/gpu.rs:114
-#: src/ui/pages/processes/mod.rs:1470 src/ui/window.rs:311
-#: data/resources/ui/dialogs/app_dialog.ui:131
-#: data/resources/ui/dialogs/process_dialog.ui:109
-#: data/resources/ui/dialogs/settings_dialog.ui:163
-#: data/resources/ui/dialogs/settings_dialog.ui:245
+#: data/resources/ui/dialogs/app_dialog.ui:140
+#: data/resources/ui/dialogs/process_dialog.ui:118
+#: data/resources/ui/dialogs/settings_dialog.ui:158
+#: data/resources/ui/dialogs/settings_dialog.ui:250
+#: src/ui/pages/applications/mod.rs:1181 src/ui/pages/gpu.rs:119
+#: src/ui/pages/processes/mod.rs:1469 src/ui/window.rs:468
 msgid "GPU"
-msgstr "GPU"
+msgstr "显卡"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:27
-#: data/resources/ui/dialogs/settings_dialog.ui:304
+#: data/resources/ui/dialogs/settings_dialog.ui:319
 msgid "Network Interfaces"
 msgstr "网络接口"
 
@@ -88,1220 +92,44 @@ msgstr "电池"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:51
 msgid "Apps page in light theme"
-msgstr ""
+msgstr "亮色主题的应用页面"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:55
 msgid "Processes page in dark theme"
-msgstr ""
+msgstr "暗色主题的进程页面"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:59
 msgid "Processor page in light theme"
-msgstr ""
+msgstr "亮色主题的处理器页面"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:63
 msgid "Memory page in dark theme"
-msgstr ""
+msgstr "暗色主题的内存页面"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:67
 msgid "GPU page in light theme"
-msgstr ""
+msgstr "亮色主题的显卡页面"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:71
 msgid "Drive page in dark theme"
-msgstr ""
+msgstr "暗色主题的驱动器页面"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:75
 msgid "Network Interface page in light theme"
-msgstr ""
+msgstr "亮色主题的网络接口页面"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:79
 msgid "Battery page in dark theme"
-msgstr ""
+msgstr "暗色主题的电池页面"
 
-#: src/application.rs:264
-msgid "The Nalux Team"
-msgstr "Nalux 团队"
+#: data/net.nokyan.Resources.policy.in.in:9
+msgid "Control Process"
+msgstr "控制进程"
 
-#: src/application.rs:272
-msgid "Report Issues"
-msgstr "上报问题"
-
-#. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
-#. One name per line, please do not remove previous names.
-#: src/application.rs:278
-msgid "translator-credits"
-msgstr "Alex3236"
-
-#: src/application.rs:279
-msgid "Icon by"
-msgstr "图标来自"
-
-#: src/ui/dialogs/app_dialog.rs:146 src/ui/dialogs/process_dialog.rs:125
-#: src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:135
-#: src/ui/dialogs/process_dialog.rs:153 src/ui/dialogs/process_dialog.rs:160
-#: src/ui/dialogs/process_dialog.rs:167 src/ui/dialogs/process_dialog.rs:174
-#: src/ui/pages/applications/mod.rs:953 src/ui/pages/applications/mod.rs:1077
-#: src/ui/pages/battery.rs:196 src/ui/pages/battery.rs:216
-#: src/ui/pages/battery.rs:222 src/ui/pages/battery.rs:225
-#: src/ui/pages/battery.rs:251 src/ui/pages/battery.rs:275
-#: src/ui/pages/battery.rs:277 src/ui/pages/battery.rs:287
-#: src/ui/pages/cpu.rs:218 src/ui/pages/cpu.rs:233 src/ui/pages/cpu.rs:248
-#: src/ui/pages/cpu.rs:254 src/ui/pages/cpu.rs:260 src/ui/pages/cpu.rs:266
-#: src/ui/pages/cpu.rs:270 src/ui/pages/cpu.rs:273 src/ui/pages/cpu.rs:370
-#: src/ui/pages/drive.rs:298 src/ui/pages/drive.rs:329
-#: src/ui/pages/drive.rs:331 src/ui/pages/drive.rs:360
-#: src/ui/pages/drive.rs:362 src/ui/pages/drive.rs:378
-#: src/ui/pages/drive.rs:379 src/ui/pages/drive.rs:386
-#: src/ui/pages/drive.rs:396 src/ui/pages/drive.rs:406 src/ui/pages/gpu.rs:227
-#: src/ui/pages/gpu.rs:267 src/ui/pages/gpu.rs:292 src/ui/pages/gpu.rs:295
-#: src/ui/pages/gpu.rs:306 src/ui/pages/gpu.rs:326 src/ui/pages/gpu.rs:338
-#: src/ui/pages/gpu.rs:352 src/ui/pages/gpu.rs:354 src/ui/pages/gpu.rs:366
-#: src/ui/pages/gpu.rs:373 src/ui/pages/gpu.rs:377 src/ui/pages/memory.rs:221
-#: src/ui/pages/memory.rs:222 src/ui/pages/memory.rs:226
-#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:231
-#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:260
-#: src/ui/pages/memory.rs:317 src/ui/pages/network.rs:230
-#: src/ui/pages/network.rs:237 src/ui/pages/network.rs:244
-#: src/ui/pages/network.rs:250 src/ui/pages/network.rs:253
-#: src/ui/pages/network.rs:314 src/ui/pages/network.rs:317
-#: src/ui/pages/network.rs:319 src/ui/pages/network.rs:348
-#: src/ui/pages/network.rs:351 src/ui/pages/network.rs:353
-#: src/ui/pages/npu.rs:201 src/ui/pages/npu.rs:230 src/ui/pages/npu.rs:248
-#: src/ui/pages/npu.rs:260 src/ui/pages/npu.rs:274 src/ui/pages/npu.rs:276
-#: src/ui/pages/npu.rs:288 src/ui/pages/npu.rs:295 src/ui/pages/npu.rs:299
-#: src/ui/pages/processes/mod.rs:1228 src/ui/pages/processes/mod.rs:1294
-#: src/ui/pages/processes/mod.rs:1360 src/ui/pages/processes/mod.rs:1426
-#: src/ui/pages/processes/mod.rs:1908 src/ui/pages/processes/mod.rs:1910
-#: src/utils/battery.rs:136 src/utils/drive.rs:89 src/utils/gpu/mod.rs:274
-#: src/utils/gpu/mod.rs:280 src/utils/npu/mod.rs:241 src/utils/npu/mod.rs:247
-msgid "N/A"
-msgstr "N/A"
-
-#: src/ui/dialogs/process_options_dialog.rs:142 src/ui/pages/cpu.rs:232
-#: src/ui/pages/cpu.rs:354 src/ui/pages/cpu.rs:358
-msgid "CPU {}"
-msgstr "CPU {}"
-
-#: src/ui/pages/applications/application_entry.rs:179 src/ui/pages/drive.rs:393
-#: src/ui/pages/drive.rs:403 src/ui/pages/processes/process_entry.rs:200
-msgid "No"
-msgstr "否"
-
-#: src/ui/pages/applications/application_entry.rs:180
-#: src/ui/pages/processes/process_entry.rs:201
-msgid "Yes (Flatpak)"
-msgstr "是 (Flatpak)"
-
-#: src/ui/pages/applications/application_entry.rs:181
-#: src/ui/pages/processes/process_entry.rs:202
-msgid "Yes (Snap)"
-msgstr "是 (Snap)"
-
-#: src/ui/pages/applications/mod.rs:134 data/resources/ui/window.ui:65
-#: data/resources/ui/window.ui:72
-#: data/resources/ui/dialogs/settings_dialog.ui:127
-msgid "Apps"
-msgstr "应用"
-
-#. -1 because we don't want to count System Processes
-#: src/ui/pages/applications/mod.rs:667
-msgid "Running Apps: {}"
-msgstr "运行中的应用：{}"
-
-#: src/ui/pages/applications/mod.rs:707 src/ui/pages/processes/mod.rs:869
-msgid "Cancel"
-msgstr "取消"
-
-#: src/ui/pages/applications/mod.rs:753
-msgid "App"
-msgstr "应用"
-
-#: src/ui/pages/applications/mod.rs:869 src/ui/pages/cpu.rs:122
-#: src/ui/pages/processes/mod.rs:1144 src/ui/window.rs:403
-#: data/resources/ui/window.ui:127 data/resources/ui/window.ui:134
-#: data/resources/ui/dialogs/app_dialog.ui:73
-#: data/resources/ui/dialogs/process_dialog.ui:55
-#: data/resources/ui/dialogs/settings_dialog.ui:138
-#: data/resources/ui/dialogs/settings_dialog.ui:220
-msgid "Processor"
-msgstr "处理器"
-
-#: src/ui/pages/applications/mod.rs:932 src/ui/pages/processes/mod.rs:1207
-#: data/resources/ui/dialogs/app_dialog.ui:91
-#: data/resources/ui/dialogs/process_dialog.ui:69
-#: data/resources/ui/dialogs/settings_dialog.ui:143
-#: data/resources/ui/dialogs/settings_dialog.ui:225
-msgid "Drive Read"
-msgstr "磁盘读取"
-
-#: src/ui/pages/applications/mod.rs:996 src/ui/pages/processes/mod.rs:1273
-#: data/resources/ui/dialogs/app_dialog.ui:100
-#: data/resources/ui/dialogs/process_dialog.ui:78
-#: data/resources/ui/dialogs/settings_dialog.ui:148
-#: data/resources/ui/dialogs/settings_dialog.ui:230
-msgid "Drive Read Total"
-msgstr "磁盘总读取量"
-
-#: src/ui/pages/applications/mod.rs:1056 src/ui/pages/processes/mod.rs:1339
-#: data/resources/ui/dialogs/app_dialog.ui:109
-#: data/resources/ui/dialogs/process_dialog.ui:87
-#: data/resources/ui/dialogs/settings_dialog.ui:153
-#: data/resources/ui/dialogs/settings_dialog.ui:235
-msgid "Drive Write"
-msgstr "磁盘写入"
-
-#: src/ui/pages/applications/mod.rs:1122 src/ui/pages/processes/mod.rs:1405
-#: data/resources/ui/dialogs/app_dialog.ui:118
-#: data/resources/ui/dialogs/process_dialog.ui:96
-#: data/resources/ui/dialogs/settings_dialog.ui:158
-#: data/resources/ui/dialogs/settings_dialog.ui:240
-msgid "Drive Write Total"
-msgstr "磁盘总写入量"
-
-#: src/ui/pages/applications/mod.rs:1241 src/ui/pages/processes/mod.rs:1528
-#: data/resources/ui/dialogs/app_dialog.ui:149
-#: data/resources/ui/dialogs/process_dialog.ui:127
-#: data/resources/ui/dialogs/settings_dialog.ui:173
-#: data/resources/ui/dialogs/settings_dialog.ui:255
-msgid "Video Encoder"
-msgstr "视频编码器"
-
-#: src/ui/pages/applications/mod.rs:1301 src/ui/pages/processes/mod.rs:1588
-#: data/resources/ui/dialogs/app_dialog.ui:158
-#: data/resources/ui/dialogs/process_dialog.ui:136
-#: data/resources/ui/dialogs/settings_dialog.ui:178
-#: data/resources/ui/dialogs/settings_dialog.ui:260
-msgid "Video Decoder"
-msgstr "视频解码器"
-
-#: src/ui/pages/applications/mod.rs:1360 src/ui/pages/processes/mod.rs:1648
-#: data/resources/ui/dialogs/app_dialog.ui:140
-#: data/resources/ui/dialogs/process_dialog.ui:118
-#: data/resources/ui/dialogs/settings_dialog.ui:168
-#: data/resources/ui/dialogs/settings_dialog.ui:250
-msgid "Video Memory"
-msgstr "显存"
-
-#: src/ui/pages/applications/mod.rs:1417 src/ui/pages/processes/mod.rs:1950
-msgid "End {}?"
-msgstr "结束 {}？"
-
-#: src/ui/pages/applications/mod.rs:1418 src/ui/pages/processes/mod.rs:1951
-msgid "Halt {}?"
-msgstr "暂停 {}？"
-
-#: src/ui/pages/applications/mod.rs:1419 src/ui/pages/processes/mod.rs:1952
-msgid "Kill {}?"
-msgstr "终止 {}？"
-
-#: src/ui/pages/applications/mod.rs:1420 src/ui/pages/processes/mod.rs:1953
-msgid "Continue {}?"
-msgstr "继续 {}？"
-
-#: src/ui/pages/applications/mod.rs:1426 src/ui/pages/processes/mod.rs:1988
-msgid "Unsaved work might be lost."
-msgstr "未储存的工作可能会遗失。"
-
-#: src/ui/pages/applications/mod.rs:1427
+#: data/net.nokyan.Resources.policy.in.in:10
 msgid ""
-"Halting an app can come with serious risks such as losing data and security "
-"implications. Use with caution."
-msgstr "暂停应用可能会带来严重的风险，例如资料遗失和安全问题。请谨慎使用。"
-
-#: src/ui/pages/applications/mod.rs:1428
-msgid ""
-"Killing an app can come with serious risks such as losing data and security "
-"implications. Use with caution."
-msgstr "终止应用可能会带来严重的风险，例如资料遗失和安全问题。请谨慎使用。"
-
-#: src/ui/pages/applications/mod.rs:1435
-#: data/resources/ui/pages/applications.ui:22
-#: data/resources/ui/pages/applications.ui:127
-msgid "End App"
-msgstr "结束应用"
-
-#: src/ui/pages/applications/mod.rs:1436
-#: data/resources/ui/pages/applications.ui:10
-#: data/resources/ui/pages/applications.ui:30
-msgid "Halt App"
-msgstr "暂停应用"
-
-#: src/ui/pages/applications/mod.rs:1437
-#: data/resources/ui/pages/applications.ui:6
-#: data/resources/ui/pages/applications.ui:26
-msgid "Kill App"
-msgstr "终止应用"
-
-#: src/ui/pages/applications/mod.rs:1438
-#: data/resources/ui/pages/applications.ui:14
-#: data/resources/ui/pages/applications.ui:34
-msgid "Continue App"
-msgstr "继续应用"
-
-#: src/ui/pages/battery.rs:101 src/ui/pages/drive.rs:122
-msgid "Drive"
-msgstr "磁盘"
-
-#: src/ui/pages/battery.rs:201
-msgid "Battery Charge"
-msgstr ""
-
-#: src/ui/pages/battery.rs:208 data/resources/ui/pages/gpu.ui:55
-#: data/resources/ui/pages/npu.ui:49
-msgid "Power Usage"
-msgstr "功耗"
-
-#: src/ui/pages/battery.rs:265 src/ui/pages/drive.rs:323
-#: src/ui/pages/drive.rs:354 src/ui/pages/network.rs:306
-#: src/ui/pages/network.rs:340
-msgid "Highest:"
-msgstr "最高："
-
-#: src/ui/pages/cpu.rs:217 src/ui/pages/gpu.rs:198 src/ui/pages/npu.rs:189
-msgid "Total Usage"
-msgstr "总使用量"
-
-#: src/ui/pages/drive.rs:224
-msgid "Drive Activity"
-msgstr "磁盘活动"
-
-#: src/ui/pages/drive.rs:231
-msgid "Read Speed"
-msgstr "读取速度"
-
-#: src/ui/pages/drive.rs:235
-msgid "Write Speed"
-msgstr "写入速度"
-
-#: src/ui/pages/drive.rs:391 src/ui/pages/drive.rs:401
-msgid "Yes"
-msgstr "是"
-
-#. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
-#. translation should preferably be quite short or an abbreviation
-#: src/ui/pages/drive.rs:413
-msgid "R: {} · W: {}"
-msgstr "读取：{} · 写入：{}"
-
-#: src/ui/pages/gpu.rs:206
-msgid "Video Encoder/Decoder Usage"
-msgstr "视频编解码器占用"
-
-#: src/ui/pages/gpu.rs:212
-msgid "Video Encoder Usage"
-msgstr "视频编码器占用"
-
-#: src/ui/pages/gpu.rs:217
-msgid "Video Decoder Usage"
-msgstr "视频解码器占用"
-
-#: src/ui/pages/gpu.rs:222
-msgid "Video Memory Usage"
-msgstr "显存占用"
-
-#. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
-#. shorter than) 'Memory'
-#: src/ui/pages/gpu.rs:385 src/ui/pages/npu.rs:307
-msgid "Memory: {}"
-msgstr "内存：{}"
-
-#: src/ui/pages/memory.rs:192
-msgid "Swap"
-msgstr "交换空间"
-
-#: src/ui/pages/memory.rs:256
-msgid "{} of {}"
-msgstr "已用 {}，总计 {}"
-
-#: src/ui/pages/memory.rs:259
-msgid "{} MT/s"
-msgstr "{} MT/s"
-
-#. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
-#. preferably be quite short or an abbreviation
-#: src/ui/pages/memory.rs:336
-msgid "{} / {} · Swap: {} %"
-msgstr "{} / {} · 交换空间：{} %"
-
-#: src/ui/pages/network.rs:114 src/utils/network.rs:128
-msgid "Network Interface"
-msgstr "网络接口"
-
-#: src/ui/pages/network.rs:218
-msgid "Receiving"
-msgstr "接收中"
-
-#: src/ui/pages/network.rs:222
-msgid "Sending"
-msgstr "发送中"
-
-#. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
-#. your translation should preferably be quite short or an abbreviation
-#: src/ui/pages/network.rs:363
-msgid "R: {} · S: {}"
-msgstr "接受：{} · 发送：{}"
-
-#: src/ui/pages/npu.rs:105 src/ui/window.rs:343
-msgid "NPU"
-msgstr "NPU"
-
-#: src/ui/pages/npu.rs:196
-msgid "Memory Usage"
-msgstr "内存占用"
-
-#: src/ui/pages/processes/mod.rs:178 data/resources/ui/window.ui:96
-#: data/resources/ui/window.ui:103
-#: data/resources/ui/dialogs/settings_dialog.ui:188
-msgid "Processes"
-msgstr "进程"
-
-#: src/ui/pages/processes/mod.rs:522 src/ui/pages/processes/mod.rs:1997
-#: data/resources/ui/pages/processes.ui:38
-#: data/resources/ui/pages/processes.ui:186
-msgid "End Process"
-msgstr "结束进程"
-
-#: src/ui/pages/processes/mod.rs:526 data/resources/ui/pages/processes.ui:70
-msgid "End Processes"
-msgstr "结束进程"
-
-#: src/ui/pages/processes/mod.rs:820
-msgid "Running Processes: {}"
-msgstr "正在运行的进程：{}"
-
-#: src/ui/pages/processes/mod.rs:918
-msgid "Process"
-msgstr "进程"
-
-#: src/ui/pages/processes/mod.rs:979
-#: data/resources/ui/dialogs/process_dialog.ui:177
-#: data/resources/ui/dialogs/settings_dialog.ui:205
-msgid "Process ID"
-msgstr "进程 ID"
-
-#: src/ui/pages/processes/mod.rs:1032
-#: data/resources/ui/dialogs/process_dialog.ui:204
-#: data/resources/ui/dialogs/settings_dialog.ui:210
-msgid "User"
-msgstr "用户"
-
-#: src/ui/pages/processes/mod.rs:1707
-#: data/resources/ui/dialogs/process_dialog.ui:145
-#: data/resources/ui/dialogs/settings_dialog.ui:265
-#| msgid "Total Usage"
-msgid "Total CPU Time"
-msgstr ""
-
-#: src/ui/pages/processes/mod.rs:1766
-#: data/resources/ui/dialogs/process_dialog.ui:154
-#: data/resources/ui/dialogs/settings_dialog.ui:270
-msgid "User CPU Time"
-msgstr ""
-
-#: src/ui/pages/processes/mod.rs:1825
-#: data/resources/ui/dialogs/process_dialog.ui:163
-#: data/resources/ui/dialogs/settings_dialog.ui:275
-msgid "System CPU Time"
-msgstr ""
-
-#: src/ui/pages/processes/mod.rs:1884
-#: data/resources/ui/dialogs/process_options_dialog.ui:87
-#: data/resources/ui/dialogs/settings_dialog.ui:280
-msgid "Priority"
-msgstr "优先级"
-
-#: src/ui/pages/processes/mod.rs:1960
-msgid "End process?"
-msgid_plural "End {} processes?"
-msgstr[0] "结束进程？"
-
-#: src/ui/pages/processes/mod.rs:1966
-#| msgid "Halt process"
-msgid "Halt process?"
-msgid_plural "Halt {} processes?"
-msgstr[0] "暂停进程？"
-
-#: src/ui/pages/processes/mod.rs:1972 src/ui/pages/processes/mod.rs:1978
-#| msgid "Kill process"
-msgid "Kill process?"
-msgid_plural "Kill {} processes?"
-msgstr[0] "终止进程？"
-
-#: src/ui/pages/processes/mod.rs:1989
-msgid ""
-"Halting a process can come with serious risks such as losing data and "
-"security implications. Use with caution."
-msgstr "暂停应用程序可能会带来严重的风险，例如资料遗失和安全问题。请谨慎使用。"
-
-#: src/ui/pages/processes/mod.rs:1990
-msgid ""
-"Killing a process can come with serious risks such as losing data and "
-"security implications. Use with caution."
-msgstr "终止应用程序可能会带来严重的风险，例如资料遗失和安全问题。请谨慎使用。"
-
-#: src/ui/pages/processes/mod.rs:1998 data/resources/ui/pages/processes.ui:10
-#: data/resources/ui/pages/processes.ui:46
-msgid "Halt Process"
-msgstr "暂停进程"
-
-#: src/ui/pages/processes/mod.rs:1999 data/resources/ui/pages/processes.ui:6
-#: data/resources/ui/pages/processes.ui:42
-msgid "Kill Process"
-msgstr "终止进程"
-
-#: src/ui/pages/processes/mod.rs:2000 data/resources/ui/pages/processes.ui:14
-#: data/resources/ui/pages/processes.ui:50
-msgid "Continue Process"
-msgstr "继续进程"
-
-#: src/ui/window.rs:309
-msgid "GPU {}"
-msgstr "GPU {}"
-
-#: src/ui/window.rs:341
-msgid "NPU {}"
-msgstr "NPU {}"
-
-#: src/ui/window.rs:1039
-msgid "Successfully adjusted {}"
-msgstr ""
-
-#: src/ui/window.rs:1040
-#| msgid "There was a problem halting {}"
-msgid "There was a problem adjusting {}"
-msgstr ""
-
-#: src/ui/window.rs:1120
-msgid "Successfully ended {}"
-msgstr "成功结束 {}"
-
-#: src/ui/window.rs:1121
-msgid "Successfully halted {}"
-msgstr "成功暂停 {}"
-
-#: src/ui/window.rs:1122
-msgid "Successfully killed {}"
-msgstr "成功终止 {}"
-
-#: src/ui/window.rs:1123
-msgid "Successfully continued {}"
-msgstr "成功继续 {}"
-
-#: src/ui/window.rs:1130
-#| msgid "Successfully ended {}"
-msgid "Successfully ended the process"
-msgid_plural "Successfully ended {} processes"
-msgstr[0] "成功结束进程"
-
-#: src/ui/window.rs:1136
-#| msgid "Successfully halted {}"
-msgid "Successfully halted the process"
-msgid_plural "Successfully halted {} processes"
-msgstr[0] "成功暂停进程"
-
-#: src/ui/window.rs:1142
-#| msgid "Successfully killed {}"
-msgid "Successfully killed the process"
-msgid_plural "Successfully killed {} processes"
-msgstr[0] "成功终止进程"
-
-#: src/ui/window.rs:1148
-#| msgid "Successfully continued {}"
-msgid "Successfully continued the process"
-msgid_plural "Successfully continued {} processes"
-msgstr[0] "成功继续进程"
-
-#: src/ui/window.rs:1159
-msgid "There was a problem ending a process"
-msgid_plural "There were problems ending {} processes"
-msgstr[0] "结束进程时出现问题"
-
-#: src/ui/window.rs:1165
-msgid "There was a problem halting a process"
-msgid_plural "There were problems halting {} processes"
-msgstr[0] "暂停进程时出现问题"
-
-#: src/ui/window.rs:1171
-msgid "There was a problem killing a process"
-msgid_plural "There were problems killing {} processes"
-msgstr[0] "终止进程时出现问题"
-
-#: src/ui/window.rs:1177
-msgid "There was a problem continuing a process"
-msgid_plural "There were problems continuing {} processes"
-msgstr[0] "继续进程时出现问题"
-
-#: src/ui/window.rs:1187
-msgid "There was a problem ending {}"
-msgstr "结束 {} 时出现问题"
-
-#: src/ui/window.rs:1188
-msgid "There was a problem halting {}"
-msgstr "暂停 {} 时出现问题"
-
-#: src/ui/window.rs:1189
-msgid "There was a problem killing {}"
-msgstr "终止 {} 时出现问题"
-
-#: src/ui/window.rs:1190
-msgid "There was a problem continuing {}"
-msgstr "继续 {} 时出现问题"
-
-#: src/utils/app.rs:223
-msgid "System Processes"
-msgstr "系统进程"
-
-#: src/utils/battery.rs:77
-msgid "Charging"
-msgstr "充电中"
-
-#: src/utils/battery.rs:78
-msgid "Discharging"
-msgstr "放电中"
-
-#: src/utils/battery.rs:79
-msgid "Empty"
-msgstr ""
-
-#: src/utils/battery.rs:80
-msgid "Full"
-msgstr "已充满"
-
-#: src/utils/battery.rs:81
-msgid "Unknown"
-msgstr "未知"
-
-#: src/utils/battery.rs:127
-msgid "Nickel-Metal Hydride"
-msgstr "镍氢"
-
-#: src/utils/battery.rs:128
-msgid "Nickel-Cadmium"
-msgstr "镍镉"
-
-#: src/utils/battery.rs:129
-msgid "Nickel-Zinc"
-msgstr "镍锌"
-
-#: src/utils/battery.rs:130
-msgid "Lead-Acid"
-msgstr "铅酸"
-
-#: src/utils/battery.rs:131
-msgid "Lithium-Ion"
-msgstr "锂离子"
-
-#: src/utils/battery.rs:132
-msgid "Lithium Iron Phosphate"
-msgstr "磷酸铁锂"
-
-#: src/utils/battery.rs:133
-msgid "Lithium Polymer"
-msgstr "锂离子聚合物"
-
-#: src/utils/battery.rs:135
-msgid "Rechargeable Alkaline Managanese"
-msgstr "可充电碱性"
-
-#: src/utils/battery.rs:229
-msgid "{} Battery"
-msgstr "{}电池"
-
-#: src/utils/battery.rs:231
-msgid "Battery"
-msgstr "电池"
-
-#: src/utils/drive.rs:81 src/utils/drive.rs:152
-msgid "CD/DVD/Blu-ray Drive"
-msgstr "CD/DVD/蓝光光驱"
-
-#: src/utils/drive.rs:82
-msgid "eMMC Storage"
-msgstr "eMMC 存储"
-
-#: src/utils/drive.rs:83
-msgid "Flash Storage"
-msgstr "闪存"
-
-#: src/utils/drive.rs:84 src/utils/drive.rs:153
-msgid "Floppy Drive"
-msgstr "软盘"
-
-#: src/utils/drive.rs:85
-msgid "Hard Disk Drive"
-msgstr "硬盘"
-
-#: src/utils/drive.rs:86
-msgid "Loop Device"
-msgstr "Loop 设备"
-
-#: src/utils/drive.rs:87
-msgid "Mapped Device"
-msgstr "映射设备"
-
-#: src/utils/drive.rs:88
-msgid "NVMe Drive"
-msgstr "NVMe 磁盘"
-
-#: src/utils/drive.rs:90
-msgid "Software Raid"
-msgstr "软 RAID"
-
-#: src/utils/drive.rs:91
-msgid "RAM Disk"
-msgstr "RAM 盘"
-
-#: src/utils/drive.rs:92
-msgid "Solid State Drive"
-msgstr "固态硬盘"
-
-#: src/utils/drive.rs:93
-msgid "ZFS Volume"
-msgstr "ZFS 卷"
-
-#: src/utils/drive.rs:94
-msgid "Compressed RAM Disk (zram)"
-msgstr "压缩 RAM 盘（ZRAM）"
-
-#: src/utils/drive.rs:154
-msgid "{} Loop Device"
-msgstr "{} Loop 设备"
-
-#: src/utils/drive.rs:155
-msgid "{} Mapped Device"
-msgstr "{} 映射设备"
-
-#: src/utils/drive.rs:156
-msgid "{} RAID"
-msgstr "{} RAID"
-
-#: src/utils/drive.rs:157
-msgid "{} RAM Disk"
-msgstr "{} RAM 盘"
-
-#: src/utils/drive.rs:158
-msgid "{} zram Device"
-msgstr "{} ZRAM 设备"
-
-#: src/utils/drive.rs:159
-msgid "{} ZFS Volume"
-msgstr "{} ZFS 卷"
-
-#: src/utils/drive.rs:160
-msgid "{} Drive"
-msgstr "{} 磁盘"
-
-#: src/utils/network.rs:116
-msgid "Bluetooth Tether"
-msgstr "蓝牙共享网络"
-
-#: src/utils/network.rs:117
-msgid "Network Bridge"
-msgstr "桥接器"
-
-#: src/utils/network.rs:118
-msgid "Ethernet Connection"
-msgstr "以太网络连接"
-
-#: src/utils/network.rs:119
-msgid "Docker Bridge"
-msgstr "Docker 网桥"
-
-#: src/utils/network.rs:120
-msgid "InfiniBand Connection"
-msgstr "InfiniBand 连接"
-
-#: src/utils/network.rs:121
-msgid "Serial Line IP Connection"
-msgstr "串行线路 IP 连接"
-
-#: src/utils/network.rs:122
-msgid "Virtual Ethernet Device"
-msgstr "虚拟网卡设备"
-
-#: src/utils/network.rs:123
-msgid "VM Network Bridge"
-msgstr "VM 桥接网络"
-
-#: src/utils/network.rs:124
-msgid "VPN Tunnel"
-msgstr "VPN 隧道"
-
-#: src/utils/network.rs:125
-msgid "VPN Tunnel (WireGuard)"
-msgstr "VPN 隧道 (WireGuard)"
-
-#: src/utils/network.rs:126
-msgid "Wi-Fi Connection"
-msgstr "Wi-Fi 连接"
-
-#: src/utils/network.rs:127
-msgid "WWAN Connection"
-msgstr "WWAN 连接"
-
-#: src/utils/units.rs:59
-msgid "{} K"
-msgstr "{} K"
-
-#: src/utils/units.rs:61
-msgid "{} °C"
-msgstr "{} °C"
-
-#: src/utils/units.rs:63
-msgid "{} °F"
-msgstr "{} °F"
-
-#: src/utils/units.rs:81 src/utils/units.rs:95 src/utils/units.rs:115
-#: src/utils/units.rs:129
-msgid "{} B"
-msgstr "{} B"
-
-#: src/utils/units.rs:82 src/utils/units.rs:96
-msgid "{} kB"
-msgstr "{} kB"
-
-#: src/utils/units.rs:83 src/utils/units.rs:97
-msgid "{} MB"
-msgstr "{} MB"
-
-#: src/utils/units.rs:84 src/utils/units.rs:98
-msgid "{} GB"
-msgstr "{} GB"
-
-#: src/utils/units.rs:85 src/utils/units.rs:99
-msgid "{} TB"
-msgstr "{} TB"
-
-#: src/utils/units.rs:86 src/utils/units.rs:100
-msgid "{} PB"
-msgstr "{} PB"
-
-#: src/utils/units.rs:87 src/utils/units.rs:101
-msgid "{} EB"
-msgstr "{} EB"
-
-#: src/utils/units.rs:88 src/utils/units.rs:102
-msgid "{} ZB"
-msgstr "{} ZB"
-
-#: src/utils/units.rs:89 src/utils/units.rs:103
-msgid "{} YB"
-msgstr "{} YB"
-
-#: src/utils/units.rs:90 src/utils/units.rs:104
-msgid "{} RB"
-msgstr "{} RB"
-
-#: src/utils/units.rs:91 src/utils/units.rs:105
-msgid "{} QB"
-msgstr "{} QB"
-
-#: src/utils/units.rs:116 src/utils/units.rs:130
-msgid "{} KiB"
-msgstr "{} KiB"
-
-#: src/utils/units.rs:117 src/utils/units.rs:131
-msgid "{} MiB"
-msgstr "{} MiB"
-
-#: src/utils/units.rs:118 src/utils/units.rs:132
-msgid "{} GiB"
-msgstr "{} GiB"
-
-#: src/utils/units.rs:119 src/utils/units.rs:133
-msgid "{} TiB"
-msgstr "{} TiB"
-
-#: src/utils/units.rs:120 src/utils/units.rs:134
-msgid "{} PiB"
-msgstr "{} PiB"
-
-#: src/utils/units.rs:121 src/utils/units.rs:135
-msgid "{} EiB"
-msgstr "{} EiB"
-
-#: src/utils/units.rs:122 src/utils/units.rs:136
-msgid "{} ZiB"
-msgstr "{} ZiB"
-
-#: src/utils/units.rs:123 src/utils/units.rs:137
-msgid "{} YiB"
-msgstr "{} YiB"
-
-#: src/utils/units.rs:124 src/utils/units.rs:138
-msgid "{} RiB"
-msgstr "{} RiB"
-
-#: src/utils/units.rs:125 src/utils/units.rs:139
-msgid "{} QiB"
-msgstr "{} QiB"
-
-#: src/utils/units.rs:166 src/utils/units.rs:183
-msgid "{} B/s"
-msgstr "{} B/s"
-
-#: src/utils/units.rs:167
-msgid "{} kB/s"
-msgstr "{} kB/s"
-
-#: src/utils/units.rs:168
-msgid "{} MB/s"
-msgstr "{} MB/s"
-
-#: src/utils/units.rs:169
-msgid "{} GB/s"
-msgstr "{} GB/s"
-
-#: src/utils/units.rs:170
-msgid "{} TB/s"
-msgstr "{} TB/s"
-
-#: src/utils/units.rs:171
-msgid "{} PB/s"
-msgstr "{} PB/s"
-
-#: src/utils/units.rs:172
-msgid "{} EB/s"
-msgstr "{} EB/s"
-
-#: src/utils/units.rs:173
-msgid "{} ZB/s"
-msgstr "{} ZB/s"
-
-#: src/utils/units.rs:174
-msgid "{} YB/s"
-msgstr "{} YB/s"
-
-#: src/utils/units.rs:175
-msgid "{} RB/s"
-msgstr "{} RB/s"
-
-#: src/utils/units.rs:176
-msgid "{} QB/s"
-msgstr "{} QB/s"
-
-#: src/utils/units.rs:184
-msgid "{} KiB/s"
-msgstr "{} KiB/s"
-
-#: src/utils/units.rs:185
-msgid "{} MiB/s"
-msgstr "{} MiB/s"
-
-#: src/utils/units.rs:186
-msgid "{} GiB/s"
-msgstr "{} GiB/s"
-
-#: src/utils/units.rs:187
-msgid "{} TiB/s"
-msgstr "{} TiB/s"
-
-#: src/utils/units.rs:188
-msgid "{} PiB/s"
-msgstr "{} PiB/s"
-
-#: src/utils/units.rs:189
-msgid "{} EiB/s"
-msgstr "{} EiB/s"
-
-#: src/utils/units.rs:190
-msgid "{} ZiB/s"
-msgstr "{} ZiB/s"
-
-#: src/utils/units.rs:191
-msgid "{} YiB/s"
-msgstr "{} YiB/s"
-
-#: src/utils/units.rs:192
-msgid "{} RiB/s"
-msgstr "{} RiB/s"
-
-#: src/utils/units.rs:193
-msgid "{} QiB/s"
-msgstr "{} QiB/s"
-
-#: src/utils/units.rs:200 src/utils/units.rs:217
-msgid "{} b/s"
-msgstr "{} b/s"
-
-#: src/utils/units.rs:201
-msgid "{} kb/s"
-msgstr "{} kb/s"
-
-#: src/utils/units.rs:202
-msgid "{} Mb/s"
-msgstr "{} Mb/s"
-
-#: src/utils/units.rs:203
-msgid "{} Gb/s"
-msgstr "{} Gb/s"
-
-#: src/utils/units.rs:204
-msgid "{} Tb/s"
-msgstr "{} Tb/s"
-
-#: src/utils/units.rs:205
-msgid "{} Pb/s"
-msgstr "{} Pb/s"
-
-#: src/utils/units.rs:206
-msgid "{} Eb/s"
-msgstr "{} Eb/s"
-
-#: src/utils/units.rs:207
-msgid "{} Zb/s"
-msgstr "{} Zb/s"
-
-#: src/utils/units.rs:208
-msgid "{} Yb/s"
-msgstr "{} Yb/s"
-
-#: src/utils/units.rs:209
-msgid "{} Rb/s"
-msgstr "{} Rb/s"
-
-#: src/utils/units.rs:210
-msgid "{} Qb/s"
-msgstr "{} Qb/s"
-
-#: src/utils/units.rs:218
-msgid "{} Kib/s"
-msgstr "{} Kib/s"
-
-#: src/utils/units.rs:219
-msgid "{} Mib/s"
-msgstr "{} Mib/s"
-
-#: src/utils/units.rs:220
-msgid "{} Gib/s"
-msgstr "{} Gib/s"
-
-#: src/utils/units.rs:221
-msgid "{} Tib/s"
-msgstr "{} Tib/s"
-
-#: src/utils/units.rs:222
-msgid "{} Pib/s"
-msgstr "{} Pib/s"
-
-#: src/utils/units.rs:223
-msgid "{} Eib/s"
-msgstr "{} Eib/s"
-
-#: src/utils/units.rs:224
-msgid "{} Zib/s"
-msgstr "{} Zib/s"
-
-#: src/utils/units.rs:225
-msgid "{} Yib/s"
-msgstr "{} Yib/s"
-
-#: src/utils/units.rs:226
-msgid "{} Rib/s"
-msgstr "{} Rib/s"
-
-#: src/utils/units.rs:227
-msgid "{} Qib/s"
-msgstr "{} Qib/s"
-
-#: src/utils/units.rs:234
-msgid "{} Hz"
-msgstr "{} Hz"
-
-#: src/utils/units.rs:235
-msgid "{} kHz"
-msgstr "{} kHz"
-
-#: src/utils/units.rs:236
-msgid "{} MHz"
-msgstr "{} MHz"
-
-#: src/utils/units.rs:237
-msgid "{} GHz"
-msgstr "{} GHz"
-
-#: src/utils/units.rs:238
-msgid "{} THz"
-msgstr "{} THz"
-
-#: src/utils/units.rs:239
-msgid "{} PHz"
-msgstr "{} PHz"
-
-#: src/utils/units.rs:240
-msgid "{} EHz"
-msgstr "{} EHz"
-
-#: src/utils/units.rs:241
-msgid "{} ZHz"
-msgstr "{} ZHz"
-
-#: src/utils/units.rs:242
-msgid "{} YHz"
-msgstr "{} YHz"
-
-#: src/utils/units.rs:243
-msgid "{} RHz"
-msgstr "{} RHz"
-
-#: src/utils/units.rs:244
-msgid "{} QHz"
-msgstr "{} QHz"
-
-#: src/utils/units.rs:251
-msgid "{} W"
-msgstr "{} W"
-
-#: src/utils/units.rs:252
-msgid "{} kW"
-msgstr "{} kW"
-
-#: src/utils/units.rs:253
-msgid "{} MW"
-msgstr "{} MW"
-
-#: src/utils/units.rs:254
-msgid "{} GW"
-msgstr "{} GW"
-
-#: src/utils/units.rs:255
-msgid "{} TW"
-msgstr "{} TW"
-
-#: src/utils/units.rs:256
-msgid "{} PW"
-msgstr "{} PW"
-
-#: src/utils/units.rs:257
-msgid "{} EW"
-msgstr "{} EW"
-
-#: src/utils/units.rs:258
-msgid "{} ZW"
-msgstr "{} ZW"
-
-#: src/utils/units.rs:259
-msgid "{} YW"
-msgstr "{} YW"
-
-#: src/utils/units.rs:260
-msgid "{} RW"
-msgstr "{} RW"
-
-#: src/utils/units.rs:261
-msgid "{} QW"
-msgstr "{} QW"
-
-#: src/utils/units.rs:270 src/utils/units.rs:284
-msgid "{} Wh"
-msgstr "{} Wh"
-
-#: src/utils/units.rs:271 src/utils/units.rs:285
-msgid "{} kWh"
-msgstr "{} kWh"
-
-#: src/utils/units.rs:272 src/utils/units.rs:286
-msgid "{} MWh"
-msgstr "{} MWh"
-
-#: src/utils/units.rs:273 src/utils/units.rs:287
-msgid "{} GWh"
-msgstr "{} GWh"
-
-#: src/utils/units.rs:274 src/utils/units.rs:288
-msgid "{} TWh"
-msgstr "{} TWh"
-
-#: src/utils/units.rs:275 src/utils/units.rs:289
-msgid "{} PWh"
-msgstr "{} PWh"
-
-#: src/utils/units.rs:276 src/utils/units.rs:290
-msgid "{} EWh"
-msgstr "{} EWh"
-
-#: src/utils/units.rs:277 src/utils/units.rs:291
-msgid "{} ZWh"
-msgstr "{} ZWh"
-
-#: src/utils/units.rs:278 src/utils/units.rs:292
-msgid "{} YWh"
-msgstr "{} YWh"
-
-#: src/utils/units.rs:279 src/utils/units.rs:293
-msgid "{} RWh"
-msgstr "{} RWh"
-
-#: src/utils/units.rs:280 src/utils/units.rs:294
-msgid "{} QWh"
-msgstr "{} QWh"
-
-#: data/resources/ui/shortcuts.ui:11
-msgctxt "shortcut window"
-msgid "General"
-msgstr "通用"
-
-#: data/resources/ui/shortcuts.ui:14
-msgctxt "shortcut window"
-msgid "Preferences"
-msgstr "选项"
-
-#: data/resources/ui/shortcuts.ui:20
-msgctxt "shortcut window"
-msgid "Show Shortcuts"
-msgstr "显示快捷键"
-
-#: data/resources/ui/shortcuts.ui:26
-msgctxt "shortcut window"
-msgid "Quit"
-msgstr "退出"
-
-#: data/resources/ui/shortcuts.ui:32
-msgctxt "shortcut window"
-msgid "Toggle Search Field"
-msgstr "切换搜索栏"
-
-#: data/resources/ui/shortcuts.ui:38
-msgctxt "shortcut window"
-msgid "End App/Process"
-msgstr "结束应用/进程"
-
-#: data/resources/ui/shortcuts.ui:44
-msgctxt "shortcut window"
-msgid "Kill App/Process"
-msgstr "终止应用/进程"
-
-#: data/resources/ui/shortcuts.ui:50
-msgctxt "shortcut window"
-msgid "Halt App/Process"
-msgstr "暂停应用/进程"
-
-#: data/resources/ui/shortcuts.ui:56
-msgctxt "shortcut window"
-msgid "Continue App/Process"
-msgstr "继续应用/进程"
-
-#: data/resources/ui/shortcuts.ui:62
-msgctxt "shortcut window"
-msgid "Show Information for App/Process"
-msgstr "显示应用/进程详情"
-
-#: data/resources/ui/shortcuts.ui:68
-msgctxt "shortcut window"
-msgid "Show Process Options"
-msgstr "显示进程选项"
-
-#: data/resources/ui/window.ui:6
-msgid "Preferences"
-msgstr "选项"
-
-#: data/resources/ui/window.ui:10
-msgid "Keyboard Shortcuts"
-msgstr "键盘快捷键"
-
-#: data/resources/ui/window.ui:14
-msgid "About Resources"
-msgstr "关于 Resources"
+"Authentication is required to control superuser’s or other users’ processes"
+msgstr "需要认证以控制超级用户或其他用户的进程"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
 msgid "App Information"
@@ -1316,30 +144,105 @@ msgstr "应用信息"
 msgid "Usage"
 msgstr "占用"
 
-#: data/resources/ui/dialogs/app_dialog.ui:165
-#: data/resources/ui/dialogs/process_dialog.ui:170
-#: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:89
-#: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:80
+#: data/resources/ui/dialogs/app_dialog.ui:73
+#: data/resources/ui/dialogs/process_dialog.ui:55
+#: data/resources/ui/dialogs/settings_dialog.ui:133
+#: data/resources/ui/dialogs/settings_dialog.ui:225
+#: data/resources/ui/window.ui:145 data/resources/ui/window.ui:152
+#: src/ui/pages/applications/mod.rs:862 src/ui/pages/cpu.rs:128
+#: src/ui/pages/processes/mod.rs:1138 src/ui/window.rs:290
+msgid "Processor"
+msgstr "处理器"
+
+#: data/resources/ui/dialogs/app_dialog.ui:91
+#: data/resources/ui/dialogs/process_dialog.ui:73
+#: data/resources/ui/dialogs/settings_dialog.ui:178
+#: data/resources/ui/dialogs/settings_dialog.ui:290
+#: src/ui/pages/applications/mod.rs:1420 src/ui/pages/memory.rs:198
+#: src/ui/pages/processes/mod.rs:1954
+msgid "Swap"
+msgstr "交换空间"
+
+#: data/resources/ui/dialogs/app_dialog.ui:100
+#: data/resources/ui/dialogs/process_dialog.ui:78
+#: data/resources/ui/dialogs/settings_dialog.ui:138
+#: data/resources/ui/dialogs/settings_dialog.ui:230
+#: src/ui/pages/applications/mod.rs:926 src/ui/pages/processes/mod.rs:1202
+msgid "Drive Read"
+msgstr "驱动器读取"
+
+#: data/resources/ui/dialogs/app_dialog.ui:109
+#: data/resources/ui/dialogs/process_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:143
+#: data/resources/ui/dialogs/settings_dialog.ui:235
+#: src/ui/pages/applications/mod.rs:991 src/ui/pages/processes/mod.rs:1269
+msgid "Drive Read Total"
+msgstr "驱动器总读取量"
+
+#: data/resources/ui/dialogs/app_dialog.ui:118
+#: data/resources/ui/dialogs/process_dialog.ui:96
+#: data/resources/ui/dialogs/settings_dialog.ui:148
+#: data/resources/ui/dialogs/settings_dialog.ui:240
+#: src/ui/pages/applications/mod.rs:1052 src/ui/pages/processes/mod.rs:1336
+msgid "Drive Write"
+msgstr "驱动器写入"
+
+#: data/resources/ui/dialogs/app_dialog.ui:127
+#: data/resources/ui/dialogs/process_dialog.ui:105
+#: data/resources/ui/dialogs/settings_dialog.ui:153
+#: data/resources/ui/dialogs/settings_dialog.ui:245
+#: src/ui/pages/applications/mod.rs:1119 src/ui/pages/processes/mod.rs:1403
+msgid "Drive Write Total"
+msgstr "驱动器总写入量"
+
+#: data/resources/ui/dialogs/app_dialog.ui:149
+#: data/resources/ui/dialogs/process_dialog.ui:127
+#: data/resources/ui/dialogs/settings_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:255
+#: src/ui/pages/applications/mod.rs:1361 src/ui/pages/processes/mod.rs:1650
+msgid "Video Memory"
+msgstr "显存"
+
+#: data/resources/ui/dialogs/app_dialog.ui:158
+#: data/resources/ui/dialogs/process_dialog.ui:136
+#: data/resources/ui/dialogs/settings_dialog.ui:168
+#: data/resources/ui/dialogs/settings_dialog.ui:260
+#: src/ui/pages/applications/mod.rs:1240 src/ui/pages/processes/mod.rs:1528
+msgid "Video Encoder"
+msgstr "视频编码器"
+
+#: data/resources/ui/dialogs/app_dialog.ui:167
+#: data/resources/ui/dialogs/process_dialog.ui:145
+#: data/resources/ui/dialogs/settings_dialog.ui:173
+#: data/resources/ui/dialogs/settings_dialog.ui:265
+#: src/ui/pages/applications/mod.rs:1301 src/ui/pages/processes/mod.rs:1589
+msgid "Video Decoder"
+msgstr "视频解码器"
+
+#: data/resources/ui/dialogs/app_dialog.ui:174
+#: data/resources/ui/dialogs/process_dialog.ui:179
+#: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:83
+#: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:74
 #: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
-#: data/resources/ui/pages/npu.ui:74
+#: data/resources/ui/pages/npu.ui:68
 msgid "Properties"
 msgstr "属性"
 
-#: data/resources/ui/dialogs/app_dialog.ui:171
+#: data/resources/ui/dialogs/app_dialog.ui:180
 msgid "ID"
 msgstr "ID"
 
-#: data/resources/ui/dialogs/app_dialog.ui:181
-#: data/resources/ui/dialogs/process_dialog.ui:186
+#: data/resources/ui/dialogs/app_dialog.ui:190
+#: data/resources/ui/dialogs/process_dialog.ui:195
 msgid "Running Since"
 msgstr "启动时间"
 
-#: data/resources/ui/dialogs/app_dialog.ui:189
+#: data/resources/ui/dialogs/app_dialog.ui:198
 msgid "Running Processes"
 msgstr "正在运行的进程"
 
-#: data/resources/ui/dialogs/app_dialog.ui:198
-#: data/resources/ui/dialogs/process_dialog.ui:222
+#: data/resources/ui/dialogs/app_dialog.ui:207
+#: data/resources/ui/dialogs/process_dialog.ui:231
 msgid "Containerized"
 msgstr "已容器化"
 
@@ -1347,11 +250,41 @@ msgstr "已容器化"
 msgid "Process Information"
 msgstr "进程信息"
 
-#: data/resources/ui/dialogs/process_dialog.ui:195
+#: data/resources/ui/dialogs/process_dialog.ui:154
+#: data/resources/ui/dialogs/settings_dialog.ui:270
+#: src/ui/pages/processes/mod.rs:1710
+msgid "Total CPU Time"
+msgstr "总处理器时间"
+
+#: data/resources/ui/dialogs/process_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:275
+#: src/ui/pages/processes/mod.rs:1769
+msgid "User CPU Time"
+msgstr "用户处理器时间"
+
+#: data/resources/ui/dialogs/process_dialog.ui:172
+#: data/resources/ui/dialogs/settings_dialog.ui:280
+#: src/ui/pages/processes/mod.rs:1828
+msgid "System CPU Time"
+msgstr "系统处理器时间"
+
+#: data/resources/ui/dialogs/process_dialog.ui:186
+#: data/resources/ui/dialogs/settings_dialog.ui:210
+#: src/ui/pages/processes/mod.rs:972
+msgid "Process ID"
+msgstr "进程 ID"
+
+#: data/resources/ui/dialogs/process_dialog.ui:204
 msgid "Commandline"
 msgstr "命令行"
 
 #: data/resources/ui/dialogs/process_dialog.ui:213
+#: data/resources/ui/dialogs/settings_dialog.ui:215
+#: src/ui/pages/processes/mod.rs:1025
+msgid "User"
+msgstr "用户"
+
+#: data/resources/ui/dialogs/process_dialog.ui:222
 msgid "Control Group"
 msgstr "控制组"
 
@@ -1366,13 +299,19 @@ msgstr "应用"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:72
 msgid "Niceness"
-msgstr ""
+msgstr "友好度"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:73
 msgid ""
 "The priority of a process is given by its niceness. A lower niceness value "
 "correspond to a higher priority."
-msgstr "进程的优先级由 Niceness 决定。Niceness 值越低，优先级越高。"
+msgstr "进程的优先级由友好度决定。友好度数值越低，优先级越高。"
+
+#: data/resources/ui/dialogs/process_options_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:285
+#: src/ui/pages/processes/mod.rs:1887
+msgid "Priority"
+msgstr "优先级"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:91
 msgctxt "process priority"
@@ -1401,19 +340,19 @@ msgstr "非常低"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:103
 msgid "Processor Affinity"
-msgstr "CPU 亲和性"
+msgstr "处理器亲和性"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:108
 msgid "Toggle All"
-msgstr ""
+msgstr "切换全部"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:111
 msgid "Select which processor cores the process is allowed to run on"
-msgstr ""
+msgstr "选择允许该进程运行在哪些处理器核心上"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:7
 msgid "General"
-msgstr "通用"
+msgstr "常规"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:10
 msgid "Units"
@@ -1421,7 +360,7 @@ msgstr "单位"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:13
 msgid "Data Unit Prefix"
-msgstr "数据单元前缀"
+msgstr "数据单位前缀"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:17
 msgid "Decimal"
@@ -1457,11 +396,11 @@ msgstr "用户界面"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:50
 msgid "Refresh Speed"
-msgstr "刷新速度"
+msgstr "刷新速率"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:51
 msgid "Higher refresh speeds can lead to higher processor usage"
-msgstr ""
+msgstr "较高的刷新速率可导致较高的处理器占用"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:55
 msgctxt "UI refresh speed"
@@ -1497,113 +436,141 @@ msgid "Graph Data Points"
 msgstr "图表数据点"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:86
-msgid "Show Search Fields on Launch"
-msgstr "在启动时显示搜索框"
-
-#: data/resources/ui/dialogs/settings_dialog.ui:91
 msgid "Show Usage Details in Sidebar"
 msgstr "在侧边栏显示占用详情"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:92
+#: data/resources/ui/dialogs/settings_dialog.ui:87
 msgid "If enabled, the usage along with other information will be displayed"
-msgstr ""
+msgstr "如果启用，将会在其它信息旁显示占用情况"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:97
+#: data/resources/ui/dialogs/settings_dialog.ui:92
 msgid "Show Device Descriptions in Sidebar"
-msgstr "在侧边栏显示设备详情"
+msgstr "在侧边栏显示设备描述"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:98
+#: data/resources/ui/dialogs/settings_dialog.ui:93
 msgid ""
 "If enabled, a device identifier like its name or device type will be "
 "displayed"
-msgstr ""
+msgstr "如果启用，将会显示设备标识符如名称或设备类型"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:103
+#: data/resources/ui/dialogs/settings_dialog.ui:98
 msgid "Sidebar Meter Type"
 msgstr "侧边栏仪表类型"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:107
+#: data/resources/ui/dialogs/settings_dialog.ui:102
 msgid "Bar"
 msgstr "条形图"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:108
+#: data/resources/ui/dialogs/settings_dialog.ui:103
 msgid "Graph"
 msgstr "图表"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:116
+#: data/resources/ui/dialogs/settings_dialog.ui:111
 msgid "Normalize Processor Usage"
-msgstr ""
+msgstr "标准化处理器占用"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:117
+#: data/resources/ui/dialogs/settings_dialog.ui:112
 msgid ""
 "If enabled, the total usage of all cores will be divided by the amount of "
 "cores"
-msgstr ""
+msgstr "如果启用，所有核心的总占用会除以核心数量"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:130
-#: data/resources/ui/dialogs/settings_dialog.ui:202
+#: data/resources/ui/dialogs/settings_dialog.ui:122
+#: data/resources/ui/window.ui:65 data/resources/ui/window.ui:72
+#: src/ui/pages/applications/mod.rs:131
+msgid "Apps"
+msgstr "应用"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:125
+#: data/resources/ui/dialogs/settings_dialog.ui:207
 msgid "Information Columns"
-msgstr "信息列目"
+msgstr "信息栏"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:191
+#: data/resources/ui/dialogs/settings_dialog.ui:183
+#: data/resources/ui/dialogs/settings_dialog.ui:295
+#: src/ui/pages/applications/mod.rs:1479 src/ui/pages/processes/mod.rs:2013
+msgid "Combined Memory"
+msgstr "聚合内存"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:193
+#: data/resources/ui/window.ui:105 data/resources/ui/window.ui:112
+#: src/ui/pages/processes/mod.rs:175
+msgid "Processes"
+msgstr "进程"
+
+#: data/resources/ui/dialogs/settings_dialog.ui:196
 #: data/resources/ui/pages/cpu.ui:22 data/resources/ui/pages/processes.ui:56
 msgid "Options"
 msgstr "选项"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:194
+#: data/resources/ui/dialogs/settings_dialog.ui:199
 msgid "Show Niceness Values"
-msgstr ""
+msgstr "显示友好度数值"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:195
+#: data/resources/ui/dialogs/settings_dialog.ui:200
 msgid ""
 "Display priorities as niceness to allow for more fine-grained adjustments"
-msgstr ""
+msgstr "将优先级显示为友好度以允许更精细的调整"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:290
+#: data/resources/ui/dialogs/settings_dialog.ui:305
 msgid "Devices"
 msgstr "设备"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:293
+#: data/resources/ui/dialogs/settings_dialog.ui:308
 msgid "Drives"
-msgstr "磁盘"
+msgstr "驱动器"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:296
+#: data/resources/ui/dialogs/settings_dialog.ui:311
 msgid "Show Virtual Drives"
-msgstr "显示虚拟设备"
+msgstr "显示虚拟驱动器"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:297
+#: data/resources/ui/dialogs/settings_dialog.ui:312
 msgid "Virtual drives are for example ZFS volumes or mapped devices"
-msgstr ""
+msgstr "虚拟驱动器指的是如 ZFS 卷或映射的设备等"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:307
+#: data/resources/ui/dialogs/settings_dialog.ui:322
 msgid "Show Virtual Network Interfaces"
 msgstr "显示虚拟网络接口"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:308
+#: data/resources/ui/dialogs/settings_dialog.ui:323
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
-msgstr "虚拟网络接口，如网桥或 VPN 隧道"
+msgstr "虚拟网络接口指的是如网桥或 VPN 隧道等"
+
+#: data/resources/ui/pages/applications.ui:6
+#: data/resources/ui/pages/applications.ui:26
+#: src/ui/pages/applications/mod.rs:1563
+msgid "Kill App"
+msgstr "杀死应用"
+
+#: data/resources/ui/pages/applications.ui:10
+#: data/resources/ui/pages/applications.ui:30
+#: src/ui/pages/applications/mod.rs:1562
+msgid "Halt App"
+msgstr "暂停应用"
+
+#: data/resources/ui/pages/applications.ui:14
+#: data/resources/ui/pages/applications.ui:34
+#: src/ui/pages/applications/mod.rs:1564
+msgid "Continue App"
+msgstr "继续应用"
+
+#: data/resources/ui/pages/applications.ui:22
+#: data/resources/ui/pages/applications.ui:98
+#: src/ui/pages/applications/mod.rs:1561
+msgid "End App"
+msgstr "结束应用"
 
 #: data/resources/ui/pages/applications.ui:40
 #: data/resources/ui/pages/processes.ui:62
 msgid "Information"
 msgstr "信息"
 
-#: data/resources/ui/pages/applications.ui:80
+#: data/resources/ui/pages/applications.ui:57
 msgid "Search applications"
-msgstr "搜索应用"
+msgstr "搜索应用程序"
 
-#: data/resources/ui/pages/applications.ui:98
-#: data/resources/ui/pages/processes.ui:144
-msgid "Search"
-msgstr "搜索"
-
-#: data/resources/ui/pages/applications.ui:100
-#: data/resources/ui/pages/processes.ui:146
-msgid "Toggle search field"
-msgstr "切换搜索栏"
-
-#: data/resources/ui/pages/applications.ui:116
-#: data/resources/ui/pages/applications.ui:118
+#: data/resources/ui/pages/applications.ui:87
+#: data/resources/ui/pages/applications.ui:89
 msgid "Show App Information"
 msgstr "显示应用信息"
 
@@ -1621,16 +588,16 @@ msgstr "充电循环"
 
 #: data/resources/ui/pages/battery.ui:63
 msgid "Technology"
-msgstr ""
+msgstr "技术"
 
-#: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:87
-#: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:81
+#: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:81
+#: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:75
 msgid "Manufacturer"
 msgstr "制造商"
 
 #: data/resources/ui/pages/battery.ui:81
 msgid "Model Name"
-msgstr "型号"
+msgstr "型号名称"
 
 #: data/resources/ui/pages/battery.ui:90 data/resources/ui/pages/drive.ui:66
 msgid "Device"
@@ -1638,39 +605,38 @@ msgstr "设备"
 
 #: data/resources/ui/pages/cpu.ui:26
 msgid "Show Usages of Logical CPUs"
-msgstr "显示逻辑 CPU 占用"
+msgstr "显示逻辑处理器占用"
 
 #: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
 #: data/resources/ui/pages/npu.ui:60
 msgid "Sensors"
 msgstr "传感器"
 
-#: data/resources/ui/pages/cpu.ui:82 data/resources/ui/pages/gpu.ui:69
-#: data/resources/ui/pages/npu.ui:63
-msgid "Temperature"
-msgstr "温度"
-
-#: data/resources/ui/pages/cpu.ui:96
+#: data/resources/ui/pages/cpu.ui:90
 msgid "Max Frequency"
 msgstr "最大频率"
 
-#: data/resources/ui/pages/cpu.ui:105
+#: data/resources/ui/pages/cpu.ui:99
 msgid "Logical Cores"
 msgstr "逻辑核心"
 
-#: data/resources/ui/pages/cpu.ui:114
+#: data/resources/ui/pages/cpu.ui:108
 msgid "Physical Cores"
 msgstr "物理核心"
 
-#: data/resources/ui/pages/cpu.ui:123
+#: data/resources/ui/pages/cpu.ui:117
 msgid "Sockets"
 msgstr "插槽"
 
-#: data/resources/ui/pages/cpu.ui:132
+#: data/resources/ui/pages/cpu.ui:126
+msgid "Uptime"
+msgstr "运行时间"
+
+#: data/resources/ui/pages/cpu.ui:135
 msgid "Virtualization"
 msgstr "虚拟化"
 
-#: data/resources/ui/pages/cpu.ui:141
+#: data/resources/ui/pages/cpu.ui:144
 msgid "Architecture"
 msgstr "架构"
 
@@ -1698,38 +664,49 @@ msgstr "可写入"
 msgid "Removable"
 msgstr "可移除"
 
+#. Translators: "Link" refers to something like "PCIe 4.0 ×16"
+#: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113
+#: data/resources/ui/pages/network.ui:103 data/resources/ui/pages/npu.ui:107
+msgid "Link"
+msgstr "接口"
+
 #: data/resources/ui/pages/gpu.ui:37
 msgid "GPU Frequency"
-msgstr "GPU 频率"
+msgstr "显卡频率"
 
 #: data/resources/ui/pages/gpu.ui:50
 msgid "Video Memory Frequency"
 msgstr "显存频率"
 
-#: data/resources/ui/pages/gpu.ui:96 data/resources/ui/pages/npu.ui:90
+#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49
+#: src/ui/pages/battery.rs:217
+msgid "Power Usage"
+msgstr "功耗"
+
+#: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:84
 msgid "PCI Slot"
 msgstr "PCI 插槽"
 
-#: data/resources/ui/pages/gpu.ui:105 data/resources/ui/pages/network.ui:67
-#: data/resources/ui/pages/npu.ui:99
+#: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
+#: data/resources/ui/pages/npu.ui:93
 msgid "Driver Used"
 msgstr "使用的驱动程序"
 
-#: data/resources/ui/pages/gpu.ui:114 data/resources/ui/pages/npu.ui:108
+#: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
 msgid "Max Power Cap"
 msgstr "最大功耗"
 
 #: data/resources/ui/pages/memory.ui:9
 msgid "You need to authenticate to see memory properties"
-msgstr "您需要授权以能查看内存属性"
+msgstr "您需要认证以查看内存属性"
 
 #: data/resources/ui/pages/memory.ui:10
 msgid "Authenticate"
-msgstr "验证"
+msgstr "认证"
 
 #: data/resources/ui/pages/memory.ui:45
 msgid "Slots Used"
-msgstr "已使用的插槽"
+msgstr "已使用插槽"
 
 #: data/resources/ui/pages/memory.ui:54
 msgid "Speed"
@@ -1737,11 +714,11 @@ msgstr "速度"
 
 #: data/resources/ui/pages/memory.ui:63
 msgid "Form Factor"
-msgstr "封装"
+msgstr "规格参数"
 
 #: data/resources/ui/pages/memory.ui:81
 msgid "Type Detail"
-msgstr "类型详细信息"
+msgstr "类型详情"
 
 #: data/resources/ui/pages/network.ui:35
 msgid "Total Received"
@@ -1753,11 +730,19 @@ msgstr "总发送量"
 
 #: data/resources/ui/pages/network.ui:76
 msgid "Interface"
-msgstr "界面"
+msgstr "接口"
 
 #: data/resources/ui/pages/network.ui:85
 msgid "Hardware Address"
 msgstr "硬件地址"
+
+#: data/resources/ui/pages/network.ui:94
+msgid "Network Name"
+msgstr "网络名称"
+
+#: data/resources/ui/pages/network.ui:112
+msgid "Link Speed"
+msgstr "连接速度"
 
 #: data/resources/ui/pages/npu.ui:31
 msgid "NPU Frequency"
@@ -1767,10 +752,25 @@ msgstr "NPU 频率"
 msgid "Memory Frequency"
 msgstr "内存频率"
 
+#: data/resources/ui/pages/processes.ui:6
+#: data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2126
+msgid "Kill Process"
+msgstr "杀死进程"
+
+#: data/resources/ui/pages/processes.ui:10
+#: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2125
+msgid "Halt Process"
+msgstr "暂停进程"
+
+#: data/resources/ui/pages/processes.ui:14
+#: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2127
+msgid "Continue Process"
+msgstr "继续进程"
+
 #: data/resources/ui/pages/processes.ui:22
 #: data/resources/ui/pages/processes.ui:74
 msgid "Kill Processes"
-msgstr "终止进程"
+msgstr "杀死进程"
 
 #: data/resources/ui/pages/processes.ui:26
 #: data/resources/ui/pages/processes.ui:78
@@ -1782,16 +782,1054 @@ msgstr "暂停进程"
 msgid "Continue Processes"
 msgstr "继续进程"
 
-#: data/resources/ui/pages/processes.ui:126
+#: data/resources/ui/pages/processes.ui:38
+#: data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:523
+#: src/ui/pages/processes/mod.rs:2124
+msgid "End Process"
+msgstr "结束进程"
+
+#: data/resources/ui/pages/processes.ui:70 src/ui/pages/processes/mod.rs:527
+msgid "End Processes"
+msgstr "结束进程"
+
+#: data/resources/ui/pages/processes.ui:103
 msgid "Search processes"
 msgstr "搜索进程"
 
-#: data/resources/ui/pages/processes.ui:162
-#: data/resources/ui/pages/processes.ui:164
+#: data/resources/ui/pages/processes.ui:133
+#: data/resources/ui/pages/processes.ui:135
 msgid "Show Process Options"
 msgstr "显示进程选项"
 
-#: data/resources/ui/pages/processes.ui:175
-#: data/resources/ui/pages/processes.ui:177
+#: data/resources/ui/pages/processes.ui:146
+#: data/resources/ui/pages/processes.ui:148
 msgid "Show Process Information"
 msgstr "显示进程信息"
+
+#: data/resources/ui/shortcuts.ui:6
+msgctxt "shortcut window"
+msgid "General"
+msgstr "常规"
+
+#: data/resources/ui/shortcuts.ui:9
+msgctxt "shortcut window"
+msgid "Preferences"
+msgstr "首选项"
+
+#: data/resources/ui/shortcuts.ui:15
+msgctxt "shortcut window"
+msgid "Show Shortcuts"
+msgstr "显示快捷键"
+
+#: data/resources/ui/shortcuts.ui:21
+msgctxt "shortcut window"
+msgid "Quit"
+msgstr "退出"
+
+#: data/resources/ui/shortcuts.ui:29
+msgctxt "shortcut window"
+msgid "Apps/Processes"
+msgstr "应用/进程"
+
+#: data/resources/ui/shortcuts.ui:32
+msgctxt "shortcut window"
+msgid "Toggle Search Field"
+msgstr "切换搜索栏"
+
+#: data/resources/ui/shortcuts.ui:38
+msgctxt "shortcut window"
+msgid "End App/Process"
+msgstr "结束应用/进程"
+
+#: data/resources/ui/shortcuts.ui:44
+msgctxt "shortcut window"
+msgid "Kill App/Process"
+msgstr "杀死应用/进程"
+
+#: data/resources/ui/shortcuts.ui:50
+msgctxt "shortcut window"
+msgid "Halt App/Process"
+msgstr "暂停应用/进程"
+
+#: data/resources/ui/shortcuts.ui:56
+msgctxt "shortcut window"
+msgid "Continue App/Process"
+msgstr "继续应用/进程"
+
+#: data/resources/ui/shortcuts.ui:62
+msgctxt "shortcut window"
+msgid "Show Information for App/Process"
+msgstr "显示应用/进程信息"
+
+#: data/resources/ui/shortcuts.ui:68
+msgctxt "shortcut window"
+msgid "Show Process Options"
+msgstr "显示进程选项"
+
+#: data/resources/ui/window.ui:6
+msgid "Preferences"
+msgstr "首选项"
+
+#: data/resources/ui/window.ui:10
+msgid "Keyboard Shortcuts"
+msgstr "键盘快捷键"
+
+#: data/resources/ui/window.ui:14
+msgid "About Resources"
+msgstr "关于资源"
+
+#: data/resources/ui/window.ui:88 data/resources/ui/window.ui:128
+msgid "Search"
+msgstr "搜索"
+
+#: data/resources/ui/window.ui:90 data/resources/ui/window.ui:130
+msgid "Toggle search field"
+msgstr "切换搜索栏"
+
+#: src/application.rs:274
+msgid "The Nalux Team"
+msgstr "Nalux 团队"
+
+#: src/application.rs:282
+msgid "Report Issues"
+msgstr "报告问题"
+
+#. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
+#. One name per line, please do not remove previous names.
+#: src/application.rs:288
+msgid "translator-credits"
+msgstr ""
+"Alex3236 <awa@alex3236.top>, 2024.\n"
+"nicolasyang <bill.lee.y@gmail.com>, 2024.\n"
+"lumingzh <lumingzh@qq.com>, 2025."
+
+#: src/application.rs:289
+msgid "Icon by"
+msgstr "图标作者"
+
+#: src/ui/dialogs/app_dialog.rs:155 src/ui/dialogs/process_dialog.rs:133
+#: src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:146
+#: src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171
+#: src/ui/dialogs/process_dialog.rs:178 src/ui/dialogs/process_dialog.rs:185
+#: src/ui/dialogs/process_dialog.rs:192 src/ui/pages/applications/mod.rs:948
+#: src/ui/pages/applications/mod.rs:1074 src/ui/pages/battery.rs:205
+#: src/ui/pages/battery.rs:225 src/ui/pages/battery.rs:231
+#: src/ui/pages/battery.rs:234 src/ui/pages/battery.rs:265
+#: src/ui/pages/battery.rs:289 src/ui/pages/battery.rs:291
+#: src/ui/pages/battery.rs:301 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258
+#: src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:290
+#: src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303
+#: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:319
+#: src/ui/pages/drive.rs:350 src/ui/pages/drive.rs:352
+#: src/ui/pages/drive.rs:381 src/ui/pages/drive.rs:383
+#: src/ui/pages/drive.rs:399 src/ui/pages/drive.rs:400
+#: src/ui/pages/drive.rs:407 src/ui/pages/drive.rs:417
+#: src/ui/pages/drive.rs:427 src/ui/pages/drive.rs:433 src/ui/pages/gpu.rs:245
+#: src/ui/pages/gpu.rs:252 src/ui/pages/gpu.rs:297 src/ui/pages/gpu.rs:322
+#: src/ui/pages/gpu.rs:325 src/ui/pages/gpu.rs:336 src/ui/pages/gpu.rs:377
+#: src/ui/pages/gpu.rs:384 src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:403
+#: src/ui/pages/gpu.rs:407 src/ui/pages/gpu.rs:437 src/ui/pages/gpu.rs:443
+#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228
+#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233
+#: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:238
+#: src/ui/pages/memory.rs:266 src/ui/pages/memory.rs:327
+#: src/ui/pages/network.rs:252 src/ui/pages/network.rs:259
+#: src/ui/pages/network.rs:266 src/ui/pages/network.rs:272
+#: src/ui/pages/network.rs:275 src/ui/pages/network.rs:285
+#: src/ui/pages/network.rs:292 src/ui/pages/network.rs:302
+#: src/ui/pages/network.rs:370 src/ui/pages/network.rs:373
+#: src/ui/pages/network.rs:375 src/ui/pages/network.rs:404
+#: src/ui/pages/network.rs:407 src/ui/pages/network.rs:409
+#: src/ui/pages/network.rs:417 src/ui/pages/network.rs:424
+#: src/ui/pages/network.rs:434 src/ui/pages/processes/mod.rs:1224
+#: src/ui/pages/processes/mod.rs:1291 src/ui/pages/processes/mod.rs:1358
+#: src/ui/pages/processes/mod.rs:1425 src/ui/pages/processes/mod.rs:1911
+#: src/ui/pages/processes/mod.rs:1913 src/utils/battery.rs:152
+#: src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291
+#: src/utils/link/mod.rs:61 src/utils/npu/mod.rs:244 src/utils/npu/mod.rs:250
+msgid "N/A"
+msgstr "不可用"
+
+#: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257
+#: src/ui/pages/cpu.rs:417 src/ui/pages/cpu.rs:421
+msgid "CPU {}"
+msgstr "处理器 {}"
+
+#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:414
+#: src/ui/pages/drive.rs:424 src/ui/pages/processes/process_entry.rs:211
+msgid "No"
+msgstr "否"
+
+#: src/ui/pages/applications/application_entry.rs:191
+#: src/ui/pages/processes/process_entry.rs:212
+msgid "Yes (Flatpak)"
+msgstr "是 (Flatpak)"
+
+#: src/ui/pages/applications/application_entry.rs:192
+#: src/ui/pages/processes/process_entry.rs:213
+msgid "Yes (Snap)"
+msgstr "是 (Snap)"
+
+#: src/ui/pages/applications/mod.rs:660
+msgid "Running Apps: {}"
+msgstr "正在运行的应用：{}"
+
+#: src/ui/pages/applications/mod.rs:700 src/ui/pages/processes/mod.rs:862
+msgid "Cancel"
+msgstr "取消"
+
+#: src/ui/pages/applications/mod.rs:746
+msgid "App"
+msgstr "应用"
+
+#: src/ui/pages/applications/mod.rs:1539 src/ui/pages/processes/mod.rs:2073
+msgid "End {}?"
+msgstr "结束 {}？"
+
+#: src/ui/pages/applications/mod.rs:1540 src/ui/pages/processes/mod.rs:2074
+msgid "Halt {}?"
+msgstr "暂停 {}？"
+
+#: src/ui/pages/applications/mod.rs:1541 src/ui/pages/processes/mod.rs:2075
+msgid "Kill {}?"
+msgstr "杀死 {}？"
+
+#: src/ui/pages/applications/mod.rs:1542 src/ui/pages/processes/mod.rs:2076
+msgid "Continue {}?"
+msgstr "继续 {}？"
+
+#: src/ui/pages/applications/mod.rs:1548 src/ui/pages/processes/mod.rs:2111
+msgid "Unsaved work might be lost."
+msgstr "可能会丢失未保存的工作。"
+
+#: src/ui/pages/applications/mod.rs:1550
+msgid ""
+"Halting an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
+msgstr "暂停应用可能会带来严重的风险，例如数据丢失和安全问题。请谨慎使用。"
+
+#: src/ui/pages/applications/mod.rs:1553
+msgid ""
+"Killing an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
+msgstr "杀死应用可能会带来严重的风险，例如数据丢失和安全问题。请谨慎使用。"
+
+#: src/ui/pages/battery.rs:102 src/utils/battery.rs:258
+msgid "Battery"
+msgstr "电池"
+
+#: src/ui/pages/battery.rs:210
+msgid "Battery Charge"
+msgstr "电池电量"
+
+#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:438
+#: src/ui/pages/drive.rs:344 src/ui/pages/drive.rs:375 src/ui/pages/gpu.rs:429
+#: src/ui/pages/network.rs:362 src/ui/pages/network.rs:396
+msgid "Highest:"
+msgstr "最高："
+
+#: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:212
+msgid "Total Usage"
+msgstr "总使用量"
+
+#: src/ui/pages/cpu.rs:271 src/ui/pages/gpu.rs:239
+msgid "Temperature"
+msgstr "温度"
+
+#: src/ui/pages/drive.rs:126
+msgid "Drive"
+msgstr "驱动器"
+
+#: src/ui/pages/drive.rs:236
+msgid "Drive Activity"
+msgstr "驱动器活动"
+
+#: src/ui/pages/drive.rs:243
+msgid "Read Speed"
+msgstr "读取速度"
+
+#: src/ui/pages/drive.rs:247
+msgid "Write Speed"
+msgstr "写入速度"
+
+#: src/ui/pages/drive.rs:412 src/ui/pages/drive.rs:422
+msgid "Yes"
+msgstr "是"
+
+#. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
+#. translation should preferably be quite short or an abbreviation
+#: src/ui/pages/drive.rs:440
+msgid "R: {} · W: {}"
+msgstr "读：{} · 写：{}"
+
+#: src/ui/pages/gpu.rs:220
+msgid "Video Encoder/Decoder Usage"
+msgstr "视频编解码器占用"
+
+#: src/ui/pages/gpu.rs:226
+msgid "Video Encoder Usage"
+msgstr "视频编码器占用"
+
+#: src/ui/pages/gpu.rs:231
+msgid "Video Decoder Usage"
+msgstr "视频解码器占用"
+
+#: src/ui/pages/gpu.rs:236
+msgid "Video Memory Usage"
+msgstr "显存占用"
+
+#. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
+#. shorter than) 'Memory'
+#: src/ui/pages/gpu.rs:415
+msgid "Memory: {}"
+msgstr "内存：{}"
+
+#: src/ui/pages/memory.rs:262
+msgid "{} of {}"
+msgstr "{} 共 {}"
+
+#: src/ui/pages/memory.rs:265
+msgid "{} MT/s"
+msgstr "{} MT/s"
+
+#. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
+#. preferably be quite short or an abbreviation
+#: src/ui/pages/memory.rs:346
+msgid "{} / {} · Swap: {} %"
+msgstr "{} / {} · 交换：{} %"
+
+#: src/ui/pages/network.rs:127 src/utils/network.rs:135
+msgid "Network Interface"
+msgstr "网络接口"
+
+#: src/ui/pages/network.rs:241
+msgid "Receiving"
+msgstr "正在接收"
+
+#: src/ui/pages/network.rs:245
+msgid "Sending"
+msgstr "正在发送"
+
+#. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
+#. your translation should preferably be quite short or an abbreviation
+#: src/ui/pages/network.rs:445
+msgid "R: {} · S: {}"
+msgstr "收：{} · 发：{}"
+
+#: src/ui/pages/processes/mod.rs:813
+msgid "Running Processes: {}"
+msgstr "正在运行的进程：{}"
+
+#: src/ui/pages/processes/mod.rs:911
+msgid "Process"
+msgstr "进程"
+
+#: src/ui/pages/processes/mod.rs:2083
+msgid "End process?"
+msgid_plural "End {} processes?"
+msgstr[0] "结束 {} 个进程？"
+
+#: src/ui/pages/processes/mod.rs:2089
+msgid "Halt process?"
+msgid_plural "Halt {} processes?"
+msgstr[0] "暂停 {} 个进程？"
+
+#: src/ui/pages/processes/mod.rs:2095 src/ui/pages/processes/mod.rs:2101
+msgid "Kill process?"
+msgid_plural "Kill {} processes?"
+msgstr[0] "杀死 {} 个进程？"
+
+#: src/ui/pages/processes/mod.rs:2113
+msgid ""
+"Halting a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr "暂停进程可能会带来严重的风险，例如数据丢失和安全问题。请谨慎使用。"
+
+#: src/ui/pages/processes/mod.rs:2116
+msgid ""
+"Killing a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr "杀死进程可能会带来严重的风险，例如数据丢失和安全问题。请谨慎使用。"
+
+#: src/ui/window.rs:466
+msgid "GPU {}"
+msgstr "显卡 {}"
+
+#: src/ui/window.rs:496
+msgid "NPU {}"
+msgstr "NPU {}"
+
+#: src/ui/window.rs:498
+msgid "NPU"
+msgstr "NPU"
+
+#: src/ui/window.rs:1174
+msgid "Successfully adjusted {}"
+msgstr "已成功调整 {}"
+
+#: src/ui/window.rs:1175
+msgid "There was a problem adjusting {}"
+msgstr "调整 {} 时出现问题"
+
+#: src/ui/window.rs:1257
+msgid "Successfully ended {}"
+msgstr "已成功结束 {}"
+
+#: src/ui/window.rs:1258
+msgid "Successfully halted {}"
+msgstr "已成功暂停 {}"
+
+#: src/ui/window.rs:1259
+msgid "Successfully killed {}"
+msgstr "已成功杀死 {}"
+
+#: src/ui/window.rs:1260
+msgid "Successfully continued {}"
+msgstr "已成功继续 {}"
+
+#: src/ui/window.rs:1267
+msgid "Successfully ended the process"
+msgid_plural "Successfully ended {} processes"
+msgstr[0] "已成功结束 {} 个进程"
+
+#: src/ui/window.rs:1273
+msgid "Successfully halted the process"
+msgid_plural "Successfully halted {} processes"
+msgstr[0] "已成功暂停 {} 个进程"
+
+#: src/ui/window.rs:1279
+msgid "Successfully killed the process"
+msgid_plural "Successfully killed {} processes"
+msgstr[0] "已成功杀死 {} 个进程"
+
+#: src/ui/window.rs:1285
+msgid "Successfully continued the process"
+msgid_plural "Successfully continued {} processes"
+msgstr[0] "已成功继续 {} 个进程"
+
+#: src/ui/window.rs:1296
+msgid "There was a problem ending a process"
+msgid_plural "There were problems ending {} processes"
+msgstr[0] "结束 {} 个进程时出现问题"
+
+#: src/ui/window.rs:1302
+msgid "There was a problem halting a process"
+msgid_plural "There were problems halting {} processes"
+msgstr[0] "暂停 {} 个进程时出现问题"
+
+#: src/ui/window.rs:1308
+msgid "There was a problem killing a process"
+msgid_plural "There were problems killing {} processes"
+msgstr[0] "杀死 {} 个进程时出现问题"
+
+#: src/ui/window.rs:1314
+msgid "There was a problem continuing a process"
+msgid_plural "There were problems continuing {} processes"
+msgstr[0] "继续 {} 个进程时出现问题"
+
+#: src/ui/window.rs:1324
+msgid "There was a problem ending {}"
+msgstr "结束 {} 时出现问题"
+
+#: src/ui/window.rs:1325
+msgid "There was a problem halting {}"
+msgstr "暂停 {} 时出现问题"
+
+#: src/ui/window.rs:1326
+msgid "There was a problem killing {}"
+msgstr "杀死 {} 时出现问题"
+
+#: src/ui/window.rs:1327
+msgid "There was a problem continuing {}"
+msgstr "继续 {} 时出现问题"
+
+#: src/utils/app.rs:222
+msgid "System Processes"
+msgstr "系统进程"
+
+#: src/utils/battery.rs:93
+msgid "Charging"
+msgstr "充电中"
+
+#: src/utils/battery.rs:94
+msgid "Discharging"
+msgstr "放电中"
+
+#: src/utils/battery.rs:95
+msgid "Empty"
+msgstr "已耗尽"
+
+#: src/utils/battery.rs:96
+msgid "Full"
+msgstr "已充满"
+
+#: src/utils/battery.rs:97
+msgid "Unknown"
+msgstr "未知"
+
+#: src/utils/battery.rs:143
+msgid "Nickel-Metal Hydride"
+msgstr "镍氢"
+
+#: src/utils/battery.rs:144
+msgid "Nickel-Cadmium"
+msgstr "镍镉"
+
+#: src/utils/battery.rs:145
+msgid "Nickel-Zinc"
+msgstr "镍锌"
+
+#: src/utils/battery.rs:146
+msgid "Lead-Acid"
+msgstr "铅酸"
+
+#: src/utils/battery.rs:147
+msgid "Lithium-Ion"
+msgstr "锂离子"
+
+#: src/utils/battery.rs:148
+msgid "Lithium Iron Phosphate"
+msgstr "磷酸铁锂"
+
+#: src/utils/battery.rs:149
+msgid "Lithium Polymer"
+msgstr "锂离子聚合物"
+
+#: src/utils/battery.rs:151
+msgid "Rechargeable Alkaline Managanese"
+msgstr "可充电碱性"
+
+#: src/utils/battery.rs:256
+msgid "{} Battery"
+msgstr "{}电池"
+
+#: src/utils/units.rs:91
+msgid "{} K"
+msgstr "{} K"
+
+#: src/utils/units.rs:93
+msgid "{} °C"
+msgstr "{} °C"
+
+#: src/utils/units.rs:95
+msgid "{} °F"
+msgstr "{} °F"
+
+#: src/utils/units.rs:113 src/utils/units.rs:127 src/utils/units.rs:147
+#: src/utils/units.rs:161
+msgid "{} B"
+msgstr "{} B"
+
+#: src/utils/units.rs:114 src/utils/units.rs:128
+msgid "{} kB"
+msgstr "{} kB"
+
+#: src/utils/units.rs:115 src/utils/units.rs:129
+msgid "{} MB"
+msgstr "{} MB"
+
+#: src/utils/units.rs:116 src/utils/units.rs:130
+msgid "{} GB"
+msgstr "{} GB"
+
+#: src/utils/units.rs:117 src/utils/units.rs:131
+msgid "{} TB"
+msgstr "{} TB"
+
+#: src/utils/units.rs:118 src/utils/units.rs:132
+msgid "{} PB"
+msgstr "{} PB"
+
+#: src/utils/units.rs:119 src/utils/units.rs:133
+msgid "{} EB"
+msgstr "{} EB"
+
+#: src/utils/units.rs:120 src/utils/units.rs:134
+msgid "{} ZB"
+msgstr "{} ZB"
+
+#: src/utils/units.rs:121 src/utils/units.rs:135
+msgid "{} YB"
+msgstr "{} YB"
+
+#: src/utils/units.rs:122 src/utils/units.rs:136
+msgid "{} RB"
+msgstr "{} RB"
+
+#: src/utils/units.rs:123 src/utils/units.rs:137
+msgid "{} QB"
+msgstr "{} QB"
+
+#: src/utils/units.rs:148 src/utils/units.rs:162
+msgid "{} KiB"
+msgstr "{} KiB"
+
+#: src/utils/units.rs:149 src/utils/units.rs:163
+msgid "{} MiB"
+msgstr "{} MiB"
+
+#: src/utils/units.rs:150 src/utils/units.rs:164
+msgid "{} GiB"
+msgstr "{} GiB"
+
+#: src/utils/units.rs:151 src/utils/units.rs:165
+msgid "{} TiB"
+msgstr "{} TiB"
+
+#: src/utils/units.rs:152 src/utils/units.rs:166
+msgid "{} PiB"
+msgstr "{} PiB"
+
+#: src/utils/units.rs:153 src/utils/units.rs:167
+msgid "{} EiB"
+msgstr "{} EiB"
+
+#: src/utils/units.rs:154 src/utils/units.rs:168
+msgid "{} ZiB"
+msgstr "{} ZiB"
+
+#: src/utils/units.rs:155 src/utils/units.rs:169
+msgid "{} YiB"
+msgstr "{} YiB"
+
+#: src/utils/units.rs:156 src/utils/units.rs:170
+msgid "{} RiB"
+msgstr "{} RiB"
+
+#: src/utils/units.rs:157 src/utils/units.rs:171
+msgid "{} QiB"
+msgstr "{} QiB"
+
+#: src/utils/units.rs:198 src/utils/units.rs:215
+msgid "{} B/s"
+msgstr "{} B/s"
+
+#: src/utils/units.rs:199
+msgid "{} kB/s"
+msgstr "{} kB/s"
+
+#: src/utils/units.rs:200
+msgid "{} MB/s"
+msgstr "{} MB/s"
+
+#: src/utils/units.rs:201
+msgid "{} GB/s"
+msgstr "{} GB/s"
+
+#: src/utils/units.rs:202
+msgid "{} TB/s"
+msgstr "{} TB/s"
+
+#: src/utils/units.rs:203
+msgid "{} PB/s"
+msgstr "{} PB/s"
+
+#: src/utils/units.rs:204
+msgid "{} EB/s"
+msgstr "{} EB/s"
+
+#: src/utils/units.rs:205
+msgid "{} ZB/s"
+msgstr "{} ZB/s"
+
+#: src/utils/units.rs:206
+msgid "{} YB/s"
+msgstr "{} YB/s"
+
+#: src/utils/units.rs:207
+msgid "{} RB/s"
+msgstr "{} RB/s"
+
+#: src/utils/units.rs:208
+msgid "{} QB/s"
+msgstr "{} QB/s"
+
+#: src/utils/units.rs:216
+msgid "{} KiB/s"
+msgstr "{} KiB/s"
+
+#: src/utils/units.rs:217
+msgid "{} MiB/s"
+msgstr "{} MiB/s"
+
+#: src/utils/units.rs:218
+msgid "{} GiB/s"
+msgstr "{} GiB/s"
+
+#: src/utils/units.rs:219
+msgid "{} TiB/s"
+msgstr "{} TiB/s"
+
+#: src/utils/units.rs:220
+msgid "{} PiB/s"
+msgstr "{} PiB/s"
+
+#: src/utils/units.rs:221
+msgid "{} EiB/s"
+msgstr "{} EiB/s"
+
+#: src/utils/units.rs:222
+msgid "{} ZiB/s"
+msgstr "{} ZiB/s"
+
+#: src/utils/units.rs:223
+msgid "{} YiB/s"
+msgstr "{} YiB/s"
+
+#: src/utils/units.rs:224
+msgid "{} RiB/s"
+msgstr "{} RiB/s"
+
+#: src/utils/units.rs:225
+msgid "{} QiB/s"
+msgstr "{} QiB/s"
+
+#: src/utils/units.rs:239 src/utils/units.rs:256
+msgid "{} b/s"
+msgstr "{} b/s"
+
+#: src/utils/units.rs:240
+msgid "{} kb/s"
+msgstr "{} kb/s"
+
+#: src/utils/units.rs:241
+msgid "{} Mb/s"
+msgstr "{} Mb/s"
+
+#: src/utils/units.rs:242
+msgid "{} Gb/s"
+msgstr "{} Gb/s"
+
+#: src/utils/units.rs:243
+msgid "{} Tb/s"
+msgstr "{} Tb/s"
+
+#: src/utils/units.rs:244
+msgid "{} Pb/s"
+msgstr "{} Pb/s"
+
+#: src/utils/units.rs:245
+msgid "{} Eb/s"
+msgstr "{} Eb/s"
+
+#: src/utils/units.rs:246
+msgid "{} Zb/s"
+msgstr "{} Zb/s"
+
+#: src/utils/units.rs:247
+msgid "{} Yb/s"
+msgstr "{} Yb/s"
+
+#: src/utils/units.rs:248
+msgid "{} Rb/s"
+msgstr "{} Rb/s"
+
+#: src/utils/units.rs:249
+msgid "{} Qb/s"
+msgstr "{} Qb/s"
+
+#: src/utils/units.rs:257
+msgid "{} Kib/s"
+msgstr "{} Kib/s"
+
+#: src/utils/units.rs:258
+msgid "{} Mib/s"
+msgstr "{} Mib/s"
+
+#: src/utils/units.rs:259
+msgid "{} Gib/s"
+msgstr "{} Gib/s"
+
+#: src/utils/units.rs:260
+msgid "{} Tib/s"
+msgstr "{} Tib/s"
+
+#: src/utils/units.rs:261
+msgid "{} Pib/s"
+msgstr "{} Pib/s"
+
+#: src/utils/units.rs:262
+msgid "{} Eib/s"
+msgstr "{} Eib/s"
+
+#: src/utils/units.rs:263
+msgid "{} Zib/s"
+msgstr "{} Zib/s"
+
+#: src/utils/units.rs:264
+msgid "{} Yib/s"
+msgstr "{} Yib/s"
+
+#: src/utils/units.rs:265
+msgid "{} Rib/s"
+msgstr "{} Rib/s"
+
+#: src/utils/units.rs:266
+msgid "{} Qib/s"
+msgstr "{} Qib/s"
+
+#: src/utils/units.rs:273
+msgid "{} Hz"
+msgstr "{} Hz"
+
+#: src/utils/units.rs:274
+msgid "{} kHz"
+msgstr "{} kHz"
+
+#: src/utils/units.rs:275
+msgid "{} MHz"
+msgstr "{} MHz"
+
+#: src/utils/units.rs:276
+msgid "{} GHz"
+msgstr "{} GHz"
+
+#: src/utils/units.rs:277
+msgid "{} THz"
+msgstr "{} THz"
+
+#: src/utils/units.rs:278
+msgid "{} PHz"
+msgstr "{} PHz"
+
+#: src/utils/units.rs:279
+msgid "{} EHz"
+msgstr "{} EHz"
+
+#: src/utils/units.rs:280
+msgid "{} ZHz"
+msgstr "{} ZHz"
+
+#: src/utils/units.rs:281
+msgid "{} YHz"
+msgstr "{} YHz"
+
+#: src/utils/units.rs:282
+msgid "{} RHz"
+msgstr "{} RHz"
+
+#: src/utils/units.rs:283
+msgid "{} QHz"
+msgstr "{} QHz"
+
+#: src/utils/units.rs:290
+msgid "{} W"
+msgstr "{} W"
+
+#: src/utils/units.rs:291
+msgid "{} kW"
+msgstr "{} kW"
+
+#: src/utils/units.rs:292
+msgid "{} MW"
+msgstr "{} MW"
+
+#: src/utils/units.rs:293
+msgid "{} GW"
+msgstr "{} GW"
+
+#: src/utils/units.rs:294
+msgid "{} TW"
+msgstr "{} TW"
+
+#: src/utils/units.rs:295
+msgid "{} PW"
+msgstr "{} PW"
+
+#: src/utils/units.rs:296
+msgid "{} EW"
+msgstr "{} EW"
+
+#: src/utils/units.rs:297
+msgid "{} ZW"
+msgstr "{} ZW"
+
+#: src/utils/units.rs:298
+msgid "{} YW"
+msgstr "{} YW"
+
+#: src/utils/units.rs:299
+msgid "{} RW"
+msgstr "{} RW"
+
+#: src/utils/units.rs:300
+msgid "{} QW"
+msgstr "{} QW"
+
+#: src/utils/units.rs:309 src/utils/units.rs:323
+msgid "{} Wh"
+msgstr "{} Wh"
+
+#: src/utils/units.rs:310 src/utils/units.rs:324
+msgid "{} kWh"
+msgstr "{} kWh"
+
+#: src/utils/units.rs:311 src/utils/units.rs:325
+msgid "{} MWh"
+msgstr "{} MWh"
+
+#: src/utils/units.rs:312 src/utils/units.rs:326
+msgid "{} GWh"
+msgstr "{} GWh"
+
+#: src/utils/units.rs:313 src/utils/units.rs:327
+msgid "{} TWh"
+msgstr "{} TWh"
+
+#: src/utils/units.rs:314 src/utils/units.rs:328
+msgid "{} PWh"
+msgstr "{} PWh"
+
+#: src/utils/units.rs:315 src/utils/units.rs:329
+msgid "{} EWh"
+msgstr "{} EWh"
+
+#: src/utils/units.rs:316 src/utils/units.rs:330
+msgid "{} ZWh"
+msgstr "{} ZWh"
+
+#: src/utils/units.rs:317 src/utils/units.rs:331
+msgid "{} YWh"
+msgstr "{} YWh"
+
+#: src/utils/units.rs:318 src/utils/units.rs:332
+msgid "{} RWh"
+msgstr "{} RWh"
+
+#: src/utils/units.rs:319 src/utils/units.rs:333
+msgid "{} QWh"
+msgstr "{} QWh"
+
+#: src/utils/drive.rs:129 src/utils/drive.rs:208
+msgid "CD/DVD/Blu-ray Drive"
+msgstr "CD/DVD/蓝光光驱"
+
+#: src/utils/drive.rs:130
+msgid "eMMC Storage"
+msgstr "eMMC 存储"
+
+#: src/utils/drive.rs:131
+msgid "Flash Storage"
+msgstr "闪存"
+
+#: src/utils/drive.rs:132 src/utils/drive.rs:209
+msgid "Floppy Drive"
+msgstr "软盘"
+
+#: src/utils/drive.rs:133
+msgid "Hard Disk Drive"
+msgstr "硬盘"
+
+#: src/utils/drive.rs:134
+msgid "Loop Device"
+msgstr "Loop 设备"
+
+#: src/utils/drive.rs:135
+msgid "Mapped Device"
+msgstr "映射设备"
+
+#: src/utils/drive.rs:136
+msgid "NVMe Drive"
+msgstr "NVMe 磁盘"
+
+#: src/utils/drive.rs:138
+msgid "Software Raid"
+msgstr "软 RAID"
+
+#: src/utils/drive.rs:139
+msgid "RAM Disk"
+msgstr "RAM 盘"
+
+#: src/utils/drive.rs:140
+msgid "Solid State Drive"
+msgstr "固态硬盘"
+
+#: src/utils/drive.rs:141
+msgid "ZFS Volume"
+msgstr "ZFS 卷"
+
+#: src/utils/drive.rs:142
+msgid "Compressed RAM Disk (zram)"
+msgstr "压缩 RAM 盘（ZRAM）"
+
+#: src/utils/drive.rs:210
+msgid "{} Loop Device"
+msgstr "{} Loop 设备"
+
+#: src/utils/drive.rs:211
+msgid "{} Mapped Device"
+msgstr "{} 映射设备"
+
+#: src/utils/drive.rs:212
+msgid "{} RAID"
+msgstr "{} RAID"
+
+#: src/utils/drive.rs:213
+msgid "{} RAM Disk"
+msgstr "{} RAM 盘"
+
+#: src/utils/drive.rs:214
+msgid "{} zram Device"
+msgstr "{} ZRAM 设备"
+
+#: src/utils/drive.rs:215
+msgid "{} ZFS Volume"
+msgstr "{} ZFS 卷"
+
+#: src/utils/drive.rs:216
+msgid "{} Drive"
+msgstr "{} 磁盘"
+
+#: src/utils/network.rs:123
+msgid "Bluetooth Tether"
+msgstr "蓝牙共享网络"
+
+#: src/utils/network.rs:124
+msgid "Network Bridge"
+msgstr "网络桥接"
+
+#: src/utils/network.rs:125
+msgid "Ethernet Connection"
+msgstr "以太网络连接"
+
+#: src/utils/network.rs:126
+msgid "Docker Bridge"
+msgstr "Docker 网桥"
+
+#: src/utils/network.rs:127
+msgid "InfiniBand Connection"
+msgstr "InfiniBand 连接"
+
+#: src/utils/network.rs:128
+msgid "Serial Line IP Connection"
+msgstr "串行线路 IP 连接"
+
+#: src/utils/network.rs:129
+msgid "Virtual Ethernet Device"
+msgstr "虚拟网卡设备"
+
+#: src/utils/network.rs:130
+msgid "VM Network Bridge"
+msgstr "VM 网络桥接"
+
+#: src/utils/network.rs:131
+msgid "VPN Tunnel"
+msgstr "VPN 隧道"
+
+#: src/utils/network.rs:132
+msgid "VPN Tunnel (WireGuard)"
+msgstr "VPN 隧道 (WireGuard)"
+
+#: src/utils/network.rs:133
+msgid "Wi-Fi Connection"
+msgstr "Wi-Fi 连接"
+
+#: src/utils/network.rs:134
+msgid "WWAN Connection"
+msgstr "WWAN 连接"
+
+#~ msgid "Memory Usage"
+#~ msgstr "内存占用"
+
+#~ msgid "Show Search Fields on Launch"
+#~ msgstr "在启动时显示搜索框"

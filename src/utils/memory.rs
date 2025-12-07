@@ -1,8 +1,10 @@
 use std::process::Command;
 
-use anyhow::{bail, Context, Result};
-use lazy_regex::{lazy_regex, Lazy, Regex};
+use anyhow::{Context, Result, bail};
+use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, trace};
+
+use crate::utils::read_parsed;
 
 use super::{FLATPAK_APP_PATH, FLATPAK_SPAWN, IS_FLATPAK};
 
@@ -59,9 +61,7 @@ impl MemoryData {
         trace!("Gathering memory data…");
 
         trace!("Reading {PROC_MEMINFO}…");
-        let proc_mem = std::fs::read_to_string("/proc/meminfo")
-            .inspect_err(|err| trace!("Unable to read {PROC_MEMINFO}: {err}"))
-            .context("unable to read /proc/meminfo")?;
+        let proc_mem = read_parsed::<String>("/proc/meminfo")?;
 
         let total_mem = RE_MEM_TOTAL
             .captures(&proc_mem)
@@ -183,7 +183,7 @@ impl MemoryDevice {
                     .is_some(),
             };
 
-            trace!("Found memory device: {:?}", memory_device);
+            trace!("Found memory device: {memory_device:?}");
 
             devices.push(memory_device);
         }
@@ -241,7 +241,7 @@ impl MemoryDevice {
                 .and_then(|regex| regex.captures(dmi))
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<usize>().ok())
-                .map_or(true, |int| int != 0);
+                != Some(0);
 
             let speed = if installed {
                 Regex::new(&TEMPLATE_RE_CONFIGURED_SPEED_MTS.replace('%', &i))
@@ -292,7 +292,7 @@ impl MemoryDevice {
                 installed,
             };
 
-            trace!("Found memory device: {:?}", memory_device);
+            trace!("Found memory device: {memory_device:?}");
 
             devices.push(memory_device);
         }

@@ -1,6 +1,8 @@
+use std::time::Duration;
+
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, clone};
 use gtk::FlowBoxChild;
+use gtk::glib::{self, DateTime, Priority, clone};
 use log::trace;
 
 use crate::config::PROFILE;
@@ -8,8 +10,8 @@ use crate::i18n::{i18n, i18n_f};
 use crate::ui::widgets::graph_box::ResGraphBox;
 use crate::utils::cpu::{CpuData, CpuInfo};
 use crate::utils::settings::SETTINGS;
-use crate::utils::units::{convert_frequency, convert_temperature};
-use crate::utils::{FiniteOr, NUM_CPUS};
+use crate::utils::units::{convert_frequency, convert_temperature, format_time_integer};
+use crate::utils::{FiniteOr, NUM_CPUS, boot_time};
 
 pub const TAB_ID: &str = "cpu";
 
@@ -21,9 +23,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        CompositeTemplate,
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]
@@ -50,6 +52,8 @@ mod imp {
         pub physical_cpus: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub sockets: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub uptime: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub virtualization: TemplateChild<adw::ActionRow>,
         #[template_child]
@@ -112,6 +116,7 @@ mod imp {
                 logical_cpus: Default::default(),
                 physical_cpus: Default::default(),
                 sockets: Default::default(),
+                uptime: Default::default(),
                 virtualization: Default::default(),
                 architecture: Default::default(),
                 temperature: Default::default(),
@@ -180,7 +185,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResCPU(ObjectSubclass<imp::ResCPU>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResCPU {
@@ -227,8 +233,7 @@ impl ResCPU {
         for i in 0..logical_cpus {
             let old_thread_usage = new_thread_usages
                 .get(i)
-                .map(|i| *i.as_ref().unwrap_or(&(0, 0)))
-                .unwrap_or((0, 0));
+                .map_or((0, 0), |i| *i.as_ref().unwrap_or(&(0, 0)));
             imp.old_thread_usages.borrow_mut().push(old_thread_usage);
         }
 
@@ -257,6 +262,7 @@ impl ResCPU {
             let flow_box_chld = FlowBoxChild::builder()
                 .child(&thread_box)
                 .css_classes(vec!["tile", "card"])
+                .can_target(false)
                 .build();
             imp.thread_box.append(&flow_box_chld);
             imp.thread_graphs.borrow_mut().push(thread_box);
@@ -306,10 +312,9 @@ impl ResCPU {
 
         let imp = self.imp();
         imp.logical_switch.connect_active_notify(clone!(
-            #[weak(rename_to = this)]
-            self,
+            #[weak]
+            imp,
             move |switch| {
-                let imp = this.imp();
                 if switch.is_active() {
                     imp.stack.set_visible_child(&imp.logical_page.get());
                 } else {
@@ -318,6 +323,28 @@ impl ResCPU {
                 let _ = SETTINGS.set_show_logical_cpus(switch.is_active());
             }
         ));
+
+        glib::timeout_add_local_full(
+            Duration::from_secs(1),
+            Priority::DEFAULT,
+            clone!(
+                #[strong(rename_to = this)]
+                self,
+                move || {
+                    let imp = this.imp();
+
+                    if let (Ok(boot_time), Ok(now)) = (boot_time(), DateTime::now_local()) {
+                        let time_difference = now.difference(&boot_time).as_seconds() as isize;
+                        imp.uptime
+                            .set_subtitle(&format_time_integer(time_difference));
+                    } else {
+                        imp.uptime.set_subtitle(&i18n("N/A"));
+                    }
+
+                    glib::ControlFlow::Continue
+                }
+            ),
+        );
 
         imp.logical_switch.set_active(SETTINGS.show_logical_cpus());
     }
@@ -373,8 +400,7 @@ impl ResCPU {
             {
                 let new_thread_usage = new_thread_usages
                     .get(i)
-                    .map(|i| *i.as_ref().unwrap_or(&(0, 0)))
-                    .unwrap_or((0, 0));
+                    .map_or((0, 0), |i| *i.as_ref().unwrap_or(&(0, 0)));
                 let idle_thread_delta = new_thread_usage.0.saturating_sub(old_thread_usage.0);
                 let sum_thread_delta = new_thread_usage.1.saturating_sub(old_thread_usage.1);
                 let work_thread_time = sum_thread_delta.saturating_sub(idle_thread_delta);
@@ -401,7 +427,7 @@ impl ResCPU {
         imp.temperature.graph().set_visible(temperature.is_ok());
 
         if let Ok(temperature) = temperature {
-            let temperature_string = convert_temperature(*temperature as f64);
+            let temperature_string = convert_temperature(f64::from(*temperature));
 
             let highest_temperature_string =
                 convert_temperature(imp.temperature.graph().get_highest_value());
@@ -412,7 +438,9 @@ impl ResCPU {
                 i18n("Highest:"),
                 highest_temperature_string
             ));
-            imp.temperature.graph().push_data_point(*temperature as f64);
+            imp.temperature
+                .graph()
+                .push_data_point(f64::from(*temperature));
 
             percentage_string.push_str(" · ");
             percentage_string.push_str(&temperature_string);

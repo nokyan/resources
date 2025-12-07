@@ -1,8 +1,8 @@
 use adw::{glib::property::PropertySet, prelude::*, subclass::prelude::*};
 use gtk::{
+    Ordering,
     gio::Icon,
     glib::{self},
-    Ordering,
 };
 use log::trace;
 
@@ -16,9 +16,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        CompositeTemplate,
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]
@@ -193,7 +193,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResStackSidebarItem(ObjectSubclass<imp::ResStackSidebarItem>)
-        @extends adw::Bin, gtk::Widget;
+        @extends adw::Bin, gtk::Widget,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl ResStackSidebarItem {

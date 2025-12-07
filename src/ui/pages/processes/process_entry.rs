@@ -7,7 +7,7 @@ use process_data::Containerization;
 
 use crate::{
     i18n::i18n,
-    utils::{process::Process, TICK_RATE},
+    utils::{TICK_RATE, process::Process},
 };
 
 mod imp {
@@ -48,6 +48,9 @@ mod imp {
 
         #[property(get, set)]
         swap_usage: Cell<u64>,
+
+        #[property(get, set)]
+        combined_memory_usage: Cell<u64>,
 
         #[property(get, set)]
         read_speed: Cell<f64>, // will be -1.0 if read data is not available
@@ -113,6 +116,7 @@ mod imp {
                 cpu_usage: Cell::new(0.0),
                 memory_usage: Cell::new(0),
                 swap_usage: Cell::new(0),
+                combined_memory_usage: Cell::new(0),
                 read_speed: Cell::new(0.0),
                 read_total: Cell::new(0),
                 write_speed: Cell::new(0.0),
@@ -229,6 +233,12 @@ impl ProcessEntry {
         self.set_cpu_usage(process.cpu_time_ratio());
         self.set_memory_usage(process.data.memory_usage as u64);
         self.set_swap_usage(process.data.swap_usage as u64);
+        self.set_combined_memory_usage(
+            process
+                .data
+                .memory_usage
+                .saturating_add(process.data.swap_usage) as u64,
+        );
         self.set_read_speed(process.read_speed().unwrap_or(-1.0));
         self.set_read_total(
             process
@@ -251,7 +261,7 @@ impl ProcessEntry {
         self.set_system_cpu_time((process.data.system_cpu_time as f64) / (*TICK_RATE as f64));
         self.set_total_cpu_time(self.user_cpu_time() + self.system_cpu_time());
         self.set_niceness(*process.data.niceness);
-        *self.imp().affinity.borrow_mut() = process.data.affinity.clone();
+        (*self.imp().affinity.borrow_mut()).clone_from(&process.data.affinity);
     }
 
     pub fn affinity(&self) -> Vec<bool> {

@@ -1,22 +1,31 @@
-use anyhow::{Context, Result};
+use super::units::convert_storage;
+use crate::i18n::{i18n, i18n_f};
+use crate::utils::link::{Link, LinkData};
+use crate::utils::read_parsed;
+use anyhow::{Context, Result, bail};
 use gtk::gio::{Icon, ThemedIcon};
-use lazy_regex::{lazy_regex, Lazy, Regex};
+use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::trace;
+use path_dedot::ParseDot;
+use process_data::pci_slot::PciSlot;
 use std::{
     collections::HashMap,
     fmt::Display,
     path::{Path, PathBuf},
+    str::FromStr,
 };
-
-use crate::i18n::{i18n, i18n_f};
-
-use super::units::convert_storage;
 
 const PATH_SYSFS: &str = "/sys/block";
 
 static RE_DRIVE: Lazy<Regex> = lazy_regex!(
     r" *(?P<read_ios>[0-9]*) *(?P<read_merges>[0-9]*) *(?P<read_sectors>[0-9]*) *(?P<read_ticks>[0-9]*) *(?P<write_ios>[0-9]*) *(?P<write_merges>[0-9]*) *(?P<write_sectors>[0-9]*) *(?P<write_ticks>[0-9]*) *(?P<in_flight>[0-9]*) *(?P<io_ticks>[0-9]*) *(?P<time_in_queue>[0-9]*) *(?P<discard_ios>[0-9]*) *(?P<discard_merges>[0-9]*) *(?P<discard_sectors>[0-9]*) *(?P<discard_ticks>[0-9]*) *(?P<flush_ios>[0-9]*) *(?P<flush_ticks>[0-9]*)"
 );
+
+static RE_ATA_LINK: Lazy<Regex> = lazy_regex!(r"(^link(\d+))$");
+
+static RE_ATA_SLOT: Lazy<Regex> = lazy_regex!(r"(^.+?/ata(\d+))/");
+
+static RE_USB_SLOT: Lazy<Regex> = lazy_regex!(r"(^.+?/usb(\d+))/(.+?)/");
 
 #[derive(Debug)]
 pub struct DriveData {
@@ -26,6 +35,7 @@ pub struct DriveData {
     pub removable: Result<bool>,
     pub disk_stats: HashMap<String, usize>,
     pub capacity: Result<u64>,
+    pub link: Result<Link>,
 }
 
 impl DriveData {
@@ -40,6 +50,7 @@ impl DriveData {
         let removable = inner.removable();
         let disk_stats = inner.sys_stats().unwrap_or_default();
         let capacity = inner.capacity();
+        let link = inner.link();
 
         let drive_data = Self {
             inner,
@@ -48,6 +59,7 @@ impl DriveData {
             removable,
             disk_stats,
             capacity,
+            link,
         };
 
         trace!(
@@ -78,11 +90,33 @@ pub enum DriveType {
     Unknown,
 }
 
+#[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
+pub enum DriveSlot {
+    Pci(PciSlot),
+    Ata(AtaSlot),
+    Usb(UsbSlot),
+    #[default]
+    Unknown,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct AtaSlot {
+    pub ata_device: u8,
+    pub ata_link: u8,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct UsbSlot {
+    pub usb_bus: u8,
+    pub usb_device: String,
+}
+
 #[derive(Debug, Clone, Default, Eq)]
 pub struct Drive {
     pub model: Option<String>,
     pub drive_type: DriveType,
     pub block_device: String,
+    pub slot: DriveSlot,
     pub sysfs_path: PathBuf,
 }
 
@@ -136,11 +170,11 @@ impl Drive {
             .to_string();
 
         let mut drive = Self::default();
-        drive.sysfs_path = path.clone();
+        drive.sysfs_path.clone_from(&path);
         drive.block_device = block_device;
         drive.model = drive.model().ok().map(|model| model.trim().to_string());
         drive.drive_type = drive.drive_type().unwrap_or_default();
-
+        drive.slot = drive.slot().unwrap_or_default();
         trace!("Created Drive object of {path:?}: {drive:?}");
 
         drive
@@ -190,8 +224,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub fn sys_stats(&self) -> Result<HashMap<String, usize>> {
-        let stat = std::fs::read_to_string(self.sysfs_path.join("stat"))
-            .with_context(|| format!("unable to read /sys/block/{}/stat", self.block_device))?;
+        let stat = read_parsed::<String>(self.sysfs_path.join("stat"))?;
 
         let captures = RE_DRIVE
             .captures(&stat)
@@ -230,15 +263,8 @@ impl Drive {
             Ok(DriveType::RamDisk)
         } else if self.block_device.starts_with("zd") {
             Ok(DriveType::ZfsVolume)
-        } else if let Ok(rotational) =
-            std::fs::read_to_string(self.sysfs_path.join("queue/rotational"))
-        {
-            // turn rot into a boolean
-            let rotational = rotational
-                .replace('\n', "")
-                .parse::<u8>()
-                .map(|rot| rot != 0)?;
-            if rotational {
+        } else if let Ok(rotational) = read_parsed::<u8>(self.sysfs_path.join("queue/rotational")) {
+            if rotational != 0 {
                 Ok(DriveType::Hdd)
             } else if self.removable()? {
                 Ok(DriveType::Flash)
@@ -257,9 +283,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub fn removable(&self) -> Result<bool> {
-        std::fs::read_to_string(self.sysfs_path.join("removable"))?
-            .replace('\n', "")
-            .parse::<u8>()
+        read_parsed::<u8>(self.sysfs_path.join("removable"))
             .map(|rem| rem != 0)
             .context("unable to parse removable sysfs file")
     }
@@ -271,9 +295,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub fn writable(&self) -> Result<bool> {
-        std::fs::read_to_string(self.sysfs_path.join("ro"))?
-            .replace('\n', "")
-            .parse::<u8>()
+        read_parsed::<u8>(self.sysfs_path.join("ro"))
             .map(|ro| ro == 0)
             .context("unable to parse ro sysfs file")
     }
@@ -285,9 +307,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub fn capacity(&self) -> Result<u64> {
-        std::fs::read_to_string(self.sysfs_path.join("size"))?
-            .replace('\n', "")
-            .parse::<u64>()
+        read_parsed::<u64>(self.sysfs_path.join("size"))
             .map(|sectors| sectors * 512)
             .context("unable to parse size sysfs file")
     }
@@ -299,8 +319,114 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub fn model(&self) -> Result<String> {
-        std::fs::read_to_string(self.sysfs_path.join("device/model"))
+        read_parsed(self.sysfs_path.join("device/model"))
             .context("unable to parse model sysfs file")
+    }
+
+    /// Returns the Link info of the drive
+    ///
+    /// # Errors
+    ///
+    /// Will return `Err` if there are errors during
+    /// reading or parsing, or if the drive link type is not supported
+    pub fn link(&self) -> Result<Link> {
+        match &self.slot {
+            DriveSlot::Pci(slot) => Ok(Link::Pcie(LinkData::from_pci_slot(slot)?)),
+            DriveSlot::Ata(slot) => Ok(Link::Sata(LinkData::from_ata_slot(slot)?)),
+            DriveSlot::Usb(slot) => Ok(Link::Usb(LinkData::from_usb_slot(slot)?)),
+            DriveSlot::Unknown => bail!("unsupported drive connection type"),
+        }
+    }
+
+    pub fn slot(&self) -> Result<DriveSlot> {
+        if let Ok(pci_slot) = self.pci_slot() {
+            Ok(DriveSlot::Pci(pci_slot))
+        } else if let Ok(ata_slot) = self.ata_slot() {
+            Ok(DriveSlot::Ata(ata_slot))
+        } else if let Ok(usb_slot) = self.usb_slot() {
+            Ok(DriveSlot::Usb(usb_slot))
+        } else {
+            bail!("unsupported drive slot type")
+        }
+    }
+
+    fn pci_slot(&self) -> Result<PciSlot> {
+        let pci_address_path = self.sysfs_path.join("device").join("address");
+
+        Ok(PciSlot::from_str(&read_parsed::<String>(
+            pci_address_path,
+        )?)?)
+    }
+
+    fn ata_slot(&self) -> Result<AtaSlot> {
+        let symlink = std::fs::read_link(&self.sysfs_path)
+            .context("Could not read sysfs_path as symlink")?
+            .to_string_lossy()
+            .to_string();
+        // ../../devices/pci0000:40/0000:40:08.3/0000:47:00.0/ata25/host24/target24:0:0/24:0:0:0/block/sda
+
+        let ata_sub_path_match = RE_ATA_SLOT
+            .captures(&symlink)
+            .context("No ata match found, probably no ata device")?;
+
+        let ata_sub_path = ata_sub_path_match
+            .get(1)
+            .context("No ata match found, probably no ata device")?
+            .as_str();
+
+        let ata_device = ata_sub_path_match
+            .get(2)
+            .context("could not match digits in ata")?
+            .as_str()
+            .parse::<u8>()?;
+
+        let ata_path = Path::new(&self.sysfs_path).join("..").join(ata_sub_path);
+        let dot_parsed_path = ata_path.parse_dot()?.clone();
+        let mut sub_dirs = std::fs::read_dir(dot_parsed_path).context("Could not read ata path")?;
+
+        let ata_link = sub_dirs
+            .find_map(|x| {
+                x.ok().and_then(|x| {
+                    RE_ATA_LINK
+                        .captures(&x.file_name().to_string_lossy())
+                        .and_then(|captures| captures.get(2))
+                        .and_then(|capture| capture.as_str().parse::<u8>().ok())
+                })
+            })
+            .context("No ata link number found")?;
+
+        Ok(AtaSlot {
+            ata_device,
+            ata_link,
+        })
+    }
+
+    fn usb_slot(&self) -> Result<UsbSlot> {
+        let symlink = std::fs::read_link(&self.sysfs_path)
+            .context("Could not read sysfs_path as symlink")?
+            .to_string_lossy()
+            .to_string();
+        //  ../../devices/pci0000:00/0000:00:08.1/0000:0e:00.3/usb4/4-2/4-2:1.0/host6/target6:0:0/6:0:0:0/block/sdb
+
+        let usb_match = RE_USB_SLOT
+            .captures(&symlink)
+            .context("No usb match found, probably no usb device")?;
+
+        let usb_bus = usb_match
+            .get(2)
+            .and_then(|capture| capture.as_str().parse::<u8>().ok())
+            .context("could not match digits in usb")?;
+
+        let usb_device = usb_match
+            .get(3)
+            .context("could not find usb device")?
+            .as_str()
+            .to_string();
+
+        Ok(UsbSlot {
+            usb_bus,
+            usb_device,
+        })
     }
 
     /// Returns the World-Wide Identification of the drive
@@ -310,8 +436,7 @@ impl Drive {
     /// Will return `Err` if the are errors during
     /// reading or parsing
     pub fn wwid(&self) -> Result<String> {
-        std::fs::read_to_string(self.sysfs_path.join("device/wwid"))
-            .context("unable to parse wwid sysfs file")
+        read_parsed(self.sysfs_path.join("device/wwid"))
     }
 
     /// Returns the appropriate Icon for the type of drive

@@ -6,21 +6,22 @@ use std::collections::HashSet;
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
 use async_channel::Sender;
-use gtk::glib::{self, clone, closure, MainContext, Object};
+use gtk::accessible::Property;
+use gtk::glib::{self, MainContext, Object, clone, closure};
 use gtk::{
-    gio, ColumnView, ColumnViewColumn, EventControllerKey, FilterChange, ListItem, NumericSorter,
-    SortType, StringSorter, Widget,
+    ColumnView, ColumnViewColumn, EventControllerKey, FilterChange, ListItem, NumericSorter,
+    SortType, StringSorter, Widget, gio,
 };
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::ui::dialogs::app_dialog::ResAppDialog;
 use crate::ui::window::{Action, MainWindow};
+use crate::utils::NUM_CPUS;
 use crate::utils::app::AppsContext;
 use crate::utils::process::ProcessAction;
 use crate::utils::settings::SETTINGS;
 use crate::utils::units::{convert_speed, convert_storage};
-use crate::utils::NUM_CPUS;
 
 use self::application_entry::ApplicationEntry;
 use self::application_name_cell::ResApplicationNameCell;
@@ -38,9 +39,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        ColumnViewColumn, CompositeTemplate,
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        ColumnViewColumn, CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]
@@ -52,13 +53,11 @@ mod imp {
         #[template_child]
         pub popover_menu: TemplateChild<gtk::PopoverMenu>,
         #[template_child]
-        pub search_revealer: TemplateChild<gtk::Revealer>,
+        pub search_bar: TemplateChild<gtk::SearchBar>,
         #[template_child]
         pub search_entry: TemplateChild<gtk::SearchEntry>,
         #[template_child]
         pub applications_scrolled_window: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub search_button: TemplateChild<gtk::ToggleButton>,
         #[template_child]
         pub information_button: TemplateChild<gtk::Button>,
         #[template_child]
@@ -115,9 +114,8 @@ mod imp {
             Self {
                 toast_overlay: Default::default(),
                 popover_menu: Default::default(),
-                search_revealer: Default::default(),
+                search_bar: Default::default(),
                 search_entry: Default::default(),
-                search_button: Default::default(),
                 information_button: Default::default(),
                 store: gio::ListStore::new::<ApplicationEntry>().into(),
                 selection_model: Default::default(),
@@ -284,7 +282,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResApplications(ObjectSubclass<imp::ResApplications>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResApplications {
@@ -300,12 +299,13 @@ impl ResApplications {
 
     pub fn toggle_search(&self) {
         let imp = self.imp();
-        imp.search_button.set_active(!imp.search_button.is_active());
+        imp.search_bar
+            .set_search_mode(!imp.search_bar.is_search_mode());
     }
 
     pub fn close_search(&self) {
         let imp = self.imp();
-        imp.search_button.set_active(false);
+        imp.search_bar.set_search_mode(false);
     }
 
     pub fn init(&self, sender: Sender<Action>) {
@@ -376,6 +376,7 @@ impl ResApplications {
         columns.push(self.add_encoder_column(&column_view));
         columns.push(self.add_decoder_column(&column_view));
         columns.push(self.add_swap_column(&column_view));
+        columns.push(self.add_combined_memory_column(&column_view));
 
         let store = gio::ListStore::new::<ApplicationEntry>();
 
@@ -424,7 +425,7 @@ impl ResApplications {
                 self,
                 move |model, _, _| {
                     let imp = this.imp();
-                    let is_system_processes = model.selected_item().map_or(false, |object| {
+                    let is_system_processes = model.selected_item().is_some_and(|object| {
                         object
                             .downcast::<ApplicationEntry>()
                             .unwrap()
@@ -438,20 +439,8 @@ impl ResApplications {
                 }
             ));
 
-        imp.search_button.connect_toggled(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |button| {
-                let imp = this.imp();
-                imp.search_revealer.set_reveal_child(button.is_active());
-                if let Some(filter) = imp.filter_model.borrow().filter() {
-                    filter.changed(FilterChange::Different);
-                }
-                if button.is_active() {
-                    imp.search_entry.grab_focus();
-                }
-            }
-        ));
+        imp.search_bar
+            .set_key_capture_widget(self.parent().as_ref());
 
         imp.search_entry.connect_search_changed(clone!(
             #[strong(rename_to = this)]
@@ -474,7 +463,7 @@ impl ResApplications {
                 }
             }
         ));
-        imp.search_entry.add_controller(event_controller);
+        imp.search_bar.add_controller(event_controller);
 
         imp.information_button.connect_clicked(clone!(
             #[weak(rename_to = this)]
@@ -536,6 +525,10 @@ impl ResApplications {
         }
     }
 
+    pub fn search_bar(&self) -> &gtk::SearchBar {
+        &self.imp().search_bar
+    }
+
     pub fn open_info_dialog(&self, app: &ApplicationEntry) {
         let imp = self.imp();
 
@@ -549,7 +542,7 @@ impl ResApplications {
 
         dialog.init(app);
 
-        dialog.present(Some(&MainWindow::default()));
+        AdwDialogExt::present(&dialog, Some(&MainWindow::default()));
 
         dialog.connect_closed(clone!(
             #[weak(rename_to = this)]
@@ -569,7 +562,7 @@ impl ResApplications {
         let imp = self.imp();
         let item = obj.downcast_ref::<ApplicationEntry>().unwrap();
         let search_string = imp.search_entry.text().to_string().to_lowercase();
-        !imp.search_revealer.reveals_child()
+        !imp.search_bar.is_search_mode()
             || item.name().to_lowercase().contains(&search_string)
             || item
                 .id()
@@ -618,7 +611,7 @@ impl ResApplications {
                 {
                     if let Some((dialog_id, dialog)) = dialog_opt {
                         if dialog_id.as_deref() == app_id.as_deref() {
-                            dialog.close();
+                            AdwDialogExt::close(dialog);
                             dialog_opt = &None;
                         }
                     }
@@ -819,8 +812,16 @@ impl ResApplications {
                 let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
                 let row = gtk::Inscription::new(None);
-
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Memory"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -879,6 +880,15 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(7);
+                row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Processor"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -944,6 +954,15 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(11);
+                row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Drive Read"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -1008,6 +1027,15 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Drive Read Total"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -1068,6 +1096,15 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(11);
+                row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Drive Write"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -1134,6 +1171,15 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Drive Write Total"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -1193,6 +1239,15 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(7);
+                row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("GPU"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -1253,6 +1308,15 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(7);
+                row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Video Encoder"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -1313,6 +1377,15 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(7);
+                row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Video Decoder"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -1371,6 +1444,15 @@ impl ResApplications {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Video Memory"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
                 item.property_expression("item")
@@ -1427,8 +1509,16 @@ impl ResApplications {
                 let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
                 let row = gtk::Inscription::new(None);
-
                 row.set_min_chars(9);
+                row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Swap"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -1470,6 +1560,75 @@ impl ResApplications {
 
         swap_col
     }
+
+    fn add_combined_memory_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
+        let combined_memory_col_factory = gtk::SignalListItemFactory::new();
+
+        let combined_memory_col = gtk::ColumnViewColumn::new(
+            Some(&i18n("Combined Memory")),
+            Some(combined_memory_col_factory.clone()),
+        );
+
+        combined_memory_col.set_resizable(true);
+
+        combined_memory_col_factory.connect_setup(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+
+                let row = gtk::Inscription::new(None);
+                row.set_min_chars(9);
+                row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Combined Memory"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
+
+                item.set_child(Some(&row));
+
+                item.property_expression("item")
+                    .chain_property::<ApplicationEntry>("combined_memory_usage")
+                    .chain_closure::<String>(closure!(|_: Option<Object>, swap_usage: u64| {
+                        convert_storage(swap_usage as f64, false)
+                    }))
+                    .bind(&row, "text", Widget::NONE);
+
+                this.add_gestures(item);
+            }
+        ));
+
+        combined_memory_col_factory.connect_teardown(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            item.set_child(None::<&gtk::Inscription>);
+        });
+
+        let combined_memory_col_sorter = NumericSorter::builder()
+            .sort_order(SortType::Ascending)
+            .expression(gtk::PropertyExpression::new(
+                ApplicationEntry::static_type(),
+                None::<&gtk::Expression>,
+                "combined_memory_usage",
+            ))
+            .build();
+
+        combined_memory_col.set_sorter(Some(&combined_memory_col_sorter));
+        combined_memory_col.set_visible(SETTINGS.processes_show_combined_memory());
+
+        column_view.append_column(&combined_memory_col);
+
+        SETTINGS.connect_apps_show_combined_memory(clone!(
+            #[weak]
+            combined_memory_col,
+            move |visible| combined_memory_col.set_visible(visible)
+        ));
+
+        combined_memory_col
+    }
 }
 
 fn get_action_name(action: ProcessAction, name: &str) -> String {
@@ -1483,11 +1642,15 @@ fn get_action_name(action: ProcessAction, name: &str) -> String {
 
 fn get_action_warning(action: ProcessAction) -> String {
     match action {
-            ProcessAction::TERM => i18n("Unsaved work might be lost."),
-            ProcessAction::STOP => i18n("Halting an app can come with serious risks such as losing data and security implications. Use with caution."),
-            ProcessAction::KILL => i18n("Killing an app can come with serious risks such as losing data and security implications. Use with caution."),
-            ProcessAction::CONT => String::new(),
-        }
+        ProcessAction::TERM => i18n("Unsaved work might be lost."),
+        ProcessAction::STOP => i18n(
+            "Halting an app can come with serious risks such as losing data and security implications. Use with caution.",
+        ),
+        ProcessAction::KILL => i18n(
+            "Killing an app can come with serious risks such as losing data and security implications. Use with caution.",
+        ),
+        ProcessAction::CONT => String::new(),
+    }
 }
 
 fn get_action_description(action: ProcessAction) -> String {

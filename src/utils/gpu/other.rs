@@ -1,7 +1,7 @@
-use anyhow::{bail, Result};
-use process_data::GpuIdentifier;
+use anyhow::{Result, bail};
+use process_data::gpu_usage::GpuIdentifier;
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use crate::utils::pci::Device;
 
@@ -44,16 +44,16 @@ impl GpuImpl for OtherGpu {
         self.gpu_identifier
     }
 
-    fn driver(&self) -> String {
-        self.driver.clone()
+    fn driver(&self) -> &str {
+        &self.driver
     }
 
-    fn sysfs_path(&self) -> PathBuf {
-        self.sysfs_path.clone()
+    fn sysfs_path(&self) -> &Path {
+        &self.sysfs_path
     }
 
-    fn first_hwmon(&self) -> Option<PathBuf> {
-        self.first_hwmon_path.clone()
+    fn first_hwmon(&self) -> Option<&Path> {
+        self.first_hwmon_path.as_deref()
     }
 
     fn name(&self) -> Result<String> {
@@ -76,12 +76,12 @@ impl GpuImpl for OtherGpu {
         bail!("can't know for other GPUs")
     }
 
-    fn used_vram(&self) -> Result<usize> {
-        self.drm_used_vram().map(|usage| usage as usize)
+    fn used_vram(&self) -> Result<u64> {
+        self.drm_used_vram().map(|usage| usage as u64)
     }
 
-    fn total_vram(&self) -> Result<usize> {
-        self.drm_total_vram().map(|usage| usage as usize)
+    fn total_vram(&self) -> Result<u64> {
+        self.drm_total_vram().map(|usage| usage as u64)
     }
 
     fn temperature(&self) -> Result<f64> {

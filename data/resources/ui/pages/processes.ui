@@ -95,6 +95,17 @@
     </object>
     <property name="child">
       <object class="AdwToolbarView">
+        <child type="top">
+          <object class="GtkSearchBar" id="search_bar">
+            <property name="child">
+              <object class="GtkSearchEntry" id="search_entry">
+                <accessibility>
+                  <property name="label" translatable="yes">Search processes</property>
+                </accessibility>
+              </object>
+            </property>
+          </object>
+        </child>
         <property name="content">
           <object class="AdwToastOverlay" id="toast_overlay">
             <child>
@@ -108,91 +119,47 @@
         </property>
         <child type="bottom">
           <object class="GtkBox">
-            <property name="orientation">vertical</property>
+            <property name="margin-top">16</property>
+            <property name="margin-bottom">16</property>
+            <property name="margin-start">16</property>
+            <property name="margin-end">16</property>
+            <property name="hexpand">true</property>
+            <property name="spacing">16</property>
+            <property name="halign">end</property>
             <child>
-              <object class="GtkRevealer" id="search_revealer">
-                <property name="transition_type">slide-up</property>
-                <child>
-                  <object class="AdwClamp">
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">0</property>
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="tightening-threshold">300</property>
-                    <property name="maximum-size">400</property>
-                    <child>
-                      <object class="GtkSearchEntry" id="search_entry">
-                        <accessibility>
-                          <property name="label" translatable="yes">Search processes</property>
-                        </accessibility>
-                      </object>
-                    </child>
-                  </object>
-                </child>
+              <object class="GtkButton" id="options_button">
+                <property name="icon-name">options-symbolic</property>
+                <property name="sensitive">false</property>
+                <property name="tooltip-text" translatable="yes">Show Process Options</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Show Process Options</property>
+                </accessibility>
+                <style>
+                  <class name="circular"/>
+                </style>
               </object>
             </child>
             <child>
-              <object class="GtkBox">
-                <property name="margin-top">16</property>
-                <property name="margin-bottom">16</property>
-                <property name="margin-start">16</property>
-                <property name="margin-end">16</property>
-                <property name="spacing">16</property>
-                <child>
-                  <object class="GtkToggleButton" id="search_button">
-                    <property name="icon-name">search-symbolic</property>
-                    <property name="tooltip-text" translatable="yes">Search</property>
-                    <accessibility>
-                      <property name="label" translatable="yes">Toggle search field</property>
-                    </accessibility>
-                    <style>
-                      <class name="circular"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="hexpand">true</property>
-                    <property name="spacing">16</property>
-                    <property name="halign">end</property>
-                    <child>
-                      <object class="GtkButton" id="options_button">
-                        <property name="icon-name">options-symbolic</property>
-                        <property name="sensitive">false</property>
-                        <property name="tooltip-text" translatable="yes">Show Process Options</property>
-                        <accessibility>
-                          <property name="label" translatable="yes">Show Process Options</property>
-                        </accessibility>
-                        <style>
-                          <class name="circular"/>
-                        </style>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="information_button">
-                        <property name="icon-name">info-symbolic</property>
-                        <property name="sensitive">false</property>
-                        <property name="tooltip-text" translatable="yes">Show Process Information</property>
-                        <accessibility>
-                          <property name="label" translatable="yes">Show Process Information</property>
-                        </accessibility>
-                        <style>
-                          <class name="circular"/>
-                        </style>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwSplitButton" id="end_process_button">
-                        <property name="label" translatable="yes">End Process</property>
-                        <property name="menu-model">end_process_menu</property>
-                        <property name="sensitive">false</property>
-                        <style>
-                          <class name="destructive-action"/>
-                        </style>
-                      </object>
-                    </child>
-                  </object>
-                </child>
+              <object class="GtkButton" id="information_button">
+                <property name="icon-name">info-symbolic</property>
+                <property name="sensitive">false</property>
+                <property name="tooltip-text" translatable="yes">Show Process Information</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Show Process Information</property>
+                </accessibility>
+                <style>
+                  <class name="circular"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSplitButton" id="end_process_button">
+                <property name="label" translatable="yes">End Process</property>
+                <property name="menu-model">end_process_menu</property>
+                <property name="sensitive">false</property>
+                <style>
+                  <class name="destructive-action"/>
+                </style>
               </object>
             </child>
           </object>

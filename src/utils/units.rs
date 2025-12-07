@@ -3,7 +3,7 @@ use strum_macros::{Display, EnumIter, EnumString};
 
 use crate::i18n::i18n_f;
 
-use super::settings::{Base, TemperatureUnit, SETTINGS};
+use super::settings::{Base, SETTINGS, TemperatureUnit};
 
 #[repr(u8)]
 #[derive(
@@ -40,6 +40,21 @@ pub fn format_time(time_in_seconds: f64) -> String {
         format!("-{hours}∶{minutes:02}∶{seconds:02}.{millis:02}")
     } else {
         format!("{hours}∶{minutes:02}∶{seconds:02}.{millis:02}")
+    }
+}
+
+pub fn format_time_integer(time_in_seconds: isize) -> String {
+    let negative = time_in_seconds.is_negative();
+    let time_in_seconds = time_in_seconds.abs();
+
+    let seconds = (time_in_seconds % 60) as u8;
+    let minutes = ((time_in_seconds / 60) % 60) as u8;
+    let hours = (time_in_seconds / (60 * 60)) as usize;
+
+    if negative {
+        format!("-{hours}∶{minutes:02}∶{seconds:02}")
+    } else {
+        format!("{hours}∶{minutes:02}∶{seconds:02}")
     }
 }
 
@@ -90,7 +105,7 @@ pub fn convert_storage(bytes: f64, integer: bool) -> String {
     }
 }
 
-fn convert_storage_decimal(bytes: f64, integer: bool) -> String {
+pub fn convert_storage_decimal(bytes: f64, integer: bool) -> String {
     let (mut number, prefix) = to_largest_prefix(bytes, Base::Decimal);
     if integer {
         number = number.round();
@@ -124,7 +139,7 @@ fn convert_storage_decimal(bytes: f64, integer: bool) -> String {
     }
 }
 
-fn convert_storage_binary(bytes: f64, integer: bool) -> String {
+pub fn convert_storage_binary(bytes: f64, integer: bool) -> String {
     let (mut number, prefix) = to_largest_prefix(bytes, Base::Binary);
     if integer {
         number = number.round();
@@ -177,7 +192,7 @@ pub fn convert_speed(bytes_per_second: f64, network: bool) -> String {
     }
 }
 
-fn convert_speed_decimal(bytes_per_second: f64) -> String {
+pub fn convert_speed_decimal(bytes_per_second: f64) -> String {
     let (number, prefix) = to_largest_prefix(bytes_per_second, Base::Decimal);
     match prefix {
         Prefix::None => i18n_f("{} B/s", &[&format!("{}", number.round())]),
@@ -194,7 +209,7 @@ fn convert_speed_decimal(bytes_per_second: f64) -> String {
     }
 }
 
-fn convert_speed_binary(bytes_per_second: f64) -> String {
+pub fn convert_speed_binary(bytes_per_second: f64) -> String {
     let (number, prefix) = to_largest_prefix(bytes_per_second, Base::Binary);
     match prefix {
         Prefix::None => i18n_f("{} B/s", &[&format!("{}", number.round())]),
@@ -211,24 +226,31 @@ fn convert_speed_binary(bytes_per_second: f64) -> String {
     }
 }
 
-fn convert_speed_bits_decimal(bits_per_second: f64) -> String {
+pub fn convert_speed_bits_decimal(bits_per_second: f64) -> String {
+    convert_speed_bits_decimal_with_places(bits_per_second, 2)
+}
+
+pub fn convert_speed_bits_decimal_with_places(
+    bits_per_second: f64,
+    decimal_places: usize,
+) -> String {
     let (number, prefix) = to_largest_prefix(bits_per_second, Base::Decimal);
     match prefix {
         Prefix::None => i18n_f("{} b/s", &[&format!("{}", number.round())]),
-        Prefix::Kilo => i18n_f("{} kb/s", &[&format!("{number:.2}")]),
-        Prefix::Mega => i18n_f("{} Mb/s", &[&format!("{number:.2}")]),
-        Prefix::Giga => i18n_f("{} Gb/s", &[&format!("{number:.2}")]),
-        Prefix::Tera => i18n_f("{} Tb/s", &[&format!("{number:.2}")]),
-        Prefix::Peta => i18n_f("{} Pb/s", &[&format!("{number:.2}")]),
-        Prefix::Exa => i18n_f("{} Eb/s", &[&format!("{number:.2}")]),
-        Prefix::Zetta => i18n_f("{} Zb/s", &[&format!("{number:.2}")]),
-        Prefix::Yotta => i18n_f("{} Yb/s", &[&format!("{number:.2}")]),
-        Prefix::Ronna => i18n_f("{} Rb/s", &[&format!("{number:.2}")]),
-        Prefix::Quetta => i18n_f("{} Qb/s", &[&format!("{number:.2}")]),
+        Prefix::Kilo => i18n_f("{} kb/s", &[&format!("{number:.decimal_places$}")]),
+        Prefix::Mega => i18n_f("{} Mb/s", &[&format!("{number:.decimal_places$}")]),
+        Prefix::Giga => i18n_f("{} Gb/s", &[&format!("{number:.decimal_places$}")]),
+        Prefix::Tera => i18n_f("{} Tb/s", &[&format!("{number:.decimal_places$}")]),
+        Prefix::Peta => i18n_f("{} Pb/s", &[&format!("{number:.decimal_places$}")]),
+        Prefix::Exa => i18n_f("{} Eb/s", &[&format!("{number:.decimal_places$}")]),
+        Prefix::Zetta => i18n_f("{} Zb/s", &[&format!("{number:.decimal_places$}")]),
+        Prefix::Yotta => i18n_f("{} Yb/s", &[&format!("{number:.decimal_places$}")]),
+        Prefix::Ronna => i18n_f("{} Rb/s", &[&format!("{number:.decimal_places$}")]),
+        Prefix::Quetta => i18n_f("{} Qb/s", &[&format!("{number:.decimal_places$}")]),
     }
 }
 
-fn convert_speed_bits_binary(bits_per_second: f64) -> String {
+pub fn convert_speed_bits_binary(bits_per_second: f64) -> String {
     let (number, prefix) = to_largest_prefix(bits_per_second, Base::Binary);
     match prefix {
         Prefix::None => i18n_f("{} b/s", &[&format!("{}", number.round())]),
@@ -317,7 +339,7 @@ pub fn convert_energy(watthours: f64, integer: bool) -> String {
 mod test {
     use crate::utils::{
         settings::Base,
-        units::{celsius_to_fahrenheit, celsius_to_kelvin, to_largest_prefix, Prefix},
+        units::{Prefix, celsius_to_fahrenheit, celsius_to_kelvin, to_largest_prefix},
     };
     use pretty_assertions::assert_eq;
 

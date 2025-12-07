@@ -4,9 +4,9 @@ use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
+use crate::utils::FiniteOr;
 use crate::utils::memory::{MemoryData, MemoryDevice};
 use crate::utils::units::convert_storage;
-use crate::utils::FiniteOr;
 
 pub const TAB_ID: &str = "memory";
 
@@ -18,9 +18,9 @@ mod imp {
     use super::*;
 
     use gtk::{
+        CompositeTemplate,
         gio::{Icon, ThemedIcon},
         glib::{ParamSpec, Properties, Value},
-        CompositeTemplate,
     };
 
     #[derive(CompositeTemplate, Properties)]
@@ -160,7 +160,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResMemory(ObjectSubclass<imp::ResMemory>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResMemory {
