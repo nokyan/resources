@@ -640,6 +640,19 @@ impl AppsContext {
 
     fn app_associated_with_process(&self, process: &Process) -> Option<String> {
         // TODO: tidy this up
+        // ↓ look for whether we can associate this process with an AppImage
+        if let Some(appimage_path) = &process.data.appimage_path {
+            if let Some(parent) = self.apps.values().find(|app| {
+                app.containerization == Containerization::AppImage
+                    && app
+                        .commandline
+                        .as_ref()
+                        .is_some_and(|exe_name| exe_name == appimage_path)
+            }) {
+                return parent.id.clone();
+            }
+        }
+
         // ↓ look for whether we can find an ID in the cgroup
         if DESKTOP_ENVIRONMENT_CGROUPS.contains(&process.data.cgroup.as_deref().unwrap_or_default())
         {
