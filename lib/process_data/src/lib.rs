@@ -36,6 +36,9 @@ const DRM_DRIVER: &str = "drm-driver";
 
 const DRM_PDEV: &str = "drm-pdev";
 
+const DRM_MAJOR: u32 = 226;
+const ACCEL_MAJOR: u32 = 261;
+
 static USERS_CACHE: LazyLock<HashMap<libc::uid_t, String>> = LazyLock::new(|| unsafe {
     debug!("Initializing users cache…");
     let users: HashMap<libc::uid_t, String> = uzers::all_users()
@@ -105,12 +108,12 @@ static DEC_NS_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> =
     Lazy::new(|| HashMap::from_iter([("amdgpu", vec!["drm-engine-dec"])]));
 
 static NPU_NS_FIELDS: Lazy<HashMap<&str, Vec<&str>>> =
-    Lazy::new(|| HashMap::from_iter([("amdxdna", vec!["drm-engine-npu-amdxdna"])]));
+    Lazy::new(|| HashMap::from_iter([("amdxdna_accel_driver", vec!["drm-engine-npu-amdxdna"])]));
 
 static MEM_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> = Lazy::new(|| {
     HashMap::from_iter([
         ("amdgpu", vec!["drm-memory-gtt", "drm-memory-vram"]),
-        ("amdxdna", vec!["drm-total-memory"]),
+        ("amdxdna_accel_driver", vec!["drm-total-memory"]),
         ("i915", vec!["drm-total-local0", "drm-total-system0"]),
         ("v3d", vec!["drm-total-memory"]),
         ("xe", vec!["drm-total-gtt", "drm-total-vram0"]),
@@ -508,7 +511,9 @@ impl ProcessData {
             if let Some(fd_path) = fd_path {
                 if let Ok(fd_metadata) = std::fs::metadata(fd_path) {
                     let major = libc::major(fd_metadata.st_rdev());
-                    if (fd_metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR || major != 226 {
+                    if (fd_metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR
+                        || (major != DRM_MAJOR && major != ACCEL_MAJOR)
+                    {
                         continue;
                     }
                 }
@@ -578,7 +583,7 @@ impl ProcessData {
                 .unwrap_or_default();
 
             let stats = match driver.as_str() {
-                "amdxdna" => NpuUsageStats::AmdxdnaStats {
+                "amdxdna_accel_driver" => NpuUsageStats::AmdxdnaStats {
                     usage_ns: NPU_NS_FIELDS
                         .get(driver.as_str())
                         .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
