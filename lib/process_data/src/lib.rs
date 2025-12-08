@@ -1,9 +1,11 @@
 pub mod gpu_usage;
+pub mod npu_usage;
 pub mod pci_slot;
 
 use anyhow::{Context, Result, bail};
 use glob::glob;
 use lazy_regex::{Lazy, Regex, lazy_regex};
+use log::{debug, trace, warn};
 use nutype::nutype;
 use nvml_wrapper::enums::device::UsedGpuMemory;
 use nvml_wrapper::error::NvmlError;
@@ -21,6 +23,7 @@ use std::sync::{LazyLock, RwLock};
 use std::time::SystemTime;
 
 use crate::gpu_usage::{GpuIdentifier, GpuUsageStats, IntegerPercentage};
+use crate::npu_usage::NpuUsageStats;
 
 const STAT_OFFSET: usize = 2; // we split the stat contents where the executable name ends, which is the second element
 const STAT_PARENT_PID: usize = 3 - STAT_OFFSET;
@@ -33,10 +36,19 @@ const DRM_DRIVER: &str = "drm-driver";
 
 const DRM_PDEV: &str = "drm-pdev";
 
+const DRM_MAJOR: u32 = 226;
+const ACCEL_MAJOR: u32 = 261;
+
 static USERS_CACHE: LazyLock<HashMap<libc::uid_t, String>> = LazyLock::new(|| unsafe {
-    uzers::all_users()
-        .map(|user| (user.uid(), user.name().to_string_lossy().to_string()))
-        .collect()
+    debug!("Initializing users cache…");
+    let users: HashMap<libc::uid_t, String> = uzers::all_users()
+        .map(|user| {
+            trace!("Found user {}", user.name().to_string_lossy());
+            (user.uid(), user.name().to_string_lossy().to_string())
+        })
+        .collect();
+    debug!("Found {} users", users.len());
+    users
 });
 
 static PAGESIZE: LazyLock<usize> = LazyLock::new(sysconf::pagesize);
@@ -95,25 +107,38 @@ static ENC_TOTAL_CYCLES_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> =
 static DEC_NS_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> =
     Lazy::new(|| HashMap::from_iter([("amdgpu", vec!["drm-engine-dec"])]));
 
+static NPU_NS_FIELDS: Lazy<HashMap<&str, Vec<&str>>> =
+    Lazy::new(|| HashMap::from_iter([("amdxdna_accel_driver", vec!["drm-engine-npu-amdxdna"])]));
+
 static MEM_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> = Lazy::new(|| {
     HashMap::from_iter([
         ("amdgpu", vec!["drm-memory-gtt", "drm-memory-vram"]),
+        ("amdxdna_accel_driver", vec!["drm-total-memory"]),
         ("i915", vec!["drm-total-local0", "drm-total-system0"]),
         ("v3d", vec!["drm-total-memory"]),
         ("xe", vec!["drm-total-gtt", "drm-total-vram0"]),
     ])
 });
 
-static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(Nvml::init);
+static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(|| {
+    debug!("Initializing connection to NVML…");
+    Nvml::init().inspect_err(|err| warn!("Unable to connect to NVML: {err}"))
+});
 
 static NVML_DEVICES: Lazy<Vec<(PciSlot, Device)>> = Lazy::new(|| {
     if let Ok(nvml) = NVML.as_ref() {
+        debug!("Looking for NVIDIA devices…");
         let device_count = nvml.device_count().unwrap_or(0);
         let mut return_vec = Vec::with_capacity(device_count as usize);
         for i in 0..device_count {
             if let Ok(gpu) = nvml.device_by_index(i) {
                 if let Ok(pci_slot) = gpu.pci_info().map(|pci_info| pci_info.bus_id) {
                     let pci_slot = PciSlot::from_str(&pci_slot).unwrap();
+                    debug!(
+                        "Found {} at {}",
+                        gpu.name().unwrap_or("N/A".into()),
+                        pci_slot
+                    );
                     return_vec.push((pci_slot, gpu));
                 }
             }
@@ -164,7 +189,7 @@ pub enum Containerization {
     Snap,
 }
 
-/// Data that could be transferred us>ing `resources-processes`, separated from
+/// Data that could be transferred using `resources-processes`, separated from
 /// `Process` mainly due to `Icon` not being able to derive `Serialize` and
 /// `Deserialize`.
 #[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
@@ -187,6 +212,7 @@ pub struct ProcessData {
     pub write_bytes: Option<u64>,
     pub timestamp: u64,
     pub gpu_usage_stats: BTreeMap<GpuIdentifier, GpuUsageStats>,
+    pub npu_usage_stats: BTreeMap<PciSlot, NpuUsageStats>,
 }
 
 impl ProcessData {
@@ -266,19 +292,29 @@ impl ProcessData {
 
     pub fn try_from_path<P: AsRef<Path>>(proc_path: P) -> Result<Self> {
         let proc_path = proc_path.as_ref();
-        let stat = std::fs::read_to_string(proc_path.join("stat"))?;
-        let statm = std::fs::read_to_string(proc_path.join("statm"))?;
-        let status = std::fs::read_to_string(proc_path.join("status"))?;
-        let comm = std::fs::read_to_string(proc_path.join("comm"))?;
-        let commandline = std::fs::read_to_string(proc_path.join("cmdline"))?;
-        let io = std::fs::read_to_string(proc_path.join("io")).ok();
-
         let pid = proc_path
             .file_name()
             .context("proc_path terminates in ..")?
             .to_str()
             .context("can't turn OsStr to str")?
             .parse()?;
+
+        trace!("Inspecting process {pid}…");
+
+        trace!("Reading info files…");
+        let stat = std::fs::read_to_string(proc_path.join("stat"))
+            .inspect_err(|err| trace!("Error reading 'stat': {err}"))?;
+        let statm = std::fs::read_to_string(proc_path.join("statm"))
+            .inspect_err(|err| trace!("Error reading 'statm': {err}"))?;
+        let status = std::fs::read_to_string(proc_path.join("status"))
+            .inspect_err(|err| trace!("Error reading 'status': {err}"))?;
+        let comm = std::fs::read_to_string(proc_path.join("comm"))
+            .inspect_err(|err| trace!("Error reading 'comm': {err}"))?;
+        let commandline = std::fs::read_to_string(proc_path.join("cmdline"))
+            .inspect_err(|err| trace!("Error reading 'cmdline': {err}"))?;
+        let io = std::fs::read_to_string(proc_path.join("io"))
+            .inspect_err(|err| trace!("Error reading 'io': {err}"))
+            .ok();
 
         let user = USERS_CACHE
             .get(&Self::get_uid(proc_path)?)
@@ -288,7 +324,8 @@ impl ProcessData {
         let stat = stat
             .split(')') // since we don't care about the pid or the executable name, split after the executable name to make our life easier
             .last()
-            .context("stat doesn't have ')'")?
+            .context("stat doesn't have ')'")
+            .inspect_err(|err| trace!("Can't parse 'stat': {err}"))?
             .split(' ')
             .skip(1) // the first element would be a space, let's ignore that
             .collect::<Vec<_>>();
@@ -300,23 +337,28 @@ impl ProcessData {
         let parent_pid = stat
             .get(STAT_PARENT_PID)
             .context("wrong stat file format")
-            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+            .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
+            .inspect_err(|err| trace!("Can't parse parent pid from 'stat': {err}"))?;
         let user_cpu_time = stat
             .get(STAT_USER_CPU_TIME)
             .context("wrong stat file format")
-            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+            .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
+            .inspect_err(|err| trace!("Can't parse user cpu time from 'stat': {err}"))?;
         let system_cpu_time = stat
             .get(STAT_SYSTEM_CPU_TIME)
             .context("wrong stat file format")
-            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+            .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
+            .inspect_err(|err| trace!("Can't parse system cpu time from 'stat': {err}"))?;
         let nice = stat
             .get(STAT_NICE)
             .context("wrong stat file format")
-            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+            .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
+            .inspect_err(|err| trace!("Can't parse nice from 'stat': {err}"))?;
         let starttime = stat
             .get(STAT_STARTTIME)
             .context("wrong stat file format")
-            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+            .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
+            .inspect_err(|err| trace!("Can't parse start time from 'stat': {err}"))?;
 
         let mut affinity = Vec::with_capacity(*NUM_CPUS);
         RE_AFFINITY
@@ -352,7 +394,8 @@ impl ProcessData {
             .and_then(|x| {
                 x.parse::<usize>()
                     .context("couldn't parse statm file content")
-            })?
+            })
+            .inspect_err(|err| trace!("Can't parse memory usage from 'statm': {err}"))?
             .saturating_sub(
                 statm
                     .get(2)
@@ -365,6 +408,7 @@ impl ProcessData {
             .saturating_mul(*PAGESIZE);
 
         let cgroup = std::fs::read_to_string(proc_path.join("cgroup"))
+            .inspect_err(|err| trace!("Can't read cgroup: {err}"))
             .ok()
             .and_then(Self::sanitize_cgroup);
 
@@ -396,6 +440,8 @@ impl ProcessData {
         let mut gpu_usage_stats = Self::other_gpu_usage_stats(&fdinfos).unwrap_or_default();
         gpu_usage_stats.extend(nvidia_stats);
 
+        let npu_usage_stats = Self::npu_usage_stats(&fdinfos).unwrap_or_default();
+
         let timestamp = unix_as_millis();
 
         Ok(Self {
@@ -417,6 +463,7 @@ impl ProcessData {
             write_bytes,
             timestamp,
             gpu_usage_stats,
+            npu_usage_stats,
         })
     }
 
@@ -464,7 +511,9 @@ impl ProcessData {
             if let Some(fd_path) = fd_path {
                 if let Ok(fd_metadata) = std::fs::metadata(fd_path) {
                     let major = libc::major(fd_metadata.st_rdev());
-                    if (fd_metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR || major != 226 {
+                    if (fd_metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR
+                        || (major != DRM_MAJOR && major != ACCEL_MAJOR)
+                    {
                         continue;
                     }
                 }
@@ -501,6 +550,59 @@ impl ProcessData {
                 .filter_map(|line| line.split_once(':'))
                 .map(|(name, value)| (name.trim().to_string(), value.trim().to_string())),
         )
+    }
+
+    fn npu_usage_stats(
+        fdinfos: &[HashMap<String, String>],
+    ) -> Result<BTreeMap<PciSlot, NpuUsageStats>> {
+        let mut return_map = BTreeMap::new();
+
+        for fdinfo in fdinfos {
+            if let Ok((identifier, stats)) = Self::extract_npu_usage_from_fdinfo(fdinfo) {
+                return_map
+                    .entry(identifier)
+                    .and_modify(|existing_value: &mut NpuUsageStats| {
+                        *existing_value = existing_value.greater(&stats)
+                    })
+                    .or_insert(stats);
+            }
+        }
+
+        Ok(return_map)
+    }
+
+    fn extract_npu_usage_from_fdinfo(
+        fdinfo: &HashMap<String, String>,
+    ) -> Result<(PciSlot, NpuUsageStats)> {
+        let driver = fdinfo.get(DRM_DRIVER);
+
+        if let Some(driver) = driver {
+            let gpu_identifier = fdinfo
+                .get(DRM_PDEV)
+                .and_then(|field| PciSlot::from_str(field).ok())
+                .unwrap_or_default();
+
+            let stats = match driver.as_str() {
+                "amdxdna_accel_driver" => NpuUsageStats::AmdxdnaStats {
+                    usage_ns: NPU_NS_FIELDS
+                        .get(driver.as_str())
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
+                        .unwrap_or_default(),
+                    mem_bytes: MEM_DRM_FIELDS
+                        .get(driver.as_str())
+                        .map(|names| {
+                            Self::parse_drm_fields::<u64, _>(fdinfo, names, &RE_DRM_KIB)
+                                .saturating_mul(1024)
+                        })
+                        .unwrap_or_default(),
+                },
+                _ => bail!("unable to read stats from driver"),
+            };
+
+            return Ok((gpu_identifier, stats));
+        }
+
+        bail!("unable to find gpu information in this fdinfo");
     }
 
     fn other_gpu_usage_stats(
@@ -641,6 +743,8 @@ impl ProcessData {
     }
 
     fn nvidia_gpu_stats_all(pid: i32) -> BTreeMap<GpuIdentifier, GpuUsageStats> {
+        trace!("Gathering NVIDIA GPU stats…");
+
         let mut return_map = BTreeMap::new();
 
         for (pci_slot, _) in NVML_DEVICES.iter() {
@@ -653,6 +757,7 @@ impl ProcessData {
     }
 
     fn nvidia_gpu_stats(pid: i32, pci_slot: PciSlot) -> Result<GpuUsageStats> {
+        trace!("Gathering GPU stats for NVIDIA GPU at {pci_slot}…");
         let this_process_stats = NVIDIA_PROCESSES_STATS
             .read()
             .unwrap()
@@ -692,6 +797,7 @@ impl ProcessData {
     }
 
     fn nvidia_process_infos() -> HashMap<PciSlot, Vec<ProcessInfo>> {
+        trace!("Refreshing NVIDIA process infos…");
         let mut return_map = HashMap::new();
 
         for (pci_slot, gpu) in NVML_DEVICES.iter() {
@@ -705,6 +811,7 @@ impl ProcessData {
     }
 
     fn nvidia_process_stats() -> HashMap<PciSlot, Vec<ProcessUtilizationSample>> {
+        trace!("Refreshing NVIDIA process stats…");
         let mut return_map = HashMap::new();
 
         for (pci_slot, gpu) in NVML_DEVICES.iter() {

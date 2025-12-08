@@ -83,11 +83,11 @@ impl NpuImpl for IntelNpu {
         Ok(delta_busy_time / delta_timestamp)
     }
 
-    fn used_vram(&self) -> Result<usize> {
+    fn used_memory(&self) -> Result<usize> {
         self.drm_used_memory().map(|usage| usage as usize)
     }
 
-    fn total_vram(&self) -> Result<usize> {
+    fn total_memory(&self) -> Result<usize> {
         self.drm_total_memory().map(|usage| usage as usize)
     }
 
