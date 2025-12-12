@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2025-10-04 03:35+0000\n"
-"PO-Revision-Date: 2025-10-04 09:17+0200\n"
+"POT-Creation-Date: 2025-12-09 15:37+0000\n"
+"PO-Revision-Date: 2025-12-09 17:54+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <Slovenian>\n"
 "Language: sl\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : "
 "0);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 3.8\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:2 data/net.nokyan.Resources.metainfo.xml.in.in:4
 #: data/resources/ui/window.ui:22 src/application.rs:272
@@ -56,8 +56,9 @@ msgstr "CPE"
 #: data/resources/ui/dialogs/process_dialog.ui:64
 #: data/resources/ui/dialogs/settings_dialog.ui:128
 #: data/resources/ui/dialogs/settings_dialog.ui:220 data/resources/ui/window.ui:176
-#: data/resources/ui/window.ui:183 src/ui/pages/applications/mod.rs:803
-#: src/ui/pages/memory.rs:106 src/ui/pages/memory.rs:192 src/ui/pages/processes/mod.rs:1079
+#: data/resources/ui/window.ui:183 src/ui/pages/applications/mod.rs:806
+#: src/ui/pages/applications/mod.rs:823 src/ui/pages/memory.rs:106 src/ui/pages/memory.rs:192
+#: src/ui/pages/processes/mod.rs:1099 src/ui/pages/processes/mod.rs:1116
 msgid "Memory"
 msgstr "Pomnilnik"
 
@@ -65,13 +66,14 @@ msgstr "Pomnilnik"
 #: data/resources/ui/dialogs/app_dialog.ui:140
 #: data/resources/ui/dialogs/process_dialog.ui:118
 #: data/resources/ui/dialogs/settings_dialog.ui:158
-#: data/resources/ui/dialogs/settings_dialog.ui:250 src/ui/pages/applications/mod.rs:1181
-#: src/ui/pages/gpu.rs:119 src/ui/pages/processes/mod.rs:1469 src/ui/window.rs:468
+#: data/resources/ui/dialogs/settings_dialog.ui:250 src/ui/pages/applications/mod.rs:1232
+#: src/ui/pages/applications/mod.rs:1249 src/ui/pages/gpu.rs:119
+#: src/ui/pages/processes/mod.rs:1537 src/ui/pages/processes/mod.rs:1554 src/ui/window.rs:468
 msgid "GPU"
 msgstr "GPE"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:27
-#: data/resources/ui/dialogs/settings_dialog.ui:319
+#: data/resources/ui/dialogs/settings_dialog.ui:324
 msgid "Network Interfaces"
 msgstr "Omrežni vmesniki"
 
@@ -140,68 +142,77 @@ msgstr "Raba"
 #: data/resources/ui/dialogs/app_dialog.ui:73 data/resources/ui/dialogs/process_dialog.ui:55
 #: data/resources/ui/dialogs/settings_dialog.ui:133
 #: data/resources/ui/dialogs/settings_dialog.ui:225 data/resources/ui/window.ui:145
-#: data/resources/ui/window.ui:152 src/ui/pages/applications/mod.rs:862
-#: src/ui/pages/cpu.rs:128 src/ui/pages/processes/mod.rs:1138 src/ui/window.rs:290
+#: data/resources/ui/window.ui:152 src/ui/pages/applications/mod.rs:873
+#: src/ui/pages/applications/mod.rs:890 src/ui/pages/cpu.rs:128
+#: src/ui/pages/processes/mod.rs:1166 src/ui/pages/processes/mod.rs:1183 src/ui/window.rs:290
 msgid "Processor"
 msgstr "Procesor"
 
 #: data/resources/ui/dialogs/app_dialog.ui:91 data/resources/ui/dialogs/process_dialog.ui:73
 #: data/resources/ui/dialogs/settings_dialog.ui:178
-#: data/resources/ui/dialogs/settings_dialog.ui:290 src/ui/pages/applications/mod.rs:1420
-#: src/ui/pages/memory.rs:198 src/ui/pages/processes/mod.rs:1954
+#: data/resources/ui/dialogs/settings_dialog.ui:290 src/ui/pages/applications/mod.rs:1503
+#: src/ui/pages/applications/mod.rs:1520 src/ui/pages/memory.rs:198
+#: src/ui/pages/processes/mod.rs:2086 src/ui/pages/processes/mod.rs:2103
 msgid "Swap"
 msgstr "Izmenjalna datoteka"
 
 #: data/resources/ui/dialogs/app_dialog.ui:100 data/resources/ui/dialogs/process_dialog.ui:78
 #: data/resources/ui/dialogs/settings_dialog.ui:138
-#: data/resources/ui/dialogs/settings_dialog.ui:230 src/ui/pages/applications/mod.rs:926
-#: src/ui/pages/processes/mod.rs:1202
+#: data/resources/ui/dialogs/settings_dialog.ui:230 src/ui/pages/applications/mod.rs:945
+#: src/ui/pages/applications/mod.rs:964 src/ui/pages/processes/mod.rs:1238
+#: src/ui/pages/processes/mod.rs:1257
 msgid "Drive Read"
 msgstr "Branj pogona"
 
 #: data/resources/ui/dialogs/app_dialog.ui:109 data/resources/ui/dialogs/process_dialog.ui:87
 #: data/resources/ui/dialogs/settings_dialog.ui:143
-#: data/resources/ui/dialogs/settings_dialog.ui:235 src/ui/pages/applications/mod.rs:991
-#: src/ui/pages/processes/mod.rs:1269
+#: data/resources/ui/dialogs/settings_dialog.ui:235 src/ui/pages/applications/mod.rs:1018
+#: src/ui/pages/applications/mod.rs:1037 src/ui/pages/processes/mod.rs:1313
+#: src/ui/pages/processes/mod.rs:1332
 msgid "Drive Read Total"
 msgstr "Skupaj branj pogona"
 
 #: data/resources/ui/dialogs/app_dialog.ui:118 data/resources/ui/dialogs/process_dialog.ui:96
 #: data/resources/ui/dialogs/settings_dialog.ui:148
-#: data/resources/ui/dialogs/settings_dialog.ui:240 src/ui/pages/applications/mod.rs:1052
-#: src/ui/pages/processes/mod.rs:1336
+#: data/resources/ui/dialogs/settings_dialog.ui:240 src/ui/pages/applications/mod.rs:1087
+#: src/ui/pages/applications/mod.rs:1106 src/ui/pages/processes/mod.rs:1388
+#: src/ui/pages/processes/mod.rs:1407
 msgid "Drive Write"
 msgstr "Pisanj po pogonu"
 
 #: data/resources/ui/dialogs/app_dialog.ui:127
 #: data/resources/ui/dialogs/process_dialog.ui:105
 #: data/resources/ui/dialogs/settings_dialog.ui:153
-#: data/resources/ui/dialogs/settings_dialog.ui:245 src/ui/pages/applications/mod.rs:1119
-#: src/ui/pages/processes/mod.rs:1403
+#: data/resources/ui/dialogs/settings_dialog.ui:245 src/ui/pages/applications/mod.rs:1162
+#: src/ui/pages/applications/mod.rs:1181 src/ui/pages/processes/mod.rs:1463
+#: src/ui/pages/processes/mod.rs:1482
 msgid "Drive Write Total"
 msgstr "Skupaj pisanj po pogonu"
 
 #: data/resources/ui/dialogs/app_dialog.ui:149
 #: data/resources/ui/dialogs/process_dialog.ui:127
 #: data/resources/ui/dialogs/settings_dialog.ui:163
-#: data/resources/ui/dialogs/settings_dialog.ui:255 src/ui/pages/applications/mod.rs:1361
-#: src/ui/pages/processes/mod.rs:1650
+#: data/resources/ui/dialogs/settings_dialog.ui:255 src/ui/pages/applications/mod.rs:1436
+#: src/ui/pages/applications/mod.rs:1454 src/ui/pages/processes/mod.rs:1742
+#: src/ui/pages/processes/mod.rs:1761
 msgid "Video Memory"
 msgstr "Video pomnilnik"
 
 #: data/resources/ui/dialogs/app_dialog.ui:158
 #: data/resources/ui/dialogs/process_dialog.ui:136
 #: data/resources/ui/dialogs/settings_dialog.ui:168
-#: data/resources/ui/dialogs/settings_dialog.ui:260 src/ui/pages/applications/mod.rs:1240
-#: src/ui/pages/processes/mod.rs:1528
+#: data/resources/ui/dialogs/settings_dialog.ui:260 src/ui/pages/applications/mod.rs:1299
+#: src/ui/pages/applications/mod.rs:1318 src/ui/pages/processes/mod.rs:1604
+#: src/ui/pages/processes/mod.rs:1623
 msgid "Video Encoder"
 msgstr "Video kodirnik"
 
 #: data/resources/ui/dialogs/app_dialog.ui:167
 #: data/resources/ui/dialogs/process_dialog.ui:145
 #: data/resources/ui/dialogs/settings_dialog.ui:173
-#: data/resources/ui/dialogs/settings_dialog.ui:265 src/ui/pages/applications/mod.rs:1301
-#: src/ui/pages/processes/mod.rs:1589
+#: data/resources/ui/dialogs/settings_dialog.ui:265 src/ui/pages/applications/mod.rs:1368
+#: src/ui/pages/applications/mod.rs:1387 src/ui/pages/processes/mod.rs:1673
+#: src/ui/pages/processes/mod.rs:1692
 msgid "Video Decoder"
 msgstr "Video dekodirnik"
 
@@ -236,31 +247,38 @@ msgid "Process Information"
 msgstr "Informacije o procesu"
 
 #: data/resources/ui/dialogs/process_dialog.ui:154
-#: data/resources/ui/dialogs/settings_dialog.ui:270 src/ui/pages/processes/mod.rs:1710
+#: data/resources/ui/dialogs/settings_dialog.ui:270 src/ui/pages/processes/mod.rs:1810
+#: src/ui/pages/processes/mod.rs:1828
 msgid "Total CPU Time"
 msgstr "Skupni čas CPE"
 
 #: data/resources/ui/dialogs/process_dialog.ui:163
-#: data/resources/ui/dialogs/settings_dialog.ui:275 src/ui/pages/processes/mod.rs:1769
+#: data/resources/ui/dialogs/settings_dialog.ui:275 src/ui/pages/processes/mod.rs:1877
+#: src/ui/pages/processes/mod.rs:1895
 msgid "User CPU Time"
 msgstr "Skupni čas CPE uporabnika"
 
 #: data/resources/ui/dialogs/process_dialog.ui:172
-#: data/resources/ui/dialogs/settings_dialog.ui:280 src/ui/pages/processes/mod.rs:1828
+#: data/resources/ui/dialogs/settings_dialog.ui:280 src/ui/pages/processes/mod.rs:1944
+#: src/ui/pages/processes/mod.rs:1962
 msgid "System CPU Time"
 msgstr "Sistemski čas CPE"
 
 #: data/resources/ui/dialogs/process_dialog.ui:186
-#: data/resources/ui/dialogs/settings_dialog.ui:210 src/ui/pages/processes/mod.rs:972
+#: data/resources/ui/dialogs/settings_dialog.ui:210 src/ui/pages/processes/mod.rs:976
+#: src/ui/pages/processes/mod.rs:991
 msgid "Process ID"
 msgstr "ID procesa"
 
 #: data/resources/ui/dialogs/process_dialog.ui:204
+#: data/resources/ui/dialogs/settings_dialog.ui:300 src/ui/pages/processes/mod.rs:2222
+#: src/ui/pages/processes/mod.rs:2240
 msgid "Commandline"
 msgstr "Ukazna vrstica"
 
 #: data/resources/ui/dialogs/process_dialog.ui:213
-#: data/resources/ui/dialogs/settings_dialog.ui:215 src/ui/pages/processes/mod.rs:1025
+#: data/resources/ui/dialogs/settings_dialog.ui:215 src/ui/pages/processes/mod.rs:1037
+#: src/ui/pages/processes/mod.rs:1052
 msgid "User"
 msgstr "Uporabnik"
 
@@ -290,7 +308,8 @@ msgstr ""
 "višji prioriteti."
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:87
-#: data/resources/ui/dialogs/settings_dialog.ui:285 src/ui/pages/processes/mod.rs:1887
+#: data/resources/ui/dialogs/settings_dialog.ui:285 src/ui/pages/processes/mod.rs:2011
+#: src/ui/pages/processes/mod.rs:2027
 msgid "Priority"
 msgstr "Prioriteta"
 
@@ -453,7 +472,7 @@ msgid "If enabled, the total usage of all cores will be divided by the amount of
 msgstr "Če je omogočeno, se skupna poraba vseh jeder deli s številom jeder"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:122 data/resources/ui/window.ui:65
-#: data/resources/ui/window.ui:72 src/ui/pages/applications/mod.rs:131
+#: data/resources/ui/window.ui:72 src/ui/pages/applications/mod.rs:132
 msgid "Apps"
 msgstr "Programi"
 
@@ -463,13 +482,14 @@ msgid "Information Columns"
 msgstr "Stolpci z informacijami"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:183
-#: data/resources/ui/dialogs/settings_dialog.ui:295 src/ui/pages/applications/mod.rs:1479
-#: src/ui/pages/processes/mod.rs:2013
+#: data/resources/ui/dialogs/settings_dialog.ui:295 src/ui/pages/applications/mod.rs:1570
+#: src/ui/pages/applications/mod.rs:1589 src/ui/pages/processes/mod.rs:2153
+#: src/ui/pages/processes/mod.rs:2172
 msgid "Combined Memory"
 msgstr "Kombinirani pomnilnik"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:193 data/resources/ui/window.ui:105
-#: data/resources/ui/window.ui:112 src/ui/pages/processes/mod.rs:175
+#: data/resources/ui/window.ui:112 src/ui/pages/processes/mod.rs:176
 msgid "Processes"
 msgstr "Procesi"
 
@@ -486,47 +506,47 @@ msgstr "Pokaži vrednosti prijaznosti"
 msgid "Display priorities as niceness to allow for more fine-grained adjustments"
 msgstr "Prikaži prednost kot prijaznost, kar omogoča natančnejše prilagoditve"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:305
+#: data/resources/ui/dialogs/settings_dialog.ui:310
 msgid "Devices"
 msgstr "Naprave"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:308
+#: data/resources/ui/dialogs/settings_dialog.ui:313
 msgid "Drives"
 msgstr "Pogoni"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:311
+#: data/resources/ui/dialogs/settings_dialog.ui:316
 msgid "Show Virtual Drives"
 msgstr "Pokaži navidezne pogone"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:312
+#: data/resources/ui/dialogs/settings_dialog.ui:317
 msgid "Virtual drives are for example ZFS volumes or mapped devices"
 msgstr "Navidezni pogoni so npr. nosilci ZFS ali preslikane naprave"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:322
+#: data/resources/ui/dialogs/settings_dialog.ui:327
 msgid "Show Virtual Network Interfaces"
 msgstr "Pokaži virtualne omrežne vmesnike"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:323
+#: data/resources/ui/dialogs/settings_dialog.ui:328
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
 msgstr "Virtualni omrežni vmesniki so npr. mostovi ali predori VPN"
 
 #: data/resources/ui/pages/applications.ui:6 data/resources/ui/pages/applications.ui:26
-#: src/ui/pages/applications/mod.rs:1563
+#: src/ui/pages/applications/mod.rs:1662
 msgid "Kill App"
 msgstr "Ubij program"
 
 #: data/resources/ui/pages/applications.ui:10 data/resources/ui/pages/applications.ui:30
-#: src/ui/pages/applications/mod.rs:1562
+#: src/ui/pages/applications/mod.rs:1661
 msgid "Halt App"
 msgstr "Ustavi program"
 
 #: data/resources/ui/pages/applications.ui:14 data/resources/ui/pages/applications.ui:34
-#: src/ui/pages/applications/mod.rs:1564
+#: src/ui/pages/applications/mod.rs:1663
 msgid "Continue App"
 msgstr "Nadaljuj program"
 
 #: data/resources/ui/pages/applications.ui:22 data/resources/ui/pages/applications.ui:98
-#: src/ui/pages/applications/mod.rs:1561
+#: src/ui/pages/applications/mod.rs:1660
 msgid "End App"
 msgstr "Končaj program"
 
@@ -721,17 +741,17 @@ msgid "Memory Frequency"
 msgstr "Frekvenca pomnilnika"
 
 #: data/resources/ui/pages/processes.ui:6 data/resources/ui/pages/processes.ui:42
-#: src/ui/pages/processes/mod.rs:2126
+#: src/ui/pages/processes/mod.rs:2339
 msgid "Kill Process"
 msgstr "Uniči proces"
 
 #: data/resources/ui/pages/processes.ui:10 data/resources/ui/pages/processes.ui:46
-#: src/ui/pages/processes/mod.rs:2125
+#: src/ui/pages/processes/mod.rs:2338
 msgid "Halt Process"
 msgstr "Ustavi proces"
 
 #: data/resources/ui/pages/processes.ui:14 data/resources/ui/pages/processes.ui:50
-#: src/ui/pages/processes/mod.rs:2127
+#: src/ui/pages/processes/mod.rs:2340
 msgid "Continue Process"
 msgstr "Nadaljuj proces"
 
@@ -748,11 +768,11 @@ msgid "Continue Processes"
 msgstr "Nadaljuj s procesi"
 
 #: data/resources/ui/pages/processes.ui:38 data/resources/ui/pages/processes.ui:157
-#: src/ui/pages/processes/mod.rs:523 src/ui/pages/processes/mod.rs:2124
+#: src/ui/pages/processes/mod.rs:527 src/ui/pages/processes/mod.rs:2337
 msgid "End Process"
 msgstr "Končaj proces"
 
-#: data/resources/ui/pages/processes.ui:70 src/ui/pages/processes/mod.rs:527
+#: data/resources/ui/pages/processes.ui:70 src/ui/pages/processes/mod.rs:531
 msgid "End Processes"
 msgstr "Končaj procesee"
 
@@ -848,10 +868,6 @@ msgstr "Išči"
 msgid "Toggle search field"
 msgstr "Preklopi iskalno polje"
 
-#: src/application.rs:274
-msgid "The Nalux Team"
-msgstr "Ekipa Nalux"
-
 #: src/application.rs:282
 msgid "Report Issues"
 msgstr "Poročaj o težavah"
@@ -870,8 +886,8 @@ msgstr "Avtor ikone"
 #: src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:146
 #: src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171
 #: src/ui/dialogs/process_dialog.rs:178 src/ui/dialogs/process_dialog.rs:185
-#: src/ui/dialogs/process_dialog.rs:192 src/ui/pages/applications/mod.rs:948
-#: src/ui/pages/applications/mod.rs:1074 src/ui/pages/battery.rs:205
+#: src/ui/dialogs/process_dialog.rs:192 src/ui/pages/applications/mod.rs:975
+#: src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:205
 #: src/ui/pages/battery.rs:225 src/ui/pages/battery.rs:231 src/ui/pages/battery.rs:234
 #: src/ui/pages/battery.rs:265 src/ui/pages/battery.rs:289 src/ui/pages/battery.rs:291
 #: src/ui/pages/battery.rs:301 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258
@@ -894,9 +910,9 @@ msgstr "Avtor ikone"
 #: src/ui/pages/network.rs:370 src/ui/pages/network.rs:373 src/ui/pages/network.rs:375
 #: src/ui/pages/network.rs:404 src/ui/pages/network.rs:407 src/ui/pages/network.rs:409
 #: src/ui/pages/network.rs:417 src/ui/pages/network.rs:424 src/ui/pages/network.rs:434
-#: src/ui/pages/processes/mod.rs:1224 src/ui/pages/processes/mod.rs:1291
-#: src/ui/pages/processes/mod.rs:1358 src/ui/pages/processes/mod.rs:1425
-#: src/ui/pages/processes/mod.rs:1911 src/ui/pages/processes/mod.rs:1913
+#: src/ui/pages/processes/mod.rs:1268 src/ui/pages/processes/mod.rs:1343
+#: src/ui/pages/processes/mod.rs:1418 src/ui/pages/processes/mod.rs:1493
+#: src/ui/pages/processes/mod.rs:2043 src/ui/pages/processes/mod.rs:2045
 #: src/utils/battery.rs:152 src/utils/drive.rs:137 src/utils/gpu/mod.rs:279
 #: src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:244
 #: src/utils/npu/mod.rs:250
@@ -923,39 +939,44 @@ msgstr "Da (Flatpak)"
 msgid "Yes (Snap)"
 msgstr "Da (Snap)"
 
-#: src/ui/pages/applications/mod.rs:660
+#: src/ui/pages/applications/application_entry.rs:193
+#: src/ui/pages/processes/process_entry.rs:214
+msgid "Yes (AppImage)"
+msgstr "Da (AppImage)"
+
+#: src/ui/pages/applications/mod.rs:663
 msgid "Running Apps: {}"
 msgstr "Programi v teku: {}"
 
-#: src/ui/pages/applications/mod.rs:700 src/ui/pages/processes/mod.rs:862
+#: src/ui/pages/applications/mod.rs:703 src/ui/pages/processes/mod.rs:866
 msgid "Cancel"
 msgstr "Prekliči"
 
-#: src/ui/pages/applications/mod.rs:746
+#: src/ui/pages/applications/mod.rs:749
 msgid "App"
 msgstr "Program"
 
-#: src/ui/pages/applications/mod.rs:1539 src/ui/pages/processes/mod.rs:2073
+#: src/ui/pages/applications/mod.rs:1638 src/ui/pages/processes/mod.rs:2286
 msgid "End {}?"
 msgstr "Ali želite končati {}?"
 
-#: src/ui/pages/applications/mod.rs:1540 src/ui/pages/processes/mod.rs:2074
+#: src/ui/pages/applications/mod.rs:1639 src/ui/pages/processes/mod.rs:2287
 msgid "Halt {}?"
 msgstr "Ali želite ustaviti {}?"
 
-#: src/ui/pages/applications/mod.rs:1541 src/ui/pages/processes/mod.rs:2075
+#: src/ui/pages/applications/mod.rs:1640 src/ui/pages/processes/mod.rs:2288
 msgid "Kill {}?"
 msgstr "Ali želite ubiti {}?"
 
-#: src/ui/pages/applications/mod.rs:1542 src/ui/pages/processes/mod.rs:2076
+#: src/ui/pages/applications/mod.rs:1641 src/ui/pages/processes/mod.rs:2289
 msgid "Continue {}?"
 msgstr "Ali želite nadaljevati z {}?"
 
-#: src/ui/pages/applications/mod.rs:1548 src/ui/pages/processes/mod.rs:2111
+#: src/ui/pages/applications/mod.rs:1647 src/ui/pages/processes/mod.rs:2324
 msgid "Unsaved work might be lost."
 msgstr "Neshranjeno delo je morda izgubljeno."
 
-#: src/ui/pages/applications/mod.rs:1550
+#: src/ui/pages/applications/mod.rs:1649
 msgid ""
 "Halting an app can come with serious risks such as losing data and security implications. "
 "Use with caution."
@@ -963,7 +984,7 @@ msgstr ""
 "Zaustavitev progama lahko povzroči resna tveganja, kot so izguba podatkov in varnostne "
 "posledice. Uporabljajte previdno."
 
-#: src/ui/pages/applications/mod.rs:1553
+#: src/ui/pages/applications/mod.rs:1652
 msgid ""
 "Killing an app can come with serious risks such as losing data and security implications. "
 "Use with caution."
@@ -1055,7 +1076,7 @@ msgstr "{} MT/s"
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · Izmenjava: {} %"
 
-#: src/ui/pages/network.rs:127 src/utils/network.rs:135
+#: src/ui/pages/network.rs:127 src/utils/network.rs:144
 msgid "Network Interface"
 msgstr "Omrežni vmesnik"
 
@@ -1073,15 +1094,15 @@ msgstr "Pošiljanje"
 msgid "R: {} · S: {}"
 msgstr "Prej: {} · Posl: {}"
 
-#: src/ui/pages/processes/mod.rs:813
+#: src/ui/pages/processes/mod.rs:817
 msgid "Running Processes: {}"
 msgstr "Tekoči procesi: {}"
 
-#: src/ui/pages/processes/mod.rs:911
+#: src/ui/pages/processes/mod.rs:915
 msgid "Process"
 msgstr "Proces"
 
-#: src/ui/pages/processes/mod.rs:2083
+#: src/ui/pages/processes/mod.rs:2296
 msgid "End process?"
 msgid_plural "End {} processes?"
 msgstr[0] "Ali želite končati {} procesov?"
@@ -1089,7 +1110,7 @@ msgstr[1] "Ali želite končati {} proces?"
 msgstr[2] "Ali želite končati {} procesa?"
 msgstr[3] "Ali želite končati {} procese?"
 
-#: src/ui/pages/processes/mod.rs:2089
+#: src/ui/pages/processes/mod.rs:2302
 msgid "Halt process?"
 msgid_plural "Halt {} processes?"
 msgstr[0] "Ali želite zaustaviti {} procesov?"
@@ -1097,7 +1118,7 @@ msgstr[1] "Ali želite zaustaviti {} proces?"
 msgstr[2] "Ali želite zaustaviti {} procesa?"
 msgstr[3] "Ali želite zaustaviti {} procese?"
 
-#: src/ui/pages/processes/mod.rs:2095 src/ui/pages/processes/mod.rs:2101
+#: src/ui/pages/processes/mod.rs:2308 src/ui/pages/processes/mod.rs:2314
 msgid "Kill process?"
 msgid_plural "Kill {} processes?"
 msgstr[0] "Ali želite uničiti {} procesov?"
@@ -1105,7 +1126,7 @@ msgstr[1] "Ali želite uničiti {} proces?"
 msgstr[2] "Ali želite uničiti {} procesa?"
 msgstr[3] "Ali želite uničiti {} procese?"
 
-#: src/ui/pages/processes/mod.rs:2113
+#: src/ui/pages/processes/mod.rs:2326
 msgid ""
 "Halting a process can come with serious risks such as losing data and security "
 "implications. Use with caution."
@@ -1113,7 +1134,7 @@ msgstr ""
 "Zaustavitev procesa lahko prinese resna tveganja, kot so izguba podatkov in varnostne "
 "posledice. Uporabljajte previdno."
 
-#: src/ui/pages/processes/mod.rs:2116
+#: src/ui/pages/processes/mod.rs:2329
 msgid ""
 "Killing a process can come with serious risks such as losing data and security "
 "implications. Use with caution."
@@ -1774,50 +1795,62 @@ msgstr "Nosilec ZFS {}"
 msgid "{} Drive"
 msgstr "Pogon {}"
 
-#: src/utils/network.rs:123
+#: src/utils/network.rs:129
 msgid "Bluetooth Tether"
 msgstr "Deljenje povezave Bluetooth"
 
-#: src/utils/network.rs:124
+#: src/utils/network.rs:130
 msgid "Network Bridge"
 msgstr "Omrežni most"
 
-#: src/utils/network.rs:125
+#: src/utils/network.rs:131
 msgid "Ethernet Connection"
 msgstr "Žična omrežna povezava"
 
-#: src/utils/network.rs:126
+#: src/utils/network.rs:132
 msgid "Docker Bridge"
 msgstr "Most priklopne postaje"
 
-#: src/utils/network.rs:127
+#: src/utils/network.rs:133
 msgid "InfiniBand Connection"
 msgstr "Povezava InfiniBand"
 
-#: src/utils/network.rs:128
+#: src/utils/network.rs:134
+msgid "Incus Bridge"
+msgstr "Most Incus"
+
+#: src/utils/network.rs:135
+msgid "LXC Bridge"
+msgstr "Most LXC"
+
+#: src/utils/network.rs:136
+msgid "LXD Bridge"
+msgstr "Most LXD"
+
+#: src/utils/network.rs:137
 msgid "Serial Line IP Connection"
 msgstr "Serijska linijska povezava IP"
 
-#: src/utils/network.rs:129
+#: src/utils/network.rs:138
 msgid "Virtual Ethernet Device"
 msgstr "Virtualna omrežna naprava"
 
-#: src/utils/network.rs:130
+#: src/utils/network.rs:139
 msgid "VM Network Bridge"
 msgstr "Omrežni most VM"
 
-#: src/utils/network.rs:131
+#: src/utils/network.rs:140
 msgid "VPN Tunnel"
 msgstr "Predor VPN"
 
-#: src/utils/network.rs:132
+#: src/utils/network.rs:141
 msgid "VPN Tunnel (WireGuard)"
 msgstr "Predor VPN (WireGuard)"
 
-#: src/utils/network.rs:133
+#: src/utils/network.rs:142
 msgid "Wi-Fi Connection"
 msgstr "Povezava Wi-Fi"
 
-#: src/utils/network.rs:134
+#: src/utils/network.rs:143
 msgid "WWAN Connection"
 msgstr "Povezava WWAN"

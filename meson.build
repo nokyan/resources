@@ -41,7 +41,7 @@ if get_option('profile') == 'development'
   if vcs_tag == '' or vcs_branch == ''
     version_suffix = '-devel'
   else
-    version_suffix = '-@0@/@1@'.format(vcs_branch, vcs_tag)
+    version_suffix = '-@0@@@1@'.format(vcs_branch, vcs_tag)
   endif
   application_id = '@0@.@1@'.format(base_id, profile)
 else
