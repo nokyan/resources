@@ -591,6 +591,18 @@ impl MainWindow {
                 .unwrap_or_default()
         };
 
+        for npu_data_entry in &mut npu_data {
+            if npu_data_entry.used_memory.is_none() {
+                npu_data_entry.used_memory = Some(
+                    process_data
+                        .iter()
+                        .filter_map(|p| p.npu_usage_stats.get(&npu_data_entry.pci_slot))
+                        .filter_map(|stats| stats.mem())
+                        .sum::<u64>() as usize,
+                );
+            }
+        }
+
         let refresh_data = RefreshData {
             cpu_data,
             mem_data,
@@ -703,16 +715,31 @@ impl MainWindow {
             page.refresh_page(&gpu_data);
         }
 
-        std::mem::drop(apps_context);
-
         /*
          * Npu
          */
         let npu_pages = imp.npu_pages.borrow();
-        for ((_, page), npu_data) in npu_pages.values().zip(npu_data) {
+        for ((_, page), mut npu_data) in npu_pages.values().zip(npu_data) {
             let page = page.content().and_downcast::<ResNPU>().unwrap();
+
+            let processes_npu_fraction = apps_context.npu_fraction(npu_data.pci_slot);
+            npu_data.usage_fraction = Some(f64::max(
+                npu_data.usage_fraction.unwrap_or(0.0),
+                processes_npu_fraction.into(),
+            ));
+
+            if npu_data.total_memory.is_some() {
+                let processes_npu_memory_fraction = apps_context.npu_mem(npu_data.pci_slot);
+                npu_data.used_memory = Some(usize::max(
+                    npu_data.used_memory.unwrap_or(0),
+                    processes_npu_memory_fraction as usize,
+                ));
+            }
+
             page.refresh_page(&npu_data);
         }
+
+        std::mem::drop(apps_context);
 
         /*
          * Cpu

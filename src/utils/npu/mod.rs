@@ -1,6 +1,8 @@
+mod amd;
 mod intel;
 mod other;
 
+use amd::AmdNpu;
 use anyhow::{Context, Result, bail};
 use log::{debug, info, trace};
 use process_data::pci_slot::PciSlot;
@@ -14,16 +16,17 @@ use glob::glob;
 
 use crate::{
     i18n::i18n,
-    utils::{pci::Device, read_parsed, read_uevent},
+    utils::{
+        pci::{Device, Vendor},
+        read_parsed, read_uevent,
+    },
 };
 
 use self::{intel::IntelNpu, other::OtherNpu};
 
-use super::{
-    link::{Link, LinkData},
-    pci::Vendor,
-};
+use super::link::{Link, LinkData};
 
+pub const VID_AMD: u16 = 0x1002;
 pub const VID_INTEL: u16 = 0x8086;
 
 #[derive(Debug)]
@@ -55,8 +58,8 @@ impl NpuData {
 
         let usage_fraction = npu.usage().ok();
 
-        let total_memory = npu.total_vram().ok();
-        let used_memory = npu.used_vram().ok();
+        let total_memory = npu.total_memory().ok();
+        let used_memory = npu.used_memory().ok();
 
         let clock_speed = npu.core_frequency().ok();
         let vram_speed = npu.memory_frequency().ok();
@@ -91,6 +94,7 @@ impl NpuData {
 
 #[derive(Debug, Clone)]
 pub enum Npu {
+    Amd(AmdNpu),
     Intel(IntelNpu),
     Other(OtherNpu),
 }
@@ -110,8 +114,8 @@ pub trait NpuImpl {
 
     fn name(&self) -> Result<String>;
     fn usage(&self) -> Result<f64>;
-    fn used_vram(&self) -> Result<usize>;
-    fn total_vram(&self) -> Result<usize>;
+    fn used_memory(&self) -> Result<usize>;
+    fn total_memory(&self) -> Result<usize>;
     fn temperature(&self) -> Result<f64>;
     fn power_usage(&self) -> Result<f64>;
     fn core_frequency(&self) -> Result<f64>;
@@ -181,6 +185,7 @@ impl std::ops::Deref for Npu {
 
     fn deref(&self) -> &Self::Target {
         match self {
+            Npu::Amd(npu) => npu,
             Npu::Intel(npu) => npu,
             Npu::Other(npu) => npu,
         }
@@ -264,6 +269,17 @@ impl Npu {
                     hwmon_vec.first().cloned(),
                 )),
                 "Intel",
+            )
+        } else if vid == VID_AMD || driver == "amdxdna" {
+            (
+                Npu::Amd(AmdNpu::new(
+                    device,
+                    pci_slot,
+                    driver,
+                    path.to_path_buf(),
+                    hwmon_vec.first().cloned(),
+                )),
+                "AMD",
             )
         } else {
             (
