@@ -1336,7 +1336,6 @@ dependencies = [
  "nvml-wrapper",
  "serde",
  "syscalls",
- "sysconf",
  "thiserror 2.0.17",
  "unescape",
  "uzers",
