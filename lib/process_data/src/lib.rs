@@ -167,6 +167,7 @@ pub enum Containerization {
     Flatpak,
     Portable,
     Snap,
+    AppImage,
 }
 
 /// Data that could be transferred us>ing `resources-processes`, separated from
@@ -192,6 +193,7 @@ pub struct ProcessData {
     pub write_bytes: Option<u64>,
     pub timestamp: u64,
     pub gpu_usage_stats: BTreeMap<GpuIdentifier, GpuUsageStats>,
+    pub appimage_path: Option<String>,
 }
 
 impl ProcessData {
@@ -347,6 +349,14 @@ impl ProcessData {
             .ok()
             .and_then(Self::sanitize_cgroup);
 
+        let environ = std::fs::read_to_string(proc_path.join("environ"))?
+            .split('\0')
+            .filter_map(|e| e.split_once('='))
+            .map(|(x, y)| (x.to_string(), y.to_string()))
+            .collect::<HashMap<_, _>>();
+
+        let appimage_path = environ.get("APPIMAGE").map(|p| p.to_owned());
+
         let containerization = if commandline.starts_with("/snap/") {
             Containerization::Snap
         } else if proc_path
@@ -357,6 +367,8 @@ impl ProcessData {
             Containerization::Portable
         } else if proc_path.join("root").join(".flatpak-info").exists() {
             Containerization::Flatpak
+        } else if appimage_path.is_some() {
+            Containerization::AppImage
         } else {
             Containerization::None
         };
@@ -402,6 +414,7 @@ impl ProcessData {
             write_bytes,
             timestamp,
             gpu_usage_stats,
+            appimage_path,
         })
     }
 

@@ -7,6 +7,7 @@ use std::sync::LazyLock;
 use adw::ResponseAppearance;
 use adw::{prelude::*, subclass::prelude::*};
 use async_channel::Sender;
+use gtk::accessible::Property;
 use gtk::glib::{self, MainContext, Object, clone, closure};
 use gtk::{
     BitsetIter, ColumnView, ColumnViewColumn, EventControllerKey, FilterChange, ListItem,
@@ -443,6 +444,8 @@ impl ResProcesses {
 
         *imp.column_view.borrow_mut() = gtk::ColumnView::new(None::<gtk::SingleSelection>);
         let column_view = imp.column_view.borrow();
+
+        column_view.set_tab_behavior(gtk::ListTabBehavior::Cell);
 
         let mut columns = imp.columns.borrow_mut();
 
@@ -982,6 +985,14 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
 
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Process ID"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
+
                 item.set_child(Some(&row));
                 item.property_expression("item")
                     .chain_property::<ProcessEntry>("pid")
@@ -1034,6 +1045,14 @@ impl ResProcesses {
                 let item = item.downcast_ref::<gtk::ListItem>().unwrap();
 
                 let row = gtk::Inscription::new(None);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("User"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -1090,6 +1109,14 @@ impl ResProcesses {
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
                 row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Memory"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -1149,6 +1176,14 @@ impl ResProcesses {
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(7);
                 row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Processor"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -1215,6 +1250,14 @@ impl ResProcesses {
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(11);
                 row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Drive Read"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -1283,6 +1326,14 @@ impl ResProcesses {
                 row.set_min_chars(9);
                 row.set_xalign(1.0);
 
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Drive Read Total"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
+
                 item.set_child(Some(&row));
 
                 item.property_expression("item")
@@ -1349,6 +1400,14 @@ impl ResProcesses {
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(11);
                 row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Drive Write"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -1417,6 +1476,14 @@ impl ResProcesses {
                 row.set_min_chars(9);
                 row.set_xalign(1.0);
 
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Drive Write Total"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
+
                 item.set_child(Some(&row));
 
                 item.property_expression("item")
@@ -1481,6 +1548,14 @@ impl ResProcesses {
                 row.set_min_chars(7);
                 row.set_xalign(1.0);
 
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("GPU"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
+
                 item.set_child(Some(&row));
 
                 item.property_expression("item")
@@ -1541,6 +1616,14 @@ impl ResProcesses {
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(7);
                 row.set_xalign(1.0);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Video Encoder"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 
@@ -1603,6 +1686,14 @@ impl ResProcesses {
                 row.set_min_chars(7);
                 row.set_xalign(1.0);
 
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Video Decoder"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
+
                 item.set_child(Some(&row));
 
                 item.property_expression("item")
@@ -1664,6 +1755,14 @@ impl ResProcesses {
                 row.set_min_chars(9);
                 row.set_xalign(1.0);
 
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Video Memory"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
+
                 item.set_child(Some(&row));
                 item.property_expression("item")
                     .chain_property::<ProcessEntry>("gpu_mem_usage")
@@ -1722,6 +1821,14 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Total CPU Time"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
                 item.property_expression("item")
@@ -1782,6 +1889,14 @@ impl ResProcesses {
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
 
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("User CPU Time"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
+
                 item.set_child(Some(&row));
                 item.property_expression("item")
                     .chain_property::<ProcessEntry>("user_cpu_time")
@@ -1841,6 +1956,14 @@ impl ResProcesses {
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(9);
 
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("System CPU Time"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
+
                 item.set_child(Some(&row));
                 item.property_expression("item")
                     .chain_property::<ProcessEntry>("system_cpu_time")
@@ -1897,6 +2020,14 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(*LONGEST_PRIORITY_LABEL);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Priority"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
                 item.property_expression("item")
@@ -1966,6 +2097,14 @@ impl ResProcesses {
                 row.set_min_chars(9);
                 row.set_xalign(1.0);
 
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Swap"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
+
                 item.set_child(Some(&row));
 
                 item.property_expression("item")
@@ -2027,6 +2166,14 @@ impl ResProcesses {
                 row.set_min_chars(9);
                 row.set_xalign(1.0);
 
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Combined Memory"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
+
                 item.set_child(Some(&row));
 
                 item.property_expression("item")
@@ -2086,6 +2233,14 @@ impl ResProcesses {
 
                 let row = gtk::Inscription::new(None);
                 row.set_min_chars(32);
+
+                row.connect_text_notify(|inscription| {
+                    inscription.update_property(&[Property::Label(&format!(
+                        "{}: {}",
+                        i18n("Commandline"),
+                        inscription.text().unwrap_or_default()
+                    ))]);
+                });
 
                 item.set_child(Some(&row));
 

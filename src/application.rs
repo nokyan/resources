@@ -271,7 +271,7 @@ impl Application {
         let about = adw::AboutDialog::builder()
             .application_name(i18n("Resources"))
             .application_icon(config::APP_ID)
-            .developer_name(i18n("The Nalux Team"))
+            .developer_name("nokyan")
             .developers(vec!["nokyan <hello@nokyan.net>"])
             .license_type(gtk::License::Gpl30)
             .version(config::VERSION)
