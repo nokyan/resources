@@ -45,6 +45,10 @@ static NUM_CPUS: LazyLock<usize> = LazyLock::new(num_cpus::get);
 
 static RE_UID: Lazy<Regex> = lazy_regex!(r"Uid:\s*(\d+)");
 
+static RE_CGROUP: Lazy<Regex> = lazy_regex!(
+    r"(?U)\/(?:app|background)\.slice\/(?:app-.+|dbus-:.+)-(?P<cgroup>\S*)(?:-[0-9]+|@[0-9]+)?\.(?:scope|service)"
+);
+
 static RE_AFFINITY: Lazy<Regex> = lazy_regex!(r"Cpus_allowed:\s*([0-9A-Fa-f]+)");
 
 static RE_SWAP_USAGE: Lazy<Regex> = lazy_regex!(r"VmSwap:\s*([0-9]+)\s*kB");
@@ -161,6 +165,7 @@ pub enum Containerization {
     #[default]
     None,
     Flatpak,
+    Portable,
     Snap,
     AppImage,
 }
@@ -193,36 +198,10 @@ pub struct ProcessData {
 
 impl ProcessData {
     fn sanitize_cgroup<S: AsRef<str>>(cgroup: S) -> Option<String> {
-        let cgroups_v2_line = cgroup.as_ref().split('\n').find(|s| s.starts_with("0::"))?;
-        if cgroups_v2_line.ends_with(".scope") {
-            let cgroups_segments: Vec<&str> = cgroups_v2_line.split('-').collect();
-            if cgroups_segments.len() > 1 {
-                cgroups_segments
-                    .get(cgroups_segments.len() - 2)
-                    .map(|s| unescape::unescape(s).unwrap_or_else(|| (*s).to_string()))
-            } else {
-                None
-            }
-        } else if cgroups_v2_line.ends_with(".service") {
-            let cgroups_segments: Vec<&str> = cgroups_v2_line.split('/').collect();
-            if let Some(last) = cgroups_segments.last() {
-                last[0..last.len() - 8]
-                    .split('@')
-                    .next()
-                    .map(|s| unescape::unescape(s).unwrap_or_else(|| s.to_string()))
-                    .map(|s| {
-                        if s.contains("dbus-:") {
-                            s.split('-').last().unwrap_or(&s).to_string()
-                        } else {
-                            s
-                        }
-                    })
-            } else {
-                None
-            }
-        } else {
-            None
-        }
+        RE_CGROUP
+            .captures(cgroup.as_ref())
+            .and_then(|captures| captures.name("cgroup"))
+            .map(|capture| capture.as_str().to_string())
     }
 
     fn get_uid(proc_path: &Path) -> Result<u32> {
@@ -380,6 +359,12 @@ impl ProcessData {
 
         let containerization = if commandline.starts_with("/snap/") {
             Containerization::Snap
+        } else if proc_path
+            .join("root")
+            .join("top.kimiblock.portable")
+            .exists()
+        {
+            Containerization::Portable
         } else if proc_path.join("root").join(".flatpak-info").exists() {
             Containerization::Flatpak
         } else if appimage_path.is_some() {
