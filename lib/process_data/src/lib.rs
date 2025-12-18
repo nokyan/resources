@@ -39,8 +39,6 @@ static USERS_CACHE: LazyLock<HashMap<libc::uid_t, String>> = LazyLock::new(|| un
         .collect()
 });
 
-static PAGESIZE: LazyLock<usize> = LazyLock::new(sysconf::pagesize);
-
 static NUM_CPUS: LazyLock<usize> = LazyLock::new(num_cpus::get);
 
 static RE_UID: Lazy<Regex> = lazy_regex!(r"Uid:\s*(\d+)");
@@ -50,6 +48,8 @@ static RE_CGROUP: Lazy<Regex> = lazy_regex!(
 );
 
 static RE_AFFINITY: Lazy<Regex> = lazy_regex!(r"Cpus_allowed:\s*([0-9A-Fa-f]+)");
+
+static RE_MEMORY_USAGE: Lazy<Regex> = lazy_regex!(r"VmRSS:\s*([0-9]+)\s*kB");
 
 static RE_SWAP_USAGE: Lazy<Regex> = lazy_regex!(r"VmSwap:\s*([0-9]+)\s*kB");
 
@@ -248,7 +248,6 @@ impl ProcessData {
     pub fn try_from_path<P: AsRef<Path>>(proc_path: P) -> Result<Self> {
         let proc_path = proc_path.as_ref();
         let stat = std::fs::read_to_string(proc_path.join("stat"))?;
-        let statm = std::fs::read_to_string(proc_path.join("statm"))?;
         let status = std::fs::read_to_string(proc_path.join("status"))?;
         let comm = std::fs::read_to_string(proc_path.join("comm"))?;
         let commandline = std::fs::read_to_string(proc_path.join("cmdline"))?;
@@ -273,8 +272,6 @@ impl ProcessData {
             .split(' ')
             .skip(1) // the first element would be a space, let's ignore that
             .collect::<Vec<_>>();
-
-        let statm = statm.split(' ').collect::<Vec<_>>();
 
         let comm = comm.replace('\n', "");
 
@@ -327,23 +324,14 @@ impl ProcessData {
             .unwrap_or_default()
             .saturating_mul(1000);
 
-        let memory_usage = statm
-            .get(1)
-            .context("wrong statm file format")
-            .and_then(|x| {
-                x.parse::<usize>()
-                    .context("couldn't parse statm file content")
-            })?
-            .saturating_sub(
-                statm
-                    .get(2)
-                    .context("wrong statm file format")
-                    .and_then(|x| {
-                        x.parse::<usize>()
-                            .context("couldn't parse statm file content")
-                    })?,
-            )
-            .saturating_mul(*PAGESIZE);
+        let memory_usage = RE_MEMORY_USAGE
+            .captures(&status)
+            .and_then(|captures| captures.get(1))
+            .map(|capture| capture.as_str())
+            .unwrap_or_default()
+            .parse::<usize>()
+            .unwrap_or_default()
+            .saturating_mul(1000);
 
         let cgroup = std::fs::read_to_string(proc_path.join("cgroup"))
             .ok()

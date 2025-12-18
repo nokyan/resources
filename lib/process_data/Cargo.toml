@@ -26,7 +26,6 @@ nutype = { version = "0.6.2", features = ["serde"] }
 nvml-wrapper = "0.11.0"
 serde = { version = "1.0.228", features = ["serde_derive"] }
 syscalls = { version = "0.7.0", features = ["all"] }
-sysconf = "0.3.4"
 thiserror = "2.0.17"
 unescape = "0.1.0"
 uzers = "0.12.1"
