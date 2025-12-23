@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2025-12-09 15:37+0000\n"
-"PO-Revision-Date: 2025-12-09 18:22+0200\n"
+"POT-Creation-Date: 2025-12-17 14:12+0000\n"
+"PO-Revision-Date: 2025-12-23 11:49+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -975,6 +975,7 @@ msgstr "Невідомо"
 
 #: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257
 #: src/ui/pages/cpu.rs:417 src/ui/pages/cpu.rs:421
+#, rust-format
 msgid "CPU {}"
 msgstr "Процесор {}"
 
@@ -985,20 +986,27 @@ msgstr "Ні"
 
 #: src/ui/pages/applications/application_entry.rs:191
 #: src/ui/pages/processes/process_entry.rs:212
-msgid "Yes (Flatpak)"
-msgstr "Так (Flatpak)"
-
-#: src/ui/pages/applications/application_entry.rs:192
-#: src/ui/pages/processes/process_entry.rs:213
-msgid "Yes (Snap)"
-msgstr "Так (Snap)"
-
-#: src/ui/pages/applications/application_entry.rs:193
-#: src/ui/pages/processes/process_entry.rs:214
 msgid "Yes (AppImage)"
 msgstr "Так (AppImage)"
 
+#: src/ui/pages/applications/application_entry.rs:192
+#: src/ui/pages/processes/process_entry.rs:213
+msgid "Yes (Flatpak)"
+msgstr "Так (Flatpak)"
+
+#. Translators: "Portable" is the name of the containerization method used, please keep it as is
+#: src/ui/pages/applications/application_entry.rs:194
+#: src/ui/pages/processes/process_entry.rs:215
+msgid "Yes (Portable)"
+msgstr "Так (Portable)"
+
+#: src/ui/pages/applications/application_entry.rs:195
+#: src/ui/pages/processes/process_entry.rs:216
+msgid "Yes (Snap)"
+msgstr "Так (Snap)"
+
 #: src/ui/pages/applications/mod.rs:663
+#, rust-format
 msgid "Running Apps: {}"
 msgstr "Запущених додатків: {}"
 
@@ -1011,18 +1019,22 @@ msgid "App"
 msgstr "Додаток"
 
 #: src/ui/pages/applications/mod.rs:1638 src/ui/pages/processes/mod.rs:2286
+#, rust-format
 msgid "End {}?"
 msgstr "Завершити {}?"
 
 #: src/ui/pages/applications/mod.rs:1639 src/ui/pages/processes/mod.rs:2287
+#, rust-format
 msgid "Halt {}?"
 msgstr "Зупинити {}?"
 
 #: src/ui/pages/applications/mod.rs:1640 src/ui/pages/processes/mod.rs:2288
+#, rust-format
 msgid "Kill {}?"
 msgstr "Знищити {}?"
 
 #: src/ui/pages/applications/mod.rs:1641 src/ui/pages/processes/mod.rs:2289
+#, rust-format
 msgid "Continue {}?"
 msgstr "Продовжити {}?"
 
@@ -1091,6 +1103,7 @@ msgstr "Так"
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
 #: src/ui/pages/drive.rs:440
+#, rust-format
 msgid "R: {} · W: {}"
 msgstr "Чит.: {} · Зап.: {}"
 
@@ -1113,20 +1126,24 @@ msgstr "Використання відеопам'яті"
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
 #: src/ui/pages/gpu.rs:415
+#, rust-format
 msgid "Memory: {}"
 msgstr "Пам'ять: {}"
 
 #: src/ui/pages/memory.rs:262
+#, rust-format
 msgid "{} of {}"
 msgstr "{} із {}"
 
 #: src/ui/pages/memory.rs:265
+#, rust-format
 msgid "{} MT/s"
 msgstr "{} МТ/с"
 
 #. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
 #. preferably be quite short or an abbreviation
 #: src/ui/pages/memory.rs:346
+#, rust-format
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · Swap: {} %"
 
@@ -1145,10 +1162,12 @@ msgstr "Відправляється"
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
 #: src/ui/pages/network.rs:445
+#, rust-format
 msgid "R: {} · S: {}"
 msgstr "Отрим.: {} · Надсил.: {}"
 
 #: src/ui/pages/processes/mod.rs:817
+#, rust-format
 msgid "Running Processes: {}"
 msgstr "Запущених процесів: {}"
 
@@ -1157,6 +1176,7 @@ msgid "Process"
 msgstr "Назва процесу"
 
 #: src/ui/pages/processes/mod.rs:2296
+#, rust-format
 msgid "End process?"
 msgid_plural "End {} processes?"
 msgstr[0] "Завершити {} процес?"
@@ -1164,6 +1184,7 @@ msgstr[1] "Завершити {} процеси?"
 msgstr[2] "Завершити {} процесів?"
 
 #: src/ui/pages/processes/mod.rs:2302
+#, rust-format
 msgid "Halt process?"
 msgid_plural "Halt {} processes?"
 msgstr[0] "Зупинити {} процес?"
@@ -1171,6 +1192,7 @@ msgstr[1] "Зупинити {} процеси?"
 msgstr[2] "Зупинити {} процесів?"
 
 #: src/ui/pages/processes/mod.rs:2308 src/ui/pages/processes/mod.rs:2314
+#, rust-format
 msgid "Kill process?"
 msgid_plural "Kill {} processes?"
 msgstr[0] "Знищити {} процес?"
@@ -1194,10 +1216,12 @@ msgstr ""
 "і проблеми з безпекою. Продовжуйте на свій власний ризик."
 
 #: src/ui/window.rs:466
+#, rust-format
 msgid "GPU {}"
 msgstr "Відеокарта {}"
 
 #: src/ui/window.rs:496
+#, rust-format
 msgid "NPU {}"
 msgstr "Мережевий процесор {}"
 
@@ -1206,30 +1230,37 @@ msgid "NPU"
 msgstr "Мережевий процесор"
 
 #: src/ui/window.rs:1174
+#, rust-format
 msgid "Successfully adjusted {}"
 msgstr "Успішно відкориговано {}"
 
 #: src/ui/window.rs:1175
+#, rust-format
 msgid "There was a problem adjusting {}"
 msgstr "Виникли проблема при коригуванні {}"
 
 #: src/ui/window.rs:1257
+#, rust-format
 msgid "Successfully ended {}"
 msgstr "Успішно завершено {}"
 
 #: src/ui/window.rs:1258
+#, rust-format
 msgid "Successfully halted {}"
 msgstr "Успішно зупинено {}"
 
 #: src/ui/window.rs:1259
+#, rust-format
 msgid "Successfully killed {}"
 msgstr "Успішно знищено {}"
 
 #: src/ui/window.rs:1260
+#, rust-format
 msgid "Successfully continued {}"
 msgstr "Успішно продовжено {}"
 
 #: src/ui/window.rs:1267
+#, rust-format
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
 msgstr[0] "Успішно завершено {} процес"
@@ -1237,6 +1268,7 @@ msgstr[1] "Успішно завершено {} процеси"
 msgstr[2] "Успішно завершено {} процесів"
 
 #: src/ui/window.rs:1273
+#, rust-format
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
 msgstr[0] "Успішно зупинено {} процес"
@@ -1244,6 +1276,7 @@ msgstr[1] "Успішно зупинено {} процеси"
 msgstr[2] "Успішно зупинено {} процесів"
 
 #: src/ui/window.rs:1279
+#, rust-format
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
 msgstr[0] "Успішно знищено {} процес"
@@ -1251,6 +1284,7 @@ msgstr[1] "Успішно знищено {} процеси"
 msgstr[2] "Успішно знищено {} процесів"
 
 #: src/ui/window.rs:1285
+#, rust-format
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
 msgstr[0] "Успішно продовжено {} процес"
@@ -1258,6 +1292,7 @@ msgstr[1] "Успішно продовжено {} процеси"
 msgstr[2] "Успішно продовжено {} процесів"
 
 #: src/ui/window.rs:1296
+#, rust-format
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] ""
@@ -1267,6 +1302,7 @@ msgstr[1] "Виникли проблеми при завершені {} проц
 msgstr[2] "Виникли проблеми при завершені {} процесів"
 
 #: src/ui/window.rs:1302
+#, rust-format
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "Виникли проблеми при зупинці {} процесу"
@@ -1274,6 +1310,7 @@ msgstr[1] "Виникли проблеми при зупинці {} процес
 msgstr[2] "Виникли проблеми при зупинці {} процесів"
 
 #: src/ui/window.rs:1308
+#, rust-format
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "Виникли проблеми при знищенні {} процесу"
@@ -1281,6 +1318,7 @@ msgstr[1] "Виникли проблеми при знищенні {} проце
 msgstr[2] "Виникли проблеми при знищенні {} процесів"
 
 #: src/ui/window.rs:1314
+#, rust-format
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "Виникли проблеми при продовженні {} процесу"
@@ -1288,22 +1326,26 @@ msgstr[1] "Виникли проблеми при продовженні {} пр
 msgstr[2] "Виникли проблеми при продовженні {} процесів"
 
 #: src/ui/window.rs:1324
+#, rust-format
 msgid "There was a problem ending {}"
 msgstr "Виникли проблема при продовженні {}"
 
 #: src/ui/window.rs:1325
+#, rust-format
 msgid "There was a problem halting {}"
 msgstr "Виникли проблема при зупинці {}"
 
 #: src/ui/window.rs:1326
+#, rust-format
 msgid "There was a problem killing {}"
 msgstr "Сталася проблема при знищенні {}"
 
 #: src/ui/window.rs:1327
+#, rust-format
 msgid "There was a problem continuing {}"
 msgstr "Сталася проблема при продовженні {}"
 
-#: src/utils/app.rs:222
+#: src/utils/app.rs:223
 msgid "System Processes"
 msgstr "Системні процеси"
 
@@ -1360,403 +1402,503 @@ msgid "Rechargeable Alkaline Managanese"
 msgstr "Акумуляторний лужний марганець"
 
 #: src/utils/battery.rs:256
+#, rust-format
 msgid "{} Battery"
 msgstr "{} акумулятор"
 
 #: src/utils/units.rs:91
+#, rust-format
 msgid "{} K"
 msgstr "{} K"
 
 #: src/utils/units.rs:93
+#, rust-format
 msgid "{} °C"
 msgstr "{} °C"
 
 #: src/utils/units.rs:95
+#, rust-format
 msgid "{} °F"
 msgstr "{} °F"
 
 #: src/utils/units.rs:113 src/utils/units.rs:127 src/utils/units.rs:147
 #: src/utils/units.rs:161
+#, rust-format
 msgid "{} B"
 msgstr "{} Б"
 
 #: src/utils/units.rs:114 src/utils/units.rs:128
+#, rust-format
 msgid "{} kB"
 msgstr "{} кБ"
 
 #: src/utils/units.rs:115 src/utils/units.rs:129
+#, rust-format
 msgid "{} MB"
 msgstr "{} МБ"
 
 #: src/utils/units.rs:116 src/utils/units.rs:130
+#, rust-format
 msgid "{} GB"
 msgstr "{} ГБ"
 
 #: src/utils/units.rs:117 src/utils/units.rs:131
+#, rust-format
 msgid "{} TB"
 msgstr "{} ТБ"
 
 #: src/utils/units.rs:118 src/utils/units.rs:132
+#, rust-format
 msgid "{} PB"
 msgstr "{} ПБ"
 
 #: src/utils/units.rs:119 src/utils/units.rs:133
+#, rust-format
 msgid "{} EB"
 msgstr "{} ЕБ"
 
 #: src/utils/units.rs:120 src/utils/units.rs:134
+#, rust-format
 msgid "{} ZB"
 msgstr "{} ЗБ"
 
 #: src/utils/units.rs:121 src/utils/units.rs:135
+#, rust-format
 msgid "{} YB"
 msgstr "{} ЙБ"
 
 #: src/utils/units.rs:122 src/utils/units.rs:136
+#, rust-format
 msgid "{} RB"
 msgstr "{} РБ"
 
 #: src/utils/units.rs:123 src/utils/units.rs:137
+#, rust-format
 msgid "{} QB"
 msgstr "{} КБ"
 
 #: src/utils/units.rs:148 src/utils/units.rs:162
+#, rust-format
 msgid "{} KiB"
 msgstr "{} КіБ"
 
 #: src/utils/units.rs:149 src/utils/units.rs:163
+#, rust-format
 msgid "{} MiB"
 msgstr "{} МіБ"
 
 #: src/utils/units.rs:150 src/utils/units.rs:164
+#, rust-format
 msgid "{} GiB"
 msgstr "{} ГіБ"
 
 #: src/utils/units.rs:151 src/utils/units.rs:165
+#, rust-format
 msgid "{} TiB"
 msgstr "{} ТіБ"
 
 #: src/utils/units.rs:152 src/utils/units.rs:166
+#, rust-format
 msgid "{} PiB"
 msgstr "{} ПіБ"
 
 #: src/utils/units.rs:153 src/utils/units.rs:167
+#, rust-format
 msgid "{} EiB"
 msgstr "{} ЕіБ"
 
 #: src/utils/units.rs:154 src/utils/units.rs:168
+#, rust-format
 msgid "{} ZiB"
 msgstr "{} ЗіБ"
 
 #: src/utils/units.rs:155 src/utils/units.rs:169
+#, rust-format
 msgid "{} YiB"
 msgstr "{} ЙіБ"
 
 #: src/utils/units.rs:156 src/utils/units.rs:170
+#, rust-format
 msgid "{} RiB"
 msgstr "{} РіБ"
 
 #: src/utils/units.rs:157 src/utils/units.rs:171
+#, rust-format
 msgid "{} QiB"
 msgstr "{} КіБ"
 
 #: src/utils/units.rs:198 src/utils/units.rs:215
+#, rust-format
 msgid "{} B/s"
 msgstr "{} Б/с"
 
 #: src/utils/units.rs:199
+#, rust-format
 msgid "{} kB/s"
 msgstr "{} кБ/с"
 
 #: src/utils/units.rs:200
+#, rust-format
 msgid "{} MB/s"
 msgstr "{} МБ/с"
 
 #: src/utils/units.rs:201
+#, rust-format
 msgid "{} GB/s"
 msgstr "{} ГБ/с"
 
 #: src/utils/units.rs:202
+#, rust-format
 msgid "{} TB/s"
 msgstr "{} ТБ/с"
 
 #: src/utils/units.rs:203
+#, rust-format
 msgid "{} PB/s"
 msgstr "{} ПБ/с"
 
 #: src/utils/units.rs:204
+#, rust-format
 msgid "{} EB/s"
 msgstr "{} ЕБ/с"
 
 #: src/utils/units.rs:205
+#, rust-format
 msgid "{} ZB/s"
 msgstr "{} ЗБ/с"
 
 #: src/utils/units.rs:206
+#, rust-format
 msgid "{} YB/s"
 msgstr "{} ЙБ/с"
 
 #: src/utils/units.rs:207
+#, rust-format
 msgid "{} RB/s"
 msgstr "{} РБ/с"
 
 #: src/utils/units.rs:208
+#, rust-format
 msgid "{} QB/s"
 msgstr "{} КБ/с"
 
 #: src/utils/units.rs:216
+#, rust-format
 msgid "{} KiB/s"
 msgstr "{} КіБ/с"
 
 #: src/utils/units.rs:217
+#, rust-format
 msgid "{} MiB/s"
 msgstr "{} МіБ/с"
 
 #: src/utils/units.rs:218
+#, rust-format
 msgid "{} GiB/s"
 msgstr "{} ГіБ/с"
 
 #: src/utils/units.rs:219
+#, rust-format
 msgid "{} TiB/s"
 msgstr "{} ТіБ/с"
 
 #: src/utils/units.rs:220
+#, rust-format
 msgid "{} PiB/s"
 msgstr "{} ПіБ/с"
 
 #: src/utils/units.rs:221
+#, rust-format
 msgid "{} EiB/s"
 msgstr "{} ЕіБ/с"
 
 #: src/utils/units.rs:222
+#, rust-format
 msgid "{} ZiB/s"
 msgstr "{} ЗіБ/с"
 
 #: src/utils/units.rs:223
+#, rust-format
 msgid "{} YiB/s"
 msgstr "{} ЙіБ/с"
 
 #: src/utils/units.rs:224
+#, rust-format
 msgid "{} RiB/s"
 msgstr "{} РіБ/с"
 
 #: src/utils/units.rs:225
+#, rust-format
 msgid "{} QiB/s"
 msgstr "{} КіБ/с"
 
 #: src/utils/units.rs:239 src/utils/units.rs:256
+#, rust-format
 msgid "{} b/s"
 msgstr "{} б/с"
 
 #: src/utils/units.rs:240
+#, rust-format
 msgid "{} kb/s"
 msgstr "{} кб/с"
 
 #: src/utils/units.rs:241
+#, rust-format
 msgid "{} Mb/s"
 msgstr "{} Мб/с"
 
 #: src/utils/units.rs:242
+#, rust-format
 msgid "{} Gb/s"
 msgstr "{} Гб/с"
 
 #: src/utils/units.rs:243
+#, rust-format
 msgid "{} Tb/s"
 msgstr "{} Тб/с"
 
 #: src/utils/units.rs:244
+#, rust-format
 msgid "{} Pb/s"
 msgstr "{} Пб/с"
 
 #: src/utils/units.rs:245
+#, rust-format
 msgid "{} Eb/s"
 msgstr "{} Еб/с"
 
 #: src/utils/units.rs:246
+#, rust-format
 msgid "{} Zb/s"
 msgstr "{} Зб/с"
 
 #: src/utils/units.rs:247
+#, rust-format
 msgid "{} Yb/s"
 msgstr "{} Йб/с"
 
 #: src/utils/units.rs:248
+#, rust-format
 msgid "{} Rb/s"
 msgstr "{} Рб/с"
 
 #: src/utils/units.rs:249
+#, rust-format
 msgid "{} Qb/s"
 msgstr "{} Кб/с"
 
 #: src/utils/units.rs:257
+#, rust-format
 msgid "{} Kib/s"
 msgstr "{} КіБ/с"
 
 #: src/utils/units.rs:258
+#, rust-format
 msgid "{} Mib/s"
 msgstr "{} МіБ/с"
 
 #: src/utils/units.rs:259
+#, rust-format
 msgid "{} Gib/s"
 msgstr "{} ГіБ/с"
 
 #: src/utils/units.rs:260
+#, rust-format
 msgid "{} Tib/s"
 msgstr "{} ТіБ/с"
 
 #: src/utils/units.rs:261
+#, rust-format
 msgid "{} Pib/s"
 msgstr "{} ПіБ/с"
 
 #: src/utils/units.rs:262
+#, rust-format
 msgid "{} Eib/s"
 msgstr "{} ЕіБ/с"
 
 #: src/utils/units.rs:263
+#, rust-format
 msgid "{} Zib/s"
 msgstr "{} ЗіБ/с"
 
 #: src/utils/units.rs:264
+#, rust-format
 msgid "{} Yib/s"
 msgstr "{} ЙіБ/с"
 
 #: src/utils/units.rs:265
+#, rust-format
 msgid "{} Rib/s"
 msgstr "{} РіБ/с"
 
 #: src/utils/units.rs:266
+#, rust-format
 msgid "{} Qib/s"
 msgstr "{} КіБ/с"
 
 #: src/utils/units.rs:273
+#, rust-format
 msgid "{} Hz"
 msgstr "{} Гц"
 
 #: src/utils/units.rs:274
+#, rust-format
 msgid "{} kHz"
 msgstr "{} кГц"
 
 #: src/utils/units.rs:275
+#, rust-format
 msgid "{} MHz"
 msgstr "{} МГц"
 
 #: src/utils/units.rs:276
+#, rust-format
 msgid "{} GHz"
 msgstr "{} ГГц"
 
 #: src/utils/units.rs:277
+#, rust-format
 msgid "{} THz"
 msgstr "{} ТГц"
 
 #: src/utils/units.rs:278
+#, rust-format
 msgid "{} PHz"
 msgstr "{} ПГц"
 
 #: src/utils/units.rs:279
+#, rust-format
 msgid "{} EHz"
 msgstr "{} ЕГц"
 
 #: src/utils/units.rs:280
+#, rust-format
 msgid "{} ZHz"
 msgstr "{} ЗГц"
 
 #: src/utils/units.rs:281
+#, rust-format
 msgid "{} YHz"
 msgstr "{} ЙГц"
 
 #: src/utils/units.rs:282
+#, rust-format
 msgid "{} RHz"
 msgstr "{} РГц"
 
 #: src/utils/units.rs:283
+#, rust-format
 msgid "{} QHz"
 msgstr "{} ЙГц"
 
 #: src/utils/units.rs:290
+#, rust-format
 msgid "{} W"
 msgstr "{} Вт"
 
 #: src/utils/units.rs:291
+#, rust-format
 msgid "{} kW"
 msgstr "{} кВт"
 
 #: src/utils/units.rs:292
+#, rust-format
 msgid "{} MW"
 msgstr "{} МВт"
 
 #: src/utils/units.rs:293
+#, rust-format
 msgid "{} GW"
 msgstr "{} ГВт"
 
 #: src/utils/units.rs:294
+#, rust-format
 msgid "{} TW"
 msgstr "{} ТВт"
 
 #: src/utils/units.rs:295
+#, rust-format
 msgid "{} PW"
 msgstr "{} ПВт"
 
 #: src/utils/units.rs:296
+#, rust-format
 msgid "{} EW"
 msgstr "{} ЕВт"
 
 #: src/utils/units.rs:297
+#, rust-format
 msgid "{} ZW"
 msgstr "{} ЗВт"
 
 #: src/utils/units.rs:298
+#, rust-format
 msgid "{} YW"
 msgstr "{} ЙВт"
 
 #: src/utils/units.rs:299
+#, rust-format
 msgid "{} RW"
 msgstr "{} РВт"
 
 #: src/utils/units.rs:300
+#, rust-format
 msgid "{} QW"
 msgstr "{} КВт"
 
 #: src/utils/units.rs:309 src/utils/units.rs:323
+#, rust-format
 msgid "{} Wh"
 msgstr "{} Вт/год"
 
 #: src/utils/units.rs:310 src/utils/units.rs:324
+#, rust-format
 msgid "{} kWh"
 msgstr "{} кВт/год"
 
 #: src/utils/units.rs:311 src/utils/units.rs:325
+#, rust-format
 msgid "{} MWh"
 msgstr "{} МВт/год"
 
 #: src/utils/units.rs:312 src/utils/units.rs:326
+#, rust-format
 msgid "{} GWh"
 msgstr "{} ГВт/год"
 
 #: src/utils/units.rs:313 src/utils/units.rs:327
+#, rust-format
 msgid "{} TWh"
 msgstr "{} ТВт/год"
 
 #: src/utils/units.rs:314 src/utils/units.rs:328
+#, rust-format
 msgid "{} PWh"
 msgstr "{} ПВт/год"
 
 #: src/utils/units.rs:315 src/utils/units.rs:329
+#, rust-format
 msgid "{} EWh"
 msgstr "{} ЕВт/год"
 
 #: src/utils/units.rs:316 src/utils/units.rs:330
+#, rust-format
 msgid "{} ZWh"
 msgstr "{} ЗВт/год"
 
 #: src/utils/units.rs:317 src/utils/units.rs:331
+#, rust-format
 msgid "{} YWh"
 msgstr "{} ЙВт/год"
 
 #: src/utils/units.rs:318 src/utils/units.rs:332
+#, rust-format
 msgid "{} RWh"
 msgstr "{} РВт/год"
 
 #: src/utils/units.rs:319 src/utils/units.rs:333
+#, rust-format
 msgid "{} QWh"
 msgstr "{} КВт/год"
 
@@ -1813,30 +1955,37 @@ msgid "Compressed RAM Disk (zram)"
 msgstr "Скомпресований RAM-диск (zram)"
 
 #: src/utils/drive.rs:210
+#, rust-format
 msgid "{} Loop Device"
 msgstr "{} Loop-пристрій"
 
 #: src/utils/drive.rs:211
+#, rust-format
 msgid "{} Mapped Device"
 msgstr "{} Приєднаний пристрій"
 
 #: src/utils/drive.rs:212
+#, rust-format
 msgid "{} RAID"
 msgstr "{} RAID"
 
 #: src/utils/drive.rs:213
+#, rust-format
 msgid "{} RAM Disk"
 msgstr "{} RAM-диск"
 
 #: src/utils/drive.rs:214
+#, rust-format
 msgid "{} zram Device"
 msgstr "{} zram-пристрій"
 
 #: src/utils/drive.rs:215
+#, rust-format
 msgid "{} ZFS Volume"
 msgstr "{} ZFS розділ"
 
 #: src/utils/drive.rs:216
+#, rust-format
 msgid "{} Drive"
 msgstr "{} накопичувач"
 
@@ -1861,17 +2010,14 @@ msgid "InfiniBand Connection"
 msgstr "InfiniBand з'єднання"
 
 #: src/utils/network.rs:134
-#| msgid "Docker Bridge"
 msgid "Incus Bridge"
 msgstr "Міст Incus"
 
 #: src/utils/network.rs:135
-#| msgid "Docker Bridge"
 msgid "LXC Bridge"
 msgstr "Міст LXC"
 
 #: src/utils/network.rs:136
-#| msgid "Docker Bridge"
 msgid "LXD Bridge"
 msgstr "Міст LXD"
 
