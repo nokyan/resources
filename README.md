@@ -61,6 +61,17 @@ dnf copr enable atim/resources
 dnf install resources
 ```
 
+#### Nix
+
+Unofficially packaged for Nix/NixOS. The Flatpak version is [known to have issues](https://github.com/nokyan/resources/issues/76) with showing running apps and processes on NixOS, which the native package may resolve.
+
+In `configuration.nix`:
+```
+environment.systemPackages = [
+  pkgs.resources
+];
+```
+
 ## Building
 
 You can also build Resources yourself using either Meson directly or preferably using Flatpak Builder.
