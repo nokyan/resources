@@ -34,6 +34,8 @@
   <url type="bugtracker">https://github.com/nokyan/resources/issues</url>
   <url type="vcs-browser">https://github.com/nokyan/resources</url>
   <url type="translate">https://l10n.gnome.org/module/resources/</url>
+  <url type="donation">https://nokyan.net/donate</url>
+  <url type="contact">https://nokyan.net</url>
   <content_rating type="oars-1.1"/>
   <developer id="net.nokyan">
     <name translate="no">nokyan</name>
