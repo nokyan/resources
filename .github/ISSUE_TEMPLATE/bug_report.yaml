@@ -1,5 +1,5 @@
 name: "\U0001F41E Bug Report"
-description: Create a bug report to help us fix it
+description: Create a bug report to help us fix it.
 labels: ["bug"]
 body:
   - type: checkboxes
@@ -36,8 +36,10 @@ body:
     attributes:
       label: Debug Logs
       description: |
-        Please run Resources once with debug logs enabled (if possible) and include the terminal output here. This helps us to get hardware and software information in a streamlined way.
+        ⚠️ Please run Resources once with debug logs enabled (if possible) and include the terminal output here. This is extremely important and helps us to get hardware and software information in a streamlined way. Without debug logs, we might not be able to help you.
+
         You can do this by running `flatpak run --env=RUST_LOG=resources=debug net.nokyan.Resources` in your terminal if you've installed Resources using Flatpak. Otherwise run `RUST_LOG=resources=debug resources`.
+
         Especially during process and app detection, personally identifiable information may be printed in the debug logs, please double-check that there's nothing inside that you don't want to be public. If your issue is unrelated to process/app detection, you can safely omit any messages that start with `DEBUG resources::utils::app`.
       value: |
         <details>
@@ -70,6 +72,11 @@ body:
       description: |
         Links? References? Anything that will give us more context about the issue you are encountering!
 
-        Tip: You can attach images or log files by clicking this area to highlight it and then dragging files in.
+        Tip: You can attach images or other files by clicking this area to highlight it and then dragging files in.
     validations:
       required: false
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        Please be as detailled as possible for every field, there's no such thing as too much information. Screenshots can also help a lot.
