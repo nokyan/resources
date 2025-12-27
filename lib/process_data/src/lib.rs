@@ -44,7 +44,7 @@ static NUM_CPUS: LazyLock<usize> = LazyLock::new(num_cpus::get);
 static RE_UID: Lazy<Regex> = lazy_regex!(r"Uid:\s*(\d+)");
 
 static RE_CGROUP: Lazy<Regex> = lazy_regex!(
-    r"(?U)\/(?:app|background)\.slice\/(?:app-.+|dbus-:.+)-(?P<cgroup>\S*)(?:-[0-9]+|@[0-9]+)?\.(?:scope|service)"
+    r"(?U)/(?:app|background)\.slice/(?:app-|dbus-:)(?:(?P<launcher>[^-]+)-)?(?P<cgroup>[^-]+)(?:-[0-9]+|@[0-9]+)?\.(?:scope|service)"
 );
 
 static RE_AFFINITY: Lazy<Regex> = lazy_regex!(r"Cpus_allowed:\s*([0-9A-Fa-f]+)");
@@ -197,11 +197,53 @@ pub struct ProcessData {
 }
 
 impl ProcessData {
-    fn sanitize_cgroup<S: AsRef<str>>(cgroup: S) -> Option<String> {
+    // apparently some apps like Mullvad do this to include a '-' in their cgroup even though that's not allowed
+    fn decode_hex_escapes(s: &str) -> Result<String, ()> {
+        let bytes = s.as_bytes();
+        let mut out = Vec::with_capacity(bytes.len());
+        let mut i = 0;
+
+        #[inline]
+        const fn hex(b: u8) -> Result<u8, ()> {
+            match b {
+                b'0'..=b'9' => Ok(b - b'0'),
+                b'a'..=b'f' => Ok(b - b'a' + 10),
+                b'A'..=b'F' => Ok(b - b'A' + 10),
+                _ => Err(()),
+            }
+        }
+
+        while i < bytes.len() {
+            if bytes[i] == b'\\' && i + 3 < bytes.len() && bytes[i + 1] == b'x' {
+                let hi = bytes[i + 2];
+                let lo = bytes[i + 3];
+
+                let val = (hex(hi)? << 4) | hex(lo)?;
+                out.push(val);
+                i += 4;
+            } else {
+                out.push(bytes[i]);
+                i += 1;
+            }
+        }
+
+        String::from_utf8(out).map_err(|_| ())
+    }
+
+    fn sanitize_cgroup<S: AsRef<str>>(cgroup: S) -> (Option<String>, Option<String>) {
         RE_CGROUP
             .captures(cgroup.as_ref())
-            .and_then(|captures| captures.name("cgroup"))
-            .map(|capture| capture.as_str().to_string())
+            .map(|captures| {
+                (
+                    captures
+                        .name("launcher")
+                        .and_then(|s| Self::decode_hex_escapes(s.as_str()).ok()),
+                    captures
+                        .name("cgroup")
+                        .and_then(|s| Self::decode_hex_escapes(s.as_str()).ok()),
+                )
+            })
+            .unwrap_or_default()
     }
 
     fn get_uid(proc_path: &Path) -> Result<u32> {
@@ -333,9 +375,10 @@ impl ProcessData {
             .unwrap_or_default()
             .saturating_mul(1000);
 
-        let cgroup = std::fs::read_to_string(proc_path.join("cgroup"))
-            .ok()
-            .and_then(Self::sanitize_cgroup);
+        let (launcher, cgroup) = std::fs::read_to_string(proc_path.join("cgroup"))
+            .map(Self::sanitize_cgroup)
+            .map(|(launcher, cgroup)| (launcher.unwrap_or_default(), cgroup)) // we only need the launcher for some checks here locally
+            .unwrap_or_default();
 
         let environ = std::fs::read_to_string(proc_path.join("environ"))?
             .split('\0')
@@ -351,9 +394,10 @@ impl ProcessData {
             .join("root")
             .join("top.kimiblock.portable")
             .exists()
+            || launcher == "portable"
         {
             Containerization::Portable
-        } else if proc_path.join("root").join(".flatpak-info").exists() {
+        } else if proc_path.join("root").join(".flatpak-info").exists() || launcher == "flatpak" {
             Containerization::Flatpak
         } else if appimage_path.is_some() {
             Containerization::AppImage
