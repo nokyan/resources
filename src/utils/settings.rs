@@ -6,7 +6,7 @@ use gtk::{SortType, gio, glib};
 use log::debug;
 use strum_macros::{Display, EnumString, FromRepr};
 
-use paste::paste;
+use pastey::paste;
 
 use crate::config::APP_ID;
 
