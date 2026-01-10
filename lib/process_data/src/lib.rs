@@ -272,8 +272,7 @@ impl ProcessData {
             .unwrap_or_default()
     }
 
-    fn get_uid(proc_path: &Path) -> Result<u32> {
-        let status = std::fs::read_to_string(proc_path.join("status"))?;
+    fn get_uid(status: &str) -> Result<u32> {
         if let Some(captures) = RE_UID.captures(&status) {
             let first_num_str = captures.get(1).context("no uid found")?;
             first_num_str
@@ -324,23 +323,21 @@ impl ProcessData {
 
         trace!("Inspecting process {pid}…");
 
-        trace!("Reading info files…");
-        let stat = std::fs::read_to_string(proc_path.join("stat"))
-            .inspect_err(|err| trace!("Error reading 'stat': {err}"))?;
-        let status = std::fs::read_to_string(proc_path.join("status"))
-            .inspect_err(|err| trace!("Error reading 'status': {err}"))?;
-        let comm = std::fs::read_to_string(proc_path.join("comm"))
-            .inspect_err(|err| trace!("Error reading 'comm': {err}"))?;
-        let commandline = std::fs::read_to_string(proc_path.join("cmdline"))
-            .inspect_err(|err| trace!("Error reading 'cmdline': {err}"))?;
-        let io = std::fs::read_to_string(proc_path.join("io"))
-            .inspect_err(|err| trace!("Error reading 'io': {err}"))
-            .ok();
+        let stat = read_parsed::<String>(proc_path.join("stat"))?;
+
+        let status = read_parsed::<String>(proc_path.join("status"))?;
+
+        let comm = read_parsed::<String>(proc_path.join("comm"))?;
+
+        let commandline = read_parsed::<String>(proc_path.join("cmdline"))?;
+
+        let io = read_parsed::<String>(proc_path.join("io")).ok();
 
         let user = USERS_CACHE
-            .get(&Self::get_uid(proc_path)?)
+            .get(&Self::get_uid(&status)?)
             .cloned()
             .unwrap_or(String::from("root"));
+        trace!("User of {pid} determined to be {user}");
 
         let stat = stat
             .split(')') // since we don't care about the pid or the executable name, split after the executable name to make our life easier
@@ -352,32 +349,42 @@ impl ProcessData {
             .collect::<Vec<_>>();
 
         let comm = comm.replace('\n', "");
+        trace!("Comm of {pid} determined to be {comm}");
 
         let parent_pid = stat
             .get(STAT_PARENT_PID)
             .context("wrong stat file format")
             .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
             .inspect_err(|err| trace!("Can't parse parent pid from 'stat': {err}"))?;
+        trace!("Parent pid of {pid} determined to be {parent_pid}");
+
         let user_cpu_time = stat
             .get(STAT_USER_CPU_TIME)
             .context("wrong stat file format")
             .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
             .inspect_err(|err| trace!("Can't parse user cpu time from 'stat': {err}"))?;
+        trace!("User CPU time of {pid} determined to be {user_cpu_time}");
+
         let system_cpu_time = stat
             .get(STAT_SYSTEM_CPU_TIME)
             .context("wrong stat file format")
             .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
             .inspect_err(|err| trace!("Can't parse system cpu time from 'stat': {err}"))?;
+        trace!("System CPU time of {pid} determined to be {system_cpu_time}");
+
         let nice = stat
             .get(STAT_NICE)
             .context("wrong stat file format")
             .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
             .inspect_err(|err| trace!("Can't parse nice from 'stat': {err}"))?;
+        trace!("Nice of {pid} determined to be {nice}");
+
         let starttime = stat
             .get(STAT_STARTTIME)
             .context("wrong stat file format")
             .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
             .inspect_err(|err| trace!("Can't parse start time from 'stat': {err}"))?;
+        trace!("Starttime of {pid} determined to be {starttime}");
 
         let mut affinity = Vec::with_capacity(*NUM_CPUS);
         RE_AFFINITY
@@ -397,6 +404,7 @@ impl ProcessData {
                     }
                 });
             });
+        trace!("Affinity of {pid} determined to be {affinity:?}");
 
         let swap_usage = RE_SWAP_USAGE
             .captures(&status)
@@ -406,6 +414,7 @@ impl ProcessData {
             .parse::<usize>()
             .unwrap_or_default()
             .saturating_mul(1000);
+        trace!("Swap usage of {pid} determined to be {swap_usage}");
 
         let memory_usage = RE_MEMORY_USAGE
             .captures(&status)
@@ -415,13 +424,16 @@ impl ProcessData {
             .parse::<usize>()
             .unwrap_or_default()
             .saturating_mul(1000);
+        trace!("Memory usage of {pid} determined to be {swap_usage}");
 
-        let (launcher, cgroup) = std::fs::read_to_string(proc_path.join("cgroup"))
+        let (launcher, cgroup) = read_parsed::<String>(proc_path.join("cgroup"))
             .map(Self::sanitize_cgroup)
             .map(|(launcher, cgroup)| (launcher.unwrap_or_default(), cgroup)) // we only need the launcher for some checks here locally
             .unwrap_or_default();
+        trace!("Launcher of {pid} determined to be {launcher}");
+        trace!("Cgroup of {pid} determined to be {cgroup:?}");
 
-        let environ = std::fs::read_to_string(proc_path.join("environ"))?
+        let environ = read_parsed::<String>(proc_path.join("environ"))?
             .split('\0')
             .filter_map(|e| e.split_once('='))
             .map(|(x, y)| (x.to_string(), y.to_string()))
@@ -446,12 +458,15 @@ impl ProcessData {
             Containerization::None
         };
 
+        trace!("Containerization of {pid} determined to be {containerization:?}");
+
         let read_bytes = io.as_ref().and_then(|io| {
             RE_IO_READ
                 .captures(io)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
         });
+        trace!("Read bytes of {pid} determined to be {read_bytes:?}");
 
         let write_bytes = io.as_ref().and_then(|io| {
             RE_IO_WRITE
@@ -459,9 +474,12 @@ impl ProcessData {
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
         });
+        trace!("Written bytes of {pid} determined to be {write_bytes:?}");
 
+        trace!("Collecting fdinfo statistics for {pid}…");
         let fdinfos = Self::collect_fdinfos(pid).unwrap_or_default();
 
+        trace!("Collecting NVIDIA statistics for {pid}…");
         let nvidia_stats = Self::nvidia_gpu_stats_all(pid);
         let mut gpu_usage_stats = Self::other_gpu_usage_stats(&fdinfos).unwrap_or_default();
         gpu_usage_stats.extend(nvidia_stats);
@@ -469,6 +487,8 @@ impl ProcessData {
         let npu_usage_stats = Self::npu_usage_stats(&fdinfos).unwrap_or_default();
 
         let timestamp = unix_as_millis();
+
+        trace!("Process {pid} done");
 
         Ok(Self {
             pid,
@@ -505,8 +525,10 @@ impl ProcessData {
             let entry = entry?;
             let fdinfo_path = entry.path();
 
+            trace!("Entering {}", fdinfo_path.to_string_lossy());
             let _file = std::fs::File::open(&fdinfo_path);
-            if _file.is_err() {
+            if let Err(e) = _file {
+                trace!("Unable to enter, skipping → {e}");
                 continue;
             }
             let mut file = _file.unwrap();
@@ -519,16 +541,19 @@ impl ProcessData {
                 .parse::<usize>()
                 .unwrap_or(0);
             if fd_num <= 2 {
+                trace!("fd_num is <= 2 (std stream), skipping");
                 continue;
             }
 
             let _metadata = file.metadata();
-            if _metadata.is_err() {
+            if let Err(e) = _metadata {
+                trace!("Couldn't read metadata, skipping → {e}");
                 continue;
             }
             let metadata = _metadata.unwrap();
 
             if !metadata.is_file() {
+                trace!("Not a file, skipping");
                 continue;
             }
 
@@ -541,6 +566,7 @@ impl ProcessData {
                     if (fd_metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR
                         || (major != DRM_MAJOR && major != ACCEL_MAJOR)
                     {
+                        trace!("Major and mode are not correct, skipping");
                         continue;
                     }
                 }
@@ -549,16 +575,18 @@ impl ProcessData {
             // Adapted from nvtop's `processinfo_sweep_fdinfos()`
             // https://github.com/Syllo/nvtop/blob/master/src/extract_processinfo_fdinfo.c
             // if we've already seen the file this fd refers to, skip
-            let not_unique = seen_fds.iter().any(|seen_fd| unsafe {
+            if seen_fds.iter().any(|seen_fd| unsafe {
                 syscalls::syscall!(syscalls::Sysno::kcmp, pid, pid, 0, fd_num, *seen_fd)
                     .unwrap_or(0)
                     == 0
-            });
-            if not_unique {
+            }) {
+                trace!("fdinfo already seen, skipping");
                 continue;
             }
 
             seen_fds.insert(fd_num);
+
+            trace!("fdinfo passed all checks, reading and parsing…");
 
             let mut buffer = String::new();
             file.read_to_string(&mut buffer)?;
@@ -869,4 +897,25 @@ pub fn unix_as_secs_f64() -> f64 {
         .duration_since(SystemTime::UNIX_EPOCH)
         .unwrap()
         .as_secs_f64()
+}
+
+pub fn read_parsed<T: FromStr>(path: impl AsRef<Path>) -> Result<T>
+where
+    <T as FromStr>::Err: std::error::Error + Send + Sync + 'static,
+{
+    let path = path.as_ref();
+
+    let content = std::fs::read_to_string(path)
+        .map(|content| content.trim().to_string())
+        .inspect_err(|e| trace!("Unable to read {path:?} → {e}"))?;
+
+    let type_name = std::any::type_name::<T>();
+
+    content
+        .parse::<T>()
+        .inspect(|_| trace!("Successfully read {path:?} to {type_name} → {content}",))
+        .inspect_err(|e| {
+            trace!("Unable to parse {path:?} to {type_name} → {e}");
+        })
+        .with_context(|| format!("error parsing file {}", path.display()))
 }
