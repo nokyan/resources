@@ -1,9 +1,11 @@
 pub mod gpu_usage;
+pub mod npu_usage;
 pub mod pci_slot;
 
 use anyhow::{Context, Result, bail};
 use glob::glob;
 use lazy_regex::{Lazy, Regex, lazy_regex};
+use log::{debug, trace, warn};
 use nutype::nutype;
 use nvml_wrapper::enums::device::UsedGpuMemory;
 use nvml_wrapper::error::NvmlError;
@@ -21,6 +23,7 @@ use std::sync::{LazyLock, RwLock};
 use std::time::SystemTime;
 
 use crate::gpu_usage::{GpuIdentifier, GpuUsageStats, IntegerPercentage};
+use crate::npu_usage::NpuUsageStats;
 
 const STAT_OFFSET: usize = 2; // we split the stat contents where the executable name ends, which is the second element
 const STAT_PARENT_PID: usize = 3 - STAT_OFFSET;
@@ -33,10 +36,19 @@ const DRM_DRIVER: &str = "drm-driver";
 
 const DRM_PDEV: &str = "drm-pdev";
 
+const DRM_MAJOR: u32 = 226;
+const ACCEL_MAJOR: u32 = 261;
+
 static USERS_CACHE: LazyLock<HashMap<libc::uid_t, String>> = LazyLock::new(|| unsafe {
-    uzers::all_users()
-        .map(|user| (user.uid(), user.name().to_string_lossy().to_string()))
-        .collect()
+    debug!("Initializing users cache…");
+    let users: HashMap<libc::uid_t, String> = uzers::all_users()
+        .map(|user| {
+            trace!("Found user {}", user.name().to_string_lossy());
+            (user.uid(), user.name().to_string_lossy().to_string())
+        })
+        .collect();
+    debug!("Found {} users", users.len());
+    users
 });
 
 static NUM_CPUS: LazyLock<usize> = LazyLock::new(num_cpus::get);
@@ -99,25 +111,38 @@ static ENC_TOTAL_CYCLES_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> =
 static DEC_NS_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> =
     Lazy::new(|| HashMap::from_iter([("amdgpu", vec!["drm-engine-dec"])]));
 
+static NPU_NS_FIELDS: Lazy<HashMap<&str, Vec<&str>>> =
+    Lazy::new(|| HashMap::from_iter([("amdxdna_accel_driver", vec!["drm-engine-npu-amdxdna"])]));
+
 static MEM_DRM_FIELDS: Lazy<HashMap<&str, Vec<&str>>> = Lazy::new(|| {
     HashMap::from_iter([
         ("amdgpu", vec!["drm-memory-gtt", "drm-memory-vram"]),
+        ("amdxdna_accel_driver", vec!["drm-total-memory"]),
         ("i915", vec!["drm-total-local0", "drm-total-system0"]),
         ("v3d", vec!["drm-total-memory"]),
         ("xe", vec!["drm-total-gtt", "drm-total-vram0"]),
     ])
 });
 
-static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(Nvml::init);
+static NVML: Lazy<Result<Nvml, NvmlError>> = Lazy::new(|| {
+    debug!("Initializing connection to NVML…");
+    Nvml::init().inspect_err(|err| warn!("Unable to connect to NVML: {err}"))
+});
 
 static NVML_DEVICES: Lazy<Vec<(PciSlot, Device)>> = Lazy::new(|| {
     if let Ok(nvml) = NVML.as_ref() {
+        debug!("Looking for NVIDIA devices…");
         let device_count = nvml.device_count().unwrap_or(0);
         let mut return_vec = Vec::with_capacity(device_count as usize);
         for i in 0..device_count {
             if let Ok(gpu) = nvml.device_by_index(i) {
                 if let Ok(pci_slot) = gpu.pci_info().map(|pci_info| pci_info.bus_id) {
                     let pci_slot = PciSlot::from_str(&pci_slot).unwrap();
+                    debug!(
+                        "Found {} at {}",
+                        gpu.name().unwrap_or("N/A".into()),
+                        pci_slot
+                    );
                     return_vec.push((pci_slot, gpu));
                 }
             }
@@ -170,7 +195,7 @@ pub enum Containerization {
     AppImage,
 }
 
-/// Data that could be transferred us>ing `resources-processes`, separated from
+/// Data that could be transferred using `resources-processes`, separated from
 /// `Process` mainly due to `Icon` not being able to derive `Serialize` and
 /// `Deserialize`.
 #[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
@@ -193,6 +218,7 @@ pub struct ProcessData {
     pub write_bytes: Option<u64>,
     pub timestamp: u64,
     pub gpu_usage_stats: BTreeMap<GpuIdentifier, GpuUsageStats>,
+    pub npu_usage_stats: BTreeMap<PciSlot, NpuUsageStats>,
     pub appimage_path: Option<String>,
 }
 
@@ -246,8 +272,7 @@ impl ProcessData {
             .unwrap_or_default()
     }
 
-    fn get_uid(proc_path: &Path) -> Result<u32> {
-        let status = std::fs::read_to_string(proc_path.join("status"))?;
+    fn get_uid(status: &str) -> Result<u32> {
         if let Some(captures) = RE_UID.captures(&status) {
             let first_num_str = captures.get(1).context("no uid found")?;
             first_num_str
@@ -289,12 +314,6 @@ impl ProcessData {
 
     pub fn try_from_path<P: AsRef<Path>>(proc_path: P) -> Result<Self> {
         let proc_path = proc_path.as_ref();
-        let stat = std::fs::read_to_string(proc_path.join("stat"))?;
-        let status = std::fs::read_to_string(proc_path.join("status"))?;
-        let comm = std::fs::read_to_string(proc_path.join("comm"))?;
-        let commandline = std::fs::read_to_string(proc_path.join("cmdline"))?;
-        let io = std::fs::read_to_string(proc_path.join("io")).ok();
-
         let pid = proc_path
             .file_name()
             .context("proc_path terminates in ..")?
@@ -302,41 +321,70 @@ impl ProcessData {
             .context("can't turn OsStr to str")?
             .parse()?;
 
+        trace!("Inspecting process {pid}…");
+
+        let stat = read_parsed::<String>(proc_path.join("stat"))?;
+
+        let status = read_parsed::<String>(proc_path.join("status"))?;
+
+        let comm = read_parsed::<String>(proc_path.join("comm"))?;
+
+        let commandline = read_parsed::<String>(proc_path.join("cmdline"))?;
+
+        let io = read_parsed::<String>(proc_path.join("io")).ok();
+
         let user = USERS_CACHE
-            .get(&Self::get_uid(proc_path)?)
+            .get(&Self::get_uid(&status)?)
             .cloned()
             .unwrap_or(String::from("root"));
+        trace!("User of {pid} determined to be {user}");
 
         let stat = stat
             .split(')') // since we don't care about the pid or the executable name, split after the executable name to make our life easier
             .last()
-            .context("stat doesn't have ')'")?
+            .context("stat doesn't have ')'")
+            .inspect_err(|err| trace!("Can't parse 'stat': {err}"))?
             .split(' ')
             .skip(1) // the first element would be a space, let's ignore that
             .collect::<Vec<_>>();
 
         let comm = comm.replace('\n', "");
+        trace!("Comm of {pid} determined to be {comm}");
 
         let parent_pid = stat
             .get(STAT_PARENT_PID)
             .context("wrong stat file format")
-            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+            .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
+            .inspect_err(|err| trace!("Can't parse parent pid from 'stat': {err}"))?;
+        trace!("Parent pid of {pid} determined to be {parent_pid}");
+
         let user_cpu_time = stat
             .get(STAT_USER_CPU_TIME)
             .context("wrong stat file format")
-            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+            .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
+            .inspect_err(|err| trace!("Can't parse user cpu time from 'stat': {err}"))?;
+        trace!("User CPU time of {pid} determined to be {user_cpu_time}");
+
         let system_cpu_time = stat
             .get(STAT_SYSTEM_CPU_TIME)
             .context("wrong stat file format")
-            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+            .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
+            .inspect_err(|err| trace!("Can't parse system cpu time from 'stat': {err}"))?;
+        trace!("System CPU time of {pid} determined to be {system_cpu_time}");
+
         let nice = stat
             .get(STAT_NICE)
             .context("wrong stat file format")
-            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+            .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
+            .inspect_err(|err| trace!("Can't parse nice from 'stat': {err}"))?;
+        trace!("Nice of {pid} determined to be {nice}");
+
         let starttime = stat
             .get(STAT_STARTTIME)
             .context("wrong stat file format")
-            .and_then(|x| x.parse().context("couldn't parse stat file content"))?;
+            .and_then(|x| x.parse().context("couldn't parse stat file content to int"))
+            .inspect_err(|err| trace!("Can't parse start time from 'stat': {err}"))?;
+        trace!("Starttime of {pid} determined to be {starttime}");
 
         let mut affinity = Vec::with_capacity(*NUM_CPUS);
         RE_AFFINITY
@@ -356,6 +404,7 @@ impl ProcessData {
                     }
                 });
             });
+        trace!("Affinity of {pid} determined to be {affinity:?}");
 
         let swap_usage = RE_SWAP_USAGE
             .captures(&status)
@@ -365,6 +414,7 @@ impl ProcessData {
             .parse::<usize>()
             .unwrap_or_default()
             .saturating_mul(1000);
+        trace!("Swap usage of {pid} determined to be {swap_usage}");
 
         let memory_usage = RE_MEMORY_USAGE
             .captures(&status)
@@ -374,13 +424,16 @@ impl ProcessData {
             .parse::<usize>()
             .unwrap_or_default()
             .saturating_mul(1000);
+        trace!("Memory usage of {pid} determined to be {swap_usage}");
 
-        let (launcher, cgroup) = std::fs::read_to_string(proc_path.join("cgroup"))
+        let (launcher, cgroup) = read_parsed::<String>(proc_path.join("cgroup"))
             .map(Self::sanitize_cgroup)
             .map(|(launcher, cgroup)| (launcher.unwrap_or_default(), cgroup)) // we only need the launcher for some checks here locally
             .unwrap_or_default();
+        trace!("Launcher of {pid} determined to be {launcher}");
+        trace!("Cgroup of {pid} determined to be {cgroup:?}");
 
-        let environ = std::fs::read_to_string(proc_path.join("environ"))?
+        let environ = read_parsed::<String>(proc_path.join("environ"))?
             .split('\0')
             .filter_map(|e| e.split_once('='))
             .map(|(x, y)| (x.to_string(), y.to_string()))
@@ -405,12 +458,15 @@ impl ProcessData {
             Containerization::None
         };
 
+        trace!("Containerization of {pid} determined to be {containerization:?}");
+
         let read_bytes = io.as_ref().and_then(|io| {
             RE_IO_READ
                 .captures(io)
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
         });
+        trace!("Read bytes of {pid} determined to be {read_bytes:?}");
 
         let write_bytes = io.as_ref().and_then(|io| {
             RE_IO_WRITE
@@ -418,14 +474,21 @@ impl ProcessData {
                 .and_then(|captures| captures.get(1))
                 .and_then(|capture| capture.as_str().parse::<u64>().ok())
         });
+        trace!("Written bytes of {pid} determined to be {write_bytes:?}");
 
+        trace!("Collecting fdinfo statistics for {pid}…");
         let fdinfos = Self::collect_fdinfos(pid).unwrap_or_default();
 
+        trace!("Collecting NVIDIA statistics for {pid}…");
         let nvidia_stats = Self::nvidia_gpu_stats_all(pid);
         let mut gpu_usage_stats = Self::other_gpu_usage_stats(&fdinfos).unwrap_or_default();
         gpu_usage_stats.extend(nvidia_stats);
 
+        let npu_usage_stats = Self::npu_usage_stats(&fdinfos).unwrap_or_default();
+
         let timestamp = unix_as_millis();
+
+        trace!("Process {pid} done");
 
         Ok(Self {
             pid,
@@ -446,6 +509,7 @@ impl ProcessData {
             write_bytes,
             timestamp,
             gpu_usage_stats,
+            npu_usage_stats,
             appimage_path,
         })
     }
@@ -461,8 +525,10 @@ impl ProcessData {
             let entry = entry?;
             let fdinfo_path = entry.path();
 
+            trace!("Entering {}", fdinfo_path.to_string_lossy());
             let _file = std::fs::File::open(&fdinfo_path);
-            if _file.is_err() {
+            if let Err(e) = _file {
+                trace!("Unable to enter, skipping → {e}");
                 continue;
             }
             let mut file = _file.unwrap();
@@ -475,16 +541,19 @@ impl ProcessData {
                 .parse::<usize>()
                 .unwrap_or(0);
             if fd_num <= 2 {
+                trace!("fd_num is <= 2 (std stream), skipping");
                 continue;
             }
 
             let _metadata = file.metadata();
-            if _metadata.is_err() {
+            if let Err(e) = _metadata {
+                trace!("Couldn't read metadata, skipping → {e}");
                 continue;
             }
             let metadata = _metadata.unwrap();
 
             if !metadata.is_file() {
+                trace!("Not a file, skipping");
                 continue;
             }
 
@@ -494,7 +563,10 @@ impl ProcessData {
             if let Some(fd_path) = fd_path {
                 if let Ok(fd_metadata) = std::fs::metadata(fd_path) {
                     let major = libc::major(fd_metadata.st_rdev());
-                    if (fd_metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR || major != 226 {
+                    if (fd_metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR
+                        || (major != DRM_MAJOR && major != ACCEL_MAJOR)
+                    {
+                        trace!("Major and mode are not correct, skipping");
                         continue;
                     }
                 }
@@ -503,16 +575,18 @@ impl ProcessData {
             // Adapted from nvtop's `processinfo_sweep_fdinfos()`
             // https://github.com/Syllo/nvtop/blob/master/src/extract_processinfo_fdinfo.c
             // if we've already seen the file this fd refers to, skip
-            let not_unique = seen_fds.iter().any(|seen_fd| unsafe {
+            if seen_fds.iter().any(|seen_fd| unsafe {
                 syscalls::syscall!(syscalls::Sysno::kcmp, pid, pid, 0, fd_num, *seen_fd)
                     .unwrap_or(0)
                     == 0
-            });
-            if not_unique {
+            }) {
+                trace!("fdinfo already seen, skipping");
                 continue;
             }
 
             seen_fds.insert(fd_num);
+
+            trace!("fdinfo passed all checks, reading and parsing…");
 
             let mut buffer = String::new();
             file.read_to_string(&mut buffer)?;
@@ -531,6 +605,59 @@ impl ProcessData {
                 .filter_map(|line| line.split_once(':'))
                 .map(|(name, value)| (name.trim().to_string(), value.trim().to_string())),
         )
+    }
+
+    fn npu_usage_stats(
+        fdinfos: &[HashMap<String, String>],
+    ) -> Result<BTreeMap<PciSlot, NpuUsageStats>> {
+        let mut return_map = BTreeMap::new();
+
+        for fdinfo in fdinfos {
+            if let Ok((identifier, stats)) = Self::extract_npu_usage_from_fdinfo(fdinfo) {
+                return_map
+                    .entry(identifier)
+                    .and_modify(|existing_value: &mut NpuUsageStats| {
+                        *existing_value = existing_value.greater(&stats)
+                    })
+                    .or_insert(stats);
+            }
+        }
+
+        Ok(return_map)
+    }
+
+    fn extract_npu_usage_from_fdinfo(
+        fdinfo: &HashMap<String, String>,
+    ) -> Result<(PciSlot, NpuUsageStats)> {
+        let driver = fdinfo.get(DRM_DRIVER);
+
+        if let Some(driver) = driver {
+            let gpu_identifier = fdinfo
+                .get(DRM_PDEV)
+                .and_then(|field| PciSlot::from_str(field).ok())
+                .unwrap_or_default();
+
+            let stats = match driver.as_str() {
+                "amdxdna_accel_driver" => NpuUsageStats::AmdxdnaStats {
+                    usage_ns: NPU_NS_FIELDS
+                        .get(driver.as_str())
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
+                        .unwrap_or_default(),
+                    mem_bytes: MEM_DRM_FIELDS
+                        .get(driver.as_str())
+                        .map(|names| {
+                            Self::parse_drm_fields::<u64, _>(fdinfo, names, &RE_DRM_KIB)
+                                .saturating_mul(1024)
+                        })
+                        .unwrap_or_default(),
+                },
+                _ => bail!("unable to read stats from driver"),
+            };
+
+            return Ok((gpu_identifier, stats));
+        }
+
+        bail!("unable to find gpu information in this fdinfo");
     }
 
     fn other_gpu_usage_stats(
@@ -671,6 +798,8 @@ impl ProcessData {
     }
 
     fn nvidia_gpu_stats_all(pid: i32) -> BTreeMap<GpuIdentifier, GpuUsageStats> {
+        trace!("Gathering NVIDIA GPU stats…");
+
         let mut return_map = BTreeMap::new();
 
         for (pci_slot, _) in NVML_DEVICES.iter() {
@@ -683,6 +812,7 @@ impl ProcessData {
     }
 
     fn nvidia_gpu_stats(pid: i32, pci_slot: PciSlot) -> Result<GpuUsageStats> {
+        trace!("Gathering GPU stats for NVIDIA GPU at {pci_slot}…");
         let this_process_stats = NVIDIA_PROCESSES_STATS
             .read()
             .unwrap()
@@ -722,6 +852,7 @@ impl ProcessData {
     }
 
     fn nvidia_process_infos() -> HashMap<PciSlot, Vec<ProcessInfo>> {
+        trace!("Refreshing NVIDIA process infos…");
         let mut return_map = HashMap::new();
 
         for (pci_slot, gpu) in NVML_DEVICES.iter() {
@@ -735,6 +866,7 @@ impl ProcessData {
     }
 
     fn nvidia_process_stats() -> HashMap<PciSlot, Vec<ProcessUtilizationSample>> {
+        trace!("Refreshing NVIDIA process stats…");
         let mut return_map = HashMap::new();
 
         for (pci_slot, gpu) in NVML_DEVICES.iter() {
@@ -765,4 +897,25 @@ pub fn unix_as_secs_f64() -> f64 {
         .duration_since(SystemTime::UNIX_EPOCH)
         .unwrap()
         .as_secs_f64()
+}
+
+pub fn read_parsed<T: FromStr>(path: impl AsRef<Path>) -> Result<T>
+where
+    <T as FromStr>::Err: std::error::Error + Send + Sync + 'static,
+{
+    let path = path.as_ref();
+
+    let content = std::fs::read_to_string(path)
+        .map(|content| content.trim().to_string())
+        .inspect_err(|e| trace!("Unable to read {path:?} → {e}"))?;
+
+    let type_name = std::any::type_name::<T>();
+
+    content
+        .parse::<T>()
+        .inspect(|_| trace!("Successfully read {path:?} to {type_name} → {content}",))
+        .inspect_err(|e| {
+            trace!("Unable to parse {path:?} to {type_name} → {e}");
+        })
+        .with_context(|| format!("error parsing file {}", path.display()))
 }

@@ -124,7 +124,6 @@ where
         .inspect(|_| trace!("Successfully read {path:?} to {type_name} → {content}",))
         .inspect_err(|e| {
             trace!("Unable to parse {path:?} to {type_name} → {e}");
-            trace!("Content of {path:?} → {content}");
         })
         .with_context(|| format!("error parsing file {}", path.display()))
 }
