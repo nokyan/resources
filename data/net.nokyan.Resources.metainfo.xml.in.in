@@ -33,7 +33,9 @@
   <url type="contribute">https://welcome.gnome.org/app/Resources/</url>
   <url type="bugtracker">https://github.com/nokyan/resources/issues</url>
   <url type="vcs-browser">https://github.com/nokyan/resources</url>
-  <url type="translate">https://github.com/nokyan/resources/tree/main/po</url>
+  <url type="translate">https://l10n.gnome.org/module/resources/</url>
+  <url type="donation">https://nokyan.net/donate</url>
+  <url type="contact">https://nokyan.net</url>
   <content_rating type="oars-1.1"/>
   <developer id="net.nokyan">
     <name translate="no">nokyan</name>
@@ -80,6 +82,32 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.9.1" date="2025-11-16">
+      <url type="details">https://github.com/nokyan/resources/releases/tag/v1.9.1</url>
+      <description translate="no">
+        <p>
+          Resources 1.9.1 is here with a small bugfix:
+        </p>
+        <ul>
+          <li>Less unnecessary warnings in Resources’ console logs</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.9.0" date="2025-10-25">
+      <url type="details">https://github.com/nokyan/resources/releases/tag/v1.9.0</url>
+      <description translate="no">
+        <p>
+          After quite some time since the last update, Resources 1.9 has been released featuring lots of more languages and a bunch of small new features! These are the highlights:
+        </p>
+        <ul>
+          <li>Thanks to the volunteers of GNOME Damned Lies, Resources is now available in many more languages</li>
+          <li>Support for the new “xe” driver for Intel GPUs</li>
+          <li>Link information is now also shown for Wi-Fi interfaces</li>
+          <li>Resources can now halt graphical updates when its window is not in view to save on power</li>
+          <li>Internal changes for less code complexity and clearer architecture</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.8.0" date="2025-03-29">
       <url type="details">https://github.com/nokyan/resources/releases/tag/v1.8.0</url>
       <description translate="no">

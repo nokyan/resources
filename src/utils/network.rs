@@ -8,9 +8,8 @@ use anyhow::Result;
 use gtk::gio::{Icon, ThemedIcon};
 use log::trace;
 
-use crate::{i18n::i18n, utils::read_parsed};
-
 use super::{pci::Device, read_uevent};
+use crate::{i18n::i18n, utils::read_parsed};
 
 const PATH_SYSFS: &str = "/sys/class/net";
 
@@ -23,6 +22,9 @@ const INTERFACE_TYPE_MAP: &[(&str, InterfaceType)] = &[
     ("eth", InterfaceType::Ethernet),
     ("en", InterfaceType::Ethernet),
     ("ib", InterfaceType::InfiniBand),
+    ("incusbr", InterfaceType::IncusBridge),
+    ("lxcbr", InterfaceType::LXCBridge),
+    ("lxdbr", InterfaceType::LXDBridge),
     ("sl", InterfaceType::Slip),
     ("tun", InterfaceType::Vpn),
     ("veth", InterfaceType::VirtualEthernet),
@@ -71,13 +73,16 @@ impl NetworkData {
     }
 }
 
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub enum InterfaceType {
     Bluetooth,
     Bridge,
     Docker,
     Ethernet,
     InfiniBand,
+    IncusBridge,
+    LXCBridge,
+    LXDBridge,
     Slip,
     VirtualEthernet,
     VmBridge,
@@ -126,6 +131,9 @@ impl Display for InterfaceType {
                 InterfaceType::Ethernet => i18n("Ethernet Connection"),
                 InterfaceType::Docker => i18n("Docker Bridge"),
                 InterfaceType::InfiniBand => i18n("InfiniBand Connection"),
+                InterfaceType::IncusBridge => i18n("Incus Bridge"),
+                InterfaceType::LXCBridge => i18n("LXC Bridge"),
+                InterfaceType::LXDBridge => i18n("LXD Bridge"),
                 InterfaceType::Slip => i18n("Serial Line IP Connection"),
                 InterfaceType::VirtualEthernet => i18n("Virtual Ethernet Device"),
                 InterfaceType::VmBridge => i18n("VM Network Bridge"),
@@ -274,6 +282,9 @@ impl NetworkInterface {
             InterfaceType::Docker => ThemedIcon::new("docker-bridge-symbolic").into(),
             InterfaceType::Ethernet => ThemedIcon::new("ethernet-symbolic").into(),
             InterfaceType::InfiniBand => ThemedIcon::new("infiniband-symbolic").into(),
+            InterfaceType::IncusBridge => ThemedIcon::new("bridge-symbolic").into(),
+            InterfaceType::LXCBridge => ThemedIcon::new("bridge-symbolic").into(),
+            InterfaceType::LXDBridge => ThemedIcon::new("bridge-symbolic").into(),
             InterfaceType::Slip => ThemedIcon::new("slip-symbolic").into(),
             InterfaceType::VirtualEthernet => ThemedIcon::new("virtual-ethernet").into(),
             InterfaceType::VmBridge => ThemedIcon::new("vm-bridge-symbolic").into(),
@@ -289,6 +300,9 @@ impl NetworkInterface {
             self.interface_type,
             InterfaceType::Bridge
                 | InterfaceType::Docker
+                | InterfaceType::IncusBridge
+                | InterfaceType::LXCBridge
+                | InterfaceType::LXDBridge
                 | InterfaceType::VirtualEthernet
                 | InterfaceType::Vpn
                 | InterfaceType::VmBridge

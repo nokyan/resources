@@ -101,6 +101,8 @@ mod imp {
         pub processes_show_swap_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub processes_show_combined_memory_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub processes_show_commandline_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub show_virtual_drives_row: TemplateChild<adw::SwitchRow>,
@@ -147,7 +149,9 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResSettingsDialog(ObjectSubclass<imp::ResSettingsDialog>)
-        @extends adw::PreferencesDialog, gtk::Widget, adw::Dialog;
+        @extends adw::PreferencesDialog, gtk::Widget, adw::Dialog, gtk::Window,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible, gtk::ShortcutManager, gtk::Root,
+        gtk::Native;
 }
 
 impl Default for ResSettingsDialog {
@@ -182,7 +186,7 @@ impl ResSettingsDialog {
         imp.show_graph_grids_row
             .set_active(SETTINGS.show_graph_grids());
         imp.graph_data_points_row
-            .set_value(SETTINGS.graph_data_points() as f64);
+            .set_value(f64::from(SETTINGS.graph_data_points()));
         imp.sidebar_details_row
             .set_active(SETTINGS.sidebar_details());
         imp.sidebar_description_row
@@ -252,6 +256,8 @@ impl ResSettingsDialog {
             .set_active(SETTINGS.processes_show_swap());
         imp.processes_show_combined_memory_row
             .set_active(SETTINGS.processes_show_combined_memory());
+        imp.processes_show_commandline_row
+            .set_active(SETTINGS.processes_show_commandline());
 
         imp.show_virtual_drives_row
             .set_active(SETTINGS.show_virtual_drives());
@@ -470,6 +476,11 @@ impl ResSettingsDialog {
         imp.processes_show_combined_memory_row
             .connect_active_notify(|switch_row| {
                 let _ = SETTINGS.set_processes_show_combined_memory(switch_row.is_active());
+            });
+
+        imp.processes_show_commandline_row
+            .connect_active_notify(|switch_row| {
+                let _ = SETTINGS.set_processes_show_commandline(switch_row.is_active());
             });
 
         imp.show_virtual_drives_row

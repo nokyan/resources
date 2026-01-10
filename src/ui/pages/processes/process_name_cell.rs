@@ -143,7 +143,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResProcessNameCell(ObjectSubclass<imp::ResProcessNameCell>)
-        @extends gtk::Widget, gtk::Box;
+        @extends gtk::Widget, gtk::Box,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResProcessNameCell {

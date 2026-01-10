@@ -99,7 +99,7 @@ mod imp {
                 main_graph_color: glib::Bytes::from_static(&super::ResBattery::MAIN_GRAPH_COLOR),
                 icon: RefCell::new(ThemedIcon::new("battery-symbolic").into()),
                 usage: Default::default(),
-                tab_name: Cell::new(glib::GString::from(i18n("Drive"))),
+                tab_name: Cell::new(glib::GString::from(i18n("Battery"))),
                 tab_detail_string: Cell::new(glib::GString::new()),
                 tab_id: Cell::new(glib::GString::new()),
                 tab_usage_string: Cell::new(glib::GString::new()),
@@ -156,7 +156,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResBattery(ObjectSubclass<imp::ResBattery>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResBattery {

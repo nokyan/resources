@@ -67,7 +67,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResDoubleGraphBox(ObjectSubclass<imp::ResDoubleGraphBox>)
-        @extends gtk::Widget, gtk::ListBoxRow, adw::PreferencesRow;
+        @extends gtk::Widget, gtk::ListBoxRow, adw::PreferencesRow,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible, gtk::Actionable;
 }
 
 impl Default for ResDoubleGraphBox {

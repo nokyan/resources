@@ -32,6 +32,8 @@ pub const VID_AMD: u16 = 0x1002;
 pub const VID_INTEL: u16 = 0x8086;
 pub const VID_NVIDIA: u16 = 0x10DE;
 
+const BLOCKLISTED_DRIVERS: &[&str] = &["simple-framebuffer", "evdi"];
+
 static RE_CARD_ENUMARATOR: Lazy<Regex> = lazy_regex!(r"(\d+)\/?$");
 
 #[derive(Debug)]
@@ -44,8 +46,8 @@ pub struct GpuData {
     pub encode_fraction: Option<f64>,
     pub decode_fraction: Option<f64>,
 
-    pub total_vram: Option<usize>,
-    pub used_vram: Option<usize>,
+    pub total_vram: Option<u64>,
+    pub used_vram: Option<u64>,
 
     pub clock_speed: Option<f64>,
     pub vram_speed: Option<f64>,
@@ -139,8 +141,8 @@ pub trait GpuImpl {
     fn encode_usage(&self) -> Result<f64>;
     fn decode_usage(&self) -> Result<f64>;
     fn combined_media_engine(&self) -> Result<bool>;
-    fn used_vram(&self) -> Result<usize>;
-    fn total_vram(&self) -> Result<usize>;
+    fn used_vram(&self) -> Result<u64>;
+    fn total_vram(&self) -> Result<u64>;
     fn temperature(&self) -> Result<f64>;
     fn power_usage(&self) -> Result<f64>;
     fn core_frequency(&self) -> Result<f64>;
@@ -180,11 +182,6 @@ pub trait GpuImpl {
         read_parsed::<f64>(self.hwmon_path()?.join("power1_average"))
             .or_else(|_| read_parsed::<f64>(self.hwmon_path()?.join("power1_input")))
             .map(|microwatts| microwatts / 1_000_000.0)
-    }
-
-    fn hwmon_energy_usage(&self) -> Result<f64> {
-        read_parsed::<f64>(self.hwmon_path()?.join("energy1_input"))
-            .map(|microjoules| microjoules / 1_000_000.0)
     }
 
     fn hwmon_core_frequency(&self) -> Result<f64> {
@@ -293,9 +290,8 @@ impl Gpu {
             .get("DRIVER")
             .map_or_else(|| i18n("N/A"), std::string::ToString::to_string);
 
-        // if the driver is simple-framebuffer, it's likely not a GPU
-        if driver == "simple-framebuffer" {
-            bail!("this is a simple framebuffer");
+        if BLOCKLISTED_DRIVERS.contains(&driver.as_str()) {
+            bail!("blocklisted driver");
         }
 
         let (gpu, gpu_category) = if vid == VID_AMD || driver == "amdgpu" {

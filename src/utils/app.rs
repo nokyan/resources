@@ -17,7 +17,7 @@ use process_data::{
     gpu_usage::{GpuIdentifier, GpuUsageStats},
 };
 
-use crate::i18n::i18n;
+use crate::{i18n::i18n, utils::read_parsed};
 
 use super::{
     boot_time,
@@ -74,6 +74,7 @@ static APP_ID_BLOCKLIST: LazyLock<HashMap<&'static str, &'static str>> = LazyLoc
         ("gnome-wacom-panel", "Technical application"),
         ("gnome-wifi-panel", "Technical application"),
         ("gnome-wwan-panel", "Technical application"),
+        ("org.freedesktop.Xwayland", "Technical application"),
     ])
 });
 
@@ -233,9 +234,8 @@ impl App {
 
     pub fn from_desktop_file<P: AsRef<Path>>(file_path: P) -> Result<App> {
         let file_path = file_path.as_ref();
-        trace!("Reading {file_path:?}…");
 
-        let ini = ini::Ini::load_from_file(file_path)?;
+        let ini = ini::Ini::load_from_str(&read_parsed::<String>(file_path)?)?;
 
         let desktop_entry = ini
             .section(Some("Desktop Entry"))
@@ -244,6 +244,7 @@ impl App {
         let id = desktop_entry
             .get("X-Flatpak") // is there a X-Flatpak section?
             .or_else(|| desktop_entry.get("X-SnapInstanceName")) // if not, maybe there is a X-SnapInstanceName
+            .or_else(|| desktop_entry.get("X-AppImage-Identifier")) // or maybe a X-AppImageIdentifier
             .map(str::to_string)
             .or_else(|| {
                 // if not, presume that the ID is in the file name
@@ -257,7 +258,9 @@ impl App {
             bail!("{id} is blocklisted (reason: {reason})")
         }
 
-        let exec = desktop_entry.get("Exec");
+        let exec = desktop_entry
+            .get("X-ExecLocation") // appimaged adds this entry that points to the original AppImage path
+            .or(desktop_entry.get("Exec"));
         let is_flatpak = exec.is_some_and(|exec| exec.starts_with("/usr/bin/flatpak run"));
         let commandline = exec
             .and_then(|exec| {
@@ -328,6 +331,7 @@ impl App {
             .map(str::to_string);
 
         let is_snap = desktop_entry.get("X-SnapInstanceName").is_some();
+        let is_appimage = desktop_entry.get("X-AppImage-Identifier").is_some();
 
         let containerization = if is_flatpak {
             debug!(
@@ -345,6 +349,14 @@ impl App {
                 executable_name.as_ref().unwrap_or(&"<None>".into()),
             );
             Containerization::Snap
+        } else if is_appimage {
+            debug!(
+                "Found AppImage app \"{display_name}\" (ID: {id:?}) at {} with commandline `{}` (detected executable name: {})",
+                file_path.to_string_lossy(),
+                commandline.as_ref().unwrap_or(&"<None>".into()),
+                executable_name.as_ref().unwrap_or(&"<None>".into()),
+            );
+            Containerization::AppImage
         } else {
             debug!(
                 "Found native app \"{display_name}\" (ID: {id:?}) at {} with commandline `{}` (detected executable name: {})",
@@ -615,8 +627,33 @@ impl AppsContext {
             .clamp(0.0, 1.0)
     }
 
+    pub fn vram_usage(&self, gpu_identifier: GpuIdentifier) -> u64 {
+        self.processes_iter()
+            .flat_map(|process| {
+                process
+                    .data
+                    .gpu_usage_stats
+                    .get(&gpu_identifier)
+                    .and_then(|gpu_identifier| gpu_identifier.mem())
+            })
+            .sum()
+    }
+
     fn app_associated_with_process(&self, process: &Process) -> Option<String> {
         // TODO: tidy this up
+        // ↓ look for whether we can associate this process with an AppImage
+        if let Some(appimage_path) = &process.data.appimage_path {
+            if let Some(parent) = self.apps.values().find(|app| {
+                app.containerization == Containerization::AppImage
+                    && app
+                        .commandline
+                        .as_ref()
+                        .is_some_and(|exe_name| exe_name == appimage_path)
+            }) {
+                return parent.id.clone();
+            }
+        }
+
         // ↓ look for whether we can find an ID in the cgroup
         if DESKTOP_ENVIRONMENT_CGROUPS.contains(&process.data.cgroup.as_deref().unwrap_or_default())
         {

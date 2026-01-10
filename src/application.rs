@@ -91,6 +91,13 @@ impl Application {
         self.imp().window.get().unwrap().upgrade().unwrap()
     }
 
+    pub fn try_main_window(&self) -> Option<MainWindow> {
+        self.imp()
+            .window
+            .get()
+            .and_then(adw::glib::WeakRef::upgrade)
+    }
+
     fn setup_gactions(&self) {
         // Quit
         let action_quit = gio::SimpleAction::new("quit", None);
@@ -248,7 +255,7 @@ impl Application {
 
         settings.init();
 
-        settings.present(Some(&self.main_window()));
+        AdwDialogExt::present(&settings, Some(&self.main_window()));
         imp.settings_window_opened.set(true);
 
         settings.connect_closed(clone!(
@@ -264,22 +271,18 @@ impl Application {
         let about = adw::AboutDialog::builder()
             .application_name(i18n("Resources"))
             .application_icon(config::APP_ID)
-            .developer_name(i18n("The Nalux Team"))
+            .issue_url("https://github.com/nokyan/resources/issues")
+            .developer_name("nokyan")
             .developers(vec!["nokyan <hello@nokyan.net>"])
+            .artists(["Avhiren"])
             .license_type(gtk::License::Gpl30)
             .version(config::VERSION)
             .website("https://apps.gnome.org/app/net.nokyan.Resources/")
             .build();
 
-        about.add_link(
-            &i18n("Report Issues"),
-            "https://github.com/nokyan/resources/issues",
-        );
-
         // Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
         // One name per line, please do not remove previous names.
         about.set_translator_credits(&i18n("translator-credits"));
-        about.add_credit_section(Some(&i18n("Icon by")), &["Avhiren"]);
 
         about.present(Some(&self.main_window()));
     }
@@ -309,6 +312,10 @@ impl Application {
         }
 
         ApplicationExtManual::run_with_args::<&str>(self, &[]);
+    }
+
+    pub fn try_default() -> Option<Self> {
+        gio::Application::default().and_then(|app| app.downcast().ok())
     }
 }
 

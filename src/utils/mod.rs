@@ -3,7 +3,7 @@ use std::{collections::HashMap, path::Path, str::FromStr, sync::LazyLock};
 use anyhow::{Context, Result};
 use gtk::glib::DateTime;
 use ini::Ini;
-use log::{debug, trace, warn};
+use log::{debug, trace};
 use process_data::unix_as_millis;
 
 pub mod app;
@@ -123,8 +123,8 @@ where
         .parse::<T>()
         .inspect(|_| trace!("Successfully read {path:?} to {type_name} → {content}",))
         .inspect_err(|e| {
-            warn!("Unable to parse {path:?} to {type_name} → {e}");
-            warn!("Content of {path:?} → {content}");
+            trace!("Unable to parse {path:?} to {type_name} → {e}");
+            trace!("Content of {path:?} → {content}");
         })
         .with_context(|| format!("error parsing file {}", path.display()))
 }

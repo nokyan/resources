@@ -6,7 +6,7 @@ use gtk::{SortType, gio, glib};
 use log::debug;
 use strum_macros::{Display, EnumString, FromRepr};
 
-use paste::paste;
+use pastey::paste;
 
 use crate::config::APP_ID;
 
@@ -377,6 +377,7 @@ impl Settings {
         processes_show_priority,
         processes_show_swap,
         processes_show_combined_memory,
+        processes_show_commandline,
         show_logical_cpus,
         show_graph_grids,
         normalize_cpu_usage,

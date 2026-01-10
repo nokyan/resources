@@ -173,7 +173,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResGPU(ObjectSubclass<imp::ResGPU>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResGPU {
@@ -344,36 +345,41 @@ impl ResGPU {
             .end_graph()
             .set_visible(encode_fraction.is_some() || decode_fraction.is_some());
 
-        let used_vram_fraction =
-            if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
-                Some((*used_vram as f64 / *total_vram as f64).finite_or_default())
-            } else {
-                None
-            };
+        let vram_usage_string = if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram)
+        {
+            let used_vram_fraction = (*used_vram as f64 / *total_vram as f64).finite_or_default();
 
-        let vram_percentage_string = used_vram_fraction.as_ref().map_or_else(
-            || i18n("N/A"),
-            |fraction| format!("{} %", (fraction * 100.0).round()),
-        );
+            let vram_percentage_string = format!("{} %", (used_vram_fraction * 100.0).round());
 
-        let vram_subtitle = if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram) {
-            format!(
+            let vram_subtitle = format!(
                 "{} / {} · {}",
                 convert_storage(*used_vram as f64, false),
                 convert_storage(*total_vram as f64, false),
                 vram_percentage_string
-            )
-        } else {
-            i18n("N/A")
-        };
+            );
 
-        imp.vram_usage.set_subtitle(&vram_subtitle);
-        imp.vram_usage
-            .graph()
-            .push_data_point(used_vram_fraction.unwrap_or(0.0));
-        imp.vram_usage
-            .graph()
-            .set_visible(used_vram_fraction.is_some());
+            imp.vram_usage.set_subtitle(&vram_subtitle);
+            imp.vram_usage.graph().push_data_point(used_vram_fraction);
+            imp.vram_usage.graph().set_visible(true);
+            imp.vram_usage.graph().set_locked_max_y(Some(1.0));
+
+            Some(vram_percentage_string)
+        } else if let Some(used_vram) = used_vram {
+            let vram_subtitle = convert_storage(*used_vram as f64, false);
+
+            imp.vram_usage.set_subtitle(&vram_subtitle);
+            imp.vram_usage.graph().push_data_point(*used_vram as f64);
+            imp.vram_usage.graph().set_visible(true);
+            imp.vram_usage.graph().set_locked_max_y(None);
+
+            Some(vram_subtitle)
+        } else {
+            imp.vram_usage.set_subtitle(&i18n("N/A"));
+
+            imp.vram_usage.graph().set_visible(false);
+
+            None
+        };
 
         let mut power_string = power_usage.map_or_else(|| i18n("N/A"), convert_power);
 
@@ -402,11 +408,11 @@ impl ResGPU {
 
         self.set_property("usage", usage_fraction.unwrap_or(0.0));
 
-        if used_vram_fraction.is_some() {
+        if let Some(vram_usage_string) = vram_usage_string {
             usage_percentage_string.push_str(" · ");
             // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
             // shorter than) 'Memory'
-            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&vram_percentage_string]));
+            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&vram_usage_string]));
         }
 
         imp.temperature.graph().set_visible(temperature.is_some());

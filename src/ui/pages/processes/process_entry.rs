@@ -209,7 +209,10 @@ impl ProcessEntry {
 
         let containerization = match process.data.containerization {
             Containerization::None => i18n("No"),
+            Containerization::AppImage => i18n("Yes (AppImage)"),
             Containerization::Flatpak => i18n("Yes (Flatpak)"),
+            // Translators: "Portable" is the name of the containerization method used, please keep it as is
+            Containerization::Portable => i18n("Yes (Portable)"),
             Containerization::Snap => i18n("Yes (Snap)"),
         };
 

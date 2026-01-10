@@ -108,10 +108,9 @@ fn parse_pci_ids<R: BufRead>(reader: R) -> Result<BTreeMap<u16, Vendor>> {
             trace!("Line {}: Classes reached, parsing done", number + 1);
             break;
         } else if line.starts_with('#') || line.is_empty() {
-            trace!("Line {}: Empty line or comment", number + 1);
             // case 2: we're seeing a comment, don't care
             // case 3: we're seeing an empty line, also don't care
-            continue;
+            trace!("Line {}: Empty line or comment", number + 1);
         } else if line.starts_with("\t\t") {
             // case 4: we're seeing a new sub device of the last seen device
             let mut split = line.trim_start().splitn(4, ' ');

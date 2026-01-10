@@ -58,7 +58,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/network.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/npu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pages/processes.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks" alias="gtk/help-overlay.ui">ui/shortcuts.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="shortcuts-dialog.ui">ui/shortcuts.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/application_name_cell.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/double_graph_box.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/widgets/graph_box.ui</file>

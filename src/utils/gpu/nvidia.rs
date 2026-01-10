@@ -135,24 +135,24 @@ impl GpuImpl for NvidiaGpu {
         Ok(false)
     }
 
-    fn used_vram(&self) -> Result<usize> {
+    fn used_vram(&self) -> Result<u64> {
         Self::nvml_device(&self.pci_slot_string)
             .and_then(|dev| {
                 dev.memory_info()
                     .context("unable to get memory info through NVML")
             })
-            .map(|memory_info| memory_info.used as usize)
-            .or_else(|_| self.drm_used_vram().map(|usage| usage as usize))
+            .map(|memory_info| memory_info.used)
+            .or_else(|_| self.drm_used_vram().map(|usage| usage as u64))
     }
 
-    fn total_vram(&self) -> Result<usize> {
+    fn total_vram(&self) -> Result<u64> {
         Self::nvml_device(&self.pci_slot_string)
             .and_then(|dev| {
                 dev.memory_info()
                     .context("unable to get memory info through NVML")
             })
-            .map(|memory_info| memory_info.total as usize)
-            .or_else(|_| self.drm_total_vram().map(|usage| usage as usize))
+            .map(|memory_info| memory_info.total)
+            .or_else(|_| self.drm_total_vram().map(|usage| usage as u64))
     }
 
     fn temperature(&self) -> Result<f64> {

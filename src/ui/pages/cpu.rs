@@ -185,7 +185,8 @@ mod imp {
 
 glib::wrapper! {
     pub struct ResCPU(ObjectSubclass<imp::ResCPU>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Buildable, gtk::ConstraintTarget, gtk::Accessible;
 }
 
 impl Default for ResCPU {
@@ -261,6 +262,7 @@ impl ResCPU {
             let flow_box_chld = FlowBoxChild::builder()
                 .child(&thread_box)
                 .css_classes(vec!["tile", "card"])
+                .can_target(false)
                 .build();
             imp.thread_box.append(&flow_box_chld);
             imp.thread_graphs.borrow_mut().push(thread_box);
