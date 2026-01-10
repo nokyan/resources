@@ -3,7 +3,6 @@ pub mod npu_usage;
 pub mod pci_slot;
 
 use anyhow::{Context, Result, bail};
-use glob::glob;
 use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, trace, warn};
 use nutype::nutype;
@@ -33,9 +32,6 @@ const STAT_STARTTIME: usize = 21 - STAT_OFFSET;
 const DRM_DRIVER: &str = "drm-driver";
 
 const DRM_PDEV: &str = "drm-pdev";
-
-const DRM_MAJOR: u32 = 226;
-const ACCEL_MAJOR: u32 = 261;
 
 static USERS_CACHE: LazyLock<HashMap<libc::uid_t, String>> = LazyLock::new(|| unsafe {
     debug!("Initializing users cache…");
@@ -193,12 +189,7 @@ pub enum Containerization {
     AppImage,
 }
 
-struct Fdinfo {
-    pub pid: libc::pid_t,
-    pub fdinfo_num: usize,
-    pub content: HashMap<String, String>,
-}
-
+#[derive(Debug, Clone)]
 struct Fdinfo {
     pub pid: libc::pid_t,
     pub fdinfo_num: usize,
@@ -308,16 +299,26 @@ impl ProcessData {
     }
 
     pub fn all_process_data(
-        known_non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+        non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+        non_npu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+        symlink_cache: &mut HashMap<(libc::pid_t, usize), PathBuf>,
     ) -> Result<Vec<Self>> {
         Self::update_nvidia_stats();
 
         let mut process_data = vec![];
-        for entry in glob("/proc/[0-9]*/").context("unable to glob")?.flatten() {
-            let data = ProcessData::try_from_path(&entry, known_non_gpu_fdinfos);
+        for entry in std::fs::read_dir("/proc")?.flatten() {
+            // if name contains pid
+            if let Ok(_) = entry.file_name().to_string_lossy().parse::<u32>() {
+                let data = ProcessData::try_from_path(
+                    entry.path(),
+                    non_gpu_fdinfos,
+                    non_npu_fdinfos,
+                    symlink_cache,
+                );
 
-            if let Ok(data) = data {
-                process_data.push(data);
+                if let Ok(data) = data {
+                    process_data.push(data);
+                }
             }
         }
 
@@ -326,7 +327,9 @@ impl ProcessData {
 
     pub fn try_from_path<P: AsRef<Path>>(
         proc_path: P,
-        known_non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+        non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+        non_npu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+        symlink_cache: &mut HashMap<(libc::pid_t, usize), PathBuf>,
     ) -> Result<Self> {
         let proc_path = proc_path.as_ref();
         let pid = proc_path
@@ -492,15 +495,16 @@ impl ProcessData {
         trace!("Written bytes of {pid} determined to be {write_bytes:?}");
 
         trace!("Collecting fdinfo statistics for {pid}…");
-        let fdinfos = Self::collect_fdinfos(pid, known_non_gpu_fdinfos).unwrap_or_default();
+        let fdinfos = Self::collect_fdinfos(pid, non_gpu_fdinfos, non_npu_fdinfos, symlink_cache)
+            .unwrap_or_default();
 
         trace!("Collecting NVIDIA statistics for {pid}…");
         let nvidia_stats = Self::nvidia_gpu_stats_all(pid);
         let mut gpu_usage_stats =
-            Self::other_gpu_usage_stats(&fdinfos, known_non_gpu_fdinfos).unwrap_or_default();
+            Self::other_gpu_usage_stats(&fdinfos, non_gpu_fdinfos).unwrap_or_default();
         gpu_usage_stats.extend(nvidia_stats);
 
-        let npu_usage_stats = Self::npu_usage_stats(&fdinfos).unwrap_or_default();
+        let npu_usage_stats = Self::npu_usage_stats(&fdinfos, non_npu_fdinfos).unwrap_or_default();
 
         let timestamp = unix_as_millis();
 
@@ -532,74 +536,85 @@ impl ProcessData {
 
     fn collect_fdinfos(
         pid: libc::pid_t,
-        known_non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+        non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+        non_npu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+        symlink_cache: &mut HashMap<(libc::pid_t, usize), PathBuf>,
     ) -> Result<Vec<Fdinfo>> {
         let fdinfo_dir = PathBuf::from(format!("/proc/{pid}/fdinfo"));
+        let fd_dir = PathBuf::from(format!("/proc/{pid}/fd"));
 
-        let mut seen_fds = HashSet::new();
-
+        let mut seen_targets: HashMap<PathBuf, usize> = HashMap::new();
         let mut return_vec = Vec::new();
 
         for entry in std::fs::read_dir(fdinfo_dir)? {
             let entry = entry?;
             let fdinfo_path = entry.path();
 
-            // if our fd is 0, 1 or 2 it's probably just a std stream so skip it
             let fd_num = fdinfo_path
                 .file_name()
                 .and_then(|osstr| osstr.to_str())
                 .unwrap_or("0")
                 .parse::<usize>()
                 .unwrap_or(0);
-            if fd_num <= 2 {
-                trace!("fd_num is <= 2 (std stream), skipping");
-                continue;
-            }
 
-            if known_non_gpu_fdinfos.contains(&(pid, fd_num)) {
-                continue;
-            }
+            let is_cached_non_gpu = non_gpu_fdinfos.contains(&(pid, fd_num));
+            let is_cached_non_npu = non_npu_fdinfos.contains(&(pid, fd_num));
 
-            // Adapted from nvtop's `is_drm_fd()`
-            // https://github.com/Syllo/nvtop/blob/master/src/extract_processinfo_fdinfo.c
-            let fd_path = fdinfo_path.to_str().map(|s| s.replace("fdinfo", "fd"));
-            if let Some(fd_path) = fd_path {
-                if let Ok(fd_metadata) = std::fs::metadata(fd_path) {
-                    let major = libc::major(fd_metadata.st_rdev());
-                    if (fd_metadata.st_mode() & libc::S_IFMT) != libc::S_IFCHR
-                        || (major != DRM_MAJOR && major != ACCEL_MAJOR)
-                    {
-                        trace!("Major and mode are not correct, skipping");
+            let fd_symlink = fd_dir.join(fd_num.to_string());
+            let symlink_target = {
+                if let Some(cached_target) = symlink_cache.get(&(pid, fd_num)) {
+                    Some(cached_target.clone())
+                } else {
+                    std::fs::read_link(&fd_symlink).ok()
+                }
+            };
+
+            if is_cached_non_gpu && is_cached_non_npu {
+                if let Some(ref target) = symlink_target {
+                    // skip if target doesn't look like a GPU/NPU device
+                    let target_str = target.to_string_lossy();
+                    if !target_str.contains("/dev/dri/") && !target_str.contains("/dev/accel/") {
+                        trace!(
+                            "fdinfo is known to be not related with NPUs and GPUs (target: {:?}), skipping",
+                            target
+                        );
                         continue;
+                    } else {
+                        // target changed to a GPU/NPU device, remove from cache
+                        trace!("fdinfo target changed to GPU/NPU device, removing from cache");
+                        non_gpu_fdinfos.remove(&(pid, fd_num));
+                        non_npu_fdinfos.remove(&(pid, fd_num));
                     }
                 }
             }
 
-            // Adapted from nvtop's `processinfo_sweep_fdinfos()`
-            // https://github.com/Syllo/nvtop/blob/master/src/extract_processinfo_fdinfo.c
-            // if we've already seen the file this fd refers to, skip
-            if seen_fds.iter().any(|seen_fd| unsafe {
-                syscalls::syscall!(syscalls::Sysno::kcmp, pid, pid, 0, fd_num, *seen_fd)
-                    .unwrap_or(0)
-                    == 0
-            }) {
-                trace!("fdinfo already seen, skipping");
-                continue;
+            if let Some(ref target) = symlink_target {
+                if let Some(&first_fd) = seen_targets.get(target) {
+                    trace!(
+                        "fdinfo {} points to same target as fd {} (target: {:?}), skipping",
+                        fd_num, first_fd, target
+                    );
+                    continue;
+                }
+                seen_targets.insert(target.clone(), fd_num);
+                symlink_cache.insert((pid, fd_num), target.clone());
             }
-
-            seen_fds.insert(fd_num);
 
             trace!("fdinfo passed all checks, reading and parsing…");
 
-            let mut buffer = String::new();
-            if std::fs::read_to_string(&mut buffer).is_err() {
-                known_non_gpu_fdinfos.insert((pid, fd_num));
+            let _content = read_parsed::<String>(fdinfo_path);
+            if _content.is_err() {
+                trace!("couldn't read fdinfo, skipping…");
+                non_gpu_fdinfos.insert((pid, fd_num));
+                non_npu_fdinfos.insert((pid, fd_num));
+                continue;
             }
+            let content = _content.unwrap();
 
             return_vec.push(Fdinfo {
                 pid,
                 fdinfo_num: fd_num,
-                content: Self::parse_fdinfo(buffer),
+                content: Self::parse_fdinfo(content),
             });
         }
 
@@ -617,84 +632,41 @@ impl ProcessData {
     }
 
     fn npu_usage_stats(
-        fdinfos: &[HashMap<String, String>],
+        fdinfos: &[Fdinfo],
+        non_npu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
     ) -> Result<BTreeMap<PciSlot, NpuUsageStats>> {
         let mut return_map = BTreeMap::new();
 
         for fdinfo in fdinfos {
             if let Ok((identifier, stats)) = Self::extract_npu_usage_from_fdinfo(fdinfo) {
+                trace!(
+                    "Successfully got NPU statistics from fdinfo {}/{}",
+                    fdinfo.pid, fdinfo.fdinfo_num
+                );
                 return_map
                     .entry(identifier)
                     .and_modify(|existing_value: &mut NpuUsageStats| {
                         *existing_value = existing_value.greater(&stats)
                     })
                     .or_insert(stats);
+            } else {
+                trace!(
+                    "fdinfo {}/{} is not NPU-related, will be skipped in the future",
+                    fdinfo.pid, fdinfo.fdinfo_num
+                );
+                non_npu_fdinfos.insert((fdinfo.pid, fdinfo.fdinfo_num));
             }
         }
 
         Ok(return_map)
     }
 
-    fn extract_npu_usage_from_fdinfo(
-        fdinfo: &HashMap<String, String>,
-    ) -> Result<(PciSlot, NpuUsageStats)> {
-        let driver = fdinfo.get(DRM_DRIVER);
+    fn extract_npu_usage_from_fdinfo(fdinfo: &Fdinfo) -> Result<(PciSlot, NpuUsageStats)> {
+        let driver = fdinfo.content.get(DRM_DRIVER);
 
         if let Some(driver) = driver {
             let gpu_identifier = fdinfo
-                .get(DRM_PDEV)
-                .and_then(|field| PciSlot::from_str(field).ok())
-                .unwrap_or_default();
-
-            let stats = match driver.as_str() {
-                "amdxdna_accel_driver" => NpuUsageStats::AmdxdnaStats {
-                    usage_ns: NPU_NS_FIELDS
-                        .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
-                        .unwrap_or_default(),
-                    mem_bytes: MEM_DRM_FIELDS
-                        .get(driver.as_str())
-                        .map(|names| {
-                            Self::parse_drm_fields::<u64, _>(fdinfo, names, &RE_DRM_KIB)
-                                .saturating_mul(1024)
-                        })
-                        .unwrap_or_default(),
-                },
-                _ => bail!("unable to read stats from driver"),
-            };
-
-            return Ok((gpu_identifier, stats));
-        }
-
-        bail!("unable to find gpu information in this fdinfo");
-    }
-
-    fn npu_usage_stats(
-        fdinfos: &[HashMap<String, String>],
-    ) -> Result<BTreeMap<PciSlot, NpuUsageStats>> {
-        let mut return_map = BTreeMap::new();
-
-        for fdinfo in fdinfos {
-            if let Ok((identifier, stats)) = Self::extract_npu_usage_from_fdinfo(fdinfo) {
-                return_map
-                    .entry(identifier)
-                    .and_modify(|existing_value: &mut NpuUsageStats| {
-                        *existing_value = existing_value.greater(&stats)
-                    })
-                    .or_insert(stats);
-            }
-        }
-
-        Ok(return_map)
-    }
-
-    fn extract_npu_usage_from_fdinfo(
-        fdinfo: &HashMap<String, String>,
-    ) -> Result<(PciSlot, NpuUsageStats)> {
-        let driver = fdinfo.get(DRM_DRIVER);
-
-        if let Some(driver) = driver {
-            let gpu_identifier = fdinfo
+                .content
                 .get(DRM_PDEV)
                 .and_then(|field| PciSlot::from_str(field).ok())
                 .unwrap_or_default();
@@ -724,12 +696,16 @@ impl ProcessData {
 
     fn other_gpu_usage_stats(
         fdinfos: &[Fdinfo],
-        known_non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+        non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
     ) -> Result<BTreeMap<GpuIdentifier, GpuUsageStats>> {
         let mut return_map = BTreeMap::new();
 
         for fdinfo in fdinfos {
             if let Ok((identifier, stats)) = Self::extract_gpu_usage_from_fdinfo(fdinfo) {
+                trace!(
+                    "Successfully got GPU statistics from fdinfo {}/{}",
+                    fdinfo.pid, fdinfo.fdinfo_num
+                );
                 return_map
                     .entry(identifier)
                     .and_modify(|existing_value: &mut GpuUsageStats| {
@@ -737,7 +713,11 @@ impl ProcessData {
                     })
                     .or_insert(stats);
             } else {
-                known_non_gpu_fdinfos.insert((fdinfo.pid, fdinfo.fdinfo_num));
+                trace!(
+                    "fdinfo {}/{} is not GPU-related, will be skipped in the future",
+                    fdinfo.pid, fdinfo.fdinfo_num
+                );
+                non_gpu_fdinfos.insert((fdinfo.pid, fdinfo.fdinfo_num));
             }
         }
 

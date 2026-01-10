@@ -3,10 +3,9 @@ use log::{debug, info, trace};
 use process_data::ProcessData;
 use ron::ser::PrettyConfig;
 use std::{
-    collections::HashSet,
-    {
+    collections::{HashMap, HashSet},
     io::{Read, Write},
-},
+    path::PathBuf,
     time::Instant,
 };
 
@@ -33,10 +32,17 @@ fn main() -> Result<()> {
     debug!("Parsing arguments…");
     let args = Args::parse();
 
-    let mut known_non_gpu_fdinfos = HashSet::new();
+    let mut non_gpu_fdinfos = HashSet::new();
+    let mut non_npu_fdinfos = HashSet::new();
+    let mut symlink_cache = HashMap::new();
 
     if args.once {
-        output(args.ron, &mut known_non_gpu_fdinfos)?;
+        output(
+            args.ron,
+            &mut non_gpu_fdinfos,
+            &mut non_npu_fdinfos,
+            &mut symlink_cache,
+        )?;
         return Ok(());
     }
 
@@ -48,15 +54,25 @@ fn main() -> Result<()> {
         std::io::stdin().read_exact(&mut buffer)?;
         trace!("Received character, initiating scan…");
 
-        output(args.ron, &mut known_non_gpu_fdinfos)?;
+        output(
+            args.ron,
+            &mut non_gpu_fdinfos,
+            &mut non_npu_fdinfos,
+            &mut symlink_cache,
+        )?;
     }
 }
 
-fn output(ron: bool, known_non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>) -> Result<()> {
+fn output(
+    ron: bool,
+    non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+    non_npu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
+    symlink_cache: &mut HashMap<(libc::pid_t, usize), PathBuf>,
+) -> Result<()> {
     let start = Instant::now();
 
     trace!("Gathering process data…");
-    let data = ProcessData::all_process_data(known_non_gpu_fdinfos)?;
+    let data = ProcessData::all_process_data(non_gpu_fdinfos, non_npu_fdinfos, symlink_cache)?;
 
     let elapsed = start.elapsed();
     trace!(
