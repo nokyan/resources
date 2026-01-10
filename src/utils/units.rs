@@ -174,20 +174,16 @@ pub fn convert_storage_binary(bytes: f64, integer: bool) -> String {
 }
 
 pub fn convert_speed(bytes_per_second: f64, network: bool) -> String {
-    match SETTINGS.base() {
-        Base::Decimal => {
-            if network && SETTINGS.network_bits() {
-                convert_speed_bits_decimal(bytes_per_second * 8.0)
-            } else {
-                convert_speed_decimal(bytes_per_second)
-            }
+    if network {
+        if SETTINGS.network_bits() {
+            convert_speed_bits_decimal(bytes_per_second * 8.0)
+        } else {
+            convert_speed_decimal(bytes_per_second)
         }
-        Base::Binary => {
-            if network && SETTINGS.network_bits() {
-                convert_speed_bits_binary(bytes_per_second * 8.0)
-            } else {
-                convert_speed_binary(bytes_per_second)
-            }
+    } else {
+        match SETTINGS.base() {
+            Base::Decimal => convert_speed_decimal(bytes_per_second * 8.0),
+            Base::Binary => convert_speed_binary(bytes_per_second),
         }
     }
 }
