@@ -281,7 +281,7 @@ impl ResDrive {
         let imp = self.imp();
 
         let DriveData {
-            inner: _,
+            inner,
             is_virtual: _,
             writable,
             removable,
@@ -289,6 +289,8 @@ impl ResDrive {
             capacity,
             link,
         } = drive_data;
+
+        self.set_property("tab_name", &inner.display_name());
 
         let time_passed = SystemTime::now()
             .duration_since(imp.last_timestamp.get())
