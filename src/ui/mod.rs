@@ -1,4 +1,4 @@
-extern crate paste;
+extern crate pastey;
 
 #[macro_export]
 macro_rules! gstring_getter_setter {
@@ -10,7 +10,7 @@ macro_rules! gstring_getter_setter {
                 $gstring_name
             }
 
-            paste::paste! {
+            pastey::paste! {
                 pub fn [<set_ $gstring_name>](&self, $gstring_name: &str) {
                     self.$gstring_name.set(glib::GString::from($gstring_name));
                 }
@@ -29,7 +29,7 @@ macro_rules! gstring_option_getter_setter {
                 $gstring_name
             }
 
-            paste::paste! {
+            pastey::paste! {
                 pub fn [<set_ $gstring_name>](&self, $gstring_name: Option<&str>) {
                     self.$gstring_name.set($gstring_name.map(glib::GString::from));
                 }

@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources-main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2025-12-09 15:37+0000\n"
-"PO-Revision-Date: 2025-12-10 09:11+0800\n"
+"POT-Creation-Date: 2025-12-17 15:36+0000\n"
+"PO-Revision-Date: 2025-12-18 08:05+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -972,18 +972,24 @@ msgstr "否"
 
 #: src/ui/pages/applications/application_entry.rs:191
 #: src/ui/pages/processes/process_entry.rs:212
-msgid "Yes (Flatpak)"
-msgstr "是（Flatpak）"
+msgid "Yes (AppImage)"
+msgstr "是（AppImage）"
 
 #: src/ui/pages/applications/application_entry.rs:192
 #: src/ui/pages/processes/process_entry.rs:213
+msgid "Yes (Flatpak)"
+msgstr "是（Flatpak）"
+
+#. Translators: "Portable" is the name of the containerization method used, please keep it as is
+#: src/ui/pages/applications/application_entry.rs:194
+#: src/ui/pages/processes/process_entry.rs:215
+msgid "Yes (Portable)"
+msgstr "是（Portable）"
+
+#: src/ui/pages/applications/application_entry.rs:195
+#: src/ui/pages/processes/process_entry.rs:216
 msgid "Yes (Snap)"
 msgstr "是（Snap）"
-
-#: src/ui/pages/applications/application_entry.rs:193
-#: src/ui/pages/processes/process_entry.rs:214
-msgid "Yes (AppImage)"
-msgstr "是（AppImage）"
 
 #: src/ui/pages/applications/mod.rs:663
 msgid "Running Apps: {}"
@@ -1258,7 +1264,7 @@ msgstr "杀死 {} 时出现问题"
 msgid "There was a problem continuing {}"
 msgstr "继续 {} 时出现问题"
 
-#: src/utils/app.rs:222
+#: src/utils/app.rs:223
 msgid "System Processes"
 msgstr "系统进程"
 

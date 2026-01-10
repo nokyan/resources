@@ -51,13 +51,17 @@ static USERS_CACHE: LazyLock<HashMap<libc::uid_t, String>> = LazyLock::new(|| un
     users
 });
 
-static PAGESIZE: LazyLock<usize> = LazyLock::new(sysconf::pagesize);
-
 static NUM_CPUS: LazyLock<usize> = LazyLock::new(num_cpus::get);
 
 static RE_UID: Lazy<Regex> = lazy_regex!(r"Uid:\s*(\d+)");
 
+static RE_CGROUP: Lazy<Regex> = lazy_regex!(
+    r"(?U)/(?:app|background)\.slice/(?:app-|dbus-:)(?:(?P<launcher>[^-]+)-)?(?P<cgroup>[^-]+)(?:-[0-9]+|@[0-9]+)?\.(?:scope|service)"
+);
+
 static RE_AFFINITY: Lazy<Regex> = lazy_regex!(r"Cpus_allowed:\s*([0-9A-Fa-f]+)");
+
+static RE_MEMORY_USAGE: Lazy<Regex> = lazy_regex!(r"VmRSS:\s*([0-9]+)\s*kB");
 
 static RE_SWAP_USAGE: Lazy<Regex> = lazy_regex!(r"VmSwap:\s*([0-9]+)\s*kB");
 
@@ -186,6 +190,7 @@ pub enum Containerization {
     #[default]
     None,
     Flatpak,
+    Portable,
     Snap,
     AppImage,
 }
@@ -218,37 +223,53 @@ pub struct ProcessData {
 }
 
 impl ProcessData {
-    fn sanitize_cgroup<S: AsRef<str>>(cgroup: S) -> Option<String> {
-        let cgroups_v2_line = cgroup.as_ref().split('\n').find(|s| s.starts_with("0::"))?;
-        if cgroups_v2_line.ends_with(".scope") {
-            let cgroups_segments: Vec<&str> = cgroups_v2_line.split('-').collect();
-            if cgroups_segments.len() > 1 {
-                cgroups_segments
-                    .get(cgroups_segments.len() - 2)
-                    .map(|s| unescape::unescape(s).unwrap_or_else(|| (*s).to_string()))
-            } else {
-                None
+    // apparently some apps like Mullvad do this to include a '-' in their cgroup even though that's not allowed
+    fn decode_hex_escapes(s: &str) -> Result<String, ()> {
+        let bytes = s.as_bytes();
+        let mut out = Vec::with_capacity(bytes.len());
+        let mut i = 0;
+
+        #[inline]
+        const fn hex(b: u8) -> Result<u8, ()> {
+            match b {
+                b'0'..=b'9' => Ok(b - b'0'),
+                b'a'..=b'f' => Ok(b - b'a' + 10),
+                b'A'..=b'F' => Ok(b - b'A' + 10),
+                _ => Err(()),
             }
-        } else if cgroups_v2_line.ends_with(".service") {
-            let cgroups_segments: Vec<&str> = cgroups_v2_line.split('/').collect();
-            if let Some(last) = cgroups_segments.last() {
-                last[0..last.len() - 8]
-                    .split('@')
-                    .next()
-                    .map(|s| unescape::unescape(s).unwrap_or_else(|| s.to_string()))
-                    .map(|s| {
-                        if s.contains("dbus-:") {
-                            s.split('-').last().unwrap_or(&s).to_string()
-                        } else {
-                            s
-                        }
-                    })
-            } else {
-                None
-            }
-        } else {
-            None
         }
+
+        while i < bytes.len() {
+            if bytes[i] == b'\\' && i + 3 < bytes.len() && bytes[i + 1] == b'x' {
+                let hi = bytes[i + 2];
+                let lo = bytes[i + 3];
+
+                let val = (hex(hi)? << 4) | hex(lo)?;
+                out.push(val);
+                i += 4;
+            } else {
+                out.push(bytes[i]);
+                i += 1;
+            }
+        }
+
+        String::from_utf8(out).map_err(|_| ())
+    }
+
+    fn sanitize_cgroup<S: AsRef<str>>(cgroup: S) -> (Option<String>, Option<String>) {
+        RE_CGROUP
+            .captures(cgroup.as_ref())
+            .map(|captures| {
+                (
+                    captures
+                        .name("launcher")
+                        .and_then(|s| Self::decode_hex_escapes(s.as_str()).ok()),
+                    captures
+                        .name("cgroup")
+                        .and_then(|s| Self::decode_hex_escapes(s.as_str()).ok()),
+                )
+            })
+            .unwrap_or_default()
     }
 
     fn get_uid(proc_path: &Path) -> Result<u32> {
@@ -306,8 +327,6 @@ impl ProcessData {
         trace!("Reading info files…");
         let stat = std::fs::read_to_string(proc_path.join("stat"))
             .inspect_err(|err| trace!("Error reading 'stat': {err}"))?;
-        let statm = std::fs::read_to_string(proc_path.join("statm"))
-            .inspect_err(|err| trace!("Error reading 'statm': {err}"))?;
         let status = std::fs::read_to_string(proc_path.join("status"))
             .inspect_err(|err| trace!("Error reading 'status': {err}"))?;
         let comm = std::fs::read_to_string(proc_path.join("comm"))
@@ -331,8 +350,6 @@ impl ProcessData {
             .split(' ')
             .skip(1) // the first element would be a space, let's ignore that
             .collect::<Vec<_>>();
-
-        let statm = statm.split(' ').collect::<Vec<_>>();
 
         let comm = comm.replace('\n', "");
 
@@ -390,29 +407,19 @@ impl ProcessData {
             .unwrap_or_default()
             .saturating_mul(1000);
 
-        let memory_usage = statm
-            .get(1)
-            .context("wrong statm file format")
-            .and_then(|x| {
-                x.parse::<usize>()
-                    .context("couldn't parse statm file content")
-            })
-            .inspect_err(|err| trace!("Can't parse memory usage from 'statm': {err}"))?
-            .saturating_sub(
-                statm
-                    .get(2)
-                    .context("wrong statm file format")
-                    .and_then(|x| {
-                        x.parse::<usize>()
-                            .context("couldn't parse statm file content")
-                    })?,
-            )
-            .saturating_mul(*PAGESIZE);
+        let memory_usage = RE_MEMORY_USAGE
+            .captures(&status)
+            .and_then(|captures| captures.get(1))
+            .map(|capture| capture.as_str())
+            .unwrap_or_default()
+            .parse::<usize>()
+            .unwrap_or_default()
+            .saturating_mul(1000);
 
-        let cgroup = std::fs::read_to_string(proc_path.join("cgroup"))
-            .inspect_err(|err| trace!("Can't read cgroup: {err}"))
-            .ok()
-            .and_then(Self::sanitize_cgroup);
+        let (launcher, cgroup) = std::fs::read_to_string(proc_path.join("cgroup"))
+            .map(Self::sanitize_cgroup)
+            .map(|(launcher, cgroup)| (launcher.unwrap_or_default(), cgroup)) // we only need the launcher for some checks here locally
+            .unwrap_or_default();
 
         let environ = std::fs::read_to_string(proc_path.join("environ"))?
             .split('\0')
@@ -424,7 +431,14 @@ impl ProcessData {
 
         let containerization = if commandline.starts_with("/snap/") {
             Containerization::Snap
-        } else if proc_path.join("root").join(".flatpak-info").exists() {
+        } else if proc_path
+            .join("root")
+            .join("top.kimiblock.portable")
+            .exists()
+            || launcher == "portable"
+        {
+            Containerization::Portable
+        } else if proc_path.join("root").join(".flatpak-info").exists() || launcher == "flatpak" {
             Containerization::Flatpak
         } else if appimage_path.is_some() {
             Containerization::AppImage

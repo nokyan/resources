@@ -271,22 +271,18 @@ impl Application {
         let about = adw::AboutDialog::builder()
             .application_name(i18n("Resources"))
             .application_icon(config::APP_ID)
+            .issue_url("https://github.com/nokyan/resources/issues")
             .developer_name("nokyan")
             .developers(vec!["nokyan <hello@nokyan.net>"])
+            .artists(["Avhiren"])
             .license_type(gtk::License::Gpl30)
             .version(config::VERSION)
             .website("https://apps.gnome.org/app/net.nokyan.Resources/")
             .build();
 
-        about.add_link(
-            &i18n("Report Issues"),
-            "https://github.com/nokyan/resources/issues",
-        );
-
         // Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
         // One name per line, please do not remove previous names.
         about.set_translator_credits(&i18n("translator-credits"));
-        about.add_credit_section(Some(&i18n("Icon by")), &["Avhiren"]);
 
         about.present(Some(&self.main_window()));
     }
