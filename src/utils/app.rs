@@ -15,6 +15,7 @@ use log::{debug, info, trace};
 use process_data::{
     Containerization, ProcessData,
     gpu_usage::{GpuIdentifier, GpuUsageStats},
+    pci_slot::PciSlot,
 };
 
 use crate::{i18n::i18n, utils::read_parsed};
@@ -627,6 +628,48 @@ impl AppsContext {
             .clamp(0.0, 1.0)
     }
 
+    pub fn npu_fraction(&self, pci_slot: PciSlot) -> f32 {
+        self.processes_iter()
+            .map(|process| {
+                (
+                    &process.data.npu_usage_stats,
+                    &process.npu_usage_stats_last,
+                    process.data.timestamp,
+                    process.timestamp_last,
+                )
+            })
+            .map(|(new, old, timestamp, timestamp_last)| {
+                (
+                    new.get(&pci_slot),
+                    old.get(&pci_slot),
+                    timestamp,
+                    timestamp_last,
+                )
+            })
+            .filter_map(|(new, old, timestamp, timestamp_last)| match (new, old) {
+                (Some(new), Some(old)) => Some((new, old, timestamp, timestamp_last)),
+                _ => None,
+            })
+            .map(|(new, old, timestamp, timestamp_last)| {
+                let time_delta = timestamp.saturating_sub(timestamp_last);
+                new.usage_fraction(old, time_delta).unwrap_or_default()
+            })
+            .sum::<f32>()
+            .clamp(0.0, 1.0)
+    }
+
+    pub fn npu_mem(&self, pci_slot: PciSlot) -> u64 {
+        self.processes_iter()
+            .flat_map(|process| {
+                process
+                    .data
+                    .npu_usage_stats
+                    .get(&pci_slot)
+                    .and_then(|npu_usage_stats| npu_usage_stats.mem())
+            })
+            .sum()
+    }
+
     pub fn vram_usage(&self, gpu_identifier: GpuIdentifier) -> u64 {
         self.processes_iter()
             .flat_map(|process| {
@@ -634,7 +677,7 @@ impl AppsContext {
                     .data
                     .gpu_usage_stats
                     .get(&gpu_identifier)
-                    .and_then(|gpu_identifier| gpu_identifier.mem())
+                    .and_then(|gpu_usage_stats| gpu_usage_stats.mem())
             })
             .sum()
     }
@@ -817,6 +860,7 @@ impl AppsContext {
                 old_process.read_bytes_last = old_process.data.read_bytes;
                 old_process.write_bytes_last = old_process.data.write_bytes;
                 old_process.gpu_usage_stats_last = old_process.data.gpu_usage_stats.clone();
+                old_process.npu_usage_stats_last = old_process.data.npu_usage_stats.clone();
 
                 old_process.data = process_data.clone();
             } else {

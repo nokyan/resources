@@ -265,6 +265,7 @@ dependencies = [
  "glob",
  "lazy-regex",
  "libc",
+ "log",
  "num_cpus",
  "nutype",
  "nvml-wrapper",

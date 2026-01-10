@@ -4,6 +4,8 @@ use log::{debug, error, info, trace};
 use process_data::{
     Niceness, ProcessData,
     gpu_usage::{GpuIdentifier, GpuUsageStats},
+    npu_usage::NpuUsageStats,
+    pci_slot::PciSlot,
 };
 use std::{
     collections::BTreeMap,
@@ -42,7 +44,7 @@ static COMPANION_PROCESS: LazyLock<Mutex<(ChildStdin, ChildStdout)>> = LazyLock:
             .args(["--host", proxy_path.as_str()])
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
-            .stderr(Stdio::null())
+            .stderr(Stdio::piped())
             .spawn()
             .unwrap()
     } else {
@@ -50,7 +52,7 @@ static COMPANION_PROCESS: LazyLock<Mutex<(ChildStdin, ChildStdout)>> = LazyLock:
         Command::new(proxy_path)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
-            .stderr(Stdio::null())
+            .stderr(Stdio::piped())
             .spawn()
             .unwrap()
     };
@@ -73,6 +75,7 @@ pub struct Process {
     pub read_bytes_last: Option<u64>,
     pub write_bytes_last: Option<u64>,
     pub gpu_usage_stats_last: BTreeMap<GpuIdentifier, GpuUsageStats>,
+    pub npu_usage_stats_last: BTreeMap<PciSlot, NpuUsageStats>,
     pub display_name: String,
 }
 
@@ -175,6 +178,7 @@ impl Process {
             read_bytes_last,
             write_bytes_last,
             gpu_usage_stats_last: Default::default(),
+            npu_usage_stats_last: Default::default(),
             display_name,
         }
     }
@@ -446,6 +450,30 @@ impl Process {
     pub fn gpu_mem_usage(&self) -> u64 {
         self.data
             .gpu_usage_stats
+            .values()
+            .map(|stats| stats.mem().unwrap_or_default())
+            .sum()
+    }
+
+    #[must_use]
+    pub fn npu_usage(&self) -> f32 {
+        let mut returned_npu_usage = 0.0;
+        for (npu, usage) in &self.data.npu_usage_stats {
+            if let Some(old_usage) = self.npu_usage_stats_last.get(npu) {
+                let time_delta = self.data.timestamp.saturating_sub(self.timestamp_last);
+                returned_npu_usage += usage
+                    .usage_fraction(old_usage, time_delta)
+                    .unwrap_or_default();
+            }
+        }
+
+        returned_npu_usage
+    }
+
+    #[must_use]
+    pub fn npu_mem_usage(&self) -> u64 {
+        self.data
+            .npu_usage_stats
             .values()
             .map(|stats| stats.mem().unwrap_or_default())
             .sum()
