@@ -702,11 +702,18 @@ impl ResProcesses {
 
     fn search_filter(&self, obj: &Object) -> bool {
         let imp = self.imp();
+
         let item = obj.downcast_ref::<ProcessEntry>().unwrap();
-        let search_string = imp.search_entry.text().to_string().to_lowercase();
+        let item_name = item.name().to_lowercase();
+        let item_commandline = item.commandline().to_lowercase();
+
+        let lowered_search_entry_text = imp.search_entry.text().to_lowercase();
+        let search_strings: Vec<&str> = lowered_search_entry_text.split('|').collect();
+
         !imp.search_bar.is_search_mode()
-            || item.name().to_lowercase().contains(&search_string)
-            || item.commandline().to_lowercase().contains(&search_string)
+            || search_strings.iter().any(|search_string| {
+                item_name.contains(search_string) || item_commandline.contains(search_string)
+            })
     }
 
     pub fn get_selected_process_entries(&self) -> Vec<ProcessEntry> {
