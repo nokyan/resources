@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2025-12-09 15:37+0000\n"
-"PO-Revision-Date: 2025-12-13 21:53+0800\n"
+"POT-Creation-Date: 2026-01-10 18:36+0000\n"
+"PO-Revision-Date: 2026-01-11 16:40+0800\n"
 "Last-Translator: Cheng-Chia Tseng <zerngjia@gmail.com>\n"
 "Language-Team: Traditional Chinese Team <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -35,9 +35,7 @@ msgstr "關注系統資源"
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/net.nokyan.Resources.desktop.in.in:9
 msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
-msgstr ""
-"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;系統;"
-"資源;監控;程序;用量;使用率;任務;管理員;記憶體;"
+msgstr "系統;資源;監控器;處理程序;使用情形;任務;管理員;CPU;RAM;記憶體;GPU;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
@@ -50,7 +48,7 @@ msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
-msgstr "《資源》支援監控以下部分："
+msgstr "《資源》支援監控以下元件："
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
@@ -64,7 +62,7 @@ msgstr "CPU"
 #: data/resources/ui/window.ui:176 data/resources/ui/window.ui:183
 #: src/ui/pages/applications/mod.rs:806 src/ui/pages/applications/mod.rs:823
 #: src/ui/pages/memory.rs:106 src/ui/pages/memory.rs:192
-#: src/ui/pages/processes/mod.rs:1099 src/ui/pages/processes/mod.rs:1116
+#: src/ui/pages/processes/mod.rs:1106 src/ui/pages/processes/mod.rs:1123
 msgid "Memory"
 msgstr "記憶體"
 
@@ -74,8 +72,8 @@ msgstr "記憶體"
 #: data/resources/ui/dialogs/settings_dialog.ui:158
 #: data/resources/ui/dialogs/settings_dialog.ui:250
 #: src/ui/pages/applications/mod.rs:1232 src/ui/pages/applications/mod.rs:1249
-#: src/ui/pages/gpu.rs:119 src/ui/pages/processes/mod.rs:1537
-#: src/ui/pages/processes/mod.rs:1554 src/ui/window.rs:468
+#: src/ui/pages/gpu.rs:119 src/ui/pages/processes/mod.rs:1544
+#: src/ui/pages/processes/mod.rs:1561 src/ui/window.rs:468
 msgid "GPU"
 msgstr "GPU"
 
@@ -92,35 +90,35 @@ msgstr "儲存裝置"
 msgid "Batteries"
 msgstr "電池"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:51
+#: data/net.nokyan.Resources.metainfo.xml.in.in:53
 msgid "Apps page in light theme"
 msgstr "應用程式頁面（淺色主題）"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:55
+#: data/net.nokyan.Resources.metainfo.xml.in.in:57
 msgid "Processes page in dark theme"
 msgstr "程序頁面（深色主題）"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:59
+#: data/net.nokyan.Resources.metainfo.xml.in.in:61
 msgid "Processor page in light theme"
 msgstr "處理器頁面（淺色主題）"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:63
+#: data/net.nokyan.Resources.metainfo.xml.in.in:65
 msgid "Memory page in dark theme"
 msgstr "記憶體頁面（深色主題）"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:67
+#: data/net.nokyan.Resources.metainfo.xml.in.in:69
 msgid "GPU page in light theme"
 msgstr "GPU 頁面（淺色主題）"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:71
+#: data/net.nokyan.Resources.metainfo.xml.in.in:73
 msgid "Drive page in dark theme"
 msgstr "硬碟頁面（深色主題）"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:75
+#: data/net.nokyan.Resources.metainfo.xml.in.in:77
 msgid "Network Interface page in light theme"
 msgstr "網路介面頁面（淺色主題）"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:79
+#: data/net.nokyan.Resources.metainfo.xml.in.in:81
 msgid "Battery page in dark theme"
 msgstr "電池頁面（深色主題）"
 
@@ -152,8 +150,8 @@ msgstr "使用情況"
 #: data/resources/ui/dialogs/settings_dialog.ui:225
 #: data/resources/ui/window.ui:145 data/resources/ui/window.ui:152
 #: src/ui/pages/applications/mod.rs:873 src/ui/pages/applications/mod.rs:890
-#: src/ui/pages/cpu.rs:128 src/ui/pages/processes/mod.rs:1166
-#: src/ui/pages/processes/mod.rs:1183 src/ui/window.rs:290
+#: src/ui/pages/cpu.rs:128 src/ui/pages/processes/mod.rs:1173
+#: src/ui/pages/processes/mod.rs:1190 src/ui/window.rs:290
 msgid "Processor"
 msgstr "處理器"
 
@@ -162,8 +160,8 @@ msgstr "處理器"
 #: data/resources/ui/dialogs/settings_dialog.ui:178
 #: data/resources/ui/dialogs/settings_dialog.ui:290
 #: src/ui/pages/applications/mod.rs:1503 src/ui/pages/applications/mod.rs:1520
-#: src/ui/pages/memory.rs:198 src/ui/pages/processes/mod.rs:2086
-#: src/ui/pages/processes/mod.rs:2103
+#: src/ui/pages/memory.rs:198 src/ui/pages/processes/mod.rs:2093
+#: src/ui/pages/processes/mod.rs:2110
 msgid "Swap"
 msgstr "Swap"
 
@@ -172,7 +170,7 @@ msgstr "Swap"
 #: data/resources/ui/dialogs/settings_dialog.ui:138
 #: data/resources/ui/dialogs/settings_dialog.ui:230
 #: src/ui/pages/applications/mod.rs:945 src/ui/pages/applications/mod.rs:964
-#: src/ui/pages/processes/mod.rs:1238 src/ui/pages/processes/mod.rs:1257
+#: src/ui/pages/processes/mod.rs:1245 src/ui/pages/processes/mod.rs:1264
 msgid "Drive Read"
 msgstr "硬碟讀取"
 
@@ -181,7 +179,7 @@ msgstr "硬碟讀取"
 #: data/resources/ui/dialogs/settings_dialog.ui:143
 #: data/resources/ui/dialogs/settings_dialog.ui:235
 #: src/ui/pages/applications/mod.rs:1018 src/ui/pages/applications/mod.rs:1037
-#: src/ui/pages/processes/mod.rs:1313 src/ui/pages/processes/mod.rs:1332
+#: src/ui/pages/processes/mod.rs:1320 src/ui/pages/processes/mod.rs:1339
 msgid "Drive Read Total"
 msgstr "硬碟讀取總計"
 
@@ -190,7 +188,7 @@ msgstr "硬碟讀取總計"
 #: data/resources/ui/dialogs/settings_dialog.ui:148
 #: data/resources/ui/dialogs/settings_dialog.ui:240
 #: src/ui/pages/applications/mod.rs:1087 src/ui/pages/applications/mod.rs:1106
-#: src/ui/pages/processes/mod.rs:1388 src/ui/pages/processes/mod.rs:1407
+#: src/ui/pages/processes/mod.rs:1395 src/ui/pages/processes/mod.rs:1414
 msgid "Drive Write"
 msgstr "硬碟寫入"
 
@@ -199,7 +197,7 @@ msgstr "硬碟寫入"
 #: data/resources/ui/dialogs/settings_dialog.ui:153
 #: data/resources/ui/dialogs/settings_dialog.ui:245
 #: src/ui/pages/applications/mod.rs:1162 src/ui/pages/applications/mod.rs:1181
-#: src/ui/pages/processes/mod.rs:1463 src/ui/pages/processes/mod.rs:1482
+#: src/ui/pages/processes/mod.rs:1470 src/ui/pages/processes/mod.rs:1489
 msgid "Drive Write Total"
 msgstr "硬碟寫入總計"
 
@@ -208,7 +206,7 @@ msgstr "硬碟寫入總計"
 #: data/resources/ui/dialogs/settings_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:255
 #: src/ui/pages/applications/mod.rs:1436 src/ui/pages/applications/mod.rs:1454
-#: src/ui/pages/processes/mod.rs:1742 src/ui/pages/processes/mod.rs:1761
+#: src/ui/pages/processes/mod.rs:1749 src/ui/pages/processes/mod.rs:1768
 msgid "Video Memory"
 msgstr "視訊記憶體"
 
@@ -217,7 +215,7 @@ msgstr "視訊記憶體"
 #: data/resources/ui/dialogs/settings_dialog.ui:168
 #: data/resources/ui/dialogs/settings_dialog.ui:260
 #: src/ui/pages/applications/mod.rs:1299 src/ui/pages/applications/mod.rs:1318
-#: src/ui/pages/processes/mod.rs:1604 src/ui/pages/processes/mod.rs:1623
+#: src/ui/pages/processes/mod.rs:1611 src/ui/pages/processes/mod.rs:1630
 msgid "Video Encoder"
 msgstr "視訊編碼器"
 
@@ -226,7 +224,7 @@ msgstr "視訊編碼器"
 #: data/resources/ui/dialogs/settings_dialog.ui:173
 #: data/resources/ui/dialogs/settings_dialog.ui:265
 #: src/ui/pages/applications/mod.rs:1368 src/ui/pages/applications/mod.rs:1387
-#: src/ui/pages/processes/mod.rs:1673 src/ui/pages/processes/mod.rs:1692
+#: src/ui/pages/processes/mod.rs:1680 src/ui/pages/processes/mod.rs:1699
 msgid "Video Decoder"
 msgstr "視訊解碼器"
 
@@ -250,7 +248,7 @@ msgstr "執行自從"
 
 #: data/resources/ui/dialogs/app_dialog.ui:198
 msgid "Running Processes"
-msgstr "執行中的程序"
+msgstr "正在執行的程序"
 
 #: data/resources/ui/dialogs/app_dialog.ui:207
 #: data/resources/ui/dialogs/process_dialog.ui:231
@@ -263,43 +261,43 @@ msgstr "程序資訊"
 
 #: data/resources/ui/dialogs/process_dialog.ui:154
 #: data/resources/ui/dialogs/settings_dialog.ui:270
-#: src/ui/pages/processes/mod.rs:1810 src/ui/pages/processes/mod.rs:1828
+#: src/ui/pages/processes/mod.rs:1817 src/ui/pages/processes/mod.rs:1835
 msgid "Total CPU Time"
 msgstr "總 CPU 時間"
 
 #: data/resources/ui/dialogs/process_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:275
-#: src/ui/pages/processes/mod.rs:1877 src/ui/pages/processes/mod.rs:1895
+#: src/ui/pages/processes/mod.rs:1884 src/ui/pages/processes/mod.rs:1902
 msgid "User CPU Time"
 msgstr "使用者 CPU 時間"
 
 #: data/resources/ui/dialogs/process_dialog.ui:172
 #: data/resources/ui/dialogs/settings_dialog.ui:280
-#: src/ui/pages/processes/mod.rs:1944 src/ui/pages/processes/mod.rs:1962
+#: src/ui/pages/processes/mod.rs:1951 src/ui/pages/processes/mod.rs:1969
 msgid "System CPU Time"
 msgstr "系統 CPU 時間"
 
 #: data/resources/ui/dialogs/process_dialog.ui:186
 #: data/resources/ui/dialogs/settings_dialog.ui:210
-#: src/ui/pages/processes/mod.rs:976 src/ui/pages/processes/mod.rs:991
+#: src/ui/pages/processes/mod.rs:983 src/ui/pages/processes/mod.rs:998
 msgid "Process ID"
 msgstr "程序 ID"
 
 #: data/resources/ui/dialogs/process_dialog.ui:204
 #: data/resources/ui/dialogs/settings_dialog.ui:300
-#: src/ui/pages/processes/mod.rs:2222 src/ui/pages/processes/mod.rs:2240
+#: src/ui/pages/processes/mod.rs:2229 src/ui/pages/processes/mod.rs:2247
 msgid "Commandline"
 msgstr "命令列"
 
 #: data/resources/ui/dialogs/process_dialog.ui:213
 #: data/resources/ui/dialogs/settings_dialog.ui:215
-#: src/ui/pages/processes/mod.rs:1037 src/ui/pages/processes/mod.rs:1052
+#: src/ui/pages/processes/mod.rs:1044 src/ui/pages/processes/mod.rs:1059
 msgid "User"
 msgstr "使用者"
 
 #: data/resources/ui/dialogs/process_dialog.ui:222
 msgid "Control Group"
-msgstr "控制群組"
+msgstr "控制組"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:7
 #: data/resources/ui/dialogs/process_options_dialog.ui:69
@@ -322,7 +320,7 @@ msgstr "程序的優先等級由其 Nice 值決定。Nice 值越低，優先等�
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:87
 #: data/resources/ui/dialogs/settings_dialog.ui:285
-#: src/ui/pages/processes/mod.rs:2011 src/ui/pages/processes/mod.rs:2027
+#: src/ui/pages/processes/mod.rs:2018 src/ui/pages/processes/mod.rs:2034
 msgid "Priority"
 msgstr "優先等級"
 
@@ -500,7 +498,7 @@ msgstr "資訊欄"
 #: data/resources/ui/dialogs/settings_dialog.ui:183
 #: data/resources/ui/dialogs/settings_dialog.ui:295
 #: src/ui/pages/applications/mod.rs:1570 src/ui/pages/applications/mod.rs:1589
-#: src/ui/pages/processes/mod.rs:2153 src/ui/pages/processes/mod.rs:2172
+#: src/ui/pages/processes/mod.rs:2160 src/ui/pages/processes/mod.rs:2179
 msgid "Combined Memory"
 msgstr "合併記憶體"
 
@@ -551,25 +549,25 @@ msgstr "虛擬網路介面，例如橋接器或VPN隧道"
 #: data/resources/ui/pages/applications.ui:26
 #: src/ui/pages/applications/mod.rs:1662
 msgid "Kill App"
-msgstr "截殺程式"
+msgstr "截殺應用程式"
 
 #: data/resources/ui/pages/applications.ui:10
 #: data/resources/ui/pages/applications.ui:30
 #: src/ui/pages/applications/mod.rs:1661
 msgid "Halt App"
-msgstr "暫停程式"
+msgstr "暫停應用程式"
 
 #: data/resources/ui/pages/applications.ui:14
 #: data/resources/ui/pages/applications.ui:34
 #: src/ui/pages/applications/mod.rs:1663
 msgid "Continue App"
-msgstr "繼續程式"
+msgstr "繼續應用程式"
 
 #: data/resources/ui/pages/applications.ui:22
 #: data/resources/ui/pages/applications.ui:98
 #: src/ui/pages/applications/mod.rs:1660
 msgid "End App"
-msgstr "結束程式"
+msgstr "結束應用程式"
 
 #: data/resources/ui/pages/applications.ui:40
 #: data/resources/ui/pages/processes.ui:62
@@ -583,7 +581,7 @@ msgstr "搜尋應用程式"
 #: data/resources/ui/pages/applications.ui:87
 #: data/resources/ui/pages/applications.ui:89
 msgid "Show App Information"
-msgstr "顯示程式資訊"
+msgstr "顯示應用程式資訊"
 
 #: data/resources/ui/pages/battery.ui:36
 msgid "Battery Health"
@@ -701,11 +699,11 @@ msgstr "PCI插槽"
 #: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
 #: data/resources/ui/pages/npu.ui:93
 msgid "Driver Used"
-msgstr "使用的硬碟"
+msgstr "使用的驅動程式"
 
 #: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
 msgid "Max Power Cap"
-msgstr "最大功率容量"
+msgstr "最大功率限制"
 
 #: data/resources/ui/pages/memory.ui:9
 msgid "You need to authenticate to see memory properties"
@@ -717,7 +715,7 @@ msgstr "核對身分"
 
 #: data/resources/ui/pages/memory.ui:45
 msgid "Slots Used"
-msgstr "使用的插槽"
+msgstr "已使用的插槽"
 
 #: data/resources/ui/pages/memory.ui:54
 msgid "Speed"
@@ -725,7 +723,7 @@ msgstr "速度"
 
 #: data/resources/ui/pages/memory.ui:63
 msgid "Form Factor"
-msgstr "外形規格"
+msgstr "規格尺寸"
 
 #: data/resources/ui/pages/memory.ui:81
 msgid "Type Detail"
@@ -764,17 +762,17 @@ msgid "Memory Frequency"
 msgstr "記憶體頻率"
 
 #: data/resources/ui/pages/processes.ui:6 data/resources/ui/pages/processes.ui:42
-#: src/ui/pages/processes/mod.rs:2339
+#: src/ui/pages/processes/mod.rs:2346
 msgid "Kill Process"
 msgstr "截殺程序"
 
 #: data/resources/ui/pages/processes.ui:10
-#: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2338
+#: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2345
 msgid "Halt Process"
 msgstr "暫停程序"
 
 #: data/resources/ui/pages/processes.ui:14
-#: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2340
+#: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2347
 msgid "Continue Process"
 msgstr "繼續程序"
 
@@ -795,7 +793,7 @@ msgstr "繼續程序"
 
 #: data/resources/ui/pages/processes.ui:38
 #: data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:527
-#: src/ui/pages/processes/mod.rs:2337
+#: src/ui/pages/processes/mod.rs:2344
 msgid "End Process"
 msgstr "結束程序"
 
@@ -835,12 +833,12 @@ msgstr "顯示快捷鍵"
 #: data/resources/ui/shortcuts.ui:21
 msgctxt "shortcut window"
 msgid "Quit"
-msgstr "離開"
+msgstr "結束"
 
 #: data/resources/ui/shortcuts.ui:29
 msgctxt "shortcut window"
 msgid "Apps/Processes"
-msgstr "程式/程序"
+msgstr "應用程式/程序"
 
 #: data/resources/ui/shortcuts.ui:32
 msgctxt "shortcut window"
@@ -850,27 +848,27 @@ msgstr "切換搜尋欄位"
 #: data/resources/ui/shortcuts.ui:38
 msgctxt "shortcut window"
 msgid "End App/Process"
-msgstr "結束程式/程序"
+msgstr "結束應用程式/程序"
 
 #: data/resources/ui/shortcuts.ui:44
 msgctxt "shortcut window"
 msgid "Kill App/Process"
-msgstr "截殺程式/程序"
+msgstr "截殺應用程式/程序"
 
 #: data/resources/ui/shortcuts.ui:50
 msgctxt "shortcut window"
 msgid "Halt App/Process"
-msgstr "暫停程式/程序"
+msgstr "暫停應用程式/程序"
 
 #: data/resources/ui/shortcuts.ui:56
 msgctxt "shortcut window"
 msgid "Continue App/Process"
-msgstr "繼續程式/程序"
+msgstr "繼續應用程式/程序"
 
 #: data/resources/ui/shortcuts.ui:62
 msgctxt "shortcut window"
 msgid "Show Information for App/Process"
-msgstr "顯示程式/程序資訊"
+msgstr "顯示應用程式/程序資訊"
 
 #: data/resources/ui/shortcuts.ui:68
 msgctxt "shortcut window"
@@ -897,21 +895,13 @@ msgstr "搜尋"
 msgid "Toggle search field"
 msgstr "切換搜尋欄位"
 
-#: src/application.rs:282
-msgid "Report Issues"
-msgstr "回報問題"
-
 #. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
 #. One name per line, please do not remove previous names.
-#: src/application.rs:288
+#: src/application.rs:285
 msgid "translator-credits"
 msgstr ""
 "taijuin, 2025.\n"
 "Cheng-Chia Tseng, 2025."
-
-#: src/application.rs:289
-msgid "Icon by"
-msgstr "圖示提供"
 
 #: src/ui/dialogs/app_dialog.rs:155 src/ui/dialogs/process_dialog.rs:133
 #: src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:146
@@ -925,11 +915,11 @@ msgstr "圖示提供"
 #: src/ui/pages/battery.rs:301 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258
 #: src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:290
 #: src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303
-#: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:319
-#: src/ui/pages/drive.rs:350 src/ui/pages/drive.rs:352 src/ui/pages/drive.rs:381
-#: src/ui/pages/drive.rs:383 src/ui/pages/drive.rs:399 src/ui/pages/drive.rs:400
-#: src/ui/pages/drive.rs:407 src/ui/pages/drive.rs:417 src/ui/pages/drive.rs:427
-#: src/ui/pages/drive.rs:433 src/ui/pages/gpu.rs:245 src/ui/pages/gpu.rs:252
+#: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:321
+#: src/ui/pages/drive.rs:352 src/ui/pages/drive.rs:354 src/ui/pages/drive.rs:383
+#: src/ui/pages/drive.rs:385 src/ui/pages/drive.rs:401 src/ui/pages/drive.rs:402
+#: src/ui/pages/drive.rs:409 src/ui/pages/drive.rs:419 src/ui/pages/drive.rs:429
+#: src/ui/pages/drive.rs:435 src/ui/pages/gpu.rs:245 src/ui/pages/gpu.rs:252
 #: src/ui/pages/gpu.rs:297 src/ui/pages/gpu.rs:322 src/ui/pages/gpu.rs:325
 #: src/ui/pages/gpu.rs:336 src/ui/pages/gpu.rs:377 src/ui/pages/gpu.rs:384
 #: src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:403 src/ui/pages/gpu.rs:407
@@ -946,69 +936,81 @@ msgstr "圖示提供"
 #: src/ui/pages/network.rs:404 src/ui/pages/network.rs:407
 #: src/ui/pages/network.rs:409 src/ui/pages/network.rs:417
 #: src/ui/pages/network.rs:424 src/ui/pages/network.rs:434
-#: src/ui/pages/processes/mod.rs:1268 src/ui/pages/processes/mod.rs:1343
-#: src/ui/pages/processes/mod.rs:1418 src/ui/pages/processes/mod.rs:1493
-#: src/ui/pages/processes/mod.rs:2043 src/ui/pages/processes/mod.rs:2045
+#: src/ui/pages/processes/mod.rs:1275 src/ui/pages/processes/mod.rs:1350
+#: src/ui/pages/processes/mod.rs:1425 src/ui/pages/processes/mod.rs:1500
+#: src/ui/pages/processes/mod.rs:2050 src/ui/pages/processes/mod.rs:2052
 #: src/utils/battery.rs:152 src/utils/drive.rs:137 src/utils/gpu/mod.rs:279
-#: src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:244
-#: src/utils/npu/mod.rs:250
+#: src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:249
+#: src/utils/npu/mod.rs:255
 msgid "N/A"
 msgstr "N/A"
 
 #: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257
 #: src/ui/pages/cpu.rs:417 src/ui/pages/cpu.rs:421
+#, rust-format
 msgid "CPU {}"
 msgstr "CPU {}"
 
-#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:414
-#: src/ui/pages/drive.rs:424 src/ui/pages/processes/process_entry.rs:211
+#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:416
+#: src/ui/pages/drive.rs:426 src/ui/pages/processes/process_entry.rs:211
 msgid "No"
 msgstr "否"
 
 #: src/ui/pages/applications/application_entry.rs:191
 #: src/ui/pages/processes/process_entry.rs:212
-msgid "Yes (Flatpak)"
-msgstr "是 (Flatpak)"
-
-#: src/ui/pages/applications/application_entry.rs:192
-#: src/ui/pages/processes/process_entry.rs:213
-msgid "Yes (Snap)"
-msgstr "是 (Snap)"
-
-#: src/ui/pages/applications/application_entry.rs:193
-#: src/ui/pages/processes/process_entry.rs:214
 msgid "Yes (AppImage)"
 msgstr "是 (AppImage)"
 
-#: src/ui/pages/applications/mod.rs:663
-msgid "Running Apps: {}"
-msgstr "執行中的程式：{}"
+#: src/ui/pages/applications/application_entry.rs:192
+#: src/ui/pages/processes/process_entry.rs:213
+msgid "Yes (Flatpak)"
+msgstr "是 (Flatpak)"
 
-#: src/ui/pages/applications/mod.rs:703 src/ui/pages/processes/mod.rs:866
+#. Translators: "Portable" is the name of the containerization method used, please keep it as is
+#: src/ui/pages/applications/application_entry.rs:194
+#: src/ui/pages/processes/process_entry.rs:215
+msgid "Yes (Portable)"
+msgstr "是的（便攜式）"
+
+#: src/ui/pages/applications/application_entry.rs:195
+#: src/ui/pages/processes/process_entry.rs:216
+msgid "Yes (Snap)"
+msgstr "是 (Snap)"
+
+#: src/ui/pages/applications/mod.rs:663
+#, rust-format
+msgid "Running Apps: {}"
+msgstr "執行中的應用程式：{}"
+
+#: src/ui/pages/applications/mod.rs:703 src/ui/pages/processes/mod.rs:873
 msgid "Cancel"
 msgstr "取消"
 
 #: src/ui/pages/applications/mod.rs:749
 msgid "App"
-msgstr "程式"
+msgstr "應用程式"
 
-#: src/ui/pages/applications/mod.rs:1638 src/ui/pages/processes/mod.rs:2286
+#: src/ui/pages/applications/mod.rs:1638 src/ui/pages/processes/mod.rs:2293
+#, rust-format
 msgid "End {}?"
 msgstr "結束 {}？"
 
-#: src/ui/pages/applications/mod.rs:1639 src/ui/pages/processes/mod.rs:2287
+#: src/ui/pages/applications/mod.rs:1639 src/ui/pages/processes/mod.rs:2294
+#, rust-format
 msgid "Halt {}?"
 msgstr "暫停 {}？"
 
-#: src/ui/pages/applications/mod.rs:1640 src/ui/pages/processes/mod.rs:2288
+#: src/ui/pages/applications/mod.rs:1640 src/ui/pages/processes/mod.rs:2295
+#, rust-format
 msgid "Kill {}?"
 msgstr "截殺 {}？"
 
-#: src/ui/pages/applications/mod.rs:1641 src/ui/pages/processes/mod.rs:2289
+#: src/ui/pages/applications/mod.rs:1641 src/ui/pages/processes/mod.rs:2296
+#, rust-format
 msgid "Continue {}?"
 msgstr "繼續 {}？"
 
-#: src/ui/pages/applications/mod.rs:1647 src/ui/pages/processes/mod.rs:2324
+#: src/ui/pages/applications/mod.rs:1647 src/ui/pages/processes/mod.rs:2331
 msgid "Unsaved work might be lost."
 msgstr "未儲存的工作可能會遺失。"
 
@@ -1032,15 +1034,15 @@ msgstr "電池"
 msgid "Battery Charge"
 msgstr "電池充電"
 
-#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:438 src/ui/pages/drive.rs:344
-#: src/ui/pages/drive.rs:375 src/ui/pages/gpu.rs:429 src/ui/pages/network.rs:362
+#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:438 src/ui/pages/drive.rs:346
+#: src/ui/pages/drive.rs:377 src/ui/pages/gpu.rs:429 src/ui/pages/network.rs:362
 #: src/ui/pages/network.rs:396
 msgid "Highest:"
 msgstr "最高："
 
 #: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:212
 msgid "Total Usage"
-msgstr "總使用率"
+msgstr "總使用量"
 
 #: src/ui/pages/cpu.rs:271 src/ui/pages/gpu.rs:239
 msgid "Temperature"
@@ -1048,11 +1050,11 @@ msgstr "溫度"
 
 #: src/ui/pages/drive.rs:126
 msgid "Drive"
-msgstr "硬碟"
+msgstr "磁碟機"
 
 #: src/ui/pages/drive.rs:236
 msgid "Drive Activity"
-msgstr "硬碟活動紀錄"
+msgstr "磁碟活動紀錄"
 
 #: src/ui/pages/drive.rs:243
 msgid "Read Speed"
@@ -1062,13 +1064,14 @@ msgstr "讀取速度"
 msgid "Write Speed"
 msgstr "寫入速度"
 
-#: src/ui/pages/drive.rs:412 src/ui/pages/drive.rs:422
+#: src/ui/pages/drive.rs:414 src/ui/pages/drive.rs:424
 msgid "Yes"
 msgstr "是"
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
-#: src/ui/pages/drive.rs:440
+#: src/ui/pages/drive.rs:442
+#, rust-format
 msgid "R: {} · W: {}"
 msgstr "讀取：{} · 寫入：{}"
 
@@ -1091,20 +1094,24 @@ msgstr "視訊記憶體使用情況"
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
 #: src/ui/pages/gpu.rs:415
+#, rust-format
 msgid "Memory: {}"
 msgstr "記憶體：{}"
 
 #: src/ui/pages/memory.rs:262
+#, rust-format
 msgid "{} of {}"
-msgstr "{} / {}"
+msgstr "已用 {}，總計 {}"
 
 #: src/ui/pages/memory.rs:265
+#, rust-format
 msgid "{} MT/s"
 msgstr "{} MT/s"
 
 #. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
 #. preferably be quite short or an abbreviation
 #: src/ui/pages/memory.rs:346
+#, rust-format
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · Swap：{} %"
 
@@ -1123,49 +1130,56 @@ msgstr "傳送"
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
 #: src/ui/pages/network.rs:445
+#, rust-format
 msgid "R: {} · S: {}"
 msgstr "接收：{} · 傳送：{}"
 
-#: src/ui/pages/processes/mod.rs:817
+#: src/ui/pages/processes/mod.rs:824
+#, rust-format
 msgid "Running Processes: {}"
 msgstr "執行中的程序：{}"
 
-#: src/ui/pages/processes/mod.rs:915
+#: src/ui/pages/processes/mod.rs:922
 msgid "Process"
 msgstr "程序"
 
-#: src/ui/pages/processes/mod.rs:2296
+#: src/ui/pages/processes/mod.rs:2303
+#, rust-format
 msgid "End process?"
 msgid_plural "End {} processes?"
-msgstr[0] "結束程序？"
+msgstr[0] "結束 {} 個程序？"
 
-#: src/ui/pages/processes/mod.rs:2302
+#: src/ui/pages/processes/mod.rs:2309
+#, rust-format
 msgid "Halt process?"
 msgid_plural "Halt {} processes?"
-msgstr[0] "暫停程序？"
+msgstr[0] "暫停 {} 個程序？"
 
-#: src/ui/pages/processes/mod.rs:2308 src/ui/pages/processes/mod.rs:2314
+#: src/ui/pages/processes/mod.rs:2315 src/ui/pages/processes/mod.rs:2321
+#, rust-format
 msgid "Kill process?"
 msgid_plural "Kill {} processes?"
-msgstr[0] "截殺程序？"
+msgstr[0] "截殺 {} 個程序？"
 
-#: src/ui/pages/processes/mod.rs:2326
+#: src/ui/pages/processes/mod.rs:2333
 msgid ""
 "Halting a process can come with serious risks such as losing data and security "
 "implications. Use with caution."
 msgstr "暫停程序可能伴隨嚴重風險，例如資料遺失與安全隱患。請謹慎使用。"
 
-#: src/ui/pages/processes/mod.rs:2329
+#: src/ui/pages/processes/mod.rs:2336
 msgid ""
 "Killing a process can come with serious risks such as losing data and security "
 "implications. Use with caution."
 msgstr "截殺程序可能伴隨嚴重風險，例如資料遺失與安全隱患。請謹慎使用。"
 
 #: src/ui/window.rs:466
+#, rust-format
 msgid "GPU {}"
 msgstr "GPU {}"
 
 #: src/ui/window.rs:496
+#, rust-format
 msgid "NPU {}"
 msgstr "NPU {}"
 
@@ -1173,87 +1187,105 @@ msgstr "NPU {}"
 msgid "NPU"
 msgstr "NPU"
 
-#: src/ui/window.rs:1174
+#: src/ui/window.rs:1201
+#, rust-format
 msgid "Successfully adjusted {}"
 msgstr "成功調整 {}"
 
-#: src/ui/window.rs:1175
+#: src/ui/window.rs:1202
+#, rust-format
 msgid "There was a problem adjusting {}"
 msgstr "調整 {} 時發生問題"
 
-#: src/ui/window.rs:1257
+#: src/ui/window.rs:1284
+#, rust-format
 msgid "Successfully ended {}"
 msgstr "成功結束 {}"
 
-#: src/ui/window.rs:1258
+#: src/ui/window.rs:1285
+#, rust-format
 msgid "Successfully halted {}"
 msgstr "成功暫停 {}"
 
-#: src/ui/window.rs:1259
+#: src/ui/window.rs:1286
+#, rust-format
 msgid "Successfully killed {}"
 msgstr "成功截殺 {}"
 
-#: src/ui/window.rs:1260
+#: src/ui/window.rs:1287
+#, rust-format
 msgid "Successfully continued {}"
 msgstr "成功繼續 {}"
 
-#: src/ui/window.rs:1267
+#: src/ui/window.rs:1294
+#, rust-format
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
 msgstr[0] "成功結束 {} 個程序"
 
-#: src/ui/window.rs:1273
+#: src/ui/window.rs:1300
+#, rust-format
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
 msgstr[0] "成功暫停 {} 個程序"
 
-#: src/ui/window.rs:1279
+#: src/ui/window.rs:1306
+#, rust-format
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
 msgstr[0] "成功截殺 {} 個程序"
 
-#: src/ui/window.rs:1285
+#: src/ui/window.rs:1312
+#, rust-format
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
 msgstr[0] "成功繼續 {} 個程序"
 
-#: src/ui/window.rs:1296
+#: src/ui/window.rs:1323
+#, rust-format
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] "結束 {} 個程序時發生問題"
 
-#: src/ui/window.rs:1302
+#: src/ui/window.rs:1329
+#, rust-format
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "暫停 {} 個程序時發生問題"
 
-#: src/ui/window.rs:1308
+#: src/ui/window.rs:1335
+#, rust-format
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "截殺 {} 個程序時發生問題"
 
-#: src/ui/window.rs:1314
+#: src/ui/window.rs:1341
+#, rust-format
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "繼續 {} 個程序時發生問題"
 
-#: src/ui/window.rs:1324
+#: src/ui/window.rs:1351
+#, rust-format
 msgid "There was a problem ending {}"
 msgstr "結束 {} 時發生問題"
 
-#: src/ui/window.rs:1325
+#: src/ui/window.rs:1352
+#, rust-format
 msgid "There was a problem halting {}"
 msgstr "暫停 {} 時發生問題"
 
-#: src/ui/window.rs:1326
+#: src/ui/window.rs:1353
+#, rust-format
 msgid "There was a problem killing {}"
 msgstr "截殺 {} 時發生問題"
 
-#: src/ui/window.rs:1327
+#: src/ui/window.rs:1354
+#, rust-format
 msgid "There was a problem continuing {}"
 msgstr "繼續 {} 時發生問題"
 
-#: src/utils/app.rs:222
+#: src/utils/app.rs:224
 msgid "System Processes"
 msgstr "系統程序"
 
@@ -1310,403 +1342,503 @@ msgid "Rechargeable Alkaline Managanese"
 msgstr "可充電鹼錳電池"
 
 #: src/utils/battery.rs:256
+#, rust-format
 msgid "{} Battery"
 msgstr "{} 電池"
 
 #: src/utils/units.rs:91
+#, rust-format
 msgid "{} K"
 msgstr "{} K"
 
 #: src/utils/units.rs:93
+#, rust-format
 msgid "{} °C"
 msgstr "{} °C"
 
 #: src/utils/units.rs:95
+#, rust-format
 msgid "{} °F"
 msgstr "{} °F"
 
 #: src/utils/units.rs:113 src/utils/units.rs:127 src/utils/units.rs:147
 #: src/utils/units.rs:161
+#, rust-format
 msgid "{} B"
 msgstr "{} B"
 
 #: src/utils/units.rs:114 src/utils/units.rs:128
+#, rust-format
 msgid "{} kB"
 msgstr "{} kB"
 
 #: src/utils/units.rs:115 src/utils/units.rs:129
+#, rust-format
 msgid "{} MB"
 msgstr "{} MB"
 
 #: src/utils/units.rs:116 src/utils/units.rs:130
+#, rust-format
 msgid "{} GB"
 msgstr "{} GB"
 
 #: src/utils/units.rs:117 src/utils/units.rs:131
+#, rust-format
 msgid "{} TB"
 msgstr "{} TB"
 
 #: src/utils/units.rs:118 src/utils/units.rs:132
+#, rust-format
 msgid "{} PB"
 msgstr "{} PB"
 
 #: src/utils/units.rs:119 src/utils/units.rs:133
+#, rust-format
 msgid "{} EB"
 msgstr "{} EB"
 
 #: src/utils/units.rs:120 src/utils/units.rs:134
+#, rust-format
 msgid "{} ZB"
 msgstr "{} ZB"
 
 #: src/utils/units.rs:121 src/utils/units.rs:135
+#, rust-format
 msgid "{} YB"
 msgstr "{} YB"
 
 #: src/utils/units.rs:122 src/utils/units.rs:136
+#, rust-format
 msgid "{} RB"
 msgstr "{} RB"
 
 #: src/utils/units.rs:123 src/utils/units.rs:137
+#, rust-format
 msgid "{} QB"
 msgstr "{} QB"
 
 #: src/utils/units.rs:148 src/utils/units.rs:162
+#, rust-format
 msgid "{} KiB"
 msgstr "{} KiB"
 
 #: src/utils/units.rs:149 src/utils/units.rs:163
+#, rust-format
 msgid "{} MiB"
 msgstr "{} MiB"
 
 #: src/utils/units.rs:150 src/utils/units.rs:164
+#, rust-format
 msgid "{} GiB"
 msgstr "{} GiB"
 
 #: src/utils/units.rs:151 src/utils/units.rs:165
+#, rust-format
 msgid "{} TiB"
 msgstr "{} TiB"
 
 #: src/utils/units.rs:152 src/utils/units.rs:166
+#, rust-format
 msgid "{} PiB"
 msgstr "{} PiB"
 
 #: src/utils/units.rs:153 src/utils/units.rs:167
+#, rust-format
 msgid "{} EiB"
 msgstr "{} EiB"
 
 #: src/utils/units.rs:154 src/utils/units.rs:168
+#, rust-format
 msgid "{} ZiB"
 msgstr "{} ZiB"
 
 #: src/utils/units.rs:155 src/utils/units.rs:169
+#, rust-format
 msgid "{} YiB"
 msgstr "{} YiB"
 
 #: src/utils/units.rs:156 src/utils/units.rs:170
+#, rust-format
 msgid "{} RiB"
 msgstr "{} RiB"
 
 #: src/utils/units.rs:157 src/utils/units.rs:171
+#, rust-format
 msgid "{} QiB"
 msgstr "{} QiB"
 
-#: src/utils/units.rs:198 src/utils/units.rs:215
+#: src/utils/units.rs:197 src/utils/units.rs:214
+#, rust-format
 msgid "{} B/s"
 msgstr "{} B/s"
 
-#: src/utils/units.rs:199
+#: src/utils/units.rs:198
+#, rust-format
 msgid "{} kB/s"
 msgstr "{} kB/s"
 
-#: src/utils/units.rs:200
+#: src/utils/units.rs:199
+#, rust-format
 msgid "{} MB/s"
 msgstr "{} MB/s"
 
-#: src/utils/units.rs:201
+#: src/utils/units.rs:200
+#, rust-format
 msgid "{} GB/s"
 msgstr "{} GB/s"
 
-#: src/utils/units.rs:202
+#: src/utils/units.rs:201
+#, rust-format
 msgid "{} TB/s"
 msgstr "{} TB/s"
 
-#: src/utils/units.rs:203
+#: src/utils/units.rs:202
+#, rust-format
 msgid "{} PB/s"
 msgstr "{} PB/s"
 
-#: src/utils/units.rs:204
+#: src/utils/units.rs:203
+#, rust-format
 msgid "{} EB/s"
 msgstr "{} EB/s"
 
-#: src/utils/units.rs:205
+#: src/utils/units.rs:204
+#, rust-format
 msgid "{} ZB/s"
 msgstr "{} ZB/s"
 
-#: src/utils/units.rs:206
+#: src/utils/units.rs:205
+#, rust-format
 msgid "{} YB/s"
 msgstr "{} YB/s"
 
-#: src/utils/units.rs:207
+#: src/utils/units.rs:206
+#, rust-format
 msgid "{} RB/s"
 msgstr "{} RB/s"
 
-#: src/utils/units.rs:208
+#: src/utils/units.rs:207
+#, rust-format
 msgid "{} QB/s"
 msgstr "{} QB/s"
 
-#: src/utils/units.rs:216
+#: src/utils/units.rs:215
+#, rust-format
 msgid "{} KiB/s"
 msgstr "{} KiB/s"
 
-#: src/utils/units.rs:217
+#: src/utils/units.rs:216
+#, rust-format
 msgid "{} MiB/s"
 msgstr "{} MiB/s"
 
-#: src/utils/units.rs:218
+#: src/utils/units.rs:217
+#, rust-format
 msgid "{} GiB/s"
 msgstr "{} GiB/s"
 
-#: src/utils/units.rs:219
+#: src/utils/units.rs:218
+#, rust-format
 msgid "{} TiB/s"
 msgstr "{} TiB/s"
 
-#: src/utils/units.rs:220
+#: src/utils/units.rs:219
+#, rust-format
 msgid "{} PiB/s"
 msgstr "{} PiB/s"
 
-#: src/utils/units.rs:221
+#: src/utils/units.rs:220
+#, rust-format
 msgid "{} EiB/s"
 msgstr "{} EiB/s"
 
-#: src/utils/units.rs:222
+#: src/utils/units.rs:221
+#, rust-format
 msgid "{} ZiB/s"
 msgstr "{} ZiB/s"
 
-#: src/utils/units.rs:223
+#: src/utils/units.rs:222
+#, rust-format
 msgid "{} YiB/s"
 msgstr "{} YiB/s"
 
-#: src/utils/units.rs:224
+#: src/utils/units.rs:223
+#, rust-format
 msgid "{} RiB/s"
 msgstr "{} RiB/s"
 
-#: src/utils/units.rs:225
+#: src/utils/units.rs:224
+#, rust-format
 msgid "{} QiB/s"
 msgstr "{} QiB/s"
 
-#: src/utils/units.rs:239 src/utils/units.rs:256
+#: src/utils/units.rs:238 src/utils/units.rs:255
+#, rust-format
 msgid "{} b/s"
 msgstr "{} b/s"
 
-#: src/utils/units.rs:240
+#: src/utils/units.rs:239
+#, rust-format
 msgid "{} kb/s"
 msgstr "{} kb/s"
 
-#: src/utils/units.rs:241
+#: src/utils/units.rs:240
+#, rust-format
 msgid "{} Mb/s"
 msgstr "{} Mb/s"
 
-#: src/utils/units.rs:242
+#: src/utils/units.rs:241
+#, rust-format
 msgid "{} Gb/s"
 msgstr "{} Gb/s"
 
-#: src/utils/units.rs:243
+#: src/utils/units.rs:242
+#, rust-format
 msgid "{} Tb/s"
 msgstr "{} Tb/s"
 
-#: src/utils/units.rs:244
+#: src/utils/units.rs:243
+#, rust-format
 msgid "{} Pb/s"
 msgstr "{} Pb/s"
 
-#: src/utils/units.rs:245
+#: src/utils/units.rs:244
+#, rust-format
 msgid "{} Eb/s"
 msgstr "{} Eb/s"
 
-#: src/utils/units.rs:246
+#: src/utils/units.rs:245
+#, rust-format
 msgid "{} Zb/s"
 msgstr "{} Zb/s"
 
-#: src/utils/units.rs:247
+#: src/utils/units.rs:246
+#, rust-format
 msgid "{} Yb/s"
 msgstr "{} Yb/s"
 
-#: src/utils/units.rs:248
+#: src/utils/units.rs:247
+#, rust-format
 msgid "{} Rb/s"
 msgstr "{} Rb/s"
 
-#: src/utils/units.rs:249
+#: src/utils/units.rs:248
+#, rust-format
 msgid "{} Qb/s"
 msgstr "{} Qb/s"
 
-#: src/utils/units.rs:257
+#: src/utils/units.rs:256
+#, rust-format
 msgid "{} Kib/s"
 msgstr "{} Kib/s"
 
-#: src/utils/units.rs:258
+#: src/utils/units.rs:257
+#, rust-format
 msgid "{} Mib/s"
 msgstr "{} Mib/s"
 
-#: src/utils/units.rs:259
+#: src/utils/units.rs:258
+#, rust-format
 msgid "{} Gib/s"
 msgstr "{} Gib/s"
 
-#: src/utils/units.rs:260
+#: src/utils/units.rs:259
+#, rust-format
 msgid "{} Tib/s"
 msgstr "{} Tib/s"
 
-#: src/utils/units.rs:261
+#: src/utils/units.rs:260
+#, rust-format
 msgid "{} Pib/s"
 msgstr "{} Pib/s"
 
-#: src/utils/units.rs:262
+#: src/utils/units.rs:261
+#, rust-format
 msgid "{} Eib/s"
 msgstr "{} Eib/s"
 
-#: src/utils/units.rs:263
+#: src/utils/units.rs:262
+#, rust-format
 msgid "{} Zib/s"
 msgstr "{} Zib/s"
 
-#: src/utils/units.rs:264
+#: src/utils/units.rs:263
+#, rust-format
 msgid "{} Yib/s"
 msgstr "{} Yib/s"
 
-#: src/utils/units.rs:265
+#: src/utils/units.rs:264
+#, rust-format
 msgid "{} Rib/s"
 msgstr "{} Rib/s"
 
-#: src/utils/units.rs:266
+#: src/utils/units.rs:265
+#, rust-format
 msgid "{} Qib/s"
 msgstr "{} Qib/s"
 
-#: src/utils/units.rs:273
+#: src/utils/units.rs:272
+#, rust-format
 msgid "{} Hz"
 msgstr "{} Hz"
 
-#: src/utils/units.rs:274
+#: src/utils/units.rs:273
+#, rust-format
 msgid "{} kHz"
 msgstr "{} kHz"
 
-#: src/utils/units.rs:275
+#: src/utils/units.rs:274
+#, rust-format
 msgid "{} MHz"
 msgstr "{} MHz"
 
-#: src/utils/units.rs:276
+#: src/utils/units.rs:275
+#, rust-format
 msgid "{} GHz"
 msgstr "{} GHz"
 
-#: src/utils/units.rs:277
+#: src/utils/units.rs:276
+#, rust-format
 msgid "{} THz"
 msgstr "{} THz"
 
-#: src/utils/units.rs:278
+#: src/utils/units.rs:277
+#, rust-format
 msgid "{} PHz"
 msgstr "{} PHz"
 
-#: src/utils/units.rs:279
+#: src/utils/units.rs:278
+#, rust-format
 msgid "{} EHz"
 msgstr "{} EHz"
 
-#: src/utils/units.rs:280
+#: src/utils/units.rs:279
+#, rust-format
 msgid "{} ZHz"
 msgstr "{} ZHz"
 
-#: src/utils/units.rs:281
+#: src/utils/units.rs:280
+#, rust-format
 msgid "{} YHz"
 msgstr "{} YHz"
 
-#: src/utils/units.rs:282
+#: src/utils/units.rs:281
+#, rust-format
 msgid "{} RHz"
 msgstr "{} RHz"
 
-#: src/utils/units.rs:283
+#: src/utils/units.rs:282
+#, rust-format
 msgid "{} QHz"
 msgstr "{} QHz"
 
-#: src/utils/units.rs:290
+#: src/utils/units.rs:289
+#, rust-format
 msgid "{} W"
 msgstr "{} W"
 
-#: src/utils/units.rs:291
+#: src/utils/units.rs:290
+#, rust-format
 msgid "{} kW"
 msgstr "{} kW"
 
-#: src/utils/units.rs:292
+#: src/utils/units.rs:291
+#, rust-format
 msgid "{} MW"
 msgstr "{} MW"
 
-#: src/utils/units.rs:293
+#: src/utils/units.rs:292
+#, rust-format
 msgid "{} GW"
 msgstr "{} GW"
 
-#: src/utils/units.rs:294
+#: src/utils/units.rs:293
+#, rust-format
 msgid "{} TW"
 msgstr "{} TW"
 
-#: src/utils/units.rs:295
+#: src/utils/units.rs:294
+#, rust-format
 msgid "{} PW"
 msgstr "{} PW"
 
-#: src/utils/units.rs:296
+#: src/utils/units.rs:295
+#, rust-format
 msgid "{} EW"
 msgstr "{} EW"
 
-#: src/utils/units.rs:297
+#: src/utils/units.rs:296
+#, rust-format
 msgid "{} ZW"
 msgstr "{} ZW"
 
-#: src/utils/units.rs:298
+#: src/utils/units.rs:297
+#, rust-format
 msgid "{} YW"
 msgstr "{} YW"
 
-#: src/utils/units.rs:299
+#: src/utils/units.rs:298
+#, rust-format
 msgid "{} RW"
 msgstr "{} RW"
 
-#: src/utils/units.rs:300
+#: src/utils/units.rs:299
+#, rust-format
 msgid "{} QW"
 msgstr "{} QW"
 
-#: src/utils/units.rs:309 src/utils/units.rs:323
+#: src/utils/units.rs:308 src/utils/units.rs:322
+#, rust-format
 msgid "{} Wh"
 msgstr "{} Wh"
 
-#: src/utils/units.rs:310 src/utils/units.rs:324
+#: src/utils/units.rs:309 src/utils/units.rs:323
+#, rust-format
 msgid "{} kWh"
 msgstr "{} kWh"
 
-#: src/utils/units.rs:311 src/utils/units.rs:325
+#: src/utils/units.rs:310 src/utils/units.rs:324
+#, rust-format
 msgid "{} MWh"
 msgstr "{} MWh"
 
-#: src/utils/units.rs:312 src/utils/units.rs:326
+#: src/utils/units.rs:311 src/utils/units.rs:325
+#, rust-format
 msgid "{} GWh"
 msgstr "{} GWh"
 
-#: src/utils/units.rs:313 src/utils/units.rs:327
+#: src/utils/units.rs:312 src/utils/units.rs:326
+#, rust-format
 msgid "{} TWh"
 msgstr "{} TWh"
 
-#: src/utils/units.rs:314 src/utils/units.rs:328
+#: src/utils/units.rs:313 src/utils/units.rs:327
+#, rust-format
 msgid "{} PWh"
 msgstr "{} PWh"
 
-#: src/utils/units.rs:315 src/utils/units.rs:329
+#: src/utils/units.rs:314 src/utils/units.rs:328
+#, rust-format
 msgid "{} EWh"
 msgstr "{} EWh"
 
-#: src/utils/units.rs:316 src/utils/units.rs:330
+#: src/utils/units.rs:315 src/utils/units.rs:329
+#, rust-format
 msgid "{} ZWh"
 msgstr "{} ZWh"
 
-#: src/utils/units.rs:317 src/utils/units.rs:331
+#: src/utils/units.rs:316 src/utils/units.rs:330
+#, rust-format
 msgid "{} YWh"
 msgstr "{} YWh"
 
-#: src/utils/units.rs:318 src/utils/units.rs:332
+#: src/utils/units.rs:317 src/utils/units.rs:331
+#, rust-format
 msgid "{} RWh"
 msgstr "{} RWh"
 
-#: src/utils/units.rs:319 src/utils/units.rs:333
+#: src/utils/units.rs:318 src/utils/units.rs:332
+#, rust-format
 msgid "{} QWh"
 msgstr "{} QWh"
 
@@ -1720,7 +1852,7 @@ msgstr "eMMC 儲存裝置"
 
 #: src/utils/drive.rs:131
 msgid "Flash Storage"
-msgstr "快閃記憶儲存裝置"
+msgstr "快閃記憶體儲存裝置"
 
 #: src/utils/drive.rs:132 src/utils/drive.rs:209
 msgid "Floppy Drive"
@@ -1740,7 +1872,7 @@ msgstr "映射裝置"
 
 #: src/utils/drive.rs:136
 msgid "NVMe Drive"
-msgstr "NVMe 裝置"
+msgstr "NVMe 磁碟機"
 
 #: src/utils/drive.rs:138
 msgid "Software Raid"
@@ -1763,36 +1895,43 @@ msgid "Compressed RAM Disk (zram)"
 msgstr "壓縮式 RAM 磁碟（zram）"
 
 #: src/utils/drive.rs:210
+#, rust-format
 msgid "{} Loop Device"
 msgstr "{} Loop 裝置"
 
 #: src/utils/drive.rs:211
+#, rust-format
 msgid "{} Mapped Device"
 msgstr "{} 映射裝置"
 
 #: src/utils/drive.rs:212
+#, rust-format
 msgid "{} RAID"
 msgstr "{} 磁碟陣列"
 
 #: src/utils/drive.rs:213
+#, rust-format
 msgid "{} RAM Disk"
 msgstr "{} RAM 磁碟"
 
 #: src/utils/drive.rs:214
+#, rust-format
 msgid "{} zram Device"
 msgstr "{} zram 裝置"
 
 #: src/utils/drive.rs:215
+#, rust-format
 msgid "{} ZFS Volume"
 msgstr "{} ZFS 儲存區"
 
 #: src/utils/drive.rs:216
+#, rust-format
 msgid "{} Drive"
-msgstr "{} 硬碟"
+msgstr "{} 磁碟機"
 
 #: src/utils/network.rs:129
 msgid "Bluetooth Tether"
-msgstr "藍牙共享網路"
+msgstr "藍牙網路共享"
 
 #: src/utils/network.rs:130
 msgid "Network Bridge"
@@ -1800,7 +1939,7 @@ msgstr "網路橋接"
 
 #: src/utils/network.rs:131
 msgid "Ethernet Connection"
-msgstr "乙太網路連接"
+msgstr "乙太網路連線"
 
 #: src/utils/network.rs:132
 msgid "Docker Bridge"
@@ -1849,6 +1988,12 @@ msgstr "Wi-Fi 連線"
 #: src/utils/network.rs:143
 msgid "WWAN Connection"
 msgstr "WWAN 連線"
+
+#~ msgid "Report Issues"
+#~ msgstr "回報問題"
+
+#~ msgid "Icon by"
+#~ msgstr "圖示提供"
 
 #~ msgid "The Nalux Team"
 #~ msgstr "Nalux 團隊"
