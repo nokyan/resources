@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
 "POT-Creation-Date: 2026-01-10 18:36+0000\n"
-"PO-Revision-Date: 2026-01-11 21:23+0800\n"
+"PO-Revision-Date: 2026-01-12 00:48+0800\n"
 "Last-Translator: Cheng-Chia Tseng <zerngjia@gmail.com>\n"
 "Language-Team: Traditional Chinese Team <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -50,7 +50,7 @@ msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
-msgstr "《資源》支援監控以下部分："
+msgstr "《資源》支援監控以下電腦元件："
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
