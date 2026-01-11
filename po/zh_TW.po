@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
 "POT-Creation-Date: 2026-01-10 18:36+0000\n"
-"PO-Revision-Date: 2026-01-11 16:40+0800\n"
+"PO-Revision-Date: 2026-01-11 21:23+0800\n"
 "Last-Translator: Cheng-Chia Tseng <zerngjia@gmail.com>\n"
 "Language-Team: Traditional Chinese Team <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -35,7 +35,9 @@ msgstr "關注系統資源"
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/net.nokyan.Resources.desktop.in.in:9
 msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
-msgstr "系統;資源;監控器;處理程序;使用情形;任務;管理員;CPU;RAM;記憶體;GPU;"
+msgstr ""
+"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;系統;"
+"資源;監控;程序;用量;使用率;任務;管理員;記憶體;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
@@ -48,7 +50,7 @@ msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
-msgstr "《資源》支援監控以下元件："
+msgstr "《資源》支援監控以下部分："
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
@@ -248,7 +250,7 @@ msgstr "執行自從"
 
 #: data/resources/ui/dialogs/app_dialog.ui:198
 msgid "Running Processes"
-msgstr "正在執行的程序"
+msgstr "執行中的程序"
 
 #: data/resources/ui/dialogs/app_dialog.ui:207
 #: data/resources/ui/dialogs/process_dialog.ui:231
@@ -297,7 +299,7 @@ msgstr "使用者"
 
 #: data/resources/ui/dialogs/process_dialog.ui:222
 msgid "Control Group"
-msgstr "控制組"
+msgstr "控制群組"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:7
 #: data/resources/ui/dialogs/process_options_dialog.ui:69
@@ -549,25 +551,25 @@ msgstr "虛擬網路介面，例如橋接器或VPN隧道"
 #: data/resources/ui/pages/applications.ui:26
 #: src/ui/pages/applications/mod.rs:1662
 msgid "Kill App"
-msgstr "截殺應用程式"
+msgstr "截殺程式"
 
 #: data/resources/ui/pages/applications.ui:10
 #: data/resources/ui/pages/applications.ui:30
 #: src/ui/pages/applications/mod.rs:1661
 msgid "Halt App"
-msgstr "暫停應用程式"
+msgstr "暫停程式"
 
 #: data/resources/ui/pages/applications.ui:14
 #: data/resources/ui/pages/applications.ui:34
 #: src/ui/pages/applications/mod.rs:1663
 msgid "Continue App"
-msgstr "繼續應用程式"
+msgstr "繼續程式"
 
 #: data/resources/ui/pages/applications.ui:22
 #: data/resources/ui/pages/applications.ui:98
 #: src/ui/pages/applications/mod.rs:1660
 msgid "End App"
-msgstr "結束應用程式"
+msgstr "結束程式"
 
 #: data/resources/ui/pages/applications.ui:40
 #: data/resources/ui/pages/processes.ui:62
@@ -581,7 +583,7 @@ msgstr "搜尋應用程式"
 #: data/resources/ui/pages/applications.ui:87
 #: data/resources/ui/pages/applications.ui:89
 msgid "Show App Information"
-msgstr "顯示應用程式資訊"
+msgstr "顯示程式資訊"
 
 #: data/resources/ui/pages/battery.ui:36
 msgid "Battery Health"
@@ -703,7 +705,7 @@ msgstr "使用的驅動程式"
 
 #: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
 msgid "Max Power Cap"
-msgstr "最大功率限制"
+msgstr "最大功率上限"
 
 #: data/resources/ui/pages/memory.ui:9
 msgid "You need to authenticate to see memory properties"
@@ -715,7 +717,7 @@ msgstr "核對身分"
 
 #: data/resources/ui/pages/memory.ui:45
 msgid "Slots Used"
-msgstr "已使用的插槽"
+msgstr "使用的插槽"
 
 #: data/resources/ui/pages/memory.ui:54
 msgid "Speed"
@@ -723,7 +725,7 @@ msgstr "速度"
 
 #: data/resources/ui/pages/memory.ui:63
 msgid "Form Factor"
-msgstr "規格尺寸"
+msgstr "外形規格"
 
 #: data/resources/ui/pages/memory.ui:81
 msgid "Type Detail"
@@ -833,12 +835,12 @@ msgstr "顯示快捷鍵"
 #: data/resources/ui/shortcuts.ui:21
 msgctxt "shortcut window"
 msgid "Quit"
-msgstr "結束"
+msgstr "離開"
 
 #: data/resources/ui/shortcuts.ui:29
 msgctxt "shortcut window"
 msgid "Apps/Processes"
-msgstr "應用程式/程序"
+msgstr "程式/程序"
 
 #: data/resources/ui/shortcuts.ui:32
 msgctxt "shortcut window"
@@ -848,27 +850,27 @@ msgstr "切換搜尋欄位"
 #: data/resources/ui/shortcuts.ui:38
 msgctxt "shortcut window"
 msgid "End App/Process"
-msgstr "結束應用程式/程序"
+msgstr "結束程式/程序"
 
 #: data/resources/ui/shortcuts.ui:44
 msgctxt "shortcut window"
 msgid "Kill App/Process"
-msgstr "截殺應用程式/程序"
+msgstr "截殺程式/程序"
 
 #: data/resources/ui/shortcuts.ui:50
 msgctxt "shortcut window"
 msgid "Halt App/Process"
-msgstr "暫停應用程式/程序"
+msgstr "暫停程式/程序"
 
 #: data/resources/ui/shortcuts.ui:56
 msgctxt "shortcut window"
 msgid "Continue App/Process"
-msgstr "繼續應用程式/程序"
+msgstr "繼續程式/程序"
 
 #: data/resources/ui/shortcuts.ui:62
 msgctxt "shortcut window"
 msgid "Show Information for App/Process"
-msgstr "顯示應用程式/程序資訊"
+msgstr "顯示程式/程序資訊"
 
 #: data/resources/ui/shortcuts.ui:68
 msgctxt "shortcut window"
@@ -970,7 +972,7 @@ msgstr "是 (Flatpak)"
 #: src/ui/pages/applications/application_entry.rs:194
 #: src/ui/pages/processes/process_entry.rs:215
 msgid "Yes (Portable)"
-msgstr "是的（便攜式）"
+msgstr "是 (Portable)"
 
 #: src/ui/pages/applications/application_entry.rs:195
 #: src/ui/pages/processes/process_entry.rs:216
@@ -980,7 +982,7 @@ msgstr "是 (Snap)"
 #: src/ui/pages/applications/mod.rs:663
 #, rust-format
 msgid "Running Apps: {}"
-msgstr "執行中的應用程式：{}"
+msgstr "執行中的程式：{}"
 
 #: src/ui/pages/applications/mod.rs:703 src/ui/pages/processes/mod.rs:873
 msgid "Cancel"
@@ -988,7 +990,7 @@ msgstr "取消"
 
 #: src/ui/pages/applications/mod.rs:749
 msgid "App"
-msgstr "應用程式"
+msgstr "程式"
 
 #: src/ui/pages/applications/mod.rs:1638 src/ui/pages/processes/mod.rs:2293
 #, rust-format
@@ -1042,7 +1044,7 @@ msgstr "最高："
 
 #: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:212
 msgid "Total Usage"
-msgstr "總使用量"
+msgstr "總使用率"
 
 #: src/ui/pages/cpu.rs:271 src/ui/pages/gpu.rs:239
 msgid "Temperature"
@@ -1050,11 +1052,11 @@ msgstr "溫度"
 
 #: src/ui/pages/drive.rs:126
 msgid "Drive"
-msgstr "磁碟機"
+msgstr "硬碟"
 
 #: src/ui/pages/drive.rs:236
 msgid "Drive Activity"
-msgstr "磁碟活動紀錄"
+msgstr "硬碟活動紀錄"
 
 #: src/ui/pages/drive.rs:243
 msgid "Read Speed"
@@ -1101,7 +1103,7 @@ msgstr "記憶體：{}"
 #: src/ui/pages/memory.rs:262
 #, rust-format
 msgid "{} of {}"
-msgstr "已用 {}，總計 {}"
+msgstr "{} / {}"
 
 #: src/ui/pages/memory.rs:265
 #, rust-format
@@ -1852,7 +1854,7 @@ msgstr "eMMC 儲存裝置"
 
 #: src/utils/drive.rs:131
 msgid "Flash Storage"
-msgstr "快閃記憶體儲存裝置"
+msgstr "快閃儲存裝置"
 
 #: src/utils/drive.rs:132 src/utils/drive.rs:209
 msgid "Floppy Drive"
@@ -1872,7 +1874,7 @@ msgstr "映射裝置"
 
 #: src/utils/drive.rs:136
 msgid "NVMe Drive"
-msgstr "NVMe 磁碟機"
+msgstr "NVMe 裝置"
 
 #: src/utils/drive.rs:138
 msgid "Software Raid"
@@ -1927,11 +1929,11 @@ msgstr "{} ZFS 儲存區"
 #: src/utils/drive.rs:216
 #, rust-format
 msgid "{} Drive"
-msgstr "{} 磁碟機"
+msgstr "{} 硬碟"
 
 #: src/utils/network.rs:129
 msgid "Bluetooth Tether"
-msgstr "藍牙網路共享"
+msgstr "藍牙共享網路"
 
 #: src/utils/network.rs:130
 msgid "Network Bridge"
