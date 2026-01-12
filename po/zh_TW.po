@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
 "POT-Creation-Date: 2026-01-10 18:36+0000\n"
-"PO-Revision-Date: 2026-01-12 00:48+0800\n"
+"PO-Revision-Date: 2026-01-12 21:00+0800\n"
 "Last-Translator: Cheng-Chia Tseng <zerngjia@gmail.com>\n"
 "Language-Team: Traditional Chinese Team <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -551,7 +551,7 @@ msgstr "虛擬網路介面，例如橋接器或VPN隧道"
 #: data/resources/ui/pages/applications.ui:26
 #: src/ui/pages/applications/mod.rs:1662
 msgid "Kill App"
-msgstr "截殺程式"
+msgstr "強制結束程式"
 
 #: data/resources/ui/pages/applications.ui:10
 #: data/resources/ui/pages/applications.ui:30
@@ -766,7 +766,7 @@ msgstr "記憶體頻率"
 #: data/resources/ui/pages/processes.ui:6 data/resources/ui/pages/processes.ui:42
 #: src/ui/pages/processes/mod.rs:2346
 msgid "Kill Process"
-msgstr "截殺程序"
+msgstr "強制結束程序"
 
 #: data/resources/ui/pages/processes.ui:10
 #: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2345
@@ -781,7 +781,7 @@ msgstr "繼續程序"
 #: data/resources/ui/pages/processes.ui:22
 #: data/resources/ui/pages/processes.ui:74
 msgid "Kill Processes"
-msgstr "截殺程序"
+msgstr "強制結束程序"
 
 #: data/resources/ui/pages/processes.ui:26
 #: data/resources/ui/pages/processes.ui:78
@@ -855,7 +855,7 @@ msgstr "結束程式/程序"
 #: data/resources/ui/shortcuts.ui:44
 msgctxt "shortcut window"
 msgid "Kill App/Process"
-msgstr "截殺程式/程序"
+msgstr "強制結束程式/程序"
 
 #: data/resources/ui/shortcuts.ui:50
 msgctxt "shortcut window"
@@ -1005,7 +1005,7 @@ msgstr "暫停 {}？"
 #: src/ui/pages/applications/mod.rs:1640 src/ui/pages/processes/mod.rs:2295
 #, rust-format
 msgid "Kill {}?"
-msgstr "截殺 {}？"
+msgstr "強制結束 {}？"
 
 #: src/ui/pages/applications/mod.rs:1641 src/ui/pages/processes/mod.rs:2296
 #, rust-format
@@ -1026,7 +1026,7 @@ msgstr "暫停應用程式可能伴隨嚴重風險，例如資料遺失與安全
 msgid ""
 "Killing an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
-msgstr "截殺應用程式可能伴隨嚴重風險，例如資料遺失與安全隱患。請謹慎使用。"
+msgstr "強制結束應用程式可能伴隨嚴重風險，例如資料遺失與安全隱患。請謹慎使用。"
 
 #: src/ui/pages/battery.rs:102 src/utils/battery.rs:258
 msgid "Battery"
@@ -1161,7 +1161,7 @@ msgstr[0] "暫停 {} 個程序？"
 #, rust-format
 msgid "Kill process?"
 msgid_plural "Kill {} processes?"
-msgstr[0] "截殺 {} 個程序？"
+msgstr[0] "強制結束 {} 個程序？"
 
 #: src/ui/pages/processes/mod.rs:2333
 msgid ""
@@ -1173,7 +1173,7 @@ msgstr "暫停程序可能伴隨嚴重風險，例如資料遺失與安全隱患
 msgid ""
 "Killing a process can come with serious risks such as losing data and security "
 "implications. Use with caution."
-msgstr "截殺程序可能伴隨嚴重風險，例如資料遺失與安全隱患。請謹慎使用。"
+msgstr "強制結束程序可能伴隨嚴重風險，例如資料遺失與安全隱患。請謹慎使用。"
 
 #: src/ui/window.rs:466
 #, rust-format
@@ -1212,7 +1212,7 @@ msgstr "成功暫停 {}"
 #: src/ui/window.rs:1286
 #, rust-format
 msgid "Successfully killed {}"
-msgstr "成功截殺 {}"
+msgstr "成功強制結束 {}"
 
 #: src/ui/window.rs:1287
 #, rust-format
@@ -1235,7 +1235,7 @@ msgstr[0] "成功暫停 {} 個程序"
 #, rust-format
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
-msgstr[0] "成功截殺 {} 個程序"
+msgstr[0] "成功強制結束 {} 個程序"
 
 #: src/ui/window.rs:1312
 #, rust-format
@@ -1259,7 +1259,7 @@ msgstr[0] "暫停 {} 個程序時發生問題"
 #, rust-format
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
-msgstr[0] "截殺 {} 個程序時發生問題"
+msgstr[0] "強制結束 {} 個程序時發生問題"
 
 #: src/ui/window.rs:1341
 #, rust-format
@@ -1280,7 +1280,7 @@ msgstr "暫停 {} 時發生問題"
 #: src/ui/window.rs:1353
 #, rust-format
 msgid "There was a problem killing {}"
-msgstr "截殺 {} 時發生問題"
+msgstr "強制結束 {} 時發生問題"
 
 #: src/ui/window.rs:1354
 #, rust-format
