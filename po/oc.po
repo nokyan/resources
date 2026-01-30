@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
 "POT-Creation-Date: 2026-01-10 18:36+0000\n"
-"PO-Revision-Date: 2026-01-30 13:50+0100\n"
+"PO-Revision-Date: 2026-01-30 18:15+0100\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Occitan <Occitan>\n"
 "Language: oc\n"
@@ -91,11 +91,11 @@ msgstr "Pagina memòria en tèma escur"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:69
 msgid "GPU page in light theme"
-msgstr ""
+msgstr "Pagina carta grafica en tèma clar"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:73
 msgid "Drive page in dark theme"
-msgstr ""
+msgstr "Pagina lector en tèma escur"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:77
 msgid "Network Interface page in light theme"
@@ -107,11 +107,11 @@ msgstr "Pagina batariá en tèma escur"
 
 #: data/net.nokyan.Resources.policy.in.in:9
 msgid "Control Process"
-msgstr ""
+msgstr "Contrarotlar procèssus"
 
 #: data/net.nokyan.Resources.policy.in.in:10
 msgid "Authentication is required to control superuser’s or other users’ processes"
-msgstr ""
+msgstr "Autentificacion requerida per contrarotlar los procèssus del super administrator o d’autres utilizaires"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
 msgid "App Information"
@@ -139,25 +139,25 @@ msgstr "Memòria d'escambi"
 #: data/resources/ui/dialogs/settings_dialog.ui:230 src/ui/pages/applications/mod.rs:945 src/ui/pages/applications/mod.rs:964 src/ui/pages/processes/mod.rs:1245
 #: src/ui/pages/processes/mod.rs:1264
 msgid "Drive Read"
-msgstr ""
+msgstr "Lectura disc"
 
 #: data/resources/ui/dialogs/app_dialog.ui:109 data/resources/ui/dialogs/process_dialog.ui:87 data/resources/ui/dialogs/settings_dialog.ui:143
 #: data/resources/ui/dialogs/settings_dialog.ui:235 src/ui/pages/applications/mod.rs:1018 src/ui/pages/applications/mod.rs:1037 src/ui/pages/processes/mod.rs:1320
 #: src/ui/pages/processes/mod.rs:1339
 msgid "Drive Read Total"
-msgstr ""
+msgstr "Lectura disc totala"
 
 #: data/resources/ui/dialogs/app_dialog.ui:118 data/resources/ui/dialogs/process_dialog.ui:96 data/resources/ui/dialogs/settings_dialog.ui:148
 #: data/resources/ui/dialogs/settings_dialog.ui:240 src/ui/pages/applications/mod.rs:1087 src/ui/pages/applications/mod.rs:1106 src/ui/pages/processes/mod.rs:1395
 #: src/ui/pages/processes/mod.rs:1414
 msgid "Drive Write"
-msgstr ""
+msgstr "Escritura disc"
 
 #: data/resources/ui/dialogs/app_dialog.ui:127 data/resources/ui/dialogs/process_dialog.ui:105 data/resources/ui/dialogs/settings_dialog.ui:153
 #: data/resources/ui/dialogs/settings_dialog.ui:245 src/ui/pages/applications/mod.rs:1162 src/ui/pages/applications/mod.rs:1181 src/ui/pages/processes/mod.rs:1470
 #: src/ui/pages/processes/mod.rs:1489
 msgid "Drive Write Total"
-msgstr ""
+msgstr "Escritura disc totala"
 
 #: data/resources/ui/dialogs/app_dialog.ui:149 data/resources/ui/dialogs/process_dialog.ui:127 data/resources/ui/dialogs/settings_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:255 src/ui/pages/applications/mod.rs:1436 src/ui/pages/applications/mod.rs:1454 src/ui/pages/processes/mod.rs:1749
@@ -197,7 +197,7 @@ msgstr "Procèssus en execucion"
 
 #: data/resources/ui/dialogs/app_dialog.ui:207 data/resources/ui/dialogs/process_dialog.ui:231
 msgid "Containerized"
-msgstr ""
+msgstr "Contenedorizat"
 
 #: data/resources/ui/dialogs/process_dialog.ui:7
 msgid "Process Information"
@@ -205,15 +205,15 @@ msgstr "Informacions del procèssus"
 
 #: data/resources/ui/dialogs/process_dialog.ui:154 data/resources/ui/dialogs/settings_dialog.ui:270 src/ui/pages/processes/mod.rs:1817 src/ui/pages/processes/mod.rs:1835
 msgid "Total CPU Time"
-msgstr ""
+msgstr "Temps CPU total"
 
 #: data/resources/ui/dialogs/process_dialog.ui:163 data/resources/ui/dialogs/settings_dialog.ui:275 src/ui/pages/processes/mod.rs:1884 src/ui/pages/processes/mod.rs:1902
 msgid "User CPU Time"
-msgstr ""
+msgstr "Temps CPU utilizaire"
 
 #: data/resources/ui/dialogs/process_dialog.ui:172 data/resources/ui/dialogs/settings_dialog.ui:280 src/ui/pages/processes/mod.rs:1951 src/ui/pages/processes/mod.rs:1969
 msgid "System CPU Time"
-msgstr ""
+msgstr "Temps CPU sistèma"
 
 #: data/resources/ui/dialogs/process_dialog.ui:186 data/resources/ui/dialogs/settings_dialog.ui:210 src/ui/pages/processes/mod.rs:983 src/ui/pages/processes/mod.rs:998
 msgid "Process ID"
@@ -241,11 +241,11 @@ msgstr "Aplicar"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:72
 msgid "Niceness"
-msgstr ""
+msgstr "Cortesi"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:73
 msgid "The priority of a process is given by its niceness. A lower niceness value correspond to a higher priority."
-msgstr ""
+msgstr "La prioritat d'un procèssus es atribuida al mejan de sa valor de « cortesiá ». Una valor de cortesiá mai bassa correspond a una mai nauta prioritat."
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:87 data/resources/ui/dialogs/settings_dialog.ui:285 src/ui/pages/processes/mod.rs:2018
 #: src/ui/pages/processes/mod.rs:2034
@@ -255,31 +255,31 @@ msgstr "Prioritat"
 #: data/resources/ui/dialogs/process_options_dialog.ui:91
 msgctxt "process priority"
 msgid "Very High"
-msgstr "Fòrça elevat"
+msgstr "Fòrça elevada"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:92
 msgctxt "process priority"
 msgid "High"
-msgstr "Elevat"
+msgstr "Elevada"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:93
 msgctxt "process priority"
 msgid "Normal"
-msgstr "Normal"
+msgstr "Normala"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:94
 msgctxt "process priority"
 msgid "Low"
-msgstr "Feble"
+msgstr "Febla"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:95
 msgctxt "process priority"
 msgid "Very Low"
-msgstr "Fòrça bas"
+msgstr "Fòrça bassa"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:103
 msgid "Processor Affinity"
-msgstr ""
+msgstr "Afinitat processor"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:108
 msgid "Toggle All"
@@ -287,7 +287,7 @@ msgstr "Tot bascular"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:111
 msgid "Select which processor cores the process is allowed to run on"
-msgstr ""
+msgstr "Seleccionar los còrs de processors que lo procèssus pòt utilizar"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:7
 msgid "General"
@@ -299,7 +299,7 @@ msgstr "Unitats"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:13
 msgid "Data Unit Prefix"
-msgstr ""
+msgstr "Prefix d’unitat de data"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:17
 msgid "Decimal"
@@ -311,7 +311,7 @@ msgstr "Binari"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:26
 msgid "Show Network Speeds in Bits per Second"
-msgstr ""
+msgstr "Afichar las velocitat de ret en Bits per segonda"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:31
 msgid "Temperature Unit"
@@ -339,7 +339,7 @@ msgstr "Velocitat d’actualizacion"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:51
 msgid "Higher refresh speeds can lead to higher processor usage"
-msgstr ""
+msgstr "Una velocitat d’actualizacion mai nauta pòt menar a una utilizacion processor mai nauta"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:55
 msgctxt "UI refresh speed"
@@ -421,7 +421,7 @@ msgstr ""
 #: data/resources/ui/dialogs/settings_dialog.ui:183 data/resources/ui/dialogs/settings_dialog.ui:295 src/ui/pages/applications/mod.rs:1570
 #: src/ui/pages/applications/mod.rs:1589 src/ui/pages/processes/mod.rs:2160 src/ui/pages/processes/mod.rs:2179
 msgid "Combined Memory"
-msgstr ""
+msgstr "Memòria combinada"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:193 data/resources/ui/window.ui:105 data/resources/ui/window.ui:112 src/ui/pages/processes/mod.rs:176
 msgid "Processes"
@@ -433,7 +433,7 @@ msgstr "Opcions"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:199
 msgid "Show Niceness Values"
-msgstr ""
+msgstr "Afichar las valors de cortesiá"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:200
 msgid "Display priorities as niceness to allow for more fine-grained adjustments"
@@ -485,7 +485,7 @@ msgstr "Informacions"
 
 #: data/resources/ui/pages/applications.ui:57
 msgid "Search applications"
-msgstr ""
+msgstr "Recercar d'aplicacions"
 
 #: data/resources/ui/pages/applications.ui:87 data/resources/ui/pages/applications.ui:89
 msgid "Show App Information"
@@ -533,15 +533,15 @@ msgstr "Frequéncia max"
 
 #: data/resources/ui/pages/cpu.ui:99
 msgid "Logical Cores"
-msgstr ""
+msgstr "Còrs logics"
 
 #: data/resources/ui/pages/cpu.ui:108
 msgid "Physical Cores"
-msgstr ""
+msgstr "Còrs fisics"
 
 #: data/resources/ui/pages/cpu.ui:117
 msgid "Sockets"
-msgstr ""
+msgstr "Connectadors"
 
 #: data/resources/ui/pages/cpu.ui:126
 msgid "Uptime"
@@ -598,7 +598,7 @@ msgstr "Usatge energetic"
 
 #: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:84
 msgid "PCI Slot"
-msgstr ""
+msgstr "Emplaçament PCI"
 
 #: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67 data/resources/ui/pages/npu.ui:93
 msgid "Driver Used"
@@ -606,11 +606,11 @@ msgstr "Lector utilizat"
 
 #: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
 msgid "Max Power Cap"
-msgstr ""
+msgstr "Capacitat max corrent"
 
 #: data/resources/ui/pages/memory.ui:9
 msgid "You need to authenticate to see memory properties"
-msgstr ""
+msgstr "Vos devètz autentificar per veire las proprietats de memòrias"
 
 #: data/resources/ui/pages/memory.ui:10
 msgid "Authenticate"
@@ -618,7 +618,7 @@ msgstr "Autentificacion"
 
 #: data/resources/ui/pages/memory.ui:45
 msgid "Slots Used"
-msgstr ""
+msgstr "Emplaçament utilizat"
 
 #: data/resources/ui/pages/memory.ui:54
 msgid "Speed"
@@ -658,7 +658,7 @@ msgstr "Velocitat del ligam"
 
 #: data/resources/ui/pages/npu.ui:31
 msgid "NPU Frequency"
-msgstr ""
+msgstr "Frequéncia NPU"
 
 #: data/resources/ui/pages/npu.ui:44
 msgid "Memory Frequency"
@@ -1037,11 +1037,11 @@ msgstr "Carta grafica {}"
 #: src/ui/window.rs:496
 #, rust-format
 msgid "NPU {}"
-msgstr ""
+msgstr "NPU {}"
 
 #: src/ui/window.rs:498
 msgid "NPU"
-msgstr ""
+msgstr "NPU"
 
 #: src/ui/window.rs:1201
 #, rust-format
@@ -1739,7 +1739,7 @@ msgstr "Lector NVMe"
 
 #: src/utils/drive.rs:138
 msgid "Software Raid"
-msgstr ""
+msgstr "Raid logicial"
 
 #: src/utils/drive.rs:139
 msgid "RAM Disk"
@@ -1806,27 +1806,27 @@ msgstr "Connexion Ethernet"
 
 #: src/utils/network.rs:132
 msgid "Docker Bridge"
-msgstr ""
+msgstr "Pont Docker"
 
 #: src/utils/network.rs:133
 msgid "InfiniBand Connection"
-msgstr ""
+msgstr "Connexion InfiniBand"
 
 #: src/utils/network.rs:134
 msgid "Incus Bridge"
-msgstr ""
+msgstr "Pont Incus"
 
 #: src/utils/network.rs:135
 msgid "LXC Bridge"
-msgstr ""
+msgstr "Pont LXC"
 
 #: src/utils/network.rs:136
 msgid "LXD Bridge"
-msgstr ""
+msgstr "Pont LXD"
 
 #: src/utils/network.rs:137
 msgid "Serial Line IP Connection"
-msgstr ""
+msgstr "Connexion Serial Line IP"
 
 #: src/utils/network.rs:138
 msgid "Virtual Ethernet Device"
