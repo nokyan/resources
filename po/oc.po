@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
 "POT-Creation-Date: 2026-01-10 18:36+0000\n"
-"PO-Revision-Date: 2026-01-30 11:20+0100\n"
+"PO-Revision-Date: 2026-01-30 13:50+0100\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Occitan <Occitan>\n"
 "Language: oc\n"
@@ -42,7 +42,7 @@ msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
-msgstr ""
+msgstr "Resources pren en carga la susvelhança dels compausants seguents :"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
@@ -201,7 +201,7 @@ msgstr ""
 
 #: data/resources/ui/dialogs/process_dialog.ui:7
 msgid "Process Information"
-msgstr ""
+msgstr "Informacions del procèssus"
 
 #: data/resources/ui/dialogs/process_dialog.ui:154 data/resources/ui/dialogs/settings_dialog.ui:270 src/ui/pages/processes/mod.rs:1817 src/ui/pages/processes/mod.rs:1835
 msgid "Total CPU Time"
@@ -283,7 +283,7 @@ msgstr ""
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:108
 msgid "Toggle All"
-msgstr ""
+msgstr "Tot bascular"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:111
 msgid "Select which processor cores the process is allowed to run on"
@@ -344,7 +344,7 @@ msgstr ""
 #: data/resources/ui/dialogs/settings_dialog.ui:55
 msgctxt "UI refresh speed"
 msgid "Very Slow"
-msgstr ""
+msgstr "Plan lent"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:56
 msgctxt "UI refresh speed"
@@ -449,7 +449,7 @@ msgstr "Lectors"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:316
 msgid "Show Virtual Drives"
-msgstr ""
+msgstr "Afichar los lectors virtuals"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:317
 msgid "Virtual drives are for example ZFS volumes or mapped devices"
@@ -457,7 +457,7 @@ msgstr ""
 
 #: data/resources/ui/dialogs/settings_dialog.ui:327
 msgid "Show Virtual Network Interfaces"
-msgstr ""
+msgstr "Afichar las interfàcias rets virtualas"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:328
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
@@ -465,19 +465,19 @@ msgstr ""
 
 #: data/resources/ui/pages/applications.ui:6 data/resources/ui/pages/applications.ui:26 src/ui/pages/applications/mod.rs:1662
 msgid "Kill App"
-msgstr ""
+msgstr "Tuar l’aplicacion"
 
 #: data/resources/ui/pages/applications.ui:10 data/resources/ui/pages/applications.ui:30 src/ui/pages/applications/mod.rs:1661
 msgid "Halt App"
-msgstr ""
+msgstr "Suspendre l’aplicacion"
 
 #: data/resources/ui/pages/applications.ui:14 data/resources/ui/pages/applications.ui:34 src/ui/pages/applications/mod.rs:1663
 msgid "Continue App"
-msgstr ""
+msgstr "Reprendre l’aplicacion"
 
 #: data/resources/ui/pages/applications.ui:22 data/resources/ui/pages/applications.ui:98 src/ui/pages/applications/mod.rs:1660
 msgid "End App"
-msgstr ""
+msgstr "Terminar l’aplicacion"
 
 #: data/resources/ui/pages/applications.ui:40 data/resources/ui/pages/processes.ui:62
 msgid "Information"
@@ -586,15 +586,15 @@ msgstr "Ligam"
 
 #: data/resources/ui/pages/gpu.ui:37
 msgid "GPU Frequency"
-msgstr ""
+msgstr "Frequéncia carta grafica"
 
 #: data/resources/ui/pages/gpu.ui:50
 msgid "Video Memory Frequency"
-msgstr ""
+msgstr "Frequéncia de la memòria vidèo"
 
 #: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49 src/ui/pages/battery.rs:217
 msgid "Power Usage"
-msgstr ""
+msgstr "Usatge energetic"
 
 #: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:84
 msgid "PCI Slot"
@@ -662,7 +662,7 @@ msgstr ""
 
 #: data/resources/ui/pages/npu.ui:44
 msgid "Memory Frequency"
-msgstr ""
+msgstr "Frequéncia de la memòria"
 
 #: data/resources/ui/pages/processes.ui:6 data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2346
 msgid "Kill Process"
@@ -670,7 +670,7 @@ msgstr "Tuar lo procèssus"
 
 #: data/resources/ui/pages/processes.ui:10 data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2345
 msgid "Halt Process"
-msgstr ""
+msgstr "Suspendre lo procèssus"
 
 #: data/resources/ui/pages/processes.ui:14 data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2347
 msgid "Continue Process"
@@ -678,15 +678,15 @@ msgstr "Contunha lo procèssus"
 
 #: data/resources/ui/pages/processes.ui:22 data/resources/ui/pages/processes.ui:74
 msgid "Kill Processes"
-msgstr ""
+msgstr "Tuar lo procèssus"
 
 #: data/resources/ui/pages/processes.ui:26 data/resources/ui/pages/processes.ui:78
 msgid "Halt Processes"
-msgstr ""
+msgstr "Suspendre lo procèssus"
 
 #: data/resources/ui/pages/processes.ui:30 data/resources/ui/pages/processes.ui:82
 msgid "Continue Processes"
-msgstr ""
+msgstr "Reprendre lo procèssus"
 
 #: data/resources/ui/pages/processes.ui:38 data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:527 src/ui/pages/processes/mod.rs:2344
 msgid "End Process"
@@ -694,11 +694,11 @@ msgstr "Acabar lo procèssus"
 
 #: data/resources/ui/pages/processes.ui:70 src/ui/pages/processes/mod.rs:531
 msgid "End Processes"
-msgstr ""
+msgstr "Terminar lo procèssus"
 
 #: data/resources/ui/pages/processes.ui:103
 msgid "Search processes"
-msgstr ""
+msgstr "Recercar de procèssus"
 
 #: data/resources/ui/pages/processes.ui:133 data/resources/ui/pages/processes.ui:135
 msgid "Show Process Options"
@@ -741,32 +741,32 @@ msgstr "Mostrar/Amagar camp de recèrca"
 #: data/resources/ui/shortcuts.ui:38
 msgctxt "shortcut window"
 msgid "End App/Process"
-msgstr ""
+msgstr "Terminar l’aplicacion/procèssus"
 
 #: data/resources/ui/shortcuts.ui:44
 msgctxt "shortcut window"
 msgid "Kill App/Process"
-msgstr ""
+msgstr "Tuar l’aplicacion/procèssus"
 
 #: data/resources/ui/shortcuts.ui:50
 msgctxt "shortcut window"
 msgid "Halt App/Process"
-msgstr ""
+msgstr "Suspendre l’aplicacion/procèssus"
 
 #: data/resources/ui/shortcuts.ui:56
 msgctxt "shortcut window"
 msgid "Continue App/Process"
-msgstr ""
+msgstr "Reprendre l’aplicacion/porcèssus"
 
 #: data/resources/ui/shortcuts.ui:62
 msgctxt "shortcut window"
 msgid "Show Information for App/Process"
-msgstr ""
+msgstr "Afichar las informacions de l’aplicacion/procèssus"
 
 #: data/resources/ui/shortcuts.ui:68
 msgctxt "shortcut window"
 msgid "Show Process Options"
-msgstr ""
+msgstr "Afichar las opcions de l’aplicacion/procèssus"
 
 #: data/resources/ui/window.ui:6
 msgid "Preferences"
@@ -816,7 +816,7 @@ msgstr "N/D"
 #: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257 src/ui/pages/cpu.rs:417 src/ui/pages/cpu.rs:421
 #, rust-format
 msgid "CPU {}"
-msgstr ""
+msgstr "Carta grafica {}"
 
 #: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426 src/ui/pages/processes/process_entry.rs:211
 msgid "No"
@@ -855,17 +855,17 @@ msgstr "Aplicacion"
 #: src/ui/pages/applications/mod.rs:1638 src/ui/pages/processes/mod.rs:2293
 #, rust-format
 msgid "End {}?"
-msgstr ""
+msgstr "Terminar {} ?"
 
 #: src/ui/pages/applications/mod.rs:1639 src/ui/pages/processes/mod.rs:2294
 #, rust-format
 msgid "Halt {}?"
-msgstr ""
+msgstr "Suspendre {} ?"
 
 #: src/ui/pages/applications/mod.rs:1640 src/ui/pages/processes/mod.rs:2295
 #, rust-format
 msgid "Kill {}?"
-msgstr ""
+msgstr "Tuar {} ?"
 
 #: src/ui/pages/applications/mod.rs:1641 src/ui/pages/processes/mod.rs:2296
 #, rust-format
@@ -895,7 +895,7 @@ msgstr "Carga batariá"
 #: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:438 src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377 src/ui/pages/gpu.rs:429 src/ui/pages/network.rs:362
 #: src/ui/pages/network.rs:396
 msgid "Highest:"
-msgstr ""
+msgstr "Mai naut :"
 
 #: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:212
 msgid "Total Usage"
@@ -934,19 +934,19 @@ msgstr "RL : {} · E : {}"
 
 #: src/ui/pages/gpu.rs:220
 msgid "Video Encoder/Decoder Usage"
-msgstr ""
+msgstr "Utilizacion encodador/Desencodador vidèo"
 
 #: src/ui/pages/gpu.rs:226
 msgid "Video Encoder Usage"
-msgstr ""
+msgstr "Utilizacion encodador vidèo"
 
 #: src/ui/pages/gpu.rs:231
 msgid "Video Decoder Usage"
-msgstr ""
+msgstr "Utilizacion desencodador vidèo"
 
 #: src/ui/pages/gpu.rs:236
 msgid "Video Memory Usage"
-msgstr ""
+msgstr "Utilizacion memòria vidèo"
 
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
@@ -994,7 +994,7 @@ msgstr "R : {} · M : {}"
 #: src/ui/pages/processes/mod.rs:824
 #, rust-format
 msgid "Running Processes: {}"
-msgstr ""
+msgstr "Procèssus en execucion : {}"
 
 #: src/ui/pages/processes/mod.rs:922
 msgid "Process"
@@ -1004,22 +1004,22 @@ msgstr "Procèssus"
 #, rust-format
 msgid "End process?"
 msgid_plural "End {} processes?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Terminar lo procèssus ?"
+msgstr[1] "Terminar los {} procèssus ?"
 
 #: src/ui/pages/processes/mod.rs:2309
 #, rust-format
 msgid "Halt process?"
 msgid_plural "Halt {} processes?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Suspendre lo procèssus ?"
+msgstr[1] "Suspendre los {} procèssus ?"
 
 #: src/ui/pages/processes/mod.rs:2315 src/ui/pages/processes/mod.rs:2321
 #, rust-format
 msgid "Kill process?"
 msgid_plural "Kill {} processes?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tuar lo procèssus ?"
+msgstr[1] "Tuar los {} procèssus ?"
 
 #: src/ui/pages/processes/mod.rs:2333
 msgid "Halting a process can come with serious risks such as losing data and security implications. Use with caution."
@@ -1032,7 +1032,7 @@ msgstr ""
 #: src/ui/window.rs:466
 #, rust-format
 msgid "GPU {}"
-msgstr ""
+msgstr "Carta grafica {}"
 
 #: src/ui/window.rs:496
 #, rust-format
@@ -1056,22 +1056,22 @@ msgstr ""
 #: src/ui/window.rs:1284
 #, rust-format
 msgid "Successfully ended {}"
-msgstr ""
+msgstr "{} corrèctament terminat"
 
 #: src/ui/window.rs:1285
 #, rust-format
 msgid "Successfully halted {}"
-msgstr ""
+msgstr "{} corrèctament suspendut"
 
 #: src/ui/window.rs:1286
 #, rust-format
 msgid "Successfully killed {}"
-msgstr ""
+msgstr "{} corrèctament tuat"
 
 #: src/ui/window.rs:1287
 #, rust-format
 msgid "Successfully continued {}"
-msgstr ""
+msgstr "{} corrèctament représ"
 
 #: src/ui/window.rs:1294
 #, rust-format
