@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
 "POT-Creation-Date: 2026-01-10 18:36+0000\n"
-"PO-Revision-Date: 2026-01-30 18:15+0100\n"
+"PO-Revision-Date: 2026-01-31 10:43+0100\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Occitan <Occitan>\n"
 "Language: oc\n"
@@ -384,7 +384,7 @@ msgstr ""
 
 #: data/resources/ui/dialogs/settings_dialog.ui:92
 msgid "Show Device Descriptions in Sidebar"
-msgstr ""
+msgstr "Afichar la descripcion dels periferics dins la barra laterala"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:93
 msgid "If enabled, a device identifier like its name or device type will be displayed"
@@ -404,7 +404,7 @@ msgstr "Grafic"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:111
 msgid "Normalize Processor Usage"
-msgstr ""
+msgstr "Normalizar l’utilizacion processor"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:112
 msgid "If enabled, the total usage of all cores will be divided by the amount of cores"
@@ -416,7 +416,7 @@ msgstr "Aplicacions"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:125 data/resources/ui/dialogs/settings_dialog.ui:207
 msgid "Information Columns"
-msgstr ""
+msgstr "Colomnas d’informacion"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:183 data/resources/ui/dialogs/settings_dialog.ui:295 src/ui/pages/applications/mod.rs:1570
 #: src/ui/pages/applications/mod.rs:1589 src/ui/pages/processes/mod.rs:2160 src/ui/pages/processes/mod.rs:2179
@@ -461,7 +461,7 @@ msgstr "Afichar las interfàcias rets virtualas"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:328
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
-msgstr ""
+msgstr "Las interfàcias de ret virtualas son per exemples los ponts e tunèls VPN"
 
 #: data/resources/ui/pages/applications.ui:6 data/resources/ui/pages/applications.ui:26 src/ui/pages/applications/mod.rs:1662
 msgid "Kill App"
@@ -786,7 +786,7 @@ msgstr "Recercar"
 
 #: data/resources/ui/window.ui:90 data/resources/ui/window.ui:130
 msgid "Toggle search field"
-msgstr ""
+msgstr "Mostrar/Amagar camp de recèrca"
 
 #. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
 #. One name per line, please do not remove previous names.
@@ -1046,7 +1046,7 @@ msgstr "NPU"
 #: src/ui/window.rs:1201
 #, rust-format
 msgid "Successfully adjusted {}"
-msgstr ""
+msgstr "{} corrèctament ajustat"
 
 #: src/ui/window.rs:1202
 #, rust-format
@@ -1105,49 +1105,49 @@ msgstr[1] ""
 #, rust-format
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "I a agut un problèma en terminant un procèssus"
+msgstr[1] "I a agut un problèma en terminant {} procèssus"
 
 #: src/ui/window.rs:1329
 #, rust-format
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "I a agut un problèma en suspendent un procèssus"
+msgstr[1] "I a agut un problèma en suspendent {} procèssus"
 
 #: src/ui/window.rs:1335
 #, rust-format
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "I a agut un problèma en tuant un procèssus"
+msgstr[1] "I a agut un problèma en tuant {} procèssus"
 
 #: src/ui/window.rs:1341
 #, rust-format
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "I a agut un problèma en reprenent un procèssus"
+msgstr[1] "I a agut un problèma en reprenent {} procèssus"
 
 #: src/ui/window.rs:1351
 #, rust-format
 msgid "There was a problem ending {}"
-msgstr ""
+msgstr "I a agut un problèma en terminant {}"
 
 #: src/ui/window.rs:1352
 #, rust-format
 msgid "There was a problem halting {}"
-msgstr ""
+msgstr "I a agut un problèma en suspendent {}"
 
 #: src/ui/window.rs:1353
 #, rust-format
 msgid "There was a problem killing {}"
-msgstr ""
+msgstr "I a agut un problèma en tuant {}"
 
 #: src/ui/window.rs:1354
 #, rust-format
 msgid "There was a problem continuing {}"
-msgstr ""
+msgstr "I a agut un problèma en reprenent {}"
 
 #: src/utils/app.rs:224
 msgid "System Processes"
@@ -1175,7 +1175,7 @@ msgstr "Desconegut"
 
 #: src/utils/battery.rs:143
 msgid "Nickel-Metal Hydride"
-msgstr ""
+msgstr "Niquèl metal idrur"
 
 #: src/utils/battery.rs:144
 msgid "Nickel-Cadmium"
@@ -1183,7 +1183,7 @@ msgstr "Nickel cadmi"
 
 #: src/utils/battery.rs:145
 msgid "Nickel-Zinc"
-msgstr ""
+msgstr "Niquèl-zinc"
 
 #: src/utils/battery.rs:146
 msgid "Lead-Acid"
@@ -1727,7 +1727,7 @@ msgstr "Disc dur"
 
 #: src/utils/drive.rs:134
 msgid "Loop Device"
-msgstr ""
+msgstr "Periferic de bocla"
 
 #: src/utils/drive.rs:135
 msgid "Mapped Device"
@@ -1760,7 +1760,7 @@ msgstr "Disc de RAM comprimida (zram)"
 #: src/utils/drive.rs:210
 #, rust-format
 msgid "{} Loop Device"
-msgstr ""
+msgstr "Periferic de bocla {}"
 
 #: src/utils/drive.rs:211
 #, rust-format
