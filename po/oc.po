@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
 "POT-Creation-Date: 2026-01-10 18:36+0000\n"
-"PO-Revision-Date: 2026-01-31 10:43+0100\n"
+"PO-Revision-Date: 2026-01-31 14:20+0100\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Occitan <Occitan>\n"
 "Language: oc\n"
@@ -368,19 +368,19 @@ msgstr "Força rapida"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:67
 msgid "Show Graph Grids"
-msgstr ""
+msgstr "Mostrar las grasilhas del grafic"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:72
 msgid "Graph Data Points"
-msgstr ""
+msgstr "Ponches de donadas del grafic"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:86
 msgid "Show Usage Details in Sidebar"
-msgstr ""
+msgstr "Afichar los detalhs d’utilizacion dins la bara laterala"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:87
 msgid "If enabled, the usage along with other information will be displayed"
-msgstr ""
+msgstr "Se activat, l’utilizacion demest d’autras informacions seràn mostradas"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:92
 msgid "Show Device Descriptions in Sidebar"
@@ -388,11 +388,11 @@ msgstr "Afichar la descripcion dels periferics dins la barra laterala"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:93
 msgid "If enabled, a device identifier like its name or device type will be displayed"
-msgstr ""
+msgstr "Se activat, un identificador de periferic coma son nom o lo tipe de periferic serà afichat"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
 msgid "Sidebar Meter Type"
-msgstr ""
+msgstr "Tipe de mesura de la barra laterala"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:102
 msgid "Bar"
@@ -408,7 +408,7 @@ msgstr "Normalizar l’utilizacion processor"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:112
 msgid "If enabled, the total usage of all cores will be divided by the amount of cores"
-msgstr ""
+msgstr "Se activat, l’utilizacion totala de totes los còrs serà devesida pel nombre de còrs"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:122 data/resources/ui/window.ui:65 data/resources/ui/window.ui:72 src/ui/pages/applications/mod.rs:132
 msgid "Apps"
@@ -437,7 +437,7 @@ msgstr "Afichar las valors de cortesiá"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:200
 msgid "Display priorities as niceness to allow for more fine-grained adjustments"
-msgstr ""
+msgstr "Afichar las prioritats coma la cortesiá per permetre d'ajustaments mai fins"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:310
 msgid "Devices"
@@ -453,7 +453,7 @@ msgstr "Afichar los lectors virtuals"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:317
 msgid "Virtual drives are for example ZFS volumes or mapped devices"
-msgstr ""
+msgstr "Los lectors virtuals son per exemple los volums ZFS o los periferics juntats"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:327
 msgid "Show Virtual Network Interfaces"
@@ -461,7 +461,7 @@ msgstr "Afichar las interfàcias rets virtualas"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:328
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
-msgstr "Las interfàcias de ret virtualas son per exemples los ponts e tunèls VPN"
+msgstr "Las interfàcias ret virtualas son per exemple los ponts o los tunèls VPN"
 
 #: data/resources/ui/pages/applications.ui:6 data/resources/ui/pages/applications.ui:26 src/ui/pages/applications/mod.rs:1662
 msgid "Kill App"
@@ -497,7 +497,7 @@ msgstr "Santat batariá"
 
 #: data/resources/ui/pages/battery.ui:45
 msgid "Design Capacity"
-msgstr ""
+msgstr "Capacitat projectada"
 
 #: data/resources/ui/pages/battery.ui:54
 msgid "Charge Cycles"
@@ -521,7 +521,7 @@ msgstr "Periferic"
 
 #: data/resources/ui/pages/cpu.ui:26
 msgid "Show Usages of Logical CPUs"
-msgstr ""
+msgstr "Afichar l’utilizacion dels CPU logics"
 
 #: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66 data/resources/ui/pages/npu.ui:60
 msgid "Sensors"
@@ -626,7 +626,7 @@ msgstr "Velocitat"
 
 #: data/resources/ui/pages/memory.ui:63
 msgid "Form Factor"
-msgstr ""
+msgstr "Factor de fòrma"
 
 #: data/resources/ui/pages/memory.ui:81
 msgid "Type Detail"
@@ -878,11 +878,11 @@ msgstr "Totas las modificacions pas enregistradas seràn perdudas."
 
 #: src/ui/pages/applications/mod.rs:1649
 msgid "Halting an app can come with serious risks such as losing data and security implications. Use with caution."
-msgstr ""
+msgstr "Forçar l'arrèst d'una aplicacion pòt comportar de risques grèus coma la pèrda de donadas e de problèmas de seguretat. A utilizar amb prudéncia."
 
 #: src/ui/pages/applications/mod.rs:1652
 msgid "Killing an app can come with serious risks such as losing data and security implications. Use with caution."
-msgstr ""
+msgstr "Tuar una aplicacion pòt comportar de risques grèus coma la pèrda de donadas e de problèmas de seguretat. A utilizar amb prudéncia."
 
 #: src/ui/pages/battery.rs:102 src/utils/battery.rs:258
 msgid "Battery"
@@ -1023,11 +1023,11 @@ msgstr[1] "Tuar los {} procèssus ?"
 
 #: src/ui/pages/processes/mod.rs:2333
 msgid "Halting a process can come with serious risks such as losing data and security implications. Use with caution."
-msgstr ""
+msgstr "Forçar l'arrèst d'un procèssus pòt comportar de risques grèus coma la pèrda de donadas e de problèmas de seguretat. A utilizar amb prudéncia."
 
 #: src/ui/pages/processes/mod.rs:2336
 msgid "Killing a process can come with serious risks such as losing data and security implications. Use with caution."
-msgstr ""
+msgstr "Tuar un procèssus pòt comportar de risques grèus coma la pèrda de donadas e de problèmas de seguretat. A utilizar amb prudéncia."
 
 #: src/ui/window.rs:466
 #, rust-format
@@ -1051,7 +1051,7 @@ msgstr "{} corrèctament ajustat"
 #: src/ui/window.rs:1202
 #, rust-format
 msgid "There was a problem adjusting {}"
-msgstr ""
+msgstr "I a agut un problèma en ajustant {}"
 
 #: src/ui/window.rs:1284
 #, rust-format
@@ -1077,29 +1077,29 @@ msgstr "{} corrèctament représ"
 #, rust-format
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Procèssus corrèctament terminat"
+msgstr[1] "{} procèssus corrèctament terminats"
 
 #: src/ui/window.rs:1300
 #, rust-format
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Procèssus corrèctament suspendut"
+msgstr[1] "{} procèssus corrèctament suspenduts"
 
 #: src/ui/window.rs:1306
 #, rust-format
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Procèssus corrèctament tuat"
+msgstr[1] "{} procèssus corrèctament tuats"
 
 #: src/ui/window.rs:1312
 #, rust-format
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Procèssus corrèctament représ"
+msgstr[1] "{} procèssus corrèctament represes"
 
 #: src/ui/window.rs:1323
 #, rust-format
@@ -1113,7 +1113,7 @@ msgstr[1] "I a agut un problèma en terminant {} procèssus"
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "I a agut un problèma en suspendent un procèssus"
-msgstr[1] "I a agut un problèma en suspendent {} procèssus"
+msgstr[1] "I a agut un problèma en suspendent un{}procèssus"
 
 #: src/ui/window.rs:1335
 #, rust-format
@@ -1203,7 +1203,7 @@ msgstr "Liti polimèr"
 
 #: src/utils/battery.rs:151
 msgid "Rechargeable Alkaline Managanese"
-msgstr ""
+msgstr "Batariá alcalina recargabla"
 
 #: src/utils/battery.rs:256
 #, rust-format
