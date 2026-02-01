@@ -40,20 +40,20 @@ impl WifiGeneration {
         let mut wifi_generation: Option<WifiGeneration> = None;
 
         if station.ht_mcs.is_some() {
-            wifi_generation = Some(WifiGeneration::Wifi4)
+            wifi_generation = Some(WifiGeneration::Wifi4);
         }
         if station.vht_mcs.is_some() {
-            wifi_generation = Some(WifiGeneration::Wifi5)
+            wifi_generation = Some(WifiGeneration::Wifi5);
         }
         if station.he_mcs.is_some() {
             if (5925..=7125).contains(&frequency_mhz) {
-                wifi_generation = Some(WifiGeneration::Wifi6e)
+                wifi_generation = Some(WifiGeneration::Wifi6e);
             } else {
-                wifi_generation = Some(WifiGeneration::Wifi6)
+                wifi_generation = Some(WifiGeneration::Wifi6);
             }
         }
         if station.eht_mcs.is_some() {
-            wifi_generation = Some(WifiGeneration::Wifi7)
+            wifi_generation = Some(WifiGeneration::Wifi7);
         }
         wifi_generation
     }

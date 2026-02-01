@@ -597,7 +597,7 @@ impl MainWindow {
                     process_data
                         .iter()
                         .filter_map(|p| p.npu_usage_stats.get(&npu_data_entry.pci_slot))
-                        .filter_map(|stats| stats.mem())
+                        .filter_map(process_data::npu_usage::NpuUsageStats::mem)
                         .sum::<u64>() as usize,
                 );
             }
@@ -708,7 +708,7 @@ impl MainWindow {
                     gpu_data.used_vram = Some(apps_context.vram_usage(gpu_data.gpu_identifier));
                     trace!(
                         "Couldn't read sysfs VRAM usage, falling back to summing up per-process usage…"
-                    )
+                    );
                 }
             }
 
