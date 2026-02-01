@@ -82,6 +82,21 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.10.0" date="2026-02-01">
+      <url type="details">https://github.com/nokyan/resources/releases/tag/v1.10.0</url>
+      <description translate="no">
+        <p>
+          Today marks the release of Resources 1.10 with support for new hardware, software and improvements all around! Here are some highlights:
+        </p>
+        <ul>
+          <li>Added support for AMD NPUs</li>
+          <li>Added support for detecting apps managed by appimaged and Portable</li>
+          <li>Improved app detection in some cases</li>
+          <li>Improved accessibility for screen reader users and keyboard users</li>
+          <li>Resources’ CPU usage has been cut down significantly</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.9.1" date="2025-11-16">
       <url type="details">https://github.com/nokyan/resources/releases/tag/v1.9.1</url>
       <description translate="no">

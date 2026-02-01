@@ -18,8 +18,6 @@ mod imp {
         subclass::prelude::{DerivedObjectProperties, ObjectImpl, ObjectImplExt, ObjectSubclass},
     };
 
-    use crate::gstring_getter_setter;
-
     use super::*;
 
     #[derive(Properties)]

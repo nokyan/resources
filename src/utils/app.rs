@@ -660,24 +660,24 @@ impl AppsContext {
 
     pub fn npu_mem(&self, pci_slot: PciSlot) -> u64 {
         self.processes_iter()
-            .flat_map(|process| {
+            .filter_map(|process| {
                 process
                     .data
                     .npu_usage_stats
                     .get(&pci_slot)
-                    .and_then(|npu_usage_stats| npu_usage_stats.mem())
+                    .and_then(process_data::npu_usage::NpuUsageStats::mem)
             })
             .sum()
     }
 
     pub fn vram_usage(&self, gpu_identifier: GpuIdentifier) -> u64 {
         self.processes_iter()
-            .flat_map(|process| {
+            .filter_map(|process| {
                 process
                     .data
                     .gpu_usage_stats
                     .get(&gpu_identifier)
-                    .and_then(|gpu_usage_stats| gpu_usage_stats.mem())
+                    .and_then(process_data::gpu_usage::GpuUsageStats::mem)
             })
             .sum()
     }

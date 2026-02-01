@@ -7,7 +7,7 @@ use crate::config;
 use crate::utils::IS_FLATPAK;
 use crate::utils::app::DATA_DIRS;
 
-use clap::{Parser, command};
+use clap::Parser;
 use gettextrs::{LocaleCategory, gettext};
 use gtk::{gio, glib};
 use log::trace;

@@ -274,7 +274,7 @@ impl ProcessData {
     }
 
     fn get_uid(status: &str) -> Result<u32> {
-        if let Some(captures) = RE_UID.captures(&status) {
+        if let Some(captures) = RE_UID.captures(status) {
             let first_num_str = captures.get(1).context("no uid found")?;
             first_num_str
                 .as_str()
@@ -308,7 +308,7 @@ impl ProcessData {
         let mut process_data = vec![];
         for entry in std::fs::read_dir("/proc")?.flatten() {
             // if name contains pid
-            if let Ok(_) = entry.file_name().to_string_lossy().parse::<u32>() {
+            if entry.file_name().to_string_lossy().parse::<u32>().is_ok() {
                 let data = ProcessData::try_from_path(
                     entry.path(),
                     non_gpu_fdinfos,
@@ -359,7 +359,7 @@ impl ProcessData {
 
         let stat = stat
             .split(')') // since we don't care about the pid or the executable name, split after the executable name to make our life easier
-            .last()
+            .next_back()
             .context("stat doesn't have ')'")
             .inspect_err(|err| trace!("Can't parse 'stat': {err}"))?
             .split(' ')
@@ -740,20 +740,20 @@ impl ProcessData {
                 "amdgpu" => GpuUsageStats::AmdgpuStats {
                     gfx_ns: GFX_NS_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_TIME))
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
                         .unwrap_or_default(),
                     enc_ns: ENC_NS_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_TIME))
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
                         .unwrap_or_default(),
                     dec_ns: DEC_NS_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_TIME))
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
                         .unwrap_or_default(),
                     mem_bytes: MEM_DRM_FIELDS
                         .get(driver.as_str())
                         .map(|names| {
-                            Self::parse_drm_fields::<u64, _>(&fdinfo, names, &RE_DRM_KIB)
+                            Self::parse_drm_fields::<u64, _>(fdinfo, names, &RE_DRM_KIB)
                                 .saturating_mul(1024)
                         })
                         .unwrap_or_default(),
@@ -761,22 +761,22 @@ impl ProcessData {
                 "i915" => GpuUsageStats::I915Stats {
                     gfx_ns: GFX_NS_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_TIME))
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
                         .unwrap_or_default(),
                     video_ns: ENC_NS_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_TIME))
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
                         .unwrap_or_default(),
                 },
                 "v3d" => GpuUsageStats::V3dStats {
                     gfx_ns: GFX_NS_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_TIME))
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_TIME))
                         .unwrap_or_default(),
                     mem_bytes: MEM_DRM_FIELDS
                         .get(driver.as_str())
                         .map(|names| {
-                            Self::parse_drm_fields::<u64, _>(&fdinfo, names, &RE_DRM_KIB)
+                            Self::parse_drm_fields::<u64, _>(fdinfo, names, &RE_DRM_KIB)
                                 .saturating_mul(1024)
                         })
                         .unwrap_or_default(),
@@ -784,32 +784,32 @@ impl ProcessData {
                 "xe" => GpuUsageStats::XeStats {
                     gfx_cycles: GFX_CYCLES_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_UNITS))
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
                     gfx_total_cycles: GFX_TOTAL_CYCLES_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_UNITS))
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
                     compute_cycles: COMPUTE_CYCLES_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_UNITS))
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
                     compute_total_cycles: COMPUTE_TOTAL_CYCLES_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_UNITS))
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
                     video_cycles: ENC_CYCLES_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_UNITS))
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
                     video_total_cycles: ENC_TOTAL_CYCLES_DRM_FIELDS
                         .get(driver.as_str())
-                        .map(|names| Self::parse_drm_fields(&fdinfo, names, &RE_DRM_UNITS))
+                        .map(|names| Self::parse_drm_fields(fdinfo, names, &RE_DRM_UNITS))
                         .unwrap_or_default(),
                     mem_bytes: MEM_DRM_FIELDS
                         .get(driver.as_str())
                         .map(|names| {
-                            Self::parse_drm_fields::<u64, _>(&fdinfo, names, &RE_DRM_KIB)
+                            Self::parse_drm_fields::<u64, _>(fdinfo, names, &RE_DRM_KIB)
                                 .saturating_mul(1024)
                         })
                         .unwrap_or_default(),
@@ -833,7 +833,7 @@ impl ProcessData {
             .filter_map(|name| {
                 fdinfo.content.get(name.as_ref()).and_then(|value| {
                     regex
-                        .captures(&value)
+                        .captures(value)
                         .and_then(|captures| captures.get(1))
                         .and_then(|capture| capture.as_str().parse::<T>().ok())
                 })
