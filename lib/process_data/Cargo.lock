@@ -253,7 +253,7 @@ dependencies = [
 
 [[package]]
 name = "process-data"
-version = "1.9.1"
+version = "1.10.0"
 dependencies = [
  "anyhow",
  "lazy-regex",

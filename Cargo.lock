@@ -1325,7 +1325,7 @@ dependencies = [
 
 [[package]]
 name = "process-data"
-version = "1.9.1"
+version = "1.10.0"
 dependencies = [
  "anyhow",
  "lazy-regex",
@@ -1380,7 +1380,7 @@ checksum = "7a2d987857b319362043e95f5353c0535c1f58eec5336fdfcf626430af7def58"
 
 [[package]]
 name = "resources"
-version = "1.9.1"
+version = "1.10.0"
 dependencies = [
  "anyhow",
  "async-channel",
