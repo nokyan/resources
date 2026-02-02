@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-01-10 18:36+0000\n"
-"PO-Revision-Date: 2026-01-31 14:20+0100\n"
+"POT-Creation-Date: 2026-02-01 19:19+0000\n"
+"PO-Revision-Date: 2026-02-02 17:56+0100\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Occitan <Occitan>\n"
 "Language: oc\n"
@@ -29,8 +29,8 @@ msgstr "Gardar un uèlh sus las ressorsas del sistèma"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/net.nokyan.Resources.desktop.in.in:9
-msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
-msgstr "sistèma;ressorsas;monitor;susvelhar;procèssus;processús;usatge;utilizacion;prètzfach;prètzfait;gerir;gestion;gestionari;CPU;RAM;memòria;GPU;grafica;carta;processor;"
+msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;Performance;Power;Battery;"
+msgstr "sistèma;ressorsas;resorças;monitor;susvelhar;procèssus;processús;usatge;utilizacion;prètzfach;prètzfait;gerir;gestion;gestionari;CPU;RAM;memòria;GPU;grafica;carta;processor;performanças;performàncias;batariá;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
@@ -42,7 +42,7 @@ msgstr ""
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
-msgstr "Resources pren en carga la susvelhança dels compausants seguents :"
+msgstr "Ressorsas pren en carga la susvelhança dels compausants seguents :"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
@@ -778,7 +778,7 @@ msgstr "Acorchis de clavièr"
 
 #: data/resources/ui/window.ui:14
 msgid "About Resources"
-msgstr "A prepaus de Resources"
+msgstr "A prepaus de Ressorsas"
 
 #: data/resources/ui/window.ui:88 data/resources/ui/window.ui:128
 msgid "Search"
@@ -818,24 +818,24 @@ msgstr "N/D"
 msgid "CPU {}"
 msgstr "Carta grafica {}"
 
-#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426 src/ui/pages/processes/process_entry.rs:211
+#: src/ui/pages/applications/application_entry.rs:188 src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426 src/ui/pages/processes/process_entry.rs:211
 msgid "No"
 msgstr "Non"
 
-#: src/ui/pages/applications/application_entry.rs:191 src/ui/pages/processes/process_entry.rs:212
+#: src/ui/pages/applications/application_entry.rs:189 src/ui/pages/processes/process_entry.rs:212
 msgid "Yes (AppImage)"
 msgstr "Òc (AppImage)"
 
-#: src/ui/pages/applications/application_entry.rs:192 src/ui/pages/processes/process_entry.rs:213
+#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/processes/process_entry.rs:213
 msgid "Yes (Flatpak)"
 msgstr "Òc (Flatpak)"
 
 #. Translators: "Portable" is the name of the containerization method used, please keep it as is
-#: src/ui/pages/applications/application_entry.rs:194 src/ui/pages/processes/process_entry.rs:215
+#: src/ui/pages/applications/application_entry.rs:192 src/ui/pages/processes/process_entry.rs:215
 msgid "Yes (Portable)"
 msgstr "Òc (Portable)"
 
-#: src/ui/pages/applications/application_entry.rs:195 src/ui/pages/processes/process_entry.rs:216
+#: src/ui/pages/applications/application_entry.rs:193 src/ui/pages/processes/process_entry.rs:216
 msgid "Yes (Snap)"
 msgstr "Òc (Snap)"
 
