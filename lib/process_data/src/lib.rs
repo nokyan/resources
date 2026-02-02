@@ -442,7 +442,7 @@ impl ProcessData {
             .parse::<usize>()
             .unwrap_or_default()
             .saturating_mul(1024);
-        trace!("Memory usage of {pid} determined to be {swap_usage}");
+        trace!("Memory usage of {pid} determined to be {memory_usage}");
 
         let (launcher, cgroup) = read_parsed::<String>(proc_path.join("cgroup"))
             .map(Self::sanitize_cgroup)
