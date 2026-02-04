@@ -381,7 +381,11 @@ impl Settings {
         show_logical_cpus,
         show_graph_grids,
         normalize_cpu_usage,
-        detailed_priority
+        detailed_priority,
+        show_logout_button,
+        show_reboot_button,
+        show_shutdown_button,
+        show_kill_window_button
     );
 }
 

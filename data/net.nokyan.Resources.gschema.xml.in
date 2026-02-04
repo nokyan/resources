@@ -213,5 +213,21 @@
       <default>false</default>
       <summary>Whether to show niceness values for CPU priorities</summary>
     </key>
+    <key name="show-logout-button" type="b">
+      <default>false</default>
+      <summary>Show logout button in interface</summary>
+    </key>
+    <key name="show-reboot-button" type="b">
+      <default>false</default>
+      <summary>Show reboot button in interface</summary>
+    </key>
+    <key name="show-shutdown-button" type="b">
+      <default>false</default>
+      <summary>Show shutdown button in interface</summary>
+    </key>
+    <key name="show-kill-window-button" type="b">
+      <default>false</default>
+      <summary>Show kill window button in interface when KWin is detected</summary>
+    </key>
   </schema>
 </schemalist>
