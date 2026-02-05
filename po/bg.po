@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-01-10 18:36+0000\n"
-"PO-Revision-Date: 2026-01-23 16:59+0100\n"
+"POT-Creation-Date: 2026-02-01 19:19+0000\n"
+"PO-Revision-Date: 2026-02-05 12:17+0100\n"
 "Last-Translator: twlvnn kraftwerk <kraft_werk@tutanota.com>\n"
 "Language-Team: Bulgarian <Bulgarian>\n"
 "Language: bg\n"
@@ -29,8 +29,8 @@ msgstr "Наблюдение на системните ресурси"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/net.nokyan.Resources.desktop.in.in:9
-msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
-msgstr "система;ресурси;наблюдаване;процеси;използване;мениджър;цп;памет;видеокарта;system;resources;monitor;processes;usage;task;manager;cpu;ram;memory;gpu;"
+msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;Performance;Power;Battery;"
+msgstr "Система;Ресурси;Наблюдаване;Процеси;Използване;Задачи;Мениджър;ЦП;Памет;Видеокарта;Производителност;Захранване;Батерия;System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;Performance;Power;Battery;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
@@ -834,24 +834,24 @@ msgstr "Липсва"
 msgid "CPU {}"
 msgstr "ЦП {}"
 
-#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426 src/ui/pages/processes/process_entry.rs:211
+#: src/ui/pages/applications/application_entry.rs:188 src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426 src/ui/pages/processes/process_entry.rs:211
 msgid "No"
 msgstr "Не"
 
-#: src/ui/pages/applications/application_entry.rs:191 src/ui/pages/processes/process_entry.rs:212
+#: src/ui/pages/applications/application_entry.rs:189 src/ui/pages/processes/process_entry.rs:212
 msgid "Yes (AppImage)"
 msgstr "Да (AppImage)"
 
-#: src/ui/pages/applications/application_entry.rs:192 src/ui/pages/processes/process_entry.rs:213
+#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/processes/process_entry.rs:213
 msgid "Yes (Flatpak)"
 msgstr "Да (Flatpak)"
 
 #. Translators: "Portable" is the name of the containerization method used, please keep it as is
-#: src/ui/pages/applications/application_entry.rs:194 src/ui/pages/processes/process_entry.rs:215
+#: src/ui/pages/applications/application_entry.rs:192 src/ui/pages/processes/process_entry.rs:215
 msgid "Yes (Portable)"
 msgstr "Да (Portable)"
 
-#: src/ui/pages/applications/application_entry.rs:195 src/ui/pages/processes/process_entry.rs:216
+#: src/ui/pages/applications/application_entry.rs:193 src/ui/pages/processes/process_entry.rs:216
 msgid "Yes (Snap)"
 msgstr "Да (Snap)"
 
