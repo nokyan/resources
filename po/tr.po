@@ -2,16 +2,16 @@
 # Copyright (C) 2023-2025 resources's COPYRIGHT HOLDER
 # This file is distributed under the same license as the resources package.
 #
-# Sabri Ünal <yakushabb@gmail.com>, 2023-2025.
-# Emin Tufan Çetin <etcetin@gmail.com, 2025.
+# Sabri Ünal <yakushabb@gmail.com>, 2023-2026.
+# Emin Tufan Çetin <etcetin@gmail.com, 2025-2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2025-12-17 14:12+0000\n"
-"PO-Revision-Date: 2025-12-24 02:32+0300\n"
-"Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
+"POT-Creation-Date: 2026-02-01 19:19+0000\n"
+"PO-Revision-Date: 2026-02-08 08:00+0300\n"
+"Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -20,32 +20,34 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 3.8\n"
 
-#: data/net.nokyan.Resources.desktop.in.in:2 data/net.nokyan.Resources.metainfo.xml.in.in:4
+#: data/net.nokyan.Resources.desktop.in.in:2
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4
 #: data/resources/ui/window.ui:22 src/application.rs:272
 msgid "Resources"
 msgstr "Kaynaklar"
 
 #. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
-#: data/net.nokyan.Resources.desktop.in.in:3 data/net.nokyan.Resources.metainfo.xml.in.in:5
+#: data/net.nokyan.Resources.desktop.in.in:3
+#: data/net.nokyan.Resources.metainfo.xml.in.in:5
 msgid "Keep an eye on system resources"
 msgstr "Bir gözünüz hep sistem kaynaklarında olsun"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/net.nokyan.Resources.desktop.in.in:9
-msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
+msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;Performance;Power;Battery;"
 msgstr ""
-"Sistem;Kaynaklar;Monitör;İzle;Süreçler;Kullanım;Görev;Yönetici;CPU;MİB;İşlemci;RAM;Bellek;GPU;Ekran "
-"Kartı;Grafik Kartı;"
+"System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;Performance;Power;Battery;Sistem;Kaynaklar;Monitör;Süreçler;Kullanım;Görev;Yönetici;MİB;İşlemci;RAM;Bellek;Ekran "
+"Kartı;Grafik Kartı;Performans;Başarım;Güç;Pil;Batarya;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
-"Resources allows you to check the utilization of your system resources and control your running "
-"processes and apps. It’s designed to be user-friendly and feel right at home on a modern desktop by "
-"using GNOME’s libadwaita."
+"Resources allows you to check the utilization of your system resources and "
+"control your running processes and apps. It’s designed to be user-friendly "
+"and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
-"Kaynaklar; sistem kaynaklarınızın kullanımını gözlemenizi, çalışan süreçleri ve uygulamaları "
-"denetlemenizi sağlar. GNOME libadwaita kullanılarak sizi evinizde hissettirecek ve kullanıcı dostu "
-"olacak biçimde tasarlanmıştır."
+"Kaynaklar; sistem kaynaklarınızın kullanımını gözlemenizi, çalışan süreçleri "
+"ve uygulamaları denetlemenizi sağlar. GNOME libadwaita kullanılarak sizi "
+"evinizde hissettirecek ve kullanıcı dostu olacak biçimde tasarlanmıştır."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
@@ -55,24 +57,31 @@ msgstr "Kaynaklar aşağıdaki bileşenlerin izlenmesini destekler:"
 msgid "CPU"
 msgstr "İşlemci"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:25 data/resources/ui/dialogs/app_dialog.ui:82
-#: data/resources/ui/dialogs/process_dialog.ui:64 data/resources/ui/dialogs/settings_dialog.ui:128
-#: data/resources/ui/dialogs/settings_dialog.ui:220 data/resources/ui/window.ui:176
-#: data/resources/ui/window.ui:183 src/ui/pages/applications/mod.rs:806
-#: src/ui/pages/applications/mod.rs:823 src/ui/pages/memory.rs:106 src/ui/pages/memory.rs:192
-#: src/ui/pages/processes/mod.rs:1099 src/ui/pages/processes/mod.rs:1116
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+#: data/resources/ui/dialogs/app_dialog.ui:82
+#: data/resources/ui/dialogs/process_dialog.ui:64
+#: data/resources/ui/dialogs/settings_dialog.ui:128
+#: data/resources/ui/dialogs/settings_dialog.ui:220
+#: data/resources/ui/window.ui:176 data/resources/ui/window.ui:183
+#: src/ui/pages/applications/mod.rs:806 src/ui/pages/applications/mod.rs:823
+#: src/ui/pages/memory.rs:106 src/ui/pages/memory.rs:192
+#: src/ui/pages/processes/mod.rs:1106 src/ui/pages/processes/mod.rs:1123
 msgid "Memory"
 msgstr "Bellek"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:26 data/resources/ui/dialogs/app_dialog.ui:140
-#: data/resources/ui/dialogs/process_dialog.ui:118 data/resources/ui/dialogs/settings_dialog.ui:158
-#: data/resources/ui/dialogs/settings_dialog.ui:250 src/ui/pages/applications/mod.rs:1232
-#: src/ui/pages/applications/mod.rs:1249 src/ui/pages/gpu.rs:119 src/ui/pages/processes/mod.rs:1537
-#: src/ui/pages/processes/mod.rs:1554 src/ui/window.rs:468
+#: data/net.nokyan.Resources.metainfo.xml.in.in:26
+#: data/resources/ui/dialogs/app_dialog.ui:140
+#: data/resources/ui/dialogs/process_dialog.ui:118
+#: data/resources/ui/dialogs/settings_dialog.ui:158
+#: data/resources/ui/dialogs/settings_dialog.ui:250
+#: src/ui/pages/applications/mod.rs:1232 src/ui/pages/applications/mod.rs:1249
+#: src/ui/pages/gpu.rs:119 src/ui/pages/processes/mod.rs:1544
+#: src/ui/pages/processes/mod.rs:1561 src/ui/window.rs:468
 msgid "GPU"
 msgstr "Ekran Kartı"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:27 data/resources/ui/dialogs/settings_dialog.ui:324
+#: data/net.nokyan.Resources.metainfo.xml.in.in:27
+#: data/resources/ui/dialogs/settings_dialog.ui:324
 msgid "Network Interfaces"
 msgstr "Ağ Arayüzleri"
 
@@ -84,35 +93,35 @@ msgstr "Depolama Aygıtları"
 msgid "Batteries"
 msgstr "Piller"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:51
+#: data/net.nokyan.Resources.metainfo.xml.in.in:53
 msgid "Apps page in light theme"
 msgstr "Uygulamalar sayfası açık temada"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:55
+#: data/net.nokyan.Resources.metainfo.xml.in.in:57
 msgid "Processes page in dark theme"
 msgstr "Süreçler sayfası koyu temada"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:59
+#: data/net.nokyan.Resources.metainfo.xml.in.in:61
 msgid "Processor page in light theme"
 msgstr "Süreçler sayfası açık semada"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:63
+#: data/net.nokyan.Resources.metainfo.xml.in.in:65
 msgid "Memory page in dark theme"
 msgstr "Bellekler sayfası koyu temada"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:67
+#: data/net.nokyan.Resources.metainfo.xml.in.in:69
 msgid "GPU page in light theme"
 msgstr "Ekran Kartı sayfası açık temada"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:71
+#: data/net.nokyan.Resources.metainfo.xml.in.in:73
 msgid "Drive page in dark theme"
 msgstr "Sürücü sayfası koyu temada"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:75
+#: data/net.nokyan.Resources.metainfo.xml.in.in:77
 msgid "Network Interface page in light theme"
 msgstr "Ağ Arayüzü sayfası açık temada"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:79
+#: data/net.nokyan.Resources.metainfo.xml.in.in:81
 msgid "Battery page in dark theme"
 msgstr "Pil sayfası koyu temada"
 
@@ -121,15 +130,18 @@ msgid "Control Process"
 msgstr "Süreci Denetle"
 
 #: data/net.nokyan.Resources.policy.in.in:10
-msgid "Authentication is required to control superuser’s or other users’ processes"
+msgid ""
+"Authentication is required to control superuser’s or other users’ processes"
 msgstr ""
-"Süper kullanıcı ya da diğer kullanıcıların süreçlerini denetlemek için kimlik doğrulama gereklidir"
+"Süper kullanıcı ya da diğer kullanıcıların süreçlerini denetlemek için "
+"kimlik doğrulama gereklidir"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
 msgid "App Information"
 msgstr "Uygulama Bilgileri"
 
-#: data/resources/ui/dialogs/app_dialog.ui:70 data/resources/ui/dialogs/process_dialog.ui:48
+#: data/resources/ui/dialogs/app_dialog.ui:70
+#: data/resources/ui/dialogs/process_dialog.ui:48
 #: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37
 #: data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22
 #: data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31
@@ -137,71 +149,92 @@ msgstr "Uygulama Bilgileri"
 msgid "Usage"
 msgstr "Kullanım"
 
-#: data/resources/ui/dialogs/app_dialog.ui:73 data/resources/ui/dialogs/process_dialog.ui:55
-#: data/resources/ui/dialogs/settings_dialog.ui:133 data/resources/ui/dialogs/settings_dialog.ui:225
+#: data/resources/ui/dialogs/app_dialog.ui:73
+#: data/resources/ui/dialogs/process_dialog.ui:55
+#: data/resources/ui/dialogs/settings_dialog.ui:133
+#: data/resources/ui/dialogs/settings_dialog.ui:225
 #: data/resources/ui/window.ui:145 data/resources/ui/window.ui:152
-#: src/ui/pages/applications/mod.rs:873 src/ui/pages/applications/mod.rs:890 src/ui/pages/cpu.rs:128
-#: src/ui/pages/processes/mod.rs:1166 src/ui/pages/processes/mod.rs:1183 src/ui/window.rs:290
+#: src/ui/pages/applications/mod.rs:873 src/ui/pages/applications/mod.rs:890
+#: src/ui/pages/cpu.rs:128 src/ui/pages/processes/mod.rs:1173
+#: src/ui/pages/processes/mod.rs:1190 src/ui/window.rs:290
 msgid "Processor"
 msgstr "İşlemci"
 
-#: data/resources/ui/dialogs/app_dialog.ui:91 data/resources/ui/dialogs/process_dialog.ui:73
-#: data/resources/ui/dialogs/settings_dialog.ui:178 data/resources/ui/dialogs/settings_dialog.ui:290
+#: data/resources/ui/dialogs/app_dialog.ui:91
+#: data/resources/ui/dialogs/process_dialog.ui:73
+#: data/resources/ui/dialogs/settings_dialog.ui:178
+#: data/resources/ui/dialogs/settings_dialog.ui:290
 #: src/ui/pages/applications/mod.rs:1503 src/ui/pages/applications/mod.rs:1520
-#: src/ui/pages/memory.rs:198 src/ui/pages/processes/mod.rs:2086 src/ui/pages/processes/mod.rs:2103
+#: src/ui/pages/memory.rs:198 src/ui/pages/processes/mod.rs:2093
+#: src/ui/pages/processes/mod.rs:2110
 msgid "Swap"
 msgstr "Takas"
 
-#: data/resources/ui/dialogs/app_dialog.ui:100 data/resources/ui/dialogs/process_dialog.ui:78
-#: data/resources/ui/dialogs/settings_dialog.ui:138 data/resources/ui/dialogs/settings_dialog.ui:230
+#: data/resources/ui/dialogs/app_dialog.ui:100
+#: data/resources/ui/dialogs/process_dialog.ui:78
+#: data/resources/ui/dialogs/settings_dialog.ui:138
+#: data/resources/ui/dialogs/settings_dialog.ui:230
 #: src/ui/pages/applications/mod.rs:945 src/ui/pages/applications/mod.rs:964
-#: src/ui/pages/processes/mod.rs:1238 src/ui/pages/processes/mod.rs:1257
+#: src/ui/pages/processes/mod.rs:1245 src/ui/pages/processes/mod.rs:1264
 msgid "Drive Read"
 msgstr "Sürücü Okuma"
 
-#: data/resources/ui/dialogs/app_dialog.ui:109 data/resources/ui/dialogs/process_dialog.ui:87
-#: data/resources/ui/dialogs/settings_dialog.ui:143 data/resources/ui/dialogs/settings_dialog.ui:235
+#: data/resources/ui/dialogs/app_dialog.ui:109
+#: data/resources/ui/dialogs/process_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:143
+#: data/resources/ui/dialogs/settings_dialog.ui:235
 #: src/ui/pages/applications/mod.rs:1018 src/ui/pages/applications/mod.rs:1037
-#: src/ui/pages/processes/mod.rs:1313 src/ui/pages/processes/mod.rs:1332
+#: src/ui/pages/processes/mod.rs:1320 src/ui/pages/processes/mod.rs:1339
 msgid "Drive Read Total"
 msgstr "Sürücü Okuma Toplamı"
 
-#: data/resources/ui/dialogs/app_dialog.ui:118 data/resources/ui/dialogs/process_dialog.ui:96
-#: data/resources/ui/dialogs/settings_dialog.ui:148 data/resources/ui/dialogs/settings_dialog.ui:240
+#: data/resources/ui/dialogs/app_dialog.ui:118
+#: data/resources/ui/dialogs/process_dialog.ui:96
+#: data/resources/ui/dialogs/settings_dialog.ui:148
+#: data/resources/ui/dialogs/settings_dialog.ui:240
 #: src/ui/pages/applications/mod.rs:1087 src/ui/pages/applications/mod.rs:1106
-#: src/ui/pages/processes/mod.rs:1388 src/ui/pages/processes/mod.rs:1407
+#: src/ui/pages/processes/mod.rs:1395 src/ui/pages/processes/mod.rs:1414
 msgid "Drive Write"
 msgstr "Sürücü Yazma"
 
-#: data/resources/ui/dialogs/app_dialog.ui:127 data/resources/ui/dialogs/process_dialog.ui:105
-#: data/resources/ui/dialogs/settings_dialog.ui:153 data/resources/ui/dialogs/settings_dialog.ui:245
+#: data/resources/ui/dialogs/app_dialog.ui:127
+#: data/resources/ui/dialogs/process_dialog.ui:105
+#: data/resources/ui/dialogs/settings_dialog.ui:153
+#: data/resources/ui/dialogs/settings_dialog.ui:245
 #: src/ui/pages/applications/mod.rs:1162 src/ui/pages/applications/mod.rs:1181
-#: src/ui/pages/processes/mod.rs:1463 src/ui/pages/processes/mod.rs:1482
+#: src/ui/pages/processes/mod.rs:1470 src/ui/pages/processes/mod.rs:1489
 msgid "Drive Write Total"
 msgstr "Sürücü Yazma Toplamı"
 
-#: data/resources/ui/dialogs/app_dialog.ui:149 data/resources/ui/dialogs/process_dialog.ui:127
-#: data/resources/ui/dialogs/settings_dialog.ui:163 data/resources/ui/dialogs/settings_dialog.ui:255
+#: data/resources/ui/dialogs/app_dialog.ui:149
+#: data/resources/ui/dialogs/process_dialog.ui:127
+#: data/resources/ui/dialogs/settings_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:255
 #: src/ui/pages/applications/mod.rs:1436 src/ui/pages/applications/mod.rs:1454
-#: src/ui/pages/processes/mod.rs:1742 src/ui/pages/processes/mod.rs:1761
+#: src/ui/pages/processes/mod.rs:1749 src/ui/pages/processes/mod.rs:1768
 msgid "Video Memory"
 msgstr "Video Belleği"
 
-#: data/resources/ui/dialogs/app_dialog.ui:158 data/resources/ui/dialogs/process_dialog.ui:136
-#: data/resources/ui/dialogs/settings_dialog.ui:168 data/resources/ui/dialogs/settings_dialog.ui:260
+#: data/resources/ui/dialogs/app_dialog.ui:158
+#: data/resources/ui/dialogs/process_dialog.ui:136
+#: data/resources/ui/dialogs/settings_dialog.ui:168
+#: data/resources/ui/dialogs/settings_dialog.ui:260
 #: src/ui/pages/applications/mod.rs:1299 src/ui/pages/applications/mod.rs:1318
-#: src/ui/pages/processes/mod.rs:1604 src/ui/pages/processes/mod.rs:1623
+#: src/ui/pages/processes/mod.rs:1611 src/ui/pages/processes/mod.rs:1630
 msgid "Video Encoder"
 msgstr "Video Kodlayıcı"
 
-#: data/resources/ui/dialogs/app_dialog.ui:167 data/resources/ui/dialogs/process_dialog.ui:145
-#: data/resources/ui/dialogs/settings_dialog.ui:173 data/resources/ui/dialogs/settings_dialog.ui:265
+#: data/resources/ui/dialogs/app_dialog.ui:167
+#: data/resources/ui/dialogs/process_dialog.ui:145
+#: data/resources/ui/dialogs/settings_dialog.ui:173
+#: data/resources/ui/dialogs/settings_dialog.ui:265
 #: src/ui/pages/applications/mod.rs:1368 src/ui/pages/applications/mod.rs:1387
-#: src/ui/pages/processes/mod.rs:1673 src/ui/pages/processes/mod.rs:1692
+#: src/ui/pages/processes/mod.rs:1680 src/ui/pages/processes/mod.rs:1699
 msgid "Video Decoder"
 msgstr "Video Kod Çözücü"
 
-#: data/resources/ui/dialogs/app_dialog.ui:174 data/resources/ui/dialogs/process_dialog.ui:179
+#: data/resources/ui/dialogs/app_dialog.ui:174
+#: data/resources/ui/dialogs/process_dialog.ui:179
 #: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:83
 #: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:74
 #: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
@@ -213,7 +246,8 @@ msgstr "Özellikler"
 msgid "ID"
 msgstr "Kimlik"
 
-#: data/resources/ui/dialogs/app_dialog.ui:190 data/resources/ui/dialogs/process_dialog.ui:195
+#: data/resources/ui/dialogs/app_dialog.ui:190
+#: data/resources/ui/dialogs/process_dialog.ui:195
 msgid "Running Since"
 msgstr "Çalışmaya Başlama"
 
@@ -221,7 +255,8 @@ msgstr "Çalışmaya Başlama"
 msgid "Running Processes"
 msgstr "Çalışan Süreçler"
 
-#: data/resources/ui/dialogs/app_dialog.ui:207 data/resources/ui/dialogs/process_dialog.ui:231
+#: data/resources/ui/dialogs/app_dialog.ui:207
+#: data/resources/ui/dialogs/process_dialog.ui:231
 msgid "Containerized"
 msgstr "Konteynerli"
 
@@ -229,33 +264,39 @@ msgstr "Konteynerli"
 msgid "Process Information"
 msgstr "Süreç Bilgileri"
 
-#: data/resources/ui/dialogs/process_dialog.ui:154 data/resources/ui/dialogs/settings_dialog.ui:270
-#: src/ui/pages/processes/mod.rs:1810 src/ui/pages/processes/mod.rs:1828
+#: data/resources/ui/dialogs/process_dialog.ui:154
+#: data/resources/ui/dialogs/settings_dialog.ui:270
+#: src/ui/pages/processes/mod.rs:1817 src/ui/pages/processes/mod.rs:1835
 msgid "Total CPU Time"
 msgstr "Toplam İşlemci Süresi"
 
-#: data/resources/ui/dialogs/process_dialog.ui:163 data/resources/ui/dialogs/settings_dialog.ui:275
-#: src/ui/pages/processes/mod.rs:1877 src/ui/pages/processes/mod.rs:1895
+#: data/resources/ui/dialogs/process_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:275
+#: src/ui/pages/processes/mod.rs:1884 src/ui/pages/processes/mod.rs:1902
 msgid "User CPU Time"
 msgstr "Kullanıcı İşlemci Süresi"
 
-#: data/resources/ui/dialogs/process_dialog.ui:172 data/resources/ui/dialogs/settings_dialog.ui:280
-#: src/ui/pages/processes/mod.rs:1944 src/ui/pages/processes/mod.rs:1962
+#: data/resources/ui/dialogs/process_dialog.ui:172
+#: data/resources/ui/dialogs/settings_dialog.ui:280
+#: src/ui/pages/processes/mod.rs:1951 src/ui/pages/processes/mod.rs:1969
 msgid "System CPU Time"
 msgstr "Sistem İşlemci Süresi"
 
-#: data/resources/ui/dialogs/process_dialog.ui:186 data/resources/ui/dialogs/settings_dialog.ui:210
-#: src/ui/pages/processes/mod.rs:976 src/ui/pages/processes/mod.rs:991
+#: data/resources/ui/dialogs/process_dialog.ui:186
+#: data/resources/ui/dialogs/settings_dialog.ui:210
+#: src/ui/pages/processes/mod.rs:983 src/ui/pages/processes/mod.rs:998
 msgid "Process ID"
 msgstr "Süreç Kimliği"
 
-#: data/resources/ui/dialogs/process_dialog.ui:204 data/resources/ui/dialogs/settings_dialog.ui:300
-#: src/ui/pages/processes/mod.rs:2222 src/ui/pages/processes/mod.rs:2240
+#: data/resources/ui/dialogs/process_dialog.ui:204
+#: data/resources/ui/dialogs/settings_dialog.ui:300
+#: src/ui/pages/processes/mod.rs:2229 src/ui/pages/processes/mod.rs:2247
 msgid "Commandline"
 msgstr "Komut Satırı"
 
-#: data/resources/ui/dialogs/process_dialog.ui:213 data/resources/ui/dialogs/settings_dialog.ui:215
-#: src/ui/pages/processes/mod.rs:1037 src/ui/pages/processes/mod.rs:1052
+#: data/resources/ui/dialogs/process_dialog.ui:213
+#: data/resources/ui/dialogs/settings_dialog.ui:215
+#: src/ui/pages/processes/mod.rs:1044 src/ui/pages/processes/mod.rs:1059
 msgid "User"
 msgstr "Kullanıcı"
 
@@ -278,15 +319,15 @@ msgstr "Nicelik"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:73
 msgid ""
-"The priority of a process is given by its niceness. A lower niceness value correspond to a higher "
-"priority."
+"The priority of a process is given by its niceness. A lower niceness value "
+"correspond to a higher priority."
 msgstr ""
-"Sürecin önceliği niceliğine göre verilir. Daha düşük nicelik değeri daha yüksek önceliğe karşılık "
-"gelir."
+"Sürecin önceliği niceliğine göre verilir. Daha düşük nicelik değeri daha "
+"yüksek önceliğe karşılık gelir."
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:87
-#: data/resources/ui/dialogs/settings_dialog.ui:285 src/ui/pages/processes/mod.rs:2011
-#: src/ui/pages/processes/mod.rs:2027
+#: data/resources/ui/dialogs/settings_dialog.ui:285
+#: src/ui/pages/processes/mod.rs:2018 src/ui/pages/processes/mod.rs:2034
 msgid "Priority"
 msgstr "Öncelik"
 
@@ -325,7 +366,9 @@ msgstr "Tümünü Genişlet"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:111
 msgid "Select which processor cores the process is allowed to run on"
-msgstr "İşlemin hangi işlemci çekirdekleri üzerinde çalışmasına izin verileceğini seçin"
+msgstr ""
+"İşlemin hangi işlemci çekirdekleri üzerinde çalışmasına izin verileceğini "
+"seçin"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:7
 msgid "General"
@@ -425,8 +468,12 @@ msgid "Show Device Descriptions in Sidebar"
 msgstr "Aygıt Açıklamalarını Kenar Çubuğunda Göster"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:93
-msgid "If enabled, a device identifier like its name or device type will be displayed"
-msgstr "Etkinleştirilirse, adı ya da aygıt türü gibi bir aygıt tanımlayıcısı görüntülenir"
+msgid ""
+"If enabled, a device identifier like its name or device type will be "
+"displayed"
+msgstr ""
+"Etkinleştirilirse, adı ya da aygıt türü gibi bir aygıt tanımlayıcısı "
+"görüntülenir"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
 msgid "Sidebar Meter Type"
@@ -445,31 +492,39 @@ msgid "Normalize Processor Usage"
 msgstr "İşlemci Kullanımını Doğallaştır"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:112
-msgid "If enabled, the total usage of all cores will be divided by the amount of cores"
-msgstr "Etkinleştirilirse, tüm çekirdeklerin toplam kullanımı çekirdek sayısına bölünür"
+msgid ""
+"If enabled, the total usage of all cores will be divided by the amount of "
+"cores"
+msgstr ""
+"Etkinleştirilirse, tüm çekirdeklerin toplam kullanımı çekirdek sayısına "
+"bölünür"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:122 data/resources/ui/window.ui:65
-#: data/resources/ui/window.ui:72 src/ui/pages/applications/mod.rs:132
+#: data/resources/ui/dialogs/settings_dialog.ui:122
+#: data/resources/ui/window.ui:65 data/resources/ui/window.ui:72
+#: src/ui/pages/applications/mod.rs:132
 msgid "Apps"
 msgstr "Uygulamalar"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:125 data/resources/ui/dialogs/settings_dialog.ui:207
+#: data/resources/ui/dialogs/settings_dialog.ui:125
+#: data/resources/ui/dialogs/settings_dialog.ui:207
 msgid "Information Columns"
 msgstr "Bilgi Sütunları"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:183 data/resources/ui/dialogs/settings_dialog.ui:295
+#: data/resources/ui/dialogs/settings_dialog.ui:183
+#: data/resources/ui/dialogs/settings_dialog.ui:295
 #: src/ui/pages/applications/mod.rs:1570 src/ui/pages/applications/mod.rs:1589
-#: src/ui/pages/processes/mod.rs:2153 src/ui/pages/processes/mod.rs:2172
+#: src/ui/pages/processes/mod.rs:2160 src/ui/pages/processes/mod.rs:2179
 msgid "Combined Memory"
 msgstr "Birleşik Bellek"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:193 data/resources/ui/window.ui:105
-#: data/resources/ui/window.ui:112 src/ui/pages/processes/mod.rs:176
+#: data/resources/ui/dialogs/settings_dialog.ui:193
+#: data/resources/ui/window.ui:105 data/resources/ui/window.ui:112
+#: src/ui/pages/processes/mod.rs:176
 msgid "Processes"
 msgstr "Süreçler"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:196 data/resources/ui/pages/cpu.ui:22
-#: data/resources/ui/pages/processes.ui:56
+#: data/resources/ui/dialogs/settings_dialog.ui:196
+#: data/resources/ui/pages/cpu.ui:22 data/resources/ui/pages/processes.ui:56
 msgid "Options"
 msgstr "Seçenekler"
 
@@ -478,7 +533,8 @@ msgid "Show Niceness Values"
 msgstr "Nicelik Değerlerini Göster"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:200
-msgid "Display priorities as niceness to allow for more fine-grained adjustments"
+msgid ""
+"Display priorities as niceness to allow for more fine-grained adjustments"
 msgstr "Daha ince ayarlara izin vermek için öncelikleri nicelik olarak göster"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:310
@@ -505,27 +561,32 @@ msgstr "Sanal Ağ Arayüzlerini Göster"
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
 msgstr "Sanal ağ arayüzleri örneğin köprüler ya da VPN tünelleridir"
 
-#: data/resources/ui/pages/applications.ui:6 data/resources/ui/pages/applications.ui:26
+#: data/resources/ui/pages/applications.ui:6
+#: data/resources/ui/pages/applications.ui:26
 #: src/ui/pages/applications/mod.rs:1662
 msgid "Kill App"
 msgstr "Uygulamayı Öldür"
 
-#: data/resources/ui/pages/applications.ui:10 data/resources/ui/pages/applications.ui:30
+#: data/resources/ui/pages/applications.ui:10
+#: data/resources/ui/pages/applications.ui:30
 #: src/ui/pages/applications/mod.rs:1661
 msgid "Halt App"
 msgstr "Uygulamayı Durdur"
 
-#: data/resources/ui/pages/applications.ui:14 data/resources/ui/pages/applications.ui:34
+#: data/resources/ui/pages/applications.ui:14
+#: data/resources/ui/pages/applications.ui:34
 #: src/ui/pages/applications/mod.rs:1663
 msgid "Continue App"
 msgstr "Uygulamayı Sürdür"
 
-#: data/resources/ui/pages/applications.ui:22 data/resources/ui/pages/applications.ui:98
+#: data/resources/ui/pages/applications.ui:22
+#: data/resources/ui/pages/applications.ui:98
 #: src/ui/pages/applications/mod.rs:1660
 msgid "End App"
 msgstr "Uygulamayı Sonlandır"
 
-#: data/resources/ui/pages/applications.ui:40 data/resources/ui/pages/processes.ui:62
+#: data/resources/ui/pages/applications.ui:40
+#: data/resources/ui/pages/processes.ui:62
 msgid "Information"
 msgstr "Bilgi"
 
@@ -534,7 +595,8 @@ msgstr "Bilgi"
 msgid "Search applications"
 msgstr "Uygulamaları ara"
 
-#: data/resources/ui/pages/applications.ui:87 data/resources/ui/pages/applications.ui:89
+#: data/resources/ui/pages/applications.ui:87
+#: data/resources/ui/pages/applications.ui:89
 msgid "Show App Information"
 msgstr "Uygulama Bilgilerini Göster"
 
@@ -642,7 +704,8 @@ msgstr "Ekran Kartı Frekansı"
 msgid "Video Memory Frequency"
 msgstr "Video Bellek Frekansı"
 
-#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49 src/ui/pages/battery.rs:217
+#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49
+#: src/ui/pages/battery.rs:217
 msgid "Power Usage"
 msgstr "Güç Kullanımı"
 
@@ -715,35 +778,39 @@ msgstr "YZ Çekirdeği Frekansı"
 msgid "Memory Frequency"
 msgstr "Bellek Frekansı"
 
-#: data/resources/ui/pages/processes.ui:6 data/resources/ui/pages/processes.ui:42
-#: src/ui/pages/processes/mod.rs:2339
+#: data/resources/ui/pages/processes.ui:6
+#: data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2346
 msgid "Kill Process"
 msgstr "Süreci Öldür"
 
-#: data/resources/ui/pages/processes.ui:10 data/resources/ui/pages/processes.ui:46
-#: src/ui/pages/processes/mod.rs:2338
+#: data/resources/ui/pages/processes.ui:10
+#: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2345
 msgid "Halt Process"
 msgstr "Süreci Durdur"
 
-#: data/resources/ui/pages/processes.ui:14 data/resources/ui/pages/processes.ui:50
-#: src/ui/pages/processes/mod.rs:2340
+#: data/resources/ui/pages/processes.ui:14
+#: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2347
 msgid "Continue Process"
 msgstr "Süreci Sürdür"
 
-#: data/resources/ui/pages/processes.ui:22 data/resources/ui/pages/processes.ui:74
+#: data/resources/ui/pages/processes.ui:22
+#: data/resources/ui/pages/processes.ui:74
 msgid "Kill Processes"
 msgstr "Süreçleri Öldür"
 
-#: data/resources/ui/pages/processes.ui:26 data/resources/ui/pages/processes.ui:78
+#: data/resources/ui/pages/processes.ui:26
+#: data/resources/ui/pages/processes.ui:78
 msgid "Halt Processes"
 msgstr "Süreçleri Durdur"
 
-#: data/resources/ui/pages/processes.ui:30 data/resources/ui/pages/processes.ui:82
+#: data/resources/ui/pages/processes.ui:30
+#: data/resources/ui/pages/processes.ui:82
 msgid "Continue Processes"
 msgstr "Süreçleri Sürdür"
 
-#: data/resources/ui/pages/processes.ui:38 data/resources/ui/pages/processes.ui:157
-#: src/ui/pages/processes/mod.rs:527 src/ui/pages/processes/mod.rs:2337
+#: data/resources/ui/pages/processes.ui:38
+#: data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:527
+#: src/ui/pages/processes/mod.rs:2344
 msgid "End Process"
 msgstr "Süreci Sonlandır"
 
@@ -755,11 +822,13 @@ msgstr "Süreçleri Sonlandır"
 msgid "Search processes"
 msgstr "Süreç ara"
 
-#: data/resources/ui/pages/processes.ui:133 data/resources/ui/pages/processes.ui:135
+#: data/resources/ui/pages/processes.ui:133
+#: data/resources/ui/pages/processes.ui:135
 msgid "Show Process Options"
 msgstr "Süreç Seçeneklerini Göster"
 
-#: data/resources/ui/pages/processes.ui:146 data/resources/ui/pages/processes.ui:148
+#: data/resources/ui/pages/processes.ui:146
+#: data/resources/ui/pages/processes.ui:148
 msgid "Show Process Information"
 msgstr "Süreç Bilgilerini Göster"
 
@@ -843,79 +912,84 @@ msgstr "Ara"
 msgid "Toggle search field"
 msgstr "Arama alanını aç/kapat"
 
-#: src/application.rs:282
-msgid "Report Issues"
-msgstr "Hata Bildir"
-
 #. Translator credits. Replace "translator-credits" with your name/username, and optionally an email or URL.
 #. One name per line, please do not remove previous names.
-#: src/application.rs:288
+#: src/application.rs:285
 msgid "translator-credits"
 msgstr "Sabri Ünal <yakushabb@gmail.com>"
-
-#: src/application.rs:289
-msgid "Icon by"
-msgstr "Simgeler"
 
 #: src/ui/dialogs/app_dialog.rs:155 src/ui/dialogs/process_dialog.rs:133
 #: src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:146
 #: src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171
 #: src/ui/dialogs/process_dialog.rs:178 src/ui/dialogs/process_dialog.rs:185
 #: src/ui/dialogs/process_dialog.rs:192 src/ui/pages/applications/mod.rs:975
-#: src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:205 src/ui/pages/battery.rs:225
-#: src/ui/pages/battery.rs:231 src/ui/pages/battery.rs:234 src/ui/pages/battery.rs:265
-#: src/ui/pages/battery.rs:289 src/ui/pages/battery.rs:291 src/ui/pages/battery.rs:301
-#: src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258 src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284
-#: src/ui/pages/cpu.rs:290 src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303
-#: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:319 src/ui/pages/drive.rs:350
-#: src/ui/pages/drive.rs:352 src/ui/pages/drive.rs:381 src/ui/pages/drive.rs:383
-#: src/ui/pages/drive.rs:399 src/ui/pages/drive.rs:400 src/ui/pages/drive.rs:407
-#: src/ui/pages/drive.rs:417 src/ui/pages/drive.rs:427 src/ui/pages/drive.rs:433
-#: src/ui/pages/gpu.rs:245 src/ui/pages/gpu.rs:252 src/ui/pages/gpu.rs:297 src/ui/pages/gpu.rs:322
-#: src/ui/pages/gpu.rs:325 src/ui/pages/gpu.rs:336 src/ui/pages/gpu.rs:377 src/ui/pages/gpu.rs:384
-#: src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:403 src/ui/pages/gpu.rs:407 src/ui/pages/gpu.rs:437
-#: src/ui/pages/gpu.rs:443 src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228
-#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233 src/ui/pages/memory.rs:237
-#: src/ui/pages/memory.rs:238 src/ui/pages/memory.rs:266 src/ui/pages/memory.rs:327
-#: src/ui/pages/network.rs:252 src/ui/pages/network.rs:259 src/ui/pages/network.rs:266
-#: src/ui/pages/network.rs:272 src/ui/pages/network.rs:275 src/ui/pages/network.rs:285
-#: src/ui/pages/network.rs:292 src/ui/pages/network.rs:302 src/ui/pages/network.rs:370
-#: src/ui/pages/network.rs:373 src/ui/pages/network.rs:375 src/ui/pages/network.rs:404
-#: src/ui/pages/network.rs:407 src/ui/pages/network.rs:409 src/ui/pages/network.rs:417
-#: src/ui/pages/network.rs:424 src/ui/pages/network.rs:434 src/ui/pages/processes/mod.rs:1268
-#: src/ui/pages/processes/mod.rs:1343 src/ui/pages/processes/mod.rs:1418
-#: src/ui/pages/processes/mod.rs:1493 src/ui/pages/processes/mod.rs:2043
-#: src/ui/pages/processes/mod.rs:2045 src/utils/battery.rs:152 src/utils/drive.rs:137
-#: src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:244
-#: src/utils/npu/mod.rs:250
+#: src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:205
+#: src/ui/pages/battery.rs:225 src/ui/pages/battery.rs:231
+#: src/ui/pages/battery.rs:234 src/ui/pages/battery.rs:265
+#: src/ui/pages/battery.rs:289 src/ui/pages/battery.rs:291
+#: src/ui/pages/battery.rs:301 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258
+#: src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:290
+#: src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303
+#: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:321
+#: src/ui/pages/drive.rs:352 src/ui/pages/drive.rs:354
+#: src/ui/pages/drive.rs:383 src/ui/pages/drive.rs:385
+#: src/ui/pages/drive.rs:401 src/ui/pages/drive.rs:402
+#: src/ui/pages/drive.rs:409 src/ui/pages/drive.rs:419
+#: src/ui/pages/drive.rs:429 src/ui/pages/drive.rs:435 src/ui/pages/gpu.rs:245
+#: src/ui/pages/gpu.rs:252 src/ui/pages/gpu.rs:297 src/ui/pages/gpu.rs:322
+#: src/ui/pages/gpu.rs:325 src/ui/pages/gpu.rs:336 src/ui/pages/gpu.rs:377
+#: src/ui/pages/gpu.rs:384 src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:403
+#: src/ui/pages/gpu.rs:407 src/ui/pages/gpu.rs:437 src/ui/pages/gpu.rs:443
+#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228
+#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233
+#: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:238
+#: src/ui/pages/memory.rs:266 src/ui/pages/memory.rs:327
+#: src/ui/pages/network.rs:252 src/ui/pages/network.rs:259
+#: src/ui/pages/network.rs:266 src/ui/pages/network.rs:272
+#: src/ui/pages/network.rs:275 src/ui/pages/network.rs:285
+#: src/ui/pages/network.rs:292 src/ui/pages/network.rs:302
+#: src/ui/pages/network.rs:370 src/ui/pages/network.rs:373
+#: src/ui/pages/network.rs:375 src/ui/pages/network.rs:404
+#: src/ui/pages/network.rs:407 src/ui/pages/network.rs:409
+#: src/ui/pages/network.rs:417 src/ui/pages/network.rs:424
+#: src/ui/pages/network.rs:434 src/ui/pages/processes/mod.rs:1275
+#: src/ui/pages/processes/mod.rs:1350 src/ui/pages/processes/mod.rs:1425
+#: src/ui/pages/processes/mod.rs:1500 src/ui/pages/processes/mod.rs:2050
+#: src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152
+#: src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291
+#: src/utils/link/mod.rs:61 src/utils/npu/mod.rs:249 src/utils/npu/mod.rs:255
 msgid "N/A"
 msgstr "Bilinmiyor"
 
-#: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257 src/ui/pages/cpu.rs:417
-#: src/ui/pages/cpu.rs:421
+#: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257
+#: src/ui/pages/cpu.rs:417 src/ui/pages/cpu.rs:421
 #, rust-format
 msgid "CPU {}"
 msgstr "İşlemci {}"
 
-#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:414
-#: src/ui/pages/drive.rs:424 src/ui/pages/processes/process_entry.rs:211
+#: src/ui/pages/applications/application_entry.rs:188 src/ui/pages/drive.rs:416
+#: src/ui/pages/drive.rs:426 src/ui/pages/processes/process_entry.rs:211
 msgid "No"
 msgstr "Hayır"
 
-#: src/ui/pages/applications/application_entry.rs:191 src/ui/pages/processes/process_entry.rs:212
+#: src/ui/pages/applications/application_entry.rs:189
+#: src/ui/pages/processes/process_entry.rs:212
 msgid "Yes (AppImage)"
 msgstr "Evet (AppImage)"
 
-#: src/ui/pages/applications/application_entry.rs:192 src/ui/pages/processes/process_entry.rs:213
+#: src/ui/pages/applications/application_entry.rs:190
+#: src/ui/pages/processes/process_entry.rs:213
 msgid "Yes (Flatpak)"
 msgstr "Evet (Flatpak)"
 
 #. Translators: "Portable" is the name of the containerization method used, please keep it as is
-#: src/ui/pages/applications/application_entry.rs:194 src/ui/pages/processes/process_entry.rs:215
+#: src/ui/pages/applications/application_entry.rs:192
+#: src/ui/pages/processes/process_entry.rs:215
 msgid "Yes (Portable)"
 msgstr "Evet (Portable)"
 
-#: src/ui/pages/applications/application_entry.rs:195 src/ui/pages/processes/process_entry.rs:216
+#: src/ui/pages/applications/application_entry.rs:193
+#: src/ui/pages/processes/process_entry.rs:216
 msgid "Yes (Snap)"
 msgstr "Evet (Snap)"
 
@@ -924,7 +998,7 @@ msgstr "Evet (Snap)"
 msgid "Running Apps: {}"
 msgstr "Çalışan Uygulamalar: {}"
 
-#: src/ui/pages/applications/mod.rs:703 src/ui/pages/processes/mod.rs:866
+#: src/ui/pages/applications/mod.rs:703 src/ui/pages/processes/mod.rs:873
 msgid "Cancel"
 msgstr "İptal"
 
@@ -933,48 +1007,48 @@ msgid "App"
 msgstr "Uygulama"
 
 # Konumu gereği başlık düzeni kullanıldı
-#: src/ui/pages/applications/mod.rs:1638 src/ui/pages/processes/mod.rs:2286
+#: src/ui/pages/applications/mod.rs:1638 src/ui/pages/processes/mod.rs:2293
 #, rust-format
 msgid "End {}?"
 msgstr "{} Sonlandırılsın Mı?"
 
 # Konumu gereği başlık düzeni kullanıldı
-#: src/ui/pages/applications/mod.rs:1639 src/ui/pages/processes/mod.rs:2287
+#: src/ui/pages/applications/mod.rs:1639 src/ui/pages/processes/mod.rs:2294
 #, rust-format
 msgid "Halt {}?"
 msgstr "{} Durdurulsun Mu?"
 
 # Konumu gereği başlık düzeni kullanıldı
-#: src/ui/pages/applications/mod.rs:1640 src/ui/pages/processes/mod.rs:2288
+#: src/ui/pages/applications/mod.rs:1640 src/ui/pages/processes/mod.rs:2295
 #, rust-format
 msgid "Kill {}?"
 msgstr "{} Öldürülsün Mü?"
 
 # Konumu gereği başlık düzeni kullanıldı
-#: src/ui/pages/applications/mod.rs:1641 src/ui/pages/processes/mod.rs:2289
+#: src/ui/pages/applications/mod.rs:1641 src/ui/pages/processes/mod.rs:2296
 #, rust-format
 msgid "Continue {}?"
 msgstr "{} Sürdürülsün Mü?"
 
-#: src/ui/pages/applications/mod.rs:1647 src/ui/pages/processes/mod.rs:2324
+#: src/ui/pages/applications/mod.rs:1647 src/ui/pages/processes/mod.rs:2331
 msgid "Unsaved work might be lost."
 msgstr "Kaydedilmemiş çalışmalar yitebilir."
 
 #: src/ui/pages/applications/mod.rs:1649
 msgid ""
-"Halting an app can come with serious risks such as losing data and security implications. Use with "
-"caution."
+"Halting an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
 msgstr ""
-"Uygulamanın durdurulması, veri yitimi ve güvenlik etkileri gibi ciddi risklere neden olabilir. "
-"Dikkatli kullanın."
+"Uygulamanın durdurulması, veri yitimi ve güvenlik etkileri gibi ciddi "
+"risklere neden olabilir. Dikkatli kullanın."
 
 #: src/ui/pages/applications/mod.rs:1652
 msgid ""
-"Killing an app can come with serious risks such as losing data and security implications. Use with "
-"caution."
+"Killing an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
 msgstr ""
-"Uygulamayı öldürmek, veri yitimi ve güvenlik etkileri gibi ciddi risklere neden olabilir. Dikkatli "
-"kullanın."
+"Uygulamayı öldürmek, veri yitimi ve güvenlik etkileri gibi ciddi risklere "
+"neden olabilir. Dikkatli kullanın."
 
 #: src/ui/pages/battery.rs:102 src/utils/battery.rs:258
 msgid "Battery"
@@ -984,9 +1058,9 @@ msgstr "Pil"
 msgid "Battery Charge"
 msgstr "Pil Doluluk"
 
-#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:438 src/ui/pages/drive.rs:344
-#: src/ui/pages/drive.rs:375 src/ui/pages/gpu.rs:429 src/ui/pages/network.rs:362
-#: src/ui/pages/network.rs:396
+#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:438
+#: src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377 src/ui/pages/gpu.rs:429
+#: src/ui/pages/network.rs:362 src/ui/pages/network.rs:396
 msgid "Highest:"
 msgstr "En Yüksek:"
 
@@ -1014,13 +1088,13 @@ msgstr "Okuma Hızı"
 msgid "Write Speed"
 msgstr "Yazma Hızı"
 
-#: src/ui/pages/drive.rs:412 src/ui/pages/drive.rs:422
+#: src/ui/pages/drive.rs:414 src/ui/pages/drive.rs:424
 msgid "Yes"
 msgstr "Evet"
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
-#: src/ui/pages/drive.rs:440
+#: src/ui/pages/drive.rs:442
 #, rust-format
 msgid "R: {} · W: {}"
 msgstr "O: {} · Y: {}"
@@ -1084,48 +1158,48 @@ msgstr "Gönderiliyor"
 msgid "R: {} · S: {}"
 msgstr "A: {} · G: {}"
 
-#: src/ui/pages/processes/mod.rs:817
+#: src/ui/pages/processes/mod.rs:824
 #, rust-format
 msgid "Running Processes: {}"
 msgstr "Çalışan Süreçler: {}"
 
-#: src/ui/pages/processes/mod.rs:915
+#: src/ui/pages/processes/mod.rs:922
 msgid "Process"
 msgstr "Süreç"
 
-#: src/ui/pages/processes/mod.rs:2296
+#: src/ui/pages/processes/mod.rs:2303
 #, rust-format
 msgid "End process?"
 msgid_plural "End {} processes?"
 msgstr[0] "{} süreç sonlandırılsın mı?"
 
-#: src/ui/pages/processes/mod.rs:2302
+#: src/ui/pages/processes/mod.rs:2309
 #, rust-format
 msgid "Halt process?"
 msgid_plural "Halt {} processes?"
 msgstr[0] "{} süreç duraklatılsın mı?"
 
-#: src/ui/pages/processes/mod.rs:2308 src/ui/pages/processes/mod.rs:2314
+#: src/ui/pages/processes/mod.rs:2315 src/ui/pages/processes/mod.rs:2321
 #, rust-format
 msgid "Kill process?"
 msgid_plural "Kill {} processes?"
 msgstr[0] "{} süreç öldürülsün mü?"
 
-#: src/ui/pages/processes/mod.rs:2326
+#: src/ui/pages/processes/mod.rs:2333
 msgid ""
-"Halting a process can come with serious risks such as losing data and security implications. Use "
-"with caution."
+"Halting a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
 msgstr ""
-"Sürecin durdurulması, veri yitimi ve güvenlik etkileri gibi ciddi risklere neden olabilir. Dikkatli "
-"kullanın."
+"Sürecin durdurulması, veri yitimi ve güvenlik etkileri gibi ciddi risklere "
+"neden olabilir. Dikkatli kullanın."
 
-#: src/ui/pages/processes/mod.rs:2329
+#: src/ui/pages/processes/mod.rs:2336
 msgid ""
-"Killing a process can come with serious risks such as losing data and security implications. Use "
-"with caution."
+"Killing a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
 msgstr ""
-"Süreci öldürmek, veri yitimi ve güvenlik etkileri gibi ciddi risklere neden olabilir. Dikkatli "
-"kullanın."
+"Süreci öldürmek, veri yitimi ve güvenlik etkileri gibi ciddi risklere neden "
+"olabilir. Dikkatli kullanın."
 
 #: src/ui/window.rs:466
 #, rust-format
@@ -1141,105 +1215,105 @@ msgstr "YZ Çekirdeği {}"
 msgid "NPU"
 msgstr "YZ Çekirdeği"
 
-#: src/ui/window.rs:1174
+#: src/ui/window.rs:1201
 #, rust-format
 msgid "Successfully adjusted {}"
 msgstr "{} başarıyla ayarlandı"
 
-#: src/ui/window.rs:1175
+#: src/ui/window.rs:1202
 #, rust-format
 msgid "There was a problem adjusting {}"
 msgstr "{} ayarlanırken sorun oluştu"
 
-#: src/ui/window.rs:1257
+#: src/ui/window.rs:1284
 #, rust-format
 msgid "Successfully ended {}"
 msgstr "{} sonlandırıldı"
 
-#: src/ui/window.rs:1258
+#: src/ui/window.rs:1285
 #, rust-format
 msgid "Successfully halted {}"
 msgstr "{} durduruldu"
 
-#: src/ui/window.rs:1259
+#: src/ui/window.rs:1286
 #, rust-format
 msgid "Successfully killed {}"
 msgstr "{} öldürüldü"
 
-#: src/ui/window.rs:1260
+#: src/ui/window.rs:1287
 #, rust-format
 msgid "Successfully continued {}"
 msgstr "{} sürdürüldü"
 
-#: src/ui/window.rs:1267
+#: src/ui/window.rs:1294
 #, rust-format
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
 msgstr[0] "{} süreç sonlandırıldı"
 
-#: src/ui/window.rs:1273
+#: src/ui/window.rs:1300
 #, rust-format
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
 msgstr[0] "{} süreç durduruldu"
 
-#: src/ui/window.rs:1279
+#: src/ui/window.rs:1306
 #, rust-format
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
 msgstr[0] "{} süreç öldürüldü"
 
-#: src/ui/window.rs:1285
+#: src/ui/window.rs:1312
 #, rust-format
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
 msgstr[0] "{} süreç sürdürüldü"
 
-#: src/ui/window.rs:1296
+#: src/ui/window.rs:1323
 #, rust-format
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] "{} süreci sonlandırmakta sorun vardı"
 
-#: src/ui/window.rs:1302
+#: src/ui/window.rs:1329
 #, rust-format
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "{} süreci durdurmakta sorun vardı"
 
-#: src/ui/window.rs:1308
+#: src/ui/window.rs:1335
 #, rust-format
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "{} süreci öldürmekte sorun vardı"
 
-#: src/ui/window.rs:1314
+#: src/ui/window.rs:1341
 #, rust-format
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "{} süreci sürdürmekte sorun vardı"
 
-#: src/ui/window.rs:1324
+#: src/ui/window.rs:1351
 #, rust-format
 msgid "There was a problem ending {}"
 msgstr "{} sonlandırmakta sorun vardı"
 
-#: src/ui/window.rs:1325
+#: src/ui/window.rs:1352
 #, rust-format
 msgid "There was a problem halting {}"
 msgstr "{} durdurmakta sorun vardı"
 
-#: src/ui/window.rs:1326
+#: src/ui/window.rs:1353
 #, rust-format
 msgid "There was a problem killing {}"
 msgstr "{} sürdürmekte sorun vardı"
 
-#: src/ui/window.rs:1327
+#: src/ui/window.rs:1354
 #, rust-format
 msgid "There was a problem continuing {}"
 msgstr "{} sürdürmekte sorun vardı"
 
-#: src/utils/app.rs:223
+#: src/utils/app.rs:224
 msgid "System Processes"
 msgstr "Sistem Süreçleri"
 
@@ -1315,7 +1389,8 @@ msgstr "{} °C"
 msgid "{} °F"
 msgstr "{} °F"
 
-#: src/utils/units.rs:113 src/utils/units.rs:127 src/utils/units.rs:147 src/utils/units.rs:161
+#: src/utils/units.rs:113 src/utils/units.rs:127 src/utils/units.rs:147
+#: src/utils/units.rs:161
 #, rust-format
 msgid "{} B"
 msgstr "{} B"
@@ -1420,377 +1495,377 @@ msgstr "{} RiB"
 msgid "{} QiB"
 msgstr "{} QiB"
 
-#: src/utils/units.rs:198 src/utils/units.rs:215
+#: src/utils/units.rs:197 src/utils/units.rs:214
 #, rust-format
 msgid "{} B/s"
 msgstr "{} B/s"
 
-#: src/utils/units.rs:199
+#: src/utils/units.rs:198
 #, rust-format
 msgid "{} kB/s"
 msgstr "{} kB/s"
 
-#: src/utils/units.rs:200
+#: src/utils/units.rs:199
 #, rust-format
 msgid "{} MB/s"
 msgstr "{} MB/s"
 
-#: src/utils/units.rs:201
+#: src/utils/units.rs:200
 #, rust-format
 msgid "{} GB/s"
 msgstr "{} GB/s"
 
-#: src/utils/units.rs:202
+#: src/utils/units.rs:201
 #, rust-format
 msgid "{} TB/s"
 msgstr "{} TB/s"
 
-#: src/utils/units.rs:203
+#: src/utils/units.rs:202
 #, rust-format
 msgid "{} PB/s"
 msgstr "{} PB/s"
 
-#: src/utils/units.rs:204
+#: src/utils/units.rs:203
 #, rust-format
 msgid "{} EB/s"
 msgstr "{} EB/s"
 
-#: src/utils/units.rs:205
+#: src/utils/units.rs:204
 #, rust-format
 msgid "{} ZB/s"
 msgstr "{} ZB/s"
 
-#: src/utils/units.rs:206
+#: src/utils/units.rs:205
 #, rust-format
 msgid "{} YB/s"
 msgstr "{} YB/s"
 
-#: src/utils/units.rs:207
+#: src/utils/units.rs:206
 #, rust-format
 msgid "{} RB/s"
 msgstr "{} RB/s"
 
-#: src/utils/units.rs:208
+#: src/utils/units.rs:207
 #, rust-format
 msgid "{} QB/s"
 msgstr "{} QB/s"
 
-#: src/utils/units.rs:216
+#: src/utils/units.rs:215
 #, rust-format
 msgid "{} KiB/s"
 msgstr "{} KiB/s"
 
-#: src/utils/units.rs:217
+#: src/utils/units.rs:216
 #, rust-format
 msgid "{} MiB/s"
 msgstr "{} MiB/s"
 
-#: src/utils/units.rs:218
+#: src/utils/units.rs:217
 #, rust-format
 msgid "{} GiB/s"
 msgstr "{} GiB/s"
 
-#: src/utils/units.rs:219
+#: src/utils/units.rs:218
 #, rust-format
 msgid "{} TiB/s"
 msgstr "{} TiB/s"
 
-#: src/utils/units.rs:220
+#: src/utils/units.rs:219
 #, rust-format
 msgid "{} PiB/s"
 msgstr "{} PiB/s"
 
-#: src/utils/units.rs:221
+#: src/utils/units.rs:220
 #, rust-format
 msgid "{} EiB/s"
 msgstr "{} EiB/s"
 
-#: src/utils/units.rs:222
+#: src/utils/units.rs:221
 #, rust-format
 msgid "{} ZiB/s"
 msgstr "{} ZiB/s"
 
-#: src/utils/units.rs:223
+#: src/utils/units.rs:222
 #, rust-format
 msgid "{} YiB/s"
 msgstr "{} YiB/s"
 
-#: src/utils/units.rs:224
+#: src/utils/units.rs:223
 #, rust-format
 msgid "{} RiB/s"
 msgstr "{} RiB/s"
 
-#: src/utils/units.rs:225
+#: src/utils/units.rs:224
 #, rust-format
 msgid "{} QiB/s"
 msgstr "{} QiB/s"
 
-#: src/utils/units.rs:239 src/utils/units.rs:256
+#: src/utils/units.rs:238 src/utils/units.rs:255
 #, rust-format
 msgid "{} b/s"
 msgstr "{} b/s"
 
-#: src/utils/units.rs:240
+#: src/utils/units.rs:239
 #, rust-format
 msgid "{} kb/s"
 msgstr "{} kb/s"
 
-#: src/utils/units.rs:241
+#: src/utils/units.rs:240
 #, rust-format
 msgid "{} Mb/s"
 msgstr "{} Mb/s"
 
-#: src/utils/units.rs:242
+#: src/utils/units.rs:241
 #, rust-format
 msgid "{} Gb/s"
 msgstr "{} Gb/s"
 
-#: src/utils/units.rs:243
+#: src/utils/units.rs:242
 #, rust-format
 msgid "{} Tb/s"
 msgstr "{} Tb/s"
 
-#: src/utils/units.rs:244
+#: src/utils/units.rs:243
 #, rust-format
 msgid "{} Pb/s"
 msgstr "{} Pb/s"
 
-#: src/utils/units.rs:245
+#: src/utils/units.rs:244
 #, rust-format
 msgid "{} Eb/s"
 msgstr "{} Eb/s"
 
-#: src/utils/units.rs:246
+#: src/utils/units.rs:245
 #, rust-format
 msgid "{} Zb/s"
 msgstr "{} Zb/s"
 
-#: src/utils/units.rs:247
+#: src/utils/units.rs:246
 #, rust-format
 msgid "{} Yb/s"
 msgstr "{} Yb/s"
 
-#: src/utils/units.rs:248
+#: src/utils/units.rs:247
 #, rust-format
 msgid "{} Rb/s"
 msgstr "{} Rb/s"
 
-#: src/utils/units.rs:249
+#: src/utils/units.rs:248
 #, rust-format
 msgid "{} Qb/s"
 msgstr "{} Qb/s"
 
-#: src/utils/units.rs:257
+#: src/utils/units.rs:256
 #, rust-format
 msgid "{} Kib/s"
 msgstr "{} Kib/s"
 
-#: src/utils/units.rs:258
+#: src/utils/units.rs:257
 #, rust-format
 msgid "{} Mib/s"
 msgstr "{} Mib/s"
 
-#: src/utils/units.rs:259
+#: src/utils/units.rs:258
 #, rust-format
 msgid "{} Gib/s"
 msgstr "{} Gib/s"
 
-#: src/utils/units.rs:260
+#: src/utils/units.rs:259
 #, rust-format
 msgid "{} Tib/s"
 msgstr "{} Tib/s"
 
-#: src/utils/units.rs:261
+#: src/utils/units.rs:260
 #, rust-format
 msgid "{} Pib/s"
 msgstr "{} Pib/s"
 
-#: src/utils/units.rs:262
+#: src/utils/units.rs:261
 #, rust-format
 msgid "{} Eib/s"
 msgstr "{} Eib/s"
 
-#: src/utils/units.rs:263
+#: src/utils/units.rs:262
 #, rust-format
 msgid "{} Zib/s"
 msgstr "{} Zib/s"
 
-#: src/utils/units.rs:264
+#: src/utils/units.rs:263
 #, rust-format
 msgid "{} Yib/s"
 msgstr "{} Yib/s"
 
-#: src/utils/units.rs:265
+#: src/utils/units.rs:264
 #, rust-format
 msgid "{} Rib/s"
 msgstr "{} Rib/s"
 
-#: src/utils/units.rs:266
+#: src/utils/units.rs:265
 #, rust-format
 msgid "{} Qib/s"
 msgstr "{} Qib/s"
 
-#: src/utils/units.rs:273
+#: src/utils/units.rs:272
 #, rust-format
 msgid "{} Hz"
 msgstr "{} Hz"
 
-#: src/utils/units.rs:274
+#: src/utils/units.rs:273
 #, rust-format
 msgid "{} kHz"
 msgstr "{} kHz"
 
-#: src/utils/units.rs:275
+#: src/utils/units.rs:274
 #, rust-format
 msgid "{} MHz"
 msgstr "{} MHz"
 
-#: src/utils/units.rs:276
+#: src/utils/units.rs:275
 #, rust-format
 msgid "{} GHz"
 msgstr "{} GHz"
 
-#: src/utils/units.rs:277
+#: src/utils/units.rs:276
 #, rust-format
 msgid "{} THz"
 msgstr "{} THz"
 
-#: src/utils/units.rs:278
+#: src/utils/units.rs:277
 #, rust-format
 msgid "{} PHz"
 msgstr "{} PHz"
 
-#: src/utils/units.rs:279
+#: src/utils/units.rs:278
 #, rust-format
 msgid "{} EHz"
 msgstr "{} EHz"
 
-#: src/utils/units.rs:280
+#: src/utils/units.rs:279
 #, rust-format
 msgid "{} ZHz"
 msgstr "{} ZHz"
 
-#: src/utils/units.rs:281
+#: src/utils/units.rs:280
 #, rust-format
 msgid "{} YHz"
 msgstr "{} YHz"
 
-#: src/utils/units.rs:282
+#: src/utils/units.rs:281
 #, rust-format
 msgid "{} RHz"
 msgstr "{} RHz"
 
-#: src/utils/units.rs:283
+#: src/utils/units.rs:282
 #, rust-format
 msgid "{} QHz"
 msgstr "{} QHz"
 
-#: src/utils/units.rs:290
+#: src/utils/units.rs:289
 #, rust-format
 msgid "{} W"
 msgstr "{} W"
 
-#: src/utils/units.rs:291
+#: src/utils/units.rs:290
 #, rust-format
 msgid "{} kW"
 msgstr "{} kW"
 
-#: src/utils/units.rs:292
+#: src/utils/units.rs:291
 #, rust-format
 msgid "{} MW"
 msgstr "{} MW"
 
-#: src/utils/units.rs:293
+#: src/utils/units.rs:292
 #, rust-format
 msgid "{} GW"
 msgstr "{} GW"
 
-#: src/utils/units.rs:294
+#: src/utils/units.rs:293
 #, rust-format
 msgid "{} TW"
 msgstr "{} TW"
 
-#: src/utils/units.rs:295
+#: src/utils/units.rs:294
 #, rust-format
 msgid "{} PW"
 msgstr "{} PW"
 
-#: src/utils/units.rs:296
+#: src/utils/units.rs:295
 #, rust-format
 msgid "{} EW"
 msgstr "{} EW"
 
-#: src/utils/units.rs:297
+#: src/utils/units.rs:296
 #, rust-format
 msgid "{} ZW"
 msgstr "{} ZW"
 
-#: src/utils/units.rs:298
+#: src/utils/units.rs:297
 #, rust-format
 msgid "{} YW"
 msgstr "{} YW"
 
-#: src/utils/units.rs:299
+#: src/utils/units.rs:298
 #, rust-format
 msgid "{} RW"
 msgstr "{} RW"
 
-#: src/utils/units.rs:300
+#: src/utils/units.rs:299
 #, rust-format
 msgid "{} QW"
 msgstr "{} QW"
 
-#: src/utils/units.rs:309 src/utils/units.rs:323
+#: src/utils/units.rs:308 src/utils/units.rs:322
 #, rust-format
 msgid "{} Wh"
 msgstr "{} Wh"
 
-#: src/utils/units.rs:310 src/utils/units.rs:324
+#: src/utils/units.rs:309 src/utils/units.rs:323
 #, rust-format
 msgid "{} kWh"
 msgstr "{} kWh"
 
-#: src/utils/units.rs:311 src/utils/units.rs:325
+#: src/utils/units.rs:310 src/utils/units.rs:324
 #, rust-format
 msgid "{} MWh"
 msgstr "{} MWh"
 
-#: src/utils/units.rs:312 src/utils/units.rs:326
+#: src/utils/units.rs:311 src/utils/units.rs:325
 #, rust-format
 msgid "{} GWh"
 msgstr "{} GWh"
 
-#: src/utils/units.rs:313 src/utils/units.rs:327
+#: src/utils/units.rs:312 src/utils/units.rs:326
 #, rust-format
 msgid "{} TWh"
 msgstr "{} TWh"
 
-#: src/utils/units.rs:314 src/utils/units.rs:328
+#: src/utils/units.rs:313 src/utils/units.rs:327
 #, rust-format
 msgid "{} PWh"
 msgstr "{} PWh"
 
-#: src/utils/units.rs:315 src/utils/units.rs:329
+#: src/utils/units.rs:314 src/utils/units.rs:328
 #, rust-format
 msgid "{} EWh"
 msgstr "{} EWh"
 
-#: src/utils/units.rs:316 src/utils/units.rs:330
+#: src/utils/units.rs:315 src/utils/units.rs:329
 #, rust-format
 msgid "{} ZWh"
 msgstr "{} ZWh"
 
-#: src/utils/units.rs:317 src/utils/units.rs:331
+#: src/utils/units.rs:316 src/utils/units.rs:330
 #, rust-format
 msgid "{} YWh"
 msgstr "{} YWh"
 
-#: src/utils/units.rs:318 src/utils/units.rs:332
+#: src/utils/units.rs:317 src/utils/units.rs:331
 #, rust-format
 msgid "{} RWh"
 msgstr "{} RWh"
 
-#: src/utils/units.rs:319 src/utils/units.rs:333
+#: src/utils/units.rs:318 src/utils/units.rs:332
 #, rust-format
 msgid "{} QWh"
 msgstr "{} QWh"
@@ -1941,3 +2016,9 @@ msgstr "Kablosuz Bağlantı"
 #: src/utils/network.rs:143
 msgid "WWAN Connection"
 msgstr "WWAN Bağlantısı"
+
+#~ msgid "Report Issues"
+#~ msgstr "Hata Bildir"
+
+#~ msgid "Icon by"
+#~ msgstr "Simgeler"
