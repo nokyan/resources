@@ -2,26 +2,27 @@
 # Copyright (C) 2025 resources's COPYRIGHT HOLDER
 # This file is distributed under the same license as the resources package.
 # SPDX-FileCopyrightText: 2025 Yaron Shahrabani <sh.yaron@gmail.com>
+# Yosef Or Boczko <yoseforb@gmail.com>, 2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2025-12-30 06:46+0000\n"
-"PO-Revision-Date: 2025-12-30 18:50+0200\n"
-"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: צוות התרגום של KDE ישראל\n"
+"POT-Creation-Date: 2026-02-01 19:19+0000\n"
+"PO-Revision-Date: 2026-02-12 23:56+0200\n"
+"Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
+"Language-Team: Hebrew\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==2 ? 1 : n>10 && n%10==0 ? 2 : "
-"3);\n"
-"X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==2 ? 1 : n>10 && n%10==0 ? "
+"2 : 3)\n"
+"X-Generator: Gtranslator 49.0\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:2
-#: data/net.nokyan.Resources.metainfo.xml.in.in:4 data/resources/ui/window.ui:22
-#: src/application.rs:272
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4
+#: data/resources/ui/window.ui:22 src/application.rs:272
 msgid "Resources"
 msgstr "משאבים"
 
@@ -33,20 +34,20 @@ msgstr "להשגיח על משאבי המערכת"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/net.nokyan.Resources.desktop.in.in:9
-msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
+msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;Performance;Power;Battery;"
 msgstr ""
 "מערכת;משאבים;צג;עוקב;מעקב;מוניטור;ניטור;שימוש;משימה;מנהל;מעבד;יע\"מ;יע״מ;מעבד "
-"גרפי;זיכרון;זכרון;ראם;משימות;"
+"גרפי;זיכרון;זכרון;ראם;משימות;ביצועים;צריכת חשמל;סוללה;בטרייה;בטריה;שנאי;מטען;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
 "Resources allows you to check the utilization of your system resources and "
-"control your running processes and apps. It’s designed to be user-friendly and "
-"feel right at home on a modern desktop by using GNOME’s libadwaita."
+"control your running processes and apps. It’s designed to be user-friendly "
+"and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
-"„משאבים” מאפשרת לך לבדוק את ניצולת משאבי המערכת שלך ולשלוט בתהליכים והיישומים "
-"הפעילים. הוא תוכנן להיות ידידותי למשתמשים ולהעניק תחושה ביתית בשולחן עבודה "
-"מודרני על ידי שימוש ב־libadwaita מבית GNOME."
+"„משאבים” מאפשרת לך לבדוק את ניצולת משאבי המערכת שלך ולשלוט בתהליכים "
+"והיישומים הפעילים. הוא תוכנן להיות ידידותי למשתמשים ולהעניק תחושה ביתית "
+"בשולחן עבודה מודרני על ידי שימוש ב־libadwaita מבית GNOME."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
@@ -64,7 +65,7 @@ msgstr "מעבד"
 #: data/resources/ui/window.ui:176 data/resources/ui/window.ui:183
 #: src/ui/pages/applications/mod.rs:806 src/ui/pages/applications/mod.rs:823
 #: src/ui/pages/memory.rs:106 src/ui/pages/memory.rs:192
-#: src/ui/pages/processes/mod.rs:1099 src/ui/pages/processes/mod.rs:1116
+#: src/ui/pages/processes/mod.rs:1106 src/ui/pages/processes/mod.rs:1123
 msgid "Memory"
 msgstr "זיכרון"
 
@@ -74,8 +75,8 @@ msgstr "זיכרון"
 #: data/resources/ui/dialogs/settings_dialog.ui:158
 #: data/resources/ui/dialogs/settings_dialog.ui:250
 #: src/ui/pages/applications/mod.rs:1232 src/ui/pages/applications/mod.rs:1249
-#: src/ui/pages/gpu.rs:119 src/ui/pages/processes/mod.rs:1537
-#: src/ui/pages/processes/mod.rs:1554 src/ui/window.rs:468
+#: src/ui/pages/gpu.rs:119 src/ui/pages/processes/mod.rs:1544
+#: src/ui/pages/processes/mod.rs:1561 src/ui/window.rs:468
 msgid "GPU"
 msgstr "מעבד גרפי"
 
@@ -152,8 +153,8 @@ msgstr "ניצולת"
 #: data/resources/ui/dialogs/settings_dialog.ui:225
 #: data/resources/ui/window.ui:145 data/resources/ui/window.ui:152
 #: src/ui/pages/applications/mod.rs:873 src/ui/pages/applications/mod.rs:890
-#: src/ui/pages/cpu.rs:128 src/ui/pages/processes/mod.rs:1166
-#: src/ui/pages/processes/mod.rs:1183 src/ui/window.rs:290
+#: src/ui/pages/cpu.rs:128 src/ui/pages/processes/mod.rs:1173
+#: src/ui/pages/processes/mod.rs:1190 src/ui/window.rs:290
 msgid "Processor"
 msgstr "מעבד"
 
@@ -162,8 +163,8 @@ msgstr "מעבד"
 #: data/resources/ui/dialogs/settings_dialog.ui:178
 #: data/resources/ui/dialogs/settings_dialog.ui:290
 #: src/ui/pages/applications/mod.rs:1503 src/ui/pages/applications/mod.rs:1520
-#: src/ui/pages/memory.rs:198 src/ui/pages/processes/mod.rs:2086
-#: src/ui/pages/processes/mod.rs:2103
+#: src/ui/pages/memory.rs:198 src/ui/pages/processes/mod.rs:2093
+#: src/ui/pages/processes/mod.rs:2110
 msgid "Swap"
 msgstr "החלפה"
 
@@ -172,7 +173,7 @@ msgstr "החלפה"
 #: data/resources/ui/dialogs/settings_dialog.ui:138
 #: data/resources/ui/dialogs/settings_dialog.ui:230
 #: src/ui/pages/applications/mod.rs:945 src/ui/pages/applications/mod.rs:964
-#: src/ui/pages/processes/mod.rs:1238 src/ui/pages/processes/mod.rs:1257
+#: src/ui/pages/processes/mod.rs:1245 src/ui/pages/processes/mod.rs:1264
 msgid "Drive Read"
 msgstr "קריאה מהכונן"
 
@@ -181,7 +182,7 @@ msgstr "קריאה מהכונן"
 #: data/resources/ui/dialogs/settings_dialog.ui:143
 #: data/resources/ui/dialogs/settings_dialog.ui:235
 #: src/ui/pages/applications/mod.rs:1018 src/ui/pages/applications/mod.rs:1037
-#: src/ui/pages/processes/mod.rs:1313 src/ui/pages/processes/mod.rs:1332
+#: src/ui/pages/processes/mod.rs:1320 src/ui/pages/processes/mod.rs:1339
 msgid "Drive Read Total"
 msgstr "קריאה כוללת מהכונן"
 
@@ -190,7 +191,7 @@ msgstr "קריאה כוללת מהכונן"
 #: data/resources/ui/dialogs/settings_dialog.ui:148
 #: data/resources/ui/dialogs/settings_dialog.ui:240
 #: src/ui/pages/applications/mod.rs:1087 src/ui/pages/applications/mod.rs:1106
-#: src/ui/pages/processes/mod.rs:1388 src/ui/pages/processes/mod.rs:1407
+#: src/ui/pages/processes/mod.rs:1395 src/ui/pages/processes/mod.rs:1414
 msgid "Drive Write"
 msgstr "כתיבה לכונן"
 
@@ -199,7 +200,7 @@ msgstr "כתיבה לכונן"
 #: data/resources/ui/dialogs/settings_dialog.ui:153
 #: data/resources/ui/dialogs/settings_dialog.ui:245
 #: src/ui/pages/applications/mod.rs:1162 src/ui/pages/applications/mod.rs:1181
-#: src/ui/pages/processes/mod.rs:1463 src/ui/pages/processes/mod.rs:1482
+#: src/ui/pages/processes/mod.rs:1470 src/ui/pages/processes/mod.rs:1489
 msgid "Drive Write Total"
 msgstr "כתיבה כוללת לכונן"
 
@@ -208,7 +209,7 @@ msgstr "כתיבה כוללת לכונן"
 #: data/resources/ui/dialogs/settings_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:255
 #: src/ui/pages/applications/mod.rs:1436 src/ui/pages/applications/mod.rs:1454
-#: src/ui/pages/processes/mod.rs:1742 src/ui/pages/processes/mod.rs:1761
+#: src/ui/pages/processes/mod.rs:1749 src/ui/pages/processes/mod.rs:1768
 msgid "Video Memory"
 msgstr "זיכרון וידאו"
 
@@ -217,7 +218,7 @@ msgstr "זיכרון וידאו"
 #: data/resources/ui/dialogs/settings_dialog.ui:168
 #: data/resources/ui/dialogs/settings_dialog.ui:260
 #: src/ui/pages/applications/mod.rs:1299 src/ui/pages/applications/mod.rs:1318
-#: src/ui/pages/processes/mod.rs:1604 src/ui/pages/processes/mod.rs:1623
+#: src/ui/pages/processes/mod.rs:1611 src/ui/pages/processes/mod.rs:1630
 msgid "Video Encoder"
 msgstr "מקודד וידאו"
 
@@ -226,7 +227,7 @@ msgstr "מקודד וידאו"
 #: data/resources/ui/dialogs/settings_dialog.ui:173
 #: data/resources/ui/dialogs/settings_dialog.ui:265
 #: src/ui/pages/applications/mod.rs:1368 src/ui/pages/applications/mod.rs:1387
-#: src/ui/pages/processes/mod.rs:1673 src/ui/pages/processes/mod.rs:1692
+#: src/ui/pages/processes/mod.rs:1680 src/ui/pages/processes/mod.rs:1699
 msgid "Video Decoder"
 msgstr "מפענח וידאו"
 
@@ -263,37 +264,37 @@ msgstr "פרטי תהליך"
 
 #: data/resources/ui/dialogs/process_dialog.ui:154
 #: data/resources/ui/dialogs/settings_dialog.ui:270
-#: src/ui/pages/processes/mod.rs:1810 src/ui/pages/processes/mod.rs:1828
+#: src/ui/pages/processes/mod.rs:1817 src/ui/pages/processes/mod.rs:1835
 msgid "Total CPU Time"
 msgstr "זמן מעבד כולל"
 
 #: data/resources/ui/dialogs/process_dialog.ui:163
 #: data/resources/ui/dialogs/settings_dialog.ui:275
-#: src/ui/pages/processes/mod.rs:1877 src/ui/pages/processes/mod.rs:1895
+#: src/ui/pages/processes/mod.rs:1884 src/ui/pages/processes/mod.rs:1902
 msgid "User CPU Time"
 msgstr "זמן מעבד למשתמש"
 
 #: data/resources/ui/dialogs/process_dialog.ui:172
 #: data/resources/ui/dialogs/settings_dialog.ui:280
-#: src/ui/pages/processes/mod.rs:1944 src/ui/pages/processes/mod.rs:1962
+#: src/ui/pages/processes/mod.rs:1951 src/ui/pages/processes/mod.rs:1969
 msgid "System CPU Time"
 msgstr "זמן מעבד למערכת"
 
 #: data/resources/ui/dialogs/process_dialog.ui:186
 #: data/resources/ui/dialogs/settings_dialog.ui:210
-#: src/ui/pages/processes/mod.rs:976 src/ui/pages/processes/mod.rs:991
+#: src/ui/pages/processes/mod.rs:983 src/ui/pages/processes/mod.rs:998
 msgid "Process ID"
 msgstr "מזהה תהליך"
 
 #: data/resources/ui/dialogs/process_dialog.ui:204
 #: data/resources/ui/dialogs/settings_dialog.ui:300
-#: src/ui/pages/processes/mod.rs:2222 src/ui/pages/processes/mod.rs:2240
+#: src/ui/pages/processes/mod.rs:2229 src/ui/pages/processes/mod.rs:2247
 msgid "Commandline"
 msgstr "שורת פקודות"
 
 #: data/resources/ui/dialogs/process_dialog.ui:213
 #: data/resources/ui/dialogs/settings_dialog.ui:215
-#: src/ui/pages/processes/mod.rs:1037 src/ui/pages/processes/mod.rs:1052
+#: src/ui/pages/processes/mod.rs:1044 src/ui/pages/processes/mod.rs:1059
 msgid "User"
 msgstr "משתמש"
 
@@ -324,7 +325,7 @@ msgstr ""
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:87
 #: data/resources/ui/dialogs/settings_dialog.ui:285
-#: src/ui/pages/processes/mod.rs:2011 src/ui/pages/processes/mod.rs:2027
+#: src/ui/pages/processes/mod.rs:2018 src/ui/pages/processes/mod.rs:2034
 msgid "Priority"
 msgstr "עדיפות"
 
@@ -464,7 +465,8 @@ msgstr "הצגת תיאורי התקנים בסרגל הצד"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:93
 msgid ""
-"If enabled, a device identifier like its name or device type will be displayed"
+"If enabled, a device identifier like its name or device type will be "
+"displayed"
 msgstr "אם האפשרות פעילה, מזהה התקן כגון שמו או סוגו יוצגו"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
@@ -485,7 +487,8 @@ msgstr "נרמול ניצולת מעבד"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:112
 msgid ""
-"If enabled, the total usage of all cores will be divided by the amount of cores"
+"If enabled, the total usage of all cores will be divided by the amount of "
+"cores"
 msgstr "אם האפשרות פעילה, הניצולת הכללית של כל הליבות תחולק בכמות הליבות"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:122
@@ -502,7 +505,7 @@ msgstr "עמודות פרטים"
 #: data/resources/ui/dialogs/settings_dialog.ui:183
 #: data/resources/ui/dialogs/settings_dialog.ui:295
 #: src/ui/pages/applications/mod.rs:1570 src/ui/pages/applications/mod.rs:1589
-#: src/ui/pages/processes/mod.rs:2153 src/ui/pages/processes/mod.rs:2172
+#: src/ui/pages/processes/mod.rs:2160 src/ui/pages/processes/mod.rs:2179
 msgid "Combined Memory"
 msgstr "זיכרון משולב"
 
@@ -522,7 +525,8 @@ msgid "Show Niceness Values"
 msgstr "הצגת ערכי Niceness"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:200
-msgid "Display priorities as niceness to allow for more fine-grained adjustments"
+msgid ""
+"Display priorities as niceness to allow for more fine-grained adjustments"
 msgstr "הצגת עדיפויות כ־niceness כדי לאפשר כוונונים יותר עדינים"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:310
@@ -765,18 +769,18 @@ msgstr "תדירות מעבד עצבי"
 msgid "Memory Frequency"
 msgstr "תדירות מהירות"
 
-#: data/resources/ui/pages/processes.ui:6 data/resources/ui/pages/processes.ui:42
-#: src/ui/pages/processes/mod.rs:2339
+#: data/resources/ui/pages/processes.ui:6
+#: data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2346
 msgid "Kill Process"
 msgstr "חיסול תהליך"
 
 #: data/resources/ui/pages/processes.ui:10
-#: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2338
+#: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2345
 msgid "Halt Process"
 msgstr "הקפאת תהליך"
 
 #: data/resources/ui/pages/processes.ui:14
-#: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2340
+#: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2347
 msgid "Continue Process"
 msgstr "המשך תהליך"
 
@@ -797,7 +801,7 @@ msgstr "המשך תהליכים"
 
 #: data/resources/ui/pages/processes.ui:38
 #: data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:527
-#: src/ui/pages/processes/mod.rs:2337
+#: src/ui/pages/processes/mod.rs:2344
 msgid "End Process"
 msgstr "סיום תהליך"
 
@@ -917,33 +921,34 @@ msgstr "ירון שהרבני <sh.yaron@gmail.com>"
 #: src/ui/pages/battery.rs:301 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258
 #: src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:290
 #: src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303
-#: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:319
-#: src/ui/pages/drive.rs:350 src/ui/pages/drive.rs:352 src/ui/pages/drive.rs:381
-#: src/ui/pages/drive.rs:383 src/ui/pages/drive.rs:399 src/ui/pages/drive.rs:400
-#: src/ui/pages/drive.rs:407 src/ui/pages/drive.rs:417 src/ui/pages/drive.rs:427
-#: src/ui/pages/drive.rs:433 src/ui/pages/gpu.rs:245 src/ui/pages/gpu.rs:252
-#: src/ui/pages/gpu.rs:297 src/ui/pages/gpu.rs:322 src/ui/pages/gpu.rs:325
-#: src/ui/pages/gpu.rs:336 src/ui/pages/gpu.rs:377 src/ui/pages/gpu.rs:384
-#: src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:403 src/ui/pages/gpu.rs:407
-#: src/ui/pages/gpu.rs:437 src/ui/pages/gpu.rs:443 src/ui/pages/memory.rs:227
-#: src/ui/pages/memory.rs:228 src/ui/pages/memory.rs:232
-#: src/ui/pages/memory.rs:233 src/ui/pages/memory.rs:237
-#: src/ui/pages/memory.rs:238 src/ui/pages/memory.rs:266
-#: src/ui/pages/memory.rs:327 src/ui/pages/network.rs:252
-#: src/ui/pages/network.rs:259 src/ui/pages/network.rs:266
-#: src/ui/pages/network.rs:272 src/ui/pages/network.rs:275
-#: src/ui/pages/network.rs:285 src/ui/pages/network.rs:292
-#: src/ui/pages/network.rs:302 src/ui/pages/network.rs:370
-#: src/ui/pages/network.rs:373 src/ui/pages/network.rs:375
-#: src/ui/pages/network.rs:404 src/ui/pages/network.rs:407
-#: src/ui/pages/network.rs:409 src/ui/pages/network.rs:417
-#: src/ui/pages/network.rs:424 src/ui/pages/network.rs:434
-#: src/ui/pages/processes/mod.rs:1268 src/ui/pages/processes/mod.rs:1343
-#: src/ui/pages/processes/mod.rs:1418 src/ui/pages/processes/mod.rs:1493
-#: src/ui/pages/processes/mod.rs:2043 src/ui/pages/processes/mod.rs:2045
-#: src/utils/battery.rs:152 src/utils/drive.rs:137 src/utils/gpu/mod.rs:279
-#: src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:244
-#: src/utils/npu/mod.rs:250
+#: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:321
+#: src/ui/pages/drive.rs:352 src/ui/pages/drive.rs:354
+#: src/ui/pages/drive.rs:383 src/ui/pages/drive.rs:385
+#: src/ui/pages/drive.rs:401 src/ui/pages/drive.rs:402
+#: src/ui/pages/drive.rs:409 src/ui/pages/drive.rs:419
+#: src/ui/pages/drive.rs:429 src/ui/pages/drive.rs:435 src/ui/pages/gpu.rs:245
+#: src/ui/pages/gpu.rs:252 src/ui/pages/gpu.rs:297 src/ui/pages/gpu.rs:322
+#: src/ui/pages/gpu.rs:325 src/ui/pages/gpu.rs:336 src/ui/pages/gpu.rs:377
+#: src/ui/pages/gpu.rs:384 src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:403
+#: src/ui/pages/gpu.rs:407 src/ui/pages/gpu.rs:437 src/ui/pages/gpu.rs:443
+#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228
+#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233
+#: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:238
+#: src/ui/pages/memory.rs:266 src/ui/pages/memory.rs:327
+#: src/ui/pages/network.rs:252 src/ui/pages/network.rs:259
+#: src/ui/pages/network.rs:266 src/ui/pages/network.rs:272
+#: src/ui/pages/network.rs:275 src/ui/pages/network.rs:285
+#: src/ui/pages/network.rs:292 src/ui/pages/network.rs:302
+#: src/ui/pages/network.rs:370 src/ui/pages/network.rs:373
+#: src/ui/pages/network.rs:375 src/ui/pages/network.rs:404
+#: src/ui/pages/network.rs:407 src/ui/pages/network.rs:409
+#: src/ui/pages/network.rs:417 src/ui/pages/network.rs:424
+#: src/ui/pages/network.rs:434 src/ui/pages/processes/mod.rs:1275
+#: src/ui/pages/processes/mod.rs:1350 src/ui/pages/processes/mod.rs:1425
+#: src/ui/pages/processes/mod.rs:1500 src/ui/pages/processes/mod.rs:2050
+#: src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152
+#: src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291
+#: src/utils/link/mod.rs:61 src/utils/npu/mod.rs:249 src/utils/npu/mod.rs:255
 msgid "N/A"
 msgstr "לא זמין"
 
@@ -953,28 +958,28 @@ msgstr "לא זמין"
 msgid "CPU {}"
 msgstr "מעבד {}"
 
-#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:414
-#: src/ui/pages/drive.rs:424 src/ui/pages/processes/process_entry.rs:211
+#: src/ui/pages/applications/application_entry.rs:188 src/ui/pages/drive.rs:416
+#: src/ui/pages/drive.rs:426 src/ui/pages/processes/process_entry.rs:211
 msgid "No"
 msgstr "לא"
 
-#: src/ui/pages/applications/application_entry.rs:191
+#: src/ui/pages/applications/application_entry.rs:189
 #: src/ui/pages/processes/process_entry.rs:212
 msgid "Yes (AppImage)"
 msgstr "כן (AppImage)"
 
-#: src/ui/pages/applications/application_entry.rs:192
+#: src/ui/pages/applications/application_entry.rs:190
 #: src/ui/pages/processes/process_entry.rs:213
 msgid "Yes (Flatpak)"
 msgstr "כן (Flatpak)"
 
 #. Translators: "Portable" is the name of the containerization method used, please keep it as is
-#: src/ui/pages/applications/application_entry.rs:194
+#: src/ui/pages/applications/application_entry.rs:192
 #: src/ui/pages/processes/process_entry.rs:215
 msgid "Yes (Portable)"
 msgstr "כן (נייד)"
 
-#: src/ui/pages/applications/application_entry.rs:195
+#: src/ui/pages/applications/application_entry.rs:193
 #: src/ui/pages/processes/process_entry.rs:216
 msgid "Yes (Snap)"
 msgstr "כן (Snap)"
@@ -984,7 +989,7 @@ msgstr "כן (Snap)"
 msgid "Running Apps: {}"
 msgstr "יישומים פעילים: {}"
 
-#: src/ui/pages/applications/mod.rs:703 src/ui/pages/processes/mod.rs:866
+#: src/ui/pages/applications/mod.rs:703 src/ui/pages/processes/mod.rs:873
 msgid "Cancel"
 msgstr "ביטול"
 
@@ -992,27 +997,27 @@ msgstr "ביטול"
 msgid "App"
 msgstr "יישום"
 
-#: src/ui/pages/applications/mod.rs:1638 src/ui/pages/processes/mod.rs:2286
+#: src/ui/pages/applications/mod.rs:1638 src/ui/pages/processes/mod.rs:2293
 #, rust-format
 msgid "End {}?"
 msgstr "לסיים את {}?"
 
-#: src/ui/pages/applications/mod.rs:1639 src/ui/pages/processes/mod.rs:2287
+#: src/ui/pages/applications/mod.rs:1639 src/ui/pages/processes/mod.rs:2294
 #, rust-format
 msgid "Halt {}?"
 msgstr "להקפיא את {}?"
 
-#: src/ui/pages/applications/mod.rs:1640 src/ui/pages/processes/mod.rs:2288
+#: src/ui/pages/applications/mod.rs:1640 src/ui/pages/processes/mod.rs:2295
 #, rust-format
 msgid "Kill {}?"
 msgstr "לחסל את {}?"
 
-#: src/ui/pages/applications/mod.rs:1641 src/ui/pages/processes/mod.rs:2289
+#: src/ui/pages/applications/mod.rs:1641 src/ui/pages/processes/mod.rs:2296
 #, rust-format
 msgid "Continue {}?"
 msgstr "להמשיך את {}?"
 
-#: src/ui/pages/applications/mod.rs:1647 src/ui/pages/processes/mod.rs:2324
+#: src/ui/pages/applications/mod.rs:1647 src/ui/pages/processes/mod.rs:2331
 msgid "Unsaved work might be lost."
 msgstr "עבודה שלא נשמרה עלולה ללכת לאיבוד."
 
@@ -1040,9 +1045,9 @@ msgstr "סוללה"
 msgid "Battery Charge"
 msgstr "טעינת הסוללה"
 
-#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:438 src/ui/pages/drive.rs:344
-#: src/ui/pages/drive.rs:375 src/ui/pages/gpu.rs:429 src/ui/pages/network.rs:362
-#: src/ui/pages/network.rs:396
+#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:438
+#: src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377 src/ui/pages/gpu.rs:429
+#: src/ui/pages/network.rs:362 src/ui/pages/network.rs:396
 msgid "Highest:"
 msgstr "הגבוהה ביותר:"
 
@@ -1070,13 +1075,13 @@ msgstr "מהירות קריאה"
 msgid "Write Speed"
 msgstr "מהירות כתיבה"
 
-#: src/ui/pages/drive.rs:412 src/ui/pages/drive.rs:422
+#: src/ui/pages/drive.rs:414 src/ui/pages/drive.rs:424
 msgid "Yes"
 msgstr "כן"
 
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
-#: src/ui/pages/drive.rs:440
+#: src/ui/pages/drive.rs:442
 #, rust-format
 msgid "R: {} · W: {}"
 msgstr "ק: {} · כ: {}"
@@ -1140,16 +1145,16 @@ msgstr "נשלח"
 msgid "R: {} · S: {}"
 msgstr "↓: {} · ↑: {}"
 
-#: src/ui/pages/processes/mod.rs:817
+#: src/ui/pages/processes/mod.rs:824
 #, rust-format
 msgid "Running Processes: {}"
 msgstr "תהליכים פעילים: {}"
 
-#: src/ui/pages/processes/mod.rs:915
+#: src/ui/pages/processes/mod.rs:922
 msgid "Process"
 msgstr "תהליך"
 
-#: src/ui/pages/processes/mod.rs:2296
+#: src/ui/pages/processes/mod.rs:2303
 #, rust-format
 msgid "End process?"
 msgid_plural "End {} processes?"
@@ -1158,7 +1163,7 @@ msgstr[1] "לסיים שני תהליכים?"
 msgstr[2] "לסיים {} תהליכים?"
 msgstr[3] "לסיים {} תהליכים?"
 
-#: src/ui/pages/processes/mod.rs:2302
+#: src/ui/pages/processes/mod.rs:2309
 #, rust-format
 msgid "Halt process?"
 msgid_plural "Halt {} processes?"
@@ -1167,7 +1172,7 @@ msgstr[1] "להקפיא שני תהליכים?"
 msgstr[2] "להקפיא {} תהליכים?"
 msgstr[3] "להקפיא {} תהליכים?"
 
-#: src/ui/pages/processes/mod.rs:2308 src/ui/pages/processes/mod.rs:2314
+#: src/ui/pages/processes/mod.rs:2315 src/ui/pages/processes/mod.rs:2321
 #, rust-format
 msgid "Kill process?"
 msgid_plural "Kill {} processes?"
@@ -1176,18 +1181,18 @@ msgstr[1] "לחסל שני תהליכים?"
 msgstr[2] "לחסל {} תהליכים?"
 msgstr[3] "לחסל {} תהליכים?"
 
-#: src/ui/pages/processes/mod.rs:2326
+#: src/ui/pages/processes/mod.rs:2333
 msgid ""
-"Halting a process can come with serious risks such as losing data and security "
-"implications. Use with caution."
+"Halting a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
 msgstr ""
 "הקפאת תהליך יכולה לגרום לסיכונים משמעותיים לאובדן נתונים ולהשליך גם על אבטחת "
 "מידע. יש לנקוט במשנה זהירות."
 
-#: src/ui/pages/processes/mod.rs:2329
+#: src/ui/pages/processes/mod.rs:2336
 msgid ""
-"Killing a process can come with serious risks such as losing data and security "
-"implications. Use with caution."
+"Killing a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
 msgstr ""
 "חיסול תהליך יכול לגרום לסיכונים משמעותיים לאובדן נתונים ולהשליך גם על אבטחת "
 "מידע. יש לנקוט במשנה זהירות."
@@ -1206,37 +1211,37 @@ msgstr "מעבד עצבי {}"
 msgid "NPU"
 msgstr "מעבד עצבי"
 
-#: src/ui/window.rs:1174
+#: src/ui/window.rs:1201
 #, rust-format
 msgid "Successfully adjusted {}"
 msgstr "{} הותאם בהצלחה"
 
-#: src/ui/window.rs:1175
+#: src/ui/window.rs:1202
 #, rust-format
 msgid "There was a problem adjusting {}"
 msgstr "אירעה בעיה בכיוון {}"
 
-#: src/ui/window.rs:1257
+#: src/ui/window.rs:1284
 #, rust-format
 msgid "Successfully ended {}"
 msgstr "{} הסתיים בהצלחה"
 
-#: src/ui/window.rs:1258
+#: src/ui/window.rs:1285
 #, rust-format
 msgid "Successfully halted {}"
 msgstr "{} הוקפא בהצלחה"
 
-#: src/ui/window.rs:1259
+#: src/ui/window.rs:1286
 #, rust-format
 msgid "Successfully killed {}"
 msgstr "{} חוסל בהצלחה"
 
-#: src/ui/window.rs:1260
+#: src/ui/window.rs:1287
 #, rust-format
 msgid "Successfully continued {}"
 msgstr "{} נמשך בהצלחה"
 
-#: src/ui/window.rs:1267
+#: src/ui/window.rs:1294
 #, rust-format
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
@@ -1245,7 +1250,7 @@ msgstr[1] "סיים שני תהליכים בהצלחה"
 msgstr[2] "סיים {} תהליכים בהצלחה"
 msgstr[3] "סיים {} תהליכים בהצלחה"
 
-#: src/ui/window.rs:1273
+#: src/ui/window.rs:1300
 #, rust-format
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
@@ -1254,7 +1259,7 @@ msgstr[1] "הקפיא שני תהליכים בהצלחה"
 msgstr[2] "הקפיא {} תהליכים בהצלחה"
 msgstr[3] "הקפיא {} תהליכים בהצלחה"
 
-#: src/ui/window.rs:1279
+#: src/ui/window.rs:1306
 #, rust-format
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
@@ -1263,7 +1268,7 @@ msgstr[1] "חיסל שני תהליכים בהצלחה"
 msgstr[2] "חיסל {} תהליכים בהצלחה"
 msgstr[3] "חיסל {} תהליכים בהצלחה"
 
-#: src/ui/window.rs:1285
+#: src/ui/window.rs:1312
 #, rust-format
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
@@ -1272,7 +1277,7 @@ msgstr[1] "המשיך שני תהליכים בהצלחה"
 msgstr[2] "המשיך {} תהליכים בהצלחה"
 msgstr[3] "המשיך {} תהליכים בהצלחה"
 
-#: src/ui/window.rs:1296
+#: src/ui/window.rs:1323
 #, rust-format
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
@@ -1281,7 +1286,7 @@ msgstr[1] "אירעה בעיה בסיום שני תהליכים"
 msgstr[2] "אירעה בעיה בסיום {} תהליכים"
 msgstr[3] "אירעה בעיה בסיום {} תהליכים"
 
-#: src/ui/window.rs:1302
+#: src/ui/window.rs:1329
 #, rust-format
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
@@ -1290,7 +1295,7 @@ msgstr[1] "אירעה בעיה בהקפאת שני תהליכים"
 msgstr[2] "אירעה בעיה בהקפאת {} תהליכים"
 msgstr[3] "אירעה בעיה בהקפאת {} תהליכים"
 
-#: src/ui/window.rs:1308
+#: src/ui/window.rs:1335
 #, rust-format
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
@@ -1299,7 +1304,7 @@ msgstr[1] "אירעה בעיה בחיסול שני תהליכים"
 msgstr[2] "אירעה בעיה בחיסול {} תהליכים"
 msgstr[3] "אירעה בעיה בחיסול {} תהליכים"
 
-#: src/ui/window.rs:1314
+#: src/ui/window.rs:1341
 #, rust-format
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
@@ -1308,27 +1313,27 @@ msgstr[1] "אירעה בעיה בהמשך שני תהליכים"
 msgstr[2] "אירעה בעיה בהמשך {} תהליכים"
 msgstr[3] "אירעה בעיה בהמשך {} תהליכים"
 
-#: src/ui/window.rs:1324
+#: src/ui/window.rs:1351
 #, rust-format
 msgid "There was a problem ending {}"
 msgstr "אירעה בעיה בסיום {}"
 
-#: src/ui/window.rs:1325
+#: src/ui/window.rs:1352
 #, rust-format
 msgid "There was a problem halting {}"
 msgstr "אירעה בעיה בהקפאת {}"
 
-#: src/ui/window.rs:1326
+#: src/ui/window.rs:1353
 #, rust-format
 msgid "There was a problem killing {}"
 msgstr "אירעה בעיה בחיסול {}"
 
-#: src/ui/window.rs:1327
+#: src/ui/window.rs:1354
 #, rust-format
 msgid "There was a problem continuing {}"
 msgstr "אירעה בעיה בהמשך {}"
 
-#: src/utils/app.rs:223
+#: src/utils/app.rs:224
 msgid "System Processes"
 msgstr "תהליכי מערכת"
 
@@ -1510,377 +1515,377 @@ msgstr "{} RiB"
 msgid "{} QiB"
 msgstr "{} QiB"
 
-#: src/utils/units.rs:198 src/utils/units.rs:215
+#: src/utils/units.rs:197 src/utils/units.rs:214
 #, rust-format
 msgid "{} B/s"
 msgstr "{} ב׳ לשנ׳"
 
-#: src/utils/units.rs:199
+#: src/utils/units.rs:198
 #, rust-format
 msgid "{} kB/s"
 msgstr "{} ק״ב לשנ׳"
 
-#: src/utils/units.rs:200
+#: src/utils/units.rs:199
 #, rust-format
 msgid "{} MB/s"
 msgstr "{} מ״ב לשנ׳"
 
-#: src/utils/units.rs:201
+#: src/utils/units.rs:200
 #, rust-format
 msgid "{} GB/s"
 msgstr "{} ג״ב לשנ׳"
 
-#: src/utils/units.rs:202
+#: src/utils/units.rs:201
 #, rust-format
 msgid "{} TB/s"
 msgstr "{} ט״ב לשנ׳"
 
-#: src/utils/units.rs:203
+#: src/utils/units.rs:202
 #, rust-format
 msgid "{} PB/s"
 msgstr "{} פ״ב לשנ׳"
 
-#: src/utils/units.rs:204
+#: src/utils/units.rs:203
 #, rust-format
 msgid "{} EB/s"
 msgstr ""
 
-#: src/utils/units.rs:205
+#: src/utils/units.rs:204
 #, rust-format
 msgid "{} ZB/s"
 msgstr ""
 
-#: src/utils/units.rs:206
+#: src/utils/units.rs:205
 #, rust-format
 msgid "{} YB/s"
 msgstr ""
 
-#: src/utils/units.rs:207
+#: src/utils/units.rs:206
 #, rust-format
 msgid "{} RB/s"
 msgstr ""
 
-#: src/utils/units.rs:208
+#: src/utils/units.rs:207
 #, rust-format
 msgid "{} QB/s"
 msgstr ""
 
-#: src/utils/units.rs:216
+#: src/utils/units.rs:215
 #, rust-format
 msgid "{} KiB/s"
 msgstr ""
 
-#: src/utils/units.rs:217
+#: src/utils/units.rs:216
 #, rust-format
 msgid "{} MiB/s"
 msgstr "{} MiB/s"
 
-#: src/utils/units.rs:218
+#: src/utils/units.rs:217
 #, rust-format
 msgid "{} GiB/s"
 msgstr ""
 
-#: src/utils/units.rs:219
+#: src/utils/units.rs:218
 #, rust-format
 msgid "{} TiB/s"
 msgstr ""
 
-#: src/utils/units.rs:220
+#: src/utils/units.rs:219
 #, rust-format
 msgid "{} PiB/s"
 msgstr ""
 
-#: src/utils/units.rs:221
+#: src/utils/units.rs:220
 #, rust-format
 msgid "{} EiB/s"
 msgstr ""
 
-#: src/utils/units.rs:222
+#: src/utils/units.rs:221
 #, rust-format
 msgid "{} ZiB/s"
 msgstr ""
 
-#: src/utils/units.rs:223
+#: src/utils/units.rs:222
 #, rust-format
 msgid "{} YiB/s"
 msgstr ""
 
-#: src/utils/units.rs:224
+#: src/utils/units.rs:223
 #, rust-format
 msgid "{} RiB/s"
 msgstr ""
 
-#: src/utils/units.rs:225
+#: src/utils/units.rs:224
 #, rust-format
 msgid "{} QiB/s"
 msgstr ""
 
-#: src/utils/units.rs:239 src/utils/units.rs:256
+#: src/utils/units.rs:238 src/utils/units.rs:255
 #, rust-format
 msgid "{} b/s"
 msgstr "{} סיביות לשנ׳"
 
-#: src/utils/units.rs:240
+#: src/utils/units.rs:239
 #, rust-format
 msgid "{} kb/s"
 msgstr "{} קסל״ש"
 
-#: src/utils/units.rs:241
+#: src/utils/units.rs:240
 #, rust-format
 msgid "{} Mb/s"
 msgstr "{} מסל״ש"
 
-#: src/utils/units.rs:242
+#: src/utils/units.rs:241
 #, rust-format
 msgid "{} Gb/s"
 msgstr "{} גסל״ש"
 
-#: src/utils/units.rs:243
+#: src/utils/units.rs:242
 #, rust-format
 msgid "{} Tb/s"
 msgstr "{} טסל״ש"
 
-#: src/utils/units.rs:244
+#: src/utils/units.rs:243
 #, rust-format
 msgid "{} Pb/s"
 msgstr "{} פסל״ש"
 
-#: src/utils/units.rs:245
+#: src/utils/units.rs:244
 #, rust-format
 msgid "{} Eb/s"
 msgstr ""
 
-#: src/utils/units.rs:246
+#: src/utils/units.rs:245
 #, rust-format
 msgid "{} Zb/s"
 msgstr ""
 
-#: src/utils/units.rs:247
+#: src/utils/units.rs:246
 #, rust-format
 msgid "{} Yb/s"
 msgstr ""
 
-#: src/utils/units.rs:248
+#: src/utils/units.rs:247
 #, rust-format
 msgid "{} Rb/s"
 msgstr ""
 
-#: src/utils/units.rs:249
+#: src/utils/units.rs:248
 #, rust-format
 msgid "{} Qb/s"
 msgstr ""
 
-#: src/utils/units.rs:257
+#: src/utils/units.rs:256
 #, rust-format
 msgid "{} Kib/s"
 msgstr ""
 
-#: src/utils/units.rs:258
+#: src/utils/units.rs:257
 #, rust-format
 msgid "{} Mib/s"
 msgstr "{} Mib לשנ׳"
 
-#: src/utils/units.rs:259
+#: src/utils/units.rs:258
 #, rust-format
 msgid "{} Gib/s"
 msgstr ""
 
-#: src/utils/units.rs:260
+#: src/utils/units.rs:259
 #, rust-format
 msgid "{} Tib/s"
 msgstr ""
 
-#: src/utils/units.rs:261
+#: src/utils/units.rs:260
 #, rust-format
 msgid "{} Pib/s"
 msgstr ""
 
-#: src/utils/units.rs:262
+#: src/utils/units.rs:261
 #, rust-format
 msgid "{} Eib/s"
 msgstr ""
 
-#: src/utils/units.rs:263
+#: src/utils/units.rs:262
 #, rust-format
 msgid "{} Zib/s"
 msgstr ""
 
-#: src/utils/units.rs:264
+#: src/utils/units.rs:263
 #, rust-format
 msgid "{} Yib/s"
 msgstr ""
 
-#: src/utils/units.rs:265
+#: src/utils/units.rs:264
 #, rust-format
 msgid "{} Rib/s"
 msgstr ""
 
-#: src/utils/units.rs:266
+#: src/utils/units.rs:265
 #, rust-format
 msgid "{} Qib/s"
 msgstr ""
 
-#: src/utils/units.rs:273
+#: src/utils/units.rs:272
 #, rust-format
 msgid "{} Hz"
 msgstr "{} הרץ"
 
-#: src/utils/units.rs:274
+#: src/utils/units.rs:273
 #, rust-format
 msgid "{} kHz"
 msgstr "{} קה״ץ"
 
-#: src/utils/units.rs:275
+#: src/utils/units.rs:274
 #, rust-format
 msgid "{} MHz"
 msgstr "{} מה״ץ"
 
-#: src/utils/units.rs:276
+#: src/utils/units.rs:275
 #, rust-format
 msgid "{} GHz"
 msgstr "{} גה״ץ"
 
-#: src/utils/units.rs:277
+#: src/utils/units.rs:276
 #, rust-format
 msgid "{} THz"
 msgstr "{} טה״ץ"
 
-#: src/utils/units.rs:278
+#: src/utils/units.rs:277
 #, rust-format
 msgid "{} PHz"
 msgstr "{} פה״ץ"
 
-#: src/utils/units.rs:279
+#: src/utils/units.rs:278
 #, rust-format
 msgid "{} EHz"
 msgstr "{} אה״ץ"
 
-#: src/utils/units.rs:280
+#: src/utils/units.rs:279
 #, rust-format
 msgid "{} ZHz"
 msgstr ""
 
-#: src/utils/units.rs:281
+#: src/utils/units.rs:280
 #, rust-format
 msgid "{} YHz"
 msgstr ""
 
-#: src/utils/units.rs:282
+#: src/utils/units.rs:281
 #, rust-format
 msgid "{} RHz"
 msgstr ""
 
-#: src/utils/units.rs:283
+#: src/utils/units.rs:282
 #, rust-format
 msgid "{} QHz"
 msgstr ""
 
-#: src/utils/units.rs:290
+#: src/utils/units.rs:289
 #, rust-format
 msgid "{} W"
 msgstr "{} ואט"
 
-#: src/utils/units.rs:291
+#: src/utils/units.rs:290
 #, rust-format
 msgid "{} kW"
 msgstr "{} קילוואט"
 
-#: src/utils/units.rs:292
+#: src/utils/units.rs:291
 #, rust-format
 msgid "{} MW"
 msgstr "{} מגהוואט"
 
-#: src/utils/units.rs:293
+#: src/utils/units.rs:292
 #, rust-format
 msgid "{} GW"
 msgstr "{} גיגהוואט"
 
-#: src/utils/units.rs:294
+#: src/utils/units.rs:293
 #, rust-format
 msgid "{} TW"
 msgstr "{} טרהוואט"
 
-#: src/utils/units.rs:295
+#: src/utils/units.rs:294
 #, rust-format
 msgid "{} PW"
 msgstr "{} פטהוואט"
 
-#: src/utils/units.rs:296
+#: src/utils/units.rs:295
 #, rust-format
 msgid "{} EW"
 msgstr ""
 
-#: src/utils/units.rs:297
+#: src/utils/units.rs:296
 #, rust-format
 msgid "{} ZW"
 msgstr ""
 
-#: src/utils/units.rs:298
+#: src/utils/units.rs:297
 #, rust-format
 msgid "{} YW"
 msgstr ""
 
-#: src/utils/units.rs:299
+#: src/utils/units.rs:298
 #, rust-format
 msgid "{} RW"
 msgstr ""
 
-#: src/utils/units.rs:300
+#: src/utils/units.rs:299
 #, rust-format
 msgid "{} QW"
 msgstr ""
 
-#: src/utils/units.rs:309 src/utils/units.rs:323
+#: src/utils/units.rs:308 src/utils/units.rs:322
 #, rust-format
 msgid "{} Wh"
 msgstr ""
 
-#: src/utils/units.rs:310 src/utils/units.rs:324
+#: src/utils/units.rs:309 src/utils/units.rs:323
 #, rust-format
 msgid "{} kWh"
 msgstr ""
 
-#: src/utils/units.rs:311 src/utils/units.rs:325
+#: src/utils/units.rs:310 src/utils/units.rs:324
 #, rust-format
 msgid "{} MWh"
 msgstr "{} מגהוואט לשעה"
 
-#: src/utils/units.rs:312 src/utils/units.rs:326
+#: src/utils/units.rs:311 src/utils/units.rs:325
 #, rust-format
 msgid "{} GWh"
 msgstr ""
 
-#: src/utils/units.rs:313 src/utils/units.rs:327
+#: src/utils/units.rs:312 src/utils/units.rs:326
 #, rust-format
 msgid "{} TWh"
 msgstr ""
 
-#: src/utils/units.rs:314 src/utils/units.rs:328
+#: src/utils/units.rs:313 src/utils/units.rs:327
 #, rust-format
 msgid "{} PWh"
 msgstr ""
 
-#: src/utils/units.rs:315 src/utils/units.rs:329
+#: src/utils/units.rs:314 src/utils/units.rs:328
 #, rust-format
 msgid "{} EWh"
 msgstr ""
 
-#: src/utils/units.rs:316 src/utils/units.rs:330
+#: src/utils/units.rs:315 src/utils/units.rs:329
 #, rust-format
 msgid "{} ZWh"
 msgstr ""
 
-#: src/utils/units.rs:317 src/utils/units.rs:331
+#: src/utils/units.rs:316 src/utils/units.rs:330
 #, rust-format
 msgid "{} YWh"
 msgstr ""
 
-#: src/utils/units.rs:318 src/utils/units.rs:332
+#: src/utils/units.rs:317 src/utils/units.rs:331
 #, rust-format
 msgid "{} RWh"
 msgstr ""
 
-#: src/utils/units.rs:319 src/utils/units.rs:333
+#: src/utils/units.rs:318 src/utils/units.rs:332
 #, rust-format
 msgid "{} QWh"
 msgstr ""
@@ -1993,12 +1998,10 @@ msgid "InfiniBand Connection"
 msgstr "חיבור אינפיניבנד"
 
 #: src/utils/network.rs:134
-#| msgid "Docker Bridge"
 msgid "Incus Bridge"
 msgstr "גשר Incus"
 
 #: src/utils/network.rs:135
-#| msgid "Docker Bridge"
 msgid "LXC Bridge"
 msgstr "גישור LXC"
 
