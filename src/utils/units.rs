@@ -179,13 +179,13 @@ pub fn convert_speed(bytes_per_second: f64, network: bool) -> String {
             convert_speed_bits_decimal(bytes_per_second * 8.0)
         } else {
             match SETTINGS.base() {
-                Base::Decimal => convert_speed_decimal(bytes_per_second * 8.0),
+                Base::Decimal => convert_speed_decimal(bytes_per_second),
                 Base::Binary => convert_speed_binary(bytes_per_second),
             }
         }
     } else {
         match SETTINGS.base() {
-            Base::Decimal => convert_speed_decimal(bytes_per_second * 8.0),
+            Base::Decimal => convert_speed_decimal(bytes_per_second),
             Base::Binary => convert_speed_binary(bytes_per_second),
         }
     }
