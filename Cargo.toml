@@ -1,6 +1,6 @@
 [package]
 name = "resources"
-version = "1.10.0"
+version = "1.10.1"
 authors = ["nokyan <hello@nokyan.net>"]
 edition = "2024"
 rust-version = "1.85.0"
@@ -18,13 +18,13 @@ opt-level = 3
 
 [dependencies]
 adw = { version = "0.8.1", features = ["v1_8"], package = "libadwaita" }
-anyhow = { version = "1.0.100", features = ["backtrace"] }
+anyhow = { version = "1.0.101", features = ["backtrace"] }
 async-channel = "2.5.0"
-clap = { version = "4.5.56", features = ["derive"] }
+clap = { version = "4.5.58", features = ["derive"] }
 gettext-rs = { version = "0.7.7", features = ["gettext-system"] }
 glob = "0.3.3"
 gtk = { version = "0.10.3", features = ["v4_12"], package = "gtk4" }
-lazy-regex = "3.5.1"
+lazy-regex = "3.6.0"
 libc = { version = "0.2.180", features = ["extra_traits"] }
 log = "0.4.29"
 neli-wifi = { version = "0.6.1", features = ["default"] }
@@ -33,7 +33,7 @@ nix = { version = "0.31.1", default-features = false, features = [
     "sched",
 ] }
 num_cpus = "1.17.0"
-nvml-wrapper = "0.11.0"
+nvml-wrapper = "0.12.0"
 pastey = "0.2.1"
 path-dedot = "3.1.1"
 plotters = { version = "0.3.7", default-features = false, features = [
