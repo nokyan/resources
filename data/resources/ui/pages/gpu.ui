@@ -33,6 +33,9 @@
                       <object class="ResGraphBox" id="vram_usage"/>
                     </child>
                     <child>
+                      <object class="ResGraphBox" id="gtt_usage"/>
+                    </child>
+                    <child>
                       <object class="AdwActionRow" id="gpu_clockspeed">
                         <property name="title" translatable="yes">GPU Frequency</property>
                         <style>

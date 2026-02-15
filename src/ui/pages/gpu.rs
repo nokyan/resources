@@ -40,6 +40,8 @@ mod imp {
         #[template_child]
         pub vram_usage: TemplateChild<ResGraphBox>,
         #[template_child]
+        pub gtt_usage: TemplateChild<ResGraphBox>,
+        #[template_child]
         pub temperature: TemplateChild<ResGraphBox>,
         #[template_child]
         pub power_usage: TemplateChild<adw::ActionRow>,
@@ -103,6 +105,7 @@ mod imp {
                 encode_decode_usage: Default::default(),
                 encode_decode_combined_usage: Default::default(),
                 vram_usage: Default::default(),
+                gtt_usage: Default::default(),
                 temperature: Default::default(),
                 power_usage: Default::default(),
                 gpu_clockspeed: Default::default(),
@@ -235,6 +238,9 @@ impl ResGPU {
 
         imp.vram_usage.set_title_label(&i18n("Video Memory Usage"));
         imp.vram_usage.graph().set_graph_color(0xc0, 0x1c, 0x28);
+        
+        imp.gtt_usage.set_title_label(&i18n("GTT Memory Usage"));
+        imp.gtt_usage.graph().set_graph_color(0xc0, 0x1c, 0x28);
 
         imp.temperature.set_title_label(&i18n("Temperature"));
         imp.temperature.graph().set_graph_color(0xa5, 0x1d, 0x2d);
@@ -244,6 +250,9 @@ impl ResGPU {
             &gpu.get_vendor()
                 .map_or_else(|_| i18n("N/A"), |vendor| vendor.name().to_string()),
         );
+        
+        
+        
 
         match gpu.gpu_identifier() {
             GpuIdentifier::PciSlot(pci_slot) => {
@@ -283,6 +292,8 @@ impl ResGPU {
             decode_fraction,
             total_vram,
             used_vram,
+            used_gtt_mem,
+            total_gtt_mem,
             clock_speed,
             vram_speed,
             temperature,
@@ -380,6 +391,45 @@ impl ResGPU {
 
             None
         };
+        
+        
+        let gtt_usage_string = if let (Some(total_gtt_mem), Some(used_gtt_mem)) = (total_gtt_mem, used_gtt_mem)
+        {
+            let used_gtt_fraction = (*used_gtt_mem as f64 / *total_gtt_mem as f64).finite_or_default();
+
+            let gtt_percentage_string = format!("{} %", (used_gtt_fraction * 100.0).round());
+
+            let gtt_subtitle = format!(
+                "{} / {} · {}",
+                convert_storage(*used_gtt_mem as f64, false),
+                convert_storage(*total_gtt_mem as f64, false),
+                gtt_percentage_string
+            );
+
+            imp.gtt_usage.set_subtitle(&gtt_subtitle);
+            imp.gtt_usage.graph().push_data_point(used_gtt_fraction);
+            imp.gtt_usage.graph().set_visible(true);
+            imp.gtt_usage.graph().set_locked_max_y(Some(1.0));
+
+            Some(gtt_percentage_string)
+        } else if let Some(used_gtt_mem) = used_gtt_mem {
+            let gtt_subtitle = convert_storage(*used_gtt_mem as f64, false);
+
+            imp.gtt_usage.set_subtitle(&gtt_subtitle);
+            imp.gtt_usage.graph().push_data_point(*used_gtt_mem as f64);
+            imp.gtt_usage.graph().set_visible(true);
+            imp.gtt_usage.graph().set_locked_max_y(None);
+
+            Some(gtt_subtitle)
+        } else {
+            imp.gtt_usage.set_subtitle(&i18n("N/A"));
+
+            imp.gtt_usage.graph().set_visible(false);
+
+            None
+        };
+        
+
 
         let mut power_string = power_usage.map_or_else(|| i18n("N/A"), convert_power);
 
@@ -413,6 +463,11 @@ impl ResGPU {
             // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
             // shorter than) 'Memory'
             usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&vram_usage_string]));
+        }
+        
+        if let Some(gtt_usage_string) = gtt_usage_string {
+            usage_percentage_string.push_str(" · ");
+            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&gtt_usage_string]));
         }
 
         imp.temperature.graph().set_visible(temperature.is_some());
