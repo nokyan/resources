@@ -100,7 +100,9 @@ impl NpuImpl for IntelNpu {
     }
 
     fn core_frequency(&self) -> Result<f64> {
-        self.hwmon_core_frequency()
+        read_parsed::<f64>("device/npu_current_frequency_mhz")
+            .map(|mhz| mhz * 1_000_000.0)
+            .or_else(|_| self.hwmon_core_frequency())
     }
 
     fn memory_frequency(&self) -> Result<f64> {
