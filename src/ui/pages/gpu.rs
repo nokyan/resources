@@ -2,6 +2,7 @@ use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self};
 use log::trace;
 use process_data::gpu_usage::GpuIdentifier;
+use std::fmt::Write;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
@@ -384,7 +385,7 @@ impl ResGPU {
         let mut power_string = power_usage.map_or_else(|| i18n("N/A"), convert_power);
 
         if let Some(power_cap) = power_cap {
-            power_string.push_str(&format!(" / {}", convert_power(*power_cap)));
+            let _ = write!(power_string, " / {}", convert_power(*power_cap));
         }
 
         imp.power_usage.set_subtitle(&power_string);

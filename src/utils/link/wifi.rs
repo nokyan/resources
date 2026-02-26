@@ -141,7 +141,7 @@ impl WifiLinkData {
     pub fn frequency_display(&self) -> String {
         // https://en.wikipedia.org/wiki/List_of_WLAN_channels
         match self.frequency_mhz {
-            0 => "".to_string(),
+            0 => String::new(),
             2400..=2495 => "2.4 GHz".to_string(),
             5150..=5895 => "5 GHz".to_string(),
             5925..=7125 => "6 GHz".to_string(),
