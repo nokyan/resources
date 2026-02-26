@@ -1,8 +1,9 @@
 use anyhow::{Result, bail};
-use process_data::gpu_usage::GpuIdentifier;
+use process_data::{gpu_usage::GpuIdentifier, unix_as_secs_f64};
 use strum_macros::{Display, EnumString};
 
 use std::{
+    cell::Cell,
     path::{Path, PathBuf},
     str::FromStr,
 };
@@ -39,10 +40,9 @@ pub struct IntelGpu {
     driver_string: String,
     sysfs_path: PathBuf,
     first_hwmon_path: Option<PathBuf>,
-    /*
     // for some reason intel states used energy in joules instead of power in watts…
     last_energy_usage: Cell<u64>,
-    last_energy_usage_timestamp: Cell<f64>,*/
+    last_energy_usage_timestamp: Cell<f64>,
 }
 
 impl IntelGpu {
@@ -60,8 +60,8 @@ impl IntelGpu {
             driver_string: driver,
             sysfs_path,
             first_hwmon_path,
-            /*last_energy_usage: Cell::new(0),
-            last_energy_usage_timestamp: Cell::new(0.0),*/
+            last_energy_usage: Cell::new(0),
+            last_energy_usage_timestamp: Cell::new(0.0),
         }
     }
 }
@@ -126,26 +126,28 @@ impl GpuImpl for IntelGpu {
     /// For Intel GPUs, this returns the average power usage since last time this function was called.
     /// First call will always return Err
     fn power_usage(&self) -> Result<f64> {
-        /*
-        TODO: Get this working properly (or wait until xe gets its act together)
-        let new_energy = read_parsed::<u64>(self.hwmon_path()?.join("energy1_input"))
-            .or_else(|_| read_parsed::<u64>(self.hwmon_path()?.join("energy2_input")))
-            .map(|microjoules| microjoules.saturating_div(1_000_000))?;
-        let new_timestamp = unix_as_secs_f64();
-        let old_energy = self.last_energy_usage.get();
-        let old_timestamp = self.last_energy_usage_timestamp.get();
+        match self.driver {
+            IntelGpuDriver::Xe => {
+                let new_energy = read_parsed::<u64>(self.hwmon_path()?.join("energy1_input"))
+                    .or_else(|_| read_parsed::<u64>(self.hwmon_path()?.join("energy2_input")))
+                    .map(|microjoules| microjoules.saturating_div(1_000_000))?;
+                let new_timestamp = unix_as_secs_f64();
+                let old_energy = self.last_energy_usage.get();
+                let old_timestamp = self.last_energy_usage_timestamp.get();
 
-        self.last_energy_usage.set(new_energy);
-        self.last_energy_usage_timestamp.set(new_timestamp);
+                self.last_energy_usage.set(new_energy);
+                self.last_energy_usage_timestamp.set(new_timestamp);
 
-        if self.last_energy_usage_timestamp.get() == 0.0 {
-            bail!("first check")
+                if self.last_energy_usage_timestamp.get() == 0.0 {
+                    bail!("first check")
+                }
+
+                let energy_delta = (new_energy.saturating_sub(old_energy)) as f64;
+                let timestamp_delta = new_timestamp - old_timestamp;
+                Ok(energy_delta / timestamp_delta)
+            }
+            _ => self.hwmon_power_usage(),
         }
-
-        let energy_delta = (new_energy.saturating_sub(old_energy)) as f64;
-        let timestamp_delta = new_timestamp - old_timestamp;
-        Ok(energy_delta / timestamp_delta)*/
-        self.hwmon_power_usage()
     }
 
     fn core_frequency(&self) -> Result<f64> {

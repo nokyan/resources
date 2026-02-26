@@ -413,7 +413,7 @@ impl Process {
             }
         }
 
-        returned_gpu_usage
+        returned_gpu_usage.clamp(0.0, 1.0)
     }
 
     #[must_use]
@@ -428,7 +428,7 @@ impl Process {
             }
         }
 
-        returned_gpu_usage
+        returned_gpu_usage.clamp(0.0, 1.0)
     }
 
     #[must_use]
@@ -443,7 +443,7 @@ impl Process {
             }
         }
 
-        returned_gpu_usage
+        returned_gpu_usage.clamp(0.0, 1.0)
     }
 
     #[must_use]
