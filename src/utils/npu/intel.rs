@@ -80,7 +80,7 @@ impl NpuImpl for IntelNpu {
         let delta_timestamp = new_timestamp - last_timestamp;
         let delta_busy_time = new_busy_time.saturating_sub(last_busy_time) as f64;
 
-        Ok(delta_busy_time / delta_timestamp)
+        Ok(delta_busy_time / 1_000_000.0 / delta_timestamp)
     }
 
     fn used_memory(&self) -> Result<usize> {
@@ -100,7 +100,9 @@ impl NpuImpl for IntelNpu {
     }
 
     fn core_frequency(&self) -> Result<f64> {
-        self.hwmon_core_frequency()
+        read_parsed::<f64>(self.sysfs_path().join("device/npu_current_frequency_mhz"))
+            .map(|mhz| mhz * 1_000_000.0)
+            .or_else(|_| self.hwmon_core_frequency())
     }
 
     fn memory_frequency(&self) -> Result<f64> {
