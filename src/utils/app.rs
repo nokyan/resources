@@ -797,12 +797,10 @@ impl AppsContext {
         self.apps.get(id)
     }
 
-    #[must_use]
     pub fn processes_iter(&self) -> impl Iterator<Item = &Process> {
         self.processes.values()
     }
 
-    #[must_use]
     pub fn processes_iter_mut(&mut self) -> impl Iterator<Item = &mut Process> {
         self.processes.values_mut()
     }

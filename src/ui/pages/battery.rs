@@ -1,6 +1,7 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib;
 use log::trace;
+use std::fmt::Write;
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
@@ -254,7 +255,7 @@ impl ResBattery {
             usage_string.push_str(&percentage_string);
 
             if let Ok(state) = battery_data.state {
-                percentage_string.push_str(&format!(" ({state})"));
+                let _ = write!(percentage_string, " ({state})");
             }
 
             imp.charge.graph().set_visible(true);

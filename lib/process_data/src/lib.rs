@@ -226,10 +226,6 @@ pub struct ProcessData {
 impl ProcessData {
     // apparently some apps like Mullvad do this to include a '-' in their cgroup even though that's not allowed
     fn decode_hex_escapes(s: &str) -> Result<String, ()> {
-        let bytes = s.as_bytes();
-        let mut out = Vec::with_capacity(bytes.len());
-        let mut i = 0;
-
         #[inline]
         const fn hex(b: u8) -> Result<u8, ()> {
             match b {
@@ -239,6 +235,10 @@ impl ProcessData {
                 _ => Err(()),
             }
         }
+
+        let bytes = s.as_bytes();
+        let mut out = Vec::with_capacity(bytes.len());
+        let mut i = 0;
 
         while i < bytes.len() {
             if bytes[i] == b'\\' && i + 3 < bytes.len() && bytes[i + 1] == b'x' {
@@ -457,7 +457,7 @@ impl ProcessData {
             .map(|(x, y)| (x.to_string(), y.to_string()))
             .collect::<HashMap<_, _>>();
 
-        let appimage_path = environ.get("APPIMAGE").map(|p| p.to_owned());
+        let appimage_path = environ.get("APPIMAGE").map(std::borrow::ToOwned::to_owned);
 
         let containerization = if commandline.starts_with("/snap/") {
             Containerization::Snap
@@ -500,11 +500,10 @@ impl ProcessData {
 
         trace!("Collecting NVIDIA statistics for {pid}…");
         let nvidia_stats = Self::nvidia_gpu_stats_all(pid);
-        let mut gpu_usage_stats =
-            Self::other_gpu_usage_stats(&fdinfos, non_gpu_fdinfos).unwrap_or_default();
+        let mut gpu_usage_stats = Self::other_gpu_usage_stats(&fdinfos, non_gpu_fdinfos);
         gpu_usage_stats.extend(nvidia_stats);
 
-        let npu_usage_stats = Self::npu_usage_stats(&fdinfos, non_npu_fdinfos).unwrap_or_default();
+        let npu_usage_stats = Self::npu_usage_stats(&fdinfos, non_npu_fdinfos);
 
         let timestamp = unix_as_millis();
 
@@ -579,12 +578,11 @@ impl ProcessData {
                             target
                         );
                         continue;
-                    } else {
-                        // target changed to a GPU/NPU device, remove from cache
-                        trace!("fdinfo target changed to GPU/NPU device, removing from cache");
-                        non_gpu_fdinfos.remove(&(pid, fd_num));
-                        non_npu_fdinfos.remove(&(pid, fd_num));
                     }
+                    // target changed to a GPU/NPU device, remove from cache
+                    trace!("fdinfo target changed to GPU/NPU device, removing from cache");
+                    non_gpu_fdinfos.remove(&(pid, fd_num));
+                    non_npu_fdinfos.remove(&(pid, fd_num));
                 }
             }
 
@@ -622,19 +620,18 @@ impl ProcessData {
     }
 
     fn parse_fdinfo<S: Into<String>>(file_contents: S) -> HashMap<String, String> {
-        HashMap::from_iter(
-            file_contents
-                .into()
-                .lines()
-                .filter_map(|line| line.split_once(':'))
-                .map(|(name, value)| (name.trim().to_string(), value.trim().to_string())),
-        )
+        file_contents
+            .into()
+            .lines()
+            .filter_map(|line| line.split_once(':'))
+            .map(|(name, value)| (name.trim().to_string(), value.trim().to_string()))
+            .collect::<HashMap<_, _>>()
     }
 
     fn npu_usage_stats(
         fdinfos: &[Fdinfo],
         non_npu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
-    ) -> Result<BTreeMap<PciSlot, NpuUsageStats>> {
+    ) -> BTreeMap<PciSlot, NpuUsageStats> {
         let mut return_map = BTreeMap::new();
 
         for fdinfo in fdinfos {
@@ -658,7 +655,7 @@ impl ProcessData {
             }
         }
 
-        Ok(return_map)
+        return_map
     }
 
     fn extract_npu_usage_from_fdinfo(fdinfo: &Fdinfo) -> Result<(PciSlot, NpuUsageStats)> {
@@ -697,7 +694,7 @@ impl ProcessData {
     fn other_gpu_usage_stats(
         fdinfos: &[Fdinfo],
         non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
-    ) -> Result<BTreeMap<GpuIdentifier, GpuUsageStats>> {
+    ) -> BTreeMap<GpuIdentifier, GpuUsageStats> {
         let mut return_map = BTreeMap::new();
 
         for fdinfo in fdinfos {
@@ -709,7 +706,7 @@ impl ProcessData {
                 return_map
                     .entry(identifier)
                     .and_modify(|existing_value: &mut GpuUsageStats| {
-                        *existing_value = existing_value.greater(&stats)
+                        *existing_value = existing_value.greater(&stats);
                     })
                     .or_insert(stats);
             } else {
@@ -721,7 +718,7 @@ impl ProcessData {
             }
         }
 
-        Ok(return_map)
+        return_map
     }
 
     fn extract_gpu_usage_from_fdinfo(fdinfo: &Fdinfo) -> Result<(GpuIdentifier, GpuUsageStats)> {

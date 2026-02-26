@@ -288,10 +288,11 @@ impl ResNetwork {
             imp.network_name.set_visible(false);
         }
 
-        imp.link.set_subtitle(&wifi_link.as_ref().map_or_else(
-            |_| i18n("N/A"),
-            |network_link_data| network_link_data.to_string(),
-        ));
+        imp.link.set_subtitle(
+            &wifi_link
+                .as_ref()
+                .map_or_else(|_| i18n("N/A"), std::string::ToString::to_string),
+        );
 
         imp.link_speed.set_subtitle(
             &(if let Ok(wifi_link) = wifi_link {
@@ -420,10 +421,11 @@ impl ResNetwork {
             imp.network_name.set_visible(false);
         }
 
-        imp.link.set_subtitle(&wifi_link.as_ref().map_or_else(
-            |_| i18n("N/A"),
-            |network_link_data| network_link_data.to_string(),
-        ));
+        imp.link.set_subtitle(
+            &wifi_link
+                .as_ref()
+                .map_or_else(|_| i18n("N/A"), std::string::ToString::to_string),
+        );
 
         imp.link_speed.set_subtitle(
             &(if let Ok(wifi_link) = wifi_link {
