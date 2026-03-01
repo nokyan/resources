@@ -7,7 +7,7 @@ use adw::{ToolbarView, prelude::*, subclass::prelude::*};
 use anyhow::{Context, Result};
 use gtk::glib::{GString, MainContext, clone, timeout_future};
 use gtk::{Widget, gdk, gio, glib};
-use log::{debug, info, trace, warn};
+use log::{debug, error, info, trace, warn};
 
 use crate::application::Application;
 use crate::config::PROFILE;
@@ -456,6 +456,77 @@ impl MainWindow {
         }
     }
 
+    pub fn shortcut_kill_window(&self) {
+        // Simply execute the kill window command directly
+        match Process::execute_kill_window() {
+            Ok(()) => info!("Kill Window mode activated"),
+            Err(e) => error!("Failed to activate Kill Window mode: {}", e),
+        }
+    }
+
+    fn show_system_action_confirmation_dialog(&self, action_name: &str, command_description: &str) {
+        let dialog = adw::AlertDialog::builder()
+            .heading(format!("Confirm {}", action_name))
+            .body(format!(
+                "Are you sure you want to {}?\n\nThis action will be executed without checking for unsaved files.",
+                command_description
+            ))
+            .build();
+
+        dialog.add_response("cancel", "Cancel");
+        dialog.add_response("confirm", action_name);
+        dialog.set_response_appearance("confirm", adw::ResponseAppearance::Destructive);
+
+        let action_name_owned = action_name.to_string();
+        dialog.connect_response(None, move |_, response| {
+            if response == "confirm" {
+                match action_name_owned.as_str() {
+                    "Logout" => {
+                        if let Err(e) = Process::execute_logout() {
+                            error!("Failed to initiate logout: {}", e);
+                        } else {
+                            info!("Logout initiated");
+                        }
+                    }
+                    "Reboot" => {
+                        if let Err(e) = Process::execute_reboot() {
+                            error!("Failed to initiate reboot: {}", e);
+                        } else {
+                            info!("Reboot initiated");
+                        }
+                    }
+                    "Shutdown" => {
+                        if let Err(e) = Process::execute_shutdown() {
+                            error!("Failed to initiate shutdown: {}", e);
+                        } else {
+                            info!("Shutdown initiated");
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        });
+
+        dialog.present(Some(self));
+    }
+
+    pub fn shortcut_logout(&self) {
+        self.show_system_action_confirmation_dialog("Logout", "log out");
+    }
+
+    pub fn shortcut_reboot(&self) {
+        self.show_system_action_confirmation_dialog("Reboot", "reboot the system");
+    }
+
+    pub fn shortcut_shutdown(&self) {
+        self.show_system_action_confirmation_dialog("Shutdown", "shut down the system");
+    }
+
+    pub fn is_kwin_running(&self) -> bool {
+        let imp = self.imp();
+        imp.apps_context.borrow().is_kwin_running()
+    }
+
     fn init_gpu_pages(self: &MainWindow, gpus: &[Gpu]) {
         let imp = self.imp();
 
@@ -650,11 +721,15 @@ impl MainWindow {
         let mut apps_context = imp.apps_context.borrow_mut();
         apps_context.refresh(process_data);
 
+        // Check if kwin is running for the kill window button
+        let kwin_running = apps_context.is_kwin_running();
+
         // if CTRL is held, don't update apps and processes like Windows Task Manager
         if !imp.pause_updates.get() {
             trace!("Skipping visual apps and processes updates");
-            imp.apps.refresh_apps_list(&apps_context);
-            imp.processes.refresh_processes_list(&apps_context);
+            imp.apps.refresh_apps_list(&apps_context, kwin_running);
+            imp.processes
+                .refresh_processes_list(&apps_context, kwin_running);
         }
 
         /*
@@ -1285,6 +1360,10 @@ fn get_action_success(action: ProcessAction, name: &str) -> String {
         ProcessAction::STOP => i18n_f("Successfully halted {}", &[name]),
         ProcessAction::KILL => i18n_f("Successfully killed {}", &[name]),
         ProcessAction::CONT => i18n_f("Successfully continued {}", &[name]),
+        ProcessAction::KILLWINDOW => i18n("Kill Window mode activated"),
+        ProcessAction::LOGOUT => i18n("Logout initiated"),
+        ProcessAction::REBOOT => i18n("Reboot initiated"),
+        ProcessAction::SHUTDOWN => i18n("Shutdown initiated"),
     }
 }
 
@@ -1314,6 +1393,10 @@ fn get_processes_success(action: ProcessAction, count: usize) -> String {
             count as u32,
             &[&count.to_string()],
         ),
+        ProcessAction::KILLWINDOW => i18n("Kill Window mode activated"),
+        ProcessAction::LOGOUT => i18n("Logout initiated"),
+        ProcessAction::REBOOT => i18n("Reboot initiated"),
+        ProcessAction::SHUTDOWN => i18n("Shutdown initiated"),
     }
 }
 
@@ -1343,6 +1426,10 @@ fn get_action_failure(action: ProcessAction, count: usize) -> String {
             count as u32,
             &[&count.to_string()],
         ),
+        ProcessAction::KILLWINDOW => i18n("Failed to activate Kill Window mode"),
+        ProcessAction::LOGOUT => i18n("Failed to initiate logout"),
+        ProcessAction::REBOOT => i18n("Failed to initiate reboot"),
+        ProcessAction::SHUTDOWN => i18n("Failed to initiate shutdown"),
     }
 }
 
@@ -1352,5 +1439,9 @@ pub fn get_named_action_failure(action: ProcessAction, name: &str) -> String {
         ProcessAction::STOP => i18n_f("There was a problem halting {}", &[name]),
         ProcessAction::KILL => i18n_f("There was a problem killing {}", &[name]),
         ProcessAction::CONT => i18n_f("There was a problem continuing {}", &[name]),
+        ProcessAction::KILLWINDOW => i18n("Failed to activate Kill Window mode"),
+        ProcessAction::LOGOUT => i18n("Failed to initiate logout"),
+        ProcessAction::REBOOT => i18n("Failed to initiate reboot"),
+        ProcessAction::SHUTDOWN => i18n("Failed to initiate shutdown"),
     }
 }
