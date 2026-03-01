@@ -206,9 +206,13 @@ impl ResNPU {
             Self::MAIN_GRAPH_COLOR[1],
             Self::MAIN_GRAPH_COLOR[2],
         );
+        // Initially hidden until we have data
+        imp.npu_usage.set_visible(false);
 
         imp.memory_usage.set_title_label(&i18n("Memory Usage"));
         imp.memory_usage.graph().set_graph_color(0x9e, 0x1c, 0xcc);
+        // Initially hidden until we have data
+        imp.memory_usage.set_visible(false);
 
         imp.temperature.set_title_label(&i18n("Temperature"));
         imp.temperature.graph().set_graph_color(0x83, 0x1c, 0xac);
@@ -260,7 +264,7 @@ impl ResNPU {
         imp.npu_usage
             .graph()
             .push_data_point(usage_fraction.unwrap_or(0.0));
-        imp.npu_usage.graph().set_visible(usage_fraction.is_some());
+        imp.npu_usage.set_visible(usage_fraction.is_some());
 
         let memory_subtitle = if let (Some(total_memory), Some(used_memory)) =
             (total_memory, used_memory)
@@ -310,7 +314,7 @@ impl ResNPU {
             i18n("N/A")
         };
 
-        imp.memory_usage.graph().set_visible(used_memory.is_some());
+        imp.memory_usage.set_visible(used_memory.is_some());
 
         imp.memory_usage.set_subtitle(&memory_subtitle);
 

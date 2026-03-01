@@ -723,17 +723,25 @@ impl MainWindow {
             let page = page.content().and_downcast::<ResNPU>().unwrap();
 
             let processes_npu_fraction = apps_context.npu_fraction(npu_data.pci_slot);
-            npu_data.usage_fraction = Some(f64::max(
+            let max_usage = f64::max(
                 npu_data.usage_fraction.unwrap_or(0.0),
                 processes_npu_fraction.into(),
-            ));
+            );
+            // Only set to Some if there's actual activity
+            npu_data.usage_fraction = (max_usage > 0.0).then_some(max_usage);
 
-            if npu_data.total_memory.is_some() {
+            // Only recalculate memory if we have a valid non-zero total memory capacity
+            if npu_data.total_memory.is_some_and(|total| total > 0) {
                 let processes_npu_memory_fraction = apps_context.npu_mem(npu_data.pci_slot);
-                npu_data.used_memory = Some(usize::max(
+                let max_memory = usize::max(
                     npu_data.used_memory.unwrap_or(0),
                     processes_npu_memory_fraction as usize,
-                ));
+                );
+                // Only set to Some if there's actual memory usage
+                npu_data.used_memory = (max_memory > 0).then_some(max_memory);
+            } else {
+                // No valid total memory, so we can't show memory usage meaningfully
+                npu_data.used_memory = None;
             }
 
             page.refresh_page(&npu_data);

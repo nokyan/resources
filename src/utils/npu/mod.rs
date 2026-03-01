@@ -56,10 +56,10 @@ impl NpuData {
 
         trace!("Gathering NPU data for {pci_slot}…");
 
-        let usage_fraction = npu.usage().ok();
+        let usage_fraction = npu.usage().ok().and_then(|u| (u > 0.0).then_some(u));
 
         let total_memory = npu.total_memory().ok();
-        let used_memory = npu.used_memory().ok();
+        let used_memory = npu.used_memory().ok().and_then(|m| (m > 0).then_some(m));
 
         let clock_speed = npu.core_frequency().ok();
         let vram_speed = npu.memory_frequency().ok();
