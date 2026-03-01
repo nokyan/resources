@@ -723,10 +723,9 @@ impl MainWindow {
             let page = page.content().and_downcast::<ResNPU>().unwrap();
 
             let processes_npu_fraction = apps_context.npu_fraction(npu_data.pci_slot);
-            npu_data.usage_fraction = Some(f64::max(
-                npu_data.usage_fraction.unwrap_or(0.0),
-                processes_npu_fraction.into(),
-            ));
+            if let Some(usage) = npu_data.usage_fraction {
+                npu_data.usage_fraction = Some(f64::max(usage, processes_npu_fraction.into()));
+            }
 
             if npu_data.total_memory.is_some() {
                 let processes_npu_memory_fraction = apps_context.npu_mem(npu_data.pci_slot);
