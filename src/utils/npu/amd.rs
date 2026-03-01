@@ -13,6 +13,7 @@ const DRM_IOCTL_BASE: u8 = b'd';
 const DRM_COMMAND_BASE: u8 = 0x40;
 const DRM_AMDXDNA_GET_INFO: u8 = 7;
 const DRM_AMDXDNA_QUERY_CLOCK_METADATA: u32 = 3;
+const DRM_AMDXDNA_QUERY_RESOURCE_INFO: u32 = 12;
 
 const IOC_WRITE: u32 = 1;
 const IOC_READ: u32 = 2;
@@ -30,6 +31,16 @@ struct AmdxdnaDrmGetInfo {
     param: u32,
     buffer_size: u32,
     buffer: u64,
+}
+
+#[repr(C)]
+#[derive(Default)]
+struct AmdxdnaDrmGetResourceInfo {
+    npu_clk_max: u64,
+    npu_tops_max: u64,
+    npu_task_max: u64,
+    npu_tops_curr: u64,
+    npu_task_curr: u64,
 }
 
 #[repr(C)]
@@ -106,6 +117,36 @@ impl AmdNpu {
 
         Ok((h_clock_hz, mp_npu_clock_hz))
     }
+
+    fn query_resource_info(&self) -> Result<AmdxdnaDrmGetResourceInfo> {
+        let accel_name = self
+            .sysfs_path
+            .file_name()
+            .context("invalid sysfs path")?
+            .to_str()
+            .context("invalid accel name")?;
+        let dev_path = format!("/dev/accel/{accel_name}");
+
+        let file = File::open(&dev_path).context("failed to open accel device")?;
+        let fd = file.as_raw_fd();
+
+        let mut resource_info = AmdxdnaDrmGetResourceInfo::default();
+        let mut get_info = AmdxdnaDrmGetInfo {
+            param: DRM_AMDXDNA_QUERY_RESOURCE_INFO,
+            buffer_size: std::mem::size_of::<AmdxdnaDrmGetResourceInfo>() as u32,
+            buffer: &mut resource_info as *mut _ as u64,
+        };
+
+        let ioctl_cmd =
+            iowr::<AmdxdnaDrmGetInfo>(DRM_IOCTL_BASE, DRM_COMMAND_BASE + DRM_AMDXDNA_GET_INFO);
+
+        let ret = unsafe { libc::ioctl(fd, ioctl_cmd, &mut get_info) };
+        if ret < 0 {
+            anyhow::bail!("ioctl failed: {}", std::io::Error::last_os_error());
+        }
+
+        Ok(resource_info)
+    }
 }
 
 impl NpuImpl for AmdNpu {
@@ -161,6 +202,16 @@ impl NpuImpl for AmdNpu {
     fn memory_frequency(&self) -> Result<f64> {
         self.query_clock_metadata()
             .map(|(_, mp_npu_clock_hz)| mp_npu_clock_hz as f64)
+    }
+
+    fn tops(&self) -> Result<u64> {
+        let resource_info = self.query_resource_info()?;
+        Ok(resource_info.npu_tops_curr)
+    }
+
+    fn max_tops(&self) -> Result<u64> {
+        let resource_info = self.query_resource_info()?;
+        Ok(resource_info.npu_tops_max)
     }
 
     fn power_cap(&self) -> Result<f64> {

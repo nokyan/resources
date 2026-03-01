@@ -7,7 +7,9 @@ use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::FiniteOr;
 use crate::utils::npu::{Npu, NpuData};
-use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
+use crate::utils::units::{
+    convert_frequency, convert_power, convert_storage, convert_temperature, convert_tops,
+};
 
 pub const TAB_ID_PREFIX: &str = "npu";
 
@@ -38,6 +40,8 @@ mod imp {
         pub power_usage: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub npu_clockspeed: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub tops: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub memory_clockspeed: TemplateChild<adw::ActionRow>,
         #[template_child]
@@ -97,6 +101,7 @@ mod imp {
                 temperature: Default::default(),
                 power_usage: Default::default(),
                 npu_clockspeed: Default::default(),
+                tops: Default::default(),
                 memory_clockspeed: Default::default(),
                 manufacturer: Default::default(),
                 pci_slot: Default::default(),
@@ -244,6 +249,8 @@ impl ResNPU {
             used_memory,
             clock_speed,
             vram_speed,
+            curr_tops,
+            max_tops,
             temperature,
             power_usage,
             power_cap,
@@ -329,6 +336,16 @@ impl ResNPU {
                 .set_subtitle(&convert_frequency(*npu_clockspeed));
         } else {
             imp.npu_clockspeed.set_subtitle(&i18n("N/A"));
+        }
+
+        if let (Some(curr_tops), Some(max_tops)) = (curr_tops, max_tops) {
+            imp.tops.set_subtitle(&format!(
+                "{} / {}",
+                convert_tops(*curr_tops as f64),
+                convert_tops(*max_tops as f64)
+            ));
+        } else {
+            imp.tops.set_subtitle(&i18n("N/A"));
         }
 
         if let Some(vram_clockspeed) = vram_speed {
