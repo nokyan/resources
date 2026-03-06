@@ -82,6 +82,19 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.10.2" date="2026-03-06">
+      <url type="details">https://github.com/nokyan/resources/releases/tag/v1.10.2</url>
+      <description translate="no">
+        <p>
+          Resources 1.10.2 is here with another small round of bugfixes and improvements:
+        </p>
+        <ul>
+          <li>Added power usage monitoring for Intel GPUs</li>
+          <li>Fixed implausible usage values for Intel NPUs</li>
+          <li>Added core frequency monitoring for Intel NPUs</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.10.1" date="2026-02-14">
       <url type="details">https://github.com/nokyan/resources/releases/tag/v1.10.1</url>
       <description translate="no">
