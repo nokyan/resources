@@ -1,6 +1,6 @@
 [package]
 name = "process-data"
-version = "1.10.1"
+version = "1.10.2"
 authors = ["nokyan <hello@nokyan.net>"]
 edition = "2024"
 rust-version = "1.85.0"
@@ -19,7 +19,7 @@ opt-level = 3
 [dependencies]
 anyhow = "1.0.102"
 lazy-regex = "3.6.0"
-libc = "=0.2.180"
+libc = "0.2.182"
 log = "0.4.29"
 num_cpus = "1.17.0"
 nutype = { version = "0.6.2", features = ["serde"] }
