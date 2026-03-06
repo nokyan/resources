@@ -592,7 +592,7 @@ impl MainWindow {
         };
 
         for npu_data_entry in &mut npu_data {
-            if npu_data_entry.used_memory.is_none() {
+            if npu_data_entry.used_memory.is_none() && npu_data_entry.total_memory.is_some() {
                 npu_data_entry.used_memory = Some(
                     process_data
                         .iter()
