@@ -1,14 +1,13 @@
 # Basque translation for resources.
 # Copyright (C) 2025 resources's COPYRIGHT HOLDER
 # This file is distributed under the same license as the resources package.
-# Asier Saratsua Garmendia <asiersarasua@ni.eus>, 2025.
+# Asier Saratsua Garmendia <asiersarasua@ni.eus>, 2025, 2026.
 # Ibai Oihanguren Sala <ibaios@disroot.org>, 2026.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: resources main\n"
+msgstr "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-01-10 18:36+0000\n"
+"POT-Creation-Date: 2026-03-06 20:03+0000\n"
 "PO-Revision-Date: 2026-01-21 22:56+0100\n"
 "Last-Translator: Ibai Oihanguren Sala <ibaios@disroot.org>\n"
 "Language-Team: Basque\n"
@@ -17,13 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-DL-VCS-Web: https://github.com/nokyan/resources\n"
-"X-DL-Lang: eu\n"
-"X-DL-Module: resources\n"
-"X-DL-Branch: main\n"
-"X-DL-Domain: po\n"
-"X-DL-State: None\n"
-"X-Generator: Gtranslator 49.0\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:2
 #: data/net.nokyan.Resources.metainfo.xml.in.in:4
@@ -39,24 +31,19 @@ msgstr "Begiratu sistemaren baliabideak"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/net.nokyan.Resources.desktop.in.in:9
-msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
-msgstr "Sisteam;Baliabideak;Monitorea;Prozesuak;Erabilera;Zeregina;Kudeatzailea;PUZ;RAM;Memoria;PUG;"
+msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;Performance;Power;Battery;"
+msgstr "Sisteam;Baliabideak;Monitorea;Prozesuak;Erabilera;Zeregina;Kudeatzailea;PUZ;RAM;Memoria;PUG;Errendimendua;Eneria;Bateria;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
 "Resources allows you to check the utilization of your system resources and "
 "control your running processes and apps. It’s designed to be user-friendly "
 "and feel right at home on a modern desktop by using GNOME’s libadwaita."
-msgstr ""
-"Baliabideak aplikazioari esker, zure sistemaren baliabideen erabilera "
-"monitorizatu dezakezu eta exekuzioan dauden prozesuak eta aplikazioak "
-"kontrolatu ditzakezu. Erabilerraza izateko diseinatuta dago eta ongi "
-"integratzen da GNOMEren mahaigain modernoarekin."
+msgstr "Baliabideak aplikazioari esker, zure sistemaren baliabideen erabilera monitorizatu dezakezu eta exekuzioan dauden prozesuak eta aplikazioak kontrolatu ditzakezu. Erabilerraza izateko diseinatuta dago eta ongi integratzen da GNOMEren mahaigain modernoarekin."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
-msgstr ""
-"Baliabideak aplikazioak honako osagaiak monitorizatzea ahalbidetzen du:"
+msgstr "Baliabideak aplikazioak honako osagaiak monitorizatzea ahalbidetzen du:"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:24
 msgid "CPU"
@@ -80,7 +67,7 @@ msgstr "Memoria"
 #: data/resources/ui/dialogs/settings_dialog.ui:158
 #: data/resources/ui/dialogs/settings_dialog.ui:250
 #: src/ui/pages/applications/mod.rs:1232 src/ui/pages/applications/mod.rs:1249
-#: src/ui/pages/gpu.rs:119 src/ui/pages/processes/mod.rs:1544
+#: src/ui/pages/gpu.rs:120 src/ui/pages/processes/mod.rs:1544
 #: src/ui/pages/processes/mod.rs:1561 src/ui/window.rs:468
 msgid "GPU"
 msgstr "PUGa"
@@ -137,9 +124,7 @@ msgstr "Prozesu-kontrola"
 #: data/net.nokyan.Resources.policy.in.in:10
 msgid ""
 "Authentication is required to control superuser’s or other users’ processes"
-msgstr ""
-"Autentifikazioa behar da supererabiltzailearen edo beste erabiltzaileen "
-"prozesuak kontrolatzeko"
+msgstr "Autentifikazioa behar da supererabiltzailearen edo beste erabiltzaileen prozesuak kontrolatzeko"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
 msgid "App Information"
@@ -326,9 +311,7 @@ msgstr "Jatortasuna"
 msgid ""
 "The priority of a process is given by its niceness. A lower niceness value "
 "correspond to a higher priority."
-msgstr ""
-"Prozesu baten lehentasuna bere jatortasunaren araberakoa da. Jatortasun-"
-"balioa baxuagoa bada, lehentasuna altuagoa da."
+msgstr "Prozesu baten lehentasuna bere jatortasunaren araberakoa da. Jatortasun-balioa baxuagoa bada, lehentasuna altuagoa da."
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:87
 #: data/resources/ui/dialogs/settings_dialog.ui:285
@@ -423,9 +406,7 @@ msgstr "Freskatu abiadura"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:51
 msgid "Higher refresh speeds can lead to higher processor usage"
-msgstr ""
-"Freskatze-abiadura altuagoek prozesatzaile-erabilera handiagoa eragin "
-"dezakete"
+msgstr "Freskatze-abiadura altuagoek prozesatzaile-erabilera handiagoa eragin dezakete"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:55
 msgctxt "UI refresh speed"
@@ -476,9 +457,7 @@ msgstr "Erakutsi gailu-deskribapenak alboko barran"
 msgid ""
 "If enabled, a device identifier like its name or device type will be "
 "displayed"
-msgstr ""
-"Gaituta badago, gailu-identifikatzaile bat, adibidez izena edo gailu mota, "
-"bistaratuko dira"
+msgstr "Gaituta badago, gailu-identifikatzaile bat, adibidez izena edo gailu mota, bistaratuko dira"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
 msgid "Sidebar Meter Type"
@@ -500,8 +479,7 @@ msgstr "Normalizatu prozesatzaile-erabilera"
 msgid ""
 "If enabled, the total usage of all cores will be divided by the amount of "
 "cores"
-msgstr ""
-"Gaituta badago, nukleo guztien erabilera osoa nukleo kopuruarekin zatituko da"
+msgstr "Gaituta badago, nukleo guztien erabilera osoa nukleo kopuruarekin zatituko da"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:122
 #: data/resources/ui/window.ui:65 data/resources/ui/window.ui:72
@@ -539,8 +517,7 @@ msgstr "Erakutsi jatortasun-balioak"
 #: data/resources/ui/dialogs/settings_dialog.ui:200
 msgid ""
 "Display priorities as niceness to allow for more fine-grained adjustments"
-msgstr ""
-"Bistaratu lehentasunak jatortasun gisa, doikuntza finagoak egin ahal izateko"
+msgstr "Bistaratu lehentasunak jatortasun gisa, doikuntza finagoak egin ahal izateko"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:310
 msgid "Devices"
@@ -709,7 +686,7 @@ msgid "Video Memory Frequency"
 msgstr "Bideo-memoriaren maiztasuna"
 
 #: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49
-#: src/ui/pages/battery.rs:217
+#: src/ui/pages/battery.rs:218
 msgid "Power Usage"
 msgstr "Energia-erabilera"
 
@@ -927,11 +904,11 @@ msgstr "Asier Saratsua Garmendia <asiersarasua@ni.eus>"
 #: src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171
 #: src/ui/dialogs/process_dialog.rs:178 src/ui/dialogs/process_dialog.rs:185
 #: src/ui/dialogs/process_dialog.rs:192 src/ui/pages/applications/mod.rs:975
-#: src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:205
-#: src/ui/pages/battery.rs:225 src/ui/pages/battery.rs:231
-#: src/ui/pages/battery.rs:234 src/ui/pages/battery.rs:265
-#: src/ui/pages/battery.rs:289 src/ui/pages/battery.rs:291
-#: src/ui/pages/battery.rs:301 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258
+#: src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:206
+#: src/ui/pages/battery.rs:226 src/ui/pages/battery.rs:232
+#: src/ui/pages/battery.rs:235 src/ui/pages/battery.rs:266
+#: src/ui/pages/battery.rs:290 src/ui/pages/battery.rs:292
+#: src/ui/pages/battery.rs:302 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258
 #: src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:290
 #: src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303
 #: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:321
@@ -939,11 +916,11 @@ msgstr "Asier Saratsua Garmendia <asiersarasua@ni.eus>"
 #: src/ui/pages/drive.rs:383 src/ui/pages/drive.rs:385
 #: src/ui/pages/drive.rs:401 src/ui/pages/drive.rs:402
 #: src/ui/pages/drive.rs:409 src/ui/pages/drive.rs:419
-#: src/ui/pages/drive.rs:429 src/ui/pages/drive.rs:435 src/ui/pages/gpu.rs:245
-#: src/ui/pages/gpu.rs:252 src/ui/pages/gpu.rs:297 src/ui/pages/gpu.rs:322
-#: src/ui/pages/gpu.rs:325 src/ui/pages/gpu.rs:336 src/ui/pages/gpu.rs:377
-#: src/ui/pages/gpu.rs:384 src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:403
-#: src/ui/pages/gpu.rs:407 src/ui/pages/gpu.rs:437 src/ui/pages/gpu.rs:443
+#: src/ui/pages/drive.rs:429 src/ui/pages/drive.rs:435 src/ui/pages/gpu.rs:246
+#: src/ui/pages/gpu.rs:253 src/ui/pages/gpu.rs:298 src/ui/pages/gpu.rs:323
+#: src/ui/pages/gpu.rs:326 src/ui/pages/gpu.rs:337 src/ui/pages/gpu.rs:378
+#: src/ui/pages/gpu.rs:385 src/ui/pages/gpu.rs:397 src/ui/pages/gpu.rs:404
+#: src/ui/pages/gpu.rs:408 src/ui/pages/gpu.rs:438 src/ui/pages/gpu.rs:444
 #: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228
 #: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233
 #: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:238
@@ -951,12 +928,12 @@ msgstr "Asier Saratsua Garmendia <asiersarasua@ni.eus>"
 #: src/ui/pages/network.rs:252 src/ui/pages/network.rs:259
 #: src/ui/pages/network.rs:266 src/ui/pages/network.rs:272
 #: src/ui/pages/network.rs:275 src/ui/pages/network.rs:285
-#: src/ui/pages/network.rs:292 src/ui/pages/network.rs:302
-#: src/ui/pages/network.rs:370 src/ui/pages/network.rs:373
-#: src/ui/pages/network.rs:375 src/ui/pages/network.rs:404
-#: src/ui/pages/network.rs:407 src/ui/pages/network.rs:409
-#: src/ui/pages/network.rs:417 src/ui/pages/network.rs:424
-#: src/ui/pages/network.rs:434 src/ui/pages/processes/mod.rs:1275
+#: src/ui/pages/network.rs:294 src/ui/pages/network.rs:303
+#: src/ui/pages/network.rs:371 src/ui/pages/network.rs:374
+#: src/ui/pages/network.rs:376 src/ui/pages/network.rs:405
+#: src/ui/pages/network.rs:408 src/ui/pages/network.rs:410
+#: src/ui/pages/network.rs:418 src/ui/pages/network.rs:427
+#: src/ui/pages/network.rs:436 src/ui/pages/processes/mod.rs:1275
 #: src/ui/pages/processes/mod.rs:1350 src/ui/pages/processes/mod.rs:1425
 #: src/ui/pages/processes/mod.rs:1500 src/ui/pages/processes/mod.rs:2050
 #: src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152
@@ -971,28 +948,28 @@ msgstr "E/E"
 msgid "CPU {}"
 msgstr "PUZ {}"
 
-#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/drive.rs:416
+#: src/ui/pages/applications/application_entry.rs:188 src/ui/pages/drive.rs:416
 #: src/ui/pages/drive.rs:426 src/ui/pages/processes/process_entry.rs:211
 msgid "No"
 msgstr "Ez"
 
-#: src/ui/pages/applications/application_entry.rs:191
+#: src/ui/pages/applications/application_entry.rs:189
 #: src/ui/pages/processes/process_entry.rs:212
 msgid "Yes (AppImage)"
 msgstr "Bai (AppImage)"
 
-#: src/ui/pages/applications/application_entry.rs:192
+#: src/ui/pages/applications/application_entry.rs:190
 #: src/ui/pages/processes/process_entry.rs:213
 msgid "Yes (Flatpak)"
 msgstr "Bai (Flatpak)"
 
 #. Translators: "Portable" is the name of the containerization method used, please keep it as is
-#: src/ui/pages/applications/application_entry.rs:194
+#: src/ui/pages/applications/application_entry.rs:192
 #: src/ui/pages/processes/process_entry.rs:215
 msgid "Yes (Portable)"
 msgstr "Bai (Portable)"
 
-#: src/ui/pages/applications/application_entry.rs:195
+#: src/ui/pages/applications/application_entry.rs:193
 #: src/ui/pages/processes/process_entry.rs:216
 msgid "Yes (Snap)"
 msgstr "Bai (Snap)"
@@ -1038,37 +1015,33 @@ msgstr "Gorde gabeko lana galdu egin daiteke."
 msgid ""
 "Halting an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
-msgstr ""
-"Aplikazioa gelditzen bada, datuak galdu daitezke eta segurtasuna murriztu "
-"daiteke. Erabili kontuz."
+msgstr "Aplikazioa gelditzen bada, datuak galdu daitezke eta segurtasuna murriztu daiteke. Erabili kontuz."
 
 #: src/ui/pages/applications/mod.rs:1652
 msgid ""
 "Killing an app can come with serious risks such as losing data and security "
 "implications. Use with caution."
-msgstr ""
-"Aplikazioa hiltzen bada, datuak galdu daitezke eta segurtasuna murriztu "
-"daiteke. Erabili kontuz."
+msgstr "Aplikazioa hiltzen bada, datuak galdu daitezke eta segurtasuna murriztu daiteke. Erabili kontuz."
 
-#: src/ui/pages/battery.rs:102 src/utils/battery.rs:258
+#: src/ui/pages/battery.rs:103 src/utils/battery.rs:258
 msgid "Battery"
 msgstr "Bateria"
 
-#: src/ui/pages/battery.rs:210
+#: src/ui/pages/battery.rs:211
 msgid "Battery Charge"
 msgstr "Bateria-karga"
 
-#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:438
-#: src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377 src/ui/pages/gpu.rs:429
-#: src/ui/pages/network.rs:362 src/ui/pages/network.rs:396
+#: src/ui/pages/battery.rs:280 src/ui/pages/cpu.rs:438
+#: src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377 src/ui/pages/gpu.rs:430
+#: src/ui/pages/network.rs:363 src/ui/pages/network.rs:397
 msgid "Highest:"
 msgstr "Altuena:"
 
-#: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:212
+#: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:213
 msgid "Total Usage"
 msgstr "Erabilera guztira"
 
-#: src/ui/pages/cpu.rs:271 src/ui/pages/gpu.rs:239
+#: src/ui/pages/cpu.rs:271 src/ui/pages/gpu.rs:240
 msgid "Temperature"
 msgstr "Tenperatura"
 
@@ -1099,25 +1072,25 @@ msgstr "Bai"
 msgid "R: {} · W: {}"
 msgstr "R: {} · W: {}"
 
-#: src/ui/pages/gpu.rs:220
+#: src/ui/pages/gpu.rs:221
 msgid "Video Encoder/Decoder Usage"
 msgstr "Bideo-kodetzailearen/deskodetzailearen erabilera"
 
-#: src/ui/pages/gpu.rs:226
+#: src/ui/pages/gpu.rs:227
 msgid "Video Encoder Usage"
 msgstr "Bideo-kodetzailearen erabilera"
 
-#: src/ui/pages/gpu.rs:231
+#: src/ui/pages/gpu.rs:232
 msgid "Video Decoder Usage"
 msgstr "Bideo-deskodetzailearen erabilera"
 
-#: src/ui/pages/gpu.rs:236
+#: src/ui/pages/gpu.rs:237
 msgid "Video Memory Usage"
 msgstr "Bideo-memoriaren erabilera"
 
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
-#: src/ui/pages/gpu.rs:415
+#: src/ui/pages/gpu.rs:416
 #, rust-format
 msgid "Memory: {}"
 msgstr "Memoria: {}"
@@ -1153,7 +1126,7 @@ msgstr "Bidaltzen"
 
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
-#: src/ui/pages/network.rs:445
+#: src/ui/pages/network.rs:447
 #, rust-format
 msgid "R: {} · S: {}"
 msgstr "B: {} · J: {}"
@@ -1192,17 +1165,13 @@ msgstr[1] "Hil {} prozesu?"
 msgid ""
 "Halting a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
-msgstr ""
-"Prozesua gelditzen bada, datuak galdu daitezke eta segurtasuna murriztu "
-"daiteke. Erabili kontuz."
+msgstr "Prozesua gelditzen bada, datuak galdu daitezke eta segurtasuna murriztu daiteke. Erabili kontuz."
 
 #: src/ui/pages/processes/mod.rs:2336
 msgid ""
 "Killing a process can come with serious risks such as losing data and "
 "security implications. Use with caution."
-msgstr ""
-"Prozesua hiltzen bada, datuak galdu daitezke eta segurtasuna murriztu "
-"daiteke. Erabili kontuz."
+msgstr "Prozesua hiltzen bada, datuak galdu daitezke eta segurtasuna murriztu daiteke. Erabili kontuz."
 
 #: src/ui/window.rs:466
 #, rust-format
