@@ -1,4 +1,4 @@
-use super::units::convert_storage;
+use super::units::convert_storage_decimal;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::link::{Link, LinkData};
 use crate::utils::read_parsed;
@@ -203,7 +203,8 @@ impl Drive {
     }
 
     pub fn display_name(&self) -> String {
-        let capacity_formatted = convert_storage(self.capacity().unwrap_or_default() as f64, true);
+        let capacity_formatted =
+            convert_storage_decimal(self.capacity().unwrap_or_default() as f64, true);
         match self.drive_type {
             DriveType::CdDvdBluray => i18n("CD/DVD/Blu-ray Drive"),
             DriveType::Floppy => i18n("Floppy Drive"),

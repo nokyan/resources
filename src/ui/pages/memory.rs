@@ -6,7 +6,7 @@ use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::FiniteOr;
 use crate::utils::memory::{MemoryData, MemoryDevice};
-use crate::utils::units::convert_storage;
+use crate::utils::units::convert_storage_binary;
 
 pub const TAB_ID: &str = "memory";
 
@@ -247,7 +247,7 @@ impl ResMemory {
             "tab_detail_string",
             format!(
                 "{} {}",
-                convert_storage(total_memory, false),
+                convert_storage_binary(total_memory, false),
                 memory_devices
                     .iter()
                     .find(|md| md.installed)
@@ -310,8 +310,8 @@ impl ResMemory {
         let memory_fraction = used_mem as f64 / total_mem as f64;
         let swap_fraction = (used_swap as f64 / total_swap as f64).finite_or_default();
 
-        let formatted_used_mem = convert_storage(used_mem as f64, false);
-        let formatted_total_mem = convert_storage(total_mem as f64, false);
+        let formatted_used_mem = convert_storage_binary(used_mem as f64, false);
+        let formatted_total_mem = convert_storage_binary(total_mem as f64, false);
 
         imp.memory.graph().push_data_point(memory_fraction);
         imp.memory.set_subtitle(&format!(
@@ -334,8 +334,8 @@ impl ResMemory {
             imp.swap.graph().set_visible(true);
             imp.swap.set_subtitle(&format!(
                 "{} / {} · {} %",
-                &convert_storage(used_swap as f64, false),
-                &convert_storage(total_swap as f64, false),
+                &convert_storage_binary(used_swap as f64, false),
+                &convert_storage_binary(total_swap as f64, false),
                 (swap_fraction * 100.0).round()
             ));
             self.set_property(
@@ -364,7 +364,7 @@ impl ResMemory {
             "tab_detail_string",
             format!(
                 "{} {}",
-                convert_storage(total_memory, false),
+                convert_storage_binary(total_memory, false),
                 memory_devices
                     .iter()
                     .find(|md| md.installed)

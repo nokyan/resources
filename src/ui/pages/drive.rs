@@ -7,7 +7,7 @@ use log::trace;
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils::drive::{Drive, DriveData};
-use crate::utils::units::{convert_speed, convert_storage};
+use crate::utils::units::{convert_speed, convert_storage, convert_storage_decimal};
 
 pub const TAB_ID_PREFIX: &str = "drive";
 
@@ -404,7 +404,7 @@ impl ResDrive {
 
         if let Ok(capacity) = capacity {
             imp.capacity
-                .set_subtitle(&convert_storage(capacity as f64, false));
+                .set_subtitle(&convert_storage_decimal(capacity as f64, false));
         } else {
             imp.capacity.set_subtitle(&i18n("N/A"));
         }
