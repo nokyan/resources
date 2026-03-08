@@ -41,6 +41,9 @@ pub struct NpuData {
     pub clock_speed: Option<f64>,
     pub vram_speed: Option<f64>,
 
+    pub curr_tops: Option<u64>,
+    pub max_tops: Option<u64>,
+
     pub temperature: Option<f64>,
 
     pub power_usage: Option<f64>,
@@ -64,6 +67,9 @@ impl NpuData {
         let clock_speed = npu.core_frequency().ok();
         let vram_speed = npu.memory_frequency().ok();
 
+        let curr_tops = npu.tops().ok();
+        let max_tops = npu.max_tops().ok();
+
         let temperature = npu.temperature().ok();
 
         let power_usage = npu.power_usage().ok();
@@ -79,6 +85,8 @@ impl NpuData {
             used_memory,
             clock_speed,
             vram_speed,
+            curr_tops,
+            max_tops,
             temperature,
             power_usage,
             power_cap,
@@ -120,6 +128,12 @@ pub trait NpuImpl {
     fn power_usage(&self) -> Result<f64>;
     fn core_frequency(&self) -> Result<f64>;
     fn memory_frequency(&self) -> Result<f64>;
+    fn tops(&self) -> Result<u64> {
+        bail!("not implemented")
+    }
+    fn max_tops(&self) -> Result<u64> {
+        bail!("not implemented")
+    }
     fn power_cap(&self) -> Result<f64>;
     fn power_cap_max(&self) -> Result<f64>;
 

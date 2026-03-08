@@ -36,6 +36,15 @@
                       </object>
                     </child>
                     <child>
+                      <object class="AdwActionRow" id="tops">
+                        <property name="title" translatable="yes">Performance</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                        <property name="subtitle-selectable">true</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="AdwActionRow" id="memory_clockspeed">
                         <style>
                           <class name="property"/>
