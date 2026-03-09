@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
 "POT-Creation-Date: 2026-03-07 22:28+0000\n"
-"PO-Revision-Date: 2026-03-09 11:28+0100\n"
+"PO-Revision-Date: 2026-03-09 11:34+0100\n"
 "Last-Translator: Daniel Rusek <mail@asciiwolf.com>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -688,7 +688,7 @@ msgstr "Výkon"
 
 #: data/resources/ui/pages/npu.ui:53
 msgid "Memory Frequency"
-msgstr "Frekvence faměti"
+msgstr "Frekvence paměti"
 
 #: data/resources/ui/pages/processes.ui:6 data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2346
 msgid "Kill Process"
