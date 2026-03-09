@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
 "POT-Creation-Date: 2026-03-09 10:43+0000\n"
-"PO-Revision-Date: 2026-03-09 17:15+0100\n"
+"PO-Revision-Date: 2026-03-09 17:16+0100\n"
 "Last-Translator: twlvnn kraftwerk <kraft_werk@tutanota.com>\n"
 "Language-Team: Bulgarian <Bulgarian>\n"
 "Language: bg\n"
@@ -1889,13 +1889,13 @@ msgid "{} QWh"
 msgstr "{} QWh"
 
 #: src/utils/units.rs:338
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} TOPs"
 msgstr "{} TOPs"
 
 #: src/utils/drive.rs:129 src/utils/drive.rs:208
 msgid "CD/DVD/Blu-ray Drive"
-msgstr "Устройство за CD/DVD/Blu-ray"
+msgstr "CD/DVD/Blu-ray диск"
 
 #: src/utils/drive.rs:130
 msgid "eMMC Storage"
