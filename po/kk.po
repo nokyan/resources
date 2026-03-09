@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-02-01 19:19+0000\n"
-"PO-Revision-Date: 2026-02-05 07:10+0500\n"
+"POT-Creation-Date: 2026-03-07 22:28+0000\n"
+"PO-Revision-Date: 2026-03-09 16:24+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <Kazakh>\n"
 "Language: kk\n"
@@ -35,13 +35,12 @@ msgstr "Жүйе;Ресурстар;Монитор;Процестер;Қолда
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
-"Resources allows you to check the utilization of your system resources and control your running "
-"processes and apps. It’s designed to be user-friendly and feel right at home on a modern desktop by "
-"using GNOME’s libadwaita."
+"Resources allows you to check the utilization of your system resources and control your running processes and apps. "
+"It’s designed to be user-friendly and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
-"Ресурстар қолданбасы жүйелік ресурстардың пайдаланылуын тексеруге және орындалып жатқан процестер мен "
-"қолданбаларды басқаруға мүмкіндік береді. Ол GNOME libadwaita кітапханасын қолдану арқылы заманауи жұмыс "
-"үстелінде пайдаланушыға ыңғайлы әрі үйлесімді болуы үшін жасалған."
+"Ресурстар қолданбасы жүйелік ресурстардың пайдаланылуын тексеруге және орындалып жатқан процестер мен қолданбаларды "
+"басқаруға мүмкіндік береді. Ол GNOME libadwaita кітапханасын қолдану арқылы заманауи жұмыс үстелінде пайдаланушыға "
+"ыңғайлы әрі үйлесімді болуы үшін жасалған."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
@@ -53,17 +52,16 @@ msgstr "Процессор"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:25 data/resources/ui/dialogs/app_dialog.ui:82
 #: data/resources/ui/dialogs/process_dialog.ui:64 data/resources/ui/dialogs/settings_dialog.ui:128
-#: data/resources/ui/dialogs/settings_dialog.ui:220 data/resources/ui/window.ui:176
-#: data/resources/ui/window.ui:183 src/ui/pages/applications/mod.rs:806
-#: src/ui/pages/applications/mod.rs:823 src/ui/pages/memory.rs:106 src/ui/pages/memory.rs:192
-#: src/ui/pages/processes/mod.rs:1106 src/ui/pages/processes/mod.rs:1123
+#: data/resources/ui/dialogs/settings_dialog.ui:220 data/resources/ui/window.ui:176 data/resources/ui/window.ui:183
+#: src/ui/pages/applications/mod.rs:806 src/ui/pages/applications/mod.rs:823 src/ui/pages/memory.rs:106
+#: src/ui/pages/memory.rs:192 src/ui/pages/processes/mod.rs:1106 src/ui/pages/processes/mod.rs:1123
 msgid "Memory"
 msgstr "Жады"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:26 data/resources/ui/dialogs/app_dialog.ui:140
 #: data/resources/ui/dialogs/process_dialog.ui:118 data/resources/ui/dialogs/settings_dialog.ui:158
 #: data/resources/ui/dialogs/settings_dialog.ui:250 src/ui/pages/applications/mod.rs:1232
-#: src/ui/pages/applications/mod.rs:1249 src/ui/pages/gpu.rs:119 src/ui/pages/processes/mod.rs:1544
+#: src/ui/pages/applications/mod.rs:1249 src/ui/pages/gpu.rs:120 src/ui/pages/processes/mod.rs:1544
 #: src/ui/pages/processes/mod.rs:1561 src/ui/window.rs:468
 msgid "GPU"
 msgstr "Видео процессор"
@@ -125,10 +123,9 @@ msgid "App Information"
 msgstr "Қолданба туралы ақпарат"
 
 #: data/resources/ui/dialogs/app_dialog.ui:70 data/resources/ui/dialogs/process_dialog.ui:48
-#: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37
-#: data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22 data/resources/ui/pages/gpu.ui:22
-#: data/resources/ui/pages/memory.ui:31 data/resources/ui/pages/network.ui:22
-#: data/resources/ui/pages/npu.ui:22
+#: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37 data/resources/ui/pages/cpu.ui:50
+#: data/resources/ui/pages/drive.ui:22 data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31
+#: data/resources/ui/pages/network.ui:22 data/resources/ui/pages/npu.ui:22
 msgid "Usage"
 msgstr "Қолданылуы"
 
@@ -149,58 +146,57 @@ msgstr "Своп"
 
 #: data/resources/ui/dialogs/app_dialog.ui:100 data/resources/ui/dialogs/process_dialog.ui:78
 #: data/resources/ui/dialogs/settings_dialog.ui:138 data/resources/ui/dialogs/settings_dialog.ui:230
-#: src/ui/pages/applications/mod.rs:945 src/ui/pages/applications/mod.rs:964
-#: src/ui/pages/processes/mod.rs:1245 src/ui/pages/processes/mod.rs:1264
+#: src/ui/pages/applications/mod.rs:945 src/ui/pages/applications/mod.rs:964 src/ui/pages/processes/mod.rs:1245
+#: src/ui/pages/processes/mod.rs:1264
 msgid "Drive Read"
 msgstr "Дискіден оқу"
 
 #: data/resources/ui/dialogs/app_dialog.ui:109 data/resources/ui/dialogs/process_dialog.ui:87
 #: data/resources/ui/dialogs/settings_dialog.ui:143 data/resources/ui/dialogs/settings_dialog.ui:235
-#: src/ui/pages/applications/mod.rs:1018 src/ui/pages/applications/mod.rs:1037
-#: src/ui/pages/processes/mod.rs:1320 src/ui/pages/processes/mod.rs:1339
+#: src/ui/pages/applications/mod.rs:1018 src/ui/pages/applications/mod.rs:1037 src/ui/pages/processes/mod.rs:1320
+#: src/ui/pages/processes/mod.rs:1339
 msgid "Drive Read Total"
 msgstr "Дискіден оқудың жалпы көлемі"
 
 #: data/resources/ui/dialogs/app_dialog.ui:118 data/resources/ui/dialogs/process_dialog.ui:96
 #: data/resources/ui/dialogs/settings_dialog.ui:148 data/resources/ui/dialogs/settings_dialog.ui:240
-#: src/ui/pages/applications/mod.rs:1087 src/ui/pages/applications/mod.rs:1106
-#: src/ui/pages/processes/mod.rs:1395 src/ui/pages/processes/mod.rs:1414
+#: src/ui/pages/applications/mod.rs:1087 src/ui/pages/applications/mod.rs:1106 src/ui/pages/processes/mod.rs:1395
+#: src/ui/pages/processes/mod.rs:1414
 msgid "Drive Write"
 msgstr "Дискіге жазу"
 
 #: data/resources/ui/dialogs/app_dialog.ui:127 data/resources/ui/dialogs/process_dialog.ui:105
 #: data/resources/ui/dialogs/settings_dialog.ui:153 data/resources/ui/dialogs/settings_dialog.ui:245
-#: src/ui/pages/applications/mod.rs:1162 src/ui/pages/applications/mod.rs:1181
-#: src/ui/pages/processes/mod.rs:1470 src/ui/pages/processes/mod.rs:1489
+#: src/ui/pages/applications/mod.rs:1162 src/ui/pages/applications/mod.rs:1181 src/ui/pages/processes/mod.rs:1470
+#: src/ui/pages/processes/mod.rs:1489
 msgid "Drive Write Total"
 msgstr "Дискіге жазудың жалпы көлемі"
 
 #: data/resources/ui/dialogs/app_dialog.ui:149 data/resources/ui/dialogs/process_dialog.ui:127
 #: data/resources/ui/dialogs/settings_dialog.ui:163 data/resources/ui/dialogs/settings_dialog.ui:255
-#: src/ui/pages/applications/mod.rs:1436 src/ui/pages/applications/mod.rs:1454
-#: src/ui/pages/processes/mod.rs:1749 src/ui/pages/processes/mod.rs:1768
+#: src/ui/pages/applications/mod.rs:1436 src/ui/pages/applications/mod.rs:1454 src/ui/pages/processes/mod.rs:1749
+#: src/ui/pages/processes/mod.rs:1768
 msgid "Video Memory"
 msgstr "Видеожады"
 
 #: data/resources/ui/dialogs/app_dialog.ui:158 data/resources/ui/dialogs/process_dialog.ui:136
 #: data/resources/ui/dialogs/settings_dialog.ui:168 data/resources/ui/dialogs/settings_dialog.ui:260
-#: src/ui/pages/applications/mod.rs:1299 src/ui/pages/applications/mod.rs:1318
-#: src/ui/pages/processes/mod.rs:1611 src/ui/pages/processes/mod.rs:1630
+#: src/ui/pages/applications/mod.rs:1299 src/ui/pages/applications/mod.rs:1318 src/ui/pages/processes/mod.rs:1611
+#: src/ui/pages/processes/mod.rs:1630
 msgid "Video Encoder"
 msgstr "Видео кодтаушы"
 
 #: data/resources/ui/dialogs/app_dialog.ui:167 data/resources/ui/dialogs/process_dialog.ui:145
 #: data/resources/ui/dialogs/settings_dialog.ui:173 data/resources/ui/dialogs/settings_dialog.ui:265
-#: src/ui/pages/applications/mod.rs:1368 src/ui/pages/applications/mod.rs:1387
-#: src/ui/pages/processes/mod.rs:1680 src/ui/pages/processes/mod.rs:1699
+#: src/ui/pages/applications/mod.rs:1368 src/ui/pages/applications/mod.rs:1387 src/ui/pages/processes/mod.rs:1680
+#: src/ui/pages/processes/mod.rs:1699
 msgid "Video Decoder"
 msgstr "Видео декодтаушы"
 
 #: data/resources/ui/dialogs/app_dialog.ui:174 data/resources/ui/dialogs/process_dialog.ui:179
-#: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:83
-#: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:74
-#: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
-#: data/resources/ui/pages/npu.ui:68
+#: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:83 data/resources/ui/pages/drive.ui:54
+#: data/resources/ui/pages/gpu.ui:74 data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
+#: data/resources/ui/pages/npu.ui:77
 msgid "Properties"
 msgstr "Қасиеттері"
 
@@ -258,8 +254,7 @@ msgstr "Пайдаланушы"
 msgid "Control Group"
 msgstr "Басқару тобы"
 
-#: data/resources/ui/dialogs/process_options_dialog.ui:7
-#: data/resources/ui/dialogs/process_options_dialog.ui:69
+#: data/resources/ui/dialogs/process_options_dialog.ui:7 data/resources/ui/dialogs/process_options_dialog.ui:69
 msgid "Process Options"
 msgstr "Процесс опциялары"
 
@@ -272,12 +267,9 @@ msgid "Niceness"
 msgstr "Niceness мәні"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:73
-msgid ""
-"The priority of a process is given by its niceness. A lower niceness value correspond to a higher "
-"priority."
+msgid "The priority of a process is given by its niceness. A lower niceness value correspond to a higher priority."
 msgstr ""
-"Процестің басымдылығы оның niceness мәнімен анықталады. Төменірек niceness мәні жоғарырақ басымдылыққа "
-"сәйкес келеді."
+"Процестің басымдылығы оның niceness мәнімен анықталады. Төменірек niceness мәні жоғарырақ басымдылыққа сәйкес келеді."
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:87 data/resources/ui/dialogs/settings_dialog.ui:285
 #: src/ui/pages/processes/mod.rs:2018 src/ui/pages/processes/mod.rs:2034
@@ -442,8 +434,8 @@ msgstr "Процессор қолданылуын нормалау"
 msgid "If enabled, the total usage of all cores will be divided by the amount of cores"
 msgstr "Іске қосылған болса, барлық ядролардың жалпы қолданылуы ядролар санына бөлінеді"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:122 data/resources/ui/window.ui:65
-#: data/resources/ui/window.ui:72 src/ui/pages/applications/mod.rs:132
+#: data/resources/ui/dialogs/settings_dialog.ui:122 data/resources/ui/window.ui:65 data/resources/ui/window.ui:72
+#: src/ui/pages/applications/mod.rs:132
 msgid "Apps"
 msgstr "Қолданбалар"
 
@@ -452,13 +444,13 @@ msgid "Information Columns"
 msgstr "Ақпарат бағандары"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:183 data/resources/ui/dialogs/settings_dialog.ui:295
-#: src/ui/pages/applications/mod.rs:1570 src/ui/pages/applications/mod.rs:1589
-#: src/ui/pages/processes/mod.rs:2160 src/ui/pages/processes/mod.rs:2179
+#: src/ui/pages/applications/mod.rs:1570 src/ui/pages/applications/mod.rs:1589 src/ui/pages/processes/mod.rs:2160
+#: src/ui/pages/processes/mod.rs:2179
 msgid "Combined Memory"
 msgstr "Біріктірілген жад"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:193 data/resources/ui/window.ui:105
-#: data/resources/ui/window.ui:112 src/ui/pages/processes/mod.rs:176
+#: data/resources/ui/dialogs/settings_dialog.ui:193 data/resources/ui/window.ui:105 data/resources/ui/window.ui:112
+#: src/ui/pages/processes/mod.rs:176
 msgid "Processes"
 msgstr "Процестер"
 
@@ -547,8 +539,8 @@ msgstr "Зарядтау циклдері"
 msgid "Technology"
 msgstr "Технология"
 
-#: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:81
-#: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:75
+#: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:81 data/resources/ui/pages/network.ui:58
+#: data/resources/ui/pages/npu.ui:84
 msgid "Manufacturer"
 msgstr "Өндіруші"
 
@@ -564,7 +556,7 @@ msgstr "Құрылғы"
 msgid "Show Usages of Logical CPUs"
 msgstr "Логикалық процессорлардың қолданылуын көрсету"
 
-#: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66 data/resources/ui/pages/npu.ui:60
+#: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66 data/resources/ui/pages/npu.ui:69
 msgid "Sensors"
 msgstr "Сенсорлар"
 
@@ -621,8 +613,8 @@ msgid "Removable"
 msgstr "Ауыстырмалы"
 
 #. Translators: "Link" refers to something like "PCIe 4.0 ×16"
-#: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113
-#: data/resources/ui/pages/network.ui:103 data/resources/ui/pages/npu.ui:107
+#: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113 data/resources/ui/pages/network.ui:103
+#: data/resources/ui/pages/npu.ui:116
 msgid "Link"
 msgstr "Сілтеме"
 
@@ -634,20 +626,19 @@ msgstr "Видео процессор жиілігі"
 msgid "Video Memory Frequency"
 msgstr "Видео жадының жиілігі"
 
-#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49 src/ui/pages/battery.rs:217
+#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:58 src/ui/pages/battery.rs:218
 msgid "Power Usage"
 msgstr "Қуатты тұтыну"
 
-#: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:84
+#: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:93
 msgid "PCI Slot"
 msgstr "PCI слоты"
 
-#: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
-#: data/resources/ui/pages/npu.ui:93
+#: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67 data/resources/ui/pages/npu.ui:102
 msgid "Driver Used"
 msgstr "Қолданылатын драйвер"
 
-#: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
+#: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:111
 msgid "Max Power Cap"
 msgstr "Қуаттың максималды шегі"
 
@@ -703,22 +694,23 @@ msgstr "Байланыс жылдамдығы"
 msgid "NPU Frequency"
 msgstr "NPU жиілігі"
 
-#: data/resources/ui/pages/npu.ui:44
+#: data/resources/ui/pages/npu.ui:40
+msgid "Performance"
+msgstr "Өнімділік"
+
+#: data/resources/ui/pages/npu.ui:53
 msgid "Memory Frequency"
 msgstr "Жад жиілігі"
 
-#: data/resources/ui/pages/processes.ui:6 data/resources/ui/pages/processes.ui:42
-#: src/ui/pages/processes/mod.rs:2346
+#: data/resources/ui/pages/processes.ui:6 data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2346
 msgid "Kill Process"
 msgstr "Процесті жою"
 
-#: data/resources/ui/pages/processes.ui:10 data/resources/ui/pages/processes.ui:46
-#: src/ui/pages/processes/mod.rs:2345
+#: data/resources/ui/pages/processes.ui:10 data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2345
 msgid "Halt Process"
 msgstr "Процесті тоқтату"
 
-#: data/resources/ui/pages/processes.ui:14 data/resources/ui/pages/processes.ui:50
-#: src/ui/pages/processes/mod.rs:2347
+#: data/resources/ui/pages/processes.ui:14 data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2347
 msgid "Continue Process"
 msgstr "Процесті жалғастыру"
 
@@ -734,8 +726,8 @@ msgstr "Процестерді тоқтату"
 msgid "Continue Processes"
 msgstr "Процестерді жалғастыру"
 
-#: data/resources/ui/pages/processes.ui:38 data/resources/ui/pages/processes.ui:157
-#: src/ui/pages/processes/mod.rs:527 src/ui/pages/processes/mod.rs:2344
+#: data/resources/ui/pages/processes.ui:38 data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:527
+#: src/ui/pages/processes/mod.rs:2344
 msgid "End Process"
 msgstr "Процесті аяқтау"
 
@@ -841,40 +833,35 @@ msgstr "Іздеу өрісін ауыстыру"
 msgid "translator-credits"
 msgstr "Baurzhan Muftakhidinov <baurthefirst@gmail.com>"
 
-#: src/ui/dialogs/app_dialog.rs:155 src/ui/dialogs/process_dialog.rs:133
-#: src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:146
-#: src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171
-#: src/ui/dialogs/process_dialog.rs:178 src/ui/dialogs/process_dialog.rs:185
-#: src/ui/dialogs/process_dialog.rs:192 src/ui/pages/applications/mod.rs:975
-#: src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:205 src/ui/pages/battery.rs:225
-#: src/ui/pages/battery.rs:231 src/ui/pages/battery.rs:234 src/ui/pages/battery.rs:265
-#: src/ui/pages/battery.rs:289 src/ui/pages/battery.rs:291 src/ui/pages/battery.rs:301
-#: src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258 src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284
-#: src/ui/pages/cpu.rs:290 src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303
-#: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:321 src/ui/pages/drive.rs:352
-#: src/ui/pages/drive.rs:354 src/ui/pages/drive.rs:383 src/ui/pages/drive.rs:385 src/ui/pages/drive.rs:401
-#: src/ui/pages/drive.rs:402 src/ui/pages/drive.rs:409 src/ui/pages/drive.rs:419 src/ui/pages/drive.rs:429
-#: src/ui/pages/drive.rs:435 src/ui/pages/gpu.rs:245 src/ui/pages/gpu.rs:252 src/ui/pages/gpu.rs:297
-#: src/ui/pages/gpu.rs:322 src/ui/pages/gpu.rs:325 src/ui/pages/gpu.rs:336 src/ui/pages/gpu.rs:377
-#: src/ui/pages/gpu.rs:384 src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:403 src/ui/pages/gpu.rs:407
-#: src/ui/pages/gpu.rs:437 src/ui/pages/gpu.rs:443 src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228
-#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233 src/ui/pages/memory.rs:237
-#: src/ui/pages/memory.rs:238 src/ui/pages/memory.rs:266 src/ui/pages/memory.rs:327
-#: src/ui/pages/network.rs:252 src/ui/pages/network.rs:259 src/ui/pages/network.rs:266
-#: src/ui/pages/network.rs:272 src/ui/pages/network.rs:275 src/ui/pages/network.rs:285
-#: src/ui/pages/network.rs:292 src/ui/pages/network.rs:302 src/ui/pages/network.rs:370
-#: src/ui/pages/network.rs:373 src/ui/pages/network.rs:375 src/ui/pages/network.rs:404
-#: src/ui/pages/network.rs:407 src/ui/pages/network.rs:409 src/ui/pages/network.rs:417
-#: src/ui/pages/network.rs:424 src/ui/pages/network.rs:434 src/ui/pages/processes/mod.rs:1275
+#: src/ui/dialogs/app_dialog.rs:155 src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:137
+#: src/ui/dialogs/process_dialog.rs:146 src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171
+#: src/ui/dialogs/process_dialog.rs:178 src/ui/dialogs/process_dialog.rs:185 src/ui/dialogs/process_dialog.rs:192
+#: src/ui/pages/applications/mod.rs:975 src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:206
+#: src/ui/pages/battery.rs:226 src/ui/pages/battery.rs:232 src/ui/pages/battery.rs:235 src/ui/pages/battery.rs:266
+#: src/ui/pages/battery.rs:290 src/ui/pages/battery.rs:292 src/ui/pages/battery.rs:302 src/ui/pages/cpu.rs:243
+#: src/ui/pages/cpu.rs:258 src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:290
+#: src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303 src/ui/pages/cpu.rs:341
+#: src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:321 src/ui/pages/drive.rs:352 src/ui/pages/drive.rs:354
+#: src/ui/pages/drive.rs:383 src/ui/pages/drive.rs:385 src/ui/pages/drive.rs:401 src/ui/pages/drive.rs:402
+#: src/ui/pages/drive.rs:409 src/ui/pages/drive.rs:419 src/ui/pages/drive.rs:429 src/ui/pages/drive.rs:435
+#: src/ui/pages/gpu.rs:246 src/ui/pages/gpu.rs:253 src/ui/pages/gpu.rs:298 src/ui/pages/gpu.rs:323
+#: src/ui/pages/gpu.rs:326 src/ui/pages/gpu.rs:337 src/ui/pages/gpu.rs:378 src/ui/pages/gpu.rs:385
+#: src/ui/pages/gpu.rs:397 src/ui/pages/gpu.rs:404 src/ui/pages/gpu.rs:408 src/ui/pages/gpu.rs:438
+#: src/ui/pages/gpu.rs:444 src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228 src/ui/pages/memory.rs:232
+#: src/ui/pages/memory.rs:233 src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:238 src/ui/pages/memory.rs:266
+#: src/ui/pages/memory.rs:327 src/ui/pages/network.rs:252 src/ui/pages/network.rs:259 src/ui/pages/network.rs:266
+#: src/ui/pages/network.rs:272 src/ui/pages/network.rs:275 src/ui/pages/network.rs:285 src/ui/pages/network.rs:294
+#: src/ui/pages/network.rs:303 src/ui/pages/network.rs:371 src/ui/pages/network.rs:374 src/ui/pages/network.rs:376
+#: src/ui/pages/network.rs:405 src/ui/pages/network.rs:408 src/ui/pages/network.rs:410 src/ui/pages/network.rs:418
+#: src/ui/pages/network.rs:427 src/ui/pages/network.rs:436 src/ui/pages/processes/mod.rs:1275
 #: src/ui/pages/processes/mod.rs:1350 src/ui/pages/processes/mod.rs:1425 src/ui/pages/processes/mod.rs:1500
-#: src/ui/pages/processes/mod.rs:2050 src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152
-#: src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61
-#: src/utils/npu/mod.rs:249 src/utils/npu/mod.rs:255
+#: src/ui/pages/processes/mod.rs:2050 src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152 src/utils/drive.rs:137
+#: src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:263
+#: src/utils/npu/mod.rs:269
 msgid "N/A"
 msgstr "Қ/Ж"
 
-#: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257 src/ui/pages/cpu.rs:417
-#: src/ui/pages/cpu.rs:421
+#: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257 src/ui/pages/cpu.rs:417 src/ui/pages/cpu.rs:421
 #, rust-format
 msgid "CPU {}"
 msgstr "Процессор {}"
@@ -939,39 +926,35 @@ msgid "Unsaved work might be lost."
 msgstr "Сақталмаған жұмыс жоғалуы мүмкін."
 
 #: src/ui/pages/applications/mod.rs:1649
-msgid ""
-"Halting an app can come with serious risks such as losing data and security implications. Use with "
-"caution."
+msgid "Halting an app can come with serious risks such as losing data and security implications. Use with caution."
 msgstr ""
-"Қолданбаны тоқтату деректерді жоғалту және қауіпсіздік салдары сияқты күрделі қауіптерге әкелуі мүмкін. "
-"Сақтықпен қолданыңыз."
+"Қолданбаны тоқтату деректерді жоғалту және қауіпсіздік салдары сияқты күрделі қауіптерге әкелуі мүмкін. Сақтықпен "
+"қолданыңыз."
 
 #: src/ui/pages/applications/mod.rs:1652
-msgid ""
-"Killing an app can come with serious risks such as losing data and security implications. Use with "
-"caution."
+msgid "Killing an app can come with serious risks such as losing data and security implications. Use with caution."
 msgstr ""
-"Қолданбаны жою деректерді жоғалту және қауіпсіздік салдары сияқты күрделі қауіптерге әкелуі мүмкін. "
-"Сақтықпен қолданыңыз."
+"Қолданбаны жою деректерді жоғалту және қауіпсіздік салдары сияқты күрделі қауіптерге әкелуі мүмкін. Сақтықпен "
+"қолданыңыз."
 
-#: src/ui/pages/battery.rs:102 src/utils/battery.rs:258
+#: src/ui/pages/battery.rs:103 src/utils/battery.rs:258
 msgid "Battery"
 msgstr "Батарея"
 
-#: src/ui/pages/battery.rs:210
+#: src/ui/pages/battery.rs:211
 msgid "Battery Charge"
 msgstr "Батарея заряды"
 
-#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:438 src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377
-#: src/ui/pages/gpu.rs:429 src/ui/pages/network.rs:362 src/ui/pages/network.rs:396
+#: src/ui/pages/battery.rs:280 src/ui/pages/cpu.rs:438 src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377
+#: src/ui/pages/gpu.rs:430 src/ui/pages/network.rs:363 src/ui/pages/network.rs:397
 msgid "Highest:"
 msgstr "Ең жоғары:"
 
-#: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:212
+#: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:213
 msgid "Total Usage"
 msgstr "Жалпы қолданылуы"
 
-#: src/ui/pages/cpu.rs:271 src/ui/pages/gpu.rs:239
+#: src/ui/pages/cpu.rs:271 src/ui/pages/gpu.rs:240
 msgid "Temperature"
 msgstr "Температура"
 
@@ -1002,25 +985,25 @@ msgstr "Иә"
 msgid "R: {} · W: {}"
 msgstr "О: {} · Ж: {}"
 
-#: src/ui/pages/gpu.rs:220
+#: src/ui/pages/gpu.rs:221
 msgid "Video Encoder/Decoder Usage"
 msgstr "Видео кодер/декодер қолданылуы"
 
-#: src/ui/pages/gpu.rs:226
+#: src/ui/pages/gpu.rs:227
 msgid "Video Encoder Usage"
 msgstr "Видео кодер қолданылуы"
 
-#: src/ui/pages/gpu.rs:231
+#: src/ui/pages/gpu.rs:232
 msgid "Video Decoder Usage"
 msgstr "Видео декодер қолданылуы"
 
-#: src/ui/pages/gpu.rs:236
+#: src/ui/pages/gpu.rs:237
 msgid "Video Memory Usage"
 msgstr "Видео жадының қолданылуы"
 
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
-#: src/ui/pages/gpu.rs:415
+#: src/ui/pages/gpu.rs:416
 #, rust-format
 msgid "Memory: {}"
 msgstr "Жад: {}"
@@ -1056,7 +1039,7 @@ msgstr "Жіберу"
 
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
-#: src/ui/pages/network.rs:445
+#: src/ui/pages/network.rs:447
 #, rust-format
 msgid "R: {} · S: {}"
 msgstr "Қ: {} · Ж: {}"
@@ -1089,20 +1072,16 @@ msgid_plural "Kill {} processes?"
 msgstr[0] "{} процесті жою керек пе?"
 
 #: src/ui/pages/processes/mod.rs:2333
-msgid ""
-"Halting a process can come with serious risks such as losing data and security implications. Use with "
-"caution."
+msgid "Halting a process can come with serious risks such as losing data and security implications. Use with caution."
 msgstr ""
-"Процесті тоқтату деректерді жоғалту және қауіпсіздік салдары сияқты маңызды қауіптерге әкеп соғуы "
-"мүмкін. Сақтықпен пайдаланыңыз."
+"Процесті тоқтату деректерді жоғалту және қауіпсіздік салдары сияқты маңызды қауіптерге әкеп соғуы мүмкін. Сақтықпен "
+"пайдаланыңыз."
 
 #: src/ui/pages/processes/mod.rs:2336
-msgid ""
-"Killing a process can come with serious risks such as losing data and security implications. Use with "
-"caution."
+msgid "Killing a process can come with serious risks such as losing data and security implications. Use with caution."
 msgstr ""
-"Процесті жою деректерді жоғалту және қауіпсіздік салдары сияқты маңызды қауіптерге әкеп соғуы мүмкін. "
-"Сақтықпен пайдаланыңыз."
+"Процесті жою деректерді жоғалту және қауіпсіздік салдары сияқты маңызды қауіптерге әкеп соғуы мүмкін. Сақтықпен "
+"пайдаланыңыз."
 
 #: src/ui/window.rs:466
 #, rust-format
@@ -1118,100 +1097,100 @@ msgstr "NPU {}"
 msgid "NPU"
 msgstr "NPU"
 
-#: src/ui/window.rs:1201
+#: src/ui/window.rs:1200
 #, rust-format
 msgid "Successfully adjusted {}"
 msgstr "{} сәтті реттелді"
 
-#: src/ui/window.rs:1202
+#: src/ui/window.rs:1201
 #, rust-format
 msgid "There was a problem adjusting {}"
 msgstr "{} реттеу кезінде мәселе туындады"
 
-#: src/ui/window.rs:1284
+#: src/ui/window.rs:1283
 #, rust-format
 msgid "Successfully ended {}"
 msgstr "{} сәтті аяқталды"
 
-#: src/ui/window.rs:1285
+#: src/ui/window.rs:1284
 #, rust-format
 msgid "Successfully halted {}"
 msgstr "{} сәтті тоқтатылды"
 
-#: src/ui/window.rs:1286
+#: src/ui/window.rs:1285
 #, rust-format
 msgid "Successfully killed {}"
 msgstr "{} сәтті жойылды"
 
-#: src/ui/window.rs:1287
+#: src/ui/window.rs:1286
 #, rust-format
 msgid "Successfully continued {}"
 msgstr "{} сәтті жалғастырылды"
 
-#: src/ui/window.rs:1294
+#: src/ui/window.rs:1293
 #, rust-format
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
 msgstr[0] "{} процесс сәтті аяқталды"
 
-#: src/ui/window.rs:1300
+#: src/ui/window.rs:1299
 #, rust-format
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
 msgstr[0] "{} процесс сәтті тоқтатылды"
 
-#: src/ui/window.rs:1306
+#: src/ui/window.rs:1305
 #, rust-format
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
 msgstr[0] "{} процесс сәтті жойылды"
 
-#: src/ui/window.rs:1312
+#: src/ui/window.rs:1311
 #, rust-format
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
 msgstr[0] "{} процесс сәтті жалғастырылды"
 
-#: src/ui/window.rs:1323
+#: src/ui/window.rs:1322
 #, rust-format
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] "{} процесті аяқтау кезінде мәселелер туындады"
 
-#: src/ui/window.rs:1329
+#: src/ui/window.rs:1328
 #, rust-format
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "{} процесті тоқтату кезінде мәселелер туындады"
 
-#: src/ui/window.rs:1335
+#: src/ui/window.rs:1334
 #, rust-format
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "{} процесті жою кезінде мәселелер туындады"
 
-#: src/ui/window.rs:1341
+#: src/ui/window.rs:1340
 #, rust-format
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "{} процесті жалғастыру кезінде мәселелер туындады"
 
-#: src/ui/window.rs:1351
+#: src/ui/window.rs:1350
 #, rust-format
 msgid "There was a problem ending {}"
 msgstr "{} аяқтау кезінде мәселе туындады"
 
-#: src/ui/window.rs:1352
+#: src/ui/window.rs:1351
 #, rust-format
 msgid "There was a problem halting {}"
 msgstr "{} тоқтату кезінде мәселе туындады"
 
-#: src/ui/window.rs:1353
+#: src/ui/window.rs:1352
 #, rust-format
 msgid "There was a problem killing {}"
 msgstr "{} жою кезінде мәселе туындады"
 
-#: src/ui/window.rs:1354
+#: src/ui/window.rs:1353
 #, rust-format
 msgid "There was a problem continuing {}"
 msgstr "{} жалғастыру кезінде мәселе туындады"
@@ -1771,6 +1750,11 @@ msgstr "{} РнВт/сағ"
 #, rust-format
 msgid "{} QWh"
 msgstr "{} КвВт/сағ"
+
+#: src/utils/units.rs:338
+#, rust-format
+msgid "{} TOPs"
+msgstr "{} ТО/с"
 
 #: src/utils/drive.rs:129 src/utils/drive.rs:208
 msgid "CD/DVD/Blu-ray Drive"
