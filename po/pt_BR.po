@@ -3,14 +3,15 @@
 # Victor L. Pavan <victorpavan001@gmail.com>, 2023-2024.
 # Filipe Motta <luizfilipemotta@gmail.com>, 2024.
 # Juliano de Souza Camargo <julianosc@pm.me>, 2025-2026.
+# Rafael Fontenelle <rafaelff@gnome.org>, 2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-02-01 19:19+0000\n"
-"PO-Revision-Date: 2026-02-02 19:39-0300\n"
-"Last-Translator: Juliano de Souza Camargo <julianosc@pm.me>\n"
+"POT-Creation-Date: 2026-03-07 22:28+0000\n"
+"PO-Revision-Date: 2026-03-09 06:56-0300\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <https://br.gnome.org/traducao/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -20,15 +21,13 @@ msgstr ""
 "X-Generator: Gtranslator 49.0\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: data/net.nokyan.Resources.desktop.in.in:2
-#: data/net.nokyan.Resources.metainfo.xml.in.in:4
+#: data/net.nokyan.Resources.desktop.in.in:2 data/net.nokyan.Resources.metainfo.xml.in.in:4
 #: data/resources/ui/window.ui:22 src/application.rs:272
 msgid "Resources"
 msgstr "Recursos"
 
 #. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
-#: data/net.nokyan.Resources.desktop.in.in:3
-#: data/net.nokyan.Resources.metainfo.xml.in.in:5
+#: data/net.nokyan.Resources.desktop.in.in:3 data/net.nokyan.Resources.metainfo.xml.in.in:5
 msgid "Keep an eye on system resources"
 msgstr "Monitore os recursos do sistema"
 
@@ -39,14 +38,13 @@ msgstr "Sistema;Resources;Recursos;Monitor;Processos;Uso;Tarefas;Gerenciador;CPU
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
-"Resources allows you to check the utilization of your system resources and "
-"control your running processes and apps. It’s designed to be user-friendly "
-"and feel right at home on a modern desktop by using GNOME’s libadwaita."
+"Resources allows you to check the utilization of your system resources and control your running "
+"processes and apps. It’s designed to be user-friendly and feel right at home on a modern desktop by "
+"using GNOME’s libadwaita."
 msgstr ""
-"Recursos permite que você verifique a utilização dos recursos do seu sistema "
-"e controle os processos e aplicativos em execução. É projetado para ter uma "
-"interface amigável e se encaixar em um desktop moderno, usando Libadwaita do "
-"GNOME."
+"Recursos permite que você verifique a utilização dos recursos do seu sistema e controle os processos e "
+"aplicativos em execução. É projetado para ter uma interface amigável e se encaixar em um desktop "
+"moderno, usando Libadwaita do GNOME."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
@@ -56,31 +54,24 @@ msgstr "Recursos suporta o monitoramento dos seguintes componentes:"
 msgid "CPU"
 msgstr "CPU"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:25
-#: data/resources/ui/dialogs/app_dialog.ui:82
-#: data/resources/ui/dialogs/process_dialog.ui:64
-#: data/resources/ui/dialogs/settings_dialog.ui:128
-#: data/resources/ui/dialogs/settings_dialog.ui:220
-#: data/resources/ui/window.ui:176 data/resources/ui/window.ui:183
-#: src/ui/pages/applications/mod.rs:806 src/ui/pages/applications/mod.rs:823
-#: src/ui/pages/memory.rs:106 src/ui/pages/memory.rs:192
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25 data/resources/ui/dialogs/app_dialog.ui:82
+#: data/resources/ui/dialogs/process_dialog.ui:64 data/resources/ui/dialogs/settings_dialog.ui:128
+#: data/resources/ui/dialogs/settings_dialog.ui:220 data/resources/ui/window.ui:176
+#: data/resources/ui/window.ui:183 src/ui/pages/applications/mod.rs:806
+#: src/ui/pages/applications/mod.rs:823 src/ui/pages/memory.rs:106 src/ui/pages/memory.rs:192
 #: src/ui/pages/processes/mod.rs:1106 src/ui/pages/processes/mod.rs:1123
 msgid "Memory"
 msgstr "Memória"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:26
-#: data/resources/ui/dialogs/app_dialog.ui:140
-#: data/resources/ui/dialogs/process_dialog.ui:118
-#: data/resources/ui/dialogs/settings_dialog.ui:158
-#: data/resources/ui/dialogs/settings_dialog.ui:250
-#: src/ui/pages/applications/mod.rs:1232 src/ui/pages/applications/mod.rs:1249
-#: src/ui/pages/gpu.rs:119 src/ui/pages/processes/mod.rs:1544
+#: data/net.nokyan.Resources.metainfo.xml.in.in:26 data/resources/ui/dialogs/app_dialog.ui:140
+#: data/resources/ui/dialogs/process_dialog.ui:118 data/resources/ui/dialogs/settings_dialog.ui:158
+#: data/resources/ui/dialogs/settings_dialog.ui:250 src/ui/pages/applications/mod.rs:1232
+#: src/ui/pages/applications/mod.rs:1249 src/ui/pages/gpu.rs:120 src/ui/pages/processes/mod.rs:1544
 #: src/ui/pages/processes/mod.rs:1561 src/ui/window.rs:468
 msgid "GPU"
 msgstr "GPU"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:27
-#: data/resources/ui/dialogs/settings_dialog.ui:324
+#: data/net.nokyan.Resources.metainfo.xml.in.in:27 data/resources/ui/dialogs/settings_dialog.ui:324
 msgid "Network Interfaces"
 msgstr "Interfaces de rede"
 
@@ -129,115 +120,90 @@ msgid "Control Process"
 msgstr "Controlar processo"
 
 #: data/net.nokyan.Resources.policy.in.in:10
-msgid ""
-"Authentication is required to control superuser’s or other users’ processes"
-msgstr ""
-"A autenticação é requerida para controlar processos de superusuário ou "
-"outros usuários"
+msgid "Authentication is required to control superuser’s or other users’ processes"
+msgstr "A autenticação é requerida para controlar processos de superusuário ou outros usuários"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
 msgid "App Information"
 msgstr "Informações do Aplicativo"
 
-#: data/resources/ui/dialogs/app_dialog.ui:70
-#: data/resources/ui/dialogs/process_dialog.ui:48
+#: data/resources/ui/dialogs/app_dialog.ui:70 data/resources/ui/dialogs/process_dialog.ui:48
 #: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37
-#: data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22
-#: data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31
-#: data/resources/ui/pages/network.ui:22 data/resources/ui/pages/npu.ui:22
+#: data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22 data/resources/ui/pages/gpu.ui:22
+#: data/resources/ui/pages/memory.ui:31 data/resources/ui/pages/network.ui:22
+#: data/resources/ui/pages/npu.ui:22
 msgid "Usage"
 msgstr "Uso"
 
-#: data/resources/ui/dialogs/app_dialog.ui:73
-#: data/resources/ui/dialogs/process_dialog.ui:55
-#: data/resources/ui/dialogs/settings_dialog.ui:133
-#: data/resources/ui/dialogs/settings_dialog.ui:225
-#: data/resources/ui/window.ui:145 data/resources/ui/window.ui:152
-#: src/ui/pages/applications/mod.rs:873 src/ui/pages/applications/mod.rs:890
-#: src/ui/pages/cpu.rs:128 src/ui/pages/processes/mod.rs:1173
+#: data/resources/ui/dialogs/app_dialog.ui:73 data/resources/ui/dialogs/process_dialog.ui:55
+#: data/resources/ui/dialogs/settings_dialog.ui:133 data/resources/ui/dialogs/settings_dialog.ui:225
+#: data/resources/ui/window.ui:145 data/resources/ui/window.ui:152 src/ui/pages/applications/mod.rs:873
+#: src/ui/pages/applications/mod.rs:890 src/ui/pages/cpu.rs:128 src/ui/pages/processes/mod.rs:1173
 #: src/ui/pages/processes/mod.rs:1190 src/ui/window.rs:290
 msgid "Processor"
 msgstr "Processador"
 
-#: data/resources/ui/dialogs/app_dialog.ui:91
-#: data/resources/ui/dialogs/process_dialog.ui:73
-#: data/resources/ui/dialogs/settings_dialog.ui:178
-#: data/resources/ui/dialogs/settings_dialog.ui:290
-#: src/ui/pages/applications/mod.rs:1503 src/ui/pages/applications/mod.rs:1520
-#: src/ui/pages/memory.rs:198 src/ui/pages/processes/mod.rs:2093
-#: src/ui/pages/processes/mod.rs:2110
+#: data/resources/ui/dialogs/app_dialog.ui:91 data/resources/ui/dialogs/process_dialog.ui:73
+#: data/resources/ui/dialogs/settings_dialog.ui:178 data/resources/ui/dialogs/settings_dialog.ui:290
+#: src/ui/pages/applications/mod.rs:1503 src/ui/pages/applications/mod.rs:1520 src/ui/pages/memory.rs:198
+#: src/ui/pages/processes/mod.rs:2093 src/ui/pages/processes/mod.rs:2110
 msgid "Swap"
 msgstr "Swap"
 
-#: data/resources/ui/dialogs/app_dialog.ui:100
-#: data/resources/ui/dialogs/process_dialog.ui:78
-#: data/resources/ui/dialogs/settings_dialog.ui:138
-#: data/resources/ui/dialogs/settings_dialog.ui:230
+#: data/resources/ui/dialogs/app_dialog.ui:100 data/resources/ui/dialogs/process_dialog.ui:78
+#: data/resources/ui/dialogs/settings_dialog.ui:138 data/resources/ui/dialogs/settings_dialog.ui:230
 #: src/ui/pages/applications/mod.rs:945 src/ui/pages/applications/mod.rs:964
 #: src/ui/pages/processes/mod.rs:1245 src/ui/pages/processes/mod.rs:1264
 msgid "Drive Read"
 msgstr "Leitura da Unidade"
 
-#: data/resources/ui/dialogs/app_dialog.ui:109
-#: data/resources/ui/dialogs/process_dialog.ui:87
-#: data/resources/ui/dialogs/settings_dialog.ui:143
-#: data/resources/ui/dialogs/settings_dialog.ui:235
+#: data/resources/ui/dialogs/app_dialog.ui:109 data/resources/ui/dialogs/process_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:143 data/resources/ui/dialogs/settings_dialog.ui:235
 #: src/ui/pages/applications/mod.rs:1018 src/ui/pages/applications/mod.rs:1037
 #: src/ui/pages/processes/mod.rs:1320 src/ui/pages/processes/mod.rs:1339
 msgid "Drive Read Total"
 msgstr "Total de Leitura da Unidade"
 
-#: data/resources/ui/dialogs/app_dialog.ui:118
-#: data/resources/ui/dialogs/process_dialog.ui:96
-#: data/resources/ui/dialogs/settings_dialog.ui:148
-#: data/resources/ui/dialogs/settings_dialog.ui:240
+#: data/resources/ui/dialogs/app_dialog.ui:118 data/resources/ui/dialogs/process_dialog.ui:96
+#: data/resources/ui/dialogs/settings_dialog.ui:148 data/resources/ui/dialogs/settings_dialog.ui:240
 #: src/ui/pages/applications/mod.rs:1087 src/ui/pages/applications/mod.rs:1106
 #: src/ui/pages/processes/mod.rs:1395 src/ui/pages/processes/mod.rs:1414
 msgid "Drive Write"
 msgstr "Gravação da Unidade"
 
-#: data/resources/ui/dialogs/app_dialog.ui:127
-#: data/resources/ui/dialogs/process_dialog.ui:105
-#: data/resources/ui/dialogs/settings_dialog.ui:153
-#: data/resources/ui/dialogs/settings_dialog.ui:245
+#: data/resources/ui/dialogs/app_dialog.ui:127 data/resources/ui/dialogs/process_dialog.ui:105
+#: data/resources/ui/dialogs/settings_dialog.ui:153 data/resources/ui/dialogs/settings_dialog.ui:245
 #: src/ui/pages/applications/mod.rs:1162 src/ui/pages/applications/mod.rs:1181
 #: src/ui/pages/processes/mod.rs:1470 src/ui/pages/processes/mod.rs:1489
 msgid "Drive Write Total"
 msgstr "Total de Gravação da Unidade"
 
-#: data/resources/ui/dialogs/app_dialog.ui:149
-#: data/resources/ui/dialogs/process_dialog.ui:127
-#: data/resources/ui/dialogs/settings_dialog.ui:163
-#: data/resources/ui/dialogs/settings_dialog.ui:255
+#: data/resources/ui/dialogs/app_dialog.ui:149 data/resources/ui/dialogs/process_dialog.ui:127
+#: data/resources/ui/dialogs/settings_dialog.ui:163 data/resources/ui/dialogs/settings_dialog.ui:255
 #: src/ui/pages/applications/mod.rs:1436 src/ui/pages/applications/mod.rs:1454
 #: src/ui/pages/processes/mod.rs:1749 src/ui/pages/processes/mod.rs:1768
 msgid "Video Memory"
 msgstr "Memória de Vídeo"
 
-#: data/resources/ui/dialogs/app_dialog.ui:158
-#: data/resources/ui/dialogs/process_dialog.ui:136
-#: data/resources/ui/dialogs/settings_dialog.ui:168
-#: data/resources/ui/dialogs/settings_dialog.ui:260
+#: data/resources/ui/dialogs/app_dialog.ui:158 data/resources/ui/dialogs/process_dialog.ui:136
+#: data/resources/ui/dialogs/settings_dialog.ui:168 data/resources/ui/dialogs/settings_dialog.ui:260
 #: src/ui/pages/applications/mod.rs:1299 src/ui/pages/applications/mod.rs:1318
 #: src/ui/pages/processes/mod.rs:1611 src/ui/pages/processes/mod.rs:1630
 msgid "Video Encoder"
 msgstr "Codificador de Vídeo"
 
-#: data/resources/ui/dialogs/app_dialog.ui:167
-#: data/resources/ui/dialogs/process_dialog.ui:145
-#: data/resources/ui/dialogs/settings_dialog.ui:173
-#: data/resources/ui/dialogs/settings_dialog.ui:265
+#: data/resources/ui/dialogs/app_dialog.ui:167 data/resources/ui/dialogs/process_dialog.ui:145
+#: data/resources/ui/dialogs/settings_dialog.ui:173 data/resources/ui/dialogs/settings_dialog.ui:265
 #: src/ui/pages/applications/mod.rs:1368 src/ui/pages/applications/mod.rs:1387
 #: src/ui/pages/processes/mod.rs:1680 src/ui/pages/processes/mod.rs:1699
 msgid "Video Decoder"
 msgstr "Decodificador de Vídeo"
 
-#: data/resources/ui/dialogs/app_dialog.ui:174
-#: data/resources/ui/dialogs/process_dialog.ui:179
+#: data/resources/ui/dialogs/app_dialog.ui:174 data/resources/ui/dialogs/process_dialog.ui:179
 #: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:83
 #: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:74
 #: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
-#: data/resources/ui/pages/npu.ui:68
+#: data/resources/ui/pages/npu.ui:77
 msgid "Properties"
 msgstr "Propriedades"
 
@@ -245,8 +211,7 @@ msgstr "Propriedades"
 msgid "ID"
 msgstr "ID"
 
-#: data/resources/ui/dialogs/app_dialog.ui:190
-#: data/resources/ui/dialogs/process_dialog.ui:195
+#: data/resources/ui/dialogs/app_dialog.ui:190 data/resources/ui/dialogs/process_dialog.ui:195
 msgid "Running Since"
 msgstr "Em execução desde"
 
@@ -254,8 +219,7 @@ msgstr "Em execução desde"
 msgid "Running Processes"
 msgstr "Processos em Execução"
 
-#: data/resources/ui/dialogs/app_dialog.ui:207
-#: data/resources/ui/dialogs/process_dialog.ui:231
+#: data/resources/ui/dialogs/app_dialog.ui:207 data/resources/ui/dialogs/process_dialog.ui:231
 msgid "Containerized"
 msgstr "Em Contêiner"
 
@@ -263,38 +227,32 @@ msgstr "Em Contêiner"
 msgid "Process Information"
 msgstr "Informação do Processo"
 
-#: data/resources/ui/dialogs/process_dialog.ui:154
-#: data/resources/ui/dialogs/settings_dialog.ui:270
+#: data/resources/ui/dialogs/process_dialog.ui:154 data/resources/ui/dialogs/settings_dialog.ui:270
 #: src/ui/pages/processes/mod.rs:1817 src/ui/pages/processes/mod.rs:1835
 msgid "Total CPU Time"
 msgstr "Tempo Total de CPU"
 
-#: data/resources/ui/dialogs/process_dialog.ui:163
-#: data/resources/ui/dialogs/settings_dialog.ui:275
+#: data/resources/ui/dialogs/process_dialog.ui:163 data/resources/ui/dialogs/settings_dialog.ui:275
 #: src/ui/pages/processes/mod.rs:1884 src/ui/pages/processes/mod.rs:1902
 msgid "User CPU Time"
 msgstr "Tempo de CPU do Usuário"
 
-#: data/resources/ui/dialogs/process_dialog.ui:172
-#: data/resources/ui/dialogs/settings_dialog.ui:280
+#: data/resources/ui/dialogs/process_dialog.ui:172 data/resources/ui/dialogs/settings_dialog.ui:280
 #: src/ui/pages/processes/mod.rs:1951 src/ui/pages/processes/mod.rs:1969
 msgid "System CPU Time"
 msgstr "Tempo de CPU do Sistema"
 
-#: data/resources/ui/dialogs/process_dialog.ui:186
-#: data/resources/ui/dialogs/settings_dialog.ui:210
+#: data/resources/ui/dialogs/process_dialog.ui:186 data/resources/ui/dialogs/settings_dialog.ui:210
 #: src/ui/pages/processes/mod.rs:983 src/ui/pages/processes/mod.rs:998
 msgid "Process ID"
 msgstr "ID do Processo"
 
-#: data/resources/ui/dialogs/process_dialog.ui:204
-#: data/resources/ui/dialogs/settings_dialog.ui:300
+#: data/resources/ui/dialogs/process_dialog.ui:204 data/resources/ui/dialogs/settings_dialog.ui:300
 #: src/ui/pages/processes/mod.rs:2229 src/ui/pages/processes/mod.rs:2247
 msgid "Commandline"
 msgstr "Linha de Comando"
 
-#: data/resources/ui/dialogs/process_dialog.ui:213
-#: data/resources/ui/dialogs/settings_dialog.ui:215
+#: data/resources/ui/dialogs/process_dialog.ui:213 data/resources/ui/dialogs/settings_dialog.ui:215
 #: src/ui/pages/processes/mod.rs:1044 src/ui/pages/processes/mod.rs:1059
 msgid "User"
 msgstr "Usuário"
@@ -318,14 +276,13 @@ msgstr "Niceness"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:73
 msgid ""
-"The priority of a process is given by its niceness. A lower niceness value "
-"correspond to a higher priority."
+"The priority of a process is given by its niceness. A lower niceness value correspond to a higher "
+"priority."
 msgstr ""
-"A prioridade de um processo é definida por seu valor de niceness. Um valor "
-"inferior de niceness corresponde a uma prioridade mais elevada."
+"A prioridade de um processo é definida por seu valor de niceness. Um valor inferior de niceness "
+"corresponde a uma prioridade mais elevada."
 
-#: data/resources/ui/dialogs/process_options_dialog.ui:87
-#: data/resources/ui/dialogs/settings_dialog.ui:285
+#: data/resources/ui/dialogs/process_options_dialog.ui:87 data/resources/ui/dialogs/settings_dialog.ui:285
 #: src/ui/pages/processes/mod.rs:2018 src/ui/pages/processes/mod.rs:2034
 msgid "Priority"
 msgstr "Prioridade"
@@ -417,8 +374,7 @@ msgstr "Taxa de Atualização"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:51
 msgid "Higher refresh speeds can lead to higher processor usage"
-msgstr ""
-"Velocidades de atualização mais altas podem levar a maior uso de processador"
+msgstr "Velocidades de atualização mais altas podem levar a maior uso de processador"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:55
 msgctxt "UI refresh speed"
@@ -466,12 +422,8 @@ msgid "Show Device Descriptions in Sidebar"
 msgstr "Mostrar Descrição do Dispositivo na Barra Lateral"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:93
-msgid ""
-"If enabled, a device identifier like its name or device type will be "
-"displayed"
-msgstr ""
-"Se ativado, um identificador de dispositivo será mostrado, como seu nome ou "
-"tipo de dispositivo"
+msgid "If enabled, a device identifier like its name or device type will be displayed"
+msgstr "Se ativado, um identificador de dispositivo será mostrado, como seu nome ou tipo de dispositivo"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
 msgid "Sidebar Meter Type"
@@ -490,39 +442,31 @@ msgid "Normalize Processor Usage"
 msgstr "Normalizar Uso de Processador"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:112
-msgid ""
-"If enabled, the total usage of all cores will be divided by the amount of "
-"cores"
-msgstr ""
-"Se ativado, o uso total de todos os núcleos será dividido pelo número de "
-"núcleos"
+msgid "If enabled, the total usage of all cores will be divided by the amount of cores"
+msgstr "Se ativado, o uso total de todos os núcleos será dividido pelo número de núcleos"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:122
-#: data/resources/ui/window.ui:65 data/resources/ui/window.ui:72
-#: src/ui/pages/applications/mod.rs:132
+#: data/resources/ui/dialogs/settings_dialog.ui:122 data/resources/ui/window.ui:65
+#: data/resources/ui/window.ui:72 src/ui/pages/applications/mod.rs:132
 msgid "Apps"
 msgstr "Aplicativos"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:125
-#: data/resources/ui/dialogs/settings_dialog.ui:207
+#: data/resources/ui/dialogs/settings_dialog.ui:125 data/resources/ui/dialogs/settings_dialog.ui:207
 msgid "Information Columns"
 msgstr "Colunas de Informação"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:183
-#: data/resources/ui/dialogs/settings_dialog.ui:295
+#: data/resources/ui/dialogs/settings_dialog.ui:183 data/resources/ui/dialogs/settings_dialog.ui:295
 #: src/ui/pages/applications/mod.rs:1570 src/ui/pages/applications/mod.rs:1589
 #: src/ui/pages/processes/mod.rs:2160 src/ui/pages/processes/mod.rs:2179
 msgid "Combined Memory"
 msgstr "Memória combinada"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:193
-#: data/resources/ui/window.ui:105 data/resources/ui/window.ui:112
-#: src/ui/pages/processes/mod.rs:176
+#: data/resources/ui/dialogs/settings_dialog.ui:193 data/resources/ui/window.ui:105
+#: data/resources/ui/window.ui:112 src/ui/pages/processes/mod.rs:176
 msgid "Processes"
 msgstr "Processos"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:196
-#: data/resources/ui/pages/cpu.ui:22 data/resources/ui/pages/processes.ui:56
+#: data/resources/ui/dialogs/settings_dialog.ui:196 data/resources/ui/pages/cpu.ui:22
+#: data/resources/ui/pages/processes.ui:56
 msgid "Options"
 msgstr "Opções"
 
@@ -531,11 +475,8 @@ msgid "Show Niceness Values"
 msgstr "Mostrar Valores de Niceness"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:200
-msgid ""
-"Display priorities as niceness to allow for more fine-grained adjustments"
-msgstr ""
-"Mostrar prioridades como valores de niceness, para permitir ajustes mais "
-"finos"
+msgid "Display priorities as niceness to allow for more fine-grained adjustments"
+msgstr "Mostrar prioridades como valores de niceness, para permitir ajustes mais finos"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:310
 msgid "Devices"
@@ -551,8 +492,7 @@ msgstr "Mostrar Unidades Virtuais"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:317
 msgid "Virtual drives are for example ZFS volumes or mapped devices"
-msgstr ""
-"Unidades virtuais são, por exemplo, volumes ZFS ou dispositivos mapeados"
+msgstr "Unidades virtuais são, por exemplo, volumes ZFS ou dispositivos mapeados"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:327
 msgid "Show Virtual Network Interfaces"
@@ -562,32 +502,27 @@ msgstr "Mostrar Interfaces de Rede Virtuais"
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
 msgstr "Interfaces de rede virtuais são, por exemplo, pontes ou túneis VPN"
 
-#: data/resources/ui/pages/applications.ui:6
-#: data/resources/ui/pages/applications.ui:26
+#: data/resources/ui/pages/applications.ui:6 data/resources/ui/pages/applications.ui:26
 #: src/ui/pages/applications/mod.rs:1662
 msgid "Kill App"
 msgstr "Matar Aplicativo"
 
-#: data/resources/ui/pages/applications.ui:10
-#: data/resources/ui/pages/applications.ui:30
+#: data/resources/ui/pages/applications.ui:10 data/resources/ui/pages/applications.ui:30
 #: src/ui/pages/applications/mod.rs:1661
 msgid "Halt App"
 msgstr "Interromper Aplicativo"
 
-#: data/resources/ui/pages/applications.ui:14
-#: data/resources/ui/pages/applications.ui:34
+#: data/resources/ui/pages/applications.ui:14 data/resources/ui/pages/applications.ui:34
 #: src/ui/pages/applications/mod.rs:1663
 msgid "Continue App"
 msgstr "Continuar Aplicativo"
 
-#: data/resources/ui/pages/applications.ui:22
-#: data/resources/ui/pages/applications.ui:98
+#: data/resources/ui/pages/applications.ui:22 data/resources/ui/pages/applications.ui:98
 #: src/ui/pages/applications/mod.rs:1660
 msgid "End App"
 msgstr "Encerrar Aplicativo"
 
-#: data/resources/ui/pages/applications.ui:40
-#: data/resources/ui/pages/processes.ui:62
+#: data/resources/ui/pages/applications.ui:40 data/resources/ui/pages/processes.ui:62
 msgid "Information"
 msgstr "Informações"
 
@@ -595,8 +530,7 @@ msgstr "Informações"
 msgid "Search applications"
 msgstr "Pesquisar aplicativos"
 
-#: data/resources/ui/pages/applications.ui:87
-#: data/resources/ui/pages/applications.ui:89
+#: data/resources/ui/pages/applications.ui:87 data/resources/ui/pages/applications.ui:89
 msgid "Show App Information"
 msgstr "Mostrar informações do aplicativo"
 
@@ -617,7 +551,7 @@ msgid "Technology"
 msgstr "Tecnologia"
 
 #: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:81
-#: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:75
+#: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:84
 msgid "Manufacturer"
 msgstr "Fabricante"
 
@@ -633,8 +567,7 @@ msgstr "Dispositivo"
 msgid "Show Usages of Logical CPUs"
 msgstr "Mostrar Uso das CPUs Lógicas"
 
-#: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
-#: data/resources/ui/pages/npu.ui:60
+#: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66 data/resources/ui/pages/npu.ui:69
 msgid "Sensors"
 msgstr "Sensores"
 
@@ -692,7 +625,7 @@ msgstr "Removível"
 
 #. Translators: "Link" refers to something like "PCIe 4.0 ×16"
 #: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113
-#: data/resources/ui/pages/network.ui:103 data/resources/ui/pages/npu.ui:107
+#: data/resources/ui/pages/network.ui:103 data/resources/ui/pages/npu.ui:116
 msgid "Link"
 msgstr "Link"
 
@@ -704,21 +637,20 @@ msgstr "Frequência da GPU"
 msgid "Video Memory Frequency"
 msgstr "Frequência da Memória de Vídeo"
 
-#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49
-#: src/ui/pages/battery.rs:217
+#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:58 src/ui/pages/battery.rs:218
 msgid "Power Usage"
 msgstr "Consumo de Energia"
 
-#: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:84
+#: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:93
 msgid "PCI Slot"
 msgstr "Soquete PCI"
 
 #: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
-#: data/resources/ui/pages/npu.ui:93
+#: data/resources/ui/pages/npu.ui:102
 msgid "Driver Used"
 msgstr "Controlador Usado"
 
-#: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
+#: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:111
 msgid "Max Power Cap"
 msgstr "Limite Máximo de Energia"
 
@@ -774,43 +706,43 @@ msgstr "Velocidade do link"
 msgid "NPU Frequency"
 msgstr "Frequência da NPU"
 
-#: data/resources/ui/pages/npu.ui:44
+#: data/resources/ui/pages/npu.ui:40
+msgid "Performance"
+msgstr "Desempenho"
+
+#: data/resources/ui/pages/npu.ui:53
 msgid "Memory Frequency"
 msgstr "Frequência da Memória"
 
-#: data/resources/ui/pages/processes.ui:6
-#: data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2346
+#: data/resources/ui/pages/processes.ui:6 data/resources/ui/pages/processes.ui:42
+#: src/ui/pages/processes/mod.rs:2346
 msgid "Kill Process"
 msgstr "Matar Processo"
 
-#: data/resources/ui/pages/processes.ui:10
-#: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2345
+#: data/resources/ui/pages/processes.ui:10 data/resources/ui/pages/processes.ui:46
+#: src/ui/pages/processes/mod.rs:2345
 msgid "Halt Process"
 msgstr "Interromper Processo"
 
-#: data/resources/ui/pages/processes.ui:14
-#: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2347
+#: data/resources/ui/pages/processes.ui:14 data/resources/ui/pages/processes.ui:50
+#: src/ui/pages/processes/mod.rs:2347
 msgid "Continue Process"
 msgstr "Continuar Processo"
 
-#: data/resources/ui/pages/processes.ui:22
-#: data/resources/ui/pages/processes.ui:74
+#: data/resources/ui/pages/processes.ui:22 data/resources/ui/pages/processes.ui:74
 msgid "Kill Processes"
 msgstr "Matar Processos"
 
-#: data/resources/ui/pages/processes.ui:26
-#: data/resources/ui/pages/processes.ui:78
+#: data/resources/ui/pages/processes.ui:26 data/resources/ui/pages/processes.ui:78
 msgid "Halt Processes"
 msgstr "Interromper Processos"
 
-#: data/resources/ui/pages/processes.ui:30
-#: data/resources/ui/pages/processes.ui:82
+#: data/resources/ui/pages/processes.ui:30 data/resources/ui/pages/processes.ui:82
 msgid "Continue Processes"
 msgstr "Continuar Processos"
 
-#: data/resources/ui/pages/processes.ui:38
-#: data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:527
-#: src/ui/pages/processes/mod.rs:2344
+#: data/resources/ui/pages/processes.ui:38 data/resources/ui/pages/processes.ui:157
+#: src/ui/pages/processes/mod.rs:527 src/ui/pages/processes/mod.rs:2344
 msgid "End Process"
 msgstr "Encerrar Processo"
 
@@ -822,13 +754,11 @@ msgstr "Encerrar Processos"
 msgid "Search processes"
 msgstr "Pesquisar processos"
 
-#: data/resources/ui/pages/processes.ui:133
-#: data/resources/ui/pages/processes.ui:135
+#: data/resources/ui/pages/processes.ui:133 data/resources/ui/pages/processes.ui:135
 msgid "Show Process Options"
 msgstr "Mostrar opções do processo"
 
-#: data/resources/ui/pages/processes.ui:146
-#: data/resources/ui/pages/processes.ui:148
+#: data/resources/ui/pages/processes.ui:146 data/resources/ui/pages/processes.ui:148
 msgid "Show Process Information"
 msgstr "Mostrar informações do processo"
 
@@ -926,73 +856,58 @@ msgstr ""
 #: src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171
 #: src/ui/dialogs/process_dialog.rs:178 src/ui/dialogs/process_dialog.rs:185
 #: src/ui/dialogs/process_dialog.rs:192 src/ui/pages/applications/mod.rs:975
-#: src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:205
-#: src/ui/pages/battery.rs:225 src/ui/pages/battery.rs:231
-#: src/ui/pages/battery.rs:234 src/ui/pages/battery.rs:265
-#: src/ui/pages/battery.rs:289 src/ui/pages/battery.rs:291
-#: src/ui/pages/battery.rs:301 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258
-#: src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:290
-#: src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303
-#: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:321
-#: src/ui/pages/drive.rs:352 src/ui/pages/drive.rs:354
-#: src/ui/pages/drive.rs:383 src/ui/pages/drive.rs:385
-#: src/ui/pages/drive.rs:401 src/ui/pages/drive.rs:402
-#: src/ui/pages/drive.rs:409 src/ui/pages/drive.rs:419
-#: src/ui/pages/drive.rs:429 src/ui/pages/drive.rs:435 src/ui/pages/gpu.rs:245
-#: src/ui/pages/gpu.rs:252 src/ui/pages/gpu.rs:297 src/ui/pages/gpu.rs:322
-#: src/ui/pages/gpu.rs:325 src/ui/pages/gpu.rs:336 src/ui/pages/gpu.rs:377
-#: src/ui/pages/gpu.rs:384 src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:403
-#: src/ui/pages/gpu.rs:407 src/ui/pages/gpu.rs:437 src/ui/pages/gpu.rs:443
-#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228
-#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233
-#: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:238
-#: src/ui/pages/memory.rs:266 src/ui/pages/memory.rs:327
-#: src/ui/pages/network.rs:252 src/ui/pages/network.rs:259
-#: src/ui/pages/network.rs:266 src/ui/pages/network.rs:272
-#: src/ui/pages/network.rs:275 src/ui/pages/network.rs:285
-#: src/ui/pages/network.rs:292 src/ui/pages/network.rs:302
-#: src/ui/pages/network.rs:370 src/ui/pages/network.rs:373
-#: src/ui/pages/network.rs:375 src/ui/pages/network.rs:404
-#: src/ui/pages/network.rs:407 src/ui/pages/network.rs:409
-#: src/ui/pages/network.rs:417 src/ui/pages/network.rs:424
-#: src/ui/pages/network.rs:434 src/ui/pages/processes/mod.rs:1275
-#: src/ui/pages/processes/mod.rs:1350 src/ui/pages/processes/mod.rs:1425
-#: src/ui/pages/processes/mod.rs:1500 src/ui/pages/processes/mod.rs:2050
-#: src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152
-#: src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291
-#: src/utils/link/mod.rs:61 src/utils/npu/mod.rs:249 src/utils/npu/mod.rs:255
+#: src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:206 src/ui/pages/battery.rs:226
+#: src/ui/pages/battery.rs:232 src/ui/pages/battery.rs:235 src/ui/pages/battery.rs:266
+#: src/ui/pages/battery.rs:290 src/ui/pages/battery.rs:292 src/ui/pages/battery.rs:302
+#: src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258 src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284
+#: src/ui/pages/cpu.rs:290 src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303
+#: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:321 src/ui/pages/drive.rs:352
+#: src/ui/pages/drive.rs:354 src/ui/pages/drive.rs:383 src/ui/pages/drive.rs:385 src/ui/pages/drive.rs:401
+#: src/ui/pages/drive.rs:402 src/ui/pages/drive.rs:409 src/ui/pages/drive.rs:419 src/ui/pages/drive.rs:429
+#: src/ui/pages/drive.rs:435 src/ui/pages/gpu.rs:246 src/ui/pages/gpu.rs:253 src/ui/pages/gpu.rs:298
+#: src/ui/pages/gpu.rs:323 src/ui/pages/gpu.rs:326 src/ui/pages/gpu.rs:337 src/ui/pages/gpu.rs:378
+#: src/ui/pages/gpu.rs:385 src/ui/pages/gpu.rs:397 src/ui/pages/gpu.rs:404 src/ui/pages/gpu.rs:408
+#: src/ui/pages/gpu.rs:438 src/ui/pages/gpu.rs:444 src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228
+#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233 src/ui/pages/memory.rs:237
+#: src/ui/pages/memory.rs:238 src/ui/pages/memory.rs:266 src/ui/pages/memory.rs:327
+#: src/ui/pages/network.rs:252 src/ui/pages/network.rs:259 src/ui/pages/network.rs:266
+#: src/ui/pages/network.rs:272 src/ui/pages/network.rs:275 src/ui/pages/network.rs:285
+#: src/ui/pages/network.rs:294 src/ui/pages/network.rs:303 src/ui/pages/network.rs:371
+#: src/ui/pages/network.rs:374 src/ui/pages/network.rs:376 src/ui/pages/network.rs:405
+#: src/ui/pages/network.rs:408 src/ui/pages/network.rs:410 src/ui/pages/network.rs:418
+#: src/ui/pages/network.rs:427 src/ui/pages/network.rs:436 src/ui/pages/processes/mod.rs:1275
+#: src/ui/pages/processes/mod.rs:1350 src/ui/pages/processes/mod.rs:1425 src/ui/pages/processes/mod.rs:1500
+#: src/ui/pages/processes/mod.rs:2050 src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152
+#: src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61
+#: src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
 msgid "N/A"
 msgstr "N/D"
 
-#: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257
-#: src/ui/pages/cpu.rs:417 src/ui/pages/cpu.rs:421
+#: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257 src/ui/pages/cpu.rs:417
+#: src/ui/pages/cpu.rs:421
 #, rust-format
 msgid "CPU {}"
 msgstr "CPU {}"
 
-#: src/ui/pages/applications/application_entry.rs:188 src/ui/pages/drive.rs:416
-#: src/ui/pages/drive.rs:426 src/ui/pages/processes/process_entry.rs:211
+#: src/ui/pages/applications/application_entry.rs:188 src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426
+#: src/ui/pages/processes/process_entry.rs:211
 msgid "No"
 msgstr "Não"
 
-#: src/ui/pages/applications/application_entry.rs:189
-#: src/ui/pages/processes/process_entry.rs:212
+#: src/ui/pages/applications/application_entry.rs:189 src/ui/pages/processes/process_entry.rs:212
 msgid "Yes (AppImage)"
 msgstr "Sim (AppImage)"
 
-#: src/ui/pages/applications/application_entry.rs:190
-#: src/ui/pages/processes/process_entry.rs:213
+#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/processes/process_entry.rs:213
 msgid "Yes (Flatpak)"
 msgstr "Sim (Flatpak)"
 
 #. Translators: "Portable" is the name of the containerization method used, please keep it as is
-#: src/ui/pages/applications/application_entry.rs:192
-#: src/ui/pages/processes/process_entry.rs:215
+#: src/ui/pages/applications/application_entry.rs:192 src/ui/pages/processes/process_entry.rs:215
 msgid "Yes (Portable)"
 msgstr "Sim (Portable)"
 
-#: src/ui/pages/applications/application_entry.rs:193
-#: src/ui/pages/processes/process_entry.rs:216
+#: src/ui/pages/applications/application_entry.rs:193 src/ui/pages/processes/process_entry.rs:216
 msgid "Yes (Snap)"
 msgstr "Sim (Snap)"
 
@@ -1035,39 +950,38 @@ msgstr "Trabalhos não salvos poderão ser perdidos."
 
 #: src/ui/pages/applications/mod.rs:1649
 msgid ""
-"Halting an app can come with serious risks such as losing data and security "
-"implications. Use with caution."
+"Halting an app can come with serious risks such as losing data and security implications. Use with "
+"caution."
 msgstr ""
-"Interromper um aplicativo pode trazer sérios riscos, como perda de dados e "
-"implicações de segurança. Use esta opção com cautela."
+"Interromper um aplicativo pode trazer sérios riscos, como perda de dados e implicações de segurança. Use "
+"esta opção com cautela."
 
 #: src/ui/pages/applications/mod.rs:1652
 msgid ""
-"Killing an app can come with serious risks such as losing data and security "
-"implications. Use with caution."
+"Killing an app can come with serious risks such as losing data and security implications. Use with "
+"caution."
 msgstr ""
-"Matar um aplicativo pode trazer sérios riscos, como perda de dados e "
-"implicações de segurança. Use esta opção com cautela."
+"Matar um aplicativo pode trazer sérios riscos, como perda de dados e implicações de segurança. Use esta "
+"opção com cautela."
 
-#: src/ui/pages/battery.rs:102 src/utils/battery.rs:258
+#: src/ui/pages/battery.rs:103 src/utils/battery.rs:258
 msgid "Battery"
 msgstr "Bateria"
 
-#: src/ui/pages/battery.rs:210
+#: src/ui/pages/battery.rs:211
 msgid "Battery Charge"
 msgstr "Carga da Bateria"
 
-#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:438
-#: src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377 src/ui/pages/gpu.rs:429
-#: src/ui/pages/network.rs:362 src/ui/pages/network.rs:396
+#: src/ui/pages/battery.rs:280 src/ui/pages/cpu.rs:438 src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377
+#: src/ui/pages/gpu.rs:430 src/ui/pages/network.rs:363 src/ui/pages/network.rs:397
 msgid "Highest:"
 msgstr "Máximo:"
 
-#: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:212
+#: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:213
 msgid "Total Usage"
 msgstr "Uso Total"
 
-#: src/ui/pages/cpu.rs:271 src/ui/pages/gpu.rs:239
+#: src/ui/pages/cpu.rs:271 src/ui/pages/gpu.rs:240
 msgid "Temperature"
 msgstr "Temperatura"
 
@@ -1098,25 +1012,25 @@ msgstr "Sim"
 msgid "R: {} · W: {}"
 msgstr "L: {} · G: {}"
 
-#: src/ui/pages/gpu.rs:220
+#: src/ui/pages/gpu.rs:221
 msgid "Video Encoder/Decoder Usage"
 msgstr "Uso de Codificador/Decodificador de Vídeo"
 
-#: src/ui/pages/gpu.rs:226
+#: src/ui/pages/gpu.rs:227
 msgid "Video Encoder Usage"
 msgstr "Uso de Codificador de Vídeo"
 
-#: src/ui/pages/gpu.rs:231
+#: src/ui/pages/gpu.rs:232
 msgid "Video Decoder Usage"
 msgstr "Uso de Decodificador de Vídeo"
 
-#: src/ui/pages/gpu.rs:236
+#: src/ui/pages/gpu.rs:237
 msgid "Video Memory Usage"
 msgstr "Uso de Memória de Vídeo"
 
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
-#: src/ui/pages/gpu.rs:415
+#: src/ui/pages/gpu.rs:416
 #, rust-format
 msgid "Memory: {}"
 msgstr "Memória: {}"
@@ -1152,7 +1066,7 @@ msgstr "Enviando"
 
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
-#: src/ui/pages/network.rs:445
+#: src/ui/pages/network.rs:447
 #, rust-format
 msgid "R: {} · S: {}"
 msgstr "R: {} · E: {}"
@@ -1189,19 +1103,19 @@ msgstr[1] "Matar {} processos?"
 
 #: src/ui/pages/processes/mod.rs:2333
 msgid ""
-"Halting a process can come with serious risks such as losing data and "
-"security implications. Use with caution."
+"Halting a process can come with serious risks such as losing data and security implications. Use with "
+"caution."
 msgstr ""
-"Interromper um aplicativo pode trazer sérios riscos, como perda de dados e "
-"implicações de segurança. Use esta opção com cautela."
+"Interromper um aplicativo pode trazer sérios riscos, como perda de dados e implicações de segurança. Use "
+"esta opção com cautela."
 
 #: src/ui/pages/processes/mod.rs:2336
 msgid ""
-"Killing a process can come with serious risks such as losing data and "
-"security implications. Use with caution."
+"Killing a process can come with serious risks such as losing data and security implications. Use with "
+"caution."
 msgstr ""
-"Matar um aplicativo pode trazer sérios riscos, como perda de dados e "
-"implicações de segurança. Use esta opção com cautela."
+"Matar um aplicativo pode trazer sérios riscos, como perda de dados e implicações de segurança. Use esta "
+"opção com cautela."
 
 #: src/ui/window.rs:466
 #, rust-format
@@ -1217,108 +1131,108 @@ msgstr "NPU {}"
 msgid "NPU"
 msgstr "NPU"
 
-#: src/ui/window.rs:1201
+#: src/ui/window.rs:1200
 #, rust-format
 msgid "Successfully adjusted {}"
 msgstr "{} ajustado com sucesso"
 
-#: src/ui/window.rs:1202
+#: src/ui/window.rs:1201
 #, rust-format
 msgid "There was a problem adjusting {}"
 msgstr "Houve um problema ao ajustar {}"
 
-#: src/ui/window.rs:1284
+#: src/ui/window.rs:1283
 #, rust-format
 msgid "Successfully ended {}"
 msgstr "{} encerrado com sucesso"
 
-#: src/ui/window.rs:1285
+#: src/ui/window.rs:1284
 #, rust-format
 msgid "Successfully halted {}"
 msgstr "{} interrompido com sucesso"
 
-#: src/ui/window.rs:1286
+#: src/ui/window.rs:1285
 #, rust-format
 msgid "Successfully killed {}"
 msgstr "{} morto com sucesso"
 
-#: src/ui/window.rs:1287
+#: src/ui/window.rs:1286
 #, rust-format
 msgid "Successfully continued {}"
 msgstr "{} continuado com sucesso"
 
-#: src/ui/window.rs:1294
+#: src/ui/window.rs:1293
 #, rust-format
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
 msgstr[0] "Processo encerrado com sucesso"
 msgstr[1] "{} processos encerrados com sucesso"
 
-#: src/ui/window.rs:1300
+#: src/ui/window.rs:1299
 #, rust-format
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
 msgstr[0] "Processo interrompido com sucesso"
 msgstr[1] "{} processos interrompidos com sucesso"
 
-#: src/ui/window.rs:1306
+#: src/ui/window.rs:1305
 #, rust-format
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
 msgstr[0] "Processo morto com sucesso"
 msgstr[1] "{} processos mortos com sucesso"
 
-#: src/ui/window.rs:1312
+#: src/ui/window.rs:1311
 #, rust-format
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
 msgstr[0] "Processo continuado com sucesso"
 msgstr[1] "{} processos continuados com sucesso"
 
-#: src/ui/window.rs:1323
+#: src/ui/window.rs:1322
 #, rust-format
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] "Houve um problema ao encerrar um processo"
 msgstr[1] "Houve problemas ao encerrar {} processos"
 
-#: src/ui/window.rs:1329
+#: src/ui/window.rs:1328
 #, rust-format
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "Houve um problema ao interromper um processo"
 msgstr[1] "Houve problemas ao interromper {} processos"
 
-#: src/ui/window.rs:1335
+#: src/ui/window.rs:1334
 #, rust-format
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "Houve um problema ao matar um processo"
 msgstr[1] "Houve problemas ao matar {} processos"
 
-#: src/ui/window.rs:1341
+#: src/ui/window.rs:1340
 #, rust-format
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "Houve um problema ao continuar um processo"
 msgstr[1] "Houve problemas ao continuar {} processos"
 
-#: src/ui/window.rs:1351
+#: src/ui/window.rs:1350
 #, rust-format
 msgid "There was a problem ending {}"
 msgstr "Houve um problema ao encerrar {}"
 
-#: src/ui/window.rs:1352
+#: src/ui/window.rs:1351
 #, rust-format
 msgid "There was a problem halting {}"
 msgstr "Houve um problema ao interromper {}"
 
-#: src/ui/window.rs:1353
+#: src/ui/window.rs:1352
 #, rust-format
 msgid "There was a problem killing {}"
 msgstr "Houve um problema ao matar {}"
 
-#: src/ui/window.rs:1354
+#: src/ui/window.rs:1353
 #, rust-format
 msgid "There was a problem continuing {}"
 msgstr "Houve um problema ao continuar {}"
@@ -1399,8 +1313,7 @@ msgstr "{} °C"
 msgid "{} °F"
 msgstr "{} °F"
 
-#: src/utils/units.rs:113 src/utils/units.rs:127 src/utils/units.rs:147
-#: src/utils/units.rs:161
+#: src/utils/units.rs:113 src/utils/units.rs:127 src/utils/units.rs:147 src/utils/units.rs:161
 #, rust-format
 msgid "{} B"
 msgstr "{} B"
@@ -1879,6 +1792,11 @@ msgstr "{} RWh"
 #, rust-format
 msgid "{} QWh"
 msgstr "{} QWh"
+
+#: src/utils/units.rs:338
+#, rust-format
+msgid "{} TOPs"
+msgstr "{} TOPs"
 
 #: src/utils/drive.rs:129 src/utils/drive.rs:208
 msgid "CD/DVD/Blu-ray Drive"
