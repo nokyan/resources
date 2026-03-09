@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-02-26 17:23+0000\n"
-"PO-Revision-Date: 2026-03-05 02:52+0100\n"
+"POT-Creation-Date: 2026-03-09 10:43+0000\n"
+"PO-Revision-Date: 2026-03-09 19:53+0100\n"
 "Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
 "Language-Team: Hungarian <openscope at fsf dot hu>\n"
 "Language: hu\n"
@@ -33,7 +33,6 @@ msgstr "Tartsa szemmel a rendszer erőforrásait"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/net.nokyan.Resources.desktop.in.in:9
-#| msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 msgid ""
 "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;Perfo"
 "rmance;Power;Battery;"
@@ -242,7 +241,7 @@ msgstr "Videódekódoló"
 #: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:83
 #: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:74
 #: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
-#: data/resources/ui/pages/npu.ui:68
+#: data/resources/ui/pages/npu.ui:77
 msgid "Properties"
 msgstr "Tulajdonságok"
 
@@ -624,7 +623,7 @@ msgid "Technology"
 msgstr "Technológia"
 
 #: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:81
-#: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:75
+#: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:84
 msgid "Manufacturer"
 msgstr "Gyártó"
 
@@ -641,7 +640,7 @@ msgid "Show Usages of Logical CPUs"
 msgstr "Logikai CPU-k használatának megjelenítése"
 
 #: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
-#: data/resources/ui/pages/npu.ui:60
+#: data/resources/ui/pages/npu.ui:69
 msgid "Sensors"
 msgstr "Érzékelők"
 
@@ -699,7 +698,7 @@ msgstr "Eltávolítható"
 
 #. Translators: "Link" refers to something like "PCIe 4.0 ×16"
 #: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113
-#: data/resources/ui/pages/network.ui:103 data/resources/ui/pages/npu.ui:107
+#: data/resources/ui/pages/network.ui:103 data/resources/ui/pages/npu.ui:116
 msgid "Link"
 msgstr "Kapcsolat"
 
@@ -711,21 +710,21 @@ msgstr "GPU órajele"
 msgid "Video Memory Frequency"
 msgstr "Videomemória órajele"
 
-#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49
+#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:58
 #: src/ui/pages/battery.rs:218
 msgid "Power Usage"
 msgstr "Energiahasználat"
 
-#: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:84
+#: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:93
 msgid "PCI Slot"
 msgstr "PCI foglalat"
 
 #: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
-#: data/resources/ui/pages/npu.ui:93
+#: data/resources/ui/pages/npu.ui:102
 msgid "Driver Used"
 msgstr "Használt illesztőprogram"
 
-#: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
+#: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:111
 msgid "Max Power Cap"
 msgstr "Legnagyobb energiakorlát"
 
@@ -781,7 +780,11 @@ msgstr "Kapcsolat sebessége"
 msgid "NPU Frequency"
 msgstr "NPU órajele"
 
-#: data/resources/ui/pages/npu.ui:44
+#: data/resources/ui/pages/npu.ui:40
+msgid "Performance"
+msgstr "Teljesítmény"
+
+#: data/resources/ui/pages/npu.ui:53
 msgid "Memory Frequency"
 msgstr "Memória órajele"
 
@@ -860,7 +863,6 @@ msgid "Quit"
 msgstr "Kilépés"
 
 #: data/resources/ui/shortcuts.ui:29
-#| msgid "Processes"
 msgctxt "shortcut window"
 msgid "Apps/Processes"
 msgstr "Alkalmazások/Folyamatok"
@@ -965,7 +967,7 @@ msgstr "Meskó Balázs <mesko dot balazs at fsf dot hu>, 2025."
 #: src/ui/pages/processes/mod.rs:1500 src/ui/pages/processes/mod.rs:2050
 #: src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152
 #: src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291
-#: src/utils/link/mod.rs:61 src/utils/npu/mod.rs:249 src/utils/npu/mod.rs:255
+#: src/utils/link/mod.rs:61 src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
 msgid "N/A"
 msgstr "N/A"
 
@@ -1223,108 +1225,108 @@ msgstr "{}. NPU"
 msgid "NPU"
 msgstr "NPU"
 
-#: src/ui/window.rs:1201
+#: src/ui/window.rs:1200
 #, rust-format
 msgid "Successfully adjusted {}"
 msgstr "A(z) {} sikeresen módosítva"
 
-#: src/ui/window.rs:1202
+#: src/ui/window.rs:1201
 #, rust-format
 msgid "There was a problem adjusting {}"
 msgstr "Hiba történt a(z) {} módosítása során"
 
-#: src/ui/window.rs:1284
+#: src/ui/window.rs:1283
 #, rust-format
 msgid "Successfully ended {}"
 msgstr "A(z) {} sikeresen befejezve"
 
-#: src/ui/window.rs:1285
+#: src/ui/window.rs:1284
 #, rust-format
 msgid "Successfully halted {}"
 msgstr "A(z) {} sikeresen megállítva"
 
-#: src/ui/window.rs:1286
+#: src/ui/window.rs:1285
 #, rust-format
 msgid "Successfully killed {}"
 msgstr "A(z) {} sikeresen kilőve"
 
-#: src/ui/window.rs:1287
+#: src/ui/window.rs:1286
 #, rust-format
 msgid "Successfully continued {}"
 msgstr "A(z) {} sikeresen folytatva"
 
-#: src/ui/window.rs:1294
+#: src/ui/window.rs:1293
 #, rust-format
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
 msgstr[0] "A folyamat sikeresen befejezve"
 msgstr[1] "{} folyamat sikeresen befejezve"
 
-#: src/ui/window.rs:1300
+#: src/ui/window.rs:1299
 #, rust-format
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
 msgstr[0] "A folyamat sikeresen megállítva"
 msgstr[1] "{} folyamat sikeresen megállítva"
 
-#: src/ui/window.rs:1306
+#: src/ui/window.rs:1305
 #, rust-format
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
 msgstr[0] "A folyamat sikeresen kilőve"
 msgstr[1] "{} folyamat sikeresen kilőve"
 
-#: src/ui/window.rs:1312
+#: src/ui/window.rs:1311
 #, rust-format
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
 msgstr[0] "A folyamat sikeresen folytatva"
 msgstr[1] "{} folyamat sikeresen folytatva"
 
-#: src/ui/window.rs:1323
+#: src/ui/window.rs:1322
 #, rust-format
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] "Hiba történt a folyamat befejezése során"
 msgstr[1] "Hiba történt {} folyamat befejezése során"
 
-#: src/ui/window.rs:1329
+#: src/ui/window.rs:1328
 #, rust-format
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "Hiba történt a folyamat megállítása során"
 msgstr[1] "Hiba történt {} folyamat megállítása során"
 
-#: src/ui/window.rs:1335
+#: src/ui/window.rs:1334
 #, rust-format
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "Hiba történt a folyamat kilövése során"
 msgstr[1] "Hiba történt {} folyamat kilövése során"
 
-#: src/ui/window.rs:1341
+#: src/ui/window.rs:1340
 #, rust-format
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "Hiba történt a folyamat folytatása során"
 msgstr[1] "Hiba történt {} folyamat folytatása során"
 
-#: src/ui/window.rs:1351
+#: src/ui/window.rs:1350
 #, rust-format
 msgid "There was a problem ending {}"
 msgstr "Hiba történt a(z) {} befejezése során"
 
-#: src/ui/window.rs:1352
+#: src/ui/window.rs:1351
 #, rust-format
 msgid "There was a problem halting {}"
 msgstr "Hiba történt a(z) {} megállítása során"
 
-#: src/ui/window.rs:1353
+#: src/ui/window.rs:1352
 #, rust-format
 msgid "There was a problem killing {}"
 msgstr "Hiba történt a(z) {} kilövése során"
 
-#: src/ui/window.rs:1354
+#: src/ui/window.rs:1353
 #, rust-format
 msgid "There was a problem continuing {}"
 msgstr "Hiba történt a(z) {} folytatása során"
@@ -1886,6 +1888,12 @@ msgstr "{} RWh"
 msgid "{} QWh"
 msgstr "{} QWh"
 
+#: src/utils/units.rs:338
+#, rust-format
+#| msgid "{} TB/s"
+msgid "{} TOPs"
+msgstr "{} TOPs"
+
 #: src/utils/drive.rs:129 src/utils/drive.rs:208
 msgid "CD/DVD/Blu-ray Drive"
 msgstr "CD/DVD/Blu-ray-meghajtó"
@@ -1994,17 +2002,14 @@ msgid "InfiniBand Connection"
 msgstr "InfiniBand-kapcsolat"
 
 #: src/utils/network.rs:134
-#| msgid "Docker Bridge"
 msgid "Incus Bridge"
 msgstr "Incus-híd"
 
 #: src/utils/network.rs:135
-#| msgid "Docker Bridge"
 msgid "LXC Bridge"
 msgstr "LXC-híd"
 
 #: src/utils/network.rs:136
-#| msgid "Docker Bridge"
 msgid "LXD Bridge"
 msgstr "LXD-híd"
 
