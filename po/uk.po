@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-02-01 19:19+0000\n"
-"PO-Revision-Date: 2026-02-03 06:02+0200\n"
+"POT-Creation-Date: 2026-03-09 10:43+0000\n"
+"PO-Revision-Date: 2026-03-09 19:23+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -32,7 +32,6 @@ msgstr "Слідкуйте за ресурсами системи"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/net.nokyan.Resources.desktop.in.in:9
-#| msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 msgid ""
 "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;Perf"
 "ormance;Power;Battery;"
@@ -79,7 +78,7 @@ msgstr "Оперативна пам'ять"
 #: data/resources/ui/dialogs/settings_dialog.ui:158
 #: data/resources/ui/dialogs/settings_dialog.ui:250
 #: src/ui/pages/applications/mod.rs:1232 src/ui/pages/applications/mod.rs:1249
-#: src/ui/pages/gpu.rs:119 src/ui/pages/processes/mod.rs:1544
+#: src/ui/pages/gpu.rs:120 src/ui/pages/processes/mod.rs:1544
 #: src/ui/pages/processes/mod.rs:1561 src/ui/window.rs:468
 msgid "GPU"
 msgstr "Відеокарта"
@@ -242,7 +241,7 @@ msgstr "Відео декодувальник"
 #: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:83
 #: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:74
 #: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
-#: data/resources/ui/pages/npu.ui:68
+#: data/resources/ui/pages/npu.ui:77
 msgid "Properties"
 msgstr "Властивості"
 
@@ -624,7 +623,7 @@ msgid "Technology"
 msgstr "Технологія"
 
 #: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:81
-#: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:75
+#: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:84
 msgid "Manufacturer"
 msgstr "Виробник"
 
@@ -641,7 +640,7 @@ msgid "Show Usages of Logical CPUs"
 msgstr "Показати використання логічних процесорів"
 
 #: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
-#: data/resources/ui/pages/npu.ui:60
+#: data/resources/ui/pages/npu.ui:69
 msgid "Sensors"
 msgstr "Сенсори"
 
@@ -699,7 +698,7 @@ msgstr "Можна витягнути?"
 
 #. Translators: "Link" refers to something like "PCIe 4.0 ×16"
 #: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113
-#: data/resources/ui/pages/network.ui:103 data/resources/ui/pages/npu.ui:107
+#: data/resources/ui/pages/network.ui:103 data/resources/ui/pages/npu.ui:116
 msgid "Link"
 msgstr "Сполучення"
 
@@ -711,21 +710,21 @@ msgstr "Частота ядра"
 msgid "Video Memory Frequency"
 msgstr "Частота пам'яті"
 
-#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49
-#: src/ui/pages/battery.rs:217
+#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:58
+#: src/ui/pages/battery.rs:218
 msgid "Power Usage"
 msgstr "Споживання електроенергії"
 
-#: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:84
+#: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:93
 msgid "PCI Slot"
 msgstr "Слот PCI"
 
 #: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
-#: data/resources/ui/pages/npu.ui:93
+#: data/resources/ui/pages/npu.ui:102
 msgid "Driver Used"
 msgstr "Драйвер"
 
-#: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
+#: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:111
 msgid "Max Power Cap"
 msgstr "Максимальне обмеження споживання електроенергії"
 
@@ -781,7 +780,11 @@ msgstr "Швидкість запису"
 msgid "NPU Frequency"
 msgstr "Частота мережевого процесору"
 
-#: data/resources/ui/pages/npu.ui:44
+#: data/resources/ui/pages/npu.ui:40
+msgid "Performance"
+msgstr "Швидкодія"
+
+#: data/resources/ui/pages/npu.ui:53
 msgid "Memory Frequency"
 msgstr "Частота пам'яті"
 
@@ -930,11 +933,11 @@ msgstr "volkov <volkovissocool@gmail.com>"
 #: src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171
 #: src/ui/dialogs/process_dialog.rs:178 src/ui/dialogs/process_dialog.rs:185
 #: src/ui/dialogs/process_dialog.rs:192 src/ui/pages/applications/mod.rs:975
-#: src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:205
-#: src/ui/pages/battery.rs:225 src/ui/pages/battery.rs:231
-#: src/ui/pages/battery.rs:234 src/ui/pages/battery.rs:265
-#: src/ui/pages/battery.rs:289 src/ui/pages/battery.rs:291
-#: src/ui/pages/battery.rs:301 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258
+#: src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:206
+#: src/ui/pages/battery.rs:226 src/ui/pages/battery.rs:232
+#: src/ui/pages/battery.rs:235 src/ui/pages/battery.rs:266
+#: src/ui/pages/battery.rs:290 src/ui/pages/battery.rs:292
+#: src/ui/pages/battery.rs:302 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258
 #: src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:290
 #: src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303
 #: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:321
@@ -942,11 +945,11 @@ msgstr "volkov <volkovissocool@gmail.com>"
 #: src/ui/pages/drive.rs:383 src/ui/pages/drive.rs:385
 #: src/ui/pages/drive.rs:401 src/ui/pages/drive.rs:402
 #: src/ui/pages/drive.rs:409 src/ui/pages/drive.rs:419
-#: src/ui/pages/drive.rs:429 src/ui/pages/drive.rs:435 src/ui/pages/gpu.rs:245
-#: src/ui/pages/gpu.rs:252 src/ui/pages/gpu.rs:297 src/ui/pages/gpu.rs:322
-#: src/ui/pages/gpu.rs:325 src/ui/pages/gpu.rs:336 src/ui/pages/gpu.rs:377
-#: src/ui/pages/gpu.rs:384 src/ui/pages/gpu.rs:396 src/ui/pages/gpu.rs:403
-#: src/ui/pages/gpu.rs:407 src/ui/pages/gpu.rs:437 src/ui/pages/gpu.rs:443
+#: src/ui/pages/drive.rs:429 src/ui/pages/drive.rs:435 src/ui/pages/gpu.rs:246
+#: src/ui/pages/gpu.rs:253 src/ui/pages/gpu.rs:298 src/ui/pages/gpu.rs:323
+#: src/ui/pages/gpu.rs:326 src/ui/pages/gpu.rs:337 src/ui/pages/gpu.rs:378
+#: src/ui/pages/gpu.rs:385 src/ui/pages/gpu.rs:397 src/ui/pages/gpu.rs:404
+#: src/ui/pages/gpu.rs:408 src/ui/pages/gpu.rs:438 src/ui/pages/gpu.rs:444
 #: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228
 #: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233
 #: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:238
@@ -954,17 +957,17 @@ msgstr "volkov <volkovissocool@gmail.com>"
 #: src/ui/pages/network.rs:252 src/ui/pages/network.rs:259
 #: src/ui/pages/network.rs:266 src/ui/pages/network.rs:272
 #: src/ui/pages/network.rs:275 src/ui/pages/network.rs:285
-#: src/ui/pages/network.rs:292 src/ui/pages/network.rs:302
-#: src/ui/pages/network.rs:370 src/ui/pages/network.rs:373
-#: src/ui/pages/network.rs:375 src/ui/pages/network.rs:404
-#: src/ui/pages/network.rs:407 src/ui/pages/network.rs:409
-#: src/ui/pages/network.rs:417 src/ui/pages/network.rs:424
-#: src/ui/pages/network.rs:434 src/ui/pages/processes/mod.rs:1275
+#: src/ui/pages/network.rs:294 src/ui/pages/network.rs:303
+#: src/ui/pages/network.rs:371 src/ui/pages/network.rs:374
+#: src/ui/pages/network.rs:376 src/ui/pages/network.rs:405
+#: src/ui/pages/network.rs:408 src/ui/pages/network.rs:410
+#: src/ui/pages/network.rs:418 src/ui/pages/network.rs:427
+#: src/ui/pages/network.rs:436 src/ui/pages/processes/mod.rs:1275
 #: src/ui/pages/processes/mod.rs:1350 src/ui/pages/processes/mod.rs:1425
 #: src/ui/pages/processes/mod.rs:1500 src/ui/pages/processes/mod.rs:2050
 #: src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152
 #: src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291
-#: src/utils/link/mod.rs:61 src/utils/npu/mod.rs:249 src/utils/npu/mod.rs:255
+#: src/utils/link/mod.rs:61 src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
 msgid "N/A"
 msgstr "Невідомо"
 
@@ -1053,25 +1056,25 @@ msgstr ""
 "Знищення додатку може призвести до серйозних ризиків, такі як: втрата даних "
 "і проблеми з безпекою. Продовжуйте на свій власний ризик."
 
-#: src/ui/pages/battery.rs:102 src/utils/battery.rs:258
+#: src/ui/pages/battery.rs:103 src/utils/battery.rs:258
 msgid "Battery"
 msgstr "Акумулятор"
 
-#: src/ui/pages/battery.rs:210
+#: src/ui/pages/battery.rs:211
 msgid "Battery Charge"
 msgstr "Заряд акумулятора"
 
-#: src/ui/pages/battery.rs:279 src/ui/pages/cpu.rs:438
-#: src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377 src/ui/pages/gpu.rs:429
-#: src/ui/pages/network.rs:362 src/ui/pages/network.rs:396
+#: src/ui/pages/battery.rs:280 src/ui/pages/cpu.rs:438
+#: src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377 src/ui/pages/gpu.rs:430
+#: src/ui/pages/network.rs:363 src/ui/pages/network.rs:397
 msgid "Highest:"
 msgstr "Пікове навантаження:"
 
-#: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:212
+#: src/ui/pages/cpu.rs:242 src/ui/pages/gpu.rs:213
 msgid "Total Usage"
 msgstr "Загальне використання"
 
-#: src/ui/pages/cpu.rs:271 src/ui/pages/gpu.rs:239
+#: src/ui/pages/cpu.rs:271 src/ui/pages/gpu.rs:240
 msgid "Temperature"
 msgstr "Температура"
 
@@ -1102,25 +1105,25 @@ msgstr "Так"
 msgid "R: {} · W: {}"
 msgstr "Чит.: {} · Зап.: {}"
 
-#: src/ui/pages/gpu.rs:220
+#: src/ui/pages/gpu.rs:221
 msgid "Video Encoder/Decoder Usage"
 msgstr "Використання відео кодувальника/декодувальника"
 
-#: src/ui/pages/gpu.rs:226
+#: src/ui/pages/gpu.rs:227
 msgid "Video Encoder Usage"
 msgstr "Використання кодувальника"
 
-#: src/ui/pages/gpu.rs:231
+#: src/ui/pages/gpu.rs:232
 msgid "Video Decoder Usage"
 msgstr "Використання декодувальника"
 
-#: src/ui/pages/gpu.rs:236
+#: src/ui/pages/gpu.rs:237
 msgid "Video Memory Usage"
 msgstr "Використання відеопам'яті"
 
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
-#: src/ui/pages/gpu.rs:415
+#: src/ui/pages/gpu.rs:416
 #, rust-format
 msgid "Memory: {}"
 msgstr "Пам'ять: {}"
@@ -1156,7 +1159,7 @@ msgstr "Відправляється"
 
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
-#: src/ui/pages/network.rs:445
+#: src/ui/pages/network.rs:447
 #, rust-format
 msgid "R: {} · S: {}"
 msgstr "Отрим.: {} · Надсил.: {}"
@@ -1224,37 +1227,37 @@ msgstr "Мережевий процесор {}"
 msgid "NPU"
 msgstr "Мережевий процесор"
 
-#: src/ui/window.rs:1201
+#: src/ui/window.rs:1200
 #, rust-format
 msgid "Successfully adjusted {}"
 msgstr "Успішно відкориговано {}"
 
-#: src/ui/window.rs:1202
+#: src/ui/window.rs:1201
 #, rust-format
 msgid "There was a problem adjusting {}"
 msgstr "Виникли проблема при коригуванні {}"
 
-#: src/ui/window.rs:1284
+#: src/ui/window.rs:1283
 #, rust-format
 msgid "Successfully ended {}"
 msgstr "Успішно завершено {}"
 
-#: src/ui/window.rs:1285
+#: src/ui/window.rs:1284
 #, rust-format
 msgid "Successfully halted {}"
 msgstr "Успішно зупинено {}"
 
-#: src/ui/window.rs:1286
+#: src/ui/window.rs:1285
 #, rust-format
 msgid "Successfully killed {}"
 msgstr "Успішно знищено {}"
 
-#: src/ui/window.rs:1287
+#: src/ui/window.rs:1286
 #, rust-format
 msgid "Successfully continued {}"
 msgstr "Успішно продовжено {}"
 
-#: src/ui/window.rs:1294
+#: src/ui/window.rs:1293
 #, rust-format
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
@@ -1262,7 +1265,7 @@ msgstr[0] "Успішно завершено {} процес"
 msgstr[1] "Успішно завершено {} процеси"
 msgstr[2] "Успішно завершено {} процесів"
 
-#: src/ui/window.rs:1300
+#: src/ui/window.rs:1299
 #, rust-format
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
@@ -1270,7 +1273,7 @@ msgstr[0] "Успішно зупинено {} процес"
 msgstr[1] "Успішно зупинено {} процеси"
 msgstr[2] "Успішно зупинено {} процесів"
 
-#: src/ui/window.rs:1306
+#: src/ui/window.rs:1305
 #, rust-format
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
@@ -1278,7 +1281,7 @@ msgstr[0] "Успішно знищено {} процес"
 msgstr[1] "Успішно знищено {} процеси"
 msgstr[2] "Успішно знищено {} процесів"
 
-#: src/ui/window.rs:1312
+#: src/ui/window.rs:1311
 #, rust-format
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
@@ -1286,7 +1289,7 @@ msgstr[0] "Успішно продовжено {} процес"
 msgstr[1] "Успішно продовжено {} процеси"
 msgstr[2] "Успішно продовжено {} процесів"
 
-#: src/ui/window.rs:1323
+#: src/ui/window.rs:1322
 #, rust-format
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
@@ -1296,7 +1299,7 @@ msgstr[0] ""
 msgstr[1] "Виникли проблеми при завершені {} процесів"
 msgstr[2] "Виникли проблеми при завершені {} процесів"
 
-#: src/ui/window.rs:1329
+#: src/ui/window.rs:1328
 #, rust-format
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
@@ -1304,7 +1307,7 @@ msgstr[0] "Виникли проблеми при зупинці {} процес
 msgstr[1] "Виникли проблеми при зупинці {} процесів"
 msgstr[2] "Виникли проблеми при зупинці {} процесів"
 
-#: src/ui/window.rs:1335
+#: src/ui/window.rs:1334
 #, rust-format
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
@@ -1312,7 +1315,7 @@ msgstr[0] "Виникли проблеми при знищенні {} проце
 msgstr[1] "Виникли проблеми при знищенні {} процесів"
 msgstr[2] "Виникли проблеми при знищенні {} процесів"
 
-#: src/ui/window.rs:1341
+#: src/ui/window.rs:1340
 #, rust-format
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
@@ -1320,22 +1323,22 @@ msgstr[0] "Виникли проблеми при продовженні {} пр
 msgstr[1] "Виникли проблеми при продовженні {} процесів"
 msgstr[2] "Виникли проблеми при продовженні {} процесів"
 
-#: src/ui/window.rs:1351
+#: src/ui/window.rs:1350
 #, rust-format
 msgid "There was a problem ending {}"
 msgstr "Виникли проблема при продовженні {}"
 
-#: src/ui/window.rs:1352
+#: src/ui/window.rs:1351
 #, rust-format
 msgid "There was a problem halting {}"
 msgstr "Виникли проблема при зупинці {}"
 
-#: src/ui/window.rs:1353
+#: src/ui/window.rs:1352
 #, rust-format
 msgid "There was a problem killing {}"
 msgstr "Сталася проблема при знищенні {}"
 
-#: src/ui/window.rs:1354
+#: src/ui/window.rs:1353
 #, rust-format
 msgid "There was a problem continuing {}"
 msgstr "Сталася проблема при продовженні {}"
@@ -1896,6 +1899,12 @@ msgstr "{} РВт/год"
 #, rust-format
 msgid "{} QWh"
 msgstr "{} КВт/год"
+
+#: src/utils/units.rs:338
+#, rust-format
+#| msgid "{} TB/s"
+msgid "{} TOPs"
+msgstr "{} ТОп/с"
 
 #: src/utils/drive.rs:129 src/utils/drive.rs:208
 msgid "CD/DVD/Blu-ray Drive"
