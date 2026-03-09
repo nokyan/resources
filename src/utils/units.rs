@@ -335,7 +335,7 @@ pub fn convert_energy(watthours: f64, integer: bool) -> String {
 }
 
 pub fn convert_tops(tops: f64) -> String {
-    i18n_f("{}\u{00A0}TOPs", &[&tops.to_string()])
+    i18n_f("{} TOPs", &[&tops.to_string()])
 }
 
 #[cfg(test)]
