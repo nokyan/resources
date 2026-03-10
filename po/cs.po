@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-03-07 22:28+0000\n"
-"PO-Revision-Date: 2026-03-09 11:34+0100\n"
+"POT-Creation-Date: 2026-03-09 10:43+0000\n"
+"PO-Revision-Date: 2026-03-10 10:26+0100\n"
 "Last-Translator: Daniel Rusek <mail@asciiwolf.com>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -1756,8 +1756,9 @@ msgstr "{} QWh"
 
 #: src/utils/units.rs:338
 #, rust-format
-msgid "{} TOPs"
-msgstr ""
+#| msgid "{} TB/s"
+msgid "{} TOPs"
+msgstr "{} TOPů"
 
 #: src/utils/drive.rs:129 src/utils/drive.rs:208
 msgid "CD/DVD/Blu-ray Drive"
