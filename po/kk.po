@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-03-07 22:28+0000\n"
-"PO-Revision-Date: 2026-03-09 16:24+0500\n"
+"POT-Creation-Date: 2026-03-09 10:43+0000\n"
+"PO-Revision-Date: 2026-03-12 20:13+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <Kazakh>\n"
 "Language: kk\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:2 data/net.nokyan.Resources.metainfo.xml.in.in:4
 #: data/resources/ui/window.ui:22 src/application.rs:272
@@ -1753,8 +1753,9 @@ msgstr "{} КвВт/сағ"
 
 #: src/utils/units.rs:338
 #, rust-format
-msgid "{} TOPs"
-msgstr "{} ТО/с"
+#| msgid "{} TB/s"
+msgid "{} TOPs"
+msgstr "{} ТО/с"
 
 #: src/utils/drive.rs:129 src/utils/drive.rs:208
 msgid "CD/DVD/Blu-ray Drive"
@@ -1902,3 +1903,7 @@ msgstr "Wi-Fi қосылымы"
 #: src/utils/network.rs:143
 msgid "WWAN Connection"
 msgstr "WWAN қосылымы"
+
+#, rust-format
+#~ msgid "{} TOPs"
+#~ msgstr "{} ТО/с"
