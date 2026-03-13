@@ -18,8 +18,8 @@ use std::{
 use strum_macros::Display;
 
 use gtk::{
-    gio::{Icon, ThemedIcon},
-    glib::GString,
+    gio::{DBusCallFlags, DBusProxy, DBusProxyFlags, Icon, ThemedIcon, prelude::DBusProxyExt},
+    glib::{GString, Variant},
 };
 
 use crate::config;
@@ -86,6 +86,10 @@ pub enum ProcessAction {
     STOP,
     KILL,
     CONT,
+    KILLWINDOW,
+    LOGOUT,
+    REBOOT,
+    SHUTDOWN,
 }
 
 impl Process {
@@ -343,6 +347,114 @@ impl Process {
             Err(err)
         } else {
             bail!("unknown error")
+        }
+    }
+
+    pub fn execute_kill_window() -> Result<()> {
+        debug!("Executing Kill Window command via D-Bus");
+
+        // Create a D-Bus proxy for the KDE global accelerator service
+        let proxy = DBusProxy::for_bus_sync(
+            gtk::gio::BusType::Session,
+            DBusProxyFlags::NONE,
+            None, // info
+            "org.kde.kglobalaccel",
+            "/component/kwin",
+            "org.kde.kglobalaccel.Component",
+            None::<&gtk::gio::Cancellable>,
+        )
+        .context("Failed to create D-Bus proxy")?;
+
+        // Create the method call parameters
+        let shortcut_name = Variant::from("Kill Window");
+        let parameters = Variant::tuple_from_iter([shortcut_name]);
+
+        // Call the D-Bus method
+        let result = proxy.call_sync(
+            "invokeShortcut",
+            Some(&parameters),
+            DBusCallFlags::NONE,
+            -1,
+            None::<&gtk::gio::Cancellable>,
+        );
+
+        match result {
+            Ok(_) => {
+                info!("Successfully invoked Kill Window");
+                Ok(())
+            }
+            Err(err) => {
+                error!("Kill Window D-Bus call failed: {}", err);
+                bail!("Kill Window D-Bus call failed: {}", err)
+            }
+        }
+    }
+
+    pub fn execute_logout() -> Result<()> {
+        debug!("Executing logout command");
+        let result = Command::new("pkill")
+            .args([
+                "-u",
+                &std::env::var("USER").unwrap_or_else(|_| "user".to_string()),
+            ])
+            .status();
+
+        match result {
+            Ok(status) if status.success() => {
+                info!("Successfully initiated logout");
+                Ok(())
+            }
+            Ok(status) => {
+                error!("Logout command failed with exit code: {:?}", status.code());
+                bail!("Logout command failed")
+            }
+            Err(err) => {
+                error!("Failed to execute logout command: {}", err);
+                bail!("Failed to execute logout command: {}", err)
+            }
+        }
+    }
+
+    pub fn execute_reboot() -> Result<()> {
+        debug!("Executing reboot command");
+        let result = Command::new("reboot").status();
+
+        match result {
+            Ok(status) if status.success() => {
+                info!("Successfully initiated reboot");
+                Ok(())
+            }
+            Ok(status) => {
+                error!("Reboot command failed with exit code: {:?}", status.code());
+                bail!("Reboot command failed")
+            }
+            Err(err) => {
+                error!("Failed to execute reboot command: {}", err);
+                bail!("Failed to execute reboot command: {}", err)
+            }
+        }
+    }
+
+    pub fn execute_shutdown() -> Result<()> {
+        debug!("Executing shutdown command");
+        let result = Command::new("poweroff").status();
+
+        match result {
+            Ok(status) if status.success() => {
+                info!("Successfully initiated shutdown");
+                Ok(())
+            }
+            Ok(status) => {
+                error!(
+                    "Shutdown command failed with exit code: {:?}",
+                    status.code()
+                );
+                bail!("Shutdown command failed")
+            }
+            Err(err) => {
+                error!("Failed to execute shutdown command: {}", err);
+                bail!("Failed to execute shutdown command: {}", err)
+            }
         }
     }
 
