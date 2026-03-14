@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-03-09 10:43+0000\n"
-"PO-Revision-Date: 2026-03-11 18:43+0200\n"
+"POT-Creation-Date: 2026-03-14 11:16+0000\n"
+"PO-Revision-Date: 2026-03-14 22:12+0200\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: Finnish <Finnish>\n"
 "Language: fi\n"
@@ -29,17 +29,15 @@ msgstr "Tarkkaile järjestelmän resursseja"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/net.nokyan.Resources.desktop.in.in:9
-#| msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;"
 msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;Performance;Power;Battery;"
 msgstr "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;Performance;Power;Battery;järjestelmä;resurssit;valvonta;prosessit;käyttö;tehtävähallinta;suoritin;muisti;näytönohjain;suorituskyky;akku;virta;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
 msgid ""
-"Resources allows you to check the utilization of your system resources and control your running processes and apps. It’s designed to be user-friendly and feel "
-"right at home on a modern desktop by using GNOME’s libadwaita."
+"Resources allows you to check the utilization of your system resources and control your running processes and apps. It’s designed to be user-friendly and feel right at home on a modern desktop by using GNOME’s libadwaita."
 msgstr ""
-"Resurssit mahdollistaa järjestelmän resurssien käytön tarkkailemisen sekä käynnissä olevien prosessien ja sovellusten hallinnan. Se on helppokäyttöinen, ja se "
-"on kuin kotonaan modernilla työpöydällä Gnomen libadwaitaa käyttäen."
+"Resurssit mahdollistaa järjestelmän resurssien käytön tarkkailemisen sekä käynnissä olevien prosessien ja sovellusten hallinnan. Se on helppokäyttöinen, ja se on kuin kotonaan modernilla työpöydällä Gnomen libadwaitaa "
+"käyttäen."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
@@ -49,16 +47,15 @@ msgstr "Resurssit tukee seuraavien komponenttien tarkkailun:"
 msgid "CPU"
 msgstr "Suoritin"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:25 data/resources/ui/dialogs/app_dialog.ui:82 data/resources/ui/dialogs/process_dialog.ui:64
-#: data/resources/ui/dialogs/settings_dialog.ui:128 data/resources/ui/dialogs/settings_dialog.ui:220 data/resources/ui/window.ui:176
-#: data/resources/ui/window.ui:183 src/ui/pages/applications/mod.rs:806 src/ui/pages/applications/mod.rs:823 src/ui/pages/memory.rs:106 src/ui/pages/memory.rs:192
-#: src/ui/pages/processes/mod.rs:1106 src/ui/pages/processes/mod.rs:1123
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25 data/resources/ui/dialogs/app_dialog.ui:82 data/resources/ui/dialogs/process_dialog.ui:64 data/resources/ui/dialogs/settings_dialog.ui:128
+#: data/resources/ui/dialogs/settings_dialog.ui:220 data/resources/ui/window.ui:176 data/resources/ui/window.ui:183 src/ui/pages/applications/mod.rs:806 src/ui/pages/applications/mod.rs:823 src/ui/pages/memory.rs:106
+#: src/ui/pages/memory.rs:192 src/ui/pages/processes/mod.rs:1106 src/ui/pages/processes/mod.rs:1123
 msgid "Memory"
 msgstr "Muisti"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:26 data/resources/ui/dialogs/app_dialog.ui:140 data/resources/ui/dialogs/process_dialog.ui:118
-#: data/resources/ui/dialogs/settings_dialog.ui:158 data/resources/ui/dialogs/settings_dialog.ui:250 src/ui/pages/applications/mod.rs:1232
-#: src/ui/pages/applications/mod.rs:1249 src/ui/pages/gpu.rs:120 src/ui/pages/processes/mod.rs:1544 src/ui/pages/processes/mod.rs:1561 src/ui/window.rs:468
+#: data/net.nokyan.Resources.metainfo.xml.in.in:26 data/resources/ui/dialogs/app_dialog.ui:140 data/resources/ui/dialogs/process_dialog.ui:118 data/resources/ui/dialogs/settings_dialog.ui:158
+#: data/resources/ui/dialogs/settings_dialog.ui:250 src/ui/pages/applications/mod.rs:1232 src/ui/pages/applications/mod.rs:1249 src/ui/pages/gpu.rs:120 src/ui/pages/processes/mod.rs:1544 src/ui/pages/processes/mod.rs:1561
+#: src/ui/window.rs:468
 msgid "GPU"
 msgstr "Näytönohjain"
 
@@ -76,35 +73,35 @@ msgstr "Akut"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:53
 msgid "Apps page in light theme"
-msgstr "Sovellukset-näkymä vaalean teeman kera"
+msgstr "Sovellukset-näkymä vaaleaa teemaa käyttäessä"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:57
 msgid "Processes page in dark theme"
-msgstr "Prosessit-näkymä tumman teeman kera"
+msgstr "Prosessit-näkymä tummaa teemaa käyttäessä"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:61
 msgid "Processor page in light theme"
-msgstr "Suoritinnäkymä vaalean teeman kera"
+msgstr "Suoritinnäkymä vaaleaa teemaa käyttäessä"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:65
 msgid "Memory page in dark theme"
-msgstr "Muistinäkymä tumman teeman kera"
+msgstr "Muistinäkymä tummaa teemaa käyttäessä"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:69
 msgid "GPU page in light theme"
-msgstr "Näytönohjainnäkymä vaalean teeman kera"
+msgstr "Näytönohjainnäkymä vaaleaa teemaa käyttäessä"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:73
 msgid "Drive page in dark theme"
-msgstr "Asemanäkymä tumman teeman kera"
+msgstr "Asemanäkymä tummaa teemaa käyttäessä"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:77
 msgid "Network Interface page in light theme"
-msgstr "Verkkoliitäntänäkymä vaalean teeman kera"
+msgstr "Verkkoliitäntänäkymä vaaleaa teemaa käyttäessä"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:81
 msgid "Battery page in dark theme"
-msgstr "Akkunäkymä tumman teeman kera"
+msgstr "Akkunäkymä tummaa teemaa käyttäessä"
 
 #: data/net.nokyan.Resources.policy.in.in:9
 msgid "Control Process"
@@ -118,69 +115,58 @@ msgstr "Tunnistautuminen vaaditaan pääkäyttäjän tai muiden käyttäejien pr
 msgid "App Information"
 msgstr "Sovelluksen tiedot"
 
-#: data/resources/ui/dialogs/app_dialog.ui:70 data/resources/ui/dialogs/process_dialog.ui:48 data/resources/ui/pages/battery.ui:22
-#: data/resources/ui/pages/cpu.ui:37 data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22 data/resources/ui/pages/gpu.ui:22
-#: data/resources/ui/pages/memory.ui:31 data/resources/ui/pages/network.ui:22 data/resources/ui/pages/npu.ui:22
+#: data/resources/ui/dialogs/app_dialog.ui:70 data/resources/ui/dialogs/process_dialog.ui:48 data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37 data/resources/ui/pages/cpu.ui:50
+#: data/resources/ui/pages/drive.ui:22 data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31 data/resources/ui/pages/network.ui:22 data/resources/ui/pages/npu.ui:22
 msgid "Usage"
 msgstr "Käyttö"
 
-#: data/resources/ui/dialogs/app_dialog.ui:73 data/resources/ui/dialogs/process_dialog.ui:55 data/resources/ui/dialogs/settings_dialog.ui:133
-#: data/resources/ui/dialogs/settings_dialog.ui:225 data/resources/ui/window.ui:145 data/resources/ui/window.ui:152 src/ui/pages/applications/mod.rs:873
-#: src/ui/pages/applications/mod.rs:890 src/ui/pages/cpu.rs:128 src/ui/pages/processes/mod.rs:1173 src/ui/pages/processes/mod.rs:1190 src/ui/window.rs:290
+#: data/resources/ui/dialogs/app_dialog.ui:73 data/resources/ui/dialogs/process_dialog.ui:55 data/resources/ui/dialogs/settings_dialog.ui:133 data/resources/ui/dialogs/settings_dialog.ui:225 data/resources/ui/window.ui:145
+#: data/resources/ui/window.ui:152 src/ui/pages/applications/mod.rs:873 src/ui/pages/applications/mod.rs:890 src/ui/pages/cpu.rs:128 src/ui/pages/processes/mod.rs:1173 src/ui/pages/processes/mod.rs:1190 src/ui/window.rs:290
 msgid "Processor"
 msgstr "Suoritin"
 
-#: data/resources/ui/dialogs/app_dialog.ui:91 data/resources/ui/dialogs/process_dialog.ui:73 data/resources/ui/dialogs/settings_dialog.ui:178
-#: data/resources/ui/dialogs/settings_dialog.ui:290 src/ui/pages/applications/mod.rs:1503 src/ui/pages/applications/mod.rs:1520 src/ui/pages/memory.rs:198
-#: src/ui/pages/processes/mod.rs:2093 src/ui/pages/processes/mod.rs:2110
+#: data/resources/ui/dialogs/app_dialog.ui:91 data/resources/ui/dialogs/process_dialog.ui:73 data/resources/ui/dialogs/settings_dialog.ui:178 data/resources/ui/dialogs/settings_dialog.ui:290
+#: src/ui/pages/applications/mod.rs:1503 src/ui/pages/applications/mod.rs:1520 src/ui/pages/memory.rs:198 src/ui/pages/processes/mod.rs:2093 src/ui/pages/processes/mod.rs:2110
 msgid "Swap"
 msgstr "Sivutus"
 
-#: data/resources/ui/dialogs/app_dialog.ui:100 data/resources/ui/dialogs/process_dialog.ui:78 data/resources/ui/dialogs/settings_dialog.ui:138
-#: data/resources/ui/dialogs/settings_dialog.ui:230 src/ui/pages/applications/mod.rs:945 src/ui/pages/applications/mod.rs:964 src/ui/pages/processes/mod.rs:1245
-#: src/ui/pages/processes/mod.rs:1264
+#: data/resources/ui/dialogs/app_dialog.ui:100 data/resources/ui/dialogs/process_dialog.ui:78 data/resources/ui/dialogs/settings_dialog.ui:138 data/resources/ui/dialogs/settings_dialog.ui:230
+#: src/ui/pages/applications/mod.rs:945 src/ui/pages/applications/mod.rs:964 src/ui/pages/processes/mod.rs:1245 src/ui/pages/processes/mod.rs:1264
 msgid "Drive Read"
 msgstr "Asemalta lukeminen"
 
-#: data/resources/ui/dialogs/app_dialog.ui:109 data/resources/ui/dialogs/process_dialog.ui:87 data/resources/ui/dialogs/settings_dialog.ui:143
-#: data/resources/ui/dialogs/settings_dialog.ui:235 src/ui/pages/applications/mod.rs:1018 src/ui/pages/applications/mod.rs:1037 src/ui/pages/processes/mod.rs:1320
-#: src/ui/pages/processes/mod.rs:1339
+#: data/resources/ui/dialogs/app_dialog.ui:109 data/resources/ui/dialogs/process_dialog.ui:87 data/resources/ui/dialogs/settings_dialog.ui:143 data/resources/ui/dialogs/settings_dialog.ui:235
+#: src/ui/pages/applications/mod.rs:1018 src/ui/pages/applications/mod.rs:1037 src/ui/pages/processes/mod.rs:1320 src/ui/pages/processes/mod.rs:1339
 msgid "Drive Read Total"
 msgstr "Asemalta lukeminen yhteensä"
 
-#: data/resources/ui/dialogs/app_dialog.ui:118 data/resources/ui/dialogs/process_dialog.ui:96 data/resources/ui/dialogs/settings_dialog.ui:148
-#: data/resources/ui/dialogs/settings_dialog.ui:240 src/ui/pages/applications/mod.rs:1087 src/ui/pages/applications/mod.rs:1106 src/ui/pages/processes/mod.rs:1395
-#: src/ui/pages/processes/mod.rs:1414
+#: data/resources/ui/dialogs/app_dialog.ui:118 data/resources/ui/dialogs/process_dialog.ui:96 data/resources/ui/dialogs/settings_dialog.ui:148 data/resources/ui/dialogs/settings_dialog.ui:240
+#: src/ui/pages/applications/mod.rs:1087 src/ui/pages/applications/mod.rs:1106 src/ui/pages/processes/mod.rs:1395 src/ui/pages/processes/mod.rs:1414
 msgid "Drive Write"
 msgstr "Asemalle kirjoittaminen"
 
-#: data/resources/ui/dialogs/app_dialog.ui:127 data/resources/ui/dialogs/process_dialog.ui:105 data/resources/ui/dialogs/settings_dialog.ui:153
-#: data/resources/ui/dialogs/settings_dialog.ui:245 src/ui/pages/applications/mod.rs:1162 src/ui/pages/applications/mod.rs:1181 src/ui/pages/processes/mod.rs:1470
-#: src/ui/pages/processes/mod.rs:1489
+#: data/resources/ui/dialogs/app_dialog.ui:127 data/resources/ui/dialogs/process_dialog.ui:105 data/resources/ui/dialogs/settings_dialog.ui:153 data/resources/ui/dialogs/settings_dialog.ui:245
+#: src/ui/pages/applications/mod.rs:1162 src/ui/pages/applications/mod.rs:1181 src/ui/pages/processes/mod.rs:1470 src/ui/pages/processes/mod.rs:1489
 msgid "Drive Write Total"
 msgstr "Asemalle kirjoittaminen yhteensä"
 
-#: data/resources/ui/dialogs/app_dialog.ui:149 data/resources/ui/dialogs/process_dialog.ui:127 data/resources/ui/dialogs/settings_dialog.ui:163
-#: data/resources/ui/dialogs/settings_dialog.ui:255 src/ui/pages/applications/mod.rs:1436 src/ui/pages/applications/mod.rs:1454 src/ui/pages/processes/mod.rs:1749
-#: src/ui/pages/processes/mod.rs:1768
+#: data/resources/ui/dialogs/app_dialog.ui:149 data/resources/ui/dialogs/process_dialog.ui:127 data/resources/ui/dialogs/settings_dialog.ui:163 data/resources/ui/dialogs/settings_dialog.ui:255
+#: src/ui/pages/applications/mod.rs:1436 src/ui/pages/applications/mod.rs:1454 src/ui/pages/processes/mod.rs:1749 src/ui/pages/processes/mod.rs:1768
 msgid "Video Memory"
 msgstr "Videomuisti"
 
-#: data/resources/ui/dialogs/app_dialog.ui:158 data/resources/ui/dialogs/process_dialog.ui:136 data/resources/ui/dialogs/settings_dialog.ui:168
-#: data/resources/ui/dialogs/settings_dialog.ui:260 src/ui/pages/applications/mod.rs:1299 src/ui/pages/applications/mod.rs:1318 src/ui/pages/processes/mod.rs:1611
-#: src/ui/pages/processes/mod.rs:1630
+#: data/resources/ui/dialogs/app_dialog.ui:158 data/resources/ui/dialogs/process_dialog.ui:136 data/resources/ui/dialogs/settings_dialog.ui:168 data/resources/ui/dialogs/settings_dialog.ui:260
+#: src/ui/pages/applications/mod.rs:1299 src/ui/pages/applications/mod.rs:1318 src/ui/pages/processes/mod.rs:1611 src/ui/pages/processes/mod.rs:1630
 msgid "Video Encoder"
 msgstr "Videopakkaus"
 
-#: data/resources/ui/dialogs/app_dialog.ui:167 data/resources/ui/dialogs/process_dialog.ui:145 data/resources/ui/dialogs/settings_dialog.ui:173
-#: data/resources/ui/dialogs/settings_dialog.ui:265 src/ui/pages/applications/mod.rs:1368 src/ui/pages/applications/mod.rs:1387 src/ui/pages/processes/mod.rs:1680
-#: src/ui/pages/processes/mod.rs:1699
+#: data/resources/ui/dialogs/app_dialog.ui:167 data/resources/ui/dialogs/process_dialog.ui:145 data/resources/ui/dialogs/settings_dialog.ui:173 data/resources/ui/dialogs/settings_dialog.ui:265
+#: src/ui/pages/applications/mod.rs:1368 src/ui/pages/applications/mod.rs:1387 src/ui/pages/processes/mod.rs:1680 src/ui/pages/processes/mod.rs:1699
 msgid "Video Decoder"
 msgstr "Videopurku"
 
-#: data/resources/ui/dialogs/app_dialog.ui:174 data/resources/ui/dialogs/process_dialog.ui:179 data/resources/ui/pages/battery.ui:33
-#: data/resources/ui/pages/cpu.ui:83 data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:74 data/resources/ui/pages/memory.ui:42
-#: data/resources/ui/pages/network.ui:51 data/resources/ui/pages/npu.ui:77
+#: data/resources/ui/dialogs/app_dialog.ui:174 data/resources/ui/dialogs/process_dialog.ui:179 data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:83 data/resources/ui/pages/drive.ui:54
+#: data/resources/ui/pages/gpu.ui:74 data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51 data/resources/ui/pages/npu.ui:77
 msgid "Properties"
 msgstr "Ominaisuudet"
 
@@ -204,33 +190,27 @@ msgstr "Kontitettu"
 msgid "Process Information"
 msgstr "Prosessin tiedot"
 
-#: data/resources/ui/dialogs/process_dialog.ui:154 data/resources/ui/dialogs/settings_dialog.ui:270 src/ui/pages/processes/mod.rs:1817
-#: src/ui/pages/processes/mod.rs:1835
+#: data/resources/ui/dialogs/process_dialog.ui:154 data/resources/ui/dialogs/settings_dialog.ui:270 src/ui/pages/processes/mod.rs:1817 src/ui/pages/processes/mod.rs:1835
 msgid "Total CPU Time"
 msgstr "Suoritinaika yhteensä"
 
-#: data/resources/ui/dialogs/process_dialog.ui:163 data/resources/ui/dialogs/settings_dialog.ui:275 src/ui/pages/processes/mod.rs:1884
-#: src/ui/pages/processes/mod.rs:1902
+#: data/resources/ui/dialogs/process_dialog.ui:163 data/resources/ui/dialogs/settings_dialog.ui:275 src/ui/pages/processes/mod.rs:1884 src/ui/pages/processes/mod.rs:1902
 msgid "User CPU Time"
 msgstr "Käyttäjän suoritinaika"
 
-#: data/resources/ui/dialogs/process_dialog.ui:172 data/resources/ui/dialogs/settings_dialog.ui:280 src/ui/pages/processes/mod.rs:1951
-#: src/ui/pages/processes/mod.rs:1969
+#: data/resources/ui/dialogs/process_dialog.ui:172 data/resources/ui/dialogs/settings_dialog.ui:280 src/ui/pages/processes/mod.rs:1951 src/ui/pages/processes/mod.rs:1969
 msgid "System CPU Time"
 msgstr "Järjestelmän suoritinaika"
 
-#: data/resources/ui/dialogs/process_dialog.ui:186 data/resources/ui/dialogs/settings_dialog.ui:210 src/ui/pages/processes/mod.rs:983
-#: src/ui/pages/processes/mod.rs:998
+#: data/resources/ui/dialogs/process_dialog.ui:186 data/resources/ui/dialogs/settings_dialog.ui:210 src/ui/pages/processes/mod.rs:983 src/ui/pages/processes/mod.rs:998
 msgid "Process ID"
 msgstr "Prosessin ID"
 
-#: data/resources/ui/dialogs/process_dialog.ui:204 data/resources/ui/dialogs/settings_dialog.ui:300 src/ui/pages/processes/mod.rs:2229
-#: src/ui/pages/processes/mod.rs:2247
+#: data/resources/ui/dialogs/process_dialog.ui:204 data/resources/ui/dialogs/settings_dialog.ui:300 src/ui/pages/processes/mod.rs:2229 src/ui/pages/processes/mod.rs:2247
 msgid "Commandline"
 msgstr "Komentorivi"
 
-#: data/resources/ui/dialogs/process_dialog.ui:213 data/resources/ui/dialogs/settings_dialog.ui:215 src/ui/pages/processes/mod.rs:1044
-#: src/ui/pages/processes/mod.rs:1059
+#: data/resources/ui/dialogs/process_dialog.ui:213 data/resources/ui/dialogs/settings_dialog.ui:215 src/ui/pages/processes/mod.rs:1044 src/ui/pages/processes/mod.rs:1059
 msgid "User"
 msgstr "Käyttäjä"
 
@@ -254,8 +234,7 @@ msgstr "Niceness"
 msgid "The priority of a process is given by its niceness. A lower niceness value correspond to a higher priority."
 msgstr "Prosessin prioriteetin määrittää sen niceness-arvo. Mitä pienempi niceness-arvo, sitä suurempi prioriteetti."
 
-#: data/resources/ui/dialogs/process_options_dialog.ui:87 data/resources/ui/dialogs/settings_dialog.ui:285 src/ui/pages/processes/mod.rs:2018
-#: src/ui/pages/processes/mod.rs:2034
+#: data/resources/ui/dialogs/process_options_dialog.ui:87 data/resources/ui/dialogs/settings_dialog.ui:285 src/ui/pages/processes/mod.rs:2018 src/ui/pages/processes/mod.rs:2034
 msgid "Priority"
 msgstr "Prioriteetti"
 
@@ -425,8 +404,8 @@ msgstr "Sovellukset"
 msgid "Information Columns"
 msgstr "Tietosarakkeet"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:183 data/resources/ui/dialogs/settings_dialog.ui:295 src/ui/pages/applications/mod.rs:1570
-#: src/ui/pages/applications/mod.rs:1589 src/ui/pages/processes/mod.rs:2160 src/ui/pages/processes/mod.rs:2179
+#: data/resources/ui/dialogs/settings_dialog.ui:183 data/resources/ui/dialogs/settings_dialog.ui:295 src/ui/pages/applications/mod.rs:1570 src/ui/pages/applications/mod.rs:1589 src/ui/pages/processes/mod.rs:2160
+#: src/ui/pages/processes/mod.rs:2179
 msgid "Combined Memory"
 msgstr "Yhdistetty muisti"
 
@@ -805,24 +784,18 @@ msgstr "Näytä/piilota hakukenttä"
 msgid "translator-credits"
 msgstr "Jiri Grönroos"
 
-#: src/ui/dialogs/app_dialog.rs:155 src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:146
-#: src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171 src/ui/dialogs/process_dialog.rs:178 src/ui/dialogs/process_dialog.rs:185
-#: src/ui/dialogs/process_dialog.rs:192 src/ui/pages/applications/mod.rs:975 src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:206
-#: src/ui/pages/battery.rs:226 src/ui/pages/battery.rs:232 src/ui/pages/battery.rs:235 src/ui/pages/battery.rs:266 src/ui/pages/battery.rs:290
-#: src/ui/pages/battery.rs:292 src/ui/pages/battery.rs:302 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258 src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284
-#: src/ui/pages/cpu.rs:290 src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303 src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448
-#: src/ui/pages/drive.rs:321 src/ui/pages/drive.rs:352 src/ui/pages/drive.rs:354 src/ui/pages/drive.rs:383 src/ui/pages/drive.rs:385 src/ui/pages/drive.rs:401
-#: src/ui/pages/drive.rs:402 src/ui/pages/drive.rs:409 src/ui/pages/drive.rs:419 src/ui/pages/drive.rs:429 src/ui/pages/drive.rs:435 src/ui/pages/gpu.rs:246
-#: src/ui/pages/gpu.rs:253 src/ui/pages/gpu.rs:298 src/ui/pages/gpu.rs:323 src/ui/pages/gpu.rs:326 src/ui/pages/gpu.rs:337 src/ui/pages/gpu.rs:378
-#: src/ui/pages/gpu.rs:385 src/ui/pages/gpu.rs:397 src/ui/pages/gpu.rs:404 src/ui/pages/gpu.rs:408 src/ui/pages/gpu.rs:438 src/ui/pages/gpu.rs:444
-#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228 src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233 src/ui/pages/memory.rs:237
-#: src/ui/pages/memory.rs:238 src/ui/pages/memory.rs:266 src/ui/pages/memory.rs:327 src/ui/pages/network.rs:252 src/ui/pages/network.rs:259
-#: src/ui/pages/network.rs:266 src/ui/pages/network.rs:272 src/ui/pages/network.rs:275 src/ui/pages/network.rs:285 src/ui/pages/network.rs:294
-#: src/ui/pages/network.rs:303 src/ui/pages/network.rs:371 src/ui/pages/network.rs:374 src/ui/pages/network.rs:376 src/ui/pages/network.rs:405
-#: src/ui/pages/network.rs:408 src/ui/pages/network.rs:410 src/ui/pages/network.rs:418 src/ui/pages/network.rs:427 src/ui/pages/network.rs:436
-#: src/ui/pages/processes/mod.rs:1275 src/ui/pages/processes/mod.rs:1350 src/ui/pages/processes/mod.rs:1425 src/ui/pages/processes/mod.rs:1500
-#: src/ui/pages/processes/mod.rs:2050 src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152 src/utils/drive.rs:137 src/utils/gpu/mod.rs:279
-#: src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
+#: src/ui/dialogs/app_dialog.rs:155 src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:146 src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171
+#: src/ui/dialogs/process_dialog.rs:178 src/ui/dialogs/process_dialog.rs:185 src/ui/dialogs/process_dialog.rs:192 src/ui/pages/applications/mod.rs:975 src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:206
+#: src/ui/pages/battery.rs:226 src/ui/pages/battery.rs:232 src/ui/pages/battery.rs:235 src/ui/pages/battery.rs:266 src/ui/pages/battery.rs:290 src/ui/pages/battery.rs:292 src/ui/pages/battery.rs:302 src/ui/pages/cpu.rs:243
+#: src/ui/pages/cpu.rs:258 src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:290 src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303 src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448
+#: src/ui/pages/drive.rs:321 src/ui/pages/drive.rs:352 src/ui/pages/drive.rs:354 src/ui/pages/drive.rs:383 src/ui/pages/drive.rs:385 src/ui/pages/drive.rs:401 src/ui/pages/drive.rs:402 src/ui/pages/drive.rs:409
+#: src/ui/pages/drive.rs:419 src/ui/pages/drive.rs:429 src/ui/pages/drive.rs:435 src/ui/pages/gpu.rs:246 src/ui/pages/gpu.rs:253 src/ui/pages/gpu.rs:298 src/ui/pages/gpu.rs:323 src/ui/pages/gpu.rs:326 src/ui/pages/gpu.rs:337
+#: src/ui/pages/gpu.rs:378 src/ui/pages/gpu.rs:385 src/ui/pages/gpu.rs:397 src/ui/pages/gpu.rs:404 src/ui/pages/gpu.rs:408 src/ui/pages/gpu.rs:438 src/ui/pages/gpu.rs:444 src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228
+#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233 src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:238 src/ui/pages/memory.rs:266 src/ui/pages/memory.rs:327 src/ui/pages/network.rs:252 src/ui/pages/network.rs:259
+#: src/ui/pages/network.rs:266 src/ui/pages/network.rs:272 src/ui/pages/network.rs:275 src/ui/pages/network.rs:285 src/ui/pages/network.rs:294 src/ui/pages/network.rs:303 src/ui/pages/network.rs:371
+#: src/ui/pages/network.rs:374 src/ui/pages/network.rs:376 src/ui/pages/network.rs:405 src/ui/pages/network.rs:408 src/ui/pages/network.rs:410 src/ui/pages/network.rs:418 src/ui/pages/network.rs:427
+#: src/ui/pages/network.rs:436 src/ui/pages/processes/mod.rs:1275 src/ui/pages/processes/mod.rs:1350 src/ui/pages/processes/mod.rs:1425 src/ui/pages/processes/mod.rs:1500 src/ui/pages/processes/mod.rs:2050
+#: src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152 src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
 msgid "N/A"
 msgstr "-"
 
@@ -905,8 +878,7 @@ msgstr "Akku"
 msgid "Battery Charge"
 msgstr "Akun varaus"
 
-#: src/ui/pages/battery.rs:280 src/ui/pages/cpu.rs:438 src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377 src/ui/pages/gpu.rs:430 src/ui/pages/network.rs:363
-#: src/ui/pages/network.rs:397
+#: src/ui/pages/battery.rs:280 src/ui/pages/cpu.rs:438 src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377 src/ui/pages/gpu.rs:430 src/ui/pages/network.rs:363 src/ui/pages/network.rs:397
 msgid "Highest:"
 msgstr "Korkein:"
 
@@ -947,7 +919,7 @@ msgstr "Lue.: {} · Kir.: {}"
 
 #: src/ui/pages/gpu.rs:221
 msgid "Video Encoder/Decoder Usage"
-msgstr "Videon pakkauksen/purun käyttös"
+msgstr "Videon pakkauksen/purun käyttö"
 
 #: src/ui/pages/gpu.rs:227
 msgid "Video Encoder Usage"
