@@ -1619,7 +1619,7 @@ impl ResApplications {
             .build();
 
         combined_memory_col.set_sorter(Some(&combined_memory_col_sorter));
-        combined_memory_col.set_visible(SETTINGS.processes_show_combined_memory());
+        combined_memory_col.set_visible(SETTINGS.apps_show_combined_memory());
 
         column_view.append_column(&combined_memory_col);
 
