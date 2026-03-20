@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-03-06 20:03+0000\n"
-"PO-Revision-Date: 2026-03-07 08:57+0100\n"
+"POT-Creation-Date: 2026-03-14 11:16+0000\n"
+"PO-Revision-Date: 2026-03-20 07:53+0100\n"
 "Last-Translator: Guillaume Bernard <associations@guillaume-bernard.fr>\n"
 "Language-Team: French <nokyan@tuta.io>\n"
 "Language: fr\n"
@@ -195,7 +195,7 @@ msgstr "Décodeur vidéo"
 #: data/resources/ui/dialogs/app_dialog.ui:174 data/resources/ui/dialogs/process_dialog.ui:179
 #: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:83 data/resources/ui/pages/drive.ui:54
 #: data/resources/ui/pages/gpu.ui:74 data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
-#: data/resources/ui/pages/npu.ui:68
+#: data/resources/ui/pages/npu.ui:77
 msgid "Properties"
 msgstr "Propriétés"
 
@@ -540,7 +540,7 @@ msgid "Technology"
 msgstr "Technologie"
 
 #: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:81 data/resources/ui/pages/network.ui:58
-#: data/resources/ui/pages/npu.ui:75
+#: data/resources/ui/pages/npu.ui:84
 msgid "Manufacturer"
 msgstr "Fabricant"
 
@@ -556,7 +556,7 @@ msgstr "Périphérique"
 msgid "Show Usages of Logical CPUs"
 msgstr "Afficher les utilisations des CPU logiques"
 
-#: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66 data/resources/ui/pages/npu.ui:60
+#: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66 data/resources/ui/pages/npu.ui:69
 msgid "Sensors"
 msgstr "Capteurs"
 
@@ -614,7 +614,7 @@ msgstr "Amovible"
 
 #. Translators: "Link" refers to something like "PCIe 4.0 ×16"
 #: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113 data/resources/ui/pages/network.ui:103
-#: data/resources/ui/pages/npu.ui:107
+#: data/resources/ui/pages/npu.ui:116
 msgid "Link"
 msgstr "Liaison"
 
@@ -626,19 +626,19 @@ msgstr "Fréquence du GPU"
 msgid "Video Memory Frequency"
 msgstr "Fréquence de la mémoire vidéo"
 
-#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:49 src/ui/pages/battery.rs:218
+#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:58 src/ui/pages/battery.rs:218
 msgid "Power Usage"
 msgstr "Utilisation de la puissance"
 
-#: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:84
+#: data/resources/ui/pages/gpu.ui:90 data/resources/ui/pages/npu.ui:93
 msgid "PCI Slot"
 msgstr "Slot PCI"
 
-#: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67 data/resources/ui/pages/npu.ui:93
+#: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67 data/resources/ui/pages/npu.ui:102
 msgid "Driver Used"
 msgstr "Pilote utilisé"
 
-#: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:102
+#: data/resources/ui/pages/gpu.ui:108 data/resources/ui/pages/npu.ui:111
 msgid "Max Power Cap"
 msgstr "Limitation maximale de la puissance"
 
@@ -694,7 +694,11 @@ msgstr "Vitesse de connexion"
 msgid "NPU Frequency"
 msgstr "Fréquence du NPU"
 
-#: data/resources/ui/pages/npu.ui:44
+#: data/resources/ui/pages/npu.ui:40
+msgid "Performance"
+msgstr "Performance"
+
+#: data/resources/ui/pages/npu.ui:53
 msgid "Memory Frequency"
 msgstr "Fréquence de la mémoire"
 
@@ -857,12 +861,13 @@ msgstr ""
 #: src/ui/pages/processes/mod.rs:1350 src/ui/pages/processes/mod.rs:1425 src/ui/pages/processes/mod.rs:1500
 #: src/ui/pages/processes/mod.rs:2050 src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152
 #: src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61
-#: src/utils/npu/mod.rs:249 src/utils/npu/mod.rs:255
+#: src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
 msgid "N/A"
 msgstr "S/O"
 
 #: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257 src/ui/pages/cpu.rs:417
 #: src/ui/pages/cpu.rs:421
+#, rust-format
 msgid "CPU {}"
 msgstr "CPU {}"
 
@@ -889,6 +894,7 @@ msgid "Yes (Snap)"
 msgstr "Oui (Snap)"
 
 #: src/ui/pages/applications/mod.rs:663
+#, rust-format
 msgid "Running Apps: {}"
 msgstr "Applications en cours : {}"
 
@@ -901,18 +907,22 @@ msgid "App"
 msgstr "Application"
 
 #: src/ui/pages/applications/mod.rs:1638 src/ui/pages/processes/mod.rs:2293
+#, rust-format
 msgid "End {}?"
 msgstr "Arrêter {} ?"
 
 #: src/ui/pages/applications/mod.rs:1639 src/ui/pages/processes/mod.rs:2294
+#, rust-format
 msgid "Halt {}?"
 msgstr "Mettre en pause {} ?"
 
 #: src/ui/pages/applications/mod.rs:1640 src/ui/pages/processes/mod.rs:2295
+#, rust-format
 msgid "Kill {}?"
 msgstr "Tuer {} ?"
 
 #: src/ui/pages/applications/mod.rs:1641 src/ui/pages/processes/mod.rs:2296
+#, rust-format
 msgid "Continue {}?"
 msgstr "Continuer {} ?"
 
@@ -976,6 +986,7 @@ msgstr "Oui"
 #. Translators: This is an abbreviation for "Read" and "Write". This is displayed in the sidebar so your
 #. translation should preferably be quite short or an abbreviation
 #: src/ui/pages/drive.rs:442
+#, rust-format
 msgid "R: {} · W: {}"
 msgstr "L : {} · E : {}"
 
@@ -998,20 +1009,24 @@ msgstr "Utilisation de la mémoire vidéo"
 #. Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
 #. shorter than) 'Memory'
 #: src/ui/pages/gpu.rs:416
+#, rust-format
 msgid "Memory: {}"
 msgstr "Mémoire : {}"
 
 #: src/ui/pages/memory.rs:262
+#, rust-format
 msgid "{} of {}"
 msgstr "{} sur {}"
 
 #: src/ui/pages/memory.rs:265
+#, rust-format
 msgid "{} MT/s"
 msgstr "{} MT/s"
 
 #. Translators: This will be displayed in the sidebar, so your translation for "Swap" should
 #. preferably be quite short or an abbreviation
 #: src/ui/pages/memory.rs:346
+#, rust-format
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · Swap : {} %"
 
@@ -1030,10 +1045,12 @@ msgstr "Envoi"
 #. Translators: This is an abbreviation for "Receive" and "Send". This is displayed in the sidebar so
 #. your translation should preferably be quite short or an abbreviation
 #: src/ui/pages/network.rs:447
+#, rust-format
 msgid "R: {} · S: {}"
 msgstr "R : {} · E : {}"
 
 #: src/ui/pages/processes/mod.rs:824
+#, rust-format
 msgid "Running Processes: {}"
 msgstr "Processus en cours : {}"
 
@@ -1042,18 +1059,21 @@ msgid "Process"
 msgstr "Processus"
 
 #: src/ui/pages/processes/mod.rs:2303
+#, rust-format
 msgid "End process?"
 msgid_plural "End {} processes?"
 msgstr[0] "Arrêter le processus ?"
 msgstr[1] "Arrêter {} processus ?"
 
 #: src/ui/pages/processes/mod.rs:2309
+#, rust-format
 msgid "Halt process?"
 msgid_plural "Halt {} processes?"
 msgstr[0] "Mettre le processus en pause ?"
 msgstr[1] "Mettre {} processus en pause ?"
 
 #: src/ui/pages/processes/mod.rs:2315 src/ui/pages/processes/mod.rs:2321
+#, rust-format
 msgid "Kill process?"
 msgid_plural "Kill {} processes?"
 msgstr[0] "Tuer le processus ?"
@@ -1074,10 +1094,12 @@ msgstr ""
 "prudent."
 
 #: src/ui/window.rs:466
+#, rust-format
 msgid "GPU {}"
 msgstr "GPU {}"
 
 #: src/ui/window.rs:496
+#, rust-format
 msgid "NPU {}"
 msgstr "NPU {}"
 
@@ -1085,91 +1107,109 @@ msgstr "NPU {}"
 msgid "NPU"
 msgstr "NPU"
 
-#: src/ui/window.rs:1201
+#: src/ui/window.rs:1200
+#, rust-format
 msgid "Successfully adjusted {}"
 msgstr "{} ajusté avec succès"
 
-#: src/ui/window.rs:1202
+#: src/ui/window.rs:1201
+#, rust-format
 msgid "There was a problem adjusting {}"
 msgstr "Il y a eu un problème d’ajustement {}"
 
-#: src/ui/window.rs:1284
+#: src/ui/window.rs:1283
+#, rust-format
 msgid "Successfully ended {}"
 msgstr "{} arrêté avec succès"
 
-#: src/ui/window.rs:1285
+#: src/ui/window.rs:1284
+#, rust-format
 msgid "Successfully halted {}"
 msgstr "{} mis en pause avec succès"
 
-#: src/ui/window.rs:1286
+#: src/ui/window.rs:1285
+#, rust-format
 msgid "Successfully killed {}"
 msgstr "{} tué avec succès"
 
-#: src/ui/window.rs:1287
+#: src/ui/window.rs:1286
+#, rust-format
 msgid "Successfully continued {}"
 msgstr "{} continué avec succès"
 
-#: src/ui/window.rs:1294
+#: src/ui/window.rs:1293
+#, rust-format
 msgid "Successfully ended the process"
 msgid_plural "Successfully ended {} processes"
 msgstr[0] "Processus arrêté avec succès"
 msgstr[1] "{} processus arrêtés avec succès"
 
-#: src/ui/window.rs:1300
+#: src/ui/window.rs:1299
+#, rust-format
 msgid "Successfully halted the process"
 msgid_plural "Successfully halted {} processes"
 msgstr[0] "Le processus a été mis en pause avec succès"
 msgstr[1] "{} processus ont été mis en pause avec succès"
 
-#: src/ui/window.rs:1306
+#: src/ui/window.rs:1305
+#, rust-format
 msgid "Successfully killed the process"
 msgid_plural "Successfully killed {} processes"
 msgstr[0] "{} processus tué avec succès"
 msgstr[1] "{} processus tués avec succès"
 
-#: src/ui/window.rs:1312
+#: src/ui/window.rs:1311
+#, rust-format
 msgid "Successfully continued the process"
 msgid_plural "Successfully continued {} processes"
 msgstr[0] "{} processus continué avec succès"
 msgstr[1] "{} processus continués avec succès"
 
-#: src/ui/window.rs:1323
+#: src/ui/window.rs:1322
+#, rust-format
 msgid "There was a problem ending a process"
 msgid_plural "There were problems ending {} processes"
 msgstr[0] "Il y a eu un problème pour arrêter un processus"
 msgstr[1] "Il y a eu des problèmes pour arrêter {} processus"
 
-#: src/ui/window.rs:1329
+#: src/ui/window.rs:1328
+#, rust-format
 msgid "There was a problem halting a process"
 msgid_plural "There were problems halting {} processes"
 msgstr[0] "Il y a eu un problème pour la mise en pause d'un processus"
 msgstr[1] "Il y a eu des problèmes pour la mise en pause de {} processus"
 
-#: src/ui/window.rs:1335
+#: src/ui/window.rs:1334
+#, rust-format
 msgid "There was a problem killing a process"
 msgid_plural "There were problems killing {} processes"
 msgstr[0] "Il y a eu un problème pour tuer un processus"
 msgstr[1] "Il y a eu des problèmes pour tuer {} processus"
 
-#: src/ui/window.rs:1341
+#: src/ui/window.rs:1340
+#, rust-format
 msgid "There was a problem continuing a process"
 msgid_plural "There were problems continuing {} processes"
 msgstr[0] "Il y a eu un problème pour continuer un processus"
 msgstr[1] "Il y a eu des problèmes pour continuer {} processus"
 
-#: src/ui/window.rs:1351
+#: src/ui/window.rs:1350
+#, rust-format
 msgid "There was a problem ending {}"
 msgstr "Il y a eu un problème pour arrêter {}"
 
-#: src/ui/window.rs:1352
+#: src/ui/window.rs:1351
+#, rust-format
 msgid "There was a problem halting {}"
 msgstr "Il y a eu un problème pour la mise en pause de {}"
 
-#: src/ui/window.rs:1353
+#: src/ui/window.rs:1352
+#, rust-format
 msgid "There was a problem killing {}"
 msgstr "Il y a eu un problème pour tuer {}"
 
-#: src/ui/window.rs:1354
+#: src/ui/window.rs:1353
+#, rust-format
 msgid "There was a problem continuing {}"
 msgstr "Il y a eu un problème pour continuer {}"
 
@@ -1230,404 +1270,509 @@ msgid "Rechargeable Alkaline Managanese"
 msgstr "Batterie rechargeable Alkaline"
 
 #: src/utils/battery.rs:256
+#, rust-format
 msgid "{} Battery"
 msgstr "{} Batterie"
 
 #: src/utils/units.rs:91
+#, rust-format
 msgid "{} K"
 msgstr "{} K"
 
 #: src/utils/units.rs:93
+#, rust-format
 msgid "{} °C"
 msgstr "{} °C"
 
 #: src/utils/units.rs:95
+#, rust-format
 msgid "{} °F"
 msgstr "{} °F"
 
 #: src/utils/units.rs:113 src/utils/units.rs:127 src/utils/units.rs:147 src/utils/units.rs:161
+#, rust-format
 msgid "{} B"
 msgstr "{} octets"
 
 #: src/utils/units.rs:114 src/utils/units.rs:128
+#, rust-format
 msgid "{} kB"
 msgstr "{} ko"
 
 #: src/utils/units.rs:115 src/utils/units.rs:129
+#, rust-format
 msgid "{} MB"
 msgstr "{} Mo"
 
 #: src/utils/units.rs:116 src/utils/units.rs:130
+#, rust-format
 msgid "{} GB"
 msgstr "{} Go"
 
 #: src/utils/units.rs:117 src/utils/units.rs:131
+#, rust-format
 msgid "{} TB"
 msgstr "{} To"
 
 #: src/utils/units.rs:118 src/utils/units.rs:132
+#, rust-format
 msgid "{} PB"
 msgstr "{} Po"
 
 #: src/utils/units.rs:119 src/utils/units.rs:133
+#, rust-format
 msgid "{} EB"
 msgstr "{} Eo"
 
 #: src/utils/units.rs:120 src/utils/units.rs:134
+#, rust-format
 msgid "{} ZB"
 msgstr "{} Zo"
 
 #: src/utils/units.rs:121 src/utils/units.rs:135
+#, rust-format
 msgid "{} YB"
 msgstr "{} Yo"
 
 #: src/utils/units.rs:122 src/utils/units.rs:136
+#, rust-format
 msgid "{} RB"
 msgstr "{} Ro"
 
 #: src/utils/units.rs:123 src/utils/units.rs:137
+#, rust-format
 msgid "{} QB"
 msgstr "{} Qo"
 
 #: src/utils/units.rs:148 src/utils/units.rs:162
+#, rust-format
 msgid "{} KiB"
 msgstr "{} Kio"
 
 #: src/utils/units.rs:149 src/utils/units.rs:163
+#, rust-format
 msgid "{} MiB"
 msgstr "{} Mio"
 
 #: src/utils/units.rs:150 src/utils/units.rs:164
+#, rust-format
 msgid "{} GiB"
 msgstr "{} Gio"
 
 #: src/utils/units.rs:151 src/utils/units.rs:165
+#, rust-format
 msgid "{} TiB"
 msgstr "{} Tio"
 
 #: src/utils/units.rs:152 src/utils/units.rs:166
+#, rust-format
 msgid "{} PiB"
 msgstr "{} Pio"
 
 #: src/utils/units.rs:153 src/utils/units.rs:167
+#, rust-format
 msgid "{} EiB"
 msgstr "{} Eio"
 
 #: src/utils/units.rs:154 src/utils/units.rs:168
+#, rust-format
 msgid "{} ZiB"
 msgstr "{} Zio"
 
 #: src/utils/units.rs:155 src/utils/units.rs:169
+#, rust-format
 msgid "{} YiB"
 msgstr "{} Yio"
 
 #: src/utils/units.rs:156 src/utils/units.rs:170
+#, rust-format
 msgid "{} RiB"
 msgstr "{} Rio"
 
 #: src/utils/units.rs:157 src/utils/units.rs:171
+#, rust-format
 msgid "{} QiB"
 msgstr "{} Qio"
 
 #: src/utils/units.rs:197 src/utils/units.rs:214
+#, rust-format
 msgid "{} B/s"
 msgstr "{} octets/s"
 
 #: src/utils/units.rs:198
+#, rust-format
 msgid "{} kB/s"
 msgstr "{} ko/s"
 
 #: src/utils/units.rs:199
+#, rust-format
 msgid "{} MB/s"
 msgstr "{} Mo/s"
 
 #: src/utils/units.rs:200
+#, rust-format
 msgid "{} GB/s"
 msgstr "{} Go/s"
 
 #: src/utils/units.rs:201
+#, rust-format
 msgid "{} TB/s"
 msgstr "{} To/s"
 
 #: src/utils/units.rs:202
+#, rust-format
 msgid "{} PB/s"
 msgstr "{} Po/s"
 
 #: src/utils/units.rs:203
+#, rust-format
 msgid "{} EB/s"
 msgstr "{} Eo/s"
 
 #: src/utils/units.rs:204
+#, rust-format
 msgid "{} ZB/s"
 msgstr "{} Zo/s"
 
 #: src/utils/units.rs:205
+#, rust-format
 msgid "{} YB/s"
 msgstr "{} Yo/s"
 
 #: src/utils/units.rs:206
+#, rust-format
 msgid "{} RB/s"
 msgstr "{} Ro/s"
 
 #: src/utils/units.rs:207
+#, rust-format
 msgid "{} QB/s"
 msgstr "{} Qo/s"
 
 #: src/utils/units.rs:215
+#, rust-format
 msgid "{} KiB/s"
 msgstr "{} Kio/s"
 
 #: src/utils/units.rs:216
+#, rust-format
 msgid "{} MiB/s"
 msgstr "{} Mio/s"
 
 #: src/utils/units.rs:217
+#, rust-format
 msgid "{} GiB/s"
 msgstr "{} Gio/s"
 
 #: src/utils/units.rs:218
+#, rust-format
 msgid "{} TiB/s"
 msgstr "{} Tio/s"
 
 #: src/utils/units.rs:219
+#, rust-format
 msgid "{} PiB/s"
 msgstr "{} Pio/s"
 
 #: src/utils/units.rs:220
+#, rust-format
 msgid "{} EiB/s"
 msgstr "{} Eio/s"
 
 #: src/utils/units.rs:221
+#, rust-format
 msgid "{} ZiB/s"
 msgstr "{} Zio/s"
 
 #: src/utils/units.rs:222
+#, rust-format
 msgid "{} YiB/s"
 msgstr "{} Yio/s"
 
 #: src/utils/units.rs:223
+#, rust-format
 msgid "{} RiB/s"
 msgstr "{} Rio/s"
 
 #: src/utils/units.rs:224
+#, rust-format
 msgid "{} QiB/s"
 msgstr "{} Qio/s"
 
 #: src/utils/units.rs:238 src/utils/units.rs:255
+#, rust-format
 msgid "{} b/s"
 msgstr "{} b/s"
 
 #: src/utils/units.rs:239
+#, rust-format
 msgid "{} kb/s"
 msgstr "{} kb/s"
 
 #: src/utils/units.rs:240
+#, rust-format
 msgid "{} Mb/s"
 msgstr "{} Mb/s"
 
 #: src/utils/units.rs:241
+#, rust-format
 msgid "{} Gb/s"
 msgstr "{} Gb/s"
 
 #: src/utils/units.rs:242
+#, rust-format
 msgid "{} Tb/s"
 msgstr "{} Tb/s"
 
 #: src/utils/units.rs:243
+#, rust-format
 msgid "{} Pb/s"
 msgstr "{} Pb/s"
 
 #: src/utils/units.rs:244
+#, rust-format
 msgid "{} Eb/s"
 msgstr "{} Eb/s"
 
 #: src/utils/units.rs:245
+#, rust-format
 msgid "{} Zb/s"
 msgstr "{} Zb/s"
 
 #: src/utils/units.rs:246
+#, rust-format
 msgid "{} Yb/s"
 msgstr "{} Yb/s"
 
 #: src/utils/units.rs:247
+#, rust-format
 msgid "{} Rb/s"
 msgstr "{} Rb/s"
 
 #: src/utils/units.rs:248
+#, rust-format
 msgid "{} Qb/s"
 msgstr "{} Qb/s"
 
 #: src/utils/units.rs:256
+#, rust-format
 msgid "{} Kib/s"
 msgstr "{} Kib/s"
 
 #: src/utils/units.rs:257
+#, rust-format
 msgid "{} Mib/s"
 msgstr "{} Mib/s"
 
 #: src/utils/units.rs:258
+#, rust-format
 msgid "{} Gib/s"
 msgstr "{} Gib/s"
 
 #: src/utils/units.rs:259
+#, rust-format
 msgid "{} Tib/s"
 msgstr "{} Tib/s"
 
 #: src/utils/units.rs:260
+#, rust-format
 msgid "{} Pib/s"
 msgstr "{} Pib/s"
 
 #: src/utils/units.rs:261
+#, rust-format
 msgid "{} Eib/s"
 msgstr "{} Eib/s"
 
 #: src/utils/units.rs:262
+#, rust-format
 msgid "{} Zib/s"
 msgstr "{} Zib/s"
 
 #: src/utils/units.rs:263
+#, rust-format
 msgid "{} Yib/s"
 msgstr "{} Yib/s"
 
 #: src/utils/units.rs:264
+#, rust-format
 msgid "{} Rib/s"
 msgstr "{} Rib/s"
 
 #: src/utils/units.rs:265
+#, rust-format
 msgid "{} Qib/s"
 msgstr "{} Qib/s"
 
 #: src/utils/units.rs:272
+#, rust-format
 msgid "{} Hz"
 msgstr "{} Hz"
 
 #: src/utils/units.rs:273
+#, rust-format
 msgid "{} kHz"
 msgstr "{} kHz"
 
 #: src/utils/units.rs:274
+#, rust-format
 msgid "{} MHz"
 msgstr "{} MHz"
 
 #: src/utils/units.rs:275
+#, rust-format
 msgid "{} GHz"
 msgstr "{} GHz"
 
 #: src/utils/units.rs:276
+#, rust-format
 msgid "{} THz"
 msgstr "{} THz"
 
 #: src/utils/units.rs:277
+#, rust-format
 msgid "{} PHz"
 msgstr "{} PHz"
 
 #: src/utils/units.rs:278
+#, rust-format
 msgid "{} EHz"
 msgstr "{} EHz"
 
 #: src/utils/units.rs:279
+#, rust-format
 msgid "{} ZHz"
 msgstr "{} ZHz"
 
 #: src/utils/units.rs:280
+#, rust-format
 msgid "{} YHz"
 msgstr "{} YHz"
 
 #: src/utils/units.rs:281
+#, rust-format
 msgid "{} RHz"
 msgstr "{} RHz"
 
 #: src/utils/units.rs:282
+#, rust-format
 msgid "{} QHz"
 msgstr "{} QHz"
 
 #: src/utils/units.rs:289
+#, rust-format
 msgid "{} W"
 msgstr "{} W"
 
 #: src/utils/units.rs:290
+#, rust-format
 msgid "{} kW"
 msgstr "{} kW"
 
 #: src/utils/units.rs:291
+#, rust-format
 msgid "{} MW"
 msgstr "{} MW"
 
 #: src/utils/units.rs:292
+#, rust-format
 msgid "{} GW"
 msgstr "{} GW"
 
 #: src/utils/units.rs:293
+#, rust-format
 msgid "{} TW"
 msgstr "{} TW"
 
 #: src/utils/units.rs:294
+#, rust-format
 msgid "{} PW"
 msgstr "{} PW"
 
 #: src/utils/units.rs:295
+#, rust-format
 msgid "{} EW"
 msgstr "{} EW"
 
 #: src/utils/units.rs:296
+#, rust-format
 msgid "{} ZW"
 msgstr "{} ZW"
 
 #: src/utils/units.rs:297
+#, rust-format
 msgid "{} YW"
 msgstr "{} YW"
 
 #: src/utils/units.rs:298
+#, rust-format
 msgid "{} RW"
 msgstr "{} RW"
 
 #: src/utils/units.rs:299
+#, rust-format
 msgid "{} QW"
 msgstr "{} QW"
 
 #: src/utils/units.rs:308 src/utils/units.rs:322
+#, rust-format
 msgid "{} Wh"
 msgstr "{} Wh"
 
 #: src/utils/units.rs:309 src/utils/units.rs:323
+#, rust-format
 msgid "{} kWh"
 msgstr "{} kWh"
 
 #: src/utils/units.rs:310 src/utils/units.rs:324
+#, rust-format
 msgid "{} MWh"
 msgstr "{} MWh"
 
 #: src/utils/units.rs:311 src/utils/units.rs:325
+#, rust-format
 msgid "{} GWh"
 msgstr "{} GWh"
 
 #: src/utils/units.rs:312 src/utils/units.rs:326
+#, rust-format
 msgid "{} TWh"
 msgstr "{} TWh"
 
 #: src/utils/units.rs:313 src/utils/units.rs:327
+#, rust-format
 msgid "{} PWh"
 msgstr "{} PWh"
 
 #: src/utils/units.rs:314 src/utils/units.rs:328
+#, rust-format
 msgid "{} EWh"
 msgstr "{} EWh"
 
 #: src/utils/units.rs:315 src/utils/units.rs:329
+#, rust-format
 msgid "{} ZWh"
 msgstr "{} ZWh"
 
 #: src/utils/units.rs:316 src/utils/units.rs:330
+#, rust-format
 msgid "{} YWh"
 msgstr "{} YWh"
 
 #: src/utils/units.rs:317 src/utils/units.rs:331
+#, rust-format
 msgid "{} RWh"
 msgstr "{} RWh"
 
 #: src/utils/units.rs:318 src/utils/units.rs:332
+#, rust-format
 msgid "{} QWh"
 msgstr "{} QWh"
+
+#: src/utils/units.rs:338
+#, rust-format
+msgid "{} TOPs"
+msgstr "{} TOPs"
 
 #: src/utils/drive.rs:129 src/utils/drive.rs:208
 msgid "CD/DVD/Blu-ray Drive"
@@ -1682,30 +1827,37 @@ msgid "Compressed RAM Disk (zram)"
 msgstr "Disque RAM compressé (zram)"
 
 #: src/utils/drive.rs:210
+#, rust-format
 msgid "{} Loop Device"
 msgstr "{} Périphérique de boucle"
 
 #: src/utils/drive.rs:211
+#, rust-format
 msgid "{} Mapped Device"
 msgstr "{} Périphériques associés"
 
 #: src/utils/drive.rs:212
+#, rust-format
 msgid "{} RAID"
 msgstr "{} RAID"
 
 #: src/utils/drive.rs:213
+#, rust-format
 msgid "{} RAM Disk"
 msgstr "{} Disque RAM"
 
 #: src/utils/drive.rs:214
+#, rust-format
 msgid "{} zram Device"
 msgstr "{} Périphérique zram"
 
 #: src/utils/drive.rs:215
+#, rust-format
 msgid "{} ZFS Volume"
 msgstr "{} Volume ZFS"
 
 #: src/utils/drive.rs:216
+#, rust-format
 msgid "{} Drive"
 msgstr "Disque {}"
 
