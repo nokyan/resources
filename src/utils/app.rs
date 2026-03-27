@@ -20,9 +20,12 @@ use process_data::{
 
 use crate::{i18n::i18n, utils::read_parsed};
 
+use futures::future::{FutureExt, LocalBoxFuture, Shared};
+
 use super::{
     boot_time,
     process::{Process, ProcessAction},
+    snapd,
 };
 
 /// This contains the cgroups of desktop environments. If a process has this as its cgroup, its parent's cgroup will be
@@ -163,11 +166,22 @@ static MESSAGE_LOCALES: LazyLock<Vec<String>> = LazyLock::new(|| {
     return_vec
 });
 
+/// Future that resolves to an optional app ID once deferred association completes.
+type DeferredAppFuture = Shared<LocalBoxFuture<'static, Option<String>>>;
+
+/// The result of attempting to associate a process with an app.
+/// When association must be deferred (e.g. waiting for an async query), the future is returned.
+enum AppAssociation {
+    Resolved(Option<String>),
+    Pending(DeferredAppFuture),
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct AppsContext {
     apps: HashMap<Option<String>, App>,
     processes: HashMap<i32, Process>,
     gpus_with_combined_media_engine: Vec<GpuIdentifier>,
+    deferred: HashMap<i32, DeferredAppFuture>,
 }
 
 /// Represents an application installed on the system. It doesn't
@@ -244,7 +258,6 @@ impl App {
 
         let id = desktop_entry
             .get("X-Flatpak") // is there a X-Flatpak section?
-            .or_else(|| desktop_entry.get("X-SnapInstanceName")) // if not, maybe there is a X-SnapInstanceName
             .or_else(|| desktop_entry.get("X-AppImage-Identifier")) // or maybe a X-AppImageIdentifier
             .map(str::to_string)
             .or_else(|| {
@@ -535,6 +548,7 @@ impl AppsContext {
             apps,
             processes: HashMap::new(),
             gpus_with_combined_media_engine,
+            deferred: HashMap::new(),
         }
     }
 
@@ -682,8 +696,9 @@ impl AppsContext {
             .sum()
     }
 
-    fn app_associated_with_process(&self, process: &Process) -> Option<String> {
+    fn app_associated_with_process(&self, process: &Process) -> AppAssociation {
         // TODO: tidy this up
+
         // ↓ look for whether we can associate this process with an AppImage
         if let Some(appimage_path) = &process.data.appimage_path {
             if let Some(parent) = self.apps.values().find(|app| {
@@ -693,7 +708,7 @@ impl AppsContext {
                         .as_ref()
                         .is_some_and(|exe_name| exe_name == appimage_path)
             }) {
-                return parent.id.clone();
+                return AppAssociation::Resolved(parent.id.clone());
             }
         }
 
@@ -705,41 +720,81 @@ impl AppsContext {
                 .values()
                 .find(|app| app.processes.contains(&process.data.parent_pid))
             {
-                return parent.id.clone();
+                return AppAssociation::Resolved(parent.id.clone());
             }
         }
 
-        if let Some(app) = self
-            .apps
-            .get(&Some(process.data.cgroup.clone().unwrap_or_default()))
-        {
-            debug!(
-                "Associating process {} with app {:?} (ID: {:?}) based on process cgroup matching with app ID",
-                process.data.pid,
-                app.display_name,
-                app.id.as_deref().unwrap_or("N/A")
-            );
-            app.id.clone()
-        } else if let Some(app) = self.apps.get(&Some(process.executable_path.clone())) {
-            // ↑ look for whether we can find an ID in the executable path of the process
-            debug!(
-                "Associating process {} with app {:?} (ID: {:?}) based on process executable path matching with app ID",
-                process.data.pid,
-                app.display_name,
-                app.id.as_deref().unwrap_or("N/A")
-            );
-            app.id.clone()
-        } else if let Some(app) = self.apps.get(&Some(process.executable_name.clone())) {
-            // ↑ look for whether we can find an ID in the executable name of the process
-            debug!(
-                "Associating process {} with app {:?} (ID: {:?}) based on process executable name matching with app ID",
-                process.data.pid,
-                app.display_name,
-                app.id.as_deref().unwrap_or("N/A")
-            );
-            app.id.clone()
-        } else {
-            self.apps
+        // ↓ look for whether we can associate this process with a snap
+        if process.data.containerization == Containerization::Snap {
+            if let Some((snap_name, snap_app)) = process
+                .data
+                .cgroup
+                .as_deref()
+                .and_then(|c| c.split_once('.'))
+            {
+                let fut = snapd::get_desktop_id(snap_name, snap_app);
+                match fut.clone().now_or_never() {
+                    None => {
+                        debug!(
+                            "Deferring association of snap process {} with app until async query completes",
+                            process.data.pid
+                        );
+                        return AppAssociation::Pending(fut);
+                    }
+                    Some(Some(id)) if self.apps.contains_key(&Some(id.clone())) => {
+                        debug!(
+                            "Associating snap process {} ({snap_name}.{snap_app}) with app {id:?} via snapd query",
+                            process.data.pid
+                        );
+                        return AppAssociation::Resolved(Some(id));
+                    }
+                    Some(None) => {
+                        let id = format!("{snap_name}_{snap_app}");
+                        if self.apps.contains_key(&Some(id.clone())) {
+                            debug!(
+                                "Associating snap process {} ({snap_name}.{snap_app}) with app {id:?} via cgroup fallback",
+                                process.data.pid
+                            );
+                            return AppAssociation::Resolved(Some(id));
+                        }
+                    }
+                    Some(_) => {}
+                }
+            }
+        }
+
+        AppAssociation::Resolved(
+            if let Some(app) = self
+                .apps
+                .get(&Some(process.data.cgroup.clone().unwrap_or_default()))
+            {
+                debug!(
+                    "Associating process {} with app {:?} (ID: {:?}) based on process cgroup matching with app ID",
+                    process.data.pid,
+                    app.display_name,
+                    app.id.as_deref().unwrap_or("N/A")
+                );
+                app.id.clone()
+            } else if let Some(app) = self.apps.get(&Some(process.executable_path.clone())) {
+                // ↑ look for whether we can find an ID in the executable path of the process
+                debug!(
+                    "Associating process {} with app {:?} (ID: {:?}) based on process executable path matching with app ID",
+                    process.data.pid,
+                    app.display_name,
+                    app.id.as_deref().unwrap_or("N/A")
+                );
+                app.id.clone()
+            } else if let Some(app) = self.apps.get(&Some(process.executable_name.clone())) {
+                // ↑ look for whether we can find an ID in the executable name of the process
+                debug!(
+                    "Associating process {} with app {:?} (ID: {:?}) based on process executable name matching with app ID",
+                    process.data.pid,
+                    app.display_name,
+                    app.id.as_deref().unwrap_or("N/A")
+                );
+                app.id.clone()
+            } else {
+                self.apps
                 .values()
                 .find(|app| {
                     // ↓ probably most expensive lookup, therefore only last resort: look if the process' commandline
@@ -786,7 +841,8 @@ impl AppsContext {
                     }
                 })
                 .and_then(|app| app.id.clone())
-        }
+            },
+        )
     }
 
     pub fn get_process(&self, pid: i32) -> Option<&Process> {
@@ -820,9 +876,34 @@ impl AppsContext {
     }
 
     /// Refreshes the statistics about the running applications and processes.
+    /// For new processes whose association is deferred (awaiting an async query),
+    /// the result is picked up on the next call once the future resolves.
     pub fn refresh(&mut self, new_process_data: Vec<ProcessData>) {
         trace!("Refreshing AppsContext…");
         let start = Instant::now();
+
+        // Drain deferred: associate any processes whose pending future has now resolved.
+        let resolved_pids: Vec<i32> = self
+            .deferred
+            .iter()
+            .filter_map(|(&pid, fut)| fut.clone().now_or_never().is_some().then_some(pid))
+            .collect();
+        for pid in resolved_pids {
+            self.deferred.remove(&pid);
+            let Some(process) = self.processes.get(&pid) else {
+                continue;
+            };
+            // Re-invoke app_associated_with_process; now that the future has resolved
+            // it will return Resolved (either matched or heuristic fallback).
+            let AppAssociation::Resolved(app_id) = self.app_associated_with_process(process) else {
+                continue;
+            };
+            debug!("Associating deferred process {pid} with app {app_id:?}");
+            let Some(process) = self.processes.get_mut(&pid) else {
+                continue;
+            };
+            self.apps.get_mut(&app_id).unwrap().add_process(process);
+        }
 
         let mut updated_processes = HashSet::new();
 
@@ -866,13 +947,20 @@ impl AppsContext {
                 trace!("{} is a new process", process_data.pid);
 
                 let mut new_process = Process::from_process_data(process_data);
+                let pid = new_process.data.pid;
 
-                self.apps
-                    .get_mut(&self.app_associated_with_process(&new_process))
-                    .unwrap()
-                    .add_process(&mut new_process);
-
-                self.processes.insert(new_process.data.pid, new_process);
+                match self.app_associated_with_process(&new_process) {
+                    AppAssociation::Resolved(app_id) => {
+                        self.apps
+                            .get_mut(&app_id)
+                            .unwrap()
+                            .add_process(&mut new_process);
+                    }
+                    AppAssociation::Pending(fut) => {
+                        self.deferred.insert(pid, fut);
+                    }
+                }
+                self.processes.insert(pid, new_process);
             }
         }
 
@@ -920,6 +1008,10 @@ impl AppsContext {
 
         // all the not-updated processes have unfortunately died, probably
         self.processes
+            .retain(|pid, _| updated_processes.contains(pid));
+
+        // Drop pids from deferred that belong to processes that no longer exist.
+        self.deferred
             .retain(|pid, _| updated_processes.contains(pid));
 
         trace!("AppsContext refresh done within {:.2?}", start.elapsed());
