@@ -29,6 +29,7 @@ const INTERFACE_TYPE_MAP: &[(&str, InterfaceType)] = &[
     ("tun", InterfaceType::Vpn),
     ("veth", InterfaceType::VirtualEthernet),
     ("virbr", InterfaceType::VmBridge),
+    ("vnet", InterfaceType::Vm),
     ("vpn", InterfaceType::Vpn),
     ("wg", InterfaceType::Wireguard),
     ("wl", InterfaceType::Wlan),
@@ -85,6 +86,7 @@ pub enum InterfaceType {
     LXDBridge,
     Slip,
     VirtualEthernet,
+    Vm,
     VmBridge,
     Vpn,
     Wireguard,
@@ -135,6 +137,7 @@ impl Display for InterfaceType {
                 InterfaceType::LXCBridge => i18n("LXC Bridge"),
                 InterfaceType::LXDBridge => i18n("LXD Bridge"),
                 InterfaceType::Slip => i18n("Serial Line IP Connection"),
+                InterfaceType::Vm => i18n("VM Network Interface"),
                 InterfaceType::VirtualEthernet => i18n("Virtual Ethernet Device"),
                 InterfaceType::VmBridge => i18n("VM Network Bridge"),
                 InterfaceType::Vpn => i18n("VPN Tunnel"),
@@ -287,6 +290,7 @@ impl NetworkInterface {
             InterfaceType::LXDBridge => ThemedIcon::new("bridge-symbolic").into(),
             InterfaceType::Slip => ThemedIcon::new("slip-symbolic").into(),
             InterfaceType::VirtualEthernet => ThemedIcon::new("virtual-ethernet").into(),
+            InterfaceType::Vm => ThemedIcon::new("virtual-ethernet-symbolic").into(),
             InterfaceType::VmBridge => ThemedIcon::new("vm-bridge-symbolic").into(),
             InterfaceType::Vpn | InterfaceType::Wireguard => ThemedIcon::new("vpn-symbolic").into(),
             InterfaceType::Wlan => ThemedIcon::new("wlan-symbolic").into(),
@@ -305,6 +309,7 @@ impl NetworkInterface {
                 | InterfaceType::LXDBridge
                 | InterfaceType::VirtualEthernet
                 | InterfaceType::Vpn
+                | InterfaceType::Vm
                 | InterfaceType::VmBridge
                 | InterfaceType::Wireguard
         )
