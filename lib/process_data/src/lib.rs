@@ -451,7 +451,8 @@ impl ProcessData {
         trace!("Launcher of {pid} determined to be {launcher}");
         trace!("Cgroup of {pid} determined to be {cgroup:?}");
 
-        let environ = read_parsed::<String>(proc_path.join("environ"))?
+        let environ = read_parsed::<String>(proc_path.join("environ"))
+            .unwrap_or_default()
             .split('\0')
             .filter_map(|e| e.split_once('='))
             .map(|(x, y)| (x.to_string(), y.to_string()))
