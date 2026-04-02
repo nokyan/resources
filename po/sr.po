@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-03-14 11:16+0000\n"
+"POT-Creation-Date: 2026-04-01 14:01+0000\n"
 "PO-Revision-Date: 2026-03-18 23:45+0100\n"
 "Last-Translator: Марко М. Костић <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian <Serbian>\n"
@@ -15,15 +15,19 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 : "
+"n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Poedit 3.9\n"
 
-#: data/net.nokyan.Resources.desktop.in.in:2 data/net.nokyan.Resources.metainfo.xml.in.in:4 data/resources/ui/window.ui:22 src/application.rs:272
+#: data/net.nokyan.Resources.desktop.in.in:2
+#: data/net.nokyan.Resources.metainfo.xml.in.in:4
+#: data/resources/ui/window.ui:22 src/application.rs:272
 msgid "Resources"
 msgstr "Ресурси"
 
 #. Translators: The summary should be 35 characters or less according to Flathub appstream guidelines
-#: data/net.nokyan.Resources.desktop.in.in:3 data/net.nokyan.Resources.metainfo.xml.in.in:5
+#: data/net.nokyan.Resources.desktop.in.in:3
+#: data/net.nokyan.Resources.metainfo.xml.in.in:5
 msgid "Keep an eye on system resources"
 msgstr "Пратите системске ресурсе"
 
@@ -33,8 +37,15 @@ msgid "System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;
 msgstr "Систем;Ресурси;Надгледање;Процеси;Употреба;Задатак;Управник;ЦПУ;РАМ;Меморија;ГПЈ;Перформансе;Напајање;Батерија;System;Resources;Monitor;Processes;Usage;Task;Manager;CPU;RAM;Memory;GPU;Performance;Power;Battery;"
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:17
-msgid "Resources allows you to check the utilization of your system resources and control your running processes and apps. It’s designed to be user-friendly and feel right at home on a modern desktop by using GNOME’s libadwaita."
-msgstr "Ресурси вам омогућавају да проверите искоришћеност системских ресурса и управљате покренутим процесима и апликацијама. Дизајниран је да буде лак за коришћење и да се савршено уклапа у савремено радно окружење коришћењем Гномове библиотеке „libadwaita“."
+msgid ""
+"Resources allows you to check the utilization of your system resources and "
+"control your running processes and apps. It’s designed to be user-friendly "
+"and feel right at home on a modern desktop by using GNOME’s libadwaita."
+msgstr ""
+"Ресурси вам омогућавају да проверите искоришћеност системских ресурса и "
+"управљате покренутим процесима и апликацијама. Дизајниран је да буде лак за "
+"коришћење и да се савршено уклапа у савремено радно окружење коришћењем "
+"Гномове библиотеке „libadwaita“."
 
 #: data/net.nokyan.Resources.metainfo.xml.in.in:20
 msgid "Resources supports monitoring the following components:"
@@ -44,18 +55,31 @@ msgstr "Ресурси подржавају надгледање следећи�
 msgid "CPU"
 msgstr "Процесор"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:25 data/resources/ui/dialogs/app_dialog.ui:82 data/resources/ui/dialogs/process_dialog.ui:64 data/resources/ui/dialogs/settings_dialog.ui:128 data/resources/ui/dialogs/settings_dialog.ui:220
-#: data/resources/ui/window.ui:176 data/resources/ui/window.ui:183 src/ui/pages/applications/mod.rs:806 src/ui/pages/applications/mod.rs:823 src/ui/pages/memory.rs:106 src/ui/pages/memory.rs:192 src/ui/pages/processes/mod.rs:1106
-#: src/ui/pages/processes/mod.rs:1123
+#: data/net.nokyan.Resources.metainfo.xml.in.in:25
+#: data/resources/ui/dialogs/app_dialog.ui:82
+#: data/resources/ui/dialogs/process_dialog.ui:64
+#: data/resources/ui/dialogs/settings_dialog.ui:128
+#: data/resources/ui/dialogs/settings_dialog.ui:220
+#: data/resources/ui/window.ui:176 data/resources/ui/window.ui:183
+#: src/ui/pages/applications/mod.rs:806 src/ui/pages/applications/mod.rs:823
+#: src/ui/pages/memory.rs:106 src/ui/pages/memory.rs:192
+#: src/ui/pages/processes/mod.rs:1106 src/ui/pages/processes/mod.rs:1123
 msgid "Memory"
 msgstr "Меморија"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:26 data/resources/ui/dialogs/app_dialog.ui:140 data/resources/ui/dialogs/process_dialog.ui:118 data/resources/ui/dialogs/settings_dialog.ui:158 data/resources/ui/dialogs/settings_dialog.ui:250
-#: src/ui/pages/applications/mod.rs:1232 src/ui/pages/applications/mod.rs:1249 src/ui/pages/gpu.rs:120 src/ui/pages/processes/mod.rs:1544 src/ui/pages/processes/mod.rs:1561 src/ui/window.rs:468
+#: data/net.nokyan.Resources.metainfo.xml.in.in:26
+#: data/resources/ui/dialogs/app_dialog.ui:140
+#: data/resources/ui/dialogs/process_dialog.ui:118
+#: data/resources/ui/dialogs/settings_dialog.ui:158
+#: data/resources/ui/dialogs/settings_dialog.ui:250
+#: src/ui/pages/applications/mod.rs:1232 src/ui/pages/applications/mod.rs:1249
+#: src/ui/pages/gpu.rs:120 src/ui/pages/processes/mod.rs:1544
+#: src/ui/pages/processes/mod.rs:1561 src/ui/window.rs:468
 msgid "GPU"
 msgstr "Графичка"
 
-#: data/net.nokyan.Resources.metainfo.xml.in.in:27 data/resources/ui/dialogs/settings_dialog.ui:324
+#: data/net.nokyan.Resources.metainfo.xml.in.in:27
+#: data/resources/ui/dialogs/settings_dialog.ui:324
 msgid "Network Interfaces"
 msgstr "Мрежни уређаји"
 
@@ -104,65 +128,115 @@ msgid "Control Process"
 msgstr "Управљај процесом"
 
 #: data/net.nokyan.Resources.policy.in.in:10
-msgid "Authentication is required to control superuser’s or other users’ processes"
-msgstr "Потребна је потврда идентитета за управљање процесима администратора или других корисника"
+msgid ""
+"Authentication is required to control superuser’s or other users’ processes"
+msgstr ""
+"Потребна је потврда идентитета за управљање процесима администратора или "
+"других корисника"
 
 #: data/resources/ui/dialogs/app_dialog.ui:7
 msgid "App Information"
 msgstr "Подаци о апликацији"
 
-#: data/resources/ui/dialogs/app_dialog.ui:70 data/resources/ui/dialogs/process_dialog.ui:48 data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37 data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22
-#: data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31 data/resources/ui/pages/network.ui:22 data/resources/ui/pages/npu.ui:22
+#: data/resources/ui/dialogs/app_dialog.ui:70
+#: data/resources/ui/dialogs/process_dialog.ui:48
+#: data/resources/ui/pages/battery.ui:22 data/resources/ui/pages/cpu.ui:37
+#: data/resources/ui/pages/cpu.ui:50 data/resources/ui/pages/drive.ui:22
+#: data/resources/ui/pages/gpu.ui:22 data/resources/ui/pages/memory.ui:31
+#: data/resources/ui/pages/network.ui:22 data/resources/ui/pages/npu.ui:22
 msgid "Usage"
 msgstr "Употреба"
 
-#: data/resources/ui/dialogs/app_dialog.ui:73 data/resources/ui/dialogs/process_dialog.ui:55 data/resources/ui/dialogs/settings_dialog.ui:133 data/resources/ui/dialogs/settings_dialog.ui:225 data/resources/ui/window.ui:145 data/resources/ui/window.ui:152
-#: src/ui/pages/applications/mod.rs:873 src/ui/pages/applications/mod.rs:890 src/ui/pages/cpu.rs:128 src/ui/pages/processes/mod.rs:1173 src/ui/pages/processes/mod.rs:1190 src/ui/window.rs:290
+#: data/resources/ui/dialogs/app_dialog.ui:73
+#: data/resources/ui/dialogs/process_dialog.ui:55
+#: data/resources/ui/dialogs/settings_dialog.ui:133
+#: data/resources/ui/dialogs/settings_dialog.ui:225
+#: data/resources/ui/window.ui:145 data/resources/ui/window.ui:152
+#: src/ui/pages/applications/mod.rs:873 src/ui/pages/applications/mod.rs:890
+#: src/ui/pages/cpu.rs:128 src/ui/pages/processes/mod.rs:1173
+#: src/ui/pages/processes/mod.rs:1190 src/ui/window.rs:290
 msgid "Processor"
 msgstr "Процесор"
 
-#: data/resources/ui/dialogs/app_dialog.ui:91 data/resources/ui/dialogs/process_dialog.ui:73 data/resources/ui/dialogs/settings_dialog.ui:178 data/resources/ui/dialogs/settings_dialog.ui:290 src/ui/pages/applications/mod.rs:1503
-#: src/ui/pages/applications/mod.rs:1520 src/ui/pages/memory.rs:198 src/ui/pages/processes/mod.rs:2093 src/ui/pages/processes/mod.rs:2110
+#: data/resources/ui/dialogs/app_dialog.ui:91
+#: data/resources/ui/dialogs/process_dialog.ui:73
+#: data/resources/ui/dialogs/settings_dialog.ui:178
+#: data/resources/ui/dialogs/settings_dialog.ui:290
+#: src/ui/pages/applications/mod.rs:1503 src/ui/pages/applications/mod.rs:1520
+#: src/ui/pages/memory.rs:198 src/ui/pages/processes/mod.rs:2093
+#: src/ui/pages/processes/mod.rs:2110
 msgid "Swap"
 msgstr "Размена"
 
-#: data/resources/ui/dialogs/app_dialog.ui:100 data/resources/ui/dialogs/process_dialog.ui:78 data/resources/ui/dialogs/settings_dialog.ui:138 data/resources/ui/dialogs/settings_dialog.ui:230 src/ui/pages/applications/mod.rs:945
-#: src/ui/pages/applications/mod.rs:964 src/ui/pages/processes/mod.rs:1245 src/ui/pages/processes/mod.rs:1264
+#: data/resources/ui/dialogs/app_dialog.ui:100
+#: data/resources/ui/dialogs/process_dialog.ui:78
+#: data/resources/ui/dialogs/settings_dialog.ui:138
+#: data/resources/ui/dialogs/settings_dialog.ui:230
+#: src/ui/pages/applications/mod.rs:945 src/ui/pages/applications/mod.rs:964
+#: src/ui/pages/processes/mod.rs:1245 src/ui/pages/processes/mod.rs:1264
 msgid "Drive Read"
 msgstr "Читање са диска"
 
-#: data/resources/ui/dialogs/app_dialog.ui:109 data/resources/ui/dialogs/process_dialog.ui:87 data/resources/ui/dialogs/settings_dialog.ui:143 data/resources/ui/dialogs/settings_dialog.ui:235 src/ui/pages/applications/mod.rs:1018
-#: src/ui/pages/applications/mod.rs:1037 src/ui/pages/processes/mod.rs:1320 src/ui/pages/processes/mod.rs:1339
+#: data/resources/ui/dialogs/app_dialog.ui:109
+#: data/resources/ui/dialogs/process_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:143
+#: data/resources/ui/dialogs/settings_dialog.ui:235
+#: src/ui/pages/applications/mod.rs:1018 src/ui/pages/applications/mod.rs:1037
+#: src/ui/pages/processes/mod.rs:1320 src/ui/pages/processes/mod.rs:1339
 msgid "Drive Read Total"
 msgstr "Укупно прочитано са диска"
 
-#: data/resources/ui/dialogs/app_dialog.ui:118 data/resources/ui/dialogs/process_dialog.ui:96 data/resources/ui/dialogs/settings_dialog.ui:148 data/resources/ui/dialogs/settings_dialog.ui:240 src/ui/pages/applications/mod.rs:1087
-#: src/ui/pages/applications/mod.rs:1106 src/ui/pages/processes/mod.rs:1395 src/ui/pages/processes/mod.rs:1414
+#: data/resources/ui/dialogs/app_dialog.ui:118
+#: data/resources/ui/dialogs/process_dialog.ui:96
+#: data/resources/ui/dialogs/settings_dialog.ui:148
+#: data/resources/ui/dialogs/settings_dialog.ui:240
+#: src/ui/pages/applications/mod.rs:1087 src/ui/pages/applications/mod.rs:1106
+#: src/ui/pages/processes/mod.rs:1395 src/ui/pages/processes/mod.rs:1414
 msgid "Drive Write"
 msgstr "Писање на диск"
 
-#: data/resources/ui/dialogs/app_dialog.ui:127 data/resources/ui/dialogs/process_dialog.ui:105 data/resources/ui/dialogs/settings_dialog.ui:153 data/resources/ui/dialogs/settings_dialog.ui:245 src/ui/pages/applications/mod.rs:1162
-#: src/ui/pages/applications/mod.rs:1181 src/ui/pages/processes/mod.rs:1470 src/ui/pages/processes/mod.rs:1489
+#: data/resources/ui/dialogs/app_dialog.ui:127
+#: data/resources/ui/dialogs/process_dialog.ui:105
+#: data/resources/ui/dialogs/settings_dialog.ui:153
+#: data/resources/ui/dialogs/settings_dialog.ui:245
+#: src/ui/pages/applications/mod.rs:1162 src/ui/pages/applications/mod.rs:1181
+#: src/ui/pages/processes/mod.rs:1470 src/ui/pages/processes/mod.rs:1489
 msgid "Drive Write Total"
 msgstr "Укупно уписано на диск"
 
-#: data/resources/ui/dialogs/app_dialog.ui:149 data/resources/ui/dialogs/process_dialog.ui:127 data/resources/ui/dialogs/settings_dialog.ui:163 data/resources/ui/dialogs/settings_dialog.ui:255 src/ui/pages/applications/mod.rs:1436
-#: src/ui/pages/applications/mod.rs:1454 src/ui/pages/processes/mod.rs:1749 src/ui/pages/processes/mod.rs:1768
+#: data/resources/ui/dialogs/app_dialog.ui:149
+#: data/resources/ui/dialogs/process_dialog.ui:127
+#: data/resources/ui/dialogs/settings_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:255
+#: src/ui/pages/applications/mod.rs:1436 src/ui/pages/applications/mod.rs:1454
+#: src/ui/pages/processes/mod.rs:1749 src/ui/pages/processes/mod.rs:1768
 msgid "Video Memory"
 msgstr "Видео меморија"
 
-#: data/resources/ui/dialogs/app_dialog.ui:158 data/resources/ui/dialogs/process_dialog.ui:136 data/resources/ui/dialogs/settings_dialog.ui:168 data/resources/ui/dialogs/settings_dialog.ui:260 src/ui/pages/applications/mod.rs:1299
-#: src/ui/pages/applications/mod.rs:1318 src/ui/pages/processes/mod.rs:1611 src/ui/pages/processes/mod.rs:1630
+#: data/resources/ui/dialogs/app_dialog.ui:158
+#: data/resources/ui/dialogs/process_dialog.ui:136
+#: data/resources/ui/dialogs/settings_dialog.ui:168
+#: data/resources/ui/dialogs/settings_dialog.ui:260
+#: src/ui/pages/applications/mod.rs:1299 src/ui/pages/applications/mod.rs:1318
+#: src/ui/pages/processes/mod.rs:1611 src/ui/pages/processes/mod.rs:1630
 msgid "Video Encoder"
 msgstr "Видео енкодер"
 
-#: data/resources/ui/dialogs/app_dialog.ui:167 data/resources/ui/dialogs/process_dialog.ui:145 data/resources/ui/dialogs/settings_dialog.ui:173 data/resources/ui/dialogs/settings_dialog.ui:265 src/ui/pages/applications/mod.rs:1368
-#: src/ui/pages/applications/mod.rs:1387 src/ui/pages/processes/mod.rs:1680 src/ui/pages/processes/mod.rs:1699
+#: data/resources/ui/dialogs/app_dialog.ui:167
+#: data/resources/ui/dialogs/process_dialog.ui:145
+#: data/resources/ui/dialogs/settings_dialog.ui:173
+#: data/resources/ui/dialogs/settings_dialog.ui:265
+#: src/ui/pages/applications/mod.rs:1368 src/ui/pages/applications/mod.rs:1387
+#: src/ui/pages/processes/mod.rs:1680 src/ui/pages/processes/mod.rs:1699
 msgid "Video Decoder"
 msgstr "Видео декодер"
 
-#: data/resources/ui/dialogs/app_dialog.ui:174 data/resources/ui/dialogs/process_dialog.ui:179 data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:83 data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:74
-#: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51 data/resources/ui/pages/npu.ui:77
+#: data/resources/ui/dialogs/app_dialog.ui:174
+#: data/resources/ui/dialogs/process_dialog.ui:179
+#: data/resources/ui/pages/battery.ui:33 data/resources/ui/pages/cpu.ui:83
+#: data/resources/ui/pages/drive.ui:54 data/resources/ui/pages/gpu.ui:74
+#: data/resources/ui/pages/memory.ui:42 data/resources/ui/pages/network.ui:51
+#: data/resources/ui/pages/npu.ui:77
 msgid "Properties"
 msgstr "Својства"
 
@@ -170,7 +244,8 @@ msgstr "Својства"
 msgid "ID"
 msgstr "ИД"
 
-#: data/resources/ui/dialogs/app_dialog.ui:190 data/resources/ui/dialogs/process_dialog.ui:195
+#: data/resources/ui/dialogs/app_dialog.ui:190
+#: data/resources/ui/dialogs/process_dialog.ui:195
 msgid "Running Since"
 msgstr "Покренут од"
 
@@ -178,7 +253,8 @@ msgstr "Покренут од"
 msgid "Running Processes"
 msgstr "Покренути процеси"
 
-#: data/resources/ui/dialogs/app_dialog.ui:207 data/resources/ui/dialogs/process_dialog.ui:231
+#: data/resources/ui/dialogs/app_dialog.ui:207
+#: data/resources/ui/dialogs/process_dialog.ui:231
 msgid "Containerized"
 msgstr "У контејнеру"
 
@@ -186,27 +262,39 @@ msgstr "У контејнеру"
 msgid "Process Information"
 msgstr "Подаци о процесу"
 
-#: data/resources/ui/dialogs/process_dialog.ui:154 data/resources/ui/dialogs/settings_dialog.ui:270 src/ui/pages/processes/mod.rs:1817 src/ui/pages/processes/mod.rs:1835
+#: data/resources/ui/dialogs/process_dialog.ui:154
+#: data/resources/ui/dialogs/settings_dialog.ui:270
+#: src/ui/pages/processes/mod.rs:1817 src/ui/pages/processes/mod.rs:1835
 msgid "Total CPU Time"
 msgstr "Укупно време процесора"
 
-#: data/resources/ui/dialogs/process_dialog.ui:163 data/resources/ui/dialogs/settings_dialog.ui:275 src/ui/pages/processes/mod.rs:1884 src/ui/pages/processes/mod.rs:1902
+#: data/resources/ui/dialogs/process_dialog.ui:163
+#: data/resources/ui/dialogs/settings_dialog.ui:275
+#: src/ui/pages/processes/mod.rs:1884 src/ui/pages/processes/mod.rs:1902
 msgid "User CPU Time"
 msgstr "Корисничко време процесора"
 
-#: data/resources/ui/dialogs/process_dialog.ui:172 data/resources/ui/dialogs/settings_dialog.ui:280 src/ui/pages/processes/mod.rs:1951 src/ui/pages/processes/mod.rs:1969
+#: data/resources/ui/dialogs/process_dialog.ui:172
+#: data/resources/ui/dialogs/settings_dialog.ui:280
+#: src/ui/pages/processes/mod.rs:1951 src/ui/pages/processes/mod.rs:1969
 msgid "System CPU Time"
 msgstr "Системско време процесора"
 
-#: data/resources/ui/dialogs/process_dialog.ui:186 data/resources/ui/dialogs/settings_dialog.ui:210 src/ui/pages/processes/mod.rs:983 src/ui/pages/processes/mod.rs:998
+#: data/resources/ui/dialogs/process_dialog.ui:186
+#: data/resources/ui/dialogs/settings_dialog.ui:210
+#: src/ui/pages/processes/mod.rs:983 src/ui/pages/processes/mod.rs:998
 msgid "Process ID"
 msgstr "ИД процеса"
 
-#: data/resources/ui/dialogs/process_dialog.ui:204 data/resources/ui/dialogs/settings_dialog.ui:300 src/ui/pages/processes/mod.rs:2229 src/ui/pages/processes/mod.rs:2247
+#: data/resources/ui/dialogs/process_dialog.ui:204
+#: data/resources/ui/dialogs/settings_dialog.ui:300
+#: src/ui/pages/processes/mod.rs:2229 src/ui/pages/processes/mod.rs:2247
 msgid "Commandline"
 msgstr "Линија наредби"
 
-#: data/resources/ui/dialogs/process_dialog.ui:213 data/resources/ui/dialogs/settings_dialog.ui:215 src/ui/pages/processes/mod.rs:1044 src/ui/pages/processes/mod.rs:1059
+#: data/resources/ui/dialogs/process_dialog.ui:213
+#: data/resources/ui/dialogs/settings_dialog.ui:215
+#: src/ui/pages/processes/mod.rs:1044 src/ui/pages/processes/mod.rs:1059
 msgid "User"
 msgstr "Корисник"
 
@@ -214,7 +302,8 @@ msgstr "Корисник"
 msgid "Control Group"
 msgstr "Група управљања"
 
-#: data/resources/ui/dialogs/process_options_dialog.ui:7 data/resources/ui/dialogs/process_options_dialog.ui:69
+#: data/resources/ui/dialogs/process_options_dialog.ui:7
+#: data/resources/ui/dialogs/process_options_dialog.ui:69
 msgid "Process Options"
 msgstr "Опције процеса"
 
@@ -227,10 +316,16 @@ msgid "Niceness"
 msgstr "Правичност"
 
 #: data/resources/ui/dialogs/process_options_dialog.ui:73
-msgid "The priority of a process is given by its niceness. A lower niceness value correspond to a higher priority."
-msgstr "Важност процеса је одређен његовом вредношћу правичности. Нижа вредност правичности одговара вишој важности."
+msgid ""
+"The priority of a process is given by its niceness. A lower niceness value "
+"correspond to a higher priority."
+msgstr ""
+"Важност процеса је одређен његовом вредношћу правичности. Нижа вредност "
+"правичности одговара вишој важности."
 
-#: data/resources/ui/dialogs/process_options_dialog.ui:87 data/resources/ui/dialogs/settings_dialog.ui:285 src/ui/pages/processes/mod.rs:2018 src/ui/pages/processes/mod.rs:2034
+#: data/resources/ui/dialogs/process_options_dialog.ui:87
+#: data/resources/ui/dialogs/settings_dialog.ui:285
+#: src/ui/pages/processes/mod.rs:2018 src/ui/pages/processes/mod.rs:2034
 msgid "Priority"
 msgstr "Важност"
 
@@ -369,8 +464,12 @@ msgid "Show Device Descriptions in Sidebar"
 msgstr "Прикажи описе уређаја у бочној површи"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:93
-msgid "If enabled, a device identifier like its name or device type will be displayed"
-msgstr "Ако је омогућено, биће приказан одредник уређаја попут његовог назива или врсте уређаја"
+msgid ""
+"If enabled, a device identifier like its name or device type will be "
+"displayed"
+msgstr ""
+"Ако је омогућено, биће приказан одредник уређаја попут његовог назива или "
+"врсте уређаја"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:98
 msgid "Sidebar Meter Type"
@@ -389,26 +488,38 @@ msgid "Normalize Processor Usage"
 msgstr "Нормализуј коришћење процесора"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:112
-msgid "If enabled, the total usage of all cores will be divided by the amount of cores"
-msgstr "Ако је омогућено, укупно коришћење свих језгара биће подељено бројем језгара"
+msgid ""
+"If enabled, the total usage of all cores will be divided by the amount of "
+"cores"
+msgstr ""
+"Ако је омогућено, укупно коришћење свих језгара биће подељено бројем језгара"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:122 data/resources/ui/window.ui:65 data/resources/ui/window.ui:72 src/ui/pages/applications/mod.rs:132
+#: data/resources/ui/dialogs/settings_dialog.ui:122
+#: data/resources/ui/window.ui:65 data/resources/ui/window.ui:72
+#: src/ui/pages/applications/mod.rs:132
 msgid "Apps"
 msgstr "Програми"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:125 data/resources/ui/dialogs/settings_dialog.ui:207
+#: data/resources/ui/dialogs/settings_dialog.ui:125
+#: data/resources/ui/dialogs/settings_dialog.ui:207
 msgid "Information Columns"
 msgstr "Колоне са подацима"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:183 data/resources/ui/dialogs/settings_dialog.ui:295 src/ui/pages/applications/mod.rs:1570 src/ui/pages/applications/mod.rs:1589 src/ui/pages/processes/mod.rs:2160 src/ui/pages/processes/mod.rs:2179
+#: data/resources/ui/dialogs/settings_dialog.ui:183
+#: data/resources/ui/dialogs/settings_dialog.ui:295
+#: src/ui/pages/applications/mod.rs:1570 src/ui/pages/applications/mod.rs:1589
+#: src/ui/pages/processes/mod.rs:2160 src/ui/pages/processes/mod.rs:2179
 msgid "Combined Memory"
 msgstr "Комбинована меморија"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:193 data/resources/ui/window.ui:105 data/resources/ui/window.ui:112 src/ui/pages/processes/mod.rs:176
+#: data/resources/ui/dialogs/settings_dialog.ui:193
+#: data/resources/ui/window.ui:105 data/resources/ui/window.ui:112
+#: src/ui/pages/processes/mod.rs:176
 msgid "Processes"
 msgstr "Процеси"
 
-#: data/resources/ui/dialogs/settings_dialog.ui:196 data/resources/ui/pages/cpu.ui:22 data/resources/ui/pages/processes.ui:56
+#: data/resources/ui/dialogs/settings_dialog.ui:196
+#: data/resources/ui/pages/cpu.ui:22 data/resources/ui/pages/processes.ui:56
 msgid "Options"
 msgstr "Опције"
 
@@ -417,8 +528,11 @@ msgid "Show Niceness Values"
 msgstr "Прикажи вредности правичности"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:200
-msgid "Display priorities as niceness to allow for more fine-grained adjustments"
-msgstr "Прикажи важности као вредности правичности како би се омогућила прецизнија прилагођавања"
+msgid ""
+"Display priorities as niceness to allow for more fine-grained adjustments"
+msgstr ""
+"Прикажи важности као вредности правичности како би се омогућила прецизнија "
+"прилагођавања"
 
 #: data/resources/ui/dialogs/settings_dialog.ui:310
 msgid "Devices"
@@ -444,23 +558,32 @@ msgstr "Прикажи виртуелна мрежна прочеља"
 msgid "Virtual network interfaces are for example bridges or VPN tunnels"
 msgstr "Виртуелна мрежна прочеља су на пример мостови или ВПН тунели"
 
-#: data/resources/ui/pages/applications.ui:6 data/resources/ui/pages/applications.ui:26 src/ui/pages/applications/mod.rs:1662
+#: data/resources/ui/pages/applications.ui:6
+#: data/resources/ui/pages/applications.ui:26
+#: src/ui/pages/applications/mod.rs:1662
 msgid "Kill App"
 msgstr "Убиј програм"
 
-#: data/resources/ui/pages/applications.ui:10 data/resources/ui/pages/applications.ui:30 src/ui/pages/applications/mod.rs:1661
+#: data/resources/ui/pages/applications.ui:10
+#: data/resources/ui/pages/applications.ui:30
+#: src/ui/pages/applications/mod.rs:1661
 msgid "Halt App"
 msgstr "Заустави програм"
 
-#: data/resources/ui/pages/applications.ui:14 data/resources/ui/pages/applications.ui:34 src/ui/pages/applications/mod.rs:1663
+#: data/resources/ui/pages/applications.ui:14
+#: data/resources/ui/pages/applications.ui:34
+#: src/ui/pages/applications/mod.rs:1663
 msgid "Continue App"
 msgstr "Настави програм"
 
-#: data/resources/ui/pages/applications.ui:22 data/resources/ui/pages/applications.ui:98 src/ui/pages/applications/mod.rs:1660
+#: data/resources/ui/pages/applications.ui:22
+#: data/resources/ui/pages/applications.ui:98
+#: src/ui/pages/applications/mod.rs:1660
 msgid "End App"
 msgstr "Заврши програм"
 
-#: data/resources/ui/pages/applications.ui:40 data/resources/ui/pages/processes.ui:62
+#: data/resources/ui/pages/applications.ui:40
+#: data/resources/ui/pages/processes.ui:62
 msgid "Information"
 msgstr "Подаци"
 
@@ -468,7 +591,8 @@ msgstr "Подаци"
 msgid "Search applications"
 msgstr "Тражи програме"
 
-#: data/resources/ui/pages/applications.ui:87 data/resources/ui/pages/applications.ui:89
+#: data/resources/ui/pages/applications.ui:87
+#: data/resources/ui/pages/applications.ui:89
 msgid "Show App Information"
 msgstr "Прикажи податке о програму"
 
@@ -488,7 +612,8 @@ msgstr "Циклуси пуњења"
 msgid "Technology"
 msgstr "Технологија"
 
-#: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:81 data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:84
+#: data/resources/ui/pages/battery.ui:72 data/resources/ui/pages/gpu.ui:81
+#: data/resources/ui/pages/network.ui:58 data/resources/ui/pages/npu.ui:84
 msgid "Manufacturer"
 msgstr "Произвођач"
 
@@ -504,7 +629,8 @@ msgstr "Уређај"
 msgid "Show Usages of Logical CPUs"
 msgstr "Прикажи употребу логичких процесора"
 
-#: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66 data/resources/ui/pages/npu.ui:69
+#: data/resources/ui/pages/cpu.ui:75 data/resources/ui/pages/gpu.ui:66
+#: data/resources/ui/pages/npu.ui:69
 msgid "Sensors"
 msgstr "Сензори"
 
@@ -561,7 +687,8 @@ msgid "Removable"
 msgstr "Уклоњиво"
 
 #. Translators: "Link" refers to something like "PCIe 4.0 ×16"
-#: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113 data/resources/ui/pages/network.ui:103 data/resources/ui/pages/npu.ui:116
+#: data/resources/ui/pages/drive.ui:102 data/resources/ui/pages/gpu.ui:113
+#: data/resources/ui/pages/network.ui:103 data/resources/ui/pages/npu.ui:116
 msgid "Link"
 msgstr "Веза"
 
@@ -573,7 +700,8 @@ msgstr "Учесталост ГПЈ-а"
 msgid "Video Memory Frequency"
 msgstr "Учесталост видео меморије"
 
-#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:58 src/ui/pages/battery.rs:218
+#: data/resources/ui/pages/gpu.ui:55 data/resources/ui/pages/npu.ui:58
+#: src/ui/pages/battery.rs:218
 msgid "Power Usage"
 msgstr "Потрошња енергије"
 
@@ -581,7 +709,8 @@ msgstr "Потрошња енергије"
 msgid "PCI Slot"
 msgstr "ПЦИ прикључак"
 
-#: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67 data/resources/ui/pages/npu.ui:102
+#: data/resources/ui/pages/gpu.ui:99 data/resources/ui/pages/network.ui:67
+#: data/resources/ui/pages/npu.ui:102
 msgid "Driver Used"
 msgstr "Коришћени управљач"
 
@@ -649,31 +778,39 @@ msgstr "Перформансе"
 msgid "Memory Frequency"
 msgstr "Учесталост меморије"
 
-#: data/resources/ui/pages/processes.ui:6 data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2346
+#: data/resources/ui/pages/processes.ui:6
+#: data/resources/ui/pages/processes.ui:42 src/ui/pages/processes/mod.rs:2346
 msgid "Kill Process"
 msgstr "Убиј процес"
 
-#: data/resources/ui/pages/processes.ui:10 data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2345
+#: data/resources/ui/pages/processes.ui:10
+#: data/resources/ui/pages/processes.ui:46 src/ui/pages/processes/mod.rs:2345
 msgid "Halt Process"
 msgstr "Заустави процес"
 
-#: data/resources/ui/pages/processes.ui:14 data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2347
+#: data/resources/ui/pages/processes.ui:14
+#: data/resources/ui/pages/processes.ui:50 src/ui/pages/processes/mod.rs:2347
 msgid "Continue Process"
 msgstr "Настави процес"
 
-#: data/resources/ui/pages/processes.ui:22 data/resources/ui/pages/processes.ui:74
+#: data/resources/ui/pages/processes.ui:22
+#: data/resources/ui/pages/processes.ui:74
 msgid "Kill Processes"
 msgstr "Убиј процесе"
 
-#: data/resources/ui/pages/processes.ui:26 data/resources/ui/pages/processes.ui:78
+#: data/resources/ui/pages/processes.ui:26
+#: data/resources/ui/pages/processes.ui:78
 msgid "Halt Processes"
 msgstr "Заустави процесе"
 
-#: data/resources/ui/pages/processes.ui:30 data/resources/ui/pages/processes.ui:82
+#: data/resources/ui/pages/processes.ui:30
+#: data/resources/ui/pages/processes.ui:82
 msgid "Continue Processes"
 msgstr "Настави процесе"
 
-#: data/resources/ui/pages/processes.ui:38 data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:527 src/ui/pages/processes/mod.rs:2344
+#: data/resources/ui/pages/processes.ui:38
+#: data/resources/ui/pages/processes.ui:157 src/ui/pages/processes/mod.rs:527
+#: src/ui/pages/processes/mod.rs:2344
 msgid "End Process"
 msgstr "Окончај процес"
 
@@ -685,11 +822,13 @@ msgstr "Окончај процесе"
 msgid "Search processes"
 msgstr "Претражи процесе"
 
-#: data/resources/ui/pages/processes.ui:133 data/resources/ui/pages/processes.ui:135
+#: data/resources/ui/pages/processes.ui:133
+#: data/resources/ui/pages/processes.ui:135
 msgid "Show Process Options"
 msgstr "Прикажи опције процеса"
 
-#: data/resources/ui/pages/processes.ui:146 data/resources/ui/pages/processes.ui:148
+#: data/resources/ui/pages/processes.ui:146
+#: data/resources/ui/pages/processes.ui:148
 msgid "Show Process Information"
 msgstr "Прикажи податке о процесу"
 
@@ -782,43 +921,78 @@ msgstr ""
 "\n"
 "https://гном.срб — превод Гнома на српски језик."
 
-#: src/ui/dialogs/app_dialog.rs:155 src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:146 src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171 src/ui/dialogs/process_dialog.rs:178
-#: src/ui/dialogs/process_dialog.rs:185 src/ui/dialogs/process_dialog.rs:192 src/ui/pages/applications/mod.rs:975 src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:206 src/ui/pages/battery.rs:226 src/ui/pages/battery.rs:232
-#: src/ui/pages/battery.rs:235 src/ui/pages/battery.rs:266 src/ui/pages/battery.rs:290 src/ui/pages/battery.rs:292 src/ui/pages/battery.rs:302 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258 src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284
-#: src/ui/pages/cpu.rs:290 src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303 src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:321 src/ui/pages/drive.rs:352 src/ui/pages/drive.rs:354 src/ui/pages/drive.rs:383
-#: src/ui/pages/drive.rs:385 src/ui/pages/drive.rs:401 src/ui/pages/drive.rs:402 src/ui/pages/drive.rs:409 src/ui/pages/drive.rs:419 src/ui/pages/drive.rs:429 src/ui/pages/drive.rs:435 src/ui/pages/gpu.rs:246 src/ui/pages/gpu.rs:253 src/ui/pages/gpu.rs:298
-#: src/ui/pages/gpu.rs:323 src/ui/pages/gpu.rs:326 src/ui/pages/gpu.rs:337 src/ui/pages/gpu.rs:378 src/ui/pages/gpu.rs:385 src/ui/pages/gpu.rs:397 src/ui/pages/gpu.rs:404 src/ui/pages/gpu.rs:408 src/ui/pages/gpu.rs:438 src/ui/pages/gpu.rs:444
-#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228 src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233 src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:238 src/ui/pages/memory.rs:266 src/ui/pages/memory.rs:327 src/ui/pages/network.rs:252
-#: src/ui/pages/network.rs:259 src/ui/pages/network.rs:266 src/ui/pages/network.rs:272 src/ui/pages/network.rs:275 src/ui/pages/network.rs:285 src/ui/pages/network.rs:294 src/ui/pages/network.rs:303 src/ui/pages/network.rs:371 src/ui/pages/network.rs:374
-#: src/ui/pages/network.rs:376 src/ui/pages/network.rs:405 src/ui/pages/network.rs:408 src/ui/pages/network.rs:410 src/ui/pages/network.rs:418 src/ui/pages/network.rs:427 src/ui/pages/network.rs:436 src/ui/pages/processes/mod.rs:1275
-#: src/ui/pages/processes/mod.rs:1350 src/ui/pages/processes/mod.rs:1425 src/ui/pages/processes/mod.rs:1500 src/ui/pages/processes/mod.rs:2050 src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152 src/utils/drive.rs:137 src/utils/gpu/mod.rs:279
-#: src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
+#: src/ui/dialogs/app_dialog.rs:155 src/ui/dialogs/process_dialog.rs:133
+#: src/ui/dialogs/process_dialog.rs:137 src/ui/dialogs/process_dialog.rs:146
+#: src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171
+#: src/ui/dialogs/process_dialog.rs:178 src/ui/dialogs/process_dialog.rs:185
+#: src/ui/dialogs/process_dialog.rs:192 src/ui/pages/applications/mod.rs:975
+#: src/ui/pages/applications/mod.rs:1117 src/ui/pages/battery.rs:206
+#: src/ui/pages/battery.rs:226 src/ui/pages/battery.rs:232
+#: src/ui/pages/battery.rs:235 src/ui/pages/battery.rs:266
+#: src/ui/pages/battery.rs:290 src/ui/pages/battery.rs:292
+#: src/ui/pages/battery.rs:302 src/ui/pages/cpu.rs:243 src/ui/pages/cpu.rs:258
+#: src/ui/pages/cpu.rs:278 src/ui/pages/cpu.rs:284 src/ui/pages/cpu.rs:290
+#: src/ui/pages/cpu.rs:296 src/ui/pages/cpu.rs:300 src/ui/pages/cpu.rs:303
+#: src/ui/pages/cpu.rs:341 src/ui/pages/cpu.rs:448 src/ui/pages/drive.rs:321
+#: src/ui/pages/drive.rs:352 src/ui/pages/drive.rs:354
+#: src/ui/pages/drive.rs:383 src/ui/pages/drive.rs:385
+#: src/ui/pages/drive.rs:401 src/ui/pages/drive.rs:402
+#: src/ui/pages/drive.rs:409 src/ui/pages/drive.rs:419
+#: src/ui/pages/drive.rs:429 src/ui/pages/drive.rs:435 src/ui/pages/gpu.rs:246
+#: src/ui/pages/gpu.rs:253 src/ui/pages/gpu.rs:298 src/ui/pages/gpu.rs:323
+#: src/ui/pages/gpu.rs:326 src/ui/pages/gpu.rs:337 src/ui/pages/gpu.rs:378
+#: src/ui/pages/gpu.rs:385 src/ui/pages/gpu.rs:397 src/ui/pages/gpu.rs:404
+#: src/ui/pages/gpu.rs:408 src/ui/pages/gpu.rs:438 src/ui/pages/gpu.rs:444
+#: src/ui/pages/memory.rs:227 src/ui/pages/memory.rs:228
+#: src/ui/pages/memory.rs:232 src/ui/pages/memory.rs:233
+#: src/ui/pages/memory.rs:237 src/ui/pages/memory.rs:238
+#: src/ui/pages/memory.rs:266 src/ui/pages/memory.rs:327
+#: src/ui/pages/network.rs:252 src/ui/pages/network.rs:259
+#: src/ui/pages/network.rs:266 src/ui/pages/network.rs:272
+#: src/ui/pages/network.rs:275 src/ui/pages/network.rs:285
+#: src/ui/pages/network.rs:294 src/ui/pages/network.rs:303
+#: src/ui/pages/network.rs:371 src/ui/pages/network.rs:374
+#: src/ui/pages/network.rs:376 src/ui/pages/network.rs:405
+#: src/ui/pages/network.rs:408 src/ui/pages/network.rs:410
+#: src/ui/pages/network.rs:418 src/ui/pages/network.rs:427
+#: src/ui/pages/network.rs:436 src/ui/pages/processes/mod.rs:1275
+#: src/ui/pages/processes/mod.rs:1350 src/ui/pages/processes/mod.rs:1425
+#: src/ui/pages/processes/mod.rs:1500 src/ui/pages/processes/mod.rs:2050
+#: src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152
+#: src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291
+#: src/utils/link/mod.rs:61 src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
 msgid "N/A"
 msgstr "Н/Д"
 
-#: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257 src/ui/pages/cpu.rs:417 src/ui/pages/cpu.rs:421
+#: src/ui/dialogs/process_options_dialog.rs:147 src/ui/pages/cpu.rs:257
+#: src/ui/pages/cpu.rs:417 src/ui/pages/cpu.rs:421
 #, rust-format
 msgid "CPU {}"
 msgstr "Процесор {}"
 
-#: src/ui/pages/applications/application_entry.rs:188 src/ui/pages/drive.rs:416 src/ui/pages/drive.rs:426 src/ui/pages/processes/process_entry.rs:211
+#: src/ui/pages/applications/application_entry.rs:188 src/ui/pages/drive.rs:416
+#: src/ui/pages/drive.rs:426 src/ui/pages/processes/process_entry.rs:211
 msgid "No"
 msgstr "Не"
 
-#: src/ui/pages/applications/application_entry.rs:189 src/ui/pages/processes/process_entry.rs:212
+#: src/ui/pages/applications/application_entry.rs:189
+#: src/ui/pages/processes/process_entry.rs:212
 msgid "Yes (AppImage)"
 msgstr "Да (AppImage)"
 
-#: src/ui/pages/applications/application_entry.rs:190 src/ui/pages/processes/process_entry.rs:213
+#: src/ui/pages/applications/application_entry.rs:190
+#: src/ui/pages/processes/process_entry.rs:213
 msgid "Yes (Flatpak)"
 msgstr "Да (Флетпек)"
 
 #. Translators: "Portable" is the name of the containerization method used, please keep it as is
-#: src/ui/pages/applications/application_entry.rs:192 src/ui/pages/processes/process_entry.rs:215
+#: src/ui/pages/applications/application_entry.rs:192
+#: src/ui/pages/processes/process_entry.rs:215
 msgid "Yes (Portable)"
 msgstr "Да (Portable)"
 
-#: src/ui/pages/applications/application_entry.rs:193 src/ui/pages/processes/process_entry.rs:216
+#: src/ui/pages/applications/application_entry.rs:193
+#: src/ui/pages/processes/process_entry.rs:216
 msgid "Yes (Snap)"
 msgstr "Да (Снеп)"
 
@@ -860,12 +1034,20 @@ msgid "Unsaved work might be lost."
 msgstr "Несачувани рад може бити изгубљен."
 
 #: src/ui/pages/applications/mod.rs:1649
-msgid "Halting an app can come with serious risks such as losing data and security implications. Use with caution."
-msgstr "Заустављање програма може довести до озбиљних ризика као што су губитак података и безбедносне импликације. Користите са опрезом."
+msgid ""
+"Halting an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
+msgstr ""
+"Заустављање програма може довести до озбиљних ризика као што су губитак "
+"података и безбедносне импликације. Користите са опрезом."
 
 #: src/ui/pages/applications/mod.rs:1652
-msgid "Killing an app can come with serious risks such as losing data and security implications. Use with caution."
-msgstr "Убијање програма може довести до озбиљних ризика као што су губитак података и безбедносне импликације. Користите са опрезом."
+msgid ""
+"Killing an app can come with serious risks such as losing data and security "
+"implications. Use with caution."
+msgstr ""
+"Убијање програма може довести до озбиљних ризика као што су губитак података "
+"и безбедносне импликације. Користите са опрезом."
 
 #: src/ui/pages/battery.rs:103 src/utils/battery.rs:258
 msgid "Battery"
@@ -875,7 +1057,9 @@ msgstr "Батерија"
 msgid "Battery Charge"
 msgstr "Напуњеност батерије"
 
-#: src/ui/pages/battery.rs:280 src/ui/pages/cpu.rs:438 src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377 src/ui/pages/gpu.rs:430 src/ui/pages/network.rs:363 src/ui/pages/network.rs:397
+#: src/ui/pages/battery.rs:280 src/ui/pages/cpu.rs:438
+#: src/ui/pages/drive.rs:346 src/ui/pages/drive.rs:377 src/ui/pages/gpu.rs:430
+#: src/ui/pages/network.rs:363 src/ui/pages/network.rs:397
 msgid "Highest:"
 msgstr "Највише:"
 
@@ -954,7 +1138,7 @@ msgstr "{} МТ/с"
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · Размена: {} %"
 
-#: src/ui/pages/network.rs:127 src/utils/network.rs:144
+#: src/ui/pages/network.rs:127 src/utils/network.rs:147
 msgid "Network Interface"
 msgstr "Мрежни уређај"
 
@@ -1010,12 +1194,20 @@ msgstr[2] "Убити {} процеса?"
 msgstr[3] "Убити {} процес?"
 
 #: src/ui/pages/processes/mod.rs:2333
-msgid "Halting a process can come with serious risks such as losing data and security implications. Use with caution."
-msgstr "Заустављање процеса може довести до озбиљних ризика као што су губитак података и безбедносне импликације. Користите са опрезом."
+msgid ""
+"Halting a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"Заустављање процеса може довести до озбиљних ризика као што су губитак "
+"података и безбедносне импликације. Користите са опрезом."
 
 #: src/ui/pages/processes/mod.rs:2336
-msgid "Killing a process can come with serious risks such as losing data and security implications. Use with caution."
-msgstr "Убијање процеса може довести до озбиљних ризика као што су губитак података и безбедносне импликације. Користите са опрезом."
+msgid ""
+"Killing a process can come with serious risks such as losing data and "
+"security implications. Use with caution."
+msgstr ""
+"Убијање процеса може довести до озбиљних ризика као што су губитак података "
+"и безбедносне импликације. Користите са опрезом."
 
 #: src/ui/window.rs:466
 #, rust-format
@@ -1229,7 +1421,8 @@ msgstr "{} °C"
 msgid "{} °F"
 msgstr "{} °F"
 
-#: src/utils/units.rs:113 src/utils/units.rs:127 src/utils/units.rs:147 src/utils/units.rs:161
+#: src/utils/units.rs:113 src/utils/units.rs:127 src/utils/units.rs:147
+#: src/utils/units.rs:161
 #, rust-format
 msgid "{} B"
 msgstr "{} B"
@@ -1801,62 +1994,66 @@ msgstr "{} ЗФС диск"
 msgid "{} Drive"
 msgstr "{} уређај"
 
-#: src/utils/network.rs:129
+#: src/utils/network.rs:131
 msgid "Bluetooth Tether"
 msgstr "Блутут дељење везе"
 
-#: src/utils/network.rs:130
+#: src/utils/network.rs:132
 msgid "Network Bridge"
 msgstr "Мрежни мост"
 
-#: src/utils/network.rs:131
+#: src/utils/network.rs:133
 msgid "Ethernet Connection"
 msgstr "Жичана веза"
 
-#: src/utils/network.rs:132
+#: src/utils/network.rs:134
 msgid "Docker Bridge"
 msgstr "Докер мост"
 
-#: src/utils/network.rs:133
+#: src/utils/network.rs:135
 msgid "InfiniBand Connection"
 msgstr "Инфини-Бенд веза"
 
-#: src/utils/network.rs:134
+#: src/utils/network.rs:136
 msgid "Incus Bridge"
 msgstr "Инкус мост"
 
-#: src/utils/network.rs:135
+#: src/utils/network.rs:137
 msgid "LXC Bridge"
 msgstr "LXC мост"
 
-#: src/utils/network.rs:136
+#: src/utils/network.rs:138
 msgid "LXD Bridge"
 msgstr "LXD мост"
 
-#: src/utils/network.rs:137
+#: src/utils/network.rs:139
 msgid "Serial Line IP Connection"
 msgstr "Серијска ИП веза"
 
-#: src/utils/network.rs:138
+#: src/utils/network.rs:140
+msgid "VM Network Interface"
+msgstr "Мрежни интерфејс ВМ-а"
+
+#: src/utils/network.rs:141
 msgid "Virtual Ethernet Device"
 msgstr "Виртуелни жичани уређај"
 
-#: src/utils/network.rs:139
+#: src/utils/network.rs:142
 msgid "VM Network Bridge"
 msgstr "ВМ мрежни мост"
 
-#: src/utils/network.rs:140
+#: src/utils/network.rs:143
 msgid "VPN Tunnel"
 msgstr "ВПН тунел"
 
-#: src/utils/network.rs:141
+#: src/utils/network.rs:144
 msgid "VPN Tunnel (WireGuard)"
 msgstr "ВПН тунел (Вајергард)"
 
-#: src/utils/network.rs:142
+#: src/utils/network.rs:145
 msgid "Wi-Fi Connection"
 msgstr "Бежична веза"
 
-#: src/utils/network.rs:143
+#: src/utils/network.rs:146
 msgid "WWAN Connection"
 msgstr "ВВАН веза"
