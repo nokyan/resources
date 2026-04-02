@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-03-09 10:43+0000\n"
-"PO-Revision-Date: 2026-03-09 19:23+0200\n"
+"POT-Creation-Date: 2026-04-01 14:01+0000\n"
+"PO-Revision-Date: 2026-04-02 12:30+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -1145,7 +1145,7 @@ msgstr "{} МТ/с"
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · Swap: {} %"
 
-#: src/ui/pages/network.rs:127 src/utils/network.rs:144
+#: src/ui/pages/network.rs:127 src/utils/network.rs:147
 msgid "Network Interface"
 msgstr "Мережевий інтерфейс"
 
@@ -1902,7 +1902,6 @@ msgstr "{} КВт/год"
 
 #: src/utils/units.rs:338
 #, rust-format
-#| msgid "{} TB/s"
 msgid "{} TOPs"
 msgstr "{} ТОп/с"
 
@@ -1993,63 +1992,68 @@ msgstr "{} ZFS розділ"
 msgid "{} Drive"
 msgstr "{} накопичувач"
 
-#: src/utils/network.rs:129
+#: src/utils/network.rs:131
 msgid "Bluetooth Tether"
 msgstr "Bluetooth з'єднання"
 
-#: src/utils/network.rs:130
+#: src/utils/network.rs:132
 msgid "Network Bridge"
 msgstr "Мережевий міст"
 
-#: src/utils/network.rs:131
+#: src/utils/network.rs:133
 msgid "Ethernet Connection"
 msgstr "Дротове з'єднання"
 
-#: src/utils/network.rs:132
+#: src/utils/network.rs:134
 msgid "Docker Bridge"
 msgstr "Міст Docker"
 
-#: src/utils/network.rs:133
+#: src/utils/network.rs:135
 msgid "InfiniBand Connection"
 msgstr "InfiniBand з'єднання"
 
-#: src/utils/network.rs:134
+#: src/utils/network.rs:136
 msgid "Incus Bridge"
 msgstr "Міст Incus"
 
-#: src/utils/network.rs:135
+#: src/utils/network.rs:137
 msgid "LXC Bridge"
 msgstr "Міст LXC"
 
-#: src/utils/network.rs:136
+#: src/utils/network.rs:138
 msgid "LXD Bridge"
 msgstr "Міст LXD"
 
-#: src/utils/network.rs:137
+#: src/utils/network.rs:139
 msgid "Serial Line IP Connection"
 msgstr "Послідовне IP-з'єднання"
 
-#: src/utils/network.rs:138
+#: src/utils/network.rs:140
+#| msgid "Network Interface"
+msgid "VM Network Interface"
+msgstr "Мережевий інтерфейс ВМ"
+
+#: src/utils/network.rs:141
 msgid "Virtual Ethernet Device"
 msgstr "Віртуальний Ethernet пристрій"
 
-#: src/utils/network.rs:139
+#: src/utils/network.rs:142
 msgid "VM Network Bridge"
 msgstr "Мережевий міст віртуальної машини"
 
-#: src/utils/network.rs:140
+#: src/utils/network.rs:143
 msgid "VPN Tunnel"
 msgstr "Тунель VPN"
 
-#: src/utils/network.rs:141
+#: src/utils/network.rs:144
 msgid "VPN Tunnel (WireGuard)"
 msgstr "Тунель VPN (WireGuard)"
 
-#: src/utils/network.rs:142
+#: src/utils/network.rs:145
 msgid "Wi-Fi Connection"
 msgstr "Wi-Fi з'єднання"
 
-#: src/utils/network.rs:143
+#: src/utils/network.rs:146
 msgid "WWAN Connection"
 msgstr "WWAN з'єдання"
 
