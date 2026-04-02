@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-03-09 10:43+0000\n"
-"PO-Revision-Date: 2026-03-11 06:05+0100\n"
+"POT-Creation-Date: 2026-04-01 14:01+0000\n"
+"PO-Revision-Date: 2026-04-02 05:35+0200\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <(nothing)>\n"
 "Language: ka\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:2 data/net.nokyan.Resources.metainfo.xml.in.in:4
 #: data/resources/ui/window.ui:22 src/application.rs:272
@@ -828,7 +828,7 @@ msgstr "ძებნის ველის გადართვა"
 #. One name per line, please do not remove previous names.
 #: src/application.rs:285
 msgid "translator-credits"
-msgstr "თემური დოღონაძე"
+msgstr "ეკატერინე პაპავა"
 
 #: src/ui/dialogs/app_dialog.rs:155 src/ui/dialogs/process_dialog.rs:133 src/ui/dialogs/process_dialog.rs:137
 #: src/ui/dialogs/process_dialog.rs:146 src/ui/dialogs/process_dialog.rs:148 src/ui/dialogs/process_dialog.rs:171
@@ -1022,7 +1022,7 @@ msgstr "{} მტ/წმ"
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · სვოპი: {} %"
 
-#: src/ui/pages/network.rs:127 src/utils/network.rs:144
+#: src/ui/pages/network.rs:127 src/utils/network.rs:147
 msgid "Network Interface"
 msgstr "ქსელის ინტერფეისი"
 
@@ -1761,7 +1761,6 @@ msgstr "{} ქვტ/სთ"
 
 #: src/utils/units.rs:338
 #, rust-format
-#| msgid "{} TB/s"
 msgid "{} TOPs"
 msgstr "{} TOP"
 
@@ -1852,63 +1851,67 @@ msgstr "{} ZFS ტომი"
 msgid "{} Drive"
 msgstr "{} დისკი"
 
-#: src/utils/network.rs:129
+#: src/utils/network.rs:131
 msgid "Bluetooth Tether"
 msgstr "ბლუთუზის Tether"
 
-#: src/utils/network.rs:130
+#: src/utils/network.rs:132
 msgid "Network Bridge"
 msgstr "ქსელური ხიდი"
 
-#: src/utils/network.rs:131
+#: src/utils/network.rs:133
 msgid "Ethernet Connection"
 msgstr "Ethernet შეერთება"
 
-#: src/utils/network.rs:132
+#: src/utils/network.rs:134
 msgid "Docker Bridge"
 msgstr "Docker-ის ხიდი"
 
-#: src/utils/network.rs:133
+#: src/utils/network.rs:135
 msgid "InfiniBand Connection"
 msgstr "InfiniBand შეერთება"
 
-#: src/utils/network.rs:134
+#: src/utils/network.rs:136
 msgid "Incus Bridge"
 msgstr "Incus-ის ხიდი"
 
-#: src/utils/network.rs:135
+#: src/utils/network.rs:137
 msgid "LXC Bridge"
 msgstr "LXC-ის ხიდი"
 
-#: src/utils/network.rs:136
+#: src/utils/network.rs:138
 msgid "LXD Bridge"
 msgstr "LXD-ის ხიდი"
 
-#: src/utils/network.rs:137
+#: src/utils/network.rs:139
 msgid "Serial Line IP Connection"
 msgstr "სერიული ხაზის IP მიერთება"
 
-#: src/utils/network.rs:138
+#: src/utils/network.rs:140
+msgid "VM Network Interface"
+msgstr "ვმ-ის ქსელის ინტერფეისი"
+
+#: src/utils/network.rs:141
 msgid "Virtual Ethernet Device"
 msgstr "ვირტუალური Ethernet მოწყობილობა"
 
-#: src/utils/network.rs:139
+#: src/utils/network.rs:142
 msgid "VM Network Bridge"
 msgstr "ვმ-ის ქსელური ხიდი"
 
-#: src/utils/network.rs:140
+#: src/utils/network.rs:143
 msgid "VPN Tunnel"
 msgstr "VPN გვირაბი"
 
-#: src/utils/network.rs:141
+#: src/utils/network.rs:144
 msgid "VPN Tunnel (WireGuard)"
 msgstr "VPN გვირაბი (WireGuard)"
 
-#: src/utils/network.rs:142
+#: src/utils/network.rs:145
 msgid "Wi-Fi Connection"
 msgstr "Wi-Fi შეერთება"
 
-#: src/utils/network.rs:143
+#: src/utils/network.rs:146
 msgid "WWAN Connection"
 msgstr "WWAN მიერთება"
 
