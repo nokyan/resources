@@ -19,6 +19,7 @@ pub mod os;
 pub mod pci;
 pub mod process;
 pub mod settings;
+mod snapd;
 pub mod units;
 
 const FLATPAK_SPAWN: &str = "/usr/bin/flatpak-spawn";

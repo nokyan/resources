@@ -233,6 +233,8 @@ impl ProcessEntry {
     pub fn update(&self, process: &Process) {
         trace!("Refreshing ProcessEntry ({})…", process.data.pid);
 
+        self.set_icon(&process.icon);
+
         self.set_cpu_usage(process.cpu_time_ratio());
         self.set_memory_usage(process.data.memory_usage as u64);
         self.set_swap_usage(process.data.swap_usage as u64);

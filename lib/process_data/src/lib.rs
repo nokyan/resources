@@ -53,6 +53,22 @@ static RE_CGROUP: Lazy<Regex> = lazy_regex!(
     r"(?U)/(?:app|background)\.slice/(?:app-|dbus-:)(?:(?P<launcher>[^-]+)-)?(?P<cgroup>[^-]+)(?:-[0-9]+|@[0-9]+)?\.(?:scope|service)"
 );
 
+/* The cgroup of a snap process is composed of: `snap.<snap-name>.<app-name>-<uuid>.scope`
+ * The name has the following restrictions:
+ *  > It must start with an ASCII character and can only contain lower case letters, numbers, and hyphens.
+ *  > It must contain at least one letter and it can’t start or end with a hyphen.
+ * https://documentation.ubuntu.com/snapcraft/8.9.4/reference/project-file/snapcraft-yaml/#name
+ *
+ * Furthermore, the snap name may contain a single '_' character that denotes a specific instance of this snap.
+ * https://snapcraft.io/docs/explanation/how-snaps-work/parallel-installs/#installing-multiple-instances
+ *
+ * Because '-' is both the separator character before the uuid as well as a valid character for the names,
+ * we must try to match the start of the uuid group exactly.
+ */
+static RE_SNAP_CGROUP: Lazy<Regex> = lazy_regex!(
+    r"/snap\.(?P<cgroup>[_\-0-9a-z]+\.[\-0-9a-z]+)(?:-[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})\.(?:scope|service)"
+);
+
 static RE_AFFINITY: Lazy<Regex> = lazy_regex!(r"Cpus_allowed:\s*([0-9A-Fa-f]+)");
 
 static RE_MEMORY_USAGE: Lazy<Regex> = lazy_regex!(r"VmRSS:\s*([0-9]+)\s*kB");
@@ -270,6 +286,16 @@ impl ProcessData {
                         .and_then(|s| Self::decode_hex_escapes(s.as_str()).ok()),
                 )
             })
+            .or_else(|| {
+                RE_SNAP_CGROUP.captures(cgroup.as_ref()).map(|captures| {
+                    (
+                        Some("snap".to_string()),
+                        captures
+                            .name("cgroup")
+                            .and_then(|s| Self::decode_hex_escapes(s.as_str()).ok()),
+                    )
+                })
+            })
             .unwrap_or_default()
     }
 
@@ -460,7 +486,7 @@ impl ProcessData {
 
         let appimage_path = environ.get("APPIMAGE").map(std::borrow::ToOwned::to_owned);
 
-        let containerization = if commandline.starts_with("/snap/") {
+        let containerization = if commandline.starts_with("/snap/") || launcher == "snap" {
             Containerization::Snap
         } else if proc_path
             .join("root")
