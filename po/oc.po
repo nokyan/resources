@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-03-09 10:43+0000\n"
-"PO-Revision-Date: 2026-03-09 18:11+0100\n"
+"POT-Creation-Date: 2026-04-02 08:44+0000\n"
+"PO-Revision-Date: 2026-04-06 09:55+0200\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Occitan <Occitan>\n"
 "Language: oc\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 #: data/net.nokyan.Resources.desktop.in.in:2 data/net.nokyan.Resources.metainfo.xml.in.in:4 data/resources/ui/window.ui:22 src/application.rs:272
 msgid "Resources"
@@ -960,7 +960,7 @@ msgstr "{} MT/s"
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · Escambi : {} %"
 
-#: src/ui/pages/network.rs:127 src/utils/network.rs:144
+#: src/ui/pages/network.rs:127 src/utils/network.rs:147
 msgid "Network Interface"
 msgstr "Interfàcia ret"
 
@@ -1137,7 +1137,7 @@ msgstr "I a agut un problèma en tuant {}"
 msgid "There was a problem continuing {}"
 msgstr "I a agut un problèma en reprenent {}"
 
-#: src/utils/app.rs:224
+#: src/utils/app.rs:238
 msgid "System Processes"
 msgstr "Procèssus sistèma"
 
@@ -1785,63 +1785,67 @@ msgstr "Volum ZFS {}"
 msgid "{} Drive"
 msgstr "Lector {}"
 
-#: src/utils/network.rs:129
+#: src/utils/network.rs:131
 msgid "Bluetooth Tether"
 msgstr "Partatge de connexion Bluetooth"
 
-#: src/utils/network.rs:130
+#: src/utils/network.rs:132
 msgid "Network Bridge"
 msgstr "Pont ret"
 
-#: src/utils/network.rs:131
+#: src/utils/network.rs:133
 msgid "Ethernet Connection"
 msgstr "Connexion Ethernet"
 
-#: src/utils/network.rs:132
+#: src/utils/network.rs:134
 msgid "Docker Bridge"
 msgstr "Pont Docker"
 
-#: src/utils/network.rs:133
+#: src/utils/network.rs:135
 msgid "InfiniBand Connection"
 msgstr "Connexion InfiniBand"
 
-#: src/utils/network.rs:134
+#: src/utils/network.rs:136
 msgid "Incus Bridge"
 msgstr "Pont Incus"
 
-#: src/utils/network.rs:135
+#: src/utils/network.rs:137
 msgid "LXC Bridge"
 msgstr "Pont LXC"
 
-#: src/utils/network.rs:136
+#: src/utils/network.rs:138
 msgid "LXD Bridge"
 msgstr "Pont LXD"
 
-#: src/utils/network.rs:137
+#: src/utils/network.rs:139
 msgid "Serial Line IP Connection"
 msgstr "Connexion Serial Line IP"
 
-#: src/utils/network.rs:138
+#: src/utils/network.rs:140
+msgid "VM Network Interface"
+msgstr "Interfàcia ret VM"
+
+#: src/utils/network.rs:141
 msgid "Virtual Ethernet Device"
 msgstr "Periferic Ethernet virtual"
 
-#: src/utils/network.rs:139
+#: src/utils/network.rs:142
 msgid "VM Network Bridge"
 msgstr "Pont ret VM"
 
-#: src/utils/network.rs:140
+#: src/utils/network.rs:143
 msgid "VPN Tunnel"
 msgstr "Tunèl VPN"
 
-#: src/utils/network.rs:141
+#: src/utils/network.rs:144
 msgid "VPN Tunnel (WireGuard)"
 msgstr "Tunèl VPN (WireGuard)"
 
-#: src/utils/network.rs:142
+#: src/utils/network.rs:145
 msgid "Wi-Fi Connection"
 msgstr "Connexion Wi-Fi"
 
-#: src/utils/network.rs:143
+#: src/utils/network.rs:146
 msgid "WWAN Connection"
 msgstr "Connexion WWAN"
 
