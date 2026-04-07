@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-03-09 10:43+0000\n"
-"PO-Revision-Date: 2026-03-12 00:35+0300\n"
+"POT-Creation-Date: 2026-04-02 08:44+0000\n"
+"PO-Revision-Date: 2026-04-07 00:51+0300\n"
 "Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -981,7 +981,7 @@ msgstr "{} MT/s"
 msgid "{} / {} · Swap: {} %"
 msgstr "{} / {} · Takas: {} %"
 
-#: src/ui/pages/network.rs:127 src/utils/network.rs:144
+#: src/ui/pages/network.rs:127 src/utils/network.rs:147
 msgid "Network Interface"
 msgstr "Ağ Arayüzü"
 
@@ -1147,7 +1147,7 @@ msgstr "{} sürdürmekte sorun vardı"
 msgid "There was a problem continuing {}"
 msgstr "{} sürdürmekte sorun vardı"
 
-#: src/utils/app.rs:224
+#: src/utils/app.rs:238
 msgid "System Processes"
 msgstr "Sistem Süreçleri"
 
@@ -1706,7 +1706,6 @@ msgstr "{} QWh"
 # TOPS (Tera Operations per Second) kısaltması
 #: src/utils/units.rs:338
 #, rust-format
-#| msgid "{} TB/s"
 msgid "{} TOPs"
 msgstr "{} TOP/s"
 
@@ -1797,63 +1796,67 @@ msgstr "{} ZFS Birimi"
 msgid "{} Drive"
 msgstr "{} Sürücü"
 
-#: src/utils/network.rs:129
+#: src/utils/network.rs:131
 msgid "Bluetooth Tether"
 msgstr "Bluetooth Bağlantısı"
 
-#: src/utils/network.rs:130
+#: src/utils/network.rs:132
 msgid "Network Bridge"
 msgstr "Ağ Köprüsü"
 
-#: src/utils/network.rs:131
+#: src/utils/network.rs:133
 msgid "Ethernet Connection"
 msgstr "Kablolu Bağlantı"
 
-#: src/utils/network.rs:132
+#: src/utils/network.rs:134
 msgid "Docker Bridge"
 msgstr "Docker Köprüsü"
 
-#: src/utils/network.rs:133
+#: src/utils/network.rs:135
 msgid "InfiniBand Connection"
 msgstr "InfiniBand Bağlantısı"
 
-#: src/utils/network.rs:134
+#: src/utils/network.rs:136
 msgid "Incus Bridge"
 msgstr "Incus Köprüsü"
 
-#: src/utils/network.rs:135
+#: src/utils/network.rs:137
 msgid "LXC Bridge"
 msgstr "LXC Köprüsü"
 
-#: src/utils/network.rs:136
+#: src/utils/network.rs:138
 msgid "LXD Bridge"
 msgstr "LXD Köprüsü"
 
-#: src/utils/network.rs:137
+#: src/utils/network.rs:139
 msgid "Serial Line IP Connection"
 msgstr "Seri Hat IP Bağlantısı"
 
-#: src/utils/network.rs:138
+#: src/utils/network.rs:140
+msgid "VM Network Interface"
+msgstr "VM Ağ Arayüzü"
+
+#: src/utils/network.rs:141
 msgid "Virtual Ethernet Device"
 msgstr "Sanal Kablolu Ağ Aygıtı"
 
-#: src/utils/network.rs:139
+#: src/utils/network.rs:142
 msgid "VM Network Bridge"
 msgstr "VM Ağ Köprüsü"
 
-#: src/utils/network.rs:140
+#: src/utils/network.rs:143
 msgid "VPN Tunnel"
 msgstr "VPN Tüneli"
 
-#: src/utils/network.rs:141
+#: src/utils/network.rs:144
 msgid "VPN Tunnel (WireGuard)"
 msgstr "VPN Tüneli (WireGuard)"
 
-#: src/utils/network.rs:142
+#: src/utils/network.rs:145
 msgid "Wi-Fi Connection"
 msgstr "Kablosuz Bağlantı"
 
-#: src/utils/network.rs:143
+#: src/utils/network.rs:146
 msgid "WWAN Connection"
 msgstr "WWAN Bağlantısı"
 
