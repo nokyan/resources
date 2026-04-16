@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-04-01 14:01+0000\n"
-"PO-Revision-Date: 2026-04-02 13:36+0200\n"
+"POT-Creation-Date: 2026-04-15 21:06+0000\n"
+"PO-Revision-Date: 2026-04-16 16:23+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <Slovenian>\n"
 "Language: sl\n"
@@ -821,8 +821,8 @@ msgstr "Martin Srebotnjak <miles@filmsi.net>"
 #: src/ui/pages/network.rs:376 src/ui/pages/network.rs:405 src/ui/pages/network.rs:408 src/ui/pages/network.rs:410 src/ui/pages/network.rs:418
 #: src/ui/pages/network.rs:427 src/ui/pages/network.rs:436 src/ui/pages/processes/mod.rs:1275 src/ui/pages/processes/mod.rs:1350
 #: src/ui/pages/processes/mod.rs:1425 src/ui/pages/processes/mod.rs:1500 src/ui/pages/processes/mod.rs:2050 src/ui/pages/processes/mod.rs:2052
-#: src/utils/battery.rs:152 src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:263
-#: src/utils/npu/mod.rs:269
+#: src/utils/battery.rs:152 src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/link/wifi.rs:171
+#: src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
 msgid "N/A"
 msgstr "Ni na voljo"
 
@@ -1184,7 +1184,7 @@ msgstr "Prišlo je do težave z ubijanjem {}"
 msgid "There was a problem continuing {}"
 msgstr "Prišlo je do težave pri nadaljevanju {}"
 
-#: src/utils/app.rs:224
+#: src/utils/app.rs:238
 msgid "System Processes"
 msgstr "Sistemski procesi"
 
@@ -1831,6 +1831,16 @@ msgstr "Nosilec ZFS {}"
 #, rust-format
 msgid "{} Drive"
 msgstr "Pogon {}"
+
+#: src/utils/link/wifi.rs:158
+#, rust-format
+msgid "Receive: {}"
+msgstr "Prejemi: {}"
+
+#: src/utils/link/wifi.rs:159
+#, rust-format
+msgid "Send: {}"
+msgstr "Pošlji: {}"
 
 #: src/utils/network.rs:131
 msgid "Bluetooth Tether"
