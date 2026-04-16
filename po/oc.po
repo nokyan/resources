@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-04-02 08:44+0000\n"
-"PO-Revision-Date: 2026-04-06 09:55+0200\n"
+"POT-Creation-Date: 2026-04-15 21:06+0000\n"
+"PO-Revision-Date: 2026-04-16 19:24+0200\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Occitan <Occitan>\n"
 "Language: oc\n"
@@ -798,7 +798,7 @@ msgstr "Quentin PAGÈS"
 #: src/ui/pages/network.rs:272 src/ui/pages/network.rs:275 src/ui/pages/network.rs:285 src/ui/pages/network.rs:294 src/ui/pages/network.rs:303 src/ui/pages/network.rs:371 src/ui/pages/network.rs:374
 #: src/ui/pages/network.rs:376 src/ui/pages/network.rs:405 src/ui/pages/network.rs:408 src/ui/pages/network.rs:410 src/ui/pages/network.rs:418 src/ui/pages/network.rs:427 src/ui/pages/network.rs:436
 #: src/ui/pages/processes/mod.rs:1275 src/ui/pages/processes/mod.rs:1350 src/ui/pages/processes/mod.rs:1425 src/ui/pages/processes/mod.rs:1500 src/ui/pages/processes/mod.rs:2050 src/ui/pages/processes/mod.rs:2052
-#: src/utils/battery.rs:152 src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
+#: src/utils/battery.rs:152 src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/link/wifi.rs:171 src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
 msgid "N/A"
 msgstr "N/D"
 
@@ -1784,6 +1784,16 @@ msgstr "Volum ZFS {}"
 #, rust-format
 msgid "{} Drive"
 msgstr "Lector {}"
+
+#: src/utils/link/wifi.rs:158
+#, rust-format
+msgid "Receive: {}"
+msgstr "Recepcion : {}"
+
+#: src/utils/link/wifi.rs:159
+#, rust-format
+msgid "Send: {}"
+msgstr "Mandadís : {}"
 
 #: src/utils/network.rs:131
 msgid "Bluetooth Tether"
