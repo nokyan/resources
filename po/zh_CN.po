@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources-main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-04-02 08:44+0000\n"
-"PO-Revision-Date: 2026-04-03 08:18+0800\n"
+"POT-Creation-Date: 2026-04-15 21:06+0000\n"
+"PO-Revision-Date: 2026-04-19 07:39+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -953,7 +953,8 @@ msgstr ""
 #: src/ui/pages/processes/mod.rs:1500 src/ui/pages/processes/mod.rs:2050
 #: src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152
 #: src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291
-#: src/utils/link/mod.rs:61 src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
+#: src/utils/link/mod.rs:61 src/utils/link/wifi.rs:171 src/utils/npu/mod.rs:263
+#: src/utils/npu/mod.rs:269
 msgid "N/A"
 msgstr "不可用"
 
@@ -1881,7 +1882,7 @@ msgstr "硬盘"
 
 #: src/utils/drive.rs:134
 msgid "Loop Device"
-msgstr "Loop 设备"
+msgstr "回环设备"
 
 #: src/utils/drive.rs:135
 msgid "Mapped Device"
@@ -1914,7 +1915,7 @@ msgstr "压缩 RAM 盘（ZRAM）"
 #: src/utils/drive.rs:210
 #, rust-format
 msgid "{} Loop Device"
-msgstr "{} Loop 设备"
+msgstr "{} 回环设备"
 
 #: src/utils/drive.rs:211
 #, rust-format
@@ -1945,6 +1946,16 @@ msgstr "{} ZFS 卷"
 #, rust-format
 msgid "{} Drive"
 msgstr "{} 磁盘"
+
+#: src/utils/link/wifi.rs:158
+#, rust-format
+msgid "Receive: {}"
+msgstr "接收：{}"
+
+#: src/utils/link/wifi.rs:159
+#, rust-format
+msgid "Send: {}"
+msgstr "发送：{}"
 
 #: src/utils/network.rs:131
 msgid "Bluetooth Tether"
