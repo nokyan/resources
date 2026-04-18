@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-04-02 08:44+0000\n"
-"PO-Revision-Date: 2026-04-07 00:51+0300\n"
+"POT-Creation-Date: 2026-04-15 21:06+0000\n"
+"PO-Revision-Date: 2026-04-16 22:23+0300\n"
 "Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -815,7 +815,7 @@ msgstr "Sabri Ünal <yakushabb@gmail.com>"
 #: src/ui/pages/network.rs:374 src/ui/pages/network.rs:376 src/ui/pages/network.rs:405 src/ui/pages/network.rs:408 src/ui/pages/network.rs:410 src/ui/pages/network.rs:418
 #: src/ui/pages/network.rs:427 src/ui/pages/network.rs:436 src/ui/pages/processes/mod.rs:1275 src/ui/pages/processes/mod.rs:1350 src/ui/pages/processes/mod.rs:1425
 #: src/ui/pages/processes/mod.rs:1500 src/ui/pages/processes/mod.rs:2050 src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152 src/utils/drive.rs:137 src/utils/gpu/mod.rs:279
-#: src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
+#: src/utils/gpu/mod.rs:291 src/utils/link/mod.rs:61 src/utils/link/wifi.rs:171 src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
 msgid "N/A"
 msgstr "Bilinmiyor"
 
@@ -1796,6 +1796,17 @@ msgstr "{} ZFS Birimi"
 msgid "{} Drive"
 msgstr "{} Sürücü"
 
+#: src/utils/link/wifi.rs:158
+#, rust-format
+#| msgid "Receiving"
+msgid "Receive: {}"
+msgstr "Alınan: {}"
+
+#: src/utils/link/wifi.rs:159
+#, rust-format
+msgid "Send: {}"
+msgstr "Gönderilen: {}"
+
 #: src/utils/network.rs:131
 msgid "Bluetooth Tether"
 msgstr "Bluetooth Bağlantısı"
@@ -1859,9 +1870,3 @@ msgstr "Kablosuz Bağlantı"
 #: src/utils/network.rs:146
 msgid "WWAN Connection"
 msgstr "WWAN Bağlantısı"
-
-#~ msgid "Report Issues"
-#~ msgstr "Hata Bildir"
-
-#~ msgid "Icon by"
-#~ msgstr "Simgeler"
