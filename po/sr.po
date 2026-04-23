@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: resources main\n"
 "Report-Msgid-Bugs-To: https://github.com/nokyan/resources/issues/\n"
-"POT-Creation-Date: 2026-04-01 14:01+0000\n"
+"POT-Creation-Date: 2026-04-15 21:06+0000\n"
 "PO-Revision-Date: 2026-03-18 23:45+0100\n"
 "Last-Translator: Марко М. Костић <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian <Serbian>\n"
@@ -960,7 +960,8 @@ msgstr ""
 #: src/ui/pages/processes/mod.rs:1500 src/ui/pages/processes/mod.rs:2050
 #: src/ui/pages/processes/mod.rs:2052 src/utils/battery.rs:152
 #: src/utils/drive.rs:137 src/utils/gpu/mod.rs:279 src/utils/gpu/mod.rs:291
-#: src/utils/link/mod.rs:61 src/utils/npu/mod.rs:263 src/utils/npu/mod.rs:269
+#: src/utils/link/mod.rs:61 src/utils/link/wifi.rs:171 src/utils/npu/mod.rs:263
+#: src/utils/npu/mod.rs:269
 msgid "N/A"
 msgstr "Н/Д"
 
@@ -1345,7 +1346,7 @@ msgstr "Дошло је до проблема при убијању {}"
 msgid "There was a problem continuing {}"
 msgstr "Дошло је до проблема при настављању {}"
 
-#: src/utils/app.rs:224
+#: src/utils/app.rs:238
 msgid "System Processes"
 msgstr "Системски процеси"
 
@@ -1993,6 +1994,16 @@ msgstr "{} ЗФС диск"
 #, rust-format
 msgid "{} Drive"
 msgstr "{} уређај"
+
+#: src/utils/link/wifi.rs:158
+#, rust-format
+msgid "Receive: {}"
+msgstr "Примање: {}"
+
+#: src/utils/link/wifi.rs:159
+#, rust-format
+msgid "Send: {}"
+msgstr "Слање: {}"
 
 #: src/utils/network.rs:131
 msgid "Bluetooth Tether"
