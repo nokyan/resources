@@ -1,6 +1,6 @@
 use anyhow::{Context, Result, bail};
 use config::LIBEXECDIR;
-use log::{debug, error, info, trace};
+use log::{debug, error, info, trace, warn};
 use process_data::{
     Niceness, ProcessData,
     gpu_usage::{GpuIdentifier, GpuUsageStats},
@@ -22,7 +22,7 @@ use gtk::{
     glib::GString,
 };
 
-use crate::config;
+use crate::{config, gui::ARGS};
 
 use super::{
     FLATPAK_APP_PATH, FLATPAK_SPAWN, FiniteOr, IS_FLATPAK, NUM_CPUS, TICK_RATE, boot_time,
@@ -38,10 +38,18 @@ static COMPANION_PROCESS: LazyLock<Mutex<(ChildStdin, ChildStdout)>> = LazyLock:
         format!("{LIBEXECDIR}/resources-processes")
     };
 
+    let additional_args = if ARGS.disable_fdinfo_caching {
+        warn!("fdinfo caching is disabled, resources-processes may consume more CPU time");
+        vec!["-f"]
+    } else {
+        vec![]
+    };
+
     let child = if *IS_FLATPAK {
         debug!("Spawning resources-processes in Flatpak mode ({proxy_path})");
         Command::new(FLATPAK_SPAWN)
             .args(["--host", proxy_path.as_str()])
+            .args(additional_args)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
@@ -50,6 +58,7 @@ static COMPANION_PROCESS: LazyLock<Mutex<(ChildStdin, ChildStdout)>> = LazyLock:
     } else {
         debug!("Spawning resources-processes in native mode ({proxy_path})");
         Command::new(proxy_path)
+            .args(additional_args)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
@@ -451,7 +460,7 @@ impl Process {
         self.data
             .gpu_usage_stats
             .values()
-            .map(|stats| stats.mem().unwrap_or_default())
+            .map(|stats| stats.mem_bytes().unwrap_or_default())
             .sum()
     }
 
@@ -475,7 +484,7 @@ impl Process {
         self.data
             .npu_usage_stats
             .values()
-            .map(|stats| stats.mem().unwrap_or_default())
+            .map(|stats| stats.mem_bytes().unwrap_or_default())
             .sum()
     }
 

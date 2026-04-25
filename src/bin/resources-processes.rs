@@ -1,11 +1,11 @@
 use anyhow::Result;
-use log::{debug, info, trace};
-use process_data::ProcessData;
+use log::{debug, info, trace, warn};
+use process_data::{ProcessData, cache::ProcessDataCache};
 use ron::ser::PrettyConfig;
 use std::{
-    collections::{HashMap, HashSet},
     io::{Read, Write},
     path::PathBuf,
+    sync::LazyLock,
     time::Instant,
 };
 
@@ -14,14 +14,20 @@ use clap::Parser;
 #[derive(Parser, Debug)]
 #[command(version, about)]
 struct Args {
-    /// Output once and then exit
+    /// Run once and then exit (debugging only)
     #[arg(short, long, default_value_t = false)]
     once: bool,
 
-    /// Use Rusty Object Notation (use this only for debugging this binary on its own, Resources won't be able to decode RON)
+    /// Use Rusty Object Notation (debugging only)
     #[arg(short, long, default_value_t = false)]
     ron: bool,
+
+    /// Disable fdinfo caching
+    #[arg(short = 'f', long, default_value_t = false)]
+    disable_fdinfo_caching: bool,
 }
+
+static PROCFS: LazyLock<PathBuf> = LazyLock::new(|| PathBuf::from("/proc"));
 
 fn main() -> Result<()> {
     // Initialize logger
@@ -32,17 +38,26 @@ fn main() -> Result<()> {
     debug!("Parsing arguments…");
     let args = Args::parse();
 
-    let mut non_gpu_fdinfos = HashSet::new();
-    let mut non_npu_fdinfos = HashSet::new();
-    let mut symlink_cache = HashMap::new();
+    if args.ron {
+        warn!(
+            "Output in Rusty Object Notation instead of binary is enable. You should use this *only for debugging resources-processes itself*, Resources will not be able to parse this output!"
+        );
+    }
 
     if args.once {
-        output(
-            args.ron,
-            &mut non_gpu_fdinfos,
-            &mut non_npu_fdinfos,
-            &mut symlink_cache,
-        )?;
+        warn!(
+            "One-time run instead of interactive run is enabled. You should use this *only for debugging resources-processes itself*, Resources needs to be able to interact with resources-processes!"
+        )
+    }
+
+    let mut cache = if args.disable_fdinfo_caching {
+        ProcessDataCache::new_no_fdinfo_cache()
+    } else {
+        ProcessDataCache::new()
+    };
+
+    if args.once {
+        output(args.ron, &mut cache)?;
         return Ok(());
     }
 
@@ -54,25 +69,15 @@ fn main() -> Result<()> {
         std::io::stdin().read_exact(&mut buffer)?;
         trace!("Received character, initiating scan…");
 
-        output(
-            args.ron,
-            &mut non_gpu_fdinfos,
-            &mut non_npu_fdinfos,
-            &mut symlink_cache,
-        )?;
+        output(args.ron, &mut cache)?;
     }
 }
 
-fn output(
-    ron: bool,
-    non_gpu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
-    non_npu_fdinfos: &mut HashSet<(libc::pid_t, usize)>,
-    symlink_cache: &mut HashMap<(libc::pid_t, usize), PathBuf>,
-) -> Result<()> {
+fn output(ron: bool, cache: &mut ProcessDataCache) -> Result<()> {
     let start = Instant::now();
 
     trace!("Gathering process data…");
-    let data = ProcessData::all_process_data(non_gpu_fdinfos, non_npu_fdinfos, symlink_cache)?;
+    let data = ProcessData::all_from_procfs(&PROCFS, cache)?;
 
     let elapsed = start.elapsed();
     trace!(
@@ -81,7 +86,7 @@ fn output(
     );
 
     let encoded = if ron {
-        trace!("Encoding process data using ron (Resources will not be able to read this!)…");
+        trace!("Encoding process data using ron…");
         ron::ser::to_string_pretty(&data, PrettyConfig::default())?
             .as_bytes()
             .to_vec()

@@ -4,7 +4,7 @@ use anyhow::{Context, Result};
 use gtk::glib::DateTime;
 use ini::Ini;
 use log::{debug, trace};
-use process_data::unix_as_millis;
+use process_data::time::unix_as_millis;
 
 pub mod app;
 pub mod battery;

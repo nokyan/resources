@@ -406,7 +406,7 @@ impl Drive {
             .context("Could not read sysfs_path as symlink")?
             .to_string_lossy()
             .to_string();
-        //  ../../devices/pci0000:00/0000:00:08.1/0000:0e:00.3/usb4/4-2/4-2:1.0/host6/target6:0:0/6:0:0:0/block/sdb
+        // ../../devices/pci0000:00/0000:00:08.1/0000:0e:00.3/usb4/4-2/4-2:1.0/host6/target6:0:0/6:0:0:0/block/sdb
 
         let usb_match = RE_USB_SLOT
             .captures(&symlink)

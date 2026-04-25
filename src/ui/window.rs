@@ -597,7 +597,7 @@ impl MainWindow {
                     process_data
                         .iter()
                         .filter_map(|p| p.npu_usage_stats.get(&npu_data_entry.pci_slot))
-                        .filter_map(process_data::npu_usage::NpuUsageStats::mem)
+                        .filter_map(process_data::npu_usage::NpuUsageStats::mem_bytes)
                         .sum::<u64>() as usize,
                 );
             }

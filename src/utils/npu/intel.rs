@@ -1,5 +1,5 @@
 use anyhow::Result;
-use process_data::{pci_slot::PciSlot, unix_as_secs_f64};
+use process_data::{pci_slot::PciSlot, time::unix_as_secs_f64};
 
 use std::{
     cell::Cell,

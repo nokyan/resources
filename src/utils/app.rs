@@ -113,8 +113,8 @@ pub static DATA_DIRS: LazyLock<Vec<PathBuf>> = LazyLock::new(|| {
 
 // This contains known occurrences of processes having a too distinct name from the actual app
 // The HashMap is used like this:
-//   Key: The name of the executable of the process
-//   Value: What it should be replaced with when finding out to which app it belongs
+//  Key: The name of the executable of the process
+//  Value: What it should be replaced with when finding out to which app it belongs
 static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         HashMap::from([
@@ -679,7 +679,7 @@ impl AppsContext {
                     .data
                     .npu_usage_stats
                     .get(&pci_slot)
-                    .and_then(process_data::npu_usage::NpuUsageStats::mem)
+                    .and_then(process_data::npu_usage::NpuUsageStats::mem_bytes)
             })
             .sum()
     }
@@ -691,7 +691,7 @@ impl AppsContext {
                     .data
                     .gpu_usage_stats
                     .get(&gpu_identifier)
-                    .and_then(process_data::gpu_usage::GpuUsageStats::mem)
+                    .and_then(process_data::gpu_usage::GpuUsageStats::mem_bytes)
             })
             .sum()
     }
@@ -798,7 +798,7 @@ impl AppsContext {
                 .values()
                 .find(|app| {
                     // ↓ probably most expensive lookup, therefore only last resort: look if the process' commandline
-                    //   can be found in the app's commandline
+                    //  can be found in the app's commandline
                     if app
                         .commandline
                         .as_ref()

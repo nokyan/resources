@@ -52,6 +52,10 @@ pub struct Args {
     #[arg(short = 'p', long, default_value_t = false)]
     pub disable_process_monitoring: bool,
 
+    /// Disable fdinfo caching
+    #[arg(short = 'f', long, default_value_t = false)]
+    pub disable_fdinfo_caching: bool,
+
     /// Open tab specified by ID.
     /// Valid IDs are: "applications", "processes", "cpu", "memory", "gpu-$PCI_SLOT$",
     /// "drive-$MODEL_NAME_OR_DEVICE_NAME$", "network-$INTERFACE_NAME$",
