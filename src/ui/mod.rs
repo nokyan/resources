@@ -58,7 +58,7 @@ fn set_subtitle_converted_maybe<T, S: AsRef<str>, F: Fn(T) -> S>(
     stringify_fn: F,
     action_row: &ActionRow,
 ) {
-    set_subtitle_maybe(value.map(|v| stringify_fn(v)), action_row);
+    set_subtitle_maybe(value.map(stringify_fn), action_row);
 }
 
 fn set_subtitle_boolean(boolean: bool, action_row: &ActionRow) -> String {

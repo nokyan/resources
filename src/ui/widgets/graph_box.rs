@@ -116,14 +116,14 @@ impl ResGraphBox {
     ) -> String {
         match (value, max_value) {
             (Some(value), Some(max_value)) => {
-                let fraction = (value as f64 / max_value as f64).finite_or_default();
+                let fraction = (value / max_value).finite_or_default();
 
-                let percentage_string = convert_fraction(fraction as f64, true);
+                let percentage_string = convert_fraction(fraction, true);
 
                 let subtitle = format!(
                     "{} / {} · {}",
-                    stringify_fn(value as f64),
-                    stringify_fn(max_value as f64),
+                    stringify_fn(value),
+                    stringify_fn(max_value),
                     percentage_string
                 );
 
@@ -134,9 +134,7 @@ impl ResGraphBox {
 
                 subtitle
             }
-            (Some(used_bytes), None) => {
-                self.add_unclamped_point(Some(used_bytes as f64), |bytes| stringify_fn(bytes))
-            }
+            (Some(value), None) => self.add_unclamped_point(Some(value), stringify_fn),
             _ => {
                 self.set_subtitle(&i18n("N/A"));
                 self.graph().set_visible(false);
