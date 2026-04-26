@@ -4,7 +4,6 @@ use log::trace;
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
-use crate::utils::FiniteOr;
 use crate::utils::memory::{MemoryData, MemoryDevice};
 use crate::utils::units::convert_storage;
 
@@ -307,51 +306,13 @@ impl ResMemory {
         let used_mem = total_mem.saturating_sub(available_mem);
         let used_swap = total_swap.saturating_sub(free_swap);
 
+        imp.memory
+            .add_storage_point(Some(used_mem as u64), Some(total_mem as u64));
+
+        imp.swap
+            .add_storage_point(Some(used_swap as u64), Some(total_swap as u64));
+
         let memory_fraction = used_mem as f64 / total_mem as f64;
-        let swap_fraction = (used_swap as f64 / total_swap as f64).finite_or_default();
-
-        let formatted_used_mem = convert_storage(used_mem as f64, false);
-        let formatted_total_mem = convert_storage(total_mem as f64, false);
-
-        imp.memory.graph().push_data_point(memory_fraction);
-        imp.memory.set_subtitle(&format!(
-            "{} / {} · {} %",
-            &formatted_used_mem,
-            &formatted_total_mem,
-            (memory_fraction * 100.0).round()
-        ));
-        if total_swap == 0 {
-            // no swap detected
-            imp.swap.graph().push_data_point(0.0);
-            imp.swap.graph().set_visible(false);
-            imp.swap.set_subtitle(&i18n("N/A"));
-            self.set_property(
-                "tab_usage_string",
-                format!("{} / {}", &formatted_used_mem, &formatted_total_mem),
-            );
-        } else {
-            imp.swap.graph().push_data_point(swap_fraction);
-            imp.swap.graph().set_visible(true);
-            imp.swap.set_subtitle(&format!(
-                "{} / {} · {} %",
-                &convert_storage(used_swap as f64, false),
-                &convert_storage(total_swap as f64, false),
-                (swap_fraction * 100.0).round()
-            ));
-            self.set_property(
-                "tab_usage_string",
-                i18n_f(
-                    // Translators: This will be displayed in the sidebar, so your translation for "Swap" should
-                    // preferably be quite short or an abbreviation
-                    "{} / {} · Swap: {} %",
-                    &[
-                        &formatted_used_mem,
-                        &formatted_total_mem,
-                        &(swap_fraction * 100.0).round().to_string(),
-                    ],
-                ),
-            );
-        }
 
         let memory_devices = imp.memory_devices.borrow();
 
@@ -359,6 +320,32 @@ impl ResMemory {
             .iter()
             .map(|md| md.size.unwrap_or(0))
             .sum::<u64>() as f64;
+
+        if total_swap == 0 {
+            self.set_property(
+                "tab_usage_string",
+                format!(
+                    "{} / {}",
+                    &convert_storage(used_mem as f64, false),
+                    &convert_storage(total_mem as f64, false)
+                ),
+            );
+        } else {
+            let swap_fraction = used_swap as f64 / total_swap as f64;
+            self.set_property(
+                "tab_usage_string",
+                i18n_f(
+                    // Translators: This will be displayed in the sidebar, so your translation for "Swap" should
+                    // preferably be quite short or an abbreviation
+                    "{} / {} · Swap: {} %",
+                    &[
+                        &convert_storage(used_mem as f64, false),
+                        &convert_storage(total_mem as f64, false),
+                        &(swap_fraction * 100.0).round().to_string(),
+                    ],
+                ),
+            );
+        }
 
         self.set_property(
             "tab_detail_string",

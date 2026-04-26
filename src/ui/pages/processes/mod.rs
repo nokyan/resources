@@ -25,7 +25,7 @@ use crate::utils::NUM_CPUS;
 use crate::utils::app::AppsContext;
 use crate::utils::process::ProcessAction;
 use crate::utils::settings::SETTINGS;
-use crate::utils::units::{convert_speed, convert_storage, format_time};
+use crate::utils::units::{convert_fraction, convert_speed, convert_storage, format_time};
 
 use self::process_entry::ProcessEntry;
 use self::process_name_cell::ResProcessNameCell;
@@ -1197,12 +1197,12 @@ impl ResProcesses {
                 item.property_expression("item")
                     .chain_property::<ProcessEntry>("cpu_usage")
                     .chain_closure::<String>(closure!(|_: Option<Object>, cpu_usage: f32| {
-                        let mut percentage = cpu_usage * 100.0;
+                        let mut fraction = cpu_usage;
                         if !SETTINGS.normalize_cpu_usage() {
-                            percentage *= *NUM_CPUS as f32;
+                            fraction *= *NUM_CPUS as f32;
                         }
 
-                        format!("{percentage:.1} %")
+                        convert_fraction(fraction as f64, false)
                     }))
                     .bind(&row, "text", Widget::NONE);
 
@@ -1568,7 +1568,7 @@ impl ResProcesses {
                 item.property_expression("item")
                     .chain_property::<ProcessEntry>("gpu_usage")
                     .chain_closure::<String>(closure!(|_: Option<Object>, gpu_usage: f32| {
-                        format!("{:.1} %", gpu_usage * 100.0)
+                        convert_fraction(gpu_usage as f64, false)
                     }))
                     .bind(&row, "text", Widget::NONE);
 
@@ -1637,7 +1637,7 @@ impl ResProcesses {
                 item.property_expression("item")
                     .chain_property::<ProcessEntry>("enc_usage")
                     .chain_closure::<String>(closure!(|_: Option<Object>, enc_usage: f32| {
-                        format!("{:.1} %", enc_usage * 100.0)
+                        convert_fraction(enc_usage as f64, false)
                     }))
                     .bind(&row, "text", Widget::NONE);
 
@@ -1706,7 +1706,7 @@ impl ResProcesses {
                 item.property_expression("item")
                     .chain_property::<ProcessEntry>("dec_usage")
                     .chain_closure::<String>(closure!(|_: Option<Object>, dec_usage: f32| {
-                        format!("{:.1} %", dec_usage * 100.0)
+                        convert_fraction(dec_usage as f64, false)
                     }))
                     .bind(&row, "text", Widget::NONE);
 

@@ -1,7 +1,7 @@
 use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::ui::pages::applications::application_entry::ApplicationEntry;
-use crate::utils::units::{convert_speed, convert_storage};
+use crate::utils::units::{convert_fraction, convert_speed, convert_storage};
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::gio::ThemedIcon;
 use gtk::glib;
@@ -165,7 +165,7 @@ impl ResAppDialog {
         let imp = self.imp();
 
         imp.cpu_usage
-            .set_subtitle(&format!("{:.1} %", app.cpu_usage() * 100.0));
+            .set_subtitle(&convert_fraction(app.cpu_usage() as f64, false));
 
         imp.memory_usage
             .set_subtitle(&convert_storage(app.memory_usage() as f64, false));
@@ -186,16 +186,16 @@ impl ResAppDialog {
             .set_subtitle(&convert_storage(app.write_total() as f64, false));
 
         imp.gpu_usage
-            .set_subtitle(&format!("{:.1} %", app.gpu_usage() * 100.0));
+            .set_subtitle(&convert_fraction(app.gpu_usage() as f64, false));
 
         imp.vram_usage
             .set_subtitle(&convert_storage(app.gpu_mem_usage() as f64, false));
 
         imp.encoder_usage
-            .set_subtitle(&format!("{:.1} %", app.enc_usage() * 100.0));
+            .set_subtitle(&convert_fraction(app.enc_usage() as f64, false));
 
         imp.decoder_usage
-            .set_subtitle(&format!("{:.1} %", app.dec_usage() * 100.0));
+            .set_subtitle(&convert_fraction(app.dec_usage() as f64, false));
 
         imp.processes_amount
             .set_subtitle(&app.running_processes().to_string());

@@ -4,12 +4,11 @@ use log::trace;
 use std::fmt::Write;
 
 use crate::config::PROFILE;
-use crate::i18n::{i18n, i18n_f};
-use crate::utils::FiniteOr;
+use crate::i18n::i18n;
+use crate::ui::{gpu_npu_usage_string, set_subtitle_converted_maybe};
+use crate::utils::link::Link;
 use crate::utils::npu::{Npu, NpuData};
-use crate::utils::units::{
-    convert_frequency, convert_power, convert_storage, convert_temperature, convert_tops,
-};
+use crate::utils::units::{convert_frequency, convert_power, convert_tops};
 
 pub const TAB_ID_PREFIX: &str = "npu";
 
@@ -258,70 +257,12 @@ impl ResNPU {
             link,
         } = npu_data;
 
-        let mut usage_percentage_string = usage_fraction.map_or_else(
-            || i18n("N/A"),
-            |fraction| format!("{} %", (fraction * 100.0).round()),
-        );
+        imp.npu_usage.add_fraction_point(*usage_fraction);
 
-        imp.npu_usage.set_subtitle(&usage_percentage_string);
-        imp.npu_usage
-            .graph()
-            .push_data_point(usage_fraction.unwrap_or(0.0));
-        imp.npu_usage.graph().set_visible(usage_fraction.is_some());
+        imp.memory_usage
+            .add_storage_point(*used_memory, *total_memory);
 
-        let memory_subtitle = if let (Some(total_memory), Some(used_memory)) =
-            (total_memory, used_memory)
-        {
-            let used_memory_fraction =
-                (*used_memory as f64 / *total_memory as f64).finite_or_default();
-
-            imp.memory_usage
-                .graph()
-                .push_data_point(used_memory_fraction);
-
-            let memory_percentage_string = format!("{} %", (used_memory_fraction * 100.0).round());
-
-            usage_percentage_string.push_str(" · ");
-            // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
-            // shorter than) 'Memory'
-            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&memory_percentage_string]));
-
-            format!(
-                "{} / {} · {}",
-                convert_storage(*used_memory as f64, false),
-                convert_storage(*total_memory as f64, false),
-                memory_percentage_string
-            )
-        } else if let Some(used_memory) = used_memory {
-            imp.memory_usage
-                .graph()
-                .push_data_point(*used_memory as f64);
-
-            let memory_string = convert_storage(*used_memory as f64, false);
-
-            let highest_memory_string =
-                convert_storage(imp.memory_usage.graph().get_highest_value(), false);
-
-            usage_percentage_string.push_str(" · ");
-            // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
-            // shorter than) 'Memory'
-            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&memory_string]));
-
-            format!(
-                "{} · {} {}",
-                &memory_string,
-                i18n("Highest:"),
-                highest_memory_string
-            )
-        } else {
-            i18n("N/A")
-        };
-
-        imp.memory_usage.graph().set_visible(used_memory.is_some());
-
-        imp.memory_usage.set_subtitle(&memory_subtitle);
-
-        imp.temperature.graph().set_visible(temperature.is_some());
+        imp.temperature.add_temperature_point(*temperature);
 
         let mut power_string = power_usage.map_or_else(|| i18n("N/A"), convert_power);
 
@@ -331,12 +272,7 @@ impl ResNPU {
 
         imp.power_usage.set_subtitle(&power_string);
 
-        if let Some(npu_clockspeed) = clock_speed {
-            imp.npu_clockspeed
-                .set_subtitle(&convert_frequency(*npu_clockspeed));
-        } else {
-            imp.npu_clockspeed.set_subtitle(&i18n("N/A"));
-        }
+        set_subtitle_converted_maybe(*clock_speed, convert_frequency, &imp.npu_clockspeed);
 
         if let (Some(curr_tops), Some(max_tops)) = (curr_tops, max_tops) {
             imp.tops.set_subtitle(&format!(
@@ -348,44 +284,19 @@ impl ResNPU {
             imp.tops.set_subtitle(&i18n("N/A"));
         }
 
-        if let Some(vram_clockspeed) = vram_speed {
-            imp.memory_clockspeed
-                .set_subtitle(&convert_frequency(*vram_clockspeed));
-        } else {
-            imp.memory_clockspeed.set_subtitle(&i18n("N/A"));
-        }
+        set_subtitle_converted_maybe(*vram_speed, convert_frequency, &imp.npu_clockspeed);
 
-        imp.max_power_cap
-            .set_subtitle(&power_cap_max.map_or_else(|| i18n("N/A"), convert_power));
+        set_subtitle_converted_maybe(*power_cap_max, convert_power, &imp.max_power_cap);
 
         self.set_property("usage", usage_fraction.unwrap_or(0.0));
 
-        if let Some(temperature) = temperature {
-            let temperature_string = convert_temperature(*temperature);
+        imp.temperature.add_temperature_point(*temperature);
 
-            let highest_temperature_string =
-                convert_temperature(imp.temperature.graph().get_highest_value());
+        set_subtitle_converted_maybe(link.as_ref(), Link::to_string, &imp.link);
 
-            imp.temperature.set_subtitle(&format!(
-                "{} · {} {}",
-                &temperature_string,
-                i18n("Highest:"),
-                highest_temperature_string
-            ));
-            imp.temperature.graph().push_data_point(*temperature);
-
-            usage_percentage_string.push_str(" · ");
-            usage_percentage_string.push_str(&temperature_string);
-        } else {
-            imp.temperature.set_subtitle(&i18n("N/A"));
-        }
-
-        if let Some(link) = link {
-            imp.link.set_subtitle(&link.to_string());
-        } else {
-            imp.link.set_subtitle(&i18n("N/A"));
-        }
-
-        self.set_property("tab_usage_string", &usage_percentage_string);
+        self.set_property(
+            "tab_usage_string",
+            gpu_npu_usage_string(*usage_fraction, *used_memory, *total_memory, *temperature),
+        );
     }
 }

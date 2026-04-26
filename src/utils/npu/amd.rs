@@ -308,12 +308,12 @@ impl NpuImpl for AmdNpu {
         bail!("usage not implemented by kernel")
     }
 
-    fn used_memory(&self) -> Result<usize> {
-        self.drm_used_memory().map(|usage| usage as usize)
+    fn used_memory(&self) -> Result<u64> {
+        self.drm_used_memory()
     }
 
-    fn total_memory(&self) -> Result<usize> {
-        self.drm_total_memory().map(|usage| usage as usize)
+    fn total_memory(&self) -> Result<u64> {
+        self.drm_total_memory()
     }
 
     fn temperature(&self) -> Result<f64> {

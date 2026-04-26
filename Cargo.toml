@@ -20,12 +20,12 @@ opt-level = 3
 adw = { version = "0.8.1", features = ["v1_8"], package = "libadwaita" }
 anyhow = { version = "1.0.102", features = ["backtrace"] }
 async-channel = "2.5.0"
-clap = { version = "4.5.60", features = ["derive"] }
+clap = { version = "4.6.1", features = ["derive"] }
 gettext-rs = { version = "0.7.7", features = ["gettext-system"] }
 glob = "0.3.3"
 gtk = { version = "0.10.3", features = ["v4_12"], package = "gtk4" }
 lazy-regex = "3.6.0"
-libc = { version = "0.2.182", features = ["extra_traits"] }
+libc = { version = "0.2.186", features = ["extra_traits"] }
 log = "0.4.29"
 neli-wifi = { version = "0.6.1", features = ["default"] }
 nix = { version = "0.31.2", default-features = false, features = [
@@ -33,8 +33,8 @@ nix = { version = "0.31.2", default-features = false, features = [
     "sched",
 ] }
 num_cpus = "1.17.0"
-nvml-wrapper = "0.12.0"
-pastey = "0.2.1"
+nvml-wrapper = "0.12.1"
+pastey = "0.2.2"
 path-dedot = "3.1.1"
 plotters = { version = "0.3.7", default-features = false, features = [
     "area_series",
@@ -43,7 +43,7 @@ plotters-cairo = "0.8.0"
 pretty_env_logger = "0.5"
 process-data = { path = "lib/process_data" }
 rmp-serde = "1.3.1"
-ron = "0.12.0"
+ron = "0.12.1"
 rust-ini = "0.21.3"
 futures = { version = "0.3", default-features = false, features = ["alloc"] }
 serde_json = "1.0.149"

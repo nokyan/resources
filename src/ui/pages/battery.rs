@@ -5,8 +5,9 @@ use std::fmt::Write;
 
 use crate::config::PROFILE;
 use crate::i18n::i18n;
+use crate::ui::set_subtitle_converted_maybe;
 use crate::utils::battery::BatteryData;
-use crate::utils::units::{convert_energy, convert_power};
+use crate::utils::units::{convert_energy, convert_fraction, convert_power};
 
 pub const TAB_ID_PREFIX: &str = "battery";
 
@@ -251,7 +252,7 @@ impl ResBattery {
         let mut usage_string = String::new();
 
         if let Ok(charge) = battery_data.charge {
-            let mut percentage_string = format!("{} %", (charge * 100.0).round());
+            let mut percentage_string = convert_fraction(charge, true);
             usage_string.push_str(&percentage_string);
 
             if let Ok(state) = battery_data.state {
@@ -268,38 +269,22 @@ impl ResBattery {
         self.set_property("usage", battery_data.charge.unwrap_or_default());
 
         if let Ok(power_usage) = battery_data.power_usage {
-            imp.power_usage.graph().push_data_point(power_usage);
-
-            let formatted_power = convert_power(power_usage);
-            let formatted_highest_power =
-                convert_power(imp.power_usage.graph().get_highest_value());
-
-            imp.power_usage.graph().set_visible(true);
-            imp.power_usage.set_subtitle(&format!(
-                "{formatted_power} · {} {formatted_highest_power}",
-                i18n("Highest:")
-            ));
-
             if !usage_string.is_empty() {
                 usage_string.push_str(" · ");
             }
 
-            usage_string.push_str(&formatted_power);
-        } else {
-            imp.power_usage.graph().set_visible(false);
-            imp.power_usage.set_subtitle(&i18n("N/A"));
-            if usage_string.is_empty() {
-                usage_string.push_str(&i18n("N/A"));
-            }
+            usage_string.push_str(&convert_power(power_usage));
         }
+
+        imp.power_usage
+            .add_power_point(battery_data.power_usage.ok(), None);
 
         self.set_tab_usage_string(usage_string);
 
-        if let Ok(health) = battery_data.health {
-            imp.health
-                .set_subtitle(&format!("{} %", (health * 100.0).round()));
-        } else {
-            imp.health.set_subtitle(&i18n("N/A"));
-        }
+        set_subtitle_converted_maybe(
+            battery_data.health.ok(),
+            |fraction| convert_fraction(fraction, true),
+            &imp.health,
+        );
     }
 }

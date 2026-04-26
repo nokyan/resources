@@ -10,7 +10,9 @@ use crate::i18n::{i18n, i18n_f};
 use crate::ui::widgets::graph_box::ResGraphBox;
 use crate::utils::cpu::{CpuData, CpuInfo};
 use crate::utils::settings::SETTINGS;
-use crate::utils::units::{convert_frequency, convert_temperature, format_time_integer};
+use crate::utils::units::{
+    convert_fraction, convert_frequency, convert_temperature, format_time_integer,
+};
 use crate::utils::{FiniteOr, NUM_CPUS, boot_time};
 
 pub const TAB_ID: &str = "cpu";
@@ -380,12 +382,13 @@ impl ResCPU {
 
         imp.total_cpu.graph().push_data_point(total_fraction);
 
-        let mut percentage = total_fraction * 100.0;
-        if !SETTINGS.normalize_cpu_usage() {
-            percentage *= *NUM_CPUS as f64;
-        }
+        let display_fraction = if SETTINGS.normalize_cpu_usage() {
+            total_fraction
+        } else {
+            total_fraction * *NUM_CPUS as f64
+        };
 
-        let mut percentage_string = format!("{} %", percentage.round());
+        let mut percentage_string = convert_fraction(display_fraction, true);
         imp.total_cpu.set_subtitle(&percentage_string);
 
         imp.old_total_usage.set(new_total_usage);
@@ -409,7 +412,7 @@ impl ResCPU {
                     ((work_thread_time as f64) / (sum_thread_delta as f64)).finite_or_default();
 
                 curr_threadbox.graph().push_data_point(thread_fraction);
-                curr_threadbox.set_subtitle(&format!("{} %", (thread_fraction * 100.0).round()));
+                curr_threadbox.set_subtitle(&convert_fraction(thread_fraction, true));
 
                 if let Some(frequency) = frequencies[i] {
                     curr_threadbox.set_title_label(&format!(
@@ -424,29 +427,13 @@ impl ResCPU {
             }
         }
 
-        imp.temperature.graph().set_visible(temperature.is_ok());
+        imp.temperature
+            .add_temperature_point(temperature.as_ref().ok().map(|temp| *temp as f64));
 
         if let Ok(temperature) = temperature {
-            let temperature_string = convert_temperature(f64::from(*temperature));
-
-            let highest_temperature_string =
-                convert_temperature(imp.temperature.graph().get_highest_value());
-
-            imp.temperature.set_subtitle(&format!(
-                "{} · {} {}",
-                &temperature_string,
-                i18n("Highest:"),
-                highest_temperature_string
-            ));
-            imp.temperature
-                .graph()
-                .push_data_point(f64::from(*temperature));
-
             percentage_string.push_str(" · ");
-            percentage_string.push_str(&temperature_string);
-        } else {
-            imp.temperature.set_subtitle(&i18n("N/A"));
-        }
+            percentage_string.push_str(&convert_temperature(*temperature as f64));
+        };
 
         self.set_property("usage", total_fraction);
 

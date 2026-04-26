@@ -5,10 +5,11 @@ use process_data::gpu_usage::GpuIdentifier;
 use std::fmt::Write;
 
 use crate::config::PROFILE;
-use crate::i18n::{i18n, i18n_f};
-use crate::utils::FiniteOr;
+use crate::i18n::i18n;
+use crate::ui::{gpu_npu_usage_string, set_subtitle_converted_maybe};
 use crate::utils::gpu::{Gpu, GpuData};
-use crate::utils::units::{convert_frequency, convert_power, convert_storage, convert_temperature};
+use crate::utils::link::Link;
+use crate::utils::units::{convert_fraction, convert_frequency, convert_power};
 
 pub const TAB_ID_PREFIX: &str = "gpu";
 
@@ -294,16 +295,7 @@ impl ResGPU {
             nvidia: _,
         } = gpu_data;
 
-        let mut usage_percentage_string = usage_fraction.map_or_else(
-            || i18n("N/A"),
-            |fraction| format!("{} %", (fraction * 100.0).round()),
-        );
-
-        imp.gpu_usage.set_subtitle(&usage_percentage_string);
-        imp.gpu_usage
-            .graph()
-            .push_data_point(usage_fraction.unwrap_or(0.0));
-        imp.gpu_usage.graph().set_visible(usage_fraction.is_some());
+        imp.gpu_usage.add_fraction_point(*usage_fraction);
 
         // encode_fraction could be the combined usage of encoder and decoder for Intel GPUs and newer AMD GPUs
         if let Some(encode_fraction) = encode_fraction {
@@ -311,13 +303,13 @@ impl ResGPU {
                 .start_graph()
                 .push_data_point(*encode_fraction);
             imp.encode_decode_usage
-                .set_start_subtitle(&format!("{} %", (encode_fraction * 100.0).round()));
+                .set_start_subtitle(&convert_fraction(*encode_fraction, true));
 
             imp.encode_decode_combined_usage
                 .graph()
                 .push_data_point(*encode_fraction);
             imp.encode_decode_combined_usage
-                .set_subtitle(&format!("{} %", (encode_fraction * 100.0).round()));
+                .set_subtitle(&convert_fraction(*encode_fraction, true));
         } else {
             imp.encode_decode_usage.start_graph().push_data_point(0.0);
             imp.encode_decode_usage.set_start_subtitle(&i18n("N/A"));
@@ -331,7 +323,7 @@ impl ResGPU {
                 .end_graph()
                 .push_data_point(*decode_fraction);
             imp.encode_decode_usage
-                .set_end_subtitle(&format!("{} %", (decode_fraction * 100.0).round()));
+                .set_end_subtitle(&convert_fraction(*decode_fraction, true));
         } else {
             imp.encode_decode_usage.end_graph().push_data_point(0.0);
             imp.encode_decode_usage.set_end_subtitle(&i18n("N/A"));
@@ -346,41 +338,7 @@ impl ResGPU {
             .end_graph()
             .set_visible(encode_fraction.is_some() || decode_fraction.is_some());
 
-        let vram_usage_string = if let (Some(total_vram), Some(used_vram)) = (total_vram, used_vram)
-        {
-            let used_vram_fraction = (*used_vram as f64 / *total_vram as f64).finite_or_default();
-
-            let vram_percentage_string = format!("{} %", (used_vram_fraction * 100.0).round());
-
-            let vram_subtitle = format!(
-                "{} / {} · {}",
-                convert_storage(*used_vram as f64, false),
-                convert_storage(*total_vram as f64, false),
-                vram_percentage_string
-            );
-
-            imp.vram_usage.set_subtitle(&vram_subtitle);
-            imp.vram_usage.graph().push_data_point(used_vram_fraction);
-            imp.vram_usage.graph().set_visible(true);
-            imp.vram_usage.graph().set_locked_max_y(Some(1.0));
-
-            Some(vram_percentage_string)
-        } else if let Some(used_vram) = used_vram {
-            let vram_subtitle = convert_storage(*used_vram as f64, false);
-
-            imp.vram_usage.set_subtitle(&vram_subtitle);
-            imp.vram_usage.graph().push_data_point(*used_vram as f64);
-            imp.vram_usage.graph().set_visible(true);
-            imp.vram_usage.graph().set_locked_max_y(None);
-
-            Some(vram_subtitle)
-        } else {
-            imp.vram_usage.set_subtitle(&i18n("N/A"));
-
-            imp.vram_usage.graph().set_visible(false);
-
-            None
-        };
+        imp.vram_usage.add_storage_point(*used_vram, *total_vram);
 
         let mut power_string = power_usage.map_or_else(|| i18n("N/A"), convert_power);
 
@@ -390,60 +348,20 @@ impl ResGPU {
 
         imp.power_usage.set_subtitle(&power_string);
 
-        if let Some(gpu_clockspeed) = clock_speed {
-            imp.gpu_clockspeed
-                .set_subtitle(&convert_frequency(*gpu_clockspeed));
-        } else {
-            imp.gpu_clockspeed.set_subtitle(&i18n("N/A"));
-        }
+        set_subtitle_converted_maybe(*clock_speed, convert_frequency, &imp.gpu_clockspeed);
 
-        if let Some(vram_clockspeed) = vram_speed {
-            imp.vram_clockspeed
-                .set_subtitle(&convert_frequency(*vram_clockspeed));
-        } else {
-            imp.vram_clockspeed.set_subtitle(&i18n("N/A"));
-        }
+        set_subtitle_converted_maybe(*vram_speed, convert_frequency, &imp.vram_clockspeed);
 
-        imp.max_power_cap
-            .set_subtitle(&power_cap_max.map_or_else(|| i18n("N/A"), convert_power));
+        set_subtitle_converted_maybe(*power_cap_max, convert_power, &imp.max_power_cap);
+        imp.temperature.add_temperature_point(*temperature);
+
+        set_subtitle_converted_maybe(link.as_ref(), Link::to_string, &imp.link);
 
         self.set_property("usage", usage_fraction.unwrap_or(0.0));
 
-        if let Some(vram_usage_string) = vram_usage_string {
-            usage_percentage_string.push_str(" · ");
-            // Translators: This will be displayed in the sidebar, please try to keep your translation as short as (or even
-            // shorter than) 'Memory'
-            usage_percentage_string.push_str(&i18n_f("Memory: {}", &[&vram_usage_string]));
-        }
-
-        imp.temperature.graph().set_visible(temperature.is_some());
-
-        if let Some(temperature) = temperature {
-            let temperature_string = convert_temperature(*temperature);
-
-            let highest_temperature_string =
-                convert_temperature(imp.temperature.graph().get_highest_value());
-
-            imp.temperature.set_subtitle(&format!(
-                "{} · {} {}",
-                &temperature_string,
-                i18n("Highest:"),
-                highest_temperature_string
-            ));
-            imp.temperature.graph().push_data_point(*temperature);
-
-            usage_percentage_string.push_str(" · ");
-            usage_percentage_string.push_str(&temperature_string);
-        } else {
-            imp.temperature.set_subtitle(&i18n("N/A"));
-        }
-
-        if let Some(link) = link {
-            imp.link.set_subtitle(&link.to_string());
-        } else {
-            imp.link.set_subtitle(&i18n("N/A"));
-        }
-
-        self.set_property("tab_usage_string", &usage_percentage_string);
+        self.set_property(
+            "tab_usage_string",
+            gpu_npu_usage_string(*usage_fraction, *used_vram, *total_vram, *temperature),
+        );
     }
 }
