@@ -382,12 +382,13 @@ impl ResCPU {
 
         imp.total_cpu.graph().push_data_point(total_fraction);
 
-        let mut percentage = total_fraction * 100.0;
-        if !SETTINGS.normalize_cpu_usage() {
-            percentage *= *NUM_CPUS as f64;
-        }
+        let display_fraction = if SETTINGS.normalize_cpu_usage() {
+            total_fraction
+        } else {
+            total_fraction * *NUM_CPUS as f64
+        };
 
-        let mut percentage_string = convert_fraction(percentage, true);
+        let mut percentage_string = convert_fraction(display_fraction, true);
         imp.total_cpu.set_subtitle(&percentage_string);
 
         imp.old_total_usage.set(new_total_usage);
