@@ -5,7 +5,7 @@ use log::trace;
 use crate::config::PROFILE;
 use crate::i18n::i18n;
 use crate::ui::pages::processes::process_entry::ProcessEntry;
-use crate::utils::units::{convert_speed, convert_storage, format_time};
+use crate::utils::units::{convert_fraction, convert_speed, convert_storage, format_time};
 
 mod imp {
 
@@ -159,7 +159,7 @@ impl ResProcessDialog {
         let imp = self.imp();
 
         imp.cpu_usage
-            .set_subtitle(&format!("{:.1} %", process.cpu_usage() * 100.0));
+            .set_subtitle(&convert_fraction(process.cpu_usage() as f64, false));
 
         imp.memory_usage
             .set_subtitle(&convert_storage(process.memory_usage() as f64, false));
@@ -196,16 +196,16 @@ impl ResProcessDialog {
         }
 
         imp.gpu_usage
-            .set_subtitle(&format!("{:.1} %", process.gpu_usage() * 100.0));
+            .set_subtitle(&convert_fraction(process.gpu_usage() as f64, false));
 
         imp.vram_usage
             .set_subtitle(&convert_storage(process.gpu_mem_usage() as f64, false));
 
         imp.encoder_usage
-            .set_subtitle(&format!("{:.1} %", process.enc_usage() * 100.0));
+            .set_subtitle(&convert_fraction(process.enc_usage() as f64, false));
 
         imp.decoder_usage
-            .set_subtitle(&format!("{:.1} %", process.dec_usage() * 100.0));
+            .set_subtitle(&convert_fraction(process.dec_usage() as f64, false));
 
         imp.total_cpu_time
             .set_subtitle(&format_time(process.total_cpu_time()));

@@ -98,6 +98,15 @@ pub fn convert_temperature(celsius: f64) -> String {
     }
 }
 
+pub fn convert_fraction(fraction: f64, integer: bool) -> String {
+    let percentage = fraction * 100.0;
+    if integer {
+        format!("{} %", percentage.round())
+    } else {
+        format!("{percentage:.1} %")
+    }
+}
+
 pub fn convert_storage(bytes: f64, integer: bool) -> String {
     match SETTINGS.base() {
         Base::Decimal => convert_storage_decimal(bytes, integer),

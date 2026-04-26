@@ -598,7 +598,7 @@ impl MainWindow {
                         .iter()
                         .filter_map(|p| p.npu_usage_stats.get(&npu_data_entry.pci_slot))
                         .filter_map(process_data::npu_usage::NpuUsageStats::mem)
-                        .sum::<u64>() as usize,
+                        .sum(),
                 );
             }
         }
@@ -729,9 +729,9 @@ impl MainWindow {
 
             if npu_data.total_memory.is_some() {
                 let processes_npu_memory_fraction = apps_context.npu_mem(npu_data.pci_slot);
-                npu_data.used_memory = Some(usize::max(
+                npu_data.used_memory = Some(u64::max(
                     npu_data.used_memory.unwrap_or(0),
-                    processes_npu_memory_fraction as usize,
+                    processes_npu_memory_fraction,
                 ));
             }
 

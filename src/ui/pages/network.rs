@@ -2,9 +2,10 @@ use std::time::{Duration, SystemTime};
 
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f};
+use crate::ui::set_subtitle_converted_maybe;
 use crate::utils::link::LinkData;
 use crate::utils::network::{NetworkData, NetworkInterface};
-use crate::utils::units::{convert_speed, convert_speed_bits_decimal, convert_storage};
+use crate::utils::units::{convert_speed_bits_decimal, convert_storage};
 use adw::{glib::property::PropertySet, prelude::*, subclass::prelude::*};
 use gtk::glib;
 use log::trace;
@@ -340,75 +341,39 @@ impl ResNetwork {
             .duration_since(imp.last_timestamp.get())
             .map_or(1.0f64, |timestamp| timestamp.as_secs_f64());
 
-        let (received_delta, received_string) =
-            if let (Ok(received_bytes), Some(old_received_bytes)) =
-                (received_bytes, imp.old_received_bytes.get())
-            {
-                let received_delta =
-                    (received_bytes.saturating_sub(old_received_bytes)) as f64 / time_passed;
-
-                imp.total_received
-                    .set_subtitle(&convert_storage(received_bytes as f64, false));
-
-                imp.receiving.graph().set_visible(true);
-                imp.receiving.graph().push_data_point(received_delta);
-
-                let highest_received = imp.receiving.graph().get_highest_value();
-
-                let formatted_delta = convert_speed(received_delta, true);
-
-                imp.receiving.set_subtitle(&format!(
-                    "{} · {} {}",
-                    &formatted_delta,
-                    i18n("Highest:"),
-                    convert_speed(highest_received, true)
-                ));
-
-                imp.old_received_bytes.set(Some(received_bytes));
-
-                (received_delta, formatted_delta)
-            } else {
-                imp.total_received.set_subtitle(&i18n("N/A"));
-
-                imp.receiving.graph().set_visible(false);
-                imp.receiving.set_subtitle(&i18n("N/A"));
-
-                (0.0, i18n("N/A"))
-            };
-
-        let (sent_delta, sent_string) = if let (Ok(sent_bytes), Some(old_sent_bytes)) =
-            (sent_bytes, imp.old_sent_bytes.get())
+        let received_delta = if let (Ok(received_bytes), Some(old_received_bytes)) =
+            (&received_bytes, imp.old_received_bytes.get())
         {
-            let sent_delta = (sent_bytes.saturating_sub(old_sent_bytes)) as f64 / time_passed;
-
-            imp.total_sent
-                .set_subtitle(&convert_storage(sent_bytes as f64, false));
-
-            imp.sending.graph().set_visible(true);
-            imp.sending.graph().push_data_point(sent_delta);
-
-            let highest_sent = imp.sending.graph().get_highest_value();
-
-            let formatted_delta = convert_speed(sent_delta, true);
-
-            imp.sending.set_subtitle(&format!(
-                "{} · {} {}",
-                &formatted_delta,
-                i18n("Highest:"),
-                convert_speed(highest_sent, true)
-            ));
-
-            imp.old_sent_bytes.set(Some(sent_bytes));
-
-            (sent_delta, formatted_delta)
+            imp.old_received_bytes.set(Some(*received_bytes));
+            Some(received_bytes.saturating_sub(old_received_bytes) as f64 / time_passed)
         } else {
-            imp.total_sent.set_subtitle(&i18n("N/A"));
-
-            imp.sending.graph().set_visible(false);
-            imp.sending.set_subtitle(&i18n("N/A"));
-
-            (0.0, i18n("N/A"))
+            None
         };
+
+        let received_string = imp.receiving.add_speed_point_network(received_delta);
+
+        set_subtitle_converted_maybe(
+            received_bytes.ok(),
+            |bytes| convert_storage(bytes as f64, false),
+            &imp.total_received,
+        );
+
+        let sent_delta = if let (Ok(sent_bytes), Some(old_sent_bytes)) =
+            (&sent_bytes, imp.old_sent_bytes.get())
+        {
+            imp.old_sent_bytes.set(Some(*sent_bytes));
+            Some(sent_bytes.saturating_sub(old_sent_bytes) as f64 / time_passed)
+        } else {
+            None
+        };
+
+        let sent_string = imp.sending.add_speed_point_network(sent_delta);
+
+        set_subtitle_converted_maybe(
+            sent_bytes.ok(),
+            |bytes| convert_storage(bytes as f64, false),
+            &imp.total_sent,
+        );
 
         if let Ok(wifi_link) = &wifi_link {
             imp.network_name.set_visible(true);
@@ -421,11 +386,7 @@ impl ResNetwork {
             imp.network_name.set_visible(false);
         }
 
-        imp.link.set_subtitle(
-            &wifi_link
-                .as_ref()
-                .map_or_else(|_| i18n("N/A"), std::string::ToString::to_string),
-        );
+        set_subtitle_converted_maybe(wifi_link.as_ref().ok(), |link| link.to_string(), &imp.link);
 
         imp.link_speed.set_subtitle(
             &(if let Ok(wifi_link) = wifi_link {
@@ -437,7 +398,13 @@ impl ResNetwork {
             }),
         );
 
-        self.set_property("usage", f64::max(received_delta, sent_delta));
+        self.set_property(
+            "usage",
+            f64::max(
+                sent_delta.unwrap_or_default(),
+                sent_delta.unwrap_or_default(),
+            ),
+        );
 
         self.set_property(
             "tab_usage_string",

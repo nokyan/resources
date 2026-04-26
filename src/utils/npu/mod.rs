@@ -35,8 +35,8 @@ pub struct NpuData {
 
     pub usage_fraction: Option<f64>,
 
-    pub total_memory: Option<usize>,
-    pub used_memory: Option<usize>,
+    pub total_memory: Option<u64>,
+    pub used_memory: Option<u64>,
 
     pub clock_speed: Option<f64>,
     pub vram_speed: Option<f64>,
@@ -122,8 +122,8 @@ pub trait NpuImpl {
 
     fn name(&self) -> Result<String>;
     fn usage(&self) -> Result<f64>;
-    fn used_memory(&self) -> Result<usize>;
-    fn total_memory(&self) -> Result<usize>;
+    fn used_memory(&self) -> Result<u64>;
+    fn total_memory(&self) -> Result<u64>;
     fn temperature(&self) -> Result<f64>;
     fn power_usage(&self) -> Result<f64>;
     fn core_frequency(&self) -> Result<f64>;
@@ -149,13 +149,13 @@ pub trait NpuImpl {
         read_parsed(self.sysfs_path().join("device/npu_busy_percent"))
     }
 
-    fn drm_used_memory(&self) -> Result<isize> {
+    fn drm_used_memory(&self) -> Result<u64> {
         // ivpu will implement this with kernel 6.14, using this as a fallback just in case other vendors start using
         // this name as well
         read_parsed(self.sysfs_path().join("device/npu_memory_utilization"))
     }
 
-    fn drm_total_memory(&self) -> Result<isize> {
+    fn drm_total_memory(&self) -> Result<u64> {
         // No NPU driver actually implements this yet, this is a guess for the future based on ivpu's
         // npu_memory_utilization
         read_parsed(self.sysfs_path().join("device/npu_memory_total"))
