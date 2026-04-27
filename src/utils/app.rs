@@ -875,6 +875,13 @@ impl AppsContext {
         })
     }
 
+    /// Check if kwin_wayland or kwin_x11 is running
+    pub fn is_kwin_running(&self) -> bool {
+        self.processes_iter().any(|process| {
+            process.executable_name == "kwin_wayland" || process.executable_name == "kwin_x11"
+        })
+    }
+
     /// Refreshes the statistics about the running applications and processes.
     /// For new processes whose association is deferred (awaiting an async query),
     /// the result is picked up on the next call once the future resolves.
