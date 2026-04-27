@@ -10,6 +10,7 @@ use crate::cache::ProcessDataCache;
 use crate::gpu_usage::{GpuIdentifier, GpuUsageStats};
 use crate::npu_usage::NpuUsageStats;
 use crate::pci_slot::PciSlot;
+use crate::read_parsed;
 
 static RE_KIB: Lazy<Regex> = lazy_regex!(r"(\d+)\s*KiB");
 static RE_NS: Lazy<Regex> = lazy_regex!(r"(\d+)\s*ns");
@@ -119,7 +120,7 @@ pub fn collect_fdinfos(
             seen_targets.insert(t.clone(), fd_num);
         }
 
-        let content = match std::fs::read_to_string(&fdinfo_path) {
+        let content = match read_parsed::<String>(&fdinfo_path) {
             Ok(c) => c,
             Err(_) => {
                 trace!("couldn't read {fdinfo_path:?}, caching as non-GPU/NPU");

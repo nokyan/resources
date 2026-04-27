@@ -237,11 +237,29 @@ impl ProcessData {
     }
 }
 
-fn read_file_trimmed(path: impl AsRef<Path>) -> Result<String> {
+pub fn read_parsed<T: FromStr>(path: impl AsRef<Path>) -> Result<T>
+where
+    <T as FromStr>::Err: std::error::Error + Send + Sync + 'static,
+{
     let path = path.as_ref();
-    std::fs::read_to_string(path)
-        .map(|s| s.trim().to_owned())
-        .with_context(|| format!("failed to read {}", path.display()))
+
+    let content = std::fs::read_to_string(path)
+        .map(|content| content.trim().to_string())
+        .inspect_err(|e| trace!("Unable to read {path:?} → {e}"))?;
+
+    let type_name = std::any::type_name::<T>();
+
+    content
+        .parse::<T>()
+        .inspect(|_| trace!("Successfully read {path:?} to {type_name} → {content}",))
+        .inspect_err(|e| {
+            trace!("Unable to parse {path:?} to {type_name} → {e}");
+        })
+        .with_context(|| format!("error parsing file {}", path.display()))
+}
+
+fn read_file_trimmed(path: impl AsRef<Path>) -> Result<String> {
+    read_parsed::<String>(path).map(|s| s.trim().to_owned())
 }
 
 fn parse_stat_field<T>(fields: &[&str], index: usize, name: &str) -> Result<T>
