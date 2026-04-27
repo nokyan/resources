@@ -15,17 +15,20 @@ use gtk::{
 };
 use process_data::Niceness;
 
+use crate::add_column;
 use crate::config::PROFILE;
 use crate::i18n::{i18n, i18n_f, ni18n_f};
 use crate::ui::dialogs::process_dialog::ResProcessDialog;
 use crate::ui::dialogs::process_options_dialog::ResProcessOptionsDialog;
-use crate::ui::pages::NICE_TO_LABEL;
+use crate::ui::pages::{
+    MAX_PERCENTAGE_LENGTH, MAX_PID_LENGTH, MAX_SPEED_LENGTH, MAX_STORAGE_LENGTH, NICE_TO_LABEL,
+};
 use crate::ui::window::{Action, MainWindow};
 use crate::utils::NUM_CPUS;
 use crate::utils::app::AppsContext;
 use crate::utils::process::ProcessAction;
 use crate::utils::settings::SETTINGS;
-use crate::utils::units::{convert_fraction, convert_speed, convert_storage, format_time};
+use crate::utils::units::{convert_speed, convert_storage, format_time};
 
 use self::process_entry::ProcessEntry;
 use self::process_name_cell::ResProcessNameCell;
@@ -48,6 +51,8 @@ static LONGEST_PRIORITY_LABEL: LazyLock<u32> = LazyLock::new(|| {
         min_length
     }
 });
+
+const MAX_TIME_LENGTH: u32 = 12; // e.g. "123:45:67.69"
 
 mod imp {
     use std::{
@@ -443,32 +448,12 @@ impl ResProcesses {
         imp.popover_menu_multiple.set_parent(self);
 
         *imp.column_view.borrow_mut() = gtk::ColumnView::new(None::<gtk::SingleSelection>);
+
+        self.setup_columns();
+
         let column_view = imp.column_view.borrow();
-
         column_view.set_tab_behavior(gtk::ListTabBehavior::Cell);
-
-        let mut columns = imp.columns.borrow_mut();
-
-        columns.push(self.add_name_column(&column_view));
-        columns.push(self.add_pid_column(&column_view));
-        columns.push(self.add_user_column(&column_view));
-        columns.push(self.add_memory_column(&column_view));
-        columns.push(self.add_cpu_column(&column_view));
-        columns.push(self.add_read_speed_column(&column_view));
-        columns.push(self.add_read_total_column(&column_view));
-        columns.push(self.add_write_speed_column(&column_view));
-        columns.push(self.add_write_total_column(&column_view));
-        columns.push(self.add_gpu_column(&column_view));
-        columns.push(self.add_gpu_mem_column(&column_view));
-        columns.push(self.add_encoder_column(&column_view));
-        columns.push(self.add_decoder_column(&column_view));
-        columns.push(self.add_total_cpu_time_column(&column_view));
-        columns.push(self.add_user_cpu_time_column(&column_view));
-        columns.push(self.add_system_cpu_time_column(&column_view));
-        columns.push(self.add_priority_column(&column_view));
-        columns.push(self.add_swap_column(&column_view));
-        columns.push(self.add_combined_memory_column(&column_view));
-        columns.push(self.add_commandline_column(&column_view));
+        let columns = imp.columns.borrow_mut();
 
         let store = gio::ListStore::new::<ProcessEntry>();
 
@@ -502,6 +487,310 @@ impl ResProcesses {
         *imp.filter_model.borrow_mut() = filter_model;
 
         imp.processes_scrolled_window.set_child(Some(&*column_view));
+    }
+
+    fn setup_columns(&self) {
+        let imp = self.imp();
+        let column_view = imp.column_view.borrow();
+        let mut columns = imp.columns.borrow_mut();
+
+        columns.push(self.add_name_column(&column_view));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Process ID"),
+            property: pid,
+            value_type: i32,
+            min_chars: MAX_PID_LENGTH,
+            sorter: numeric,
+            convert: |v: i32| v.to_string(),
+            settings_show: processes_show_id,
+            settings_connect: connect_processes_show_id,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("User"),
+            property: user,
+            value_type: String,
+            min_chars: 10,
+            sorter: string,
+            convert: |v: String| v,
+            settings_show: processes_show_user,
+            settings_connect: connect_processes_show_user,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Memory"),
+            property: memory_usage,
+            value_type: u64,
+            min_chars: MAX_STORAGE_LENGTH,
+            xalign: 1.0,
+            sorter: numeric,
+            convert: |v: u64| convert_storage(v as f64, false),
+            settings_show: processes_show_memory,
+            settings_connect: connect_processes_show_memory,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Processor"),
+            property: cpu_usage,
+            value_type: f32,
+            min_chars: MAX_PERCENTAGE_LENGTH,
+            xalign: 1.0,
+            sorter: numeric,
+            convert: |v: f32| {
+                let mut percentage = v * 100.0;
+                if !SETTINGS.normalize_cpu_usage() {
+                    percentage *= *NUM_CPUS as f32;
+                }
+                format!("{percentage:.1} %")
+            },
+            settings_show: processes_show_cpu,
+            settings_connect: connect_processes_show_cpu,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Drive Read"),
+            property: read_speed,
+            value_type: f64,
+            min_chars: MAX_SPEED_LENGTH,
+            xalign: 1.0,
+            sorter: numeric,
+            convert: |v: f64| if v == -1.0 { i18n("N/A") } else { convert_speed(v, false) },
+            settings_show: processes_show_drive_read_speed,
+            settings_connect: connect_processes_show_drive_read_speed,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Drive Read Total"),
+            property: read_total,
+            value_type: i64,
+            min_chars: MAX_STORAGE_LENGTH,
+            xalign: 1.0,
+            sorter: numeric,
+            convert: |v: i64| if v == -1 { i18n("N/A") } else { convert_storage(v as f64, false) },
+            settings_show: processes_show_drive_read_total,
+            settings_connect: connect_processes_show_drive_read_total,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Drive Write"),
+            property: write_speed,
+            value_type: f64,
+            min_chars: MAX_SPEED_LENGTH,
+            xalign: 1.0,
+            sorter: numeric,
+            convert: |v: f64| if v == -1.0 { i18n("N/A") } else { convert_speed(v, false) },
+            settings_show: processes_show_drive_write_speed,
+            settings_connect: connect_processes_show_drive_write_speed,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Drive Write Total"),
+            property: write_total,
+            value_type: i64,
+            min_chars: MAX_STORAGE_LENGTH,
+            xalign: 1.0,
+            sorter: numeric,
+            convert: |v: i64| if v == -1 { i18n("N/A") } else { convert_storage(v as f64, false) },
+            settings_show: processes_show_drive_write_total,
+            settings_connect: connect_processes_show_drive_write_total,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("GPU"),
+            property: gpu_usage,
+            value_type: f32,
+            min_chars: MAX_PERCENTAGE_LENGTH,
+            xalign: 1.0,
+            sorter: numeric,
+            convert: |v: f32| format!("{:.1} %", v * 100.0),
+            settings_show: processes_show_gpu,
+            settings_connect: connect_processes_show_gpu,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Video Memory"),
+            property: gpu_mem_usage,
+            value_type: u64,
+            min_chars: MAX_STORAGE_LENGTH,
+            xalign: 1.0,
+            sorter: numeric,
+            convert: |v: u64| convert_storage(v as f64, false),
+            settings_show: processes_show_gpu_memory,
+            settings_connect: connect_processes_show_gpu_memory,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Video Encoder"),
+            property: enc_usage,
+            value_type: f32,
+            min_chars: MAX_PERCENTAGE_LENGTH,
+            xalign: 1.0,
+            sorter: numeric,
+            convert: |v: f32| format!("{:.1} %", v * 100.0),
+            settings_show: processes_show_encoder,
+            settings_connect: connect_processes_show_encoder,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Video Decoder"),
+            property: dec_usage,
+            value_type: f32,
+            min_chars: MAX_PERCENTAGE_LENGTH,
+            xalign: 1.0,
+            sorter: numeric,
+            convert: |v: f32| format!("{:.1} %", v * 100.0),
+            settings_show: processes_show_decoder,
+            settings_connect: connect_processes_show_decoder,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Total CPU Time"),
+            property: total_cpu_time,
+            value_type: f64,
+            min_chars: MAX_TIME_LENGTH,
+            sorter: numeric,
+            convert: |v: f64| format_time(v),
+            settings_show: processes_show_total_cpu_time,
+            settings_connect: connect_processes_show_total_cpu_time,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("User CPU Time"),
+            property: user_cpu_time,
+            value_type: f64,
+            min_chars: MAX_TIME_LENGTH,
+            sorter: numeric,
+            convert: |v: f64| format_time(v),
+            settings_show: processes_show_user_cpu_time,
+            settings_connect: connect_processes_show_user_cpu_time,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("System CPU Time"),
+            property: system_cpu_time,
+            value_type: f64,
+            min_chars: MAX_TIME_LENGTH,
+            sorter: numeric,
+            convert: |v: f64| format_time(v),
+            settings_show: processes_show_system_cpu_time,
+            settings_connect: connect_processes_show_system_cpu_time,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Priority"),
+            property: niceness,
+            value_type: i8,
+            min_chars: *LONGEST_PRIORITY_LABEL,
+            sorter: numeric,
+            convert: |v: i8| {
+                if SETTINGS.detailed_priority() {
+                    v.to_string()
+                } else if let Ok(niceness) = Niceness::try_from(v) {
+                    NICE_TO_LABEL
+                        .get(&niceness)
+                        .map(|(s, _)| s)
+                        .cloned()
+                        .unwrap_or_else(|| i18n("N/A"))
+                } else {
+                    i18n("N/A")
+                }
+            },
+            settings_show: processes_show_priority,
+            settings_connect: connect_processes_show_priority,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Swap"),
+            property: swap_usage,
+            value_type: u64,
+            min_chars: MAX_STORAGE_LENGTH,
+            xalign: 1.0,
+            sorter: numeric,
+            convert: |v: u64| convert_storage(v as f64, false),
+            settings_show: processes_show_swap,
+            settings_connect: connect_processes_show_swap,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Combined Memory"),
+            property: combined_memory_usage,
+            value_type: u64,
+            min_chars: MAX_STORAGE_LENGTH,
+            xalign: 1.0,
+            sorter: numeric,
+            convert: |v: u64| convert_storage(v as f64, false),
+            settings_show: processes_show_combined_memory,
+            settings_connect: connect_processes_show_combined_memory,
+        ));
+
+        columns.push(add_column!(
+            this: self,
+            column_view: column_view,
+            entry_type: ProcessEntry,
+            title: i18n("Commandline"),
+            property: commandline,
+            value_type: String,
+            min_chars: 32,
+            sorter: string,
+            convert: |v: String| v,
+            settings_show: processes_show_commandline,
+            settings_connect: connect_processes_show_commandline,
+        ));
     }
 
     pub fn setup_signals(&self) {
@@ -974,1317 +1263,6 @@ impl ResProcesses {
         column_view.append_column(&name_col);
 
         name_col
-    }
-
-    fn add_pid_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let pid_col_factory = gtk::SignalListItemFactory::new();
-
-        let pid_col =
-            gtk::ColumnViewColumn::new(Some(&i18n("Process ID")), Some(pid_col_factory.clone()));
-
-        pid_col.set_resizable(true);
-
-        pid_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Process ID"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("pid")
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        pid_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let pid_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "pid",
-            ))
-            .build();
-
-        pid_col.set_sorter(Some(&pid_col_sorter));
-        pid_col.set_visible(SETTINGS.processes_show_id());
-
-        column_view.append_column(&pid_col);
-
-        SETTINGS.connect_processes_show_id(clone!(
-            #[weak]
-            pid_col,
-            move |visible| pid_col.set_visible(visible)
-        ));
-
-        pid_col
-    }
-
-    fn add_user_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let user_col_factory = gtk::SignalListItemFactory::new();
-
-        let user_col =
-            gtk::ColumnViewColumn::new(Some(&i18n("User")), Some(user_col_factory.clone()));
-
-        user_col.set_resizable(true);
-
-        user_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("User"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("user")
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        user_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let user_col_sorter = StringSorter::builder()
-            .ignore_case(true)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "user",
-            ))
-            .build();
-
-        user_col.set_sorter(Some(&user_col_sorter));
-        user_col.set_visible(SETTINGS.processes_show_user());
-
-        column_view.append_column(&user_col);
-
-        SETTINGS.connect_processes_show_user(clone!(
-            #[weak]
-            user_col,
-            move |visible| user_col.set_visible(visible)
-        ));
-
-        user_col
-    }
-
-    fn add_memory_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let memory_col_factory = gtk::SignalListItemFactory::new();
-
-        let memory_col =
-            gtk::ColumnViewColumn::new(Some(&i18n("Memory")), Some(memory_col_factory.clone()));
-
-        memory_col.set_resizable(true);
-
-        memory_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(9);
-                row.set_xalign(1.0);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Memory"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("memory_usage")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, memory_usage: u64| {
-                        convert_storage(memory_usage as f64, false)
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        memory_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let memory_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "memory_usage",
-            ))
-            .build();
-
-        memory_col.set_sorter(Some(&memory_col_sorter));
-        memory_col.set_visible(SETTINGS.processes_show_memory());
-
-        column_view.append_column(&memory_col);
-
-        SETTINGS.connect_processes_show_memory(clone!(
-            #[weak]
-            memory_col,
-            move |visible| memory_col.set_visible(visible)
-        ));
-
-        memory_col
-    }
-
-    fn add_cpu_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let cpu_col_factory = gtk::SignalListItemFactory::new();
-
-        let cpu_col =
-            gtk::ColumnViewColumn::new(Some(&i18n("Processor")), Some(cpu_col_factory.clone()));
-
-        cpu_col.set_resizable(true);
-
-        cpu_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(7);
-                row.set_xalign(1.0);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Processor"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("cpu_usage")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, cpu_usage: f32| {
-                        let mut fraction = cpu_usage;
-                        if !SETTINGS.normalize_cpu_usage() {
-                            fraction *= *NUM_CPUS as f32;
-                        }
-
-                        convert_fraction(fraction as f64, false)
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        cpu_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let cpu_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "cpu_usage",
-            ))
-            .build();
-
-        cpu_col.set_sorter(Some(&cpu_col_sorter));
-        cpu_col.set_visible(SETTINGS.processes_show_cpu());
-
-        column_view.append_column(&cpu_col);
-
-        SETTINGS.connect_processes_show_cpu(clone!(
-            #[weak]
-            cpu_col,
-            move |visible| cpu_col.set_visible(visible)
-        ));
-
-        cpu_col
-    }
-
-    fn add_read_speed_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let read_speed_col_factory = gtk::SignalListItemFactory::new();
-
-        let read_speed_col = gtk::ColumnViewColumn::new(
-            Some(&i18n("Drive Read")),
-            Some(read_speed_col_factory.clone()),
-        );
-
-        read_speed_col.set_resizable(true);
-
-        read_speed_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(11);
-                row.set_xalign(1.0);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Drive Read"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("read_speed")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, read_speed: f64| {
-                        if read_speed == -1.0 {
-                            i18n("N/A")
-                        } else {
-                            convert_speed(read_speed, false)
-                        }
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        read_speed_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let read_speed_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "read_speed",
-            ))
-            .build();
-
-        read_speed_col.set_sorter(Some(&read_speed_col_sorter));
-        read_speed_col.set_visible(SETTINGS.processes_show_drive_read_speed());
-
-        column_view.append_column(&read_speed_col);
-
-        SETTINGS.connect_processes_show_drive_read_speed(clone!(
-            #[weak]
-            read_speed_col,
-            move |visible| {
-                read_speed_col.set_visible(visible);
-            }
-        ));
-
-        read_speed_col
-    }
-
-    fn add_read_total_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let read_total_col_factory = gtk::SignalListItemFactory::new();
-
-        let read_total_col = gtk::ColumnViewColumn::new(
-            Some(&i18n("Drive Read Total")),
-            Some(read_total_col_factory.clone()),
-        );
-
-        read_total_col.set_resizable(true);
-
-        read_total_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(9);
-                row.set_xalign(1.0);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Drive Read Total"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("read_total")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, read_total: i64| {
-                        if read_total == -1 {
-                            i18n("N/A")
-                        } else {
-                            convert_storage(read_total as f64, false)
-                        }
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        read_total_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let read_total_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "read_total",
-            ))
-            .build();
-
-        read_total_col.set_sorter(Some(&read_total_col_sorter));
-        read_total_col.set_visible(SETTINGS.processes_show_drive_read_total());
-
-        column_view.append_column(&read_total_col);
-
-        SETTINGS.connect_processes_show_drive_read_total(clone!(
-            #[weak]
-            read_total_col,
-            move |visible| {
-                read_total_col.set_visible(visible);
-            }
-        ));
-
-        read_total_col
-    }
-
-    fn add_write_speed_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let write_speed_col_factory = gtk::SignalListItemFactory::new();
-
-        let write_speed_col = gtk::ColumnViewColumn::new(
-            Some(&i18n("Drive Write")),
-            Some(write_speed_col_factory.clone()),
-        );
-
-        write_speed_col.set_resizable(true);
-
-        write_speed_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(11);
-                row.set_xalign(1.0);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Drive Write"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("write_speed")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, write_speed: f64| {
-                        if write_speed == -1.0 {
-                            i18n("N/A")
-                        } else {
-                            convert_speed(write_speed, false)
-                        }
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        write_speed_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let write_speed_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "write_speed",
-            ))
-            .build();
-
-        write_speed_col.set_sorter(Some(&write_speed_col_sorter));
-        write_speed_col.set_visible(SETTINGS.processes_show_drive_write_speed());
-
-        column_view.append_column(&write_speed_col);
-
-        SETTINGS.connect_processes_show_drive_write_speed(clone!(
-            #[weak]
-            write_speed_col,
-            move |visible| {
-                write_speed_col.set_visible(visible);
-            }
-        ));
-
-        write_speed_col
-    }
-
-    fn add_write_total_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let write_total_col_factory = gtk::SignalListItemFactory::new();
-
-        let write_total_col = gtk::ColumnViewColumn::new(
-            Some(&i18n("Drive Write Total")),
-            Some(write_total_col_factory.clone()),
-        );
-
-        write_total_col.set_resizable(true);
-
-        write_total_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(9);
-                row.set_xalign(1.0);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Drive Write Total"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("write_total")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, write_total: i64| {
-                        if write_total == -1 {
-                            i18n("N/A")
-                        } else {
-                            convert_storage(write_total as f64, false)
-                        }
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        write_total_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let write_total_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "write_total",
-            ))
-            .build();
-
-        write_total_col.set_sorter(Some(&write_total_col_sorter));
-        write_total_col.set_visible(SETTINGS.processes_show_drive_write_total());
-
-        column_view.append_column(&write_total_col);
-
-        SETTINGS.connect_processes_show_drive_write_total(clone!(
-            #[weak]
-            write_total_col,
-            move |visible| {
-                write_total_col.set_visible(visible);
-            }
-        ));
-
-        write_total_col
-    }
-
-    fn add_gpu_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let gpu_col_factory = gtk::SignalListItemFactory::new();
-
-        let gpu_col = gtk::ColumnViewColumn::new(Some(&i18n("GPU")), Some(gpu_col_factory.clone()));
-
-        gpu_col.set_resizable(true);
-
-        gpu_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(7);
-                row.set_xalign(1.0);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("GPU"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("gpu_usage")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, gpu_usage: f32| {
-                        convert_fraction(gpu_usage as f64, false)
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        gpu_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let gpu_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "gpu_usage",
-            ))
-            .build();
-
-        gpu_col.set_sorter(Some(&gpu_col_sorter));
-        gpu_col.set_visible(SETTINGS.processes_show_gpu());
-
-        column_view.append_column(&gpu_col);
-
-        SETTINGS.connect_processes_show_gpu(clone!(
-            #[weak]
-            gpu_col,
-            move |visible| gpu_col.set_visible(visible)
-        ));
-
-        gpu_col
-    }
-
-    fn add_encoder_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let encoder_col_factory = gtk::SignalListItemFactory::new();
-
-        let encoder_col = gtk::ColumnViewColumn::new(
-            Some(&i18n("Video Encoder")),
-            Some(encoder_col_factory.clone()),
-        );
-
-        encoder_col.set_resizable(true);
-
-        encoder_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(7);
-                row.set_xalign(1.0);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Video Encoder"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("enc_usage")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, enc_usage: f32| {
-                        convert_fraction(enc_usage as f64, false)
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        encoder_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let encoder_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "enc_usage",
-            ))
-            .build();
-
-        encoder_col.set_sorter(Some(&encoder_col_sorter));
-        encoder_col.set_visible(SETTINGS.processes_show_encoder());
-
-        column_view.append_column(&encoder_col);
-
-        SETTINGS.connect_processes_show_encoder(clone!(
-            #[weak]
-            encoder_col,
-            move |visible| encoder_col.set_visible(visible)
-        ));
-
-        encoder_col
-    }
-
-    fn add_decoder_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let decoder_col_factory = gtk::SignalListItemFactory::new();
-
-        let decoder_col = gtk::ColumnViewColumn::new(
-            Some(&i18n("Video Decoder")),
-            Some(decoder_col_factory.clone()),
-        );
-
-        decoder_col.set_resizable(true);
-
-        decoder_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(7);
-                row.set_xalign(1.0);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Video Decoder"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("dec_usage")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, dec_usage: f32| {
-                        convert_fraction(dec_usage as f64, false)
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        decoder_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let decoder_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "dec_usage",
-            ))
-            .build();
-
-        decoder_col.set_sorter(Some(&decoder_col_sorter));
-        decoder_col.set_visible(SETTINGS.processes_show_decoder());
-
-        column_view.append_column(&decoder_col);
-
-        SETTINGS.connect_processes_show_decoder(clone!(
-            #[weak]
-            decoder_col,
-            move |visible| decoder_col.set_visible(visible)
-        ));
-
-        decoder_col
-    }
-
-    fn add_gpu_mem_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let gpu_mem_col_factory = gtk::SignalListItemFactory::new();
-
-        let gpu_mem_col = gtk::ColumnViewColumn::new(
-            Some(&i18n("Video Memory")),
-            Some(gpu_mem_col_factory.clone()),
-        );
-
-        gpu_mem_col.set_resizable(true);
-
-        gpu_mem_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(9);
-                row.set_xalign(1.0);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Video Memory"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("gpu_mem_usage")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, gpu_mem: u64| {
-                        convert_storage(gpu_mem as f64, false)
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        gpu_mem_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let gpu_mem_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "gpu_mem_usage",
-            ))
-            .build();
-
-        gpu_mem_col.set_sorter(Some(&gpu_mem_col_sorter));
-        gpu_mem_col.set_visible(SETTINGS.processes_show_gpu_memory());
-
-        column_view.append_column(&gpu_mem_col);
-
-        SETTINGS.connect_processes_show_gpu_memory(clone!(
-            #[weak]
-            gpu_mem_col,
-            move |visible| gpu_mem_col.set_visible(visible)
-        ));
-
-        gpu_mem_col
-    }
-
-    fn add_total_cpu_time_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let total_cpu_time_col_factory = gtk::SignalListItemFactory::new();
-
-        let total_cpu_time_col = gtk::ColumnViewColumn::new(
-            Some(&i18n("Total CPU Time")),
-            Some(total_cpu_time_col_factory.clone()),
-        );
-
-        total_cpu_time_col.set_resizable(true);
-
-        total_cpu_time_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(9);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Total CPU Time"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("total_cpu_time")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, total_cpu_time: f64| {
-                        format_time(total_cpu_time)
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        total_cpu_time_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let total_cpu_time_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "total_cpu_time",
-            ))
-            .build();
-
-        total_cpu_time_col.set_sorter(Some(&total_cpu_time_col_sorter));
-        total_cpu_time_col.set_visible(SETTINGS.processes_show_total_cpu_time());
-
-        column_view.append_column(&total_cpu_time_col);
-
-        SETTINGS.connect_processes_show_total_cpu_time(clone!(
-            #[weak]
-            total_cpu_time_col,
-            move |visible| total_cpu_time_col.set_visible(visible)
-        ));
-
-        total_cpu_time_col
-    }
-
-    fn add_user_cpu_time_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let user_cpu_time_col_factory = gtk::SignalListItemFactory::new();
-
-        let user_cpu_time_col = gtk::ColumnViewColumn::new(
-            Some(&i18n("User CPU Time")),
-            Some(user_cpu_time_col_factory.clone()),
-        );
-
-        user_cpu_time_col.set_resizable(true);
-
-        user_cpu_time_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(9);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("User CPU Time"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("user_cpu_time")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, user_cpu_time: f64| {
-                        format_time(user_cpu_time)
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        user_cpu_time_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let user_cpu_time_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "user_cpu_time",
-            ))
-            .build();
-
-        user_cpu_time_col.set_sorter(Some(&user_cpu_time_col_sorter));
-        user_cpu_time_col.set_visible(SETTINGS.processes_show_user_cpu_time());
-
-        column_view.append_column(&user_cpu_time_col);
-
-        SETTINGS.connect_processes_show_user_cpu_time(clone!(
-            #[weak]
-            user_cpu_time_col,
-            move |visible| user_cpu_time_col.set_visible(visible)
-        ));
-
-        user_cpu_time_col
-    }
-
-    fn add_system_cpu_time_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let system_cpu_time_col_factory = gtk::SignalListItemFactory::new();
-
-        let system_cpu_time_col = gtk::ColumnViewColumn::new(
-            Some(&i18n("System CPU Time")),
-            Some(system_cpu_time_col_factory.clone()),
-        );
-
-        system_cpu_time_col.set_resizable(true);
-
-        system_cpu_time_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(9);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("System CPU Time"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("system_cpu_time")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, system_cpu_time: f64| {
-                        format_time(system_cpu_time)
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        system_cpu_time_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let system_cpu_time_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "system_cpu_time",
-            ))
-            .build();
-
-        system_cpu_time_col.set_sorter(Some(&system_cpu_time_col_sorter));
-        system_cpu_time_col.set_visible(SETTINGS.processes_show_system_cpu_time());
-
-        column_view.append_column(&system_cpu_time_col);
-
-        SETTINGS.connect_processes_show_system_cpu_time(clone!(
-            #[weak]
-            system_cpu_time_col,
-            move |visible| system_cpu_time_col.set_visible(visible)
-        ));
-
-        system_cpu_time_col
-    }
-
-    fn add_priority_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let priority_col_factory = gtk::SignalListItemFactory::new();
-
-        let priority_col =
-            gtk::ColumnViewColumn::new(Some(&i18n("Priority")), Some(priority_col_factory.clone()));
-
-        priority_col.set_resizable(true);
-
-        priority_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(*LONGEST_PRIORITY_LABEL);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Priority"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("niceness")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, niceness: i8| {
-                        if SETTINGS.detailed_priority() {
-                            niceness.to_string()
-                        } else if let Ok(niceness) = Niceness::try_from(niceness) {
-                            NICE_TO_LABEL
-                                .get(&niceness)
-                                .map(|(s, _)| s)
-                                .cloned()
-                                .unwrap_or_else(|| i18n("N/A"))
-                        } else {
-                            i18n("N/A")
-                        }
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        priority_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let priority_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "niceness",
-            ))
-            .build();
-
-        priority_col.set_sorter(Some(&priority_col_sorter));
-        priority_col.set_visible(SETTINGS.processes_show_priority());
-
-        column_view.append_column(&priority_col);
-
-        SETTINGS.connect_processes_show_priority(clone!(
-            #[weak]
-            priority_col,
-            move |visible| priority_col.set_visible(visible)
-        ));
-
-        priority_col
-    }
-
-    fn add_swap_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let swap_col_factory = gtk::SignalListItemFactory::new();
-
-        let swap_col =
-            gtk::ColumnViewColumn::new(Some(&i18n("Swap")), Some(swap_col_factory.clone()));
-
-        swap_col.set_resizable(true);
-
-        swap_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(9);
-                row.set_xalign(1.0);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Swap"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("swap_usage")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, swap_usage: u64| {
-                        convert_storage(swap_usage as f64, false)
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        swap_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let swap_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "swap_usage",
-            ))
-            .build();
-
-        swap_col.set_sorter(Some(&swap_col_sorter));
-        swap_col.set_visible(SETTINGS.processes_show_swap());
-
-        column_view.append_column(&swap_col);
-
-        SETTINGS.connect_processes_show_swap(clone!(
-            #[weak]
-            swap_col,
-            move |visible| swap_col.set_visible(visible)
-        ));
-
-        swap_col
-    }
-
-    fn add_combined_memory_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let combined_memory_col_factory = gtk::SignalListItemFactory::new();
-
-        let combined_memory_col = gtk::ColumnViewColumn::new(
-            Some(&i18n("Combined Memory")),
-            Some(combined_memory_col_factory.clone()),
-        );
-
-        combined_memory_col.set_resizable(true);
-
-        combined_memory_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(9);
-                row.set_xalign(1.0);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Combined Memory"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("combined_memory_usage")
-                    .chain_closure::<String>(closure!(|_: Option<Object>, swap_usage: u64| {
-                        convert_storage(swap_usage as f64, false)
-                    }))
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        combined_memory_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let combined_memory_col_sorter = NumericSorter::builder()
-            .sort_order(SortType::Ascending)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "combined_memory_usage",
-            ))
-            .build();
-
-        combined_memory_col.set_sorter(Some(&combined_memory_col_sorter));
-        combined_memory_col.set_visible(SETTINGS.processes_show_combined_memory());
-
-        column_view.append_column(&combined_memory_col);
-
-        SETTINGS.connect_processes_show_combined_memory(clone!(
-            #[weak]
-            combined_memory_col,
-            move |visible| combined_memory_col.set_visible(visible)
-        ));
-
-        combined_memory_col
-    }
-
-    fn add_commandline_column(&self, column_view: &ColumnView) -> ColumnViewColumn {
-        let commandline_col_factory = gtk::SignalListItemFactory::new();
-
-        let commandline_col = gtk::ColumnViewColumn::new(
-            Some(&i18n("Commandline")),
-            Some(commandline_col_factory.clone()),
-        );
-
-        commandline_col.set_resizable(true);
-
-        commandline_col_factory.connect_setup(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |_factory, item| {
-                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-
-                let row = gtk::Inscription::new(None);
-                row.set_min_chars(32);
-
-                row.connect_text_notify(|inscription| {
-                    inscription.update_property(&[Property::Label(&format!(
-                        "{}: {}",
-                        i18n("Commandline"),
-                        inscription.text().unwrap_or_default()
-                    ))]);
-                });
-
-                item.set_child(Some(&row));
-
-                item.property_expression("item")
-                    .chain_property::<ProcessEntry>("commandline")
-                    .bind(&row, "text", Widget::NONE);
-
-                this.add_gestures(item);
-            }
-        ));
-
-        commandline_col_factory.connect_teardown(move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            item.set_child(None::<&gtk::Inscription>);
-        });
-
-        let commandline_col_sorter = StringSorter::builder()
-            .ignore_case(true)
-            .expression(gtk::PropertyExpression::new(
-                ProcessEntry::static_type(),
-                None::<&gtk::Expression>,
-                "commandline",
-            ))
-            .build();
-
-        commandline_col.set_sorter(Some(&commandline_col_sorter));
-        commandline_col.set_visible(SETTINGS.processes_show_commandline());
-
-        column_view.append_column(&commandline_col);
-
-        SETTINGS.connect_processes_show_commandline(clone!(
-            #[weak]
-            commandline_col,
-            move |visible| commandline_col.set_visible(visible)
-        ));
-
-        commandline_col
     }
 }
 
