@@ -1,5 +1,6 @@
 use crate::utils::drive::UsbSlot;
 use crate::utils::link::LinkData;
+use crate::utils::read_parsed;
 use crate::utils::units::convert_speed_bits_decimal_with_places;
 use anyhow::{Context, Error, anyhow};
 use log::trace;
@@ -27,12 +28,12 @@ impl LinkData<UsbSpeed> {
         let usb_bus_path =
             Path::new("/sys/bus/usb/devices/").join(format!("usb{}", usb_slot.usb_bus));
 
-        let max_usb_port_speed_raw = std::fs::read_to_string(usb_bus_path.join("speed"))
+        let max_usb_port_speed_raw = read_parsed::<String>(usb_bus_path.join("speed"))
             .map(|x| x.trim().to_string())
             .context("Could not read usb port speed");
 
         let usb_device_speed =
-            std::fs::read_to_string(usb_bus_path.join(&usb_slot.usb_device).join("speed"))
+            read_parsed::<String>(usb_bus_path.join(&usb_slot.usb_device).join("speed"))
                 .map(|x| x.trim().to_string())
                 .context("Could not read usb device speed")?;
 

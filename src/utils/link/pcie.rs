@@ -1,4 +1,5 @@
 use crate::utils::link::LinkData;
+use crate::utils::read_parsed;
 use anyhow::{Context, Error, anyhow, bail};
 use log::trace;
 use process_data::pci_slot::PciSlot;
@@ -38,20 +39,20 @@ impl LinkData<PcieLinkData> {
         let path = path.as_ref();
         trace!("Reading PCIe link data for {path:?}…");
 
-        let current_pcie_speed_raw = std::fs::read_to_string(path.join("current_link_speed"))
+        let current_pcie_speed_raw = read_parsed::<String>(path.join("current_link_speed"))
             .map(|x| x.trim().to_string())
             .context("Could not read current link speed")?;
 
-        let current_pcie_width_raw = std::fs::read_to_string(path.join("current_link_width"))
+        let current_pcie_width_raw = read_parsed::<String>(path.join("current_link_width"))
             .map(|x| x.trim().to_string())
             .context("Could not read current link width")?;
 
         //Consider max values as optional
-        let max_pcie_speed_raw = std::fs::read_to_string(path.join("max_link_speed"))
+        let max_pcie_speed_raw = read_parsed::<String>(path.join("max_link_speed"))
             .map(|x| x.trim().to_string())
             .context("Could not read max link speed");
 
-        let max_pcie_width_raw = std::fs::read_to_string(path.join("max_link_width"))
+        let max_pcie_width_raw = read_parsed::<String>(path.join("max_link_width"))
             .map(|x| x.trim().to_string())
             .context("Could not read max link width");
 
