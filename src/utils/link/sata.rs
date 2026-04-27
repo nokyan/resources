@@ -1,6 +1,7 @@
 use crate::utils::drive::AtaSlot;
 use crate::utils::link::LinkData;
 use crate::utils::link::sata::SataSpeed::{Sata150, Sata300, Sata600};
+use crate::utils::read_parsed;
 use anyhow::{Context, Error, anyhow};
 use log::trace;
 use std::fmt::{Display, Formatter};
@@ -21,11 +22,11 @@ impl LinkData<SataSpeed> {
         let ata_link_path =
             Path::new("/sys/class/ata_link").join(format!("link{}", ata_slot.ata_link));
 
-        let current_sata_speed_raw = std::fs::read_to_string(ata_link_path.join("sata_spd"))
+        let current_sata_speed_raw = read_parsed::<String>(ata_link_path.join("sata_spd"))
             .map(|x| x.trim().to_string())
             .context("Could not read sata_spd")?;
 
-        let max_sata_speed_raw = std::fs::read_to_string(ata_link_path.join("sata_spd_max"))
+        let max_sata_speed_raw = read_parsed::<String>(ata_link_path.join("sata_spd_max"))
             .map(|x| x.trim().to_string())
             .context("Could not read sata_spd_max");
 
