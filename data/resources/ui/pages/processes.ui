@@ -88,10 +88,12 @@
     <object class="GtkPopoverMenu" id="popover_menu">
       <property name="name">popover_menu</property>
       <property name="menu-model">process_context_menu</property>
+      <property name="has-arrow">false</property>
     </object>
     <object class="GtkPopoverMenu" id="popover_menu_multiple">
       <property name="name">popover_menu_multiple</property>
       <property name="menu-model">process_context_menu_multiple</property>
+      <property name="has-arrow">false</property>
     </object>
     <property name="child">
       <object class="AdwToolbarView">
