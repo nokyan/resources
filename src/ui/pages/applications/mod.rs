@@ -983,7 +983,7 @@ fn get_action_name(action: ProcessAction, name: &str) -> String {
 
 fn get_action_warning(action: ProcessAction) -> String {
     match action {
-        ProcessAction::TERM => i18n("Unsaved work might be lost."),
+        ProcessAction::TERM => i18n("Unsaved work might be lost"),
         ProcessAction::STOP => i18n(
             "Halting an app can come with serious risks such as losing data and security implications. Use with caution.",
         ),
