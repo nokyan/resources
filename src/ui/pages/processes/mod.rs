@@ -99,6 +99,8 @@ mod imp {
         #[template_child]
         pub end_process_button: TemplateChild<adw::SplitButton>,
         #[template_child]
+        pub toolbar_view: TemplateChild<adw::ToolbarView>,
+        #[template_child]
         pub end_process_menu: TemplateChild<gio::MenuModel>,
         #[template_child]
         pub end_process_menu_multiple: TemplateChild<gio::MenuModel>,
@@ -164,6 +166,7 @@ mod imp {
                 options_button: Default::default(),
                 information_button: Default::default(),
                 end_process_button: Default::default(),
+                toolbar_view: Default::default(),
                 end_process_menu: Default::default(),
                 end_process_menu_multiple: Default::default(),
                 store: gio::ListStore::new::<ProcessEntry>().into(),
@@ -802,15 +805,19 @@ impl ResProcesses {
         imp.selection_model
             .borrow()
             .connect_selection_changed(clone!(
-                #[weak(rename_to = this)]
-                self,
+                #[weak]
+                imp,
                 move |model, _, _| {
-                    let imp = this.imp();
                     let bitset = model.selection();
 
-                    imp.information_button.set_sensitive(bitset.size() == 1);
-                    imp.options_button.set_sensitive(bitset.size() == 1);
-                    imp.end_process_button.set_sensitive(bitset.size() > 0);
+                    let one_selected = bitset.size() == 1;
+                    let multiple_selected = bitset.size() > 0;
+
+                    imp.toolbar_view.set_reveal_bottom_bars(multiple_selected);
+
+                    imp.information_button.set_sensitive(one_selected);
+                    imp.options_button.set_sensitive(one_selected);
+                    imp.end_process_button.set_sensitive(multiple_selected);
 
                     if bitset.size() <= 1 {
                         imp.end_process_button.set_label(&i18n("End Process"));
@@ -828,10 +835,9 @@ impl ResProcesses {
             .set_key_capture_widget(self.parent().as_ref());
 
         imp.search_entry.connect_search_changed(clone!(
-            #[strong(rename_to = this)]
-            self,
+            #[weak]
+            imp,
             move |_| {
-                let imp = this.imp();
                 if let Some(filter) = imp.filter_model.borrow().filter() {
                     filter.changed(FilterChange::Different);
                 }
@@ -897,8 +903,8 @@ impl ResProcesses {
 
         if let Some(column_view_sorter) = imp.column_view.borrow().sorter() {
             column_view_sorter.connect_changed(clone!(
-                #[weak(rename_to = this)]
-                self,
+                #[weak]
+                imp,
                 move |sorter, _| {
                     if let Some(sorter) = sorter.downcast_ref::<gtk::ColumnViewSorter>() {
                         let current_column = sorter
@@ -906,8 +912,7 @@ impl ResProcesses {
                             .map(|column| column.as_ptr() as usize)
                             .unwrap_or_default();
 
-                        let current_column_number = this
-                            .imp()
+                        let current_column_number = imp
                             .columns
                             .borrow()
                             .iter()
