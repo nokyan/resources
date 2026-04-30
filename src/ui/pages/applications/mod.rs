@@ -834,6 +834,12 @@ impl ResApplications {
             sorter.changed(gtk::SorterChange::Different);
         }
 
+        if imp.selection_model.borrow().selection().size() == 0 {
+            imp.toolbar_view.set_reveal_bottom_bars(false);
+            imp.information_button.set_sensitive(false);
+            imp.end_application_button.set_sensitive(false);
+        }
+
         // -1 because we don't want to count System Processes
         self.set_tab_usage_string(i18n_f(
             "Running Apps: {}",

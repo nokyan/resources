@@ -1114,6 +1114,13 @@ impl ResProcesses {
             sorter.changed(gtk::SorterChange::Different);
         }
 
+        if imp.selection_model.borrow().selection().size() == 0 {
+            imp.toolbar_view.set_reveal_bottom_bars(false);
+            imp.information_button.set_sensitive(false);
+            imp.options_button.set_sensitive(false);
+            imp.end_process_button.set_sensitive(false);
+        }
+
         self.set_tab_usage_string(i18n_f(
             "Running Processes: {}",
             &[&(store.n_items()).to_string()],
