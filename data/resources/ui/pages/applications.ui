@@ -86,9 +86,9 @@
               <object class="GtkButton" id="information_button">
                 <property name="icon-name">info-symbolic</property>
                 <property name="sensitive">false</property>
-                <property name="tooltip-text" translatable="yes">Show App Information</property>
+                <property name="tooltip-text" translatable="yes">App Information</property>
                 <accessibility>
-                  <property name="label" translatable="yes">Show App Information</property>
+                  <property name="label" translatable="yes">App Information</property>
                 </accessibility>
                 <style>
                   <class name="circular"/>

@@ -133,9 +133,9 @@
               <object class="GtkButton" id="options_button">
                 <property name="icon-name">options-symbolic</property>
                 <property name="sensitive">false</property>
-                <property name="tooltip-text" translatable="yes">Show Process Options</property>
+                <property name="tooltip-text" translatable="yes">Process Options</property>
                 <accessibility>
-                  <property name="label" translatable="yes">Show Process Options</property>
+                  <property name="label" translatable="yes">Process Options</property>
                 </accessibility>
                 <style>
                   <class name="circular"/>
@@ -146,9 +146,9 @@
               <object class="GtkButton" id="information_button">
                 <property name="icon-name">info-symbolic</property>
                 <property name="sensitive">false</property>
-                <property name="tooltip-text" translatable="yes">Show Process Information</property>
+                <property name="tooltip-text" translatable="yes">Process Information</property>
                 <accessibility>
-                  <property name="label" translatable="yes">Show Process Information</property>
+                  <property name="label" translatable="yes">Process Information</property>
                 </accessibility>
                 <style>
                   <class name="circular"/>
