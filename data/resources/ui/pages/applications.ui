@@ -46,9 +46,11 @@
     <object class="GtkPopoverMenu" id="popover_menu">
       <property name="name">popover_menu</property>
       <property name="menu-model">app_context_menu</property>
+      <property name="has-arrow">false</property>
+      <property name="halign">start</property>
     </object>
     <property name="child">
-      <object class="AdwToolbarView">
+      <object class="AdwToolbarView" id="toolbar_view">
         <child type="top">
           <object class="GtkSearchBar" id="search_bar">
             <property name="child">
@@ -71,6 +73,7 @@
             </child>
           </object>
         </property>
+        <property name="reveal-bottom-bars">false</property>
         <child type="bottom">
           <object class="GtkBox">
             <property name="margin-top">16</property>
@@ -84,9 +87,9 @@
               <object class="GtkButton" id="information_button">
                 <property name="icon-name">info-symbolic</property>
                 <property name="sensitive">false</property>
-                <property name="tooltip-text" translatable="yes">Show App Information</property>
+                <property name="tooltip-text" translatable="yes">App Information</property>
                 <accessibility>
-                  <property name="label" translatable="yes">Show App Information</property>
+                  <property name="label" translatable="yes">App Information</property>
                 </accessibility>
                 <style>
                   <class name="circular"/>

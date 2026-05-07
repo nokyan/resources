@@ -33,7 +33,7 @@ mod imp {
         #[template_child]
         pub priority_row: TemplateChild<adw::ComboRow>,
         #[template_child]
-        pub affinity_row: TemplateChild<adw::ExpanderRow>,
+        pub affinity_group: TemplateChild<adw::PreferencesGroup>,
         #[template_child]
         pub select_all_button: TemplateChild<gtk::Button>,
 
@@ -160,7 +160,7 @@ impl ResProcessOptionsDialog {
                 }
             ));
 
-            imp.affinity_row.add_row(&switch_row);
+            imp.affinity_group.add(&switch_row);
 
             imp.cpu_rows.borrow_mut().push(switch_row);
         }

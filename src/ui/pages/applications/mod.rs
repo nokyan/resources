@@ -64,6 +64,8 @@ mod imp {
         pub information_button: TemplateChild<gtk::Button>,
         #[template_child]
         pub end_application_button: TemplateChild<adw::SplitButton>,
+        #[template_child]
+        pub toolbar_view: TemplateChild<adw::ToolbarView>,
 
         pub store: RefCell<gio::ListStore>,
         pub selection_model: RefCell<gtk::SingleSelection>,
@@ -129,6 +131,7 @@ mod imp {
                 sender: Default::default(),
                 applications_scrolled_window: Default::default(),
                 end_application_button: Default::default(),
+                toolbar_view: Default::default(),
                 uses_progress_bar: Cell::new(false),
                 icon: RefCell::new(ThemedIcon::new("app-symbolic").into()),
                 tab_name: Cell::from(glib::GString::from(i18n("Apps"))),
@@ -344,8 +347,8 @@ impl ResApplications {
                     popover_menu.set_pointing_to(Some(&gtk::gdk::Rectangle::new(
                         position.x().round() as i32,
                         position.y().round() as i32,
-                        1,
-                        1,
+                        0,
+                        0,
                     )));
 
                     popover_menu.popup();
@@ -595,10 +598,12 @@ impl ResApplications {
         imp.selection_model
             .borrow()
             .connect_selection_changed(clone!(
-                #[weak(rename_to = this)]
-                self,
+                #[weak]
+                imp,
                 move |model, _, _| {
-                    let imp = this.imp();
+                    imp.toolbar_view
+                        .set_reveal_bottom_bars(model.selected_item().is_some());
+
                     let is_system_processes = model.selected_item().is_some_and(|object| {
                         object
                             .downcast::<ApplicationEntry>()
@@ -606,6 +611,7 @@ impl ResApplications {
                             .id()
                             .is_none()
                     });
+
                     imp.information_button
                         .set_sensitive(model.selected() != u32::MAX);
                     imp.end_application_button
@@ -617,10 +623,9 @@ impl ResApplications {
             .set_key_capture_widget(self.parent().as_ref());
 
         imp.search_entry.connect_search_changed(clone!(
-            #[strong(rename_to = this)]
-            self,
+            #[weak]
+            imp,
             move |_| {
-                let imp = this.imp();
                 if let Some(filter) = imp.filter_model.borrow().filter() {
                     filter.changed(FilterChange::Different);
                 }
@@ -667,8 +672,8 @@ impl ResApplications {
 
         if let Some(column_view_sorter) = imp.column_view.borrow().sorter() {
             column_view_sorter.connect_changed(clone!(
-                #[weak(rename_to = this)]
-                self,
+                #[weak]
+                imp,
                 move |sorter, _| {
                     if let Some(sorter) = sorter.downcast_ref::<gtk::ColumnViewSorter>() {
                         let current_column = sorter
@@ -676,8 +681,7 @@ impl ResApplications {
                             .map(|column| column.as_ptr() as usize)
                             .unwrap_or_default();
 
-                        let current_column_number = this
-                            .imp()
+                        let current_column_number = imp
                             .columns
                             .borrow()
                             .iter()
@@ -828,6 +832,12 @@ impl ResApplications {
 
         if let Some(sorter) = imp.column_view.borrow().sorter() {
             sorter.changed(gtk::SorterChange::Different);
+        }
+
+        if imp.selection_model.borrow().selection().size() == 0 {
+            imp.toolbar_view.set_reveal_bottom_bars(false);
+            imp.information_button.set_sensitive(false);
+            imp.end_application_button.set_sensitive(false);
         }
 
         // -1 because we don't want to count System Processes
@@ -983,7 +993,7 @@ fn get_action_name(action: ProcessAction, name: &str) -> String {
 
 fn get_action_warning(action: ProcessAction) -> String {
     match action {
-        ProcessAction::TERM => i18n("Unsaved work might be lost."),
+        ProcessAction::TERM => i18n("Unsaved work might be lost"),
         ProcessAction::STOP => i18n(
             "Halting an app can come with serious risks such as losing data and security implications. Use with caution.",
         ),
