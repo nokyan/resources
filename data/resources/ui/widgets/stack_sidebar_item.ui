@@ -9,61 +9,68 @@
     <property name="margin-start">8</property>
     <property name="margin-end">8</property>
     <property name="child">
-      <object class="GtkBox">
-        <property name="orientation">vertical</property>
-        <property name="spacing">4</property>
+      <object class="GtkOverlay">
+        <property name="visible">1</property>
         <child>
           <object class="GtkBox">
-            <property name="orientation">horizontal</property>
-            <property name="spacing">12</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">4</property>
             <child>
-              <object class="GtkImage" id="image">
-                <property name="pixel-size">16</property>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">12</property>
+                <child>
+                  <object class="GtkImage" id="image">
+                    <property name="pixel-size">16</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label">
+                    <property name="xalign">0</property>
+                    <property name="hexpand">1</property>
+                    <property name="ellipsize">end</property>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
-              <object class="GtkLabel" id="label">
+              <object class="GtkLabel" id="detail_label">
                 <property name="xalign">0</property>
                 <property name="hexpand">1</property>
                 <property name="ellipsize">end</property>
+                <style>
+                  <class name="caption"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkProgressBar" id="progress_bar">
+                <style>
+                  <class name="slim"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="ResGraph" id="graph">
+                <style>
+                  <class name="small-graph"/>
+                </style>
+                <property name="overflow">hidden</property>
+                <property name="height-request">80</property>
               </object>
             </child>
           </object>
         </child>
-        <child>
-          <object class="GtkLabel" id="detail_label">
-            <property name="xalign">0</property>
-            <property name="hexpand">1</property>
-            <property name="ellipsize">end</property>
-            <style>
-              <class name="caption"/>
-            </style>
-          </object>
-        </child>
-        <child>
+        <child type="overlay">
           <object class="GtkLabel" id="usage_label">
+            <property name="valign">end</property>
+            <property name="halign">end</property>
             <property name="xalign">0</property>
             <property name="hexpand">1</property>
             <property name="ellipsize">end</property>
             <style>
               <class name="subtitle"/>
             </style>
-          </object>
-        </child>
-        <child>
-          <object class="GtkProgressBar" id="progress_bar">
-            <style>
-              <class name="slim"/>
-            </style>
-          </object>
-        </child>
-        <child>
-          <object class="ResGraph" id="graph">
-            <style>
-              <class name="small-graph"/>
-            </style>
-            <property name="overflow">hidden</property>
-            <property name="height-request">80</property>
           </object>
         </child>
       </object>
