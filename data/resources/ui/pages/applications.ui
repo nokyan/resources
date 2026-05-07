@@ -47,6 +47,7 @@
       <property name="name">popover_menu</property>
       <property name="menu-model">app_context_menu</property>
       <property name="has-arrow">false</property>
+      <property name="halign">start</property>
     </object>
     <property name="child">
       <object class="AdwToolbarView" id="toolbar_view">

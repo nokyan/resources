@@ -347,8 +347,8 @@ impl ResApplications {
                     popover_menu.set_pointing_to(Some(&gtk::gdk::Rectangle::new(
                         position.x().round() as i32,
                         position.y().round() as i32,
-                        1,
-                        1,
+                        0,
+                        0,
                     )));
 
                     popover_menu.popup();
