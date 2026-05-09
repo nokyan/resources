@@ -52,6 +52,10 @@ pub struct Args {
     #[arg(short = 'p', long, default_value_t = false)]
     pub disable_process_monitoring: bool,
 
+    /// Do not pause graphical updates when the application is suspended
+    #[arg(short = 's', long, default_value_t = false)]
+    pub no_suspend_pause: bool,
+
     /// Open tab specified by ID.
     /// Valid IDs are: "applications", "processes", "cpu", "memory", "gpu-$PCI_SLOT$",
     /// "drive-$MODEL_NAME_OR_DEVICE_NAME$", "network-$INTERFACE_NAME$",

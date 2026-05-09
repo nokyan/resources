@@ -213,7 +213,9 @@ impl ResGraph {
     }
 
     pub fn queue_draw_if_not_suspended(&self) {
-        if Application::try_default()
+        if crate::gui::ARGS.no_suspend_pause {
+            self.imp().obj().queue_draw();
+        } else if Application::try_default()
             .and_then(|app| app.try_main_window())
             .map(|main_window| main_window.is_suspended())
             .unwrap_or_default()
