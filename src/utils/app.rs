@@ -7,8 +7,9 @@ use std::{
 
 use anyhow::{Context, Result, bail};
 use gtk::{
-    gio::{File, FileIcon, Icon, ThemedIcon},
+    gio::{DesktopAppInfo, Icon, ThemedIcon},
     glib::GString,
+    prelude::AppInfoExt,
 };
 use lazy_regex::{Lazy, Regex, lazy_regex};
 use log::{debug, info, trace};
@@ -18,7 +19,7 @@ use process_data::{
     pci_slot::PciSlot,
 };
 
-use crate::{i18n::i18n, utils::read_parsed};
+use crate::i18n::i18n;
 
 use futures::future::{FutureExt, LocalBoxFuture, Shared};
 
@@ -127,45 +128,6 @@ static KNOWN_EXECUTABLE_NAME_EXCEPTIONS: LazyLock<HashMap<&'static str, &'static
         ])
     });
 
-static MESSAGE_LOCALES: LazyLock<Vec<String>> = LazyLock::new(|| {
-    let envs = ["LC_MESSAGES", "LANGUAGE", "LANG", "LC_ALL"];
-    let mut return_vec: Vec<String> = Vec::new();
-
-    for env in &envs {
-        if let Ok(locales) = std::env::var(env) {
-            // split because LANGUAGE may contain multiple languages
-            for locale in locales.split(':') {
-                let locale = locale.to_string();
-
-                if !return_vec.contains(&locale) {
-                    return_vec.push(locale.clone());
-                }
-
-                if let Some(no_character_encoding) = locale.split_once('.') {
-                    let no_character_encoding = no_character_encoding.0.to_string();
-                    if !return_vec.contains(&no_character_encoding) {
-                        return_vec.push(no_character_encoding);
-                    }
-                }
-
-                if let Some(no_country_code) = locale.split_once('_') {
-                    let no_country_code = no_country_code.0.to_string();
-                    if !return_vec.contains(&no_country_code) {
-                        return_vec.push(no_country_code);
-                    }
-                }
-            }
-        }
-    }
-
-    debug!(
-        "Using the following locales for app names and descriptions: {:?}",
-        &return_vec
-    );
-
-    return_vec
-});
-
 /// Future that resolves to an optional app ID once deferred association completes.
 type DeferredAppFuture = Shared<LocalBoxFuture<'static, Option<String>>>;
 
@@ -250,16 +212,17 @@ impl App {
     pub fn from_desktop_file<P: AsRef<Path>>(file_path: P) -> Result<App> {
         let file_path = file_path.as_ref();
 
-        let ini = ini::Ini::load_from_str(&read_parsed::<String>(file_path)?)?;
-
-        let desktop_entry = ini
-            .section(Some("Desktop Entry"))
-            .context("no desktop entry section")?;
+        let desktop_entry = DesktopAppInfo::from_filename(file_path).with_context(|| {
+            format!(
+                "unable to load desktop app info from {}",
+                file_path.to_string_lossy()
+            )
+        })?;
 
         let id = desktop_entry
-            .get("X-Flatpak") // is there a X-Flatpak section?
-            .or_else(|| desktop_entry.get("X-AppImage-Identifier")) // or maybe a X-AppImageIdentifier
-            .map(str::to_string)
+            .string("X-Flatpak") // is there a X-Flatpak section?
+            .or_else(|| desktop_entry.string("X-AppImage-Identifier")) // or maybe a X-AppImageIdentifier
+            .map(String::from)
             .or_else(|| {
                 // if not, presume that the ID is in the file name
                 Some(file_path.file_stem()?.to_string_lossy().to_string())
@@ -273,10 +236,13 @@ impl App {
         }
 
         let exec = desktop_entry
-            .get("X-ExecLocation") // appimaged adds this entry that points to the original AppImage path
-            .or(desktop_entry.get("Exec"));
-        let is_flatpak = exec.is_some_and(|exec| exec.starts_with("/usr/bin/flatpak run"));
+            .string("X-ExecLocation") // appimaged adds this entry that points to the original AppImage path
+            .or_else(|| desktop_entry.string("Exec"));
+        let is_flatpak = exec
+            .as_deref()
+            .is_some_and(|exec| exec.starts_with("/usr/bin/flatpak run"));
         let commandline = exec
+            .as_deref()
             .and_then(|exec| {
                 RE_ENV_FILTER
                     .captures(exec)
@@ -308,44 +274,21 @@ impl App {
             }
         }
 
-        let icon = if let Some(desktop_icon) = desktop_entry.get("Icon") {
-            if Path::new(&format_path(desktop_icon)).exists() {
-                FileIcon::new(&File::for_path(desktop_icon)).into()
-            } else {
-                ThemedIcon::new(desktop_icon).into()
-            }
-        } else {
-            ThemedIcon::new("generic-process").into()
-        };
+        let icon = desktop_entry
+            .icon()
+            .unwrap_or_else(|| ThemedIcon::new("generic-process").into());
 
-        let mut display_name_opt = None;
-        let mut description_opt = None;
-
-        for locale in MESSAGE_LOCALES.iter() {
-            if let Some(name) = desktop_entry.get(format!("Name[{locale}]")) {
-                display_name_opt = Some(name);
-                break;
-            }
-        }
-
-        for locale in MESSAGE_LOCALES.iter() {
-            if let Some(comment) = desktop_entry.get(format!("Comment[{locale}]")) {
-                description_opt = Some(comment);
-                break;
-            }
-        }
-
-        let display_name = display_name_opt
-            .or_else(|| desktop_entry.get("Name"))
+        // like desktop_entry.name(), but with custom fallback instead of "Unnamed"
+        let display_name = desktop_entry
+            .locale_string("Name")
+            .as_deref()
             .unwrap_or(&id)
             .to_string();
 
-        let description = description_opt
-            .or_else(|| desktop_entry.get("Comment"))
-            .map(str::to_string);
+        let description = desktop_entry.description().map(String::from);
 
-        let is_snap = desktop_entry.get("X-SnapInstanceName").is_some();
-        let is_appimage = desktop_entry.get("X-AppImage-Identifier").is_some();
+        let is_snap = desktop_entry.has_key("X-SnapInstanceName");
+        let is_appimage = desktop_entry.has_key("X-AppImage-Identifier");
 
         let containerization = if is_flatpak {
             debug!(
