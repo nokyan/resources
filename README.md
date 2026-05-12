@@ -1,3 +1,7 @@
+# ⚠️ Resources is now part of [GNOME Incubator](https://gitlab.gnome.org/GNOME/Incubator/resources)! All further development and discussion will happen on GNOME GitLab
+
+---
+
 # Resources
 
 <a href='https://flathub.org/apps/net.nokyan.Resources'><img width='240' alt='Download on Flathub' src='https://flathub.org/api/badge?svg&locale=en'/></a>
