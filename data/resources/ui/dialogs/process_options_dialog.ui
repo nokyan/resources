@@ -66,7 +66,6 @@
                     </child>
                     <child>
                       <object class="AdwPreferencesGroup">
-                        <property name="title" translatable="yes">Process Options</property>
                         <child>
                           <object class="AdwSpinRow" id="nice_row">
                             <property name="title" translatable="yes">Niceness</property>
@@ -98,17 +97,22 @@
                             </property>
                           </object>
                         </child>
-                        <child>
-                          <object class="AdwExpanderRow" id="affinity_row">
-                            <property name="title" translatable="yes">Processor Affinity</property>
-                            <child type="suffix">
-                              <object class="GtkButton" id="select_all_button">
-                                <property name="valign">center</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwPreferencesGroup" id="affinity_group">
+                        <property name="title" translatable="yes">Processor Affinity</property>
+                        <child type="header-suffix">
+                          <object class="GtkButton" id="select_all_button">
+                            <property name="child">
+                              <object class="AdwButtonContent">
                                 <property name="icon-name">select-all-symbolic</property>
-                                <property name="tooltip-text" translatable="yes">Toggle All</property>
+                                <property name="label" translatable="yes">Toggle All</property>
                               </object>
-                            </child>
-                            <property name="subtitle" translatable="yes">Select which processor cores the process is allowed to run on</property>
+                            </property>
+                            <style>
+                              <class name="flat"/>
+                            </style>
                           </object>
                         </child>
                       </object>
